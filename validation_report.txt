@@ -1,0 +1,20 @@
+=== Validation report threshold=0.5 ===
+[[181  11]
+ [ 16  51]]
+
+              precision    recall  f1-score   support
+
+      upward      0.919     0.943     0.931       192
+     nodding      0.823     0.761     0.791        67
+
+    accuracy                          0.896       259
+   macro avg      0.871     0.852     0.861       259
+weighted avg      0.894     0.896     0.894       259
+
+
+=== class weight ===
+{0: 0.6753585397653195, 1: 1.9256505576208178}
+
+training_table: C:\Users\zuizui\cirsium_inat\cirsium_head_direction_model_yolo_crops_fixed\training_table_yolo_crops.csv
+validation_predictions: C:\Users\zuizui\cirsium_inat\cirsium_head_direction_model_yolo_crops_fixed\validation_predictions.csv
+model: C:\Users\zuizui\cirsium_inat\cirsium_head_direction_model_yolo_crops_fixed\cirsium_head_direction_yolo_crop_model.keras
