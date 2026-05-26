@@ -1,0 +1,716 @@
+---
+title: "Cirsium head-orientation macroecology"
+subtitle: "Global environmental analysis and Japan pollinator–environment analysis"
+author: "ZHANG RACHEL"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    theme: flatly
+    df_print: paged
+params:
+  root_dir: "C:/Users/zuizui/cirsium_inat"
+  run_global_analysis: false
+  run_japan_analysis: false
+  show_figures: true
+  max_table_rows: 30
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 5,
+  dpi = 300
+)
+
+pkgs <- c(
+  "dplyr", "readr", "stringr", "tibble", "tidyr",
+  "ggplot2", "forcats", "knitr", "kableExtra", "patchwork",
+  "scales"
+)
+
+for (p in pkgs) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    install.packages(p, dependencies = TRUE)
+  }
+}
+
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(readr)
+  library(stringr)
+  library(tibble)
+  library(tidyr)
+  library(ggplot2)
+  library(forcats)
+  library(knitr)
+  library(kableExtra)
+  library(scales)
+})
+
+theme_report <- function(base_size = 11) {
+  ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme(
+      axis.line = element_line(linewidth = 0.35),
+      axis.ticks = element_line(linewidth = 0.35),
+      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.25),
+      panel.grid.major.y = element_blank(),
+      strip.background = element_rect(fill = "grey92", colour = "grey60", linewidth = 0.35),
+      strip.text = element_text(face = "bold"),
+      legend.title = element_text(face = "bold")
+    )
+}
+
+safe_read_csv <- function(path, required = FALSE) {
+  if (!file.exists(path)) {
+    if (required) stop("Missing file: ", path)
+    return(NULL)
+  }
+  readr::read_csv(path, show_col_types = FALSE)
+}
+
+safe_kable <- function(x, caption = NULL, n = params$max_table_rows) {
+  if (is.null(x) || nrow(x) == 0) {
+    cat("*No table found.*\n\n")
+    return(invisible(NULL))
+  }
+
+  x |>
+    head(n) |>
+    knitr::kable(caption = caption, digits = 4) |>
+    kableExtra::kable_styling(full_width = FALSE)
+}
+
+find_first_file <- function(root, pattern, recursive = TRUE) {
+  if (!dir.exists(root)) return(NA_character_)
+  hits <- list.files(root, pattern = pattern, recursive = recursive, full.names = TRUE, ignore.case = TRUE)
+  if (length(hits) == 0) NA_character_ else hits[1]
+}
+
+include_if_exists <- function(path, caption = NULL, width = "100%") {
+  if (!isTRUE(params$show_figures)) return(invisible(NULL))
+  if (is.na(path) || !file.exists(path)) {
+    cat("*Figure not found:* `", path, "`\n\n", sep = "")
+    return(invisible(NULL))
+  }
+  if (!is.null(caption)) cat("**", caption, "**\n\n", sep = "")
+  knitr::include_graphics(path)
+}
+
+pretty_var <- function(x) {
+  x0 <- stringr::str_remove(as.character(x), "^z_")
+  dplyr::case_when(
+    x0 == "lon" ~ "Longitude",
+    x0 == "lat" ~ "Latitude",
+    x0 == "z_lon" ~ "Longitude",
+    x0 == "z_lat" ~ "Latitude",
+    x0 == "z_lon2" ~ "Longitude²",
+    x0 == "z_lat2" ~ "Latitude²",
+    x0 == "z_lon_lat" ~ "Longitude × latitude",
+    x0 == "longitude" ~ "Longitude",
+    x0 == "latitude" ~ "Latitude",
+    x0 == "elevation" ~ "Elevation",
+    x0 == "slope" ~ "Slope",
+    x0 == "roughness" ~ "Roughness",
+    x0 == "soil_bdod_0_30cm" ~ "Soil bulk density",
+    x0 == "soil_cec_0_30cm" ~ "Soil CEC",
+    x0 == "soil_cfvo_0_30cm" ~ "Soil coarse fragments",
+    x0 == "soil_clay_0_30cm" ~ "Soil clay",
+    x0 == "soil_sand_0_30cm" ~ "Soil sand",
+    x0 == "soil_silt_0_30cm" ~ "Soil silt",
+    x0 == "soil_nitrogen_0_30cm" ~ "Soil nitrogen",
+    x0 == "soil_phh2o_0_30cm" ~ "Soil pH",
+    x0 == "soil_soc_0_30cm" ~ "Soil organic carbon",
+    x0 == "soil_ocd_0_30cm" ~ "Soil organic carbon density",
+    TRUE ~ x0 |>
+      stringr::str_replace_all("_", " ") |>
+      stringr::str_replace_all("BIO", "BIO")
+  )
+}
+
+root_dir <- params$root_dir
+```
+
+# Report purpose
+
+This R Markdown document is a **clean report wrapper** for the two final R analyses:
+
+1. **Global analysis**  
+   Machine-learning-predicted Cirsium head orientation + CHELSA climate + topography + SoilGrids.  
+   The final R script runs RF, correlation clustering, VIF pruning, common-N weighted GLM, LRT, GAM, and publication-level figures.
+
+2. **Japan analysis**  
+   Japan-scale Cirsium trait grid + environmental PCA + pollinator SDMs.  
+   The final R script compares pollinator grouping schemes and fits binomial / beta-binomial models for the grid-level proportion of nodding-flowered species.
+
+The goal is not to duplicate every line of the long scripts, but to:
+
+- run the final scripts when requested,
+- read their main outputs,
+- summarize model comparisons and key coefficients,
+- display publication-ready figures,
+- keep the analysis order clear.
+
+# Main scripts
+
+```{r paths}
+global_script <- file.path(root_dir, "global_cirsium_full_rerun_RF_GLM_GAM_publication_figures.R")
+japan_script  <- file.path(root_dir, "cirsium_pollinator_grouping_sensitivity_model_comparison_full_fixed.R")
+
+global_out_dir <- file.path(root_dir, "global_cirsium_FULL_RERUN_RF_GLM_GAM_PUBLICATION")
+global_rf_dir <- file.path(global_out_dir, "01_RF")
+global_model_dir <- file.path(global_out_dir, "02_GLM_GAM")
+global_pub_dir <- file.path(global_out_dir, "04_publication_figures")
+global_pub_png <- file.path(global_pub_dir, "png")
+global_pub_data <- file.path(global_pub_dir, "figure_data")
+
+japan_root_dir <- file.path(root_dir, "chelsa_pollinator_enmeval_rebuild_no_swe")
+japan_out_dir <- file.path(japan_root_dir, "cirsium_pollinator_grouping_sensitivity_model_comparison")
+japan_fig_dir <- file.path(japan_out_dir, "figures")
+japan_pub_dir <- file.path(japan_out_dir, "publication_figures_best_model")
+
+tibble::tibble(
+  item = c(
+    "Global script",
+    "Japan script",
+    "Global output directory",
+    "Japan output directory"
+  ),
+  path = c(global_script, japan_script, global_out_dir, japan_out_dir),
+  exists = file.exists(path) | dir.exists(path)
+) |>
+  knitr::kable()
+```
+
+# Optional full rerun
+
+By default, this report **does not rerun** the long analyses.  
+To rerun them while knitting, set the YAML parameters:
+
+```yaml
+params:
+  run_global_analysis: true
+  run_japan_analysis: true
+```
+
+```{r run-global, eval=params$run_global_analysis}
+stopifnot(file.exists(global_script))
+source(global_script)
+```
+
+```{r run-japan, eval=params$run_japan_analysis}
+stopifnot(file.exists(japan_script))
+source(japan_script)
+```
+
+# Global analysis: head orientation vs environment
+
+## Analysis workflow
+
+The global script is organized as:
+
+1. Load the enriched table with predicted head orientation and extracted environmental variables.
+2. Run RF without spatial predictors.
+3. Run RF with spatial predictors.
+4. Select RF-top predictors.
+5. Reduce multicollinearity using correlation clustering.
+6. Apply VIF pruning.
+7. Fit common-N weighted logistic GLMs.
+8. Test incremental contributions of environment and space by likelihood-ratio tests.
+9. Fit GAMs.
+10. Export publication-level figures in PNG/PDF/TIFF.
+
+The response variable is binary:
+
+- `upward = 0`
+- `nodding = 1`
+
+Class imbalance is handled by:
+
+- balanced resampling for RF,
+- class-balanced `case_weight` for GLM/GAM.
+
+## Input and class balance
+
+```{r global-input}
+global_enriched <- file.path(
+  root_dir,
+  "global_cirsium_CHELSA_SOILGRIDS_TOPO_RF_GLM_GAM",
+  "01_orientation_points_CHELSA_topography_soilgrids.csv"
+)
+
+global_dat <- safe_read_csv(global_enriched)
+
+if (!is.null(global_dat)) {
+  if ("orientation_factor" %in% names(global_dat)) {
+    global_dat |>
+      count(orientation_factor) |>
+      mutate(prop = n / sum(n)) |>
+      safe_kable("Global orientation records")
+  } else if ("y_nodding" %in% names(global_dat)) {
+    global_dat |>
+      mutate(orientation_factor = ifelse(y_nodding == 1, "nodding", "upward")) |>
+      count(orientation_factor) |>
+      mutate(prop = n / sum(n)) |>
+      safe_kable("Global orientation records")
+  }
+} else {
+  cat("*Global enriched input table not found. Run the global script first or check the path.*\n")
+}
+```
+
+## RF variable importance
+
+```{r global-rf}
+rf_imp <- safe_read_csv(
+  file.path(global_rf_dir, "occurrence_CHELSA_TOPO_SOIL_RF_importance_repeats_summary.csv")
+)
+
+safe_kable(rf_imp, "Top RF importance without space")
+
+if (!is.null(rf_imp)) {
+  rf_imp |>
+    slice_max(mean_MDA, n = 25, with_ties = FALSE) |>
+    mutate(variable_label = fct_reorder(pretty_var(variable), mean_MDA)) |>
+    ggplot(aes(x = mean_MDA, y = variable_label)) +
+    geom_col(width = 0.72) +
+    geom_errorbar(
+      aes(xmin = mean_MDA - sd_MDA, xmax = mean_MDA + sd_MDA),
+      orientation = "y",
+      width = 0.15,
+      linewidth = 0.35
+    ) +
+    theme_report(10) +
+    labs(
+      x = "Random forest importance\n(mean decrease accuracy)",
+      y = NULL
+    )
+}
+```
+
+## Final predictors after correlation clustering and VIF pruning
+
+```{r global-vif}
+final_vars <- safe_read_csv(file.path(global_model_dir, "04_final_variables_for_GLM_GAM.csv"))
+vif_tbl <- safe_read_csv(file.path(global_model_dir, "03_VIF_final_table.csv"))
+vif_removed <- safe_read_csv(file.path(global_model_dir, "03_VIF_removed_variables.csv"))
+
+safe_kable(final_vars, "Final variables used in GLM/GAM")
+safe_kable(vif_tbl, "Final VIF table after pruning")
+safe_kable(vif_removed, "Variables removed by VIF pruning")
+```
+
+## GLM model comparison
+
+```{r global-glm-comparison}
+glm_comp <- safe_read_csv(file.path(global_model_dir, "05_GLM_model_comparison.csv"))
+
+safe_kable(glm_comp, "Global GLM model comparison")
+
+if (!is.null(glm_comp)) {
+  glm_comp |>
+    arrange(AIC) |>
+    mutate(
+      model_label = case_when(
+        model == "env_topography_soil_new_RFtop_VIF" ~ "Environment + topography + soil",
+        model == "space_only_commonN" ~ "Space only",
+        model == "env_topography_soil_plus_space_new_RFtop_VIF" ~ "Environment + topography + soil + space",
+        TRUE ~ model
+      ),
+      model_label = fct_reorder(model_label, delta_AIC)
+    ) |>
+    ggplot(aes(x = delta_AIC, y = model_label)) +
+    geom_col(width = 0.72) +
+    theme_report(11) +
+    labs(x = expression(Delta*AIC), y = NULL)
+}
+```
+
+## GLM coefficients
+
+```{r global-glm-coefficients}
+glm_coef <- safe_read_csv(file.path(global_model_dir, "05_GLM_coefficients.csv"))
+
+safe_kable(glm_coef, "Global GLM coefficients")
+
+if (!is.null(glm_coef)) {
+  coef_plot <- glm_coef |>
+    filter(model == "env_topography_soil_plus_space_new_RFtop_VIF", term != "(Intercept)") |>
+    mutate(
+      conf.low = ifelse("conf.low" %in% names(glm_coef), conf.low, estimate - 1.96 * std.error),
+      conf.high = ifelse("conf.high" %in% names(glm_coef), conf.high, estimate + 1.96 * std.error),
+      term_label = fct_reorder(pretty_var(term), estimate)
+    )
+
+  coef_plot |>
+    ggplot(aes(x = estimate, y = term_label)) +
+    geom_vline(xintercept = 0, linetype = 2, linewidth = 0.35) +
+    geom_errorbar(
+      aes(xmin = conf.low, xmax = conf.high),
+      orientation = "y",
+      width = 0.15,
+      linewidth = 0.42
+    ) +
+    geom_point(size = 2.2) +
+    theme_report(10.5) +
+    labs(x = "Weighted logistic coefficient", y = NULL)
+}
+```
+
+## Incremental GLM tests
+
+```{r global-lrt}
+glm_lrt <- safe_read_csv(file.path(global_model_dir, "06_GLM_incremental_tests.csv"))
+safe_kable(glm_lrt, "Incremental GLM likelihood-ratio tests")
+```
+
+## GAM comparison and smooth terms
+
+```{r global-gam}
+gam_comp <- safe_read_csv(file.path(global_model_dir, "07_GAM_model_comparison.csv"))
+gam_smooth <- safe_read_csv(file.path(global_model_dir, "07_GAM_smooth_terms.csv"))
+
+safe_kable(gam_comp, "Global GAM model comparison")
+safe_kable(gam_smooth, "Global GAM smooth terms")
+
+if (!is.null(gam_comp)) {
+  gam_comp |>
+    mutate(
+      model_label = case_when(
+        model == "GAM_env_topography_soil" ~ "GAM: environment",
+        model == "GAM_env_topography_soil_plus_space" ~ "GAM: environment + space",
+        TRUE ~ model
+      ),
+      model_label = fct_reorder(model_label, delta_AIC)
+    ) |>
+    ggplot(aes(x = delta_AIC, y = model_label)) +
+    geom_col(width = 0.72) +
+    theme_report(11) +
+    labs(x = expression(Delta*AIC), y = NULL)
+}
+```
+
+## Global publication figures
+
+```{r global-figures, results='asis'}
+global_fig_index <- safe_read_csv(file.path(global_pub_dir, "00_publication_figure_index.csv"))
+safe_kable(global_fig_index, "Global publication figure index")
+
+main_fig1 <- file.path(global_pub_png, "MainFig1_RF_GLM_model_selection_coefficients.png")
+main_fig2 <- file.path(global_pub_png, "MainFig2_response_curves_prediction_map.png")
+main_fig3 <- file.path(global_pub_png, "MainFig3_GAM_summary.png")
+
+include_if_exists(main_fig1, "MainFig1: RF, GLM model selection, and coefficients")
+include_if_exists(main_fig2, "MainFig2: GLM response curves and prediction map")
+include_if_exists(main_fig3, "MainFig3: GAM summary")
+```
+
+# Japan analysis: Cirsium grid proportion vs environment and pollinators
+
+## Analysis workflow
+
+The Japan script compares how different pollinator grouping schemes affect models of the **regional proportion of nodding-flowered Cirsium species**.
+
+Response:
+
+```r
+cbind(n_nodding_species, n_upward_species)
+```
+
+Main predictor blocks:
+
+- grid-level environmental PCA from candidate environmental rasters,
+- pollinator SDM groups,
+- spatial structure.
+
+Pollinator grouping schemes:
+
+1. `broad4_direct`: bee + butterfly + fly + hawkmoth
+2. `lepidoptera3_direct`: bee + Lepidoptera + fly
+3. `order3_direct`: Hymenoptera + Lepidoptera + Diptera
+4. `order3_pca`: PCA of Hymenoptera / Lepidoptera / Diptera
+5. `bombus_vs_nonbombus_all`: Bombus + all non-Bombus pollinators
+6. `bombus_vs_nonbombus_bees`: Bombus + non-Bombus bees only
+7. `total_pollinator`: all pollinator SDMs merged
+
+Main model families:
+
+- binomial GLM,
+- beta-binomial GLMM via `glmmTMB`.
+
+## Input and grid response
+
+```{r japan-input}
+japan_grid_candidates <- c(
+  file.path(japan_out_dir, "scheme_order3_pca", "analysis_grid_data.csv"),
+  file.path(japan_out_dir, "scheme_order3_direct", "analysis_grid_data.csv"),
+  file.path(japan_out_dir, "scheme_broad4_direct", "analysis_grid_data.csv")
+)
+
+japan_grid_file <- japan_grid_candidates[file.exists(japan_grid_candidates)][1]
+japan_grid <- safe_read_csv(japan_grid_file)
+
+if (!is.null(japan_grid)) {
+  japan_grid |>
+    summarise(
+      n_grids = n(),
+      mean_total_species = mean(n_total_species, na.rm = TRUE),
+      mean_prop_nodding = mean(prop_nodding_species, na.rm = TRUE),
+      min_prop_nodding = min(prop_nodding_species, na.rm = TRUE),
+      max_prop_nodding = max(prop_nodding_species, na.rm = TRUE)
+    ) |>
+    safe_kable("Japan grid-level response summary")
+} else {
+  cat("*Japan grid data not found. Run the Japan script first or check the path.*\n")
+}
+```
+
+## Model comparison across pollinator grouping schemes
+
+```{r japan-model-comparison}
+bb_comp <- safe_read_csv(file.path(japan_out_dir, "all_scheme_beta_binomial_model_comparison.csv"))
+glm_comp_jp <- safe_read_csv(file.path(japan_out_dir, "all_scheme_binomial_GLM_model_comparison.csv"))
+best_models <- safe_read_csv(file.path(japan_out_dir, "all_scheme_best_models.csv"))
+
+safe_kable(bb_comp, "Japan beta-binomial model comparison")
+safe_kable(glm_comp_jp, "Japan binomial GLM model comparison")
+safe_kable(best_models, "Best models by scheme")
+
+if (!is.null(bb_comp)) {
+  bb_plot <- bb_comp |>
+    filter(is.finite(AIC)) |>
+    arrange(AIC) |>
+    mutate(
+      global_delta_AIC = ifelse(
+        "global_delta_AIC" %in% names(bb_comp),
+        global_delta_AIC,
+        AIC - min(AIC, na.rm = TRUE)
+      ),
+      label = paste(scheme, model, sep = " / "),
+      label = fct_reorder(label, global_delta_AIC)
+    ) |>
+    slice_head(n = 30)
+
+  bb_plot |>
+    ggplot(aes(x = global_delta_AIC, y = label)) +
+    geom_col(width = 0.72) +
+    theme_report(9) +
+    labs(x = expression(Global~Delta*AIC), y = NULL)
+}
+```
+
+## Best beta-binomial model
+
+```{r japan-best}
+if (!is.null(bb_comp)) {
+  best_bb <- bb_comp |>
+    filter(method == "beta_binomial_glmmTMB", is.finite(AIC)) |>
+    arrange(AIC) |>
+    slice(1)
+
+  safe_kable(best_bb, "Global best beta-binomial model")
+
+  best_scheme <- best_bb$scheme[1]
+  best_model <- best_bb$model[1]
+} else {
+  best_scheme <- NA_character_
+  best_model <- NA_character_
+}
+
+best_scheme
+best_model
+```
+
+## Coefficients across schemes
+
+```{r japan-coefficients}
+coef_candidates <- c(
+  file.path(japan_out_dir, "all_scheme_beta_binomial_coefficients.csv"),
+  file.path(japan_out_dir, "all_scheme_coefficients.csv")
+)
+
+coef_file <- coef_candidates[file.exists(coef_candidates)][1]
+jp_coef <- safe_read_csv(coef_file)
+
+safe_kable(jp_coef, "Japan coefficients")
+
+if (!is.null(jp_coef) && !is.na(best_scheme) && !is.na(best_model)) {
+  jp_coef_plot <- jp_coef |>
+    filter(
+      scheme == best_scheme,
+      model == best_model,
+      method == "beta_binomial_glmmTMB",
+      term != "(Intercept)",
+      is.finite(estimate),
+      is.finite(std.error)
+    ) |>
+    mutate(
+      conf.low = estimate - 1.96 * std.error,
+      conf.high = estimate + 1.96 * std.error,
+      term_label = fct_reorder(term, estimate)
+    )
+
+  jp_coef_plot |>
+    ggplot(aes(x = estimate, y = term_label)) +
+    geom_vline(xintercept = 0, linetype = 2, linewidth = 0.35) +
+    geom_errorbar(
+      aes(xmin = conf.low, xmax = conf.high),
+      orientation = "y",
+      width = 0.15,
+      linewidth = 0.42
+    ) +
+    geom_point(size = 2.2) +
+    theme_report(10.5) +
+    labs(x = "Beta-binomial coefficient", y = NULL)
+}
+```
+
+## Predictor correlations
+
+```{r japan-correlations}
+corr_tbl <- safe_read_csv(file.path(japan_out_dir, "all_scheme_predictor_correlations.csv"))
+
+safe_kable(corr_tbl, "Predictor correlations across schemes")
+
+if (!is.null(corr_tbl)) {
+  corr_tbl |>
+    filter(abs_correlation >= 0.7) |>
+    arrange(desc(abs_correlation)) |>
+    mutate(pair = paste(var1, var2, sep = " — ")) |>
+    slice_head(n = 30) |>
+    mutate(pair = fct_reorder(pair, abs_correlation)) |>
+    ggplot(aes(x = abs_correlation, y = pair)) +
+    geom_col(width = 0.72) +
+    geom_vline(xintercept = 0.7, linetype = 2) +
+    geom_vline(xintercept = 0.85, linetype = 3) +
+    theme_report(8.5) +
+    labs(x = "|correlation|", y = NULL)
+}
+```
+
+## PCA diagnostics
+
+```{r japan-pca}
+env_loadings <- safe_read_csv(file.path(japan_out_dir, "01_grid_preVIF_env_PCA_loadings.csv"))
+
+if (is.null(env_loadings)) {
+  env_loadings <- safe_read_csv(find_first_file(japan_out_dir, "env.*PCA.*loading|grid.*PCA.*loading"))
+}
+
+safe_kable(env_loadings, "Environmental PCA loadings")
+
+if (!is.null(env_loadings)) {
+  if (!"variable" %in% names(env_loadings)) {
+    var_col <- intersect(c("var", "layer", "name"), names(env_loadings))[1]
+    if (!is.na(var_col)) names(env_loadings)[names(env_loadings) == var_col] <- "variable"
+  }
+
+  if (any(stringr::str_detect(names(env_loadings), "^PC[0-9]+$"))) {
+    env_long <- env_loadings |>
+      select(variable, matches("^PC[0-9]+$")) |>
+      pivot_longer(matches("^PC[0-9]+$"), names_to = "PC", values_to = "loading")
+  } else if (all(c("PC", "loading") %in% names(env_loadings))) {
+    env_long <- env_loadings |>
+      select(variable, PC, loading)
+  } else {
+    env_long <- NULL
+  }
+
+  if (!is.null(env_long)) {
+    env_top <- env_long |>
+      mutate(abs_loading = abs(as.numeric(loading))) |>
+      filter(PC %in% paste0("PC", 1:3)) |>
+      group_by(PC) |>
+      slice_max(abs_loading, n = 12, with_ties = FALSE) |>
+      ungroup() |>
+      mutate(variable = fct_reorder(variable, loading))
+
+    env_top |>
+      ggplot(aes(x = loading, y = variable)) +
+      geom_vline(xintercept = 0, linetype = 2) +
+      geom_col(width = 0.72) +
+      facet_wrap(~ PC, scales = "free_y") +
+      theme_report(9) +
+      labs(x = "PCA loading", y = NULL)
+  }
+}
+```
+
+## Japan figures
+
+```{r japan-figures, results='asis'}
+japan_fig_index <- safe_read_csv(file.path(japan_pub_dir, "00_publication_figure_index.csv"))
+safe_kable(japan_fig_index, "Japan publication figure index")
+
+fig_candidates <- c(
+  file.path(japan_pub_dir, "Fig1_global_model_comparison_top20.png"),
+  file.path(japan_pub_dir, "Fig2_best_model_each_scheme.png"),
+  file.path(japan_pub_dir, "Fig3_best_model_coefficients.png"),
+  file.path(japan_pub_dir, "Fig4_pollinator_order_PCA_loadings.png"),
+  file.path(japan_pub_dir, "Fig5_environmental_PCA_top_loadings.png"),
+  file.path(japan_pub_dir, "Fig6_combined_prediction_residual_panel.png")
+)
+
+for (ff in fig_candidates) {
+  include_if_exists(ff, caption = basename(ff))
+}
+```
+
+# Integrated interpretation
+
+## What the global analysis contributes
+
+The global analysis tests whether ML-predicted nodding head orientation is associated with global-scale climate, topography, soil, and spatial structure.
+
+Important interpretation points:
+
+- RF is used for exploratory variable screening.
+- Correlation clustering and VIF pruning reduce predictor collinearity.
+- The final GLM is weighted to reduce class imbalance between upward and nodding records.
+- Spatial polynomial terms help separate environmental association from broad geographic structure.
+- GAMs provide a nonlinear check of the GLM patterns.
+
+## What the Japan analysis contributes
+
+The Japan analysis asks whether the **regional proportion of nodding-flowered species** is associated with:
+
+- environmental gradients,
+- pollinator SDM composition,
+- spatial structure.
+
+Important interpretation points:
+
+- The response is grid-level species composition, not individual image records.
+- Beta-binomial models are important because they can account for overdispersion in proportions.
+- Pollinator grouping sensitivity analysis checks whether conclusions depend on how pollinators are grouped.
+- Environmental PCA is used because grid-level candidate environmental predictors are highly correlated.
+
+## How the two analyses connect
+
+Together, the two analyses form a two-scale argument:
+
+1. **Global analysis**  
+   Nodding head orientation is associated with broad environmental gradients such as moisture, elevation, climate seasonality, and geography.
+
+2. **Japan analysis**  
+   Within Japan, the regional proportion of nodding-flowered Cirsium species is further examined against environmental gradients and pollinator community structure.
+
+3. **Next step**  
+   Phylogenetic mapping is needed to separate:
+   - repeated environmental adaptation,
+   - phylogenetic inertia,
+   - historical biogeography,
+   - unresolved local ecological mechanisms.
+
+# Suggested next analyses
+
+- Map head orientation onto a phylogeny.
+- Test whether nodding orientation is clustered in specific clades.
+- Estimate ancestral states and number of transitions.
+- Compare environmental niches between upward and nodding lineages after phylogenetic correction.
+- Validate functional hypotheses using pollinator observation and orientation manipulation experiments.
