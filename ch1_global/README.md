@@ -61,6 +61,7 @@ establishes the descriptive pattern that a later chapter can test causally.
 | H1-Ch1b | Trait combinations (not just single traits) show non-random structure with climate, terrain, and geography. | RF/GLM/GAM of syndrome axes or cluster membership against CHELSA + topography + soil + space outperform null/space-only models; effect directions are consistent across the sensitivity levels in §3.4. |
 | H1-Ch1c | Models read the trait itself, not species identity. | Leave-one-species-out validation (per trait) holds up materially above the majority-class/mean baseline on held-out species; large per-species accuracy collapses are reported, not hidden in an aggregate score. |
 | H1-Ch1d | Involucral cover and corolla:involucre display are related but not interchangeable axes. | Their correlation is reported explicitly (§2, `corolla_involucre_display_ratio` notes); if r > ~0.9 across the global sample this is stated as a limitation, not silently merged. |
+| H1-Ch1e | Capitulum traits are phenotypically integrated and some trait combinations are under-represented ("forbidden"), i.e. floral trait space is structured by coordination/constraint rather than freely combinatorial. | At the species level (§3.5): the trait correlation matrix departs from independence (integration index > null); trait space (PCA/FAMD) has empty or sparse regions relative to a null occupying the marginal ranges; putative modules (e.g. a display module {colour, size, exposure} vs a protection module {cover, orientation}) are recoverable. These become correlated-evolution hypotheses handed to Ch.2 (§6). |
 
 ### 1.3 Proposed paper structure
 
@@ -90,6 +91,36 @@ establishes the descriptive pattern that a later chapter can test causally.
 5. Limitations — citizen-science sampling bias, uncalibrated colour, camera
    tilt/viewing-angle confounds, ROI detection error propagating into
    downstream trait estimates.
+
+### 1.4 Where the novelty comes from
+
+Single-trait "nodding ~ climate" is a modest, largely known story and is not
+the contribution. Chapter 1's novelty rests on three legs, in order of
+strength:
+
+1. **Multi-trait floral phenomics from citizen-science images, validated.** A
+   reproducible pipeline that extracts a *suite* of capitulum traits (not one)
+   from unstructured public photos and is validated with leave-one-species-out
+   and human-agreement checks is a methodological contribution in its own
+   right — most macro-scale floral-trait work relies on herbarium/literature
+   scoring, not validated computer vision at this breadth.
+2. **Global floral trait syndromes, integration, and constraint (§3.5).**
+   Describing how capitulum traits co-vary, integrate into modules, and leave
+   "forbidden" combinations empty, across a whole genus at global scale, is the
+   biological contribution. It reframes the question from "where is nodding"
+   to "how is the flowering head organized as a coordinated phenotype, and how
+   does that organization map onto the planet."
+3. **A phylogeny-free macroecological baseline for an intractable clade.**
+   Precisely because *Cirsium* polyploidy/hybridization make a chloroplast
+   phylogeny hard (see §3.4, §6), a rigorously space- and taxon-controlled
+   *pattern* description is both necessary and novel: it is the honest first
+   layer that a later, harder phylogenetic analysis (Ch.2) is built on, and it
+   states its hypotheses of correlated evolution up front.
+
+The framing to avoid: presenting the classifier accuracy or a single
+climate–orientation curve as the result. The result is the trait-syndrome /
+integration structure and its geographic-environmental correspondence, with
+the pipeline as enabling method.
 
 ## 2. ROI design
 
@@ -213,22 +244,113 @@ number:
 
 Extends the existing `v1/05_rf_glm_gam_env_analysis.R` / `v1/05b_rf_only_env_analysis.R`
 machinery (RF importance with repeats, correlation-cluster + VIF variable
-selection, common-N weighted GLM, GAM) from a single binary response to:
+selection, common-N weighted GLM, GAM) from a single binary response to the
+following. Note the design constraint that drives the structure of this
+section: ***Cirsium* is polyploid with extensive hybridization and a
+chloroplast phylogeny that is hard to resolve, so a reliable tree to correct
+with may not exist even in Ch.2.** Chapter 1 therefore does not promise
+"phylogenetic correction later" as its answer to non-independence (this
+revises Audit finding B2); instead it owns a **phylogeny-free** strategy in
+which space and taxonomic rank carry the load.
 
+- **Non-independence without a reliable phylogeny.** Handle pseudoreplication
+  with, in combination: (i) **spatial partitioning as a primary tool, not a
+  robustness afterthought** — spatial block/cluster CV, spatial thinning, and
+  a spatial term or spatial random effect (e.g. a smooth `s(lon,lat)` in the
+  GAM, or an SPDE/CAR effect) so geography absorbs both sampling clustering and
+  unmeasured spatially structured drivers; (ii) a **taxonomic random effect**
+  (species, and section/subgenus where a classification exists) — a taxonomic
+  hierarchy is a weaker substitute for a tree but still prevents one
+  data-rich clade from dominating; (iii) **species and species×grid
+  aggregation** as the headline unit (below); (iv) a **clade/section and
+  single-species jackknife** — refit dropping each dominant species/section to
+  show no one lineage produces the pattern. This replaces the phylogenetic
+  control we cannot reliably build with structure we can.
+- **Broadened predictor set beyond climate.** Because the strongest,
+  most-novel signal is expected in trait *combinations* rather than in any one
+  climate axis, and because climate alone risks a thin story, add non-climate
+  layers to CHELSA + topography + soil: productivity/greenness (NDVI/EVI),
+  **cloud- and fog-frequency and rain-day metrics** (directly relevant to the
+  wet-exposure ideas around cover/orientation — e.g. EarthEnv cloud, CHELSA
+  precipitation-timing variables), photoperiod/seasonality (latitude-derived),
+  and land cover / human-footprint (which doubles as a sampling-bias covariate,
+  §3.4 caveat). All enter the same correlation-cluster + VIF selection so
+  collinear layers don't inflate the model.
+- **Pollinator-availability proxy (regional tier; correlate only).** A
+  pollinator-availability layer can enter as *one more environmental
+  covariate*, framed strictly as a **correlate, never as a pollination
+  mechanism** (mechanism stays in Ch.4). Data reality bounds where this is
+  honest: GloBI/observed-interaction coverage for *Cirsium* pollinators is
+  dense enough only in well-surveyed regions, so the proxy is built and
+  interpreted at the **Japan deep-dive tier** (reusing the existing
+  `ch1_japan` GloBI + SDM machinery to produce a per-cell pollinator-guild
+  availability surface). A global-tier proxy, if used at all, is limited to a
+  coarse climate-based pollinator-richness layer with explicit warning that
+  raw GBIF pollinator density is confounded with human sampling effort and is
+  **not** used as a proxy.
+- **Two-tier design (global + Japan).** The existing code's split into a
+  global image pipeline and a Japan pipeline becomes a deliberate two-tier
+  structure rather than two disconnected halves: a **global tier** (all image
+  traits × climate/terrain/soil/broadened layers × space, maximum taxonomic
+  and geographic breadth) and a **Japan deep-dive tier** (the same image
+  traits, but in a region where the pollinator proxy and denser environmental
+  and occurrence data are available). Consistency of a trait–environment
+  pattern across both tiers is a strong, phylogeny-free robustness argument;
+  divergence flags a region- or sampling-specific artifact.
 - **Per-trait models** — one RF/GLM/GAM per trait (classification traits as
-  binary/multinomial, continuous traits as Gaussian/Beta as appropriate)
-  against CHELSA climate, topography, soil, and space, reusing the same
-  variable-selection pipeline.
-- **Trait-syndrome analysis** — PCA (continuous traits) or FAMD/MCA (mixed
-  continuous + categorical) across the trait set at the observation level,
-  followed by clustering (hierarchical or k-means on PCA/FAMD scores, or
-  Gower-distance clustering) to define discrete syndrome types; syndrome
-  axes/cluster membership are then modelled against the same environmental
-  variable set as the per-trait models.
-- **Sensitivity analysis across aggregation level** — every environmental
-  model is re-run at (a) photo/observation level, (b) species-mean level, and
-  (c) species x geographic-grid-cell level, to check that patterns are not
-  artifacts of which species/regions iNaturalist happens to oversample.
+  binary/multinomial, continuous as Gaussian/Beta), reusing the same
+  variable-selection pipeline over the broadened predictor set.
+- **Trait-syndrome models** — PCA (continuous) or FAMD/MCA (mixed) across the
+  trait set, then clustering (hierarchical/k-means on scores, or Gower-distance
+  clustering) to define discrete syndrome types; syndrome axes / cluster
+  membership are modelled against the same predictors. Integration and
+  constraint in that trait space are analysed in §3.5.
+- **Aggregation-level sensitivity** — every model is re-run at (a)
+  photo/observation level, (b) species-mean level, and (c) species×grid-cell
+  level. Given the phylogeny problem, the **species-level (and species×grid)
+  model is the headline** for any environmental claim; the per-observation
+  model is shown only to demonstrate the pattern is not created by aggregation.
+- **Inference philosophy (pre-declared).** With many traits × many predictors ×
+  several tiers and aggregation levels, primary traits/hypotheses (§1.2) are
+  declared confirmatory in advance and everything else is labelled
+  exploratory; evidence is judged by effect size + CI and by **consistency
+  across tiers and aggregation levels**, not by counting p-values (Audit D2).
+- **Errors-in-variables.** Predicted trait values carry classifier/regression
+  error into these models; carry predicted probabilities/continuous estimates
+  (not hard labels) where possible, use a high-confidence subset as one
+  sensitivity tier, and report how conclusions move (Audit D1).
+
+### 3.5 Trait coordination, integration, and constraint
+
+Beyond "do traits cluster into syndromes," Chapter 1 asks the sharper,
+more-novel question the syndrome idea implies: **how coordinated and how
+constrained is capitulum trait space?** This is the phenotypic-integration
+framing and is computed at the **species level** (photo-level correlations are
+inflated by within-individual pseudoreplication and by shared measurement
+error, so they are not the unit for integration).
+
+- **Trait covariation** — species-level correlation/partial-correlation matrix
+  among all traits, with the measurement-error caveat (D1) stated; report which
+  pairs covary beyond what shared size/allometry explains.
+- **Integration magnitude** — an integration index (e.g. variance of the
+  eigenvalues of the trait correlation matrix, or a relative eigenvalue
+  standard deviation) tested against a null of independent traits; optionally
+  whether integration strengthens in more stressful/seasonal climates.
+- **Modularity** — test whether the capitulum behaves as one integrated module
+  or as sub-modules (candidate a-priori split: a *display* module {colour,
+  size, corolla exposure} vs a *protection/exposure* module {involucral cover,
+  orientation}); report support for the modular hypothesis rather than assuming
+  it.
+- **Constraint / forbidden combinations** — quantify occupancy of trait space
+  (convex-hull volume, kernel density, or empty-quadrant tests in PCA/FAMD
+  space) against a null that fills the marginal ranges independently; sparsely
+  occupied regions are candidate developmental/functional constraints.
+- **Allometry** — trait–size scaling (e.g. colour or cover vs head size), since
+  apparent integration can be size-driven and must be separated from it.
+
+These outputs are not interpreted as adaptation in Chapter 1; each recovered
+module, strong covariance, or forbidden combination becomes an explicit
+**hypothesis of correlated evolution** passed to Chapter 2 (§6).
 
 ## 4. Implementation roadmap (mapped to existing code)
 
@@ -261,11 +383,18 @@ hardest part of the pipeline before any validation-design improvement lands.
   Chapter 1. Combining leaf and floral defence requires an explicit
   cross-organ hypothesis, which Chapter 1 does not make (consistent with
   `ch3_trait_architecture/README.md`).
-- **Pollination, floral herbivory/antagonism, and reproductive outcome
-  effects** are reserved for Chapter 4's field manipulation experiments.
-  Chapter 1 does not use interaction or fitness data even opportunistically
-  (e.g., from iNaturalist comments); if cited at all, it is background
-  motivation in the Introduction/Discussion, never an analysed variable.
+- **Pollination as a mechanism** — observed visits, legitimate contact,
+  pollen transfer, and any effect of pollinators *on* trait evolution — is
+  reserved for Chapter 4's field experiments. Chapter 1 does not use observed
+  interaction or fitness data. The one permitted exception is a **pollinator-
+  availability proxy used as an environmental correlate** (§3.4, Japan tier):
+  a modelled availability surface (climate/occurrence-derived) may be one
+  predictor among the environmental layers, reported as "trait X co-occurs
+  with pollinator-climate proxy Y," never as "pollinators cause trait X." The
+  line is: *availability layer as covariate* = Ch.1; *observed interaction and
+  causal effect* = Ch.4. If this still feels too close to Ch.4 for the author's
+  taste, the proxy can be dropped from Ch.1 with no damage to legs 1-2 of the
+  novelty (§1.4) — it is an enrichment, not a load-bearing part.
 - **Traits that share a name with a Chapter 3 field trait**
   (`involucral_cover`, `flower_colour`) are not the same measurement and
   should not be read as duplicating Chapter 3's contribution:
@@ -282,13 +411,40 @@ hardest part of the pipeline before any validation-design improvement lands.
     the two should never be merged into one variable in either chapter's
     dataset.
 - **Chapter 2** (phylogeny, ancestral states, repeated evolution) consumes
-  Chapter 1's trait table as input (species-level summaries) but performs no
-  image-derived measurement itself.
-- **`ch1_japan` (GBIF x GloBI pollinator SDM)** no longer represents part of
-  "Chapter 1" under this redefinition, because it analyses pollinator
-  assemblages and orientation together — exactly the interaction-effect
-  scope now reserved for Chapter 4. It is recommended (not yet executed) to
-  either (a) relabel it as a regional pilot feeding Chapter 4's pollinator
-  rationale, or (b) fold its pollinator-SDM machinery into Chapter 4's field
-  design as background/motivation material. This is a naming/placement
-  decision for the author to confirm before the folder is moved.
+  Chapter 1's trait table and its §3.5 hypotheses as input; see §6.
+- **`ch1_japan` (GBIF x GloBI pollinator SDM)** is **partially reinstated** as
+  the **Japan deep-dive tier** of Chapter 1 (§3.4), not fully shunted to
+  Chapter 4. Its SDM machinery is reused to build the pollinator-*availability*
+  proxy surface used as a correlate; but its original framing — pollinator
+  assemblages jointly with orientation as an interaction/mechanism story —
+  stays Chapter 4. In short: the *availability layer* it can produce is Ch.1
+  infrastructure; the *interaction inference* it was written for is Ch.4. No
+  folder move is required; the same code serves both under clearly separated
+  claims.
+
+## 6. Handoff to Chapter 2 (and the phylogeny problem)
+
+Chapter 1 is deliberately built so that its outputs are exactly Chapter 2's
+inputs, and so that it does not over-promise given that a resolved tree may not
+be available:
+
+- **What Ch.1 hands to Ch.2:** a validated species-level trait matrix
+  (orientation, colour, cover, shape, display + continuous companions), the
+  syndrome/cluster definitions (§3.4), and — most importantly — the §3.5
+  **integration/modularity/constraint results reframed as explicit hypotheses
+  of correlated evolution** (e.g. "display and protection modules are
+  decoupled," "cover and nodding co-occur beyond chance," "combination Z is
+  forbidden"). These are the concrete propositions Ch.2 tests on a tree.
+- **The phylogeny caveat, stated up front:** *Cirsium* polyploidy and
+  hybridization make chloroplast phylogeny estimation hard, so Ch.2 may need
+  multiple candidate trees, nuclear/target-capture data, or network rather
+  than strictly bifurcating-tree methods, and some correlated-evolution tests
+  may remain uncertain. Chapter 1 does **not** assume this will be solved: its
+  own claims stand on space + taxonomic-rank control (§3.4) without requiring
+  a tree. This makes Ch.1 a self-contained, phylogeny-free macroecological
+  result and a scaffold for Ch.2, rather than a claim hostage to a phylogeny
+  that may not resolve.
+- **Bridge to Ch.3/Ch.4:** the syndromes and forbidden combinations that look
+  environmentally structured in Ch.1 become the specific trait combinations
+  Ch.3 remeasures under controlled conditions and Ch.4 manipulates in the
+  field; §1.4 leg 2 is what those chapters turn from pattern into mechanism.

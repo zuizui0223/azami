@@ -90,17 +90,26 @@ Remediation (v2):
   option to README §3.4; currently only aggregation-level sensitivity is
   named.**
 
-### B2 — Phylogenetic / taxonomic non-independence (MAJOR)
+### B2 — Phylogenetic / taxonomic non-independence, with an intractable tree (MAJOR)
 Because v1 labels are species-level (A1), the response is effectively
 one-value-per-species smeared over many photos. Even after fixing A1 to
-image-level labels, species remain non-independent (shared ancestry). Chapter
-1 correctly **defers formal phylogenetic correction to Ch.2/3**, but must not
-present a raw per-observation GLM as if observations were independent draws.
-Remediation: species-level and species×grid aggregation (README §3.4) as the
-honest macro unit; state plainly that Chapter 1's inference is descriptive and
-that phylogenetic non-independence is addressed in Ch.2/3. **Covered** as a
-boundary (README §5) — but the audit adds: **the species-level model, not the
-per-observation model, should be the headline** for any climate claim.
+image-level labels, species remain non-independent (shared ancestry).
+
+**Revised remediation (this supersedes the earlier "defer to Ch.2/3" answer).**
+*Cirsium* is polyploid with extensive hybridization and a chloroplast
+phylogeny that is hard to resolve, so a reliable tree to correct with may not
+exist even in Ch.2. Chapter 1 must therefore **not** rely on "phylogenetic
+correction later" as its answer to non-independence. Instead it adopts a
+**phylogeny-free** strategy (README §3.4): (i) spatial partitioning/CV and a
+spatial random effect as a *primary* tool, (ii) a taxonomic-rank random effect
+(species, section/subgenus) as a weaker-than-tree but usable control, (iii)
+species and species×grid aggregation as the **headline** unit — the
+per-observation model is shown only to prove aggregation didn't manufacture the
+pattern — and (iv) a clade/section and single-species jackknife to show no one
+lineage drives the result. Chapter 1's claims are thereby self-contained and do
+not become hostage to a phylogeny that may never resolve; the tree-dependent
+tests move to Ch.2 as explicitly uncertain (README §6). **Covered/updated** in
+README §3.4 and §6.
 
 ### B3 — Environmental extraction not reproducible in-repo (MAJOR)
 `05` starts from a pre-computed `..._CHELSA_topography_soilgrids.csv` that no
@@ -215,14 +224,26 @@ as a finished macroecological result until they do.
 
 ---
 
-## F. New items to fold into the v2 plan
+## F. Status of the fold-in items
 
-These are findings above that are **not yet** explicit in `README.md` and
-should be added when the plan is next revised:
+Now folded into `README.md` §3.4/§3.5/§6 (this revision):
 
-- B1: spatial CV / spatial random effect option (not only aggregation-level).
-- B3: committed environmental-extraction / data-provenance phase in the §4 roadmap.
-- B4: obscured-coordinate and positional-accuracy sensitivity tier in §3.4.
-- C1: detector precision/recall reporting alongside the classifier validation in §3.2.
-- D1: errors-in-variables handling (probabilities, confidence tiers, propagation) in §3.4.
-- D2: a pre-declared inference philosophy (confirmatory vs exploratory) in §3.4.
+- B1: spatial partitioning/CV + spatial random effect, elevated to a *primary*
+  non-independence tool (§3.4).
+- B2: phylogeny-free non-independence strategy given intractable *Cirsium*
+  phylogeny (§3.4, §6).
+- D1: errors-in-variables handling — probabilities not hard labels, confidence
+  tiers (§3.4).
+- D2: pre-declared confirmatory-vs-exploratory inference philosophy (§3.4).
+- Plus new design elements the audit did not originally demand but that
+  strengthen the paper: broadened non-climate predictors incl. cloud/fog/rain
+  layers (§3.4), a pollinator-availability proxy as a correlate in a Japan
+  deep-dive tier (§3.4, §5), and a trait integration/modularity/constraint
+  analysis (§3.5) feeding correlated-evolution hypotheses to Ch.2 (§6).
+
+Still open (should be added to the §4 roadmap when next revised):
+
+- B3: a committed environmental-extraction / data-provenance phase (CHELSA,
+  topography, SoilGrids, and the new NDVI/cloud/fog/land-cover layers).
+- B4: obscured-coordinate and positional-accuracy sensitivity tier.
+- C1: detector precision/recall reporting alongside classifier validation (§3.2).
