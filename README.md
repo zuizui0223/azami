@@ -22,18 +22,22 @@ Macro pattern --> Phylogeny --> Trait architecture --> Function
 
 | Chapter | Question | Approach |
 |---------|----------|----------|
-| Ch.1 | Across global *Cirsium*, what repeated combinations do image-derived capitulum traits (orientation, colour, involucral cover, head shape, corolla:involucre display) form, how coordinated/constrained is that trait space, and how do the traits and syndromes correspond to climate, terrain, and geography? | iNat images -> multi-class YOLO ROI detection (ROI-A/ROI-B) -> per-trait extraction -> human-label + Group CV/LOSO validation -> RF/GLM/GAM + PCA/clustering syndrome analysis + trait integration/constraint. Two tiers: a global tier and a Japan deep-dive tier (denser-data consistency check). Non-independence handled **phylogeny-free** (spatial + taxonomic-rank control), because *Cirsium* polyploidy/hybridization make a reliable tree intractable. A pollinator-availability proxy is deferred out of Ch.1 for now. See `ch1_global/README.md` + `ch1_global/METHODS_AUDIT.md`. Macroecological pattern only; no causal claim. |
+| Ch.1 | Across global *Cirsium*, what repeated combinations do image-derived capitulum traits (orientation, colour, involucral cover, head shape, corolla:involucre display) form, how coordinated/constrained is that trait space, and how do the traits and syndromes correspond to climate, terrain, and geography? | iNat images -> multi-class YOLO ROI detection (ROI-A/ROI-B) -> per-trait extraction -> human-label + Group CV/LOSO validation -> RF/GLM/GAM + PCA/clustering syndrome analysis + trait integration/constraint. Two tiers: a global tier and a Japan deep-dive tier (justified by Japan being a *Cirsium* diversity hotspot, a scale-consistency test, and continuity with the Ch.2/4 study system — not by data density alone). Non-independence handled **phylogeny-free** (spatial + taxonomic-rank control), because *Cirsium* polyploidy/hybridization make a reliable tree intractable. The pollinator *hypothesis* is proposed as a candidate mechanism (the hook into Ch.4), but no pollinator *variable* is analysed in Ch.1 (a stacked-SDM proxy is climate-derived and cannot separate pollinator from climate effects). See `ch1_global/README.md` + `ch1_global/METHODS_AUDIT.md`. Macroecological pattern only; no causal claim. |
 | Ch.2 | When and how many times was the nodding trait gained? | Molecular phylogeny + ancestral state reconstruction |
 | Ch.3 | Does head orientation belong to recurrent floral trait syndromes, and how do those syndromes relate to niche shifts? | Trait dictionary + comparative data matrix + PGLS / phylogenetic logistic regression |
 | Ch.4 | Do head orientation and associated floral traits affect pollination, floral damage, rain/wind protection, mating, or seed set? | Field observation + manipulation experiments + reproductive outcomes |
 
 `ch1_japan` (GBIF occurrences x GloBI pollinator SDM x env PCA -> GLM)
 contributes the **Japan deep-dive tier** of Chapter 1 via its
-occurrence/environmental machinery, as a denser-data region for a cross-tier
-consistency check. Its **pollinator SDM is deferred** out of Chapter 1 for now
-(the pollinator-availability proxy is an optional future enrichment, and its
-interaction/mechanism framing remains Chapter 4's scope). No folder move is
-required. See `ch1_global/README.md` §3.4, §5-6.
+occurrence/environmental machinery — justified because Japan is a *Cirsium*
+diversity hotspot, gives a fine-grain scale-consistency test of the global
+pattern, and is the study system continued in Ch.2/4 (not by data density
+alone, and demotable to a regional sensitivity section if a reviewer prefers).
+Its **pollinator SDM is deferred** out of Chapter 1 (the pollinator hypothesis
+is still *named* as the hook into Ch.4, but no pollinator variable is analysed;
+a stacked-SDM proxy is climate-derived and cannot separate pollinator from
+climate effects). No folder move is required. See `ch1_global/README.md`
+§3.4, §5-6.
 
 ---
 

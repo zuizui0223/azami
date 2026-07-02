@@ -237,10 +237,12 @@ Now folded into `README.md` §3.4/§3.5/§6 (this revision):
 - D2: pre-declared confirmatory-vs-exploratory inference philosophy (§3.4).
 - Plus new design elements the audit did not originally demand but that
   strengthen the paper: broadened non-climate predictors incl. cloud/fog/rain
-  layers (§3.4), a global + Japan deep-dive two-tier consistency check (§3.4;
-  a pollinator-availability proxy is **deferred** out of Chapter 1 for now,
-  §3.4/§5), and a trait integration/modularity/constraint
-  analysis (§3.5) feeding correlated-evolution hypotheses to Ch.2 (§6).
+  layers (§3.4), an explicitly justified global + Japan deep-dive two-tier
+  consistency check (§3.4; the pollinator *hypothesis* is proposed as the hook
+  into Ch.4, but the pollinator *variable* is **deferred** — a stacked-SDM
+  proxy is climate-derived and cannot separate pollinator from climate effects,
+  §3.4/§5), and a trait integration/modularity/constraint analysis (§3.5)
+  feeding correlated-evolution hypotheses to Ch.2 (§6).
 
 Still open (should be added to the §4 roadmap when next revised):
 

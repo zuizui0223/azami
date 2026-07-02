@@ -85,9 +85,15 @@ establishes the descriptive pattern that a later chapter can test causally.
    3. Environmental/geographic correspondence of individual traits and of
       syndromes
    4. Sensitivity: photo-level vs species-level vs species x grid-level
-4. Discussion — explicitly bounded: macroecological pattern only; state what
-   would be required (Ch.2 phylogeny, Ch.3 controlled field measurement,
-   Ch.4 manipulation) to move from pattern to mechanism.
+4. Discussion — explicitly bounded: macroecological pattern only. Lay out the
+   **candidate mechanisms** the pattern is consistent with — abiotic
+   (rain/wind exposure), **pollinator-mediated selection**, floral-antagonist
+   defence, and developmental/genetic constraint — as non-exclusive hypotheses
+   *without testing them here*, and state what each later chapter contributes
+   to testing them (Ch.2 phylogeny/correlated evolution, Ch.3 controlled field
+   measurement, Ch.4 manipulation of pollination / antagonism / exposure). The
+   pollinator hypothesis is named here as the explicit hook into Ch.4; no
+   pollinator variable is analysed (§3.4, §5).
 5. Limitations — citizen-science sampling bias, uncalibrated colour, camera
    tilt/viewing-angle confounds, ROI detection error propagating into
    downstream trait estimates.
@@ -276,26 +282,55 @@ which space and taxonomic rank carry the load.
   and land cover / human-footprint (which doubles as a sampling-bias covariate,
   §3.4 caveat). All enter the same correlation-cluster + VIF selection so
   collinear layers don't inflate the model.
-- **Two-tier design (global + Japan).** The existing code's split into a
-  global image pipeline and a Japan pipeline becomes a deliberate two-tier
-  structure rather than two disconnected halves: a **global tier** (all image
-  traits × climate/terrain/soil/broadened layers × space, maximum taxonomic
-  and geographic breadth) and a **Japan deep-dive tier** (the same image
-  traits in a region with denser occurrence and finer environmental data).
-  Consistency of a trait–environment pattern across both tiers is a strong,
-  phylogeny-free robustness argument; divergence flags a region- or
-  sampling-specific artifact. The Japan tier's value here does **not** depend
-  on pollinators — denser data + a cross-tier consistency check justify it on
-  their own.
-- **Pollinator-availability proxy — DEFERRED (optional future enrichment).**
-  A pollinator-availability layer as *one more environmental correlate* (never
-  a mechanism; that stays Ch.4) is **not part of the current Chapter 1 plan**
-  and is deferred, because Chapter 1 stands without it (§1.4 legs 1-2) and it
-  sits close to Ch.4's boundary. If revisited later, the honest form is a
-  Japan-tier surface from the existing `ch1_japan` GloBI + SDM machinery
-  (well-surveyed region only); raw GBIF pollinator density is confounded with
-  human sampling effort and is **not** an acceptable proxy. Until then, no
-  pollinator variable enters any Chapter 1 model.
+- **Two-tier design (global + Japan) — with an explicit, reviewer-proof
+  justification for the Japan tier.** The existing global/Japan code split
+  becomes a deliberate two-tier structure: a **global tier** (all image traits
+  × climate/terrain/soil/broadened layers × space, maximum breadth) and a
+  **Japan deep-dive tier** (the same image traits at finer grain in a denser
+  region). A reviewer *will* ask "why single out Japan when you already have a
+  global analysis?" — and "I work there" / "more data" are not acceptable
+  answers (Europe and North America are also densely sampled). The defensible
+  reasons, which must be stated in the paper, are:
+  1. **Japan is a *Cirsium* diversity hotspot** (many species, high endemism),
+     so it lets us test trait–environment structure *within* a rich regional
+     flora, partly decoupled from the broad between-region climate gradient
+     that dominates the global tier — a distinct analytical question, not a
+     smaller copy of the global one.
+  2. **Scale-consistency test:** whether the global-scale trait–environment
+     pattern replicates at fine grain in an independent, denser dataset is a
+     genuine, phylogeny-free robustness argument; divergence flags a coarse-
+     sampling artifact.
+  3. **System continuity:** the downstream phylogenetic (Ch.2) and field
+     (Ch.4) work is concentrated in Japan, so the Japan tier is the explicit
+     bridge that sets up those chapters in the same system.
+
+  Honest caveat: with the pollinator proxy deferred (below), the Japan tier's
+  *distinctive* value rests on reasons 1 and 3, not on data density alone. If a
+  reviewer still balks, the tier can be **demoted from a co-equal tier to a
+  regional validation / sensitivity subsection** without loss to the global
+  result; this fallback is deliberately kept open.
+- **Pollinator hypothesis vs pollinator variable — keep the hypothesis, defer
+  the variable.** Two different things must not be conflated:
+  - The **pollinator *hypothesis*** (that pollinator-mediated selection is one
+    candidate driver of the trait syndromes) *is* proposed in Chapter 1, as one
+    of several non-exclusive candidate mechanisms in the framing and Discussion
+    (§1.4, §5), and is the explicit hook into Chapter 4. This is the
+    connectivity to later chapters and is wanted.
+  - A **pollinator-availability *variable*** (a modelled proxy entered into the
+    models) is **DEFERRED and not used in any Chapter 1 model.** Beyond the
+    scope boundary, there is a decisive *methodological* reason: a stacked-SDM
+    pollinator-richness surface is itself built from climate, so it is largely a
+    nonlinear transform of predictors already in the model. It is therefore
+    (i) collinear with climate and (ii) unable, even in principle, to separate a
+    "pollinator effect" from a "climate effect" — precisely the separation the
+    variable would be included to make. It also conflates total richness with
+    the specific guilds that visit *Cirsium*, and availability with realized
+    visitation. So the proxy cannot do the job the hypothesis needs; that job is
+    Chapter 4's, with observed interaction data. If ever revisited, a
+    functionally specific, regional (Japan-tier) availability surface from the
+    `ch1_japan` GloBI + SDM machinery is the only honest form — raw GBIF
+    pollinator density (confounded with human sampling effort) is never
+    acceptable.
 - **Per-trait models** — one RF/GLM/GAM per trait (classification traits as
   binary/multinomial, continuous as Gaussian/Beta), reusing the same
   variable-selection pipeline over the broadened predictor set.
@@ -382,14 +417,17 @@ hardest part of the pipeline before any validation-design improvement lands.
   Chapter 1. Combining leaf and floral defence requires an explicit
   cross-organ hypothesis, which Chapter 1 does not make (consistent with
   `ch3_trait_architecture/README.md`).
-- **Anything pollinator-related** — observed visits, legitimate contact,
-  pollen transfer, effects of pollinators *on* trait evolution, **and even a
-  pollinator-availability proxy** — is **out of the current Chapter 1 scope.**
-  Observed interaction/fitness data belong to Chapter 4. The availability
-  proxy (a modelled surface used only as a correlate) is **deferred** rather
-  than forbidden (§3.4): Chapter 1 stands without it, so it is parked as an
-  optional future enrichment and no pollinator variable enters any Chapter 1
-  model for now.
+- **Pollinators: hypothesis in, variable out.** The pollinator *hypothesis* is
+  deliberately proposed in Chapter 1 as one of several non-exclusive candidate
+  mechanisms for the observed pattern (Discussion), because it is the explicit
+  bridge to Chapter 4 — advancing it is *wanted* for chapter connectivity.
+  What stays out of Chapter 1 is the **analysed pollinator data**: observed
+  visits/contact/fitness (Chapter 4's field data) and any modelled
+  pollinator-availability *variable* in the models (deferred; §3.4 gives the
+  methodological reason — a stacked-SDM proxy is climate-derived and cannot
+  separate pollinator from climate effects). So Chapter 1 *names* the
+  hypothesis and hands it to Chapter 4 to *test*; it does not itself analyse a
+  pollinator variable.
 - **Traits that share a name with a Chapter 3 field trait**
   (`involucral_cover`, `flower_colour`) are not the same measurement and
   should not be read as duplicating Chapter 3's contribution:
