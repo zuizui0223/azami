@@ -105,16 +105,19 @@ azami/
 |   +-- 05_export_figures.R                 # Export publication figures
 |
 +-- ch1_global/
-|   +-- README.md                           # Ch.1 redesign: multi-trait macroecology plan
-|   +-- 01_annotate_and_train_yolo.py       # Annotate flowering images and train YOLO
-|   +-- 02_crop_heads_with_yolo.py          # Crop capitulum regions with YOLO
-|   +-- 03_train_head_direction_classifier.py
-|   +-- 03b_train_head_direction_classifier_legacy.py
-|   +-- 04_predict_head_direction_global.py # Apply classifier to global images
-|   +-- 04b_predict_head_direction_global_legacy.py
-|   +-- 05_rf_glm_gam_env_analysis.R        # CHELSA env vars -> RF/GLM/GAM + figures
-|   +-- 05b_rf_only_env_analysis.R
-|   # Phases 0-8 in ch1_global/README.md extend this into ROI-A/ROI-B
+|   +-- README.md                           # Ch.1 redesign (v2): multi-trait macroecology plan
+|   +-- METHODS_AUDIT.md                     # Peer-review / robustness audit of v1 + v2 gates
+|   +-- v1/                                  # Frozen orientation-only baseline (preserved, not deleted)
+|   |   +-- README.md                        # What v1 is, its limits, what v2 inherits vs replaces
+|   |   +-- 01_annotate_and_train_yolo.py    # Annotate flowering images and train YOLO
+|   |   +-- 02_crop_heads_with_yolo.py       # Crop capitulum regions with YOLO
+|   |   +-- 03_train_head_direction_classifier.py
+|   |   +-- 03b_train_head_direction_classifier_legacy.py
+|   |   +-- 04_predict_head_direction_global.py
+|   |   +-- 04b_predict_head_direction_global_legacy.py
+|   |   +-- 05_rf_glm_gam_env_analysis.R     # CHELSA env vars -> RF/GLM/GAM + figures
+|   |   +-- 05b_rf_only_env_analysis.R
+|   # v2 (phases 0-8 in ch1_global/README.md) extends v1 into ROI-A/ROI-B
 |   # detection, per-trait extraction, Group CV/LOSO validation, and
 |   # per-trait + trait-syndrome environmental analysis.
 |
@@ -157,17 +160,18 @@ multi-trait redesign and the phase-by-phase roadmap that extends this):
 ```text
 iNaturalist global images
         |
-01_annotate_and_train_yolo.py       --> models/best.pt, best.onnx
+v1/01_annotate_and_train_yolo.py    --> models/best.pt, best.onnx
         |
-02_crop_heads_with_yolo.py          --> data/head_crop_metadata.csv
+v1/02_crop_heads_with_yolo.py       --> data/head_crop_metadata.csv
         |
-03_train_head_direction_classifier.py
+v1/03_train_head_direction_classifier.py
         --> models/cirsium_head_direction_yolo_crop_model.keras
-        --> data/validation_predictions.csv  (Acc=0.896, Macro F1=0.861)
+        --> data/validation_predictions.csv  (Acc=0.896, Macro F1=0.861;
+                                               random split — see ch1_global/METHODS_AUDIT.md A1/A2)
         |
-04_predict_head_direction_global.py
+v1/04_predict_head_direction_global.py
         |
-05_rf_glm_gam_env_analysis.R        <-- CHELSA + SoilGrids
+v1/05_rf_glm_gam_env_analysis.R     <-- CHELSA + SoilGrids
 ```
 
 Planned extension (`ch1_global/README.md` §4): multi-class detector -> ROI-A

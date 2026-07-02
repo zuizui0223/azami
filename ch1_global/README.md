@@ -6,17 +6,31 @@ supersedes the "Ch.1-Global = orientation classifier" framing in the root
 README's chapter table; see that table for how this chapter now relates to
 Chapters 2-4.
 
+## Versioning: v1 (frozen) → v2 (this redesign)
+
+- **v1** = the orientation-only pipeline, frozen and preserved under
+  [`v1/`](./v1/) (see [`v1/README.md`](./v1/README.md)). Nothing is deleted;
+  v1 is the reproducible baseline the redesign inherits working code from.
+- **v2** = the multi-trait macroecology plan in this document (not yet
+  implemented; roadmap in §4).
+- Before writing anything up, read [`METHODS_AUDIT.md`](./METHODS_AUDIT.md):
+  it grades v1's peer-review vulnerabilities (three of the five macro-analysis
+  foundations currently **fail**) and maps each to the v2 remediation. The
+  v2 design exists to move every foundation to "pass."
+
 ## 0. Why the redefinition
 
-The existing pipeline (`01_annotate_and_train_yolo.py` →
-`02_crop_heads_with_yolo.py` → `03_train_head_direction_classifier.py` →
-`04_predict_head_direction_global.py` → `05_rf_glm_gam_env_analysis.R`) detects
-capitula, crops them, and classifies orientation alone (Acc 0.896, macro F1
-0.861 on the current validation split). That pipeline is the right backbone,
-but as a single-trait study it (a) cannot say whether orientation is one part
-of a repeated multivariate combination of traits or an isolated pattern, and
-(b) has no leave-one-species-out or geographic-block validation, so it cannot
-rule out "the model is reading species identity, not the trait."
+The existing pipeline (`v1/01_annotate_and_train_yolo.py` →
+`v1/02_crop_heads_with_yolo.py` → `v1/03_train_head_direction_classifier.py` →
+`v1/04_predict_head_direction_global.py` → `v1/05_rf_glm_gam_env_analysis.R`)
+detects capitula, crops them, and classifies orientation alone (Acc 0.896,
+macro F1 0.861 on the current validation split — a number that is **not
+peer-review-defensible as reported**, see `METHODS_AUDIT.md` A1/A2). That
+pipeline is the right backbone, but as a single-trait study it (a) cannot say
+whether orientation is one part of a repeated multivariate combination of
+traits or an isolated pattern, and (b) has no leave-one-species-out or
+geographic-block validation, so it cannot rule out "the model is reading
+species identity, not the trait."
 
 Chapter 1 is redefined as: **what repeated combinations do image-derived
 capitulum traits form across global *Cirsium*, and how do those combinations
@@ -136,7 +150,7 @@ leaf spines, pollination/herbivory/reproductive outcomes) are addressed in
    (apex + pedicel-attachment points) for `head_angle_deg`. Requires a new
    annotation round beyond the current single-class capitulum boxes.
 2. **ROI-A / ROI-B extraction**: standardized crop + padding from the
-   multi-class detection (extends `02_crop_heads_with_yolo.py`); ROI-B is
+   multi-class detection (extends `v1/02_crop_heads_with_yolo.py`); ROI-B is
    produced by the segmentation model below rather than the detector alone.
 3. **Segmentation model** (involucre / corolla / background) trained on
    manually annotated masks: feeds `involucral_cover_ratio`,
@@ -144,7 +158,7 @@ leaf spines, pollination/herbivory/reproductive outcomes) are addressed in
    `corolla_involucre_display_ratio`.
 4. **Per-trait extraction**:
    - Orientation: CNN classifier (extends
-     `03_train_head_direction_classifier.py`) + geometric angle estimate from
+     `v1/03_train_head_direction_classifier.py`) + geometric angle estimate from
      keypoints.
    - Colour: deterministic CIELAB pixel statistics on ROI-B, with a CNN
      classifier fallback only if the deterministic rule underperforms human
@@ -172,7 +186,7 @@ being trusted for the environmental analysis:
 ### 3.3 Group cross-validation and leave-one-species-out
 
 Random image-level splits (the current approach in
-`03_train_head_direction_classifier.py`) are replaced with nested grouping,
+`v1/03_train_head_direction_classifier.py`) are replaced with nested grouping,
 run as separate, explicitly reported validation regimes rather than a single
 number:
 
@@ -197,7 +211,7 @@ number:
 
 ### 3.4 Environmental and geographic analysis
 
-Extends the existing `05_rf_glm_gam_env_analysis.R` / `05b_rf_only_env_analysis.R`
+Extends the existing `v1/05_rf_glm_gam_env_analysis.R` / `v1/05b_rf_only_env_analysis.R`
 machinery (RF importance with repeats, correlation-cluster + VIF variable
 selection, common-N weighted GLM, GAM) from a single binary response to:
 
@@ -223,14 +237,14 @@ Ordered by what blocks the rest of the pipeline, not by file number:
 | Phase | Task | Relation to existing code |
 |---|---|---|
 | 0 | New annotation round: multi-class boxes (capitulum/involucre/pedicel), keypoints, involucre/corolla/background segmentation masks, and human trait labels (orientation, colour, cover, shape, display) on a shared calibration subset. | Blocks everything else; nothing downstream can be trained or validated without it. |
-| 1 | Extend the detector to multi-class (+ optional keypoints). | Extends `01_annotate_and_train_yolo.py`. |
-| 2 | Build ROI-A/ROI-B extraction from the multi-class detector. | Extends `02_crop_heads_with_yolo.py`. |
-| 3 | Refactor the orientation classifier as one trait module and add the continuous angle estimator. | Reuses `03_train_head_direction_classifier.py` / `03b_..._legacy.py` and `04_predict_head_direction_global.py` / `04b_..._legacy.py` largely as-is; this is the lowest-risk phase since it already validates at Acc 0.896 on a random split — the new work here is regrouping the split (§3.3), not re-deriving the model. |
+| 1 | Extend the detector to multi-class (+ optional keypoints). | Extends `v1/01_annotate_and_train_yolo.py`. |
+| 2 | Build ROI-A/ROI-B extraction from the multi-class detector. | Extends `v1/02_crop_heads_with_yolo.py`. |
+| 3 | Refactor the orientation classifier as one trait module and add the continuous angle estimator. | Reuses `v1/03_train_head_direction_classifier.py` / `v1/03b_..._legacy.py` and `v1/04_predict_head_direction_global.py` / `v1/04b_..._legacy.py` largely as-is; this is the lowest-risk phase since it already validates at Acc 0.896 on a random split — the new work here is regrouping the split (§3.3), not re-deriving the model. |
 | 4 | Train the involucre/corolla/background segmentation model. | New; no existing counterpart. Highest modelling effort in the pipeline. |
 | 5 | Colour extraction from ROI-B. | New, but mostly deterministic image processing; can proceed in parallel with Phase 4 once ROI-B exists in prototype form. |
 | 6 | Shape and relative-display feature computation from segmentation masks. | New; depends on Phase 4 output. |
 | 7 | Group-CV / LOSO validation harness applied to every trait model. | New; generalizes the ad hoc `validation_predictions.csv` / `validation_report.txt` pattern already used for orientation. |
-| 8 | Extend `05_rf_glm_gam_env_analysis.R` to per-trait models + add the trait-syndrome PCA/clustering script + the aggregation-level sensitivity script. | Extends `05_rf_glm_gam_env_analysis.R` / `05b_rf_only_env_analysis.R`; the variable-selection/RF/GLM/GAM machinery is reused, only the response side changes. |
+| 8 | Extend `v1/05_rf_glm_gam_env_analysis.R` to per-trait models + add the trait-syndrome PCA/clustering script + the aggregation-level sensitivity script. | Extends `05_rf_glm_gam_env_analysis.R` / `05b_rf_only_env_analysis.R`; the variable-selection/RF/GLM/GAM machinery is reused, only the response side changes. |
 
 Phase 3 can start immediately and ship an interim orientation-only result with
 proper Group CV/LOSO validation while Phases 4-6 (the harder segmentation-
