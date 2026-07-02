@@ -22,11 +22,17 @@ Macro pattern --> Phylogeny --> Trait architecture --> Function
 
 | Chapter | Question | Approach |
 |---------|----------|----------|
-| Ch.1-JP | Which environments and pollinator assemblages predict nodding capitula in Japanese *Cirsium*? | GBIF occurrences x GloBI pollinator SDM x env PCA -> GLM |
-| Ch.1-GL | What is the global environmental niche of nodding capitula? | iNat images -> YOLO detection -> Keras classifier -> RF/GLM/GAM |
+| Ch.1 | Across global *Cirsium*, what repeated combinations do image-derived capitulum traits (orientation, colour, involucral cover, head shape, corolla:involucre display) form, and how do they and their combinations correspond to climate, terrain, and geography? | iNat images -> multi-class YOLO ROI detection (ROI-A/ROI-B) -> per-trait extraction models -> human-label + Group CV/LOSO validation -> RF/GLM/GAM + PCA/clustering syndrome analysis. See `ch1_global/README.md`. Macroecological pattern only; no adaptive or causal claim. |
 | Ch.2 | When and how many times was the nodding trait gained? | Molecular phylogeny + ancestral state reconstruction |
 | Ch.3 | Does head orientation belong to recurrent floral trait syndromes, and how do those syndromes relate to niche shifts? | Trait dictionary + comparative data matrix + PGLS / phylogenetic logistic regression |
 | Ch.4 | Do head orientation and associated floral traits affect pollination, floral damage, rain/wind protection, mating, or seed set? | Field observation + manipulation experiments + reproductive outcomes |
+
+`ch1_japan` (GBIF occurrences x GloBI pollinator SDM x env PCA -> GLM) is
+retained in the repository but is **not** part of Chapter 1 under this
+redefinition: it analyses pollinator assemblages jointly with orientation,
+which is now Chapter 4's interaction-effect scope. See
+`ch1_global/README.md` §5 for the proposed reclassification (regional pilot
+feeding Chapter 4's rationale) pending author confirmation.
 
 ---
 
@@ -76,6 +82,8 @@ azami/
 |   +-- trait_architecture/
 |       +-- cirsium_floral_trait_dictionary.csv
 |       +-- cirsium_field_panel_template.csv
+|   +-- ch1_image_traits/
+|       +-- cirsium_ch1_image_trait_dictionary.csv  # ROI-A/ROI-B trait defs (Ch.1)
 |
 +-- models/
 |   +-- best.pt                             # YOLO best weights (PyTorch)
@@ -97,6 +105,7 @@ azami/
 |   +-- 05_export_figures.R                 # Export publication figures
 |
 +-- ch1_global/
+|   +-- README.md                           # Ch.1 redesign: multi-trait macroecology plan
 |   +-- 01_annotate_and_train_yolo.py       # Annotate flowering images and train YOLO
 |   +-- 02_crop_heads_with_yolo.py          # Crop capitulum regions with YOLO
 |   +-- 03_train_head_direction_classifier.py
@@ -105,6 +114,9 @@ azami/
 |   +-- 04b_predict_head_direction_global_legacy.py
 |   +-- 05_rf_glm_gam_env_analysis.R        # CHELSA env vars -> RF/GLM/GAM + figures
 |   +-- 05b_rf_only_env_analysis.R
+|   # Phases 0-8 in ch1_global/README.md extend this into ROI-A/ROI-B
+|   # detection, per-trait extraction, Group CV/LOSO validation, and
+|   # per-trait + trait-syndrome environmental analysis.
 |
 +-- ch3_trait_architecture/
 |   +-- README.md                           # Scope, boundaries, and planned comparisons
@@ -139,6 +151,9 @@ download_inat_images_japan.py    -+-> make_training_data_from_labels.py
 
 ### Global (AI pipeline)
 
+Current state (orientation-only; see `ch1_global/README.md` for the
+multi-trait redesign and the phase-by-phase roadmap that extends this):
+
 ```text
 iNaturalist global images
         |
@@ -155,9 +170,15 @@ iNaturalist global images
 05_rf_glm_gam_env_analysis.R        <-- CHELSA + SoilGrids
 ```
 
+Planned extension (`ch1_global/README.md` §4): multi-class detector -> ROI-A
+(head+involucre+pedicel) / ROI-B (corolla-only) -> per-trait extraction
+(orientation, colour, involucral cover, head shape, corolla:involucre
+display) -> human-label validation -> Group CV / leave-one-species-out ->
+per-trait + trait-syndrome RF/GLM/GAM.
+
 ---
 
-## Model performance (Ch.1-Global)
+## Model performance (Ch.1-Global, orientation trait)
 
 | Metric | Value |
 |--------|-------|
@@ -194,8 +215,13 @@ pyinaturalist  # iNat API
 | | Hypothesis | Chapter |
 |---|---|---|
 | H1 | Nodding capitula evolved independently in multiple lineages. | Ch.2 |
-| H2 | Nodding is more likely to evolve and persist in rainy, seasonally cold environments. | Ch.1, Ch.3 |
+| H2 | Nodding is more likely to evolve and persist in rainy, seasonally cold environments. | Ch.3 (adaptive/evolutionary claim; Ch.1 only supplies the non-causal pattern that motivates it, see H1-Ch1b below) |
 | H3 | Nodding alters pollinator landing posture and contact site, affecting pollination efficiency. | Ch.4 |
 | H4 | Nodding is associated with higher selfing rates and seed set in pollinator-limited environments. | Ch.4 |
 | H5 | Head orientation co-occurs with floral display and involucral-barrier traits in repeatable, phylogenetically structured syndromes. | Ch.3 |
 | H6 | The effects of head orientation on fitness can be mediated by pollination, floral antagonism, abiotic exposure, or more than one route. | Ch.4 |
+
+Chapter-1-specific, pattern-level (non-adaptive) hypotheses are in
+`ch1_global/README.md` §1.2 (H1-Ch1a-d): they concern trait-syndrome
+structure, environmental/geographic correspondence, and leave-one-species-out
+generalization of image-derived traits, without claiming adaptive function.
