@@ -22,18 +22,18 @@ Macro pattern --> Phylogeny --> Trait architecture --> Function
 
 | Chapter | Question | Approach |
 |---------|----------|----------|
-| Ch.1 | Across global *Cirsium*, what repeated combinations do image-derived capitulum traits (orientation, colour, involucral cover, head shape, corolla:involucre display) form, how coordinated/constrained is that trait space, and how do the traits and syndromes correspond to climate, terrain, geography, and (regionally) pollinator availability? | iNat images -> multi-class YOLO ROI detection (ROI-A/ROI-B) -> per-trait extraction -> human-label + Group CV/LOSO validation -> RF/GLM/GAM + PCA/clustering syndrome analysis + trait integration/constraint. Two tiers: a global tier and a Japan deep-dive tier. Non-independence handled **phylogeny-free** (spatial + taxonomic-rank control), because *Cirsium* polyploidy/hybridization make a reliable tree intractable. See `ch1_global/README.md` + `ch1_global/METHODS_AUDIT.md`. Macroecological pattern only; no causal claim. |
+| Ch.1 | Across global *Cirsium*, what repeated combinations do image-derived capitulum traits (orientation, colour, involucral cover, head shape, corolla:involucre display) form, how coordinated/constrained is that trait space, and how do the traits and syndromes correspond to climate, terrain, and geography? | iNat images -> multi-class YOLO ROI detection (ROI-A/ROI-B) -> per-trait extraction -> human-label + Group CV/LOSO validation -> RF/GLM/GAM + PCA/clustering syndrome analysis + trait integration/constraint. Two tiers: a global tier and a Japan deep-dive tier (denser-data consistency check). Non-independence handled **phylogeny-free** (spatial + taxonomic-rank control), because *Cirsium* polyploidy/hybridization make a reliable tree intractable. A pollinator-availability proxy is deferred out of Ch.1 for now. See `ch1_global/README.md` + `ch1_global/METHODS_AUDIT.md`. Macroecological pattern only; no causal claim. |
 | Ch.2 | When and how many times was the nodding trait gained? | Molecular phylogeny + ancestral state reconstruction |
 | Ch.3 | Does head orientation belong to recurrent floral trait syndromes, and how do those syndromes relate to niche shifts? | Trait dictionary + comparative data matrix + PGLS / phylogenetic logistic regression |
 | Ch.4 | Do head orientation and associated floral traits affect pollination, floral damage, rain/wind protection, mating, or seed set? | Field observation + manipulation experiments + reproductive outcomes |
 
-`ch1_japan` (GBIF occurrences x GloBI pollinator SDM x env PCA -> GLM) is
-**partially reinstated** as the **Japan deep-dive tier** of Chapter 1: its SDM
-machinery is reused to build a pollinator-*availability* proxy surface used as
-one environmental *correlate* (never as a pollination mechanism). Its original
-interaction/mechanism framing — pollinator effects on orientation — remains
-Chapter 4's scope. The same code serves both under clearly separated claims;
-no folder move is required. See `ch1_global/README.md` §3.4, §5-6.
+`ch1_japan` (GBIF occurrences x GloBI pollinator SDM x env PCA -> GLM)
+contributes the **Japan deep-dive tier** of Chapter 1 via its
+occurrence/environmental machinery, as a denser-data region for a cross-tier
+consistency check. Its **pollinator SDM is deferred** out of Chapter 1 for now
+(the pollinator-availability proxy is an optional future enrichment, and its
+interaction/mechanism framing remains Chapter 4's scope). No folder move is
+required. See `ch1_global/README.md` §3.4, §5-6.
 
 ---
 

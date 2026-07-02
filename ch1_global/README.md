@@ -276,27 +276,26 @@ which space and taxonomic rank carry the load.
   and land cover / human-footprint (which doubles as a sampling-bias covariate,
   §3.4 caveat). All enter the same correlation-cluster + VIF selection so
   collinear layers don't inflate the model.
-- **Pollinator-availability proxy (regional tier; correlate only).** A
-  pollinator-availability layer can enter as *one more environmental
-  covariate*, framed strictly as a **correlate, never as a pollination
-  mechanism** (mechanism stays in Ch.4). Data reality bounds where this is
-  honest: GloBI/observed-interaction coverage for *Cirsium* pollinators is
-  dense enough only in well-surveyed regions, so the proxy is built and
-  interpreted at the **Japan deep-dive tier** (reusing the existing
-  `ch1_japan` GloBI + SDM machinery to produce a per-cell pollinator-guild
-  availability surface). A global-tier proxy, if used at all, is limited to a
-  coarse climate-based pollinator-richness layer with explicit warning that
-  raw GBIF pollinator density is confounded with human sampling effort and is
-  **not** used as a proxy.
 - **Two-tier design (global + Japan).** The existing code's split into a
   global image pipeline and a Japan pipeline becomes a deliberate two-tier
   structure rather than two disconnected halves: a **global tier** (all image
   traits × climate/terrain/soil/broadened layers × space, maximum taxonomic
   and geographic breadth) and a **Japan deep-dive tier** (the same image
-  traits, but in a region where the pollinator proxy and denser environmental
-  and occurrence data are available). Consistency of a trait–environment
-  pattern across both tiers is a strong, phylogeny-free robustness argument;
-  divergence flags a region- or sampling-specific artifact.
+  traits in a region with denser occurrence and finer environmental data).
+  Consistency of a trait–environment pattern across both tiers is a strong,
+  phylogeny-free robustness argument; divergence flags a region- or
+  sampling-specific artifact. The Japan tier's value here does **not** depend
+  on pollinators — denser data + a cross-tier consistency check justify it on
+  their own.
+- **Pollinator-availability proxy — DEFERRED (optional future enrichment).**
+  A pollinator-availability layer as *one more environmental correlate* (never
+  a mechanism; that stays Ch.4) is **not part of the current Chapter 1 plan**
+  and is deferred, because Chapter 1 stands without it (§1.4 legs 1-2) and it
+  sits close to Ch.4's boundary. If revisited later, the honest form is a
+  Japan-tier surface from the existing `ch1_japan` GloBI + SDM machinery
+  (well-surveyed region only); raw GBIF pollinator density is confounded with
+  human sampling effort and is **not** an acceptable proxy. Until then, no
+  pollinator variable enters any Chapter 1 model.
 - **Per-trait models** — one RF/GLM/GAM per trait (classification traits as
   binary/multinomial, continuous as Gaussian/Beta), reusing the same
   variable-selection pipeline over the broadened predictor set.
@@ -383,18 +382,14 @@ hardest part of the pipeline before any validation-design improvement lands.
   Chapter 1. Combining leaf and floral defence requires an explicit
   cross-organ hypothesis, which Chapter 1 does not make (consistent with
   `ch3_trait_architecture/README.md`).
-- **Pollination as a mechanism** — observed visits, legitimate contact,
-  pollen transfer, and any effect of pollinators *on* trait evolution — is
-  reserved for Chapter 4's field experiments. Chapter 1 does not use observed
-  interaction or fitness data. The one permitted exception is a **pollinator-
-  availability proxy used as an environmental correlate** (§3.4, Japan tier):
-  a modelled availability surface (climate/occurrence-derived) may be one
-  predictor among the environmental layers, reported as "trait X co-occurs
-  with pollinator-climate proxy Y," never as "pollinators cause trait X." The
-  line is: *availability layer as covariate* = Ch.1; *observed interaction and
-  causal effect* = Ch.4. If this still feels too close to Ch.4 for the author's
-  taste, the proxy can be dropped from Ch.1 with no damage to legs 1-2 of the
-  novelty (§1.4) — it is an enrichment, not a load-bearing part.
+- **Anything pollinator-related** — observed visits, legitimate contact,
+  pollen transfer, effects of pollinators *on* trait evolution, **and even a
+  pollinator-availability proxy** — is **out of the current Chapter 1 scope.**
+  Observed interaction/fitness data belong to Chapter 4. The availability
+  proxy (a modelled surface used only as a correlate) is **deferred** rather
+  than forbidden (§3.4): Chapter 1 stands without it, so it is parked as an
+  optional future enrichment and no pollinator variable enters any Chapter 1
+  model for now.
 - **Traits that share a name with a Chapter 3 field trait**
   (`involucral_cover`, `flower_colour`) are not the same measurement and
   should not be read as duplicating Chapter 3's contribution:
@@ -412,14 +407,12 @@ hardest part of the pipeline before any validation-design improvement lands.
     dataset.
 - **Chapter 2** (phylogeny, ancestral states, repeated evolution) consumes
   Chapter 1's trait table and its §3.5 hypotheses as input; see §6.
-- **`ch1_japan` (GBIF x GloBI pollinator SDM)** is **partially reinstated** as
-  the **Japan deep-dive tier** of Chapter 1 (§3.4), not fully shunted to
-  Chapter 4. Its SDM machinery is reused to build the pollinator-*availability*
-  proxy surface used as a correlate; but its original framing — pollinator
-  assemblages jointly with orientation as an interaction/mechanism story —
-  stays Chapter 4. In short: the *availability layer* it can produce is Ch.1
-  infrastructure; the *interaction inference* it was written for is Ch.4. No
-  folder move is required; the same code serves both under clearly separated
+- **`ch1_japan`** contributes the **Japan deep-dive tier** of Chapter 1
+  (§3.4) as a denser-data region for a cross-tier consistency check — using its
+  occurrence/environmental machinery, **not** its pollinator SDM, which is
+  deferred with the pollinator proxy above. Its original pollinator-assemblage-
+  vs-orientation interaction framing stays Chapter 4. No folder move is
+  required; the same code serves both under clearly separated
   claims.
 
 ## 6. Handoff to Chapter 2 (and the phylogeny problem)
