@@ -11,10 +11,10 @@ on:
       max_observations:
         description: "Bounded observations in this chunk"
         required: true
-        default: "25000"
+        default: "100000"
         type: string
       chunk_label:
-        description: "Unique safe label, e.g. id_000412326"
+        description: "Unique safe label, e.g. id_017005071"
         required: true
         default: "id_000000000"
         type: string
@@ -56,6 +56,8 @@ jobs:
           label = os.environ["CHUNK_LABEL"]
           if start < 0 or maximum < 1:
               raise SystemExit("start_obs_id must be >= 0 and max_observations must be >= 1")
+          if maximum > 150000:
+              raise SystemExit("max_observations must be <= 150000 per hosted-runner chunk")
           if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
               raise SystemExit("chunk_label may contain only letters, digits, dot, underscore, and hyphen")
           PY
@@ -87,6 +89,7 @@ jobs:
             metadata_chunk/checkpoint.json
             metadata_chunk/collection_summary.csv
             metadata_chunk/collection_provenance.json
+            metadata_chunk/observation_raw.ndjson
             metadata_chunk/photo_metadata.csv
             metadata_chunk/qc
           if-no-files-found: warn
