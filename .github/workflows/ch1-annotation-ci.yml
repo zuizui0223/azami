@@ -41,8 +41,9 @@ jobs:
         run: |
           python -m py_compile ch1_global/v2/00_build_annotation_manifest.py
           python -m py_compile ch1_global/v2/01_build_blinded_annotation_packets.py
+          python -m py_compile ch1_global/v2/02_compile_double_annotations.py
 
-      - name: Run manifest invariants test
+      - name: Run annotation-foundation invariants tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
 
       - name: Run reproducible annotation smoke workflow
