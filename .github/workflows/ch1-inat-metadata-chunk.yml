@@ -9,12 +9,12 @@ on:
         default: "0"
         type: string
       max_observations:
-        description: "Bounded observations in this chunk; 1 to 150,000 (commas accepted)"
+        description: "Observations in this sweep; 1 to 400,000 (commas accepted)"
         required: true
         default: "100000"
         type: string
       chunk_label:
-        description: "Unique safe label, e.g. id_070743299"
+        description: "Unique safe label, e.g. id_232307038_final"
         required: true
         default: "id_000000000"
         type: string
@@ -64,29 +64,31 @@ jobs:
           start = parse_nonnegative_integer(os.environ["START_ID_RAW"], "start_obs_id")
           maximum = parse_nonnegative_integer(os.environ["MAX_OBSERVATIONS_RAW"], "max_observations")
           label = (os.environ["CHUNK_LABEL_RAW"] or "").strip()
-          if maximum < 1 or maximum > 150000:
-              raise SystemExit(f"max_observations must be between 1 and 150000; received {maximum}.")
+          if maximum < 1 or maximum > 400000:
+              raise SystemExit(f"max_observations must be between 1 and 400000; received {maximum}.")
           if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
               raise SystemExit(
-                  f"Invalid chunk_label={label!r}. Use a label such as id_070743299 (letters, digits, dot, underscore, hyphen only)."
+                  f"Invalid chunk_label={label!r}. Use a label such as id_232307038_final (letters, digits, dot, underscore, hyphen only)."
               )
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
               handle.write(f"START_OBS_ID_NORMALIZED={start}\n")
               handle.write(f"MAX_OBSERVATIONS_NORMALIZED={maximum}\n")
               handle.write(f"CHUNK_LABEL_NORMALIZED={label}\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
-              handle.write("## Validated chunk request\n\n")
+              handle.write("## Validated metadata sweep\n\n")
               handle.write(f"- start_obs_id: `{start}`\n")
               handle.write(f"- max_observations: `{maximum}`\n")
               handle.write(f"- chunk_label: `{label}`\n")
+              handle.write("- raw audit trail: `observation_raw.ndjson.gz`\n")
           PY
 
-      - name: Collect bounded observation-ID chunk
+      - name: Collect bounded observation-ID sweep
         run: |
           python ch1_global/v2/11_collect_inat_id_chunk.py \
             --out-dir metadata_chunk \
             --start-obs-id "$START_OBS_ID_NORMALIZED" \
             --max-observations "$MAX_OBSERVATIONS_NORMALIZED" \
+            --raw-compression gzip \
             --sleep-sec 0.8
 
       - name: Create chunk QC report
@@ -99,7 +101,7 @@ jobs:
           cat metadata_chunk/collection_summary.csv >> "$GITHUB_STEP_SUMMARY"
           cat metadata_chunk/qc/collection_qc_report.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload immutable metadata chunk artifact
+      - name: Upload immutable metadata sweep artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -109,6 +111,7 @@ jobs:
             metadata_chunk/collection_summary.csv
             metadata_chunk/collection_provenance.json
             metadata_chunk/observation_raw.ndjson
+            metadata_chunk/observation_raw.ndjson.gz
             metadata_chunk/photo_metadata.csv
             metadata_chunk/qc
           if-no-files-found: warn
