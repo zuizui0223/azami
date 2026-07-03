@@ -77,16 +77,12 @@ def clean(value: object) -> str:
     return str(value).strip().lower()
 
 
-def is_complete(df: pd.DataFrame) -> pd.Series:
-    if "annotation_complete" not in df.columns:
-        return pd.Series(False, index=df.index)
-    return df["annotation_complete"].map(clean).eq("yes")
-
-
 def validate_packet(df: pd.DataFrame, packet_name: str) -> pd.DataFrame:
     errors: list[dict[str, object]] = []
     if "annotation_unit_id" not in df.columns:
         raise ValueError(f"{packet_name}: missing annotation_unit_id")
+    if "annotation_complete" not in df.columns:
+        errors.append({"packet": packet_name, "annotation_unit_id": "", "trait": "annotation_complete", "value": "", "error": "missing_column"})
     duplicate_ids = df.loc[df["annotation_unit_id"].duplicated(keep=False), "annotation_unit_id"]
     for value in duplicate_ids.unique():
         errors.append({"packet": packet_name, "annotation_unit_id": value, "trait": "annotation_unit_id", "value": value, "error": "duplicate_id"})
@@ -150,6 +146,8 @@ def main() -> None:
 
     if primary["annotation_unit_id"].duplicated().any() or secondary["annotation_unit_id"].duplicated().any():
         raise ValueError("Duplicate annotation_unit_id values cannot be compared")
+    if "annotation_complete" not in primary.columns or "annotation_complete" not in secondary.columns:
+        raise ValueError("Both packets need annotation_complete")
 
     image_cols = [column for column in ["source_image", "crop_path"] if column in primary.columns]
     left_columns = ["annotation_unit_id", "annotation_complete", *image_cols, *[t for t in CATEGORICAL_TRAITS if t in primary.columns]]
@@ -175,15 +173,18 @@ def main() -> None:
         pair[right_name] = pair[right_name].map(clean)
         pair = pair.loc[pair[left_name].ne("") & pair[right_name].ne("")].copy()
         values_left, values_right = pair[left_name], pair[right_name]
+        assessable = pair.loc[values_left.ne("not_assessable") & values_right.ne("not_assessable")].copy()
+        score_left, score_right = assessable[left_name], assessable[right_name]
         if trait in ORDINAL_ORDERS:
-            kappa = weighted_kappa(values_left, values_right, ORDINAL_ORDERS[trait])
-            kappa_kind = "linear_weighted"
+            kappa = weighted_kappa(score_left, score_right, ORDINAL_ORDERS[trait])
+            kappa_kind = "linear_weighted_assessable_only"
         else:
             kappa = unweighted_kappa(values_left, values_right)
             kappa_kind = "unweighted"
         summaries.append({
             "trait": trait,
             "n_joint_completed": len(pair),
+            "n_joint_assessable": len(assessable),
             "percent_agreement": float((values_left == values_right).mean()) if len(pair) else float("nan"),
             "cohen_kappa": kappa,
             "kappa_type": kappa_kind,
