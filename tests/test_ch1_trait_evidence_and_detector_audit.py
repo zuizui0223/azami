@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+import numpy as np
 import pandas as pd
 
 
@@ -94,6 +95,30 @@ class TestTraitEvidenceAndDetectorAudit(unittest.TestCase):
             summary = pd.read_csv(summary_out / "literature_trait_summary.csv", dtype=str, keep_default_na=False)
             self.assertEqual(summary.loc[0, "interpretation"], "conflicting_reviewed_evidence")
             self.assertEqual(summary.loc[0, "trait_state_consensus"], "")
+
+    def test_detector_audit_minimum_per_species_is_a_real_constraint(self) -> None:
+        rows = []
+        for species in ("Cirsium alpha", "Cirsium beta"):
+            for offset in range(3):
+                rows.append({"taxon_name": species, "spatial_block": f"block_{offset}", "photo_id": f"{species}_{offset}"})
+        candidates = pd.DataFrame(rows)
+        selected = AUDIT_MANIFEST.choose_balanced(
+            candidates,
+            n_images=6,
+            min_per_species=3,
+            max_per_species=3,
+            rng=np.random.default_rng(7),
+        )
+        self.assertEqual(len(selected), 6)
+        self.assertTrue(selected.groupby("taxon_name").size().eq(3).all())
+        with self.assertRaises(ValueError):
+            AUDIT_MANIFEST.choose_balanced(
+                candidates,
+                n_images=5,
+                min_per_species=3,
+                max_per_species=3,
+                rng=np.random.default_rng(7),
+            )
 
     def test_detector_manifest_and_evaluation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
