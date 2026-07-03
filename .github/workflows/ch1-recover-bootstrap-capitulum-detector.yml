@@ -1,0 +1,176 @@
+name: Ch1 recover bootstrap visible-capitulum detector
+
+on:
+  workflow_dispatch:
+    inputs:
+      qc_images_artifact_id:
+        description: "QC-fixed source-image artifact ID"
+        required: true
+        default: "8068122589"
+        type: string
+      proposal_artifact_id:
+        description: "Failed bootstrap artifact containing successful open-vocabulary proposals"
+        required: true
+        default: "8071529579"
+        type: string
+      pseudo_label_min_score:
+        description: "Minimum proposal score accepted into provisional YOLO dataset"
+        required: true
+        default: "0.35"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_seed320_bootstrap_v1_recovered"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  recover-bootstrap-visible-capitulum-detector:
+    name: Recover bootstrap visible-capitulum detector
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install recovery dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas Pillow ultralytics
+
+      - name: Validate recovery request
+        env:
+          QC_ARTIFACT_RAW: ${{ inputs.qc_images_artifact_id }}
+          PROPOSAL_ARTIFACT_RAW: ${{ inputs.proposal_artifact_id }}
+          PSEUDO_SCORE_RAW: ${{ inputs.pseudo_label_min_score }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive_integer(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          qc_id = positive_integer(os.environ["QC_ARTIFACT_RAW"], "qc_images_artifact_id")
+          proposal_id = positive_integer(os.environ["PROPOSAL_ARTIFACT_RAW"], "proposal_artifact_id")
+          try:
+              score = float(os.environ["PSEUDO_SCORE_RAW"])
+          except ValueError as error:
+              raise SystemExit("pseudo_label_min_score must be numeric") from error
+          if not 0 <= score <= 1:
+              raise SystemExit("pseudo_label_min_score must be in [0,1]")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QC_ARTIFACT_ID={qc_id}\n")
+              handle.write(f"PROPOSAL_ARTIFACT_ID={proposal_id}\n")
+              handle.write(f"PSEUDO_SCORE={score}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download QC images and preserved proposal artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/qc source/proposals
+          for specification in "${QC_ARTIFACT_ID}:source/qc/qc_images.zip:source/qc/extracted" "${PROPOSAL_ARTIFACT_ID}:source/proposals/proposals.zip:source/proposals/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$extract_dir"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -d source/qc/extracted/downloaded_audit/images
+          test -s source/proposals/extracted/bootstrap/proposals/open_vocab_capitulum_proposals.csv
+          test -s source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_image_summary.csv
+
+      - name: Rebuild provisional YOLO dataset from preserved proposals
+        run: |
+          python ch1_global/v2/25_build_bootstrap_yolo_dataset.py \
+            --proposals source/proposals/extracted/bootstrap/proposals/open_vocab_capitulum_proposals.csv \
+            --image-summary source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_image_summary.csv \
+            --images-dir source/qc/extracted/downloaded_audit/images \
+            --out-dir recovery/dataset \
+            --min-score "$PSEUDO_SCORE" \
+            --max-boxes-per-image 8 \
+            --validation-fraction 0.20
+
+      - name: Train and export stable bootstrap detector artifacts
+        run: |
+          python ch1_global/v2/26_train_bootstrap_capitulum_detector.py \
+            --dataset-yaml recovery/dataset/visible_capitulum_bootstrap.yaml \
+            --out-dir recovery/model \
+            --epochs 40 \
+            --imgsz 640 \
+            --batch 8 \
+            --device cpu \
+            --workers 2
+
+      - name: Record recovery provenance and summarize outputs
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          report = {
+              "created_at_utc": datetime.now(timezone.utc).isoformat(),
+              "qc_images_artifact_id": int(os.environ["QC_ARTIFACT_ID"]),
+              "source_proposal_artifact_id": int(os.environ["PROPOSAL_ARTIFACT_ID"]),
+              "recovery_reason": "The original training completed and produced best.pt, but failed before stable artifact export because the output provenance directory was absent.",
+              "semantic_status": "bootstrap detector trained only on open-vocabulary pseudo-labels; not independently validated.",
+          }
+          Path("recovery").mkdir(parents=True, exist_ok=True)
+          Path("recovery/recovery_provenance.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+          {
+            echo "## Bootstrap detector recovery"
+            echo
+            echo '```json'
+            cat recovery/dataset/bootstrap_dataset_provenance.json
+            echo '```'
+            echo
+            echo '```json'
+            cat recovery/model/bootstrap_training_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload recovered bootstrap detector package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-bootstrap-capitulum-detector-${{ inputs.output_label }}
+          path: |
+            source/proposals/extracted/bootstrap/proposals/open_vocab_capitulum_proposals.csv
+            source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_image_summary.csv
+            source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_provenance.json
+            recovery/dataset/bootstrap_dataset_manifest.csv
+            recovery/dataset/bootstrap_dataset_missing_images.csv
+            recovery/dataset/bootstrap_dataset_provenance.json
+            recovery/dataset/visible_capitulum_bootstrap.yaml
+            recovery/model
+            recovery/recovery_provenance.json
+          if-no-files-found: warn
+          retention-days: 90
