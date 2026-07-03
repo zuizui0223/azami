@@ -1,0 +1,93 @@
+name: Ch1 iNaturalist metadata chunk
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_obs_id:
+        description: "Collect records with observation ID greater than this cursor"
+        required: true
+        default: "0"
+        type: string
+      max_observations:
+        description: "Bounded observations in this chunk"
+        required: true
+        default: "25000"
+        type: string
+      chunk_label:
+        description: "Unique safe label, e.g. id_000412326"
+        required: true
+        default: "id_000000000"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  collect-metadata-chunk:
+    name: Collect Cirsium metadata chunk
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install metadata collection dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements_data_collection.txt
+
+      - name: Validate chunk inputs
+        env:
+          START_ID: ${{ inputs.start_obs_id }}
+          MAX_OBSERVATIONS: ${{ inputs.max_observations }}
+          CHUNK_LABEL: ${{ inputs.chunk_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          start = int(os.environ["START_ID"])
+          maximum = int(os.environ["MAX_OBSERVATIONS"])
+          label = os.environ["CHUNK_LABEL"]
+          if start < 0 or maximum < 1:
+              raise SystemExit("start_obs_id must be >= 0 and max_observations must be >= 1")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("chunk_label may contain only letters, digits, dot, underscore, and hyphen")
+          PY
+
+      - name: Collect bounded observation-ID chunk
+        run: |
+          python ch1_global/v2/11_collect_inat_id_chunk.py \
+            --out-dir metadata_chunk \
+            --start-obs-id "${{ inputs.start_obs_id }}" \
+            --max-observations "${{ inputs.max_observations }}" \
+            --sleep-sec 0.8
+
+      - name: Create chunk QC report
+        run: |
+          python ch1_global/v2/08_summarize_metadata_collection.py \
+            --metadata metadata_chunk/photo_metadata.csv \
+            --collection-summary metadata_chunk/collection_summary.csv \
+            --out-dir metadata_chunk/qc \
+            --technical-pilot
+          cat metadata_chunk/collection_summary.csv >> "$GITHUB_STEP_SUMMARY"
+          cat metadata_chunk/qc/collection_qc_report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload immutable metadata chunk artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-inat-metadata-${{ inputs.chunk_label }}
+          path: |
+            metadata_chunk/checkpoint.json
+            metadata_chunk/collection_summary.csv
+            metadata_chunk/collection_provenance.json
+            metadata_chunk/photo_metadata.csv
+            metadata_chunk/qc
+          if-no-files-found: warn
+          retention-days: 90
