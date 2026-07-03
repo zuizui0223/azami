@@ -22,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a provisional visible-capitulum YOLO bootstrap dataset.")
     parser.add_argument("--proposals", required=True)
     parser.add_argument("--image-summary", required=True)
+    parser.add_argument("--images-dir", required=True, help="Current directory containing restored source images.")
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--min-score", type=float, default=0.35)
     parser.add_argument("--max-boxes-per-image", type=int, default=8)
@@ -35,6 +36,13 @@ def stable_fraction(value: str, seed: str) -> float:
     return int(digest[:12], 16) / float(16**12)
 
 
+def resolve_source_path(raw_path: str, images_dir: Path) -> Path:
+    candidate = Path(str(raw_path))
+    if candidate.is_file():
+        return candidate
+    return images_dir / candidate.name
+
+
 def yolo_line(row: pd.Series) -> str:
     width, height = float(row["image_width"]), float(row["image_height"])
     x1, y1, x2, y2 = [float(row[column]) for column in ("bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2")]
@@ -42,7 +50,7 @@ def yolo_line(row: pd.Series) -> str:
     y_center = ((y1 + y2) / 2) / height
     box_width = (x2 - x1) / width
     box_height = (y2 - y1) / height
-    if not (0 < box_width <= 1 and 0 < box_height <= 1):
+    if not (0 < box_width <= 1 and 0 < box_height <= 1 and 0 <= x_center <= 1 and 0 <= y_center <= 1):
         raise ValueError("Invalid normalized proposal box")
     return f"0 {x_center:.8f} {y_center:.8f} {box_width:.8f} {box_height:.8f}"
 
@@ -51,24 +59,30 @@ def main() -> None:
     args = parse_args()
     if not 0 <= args.min_score <= 1 or args.max_boxes_per_image < 1 or not 0 < args.validation_fraction < 1:
         raise ValueError("Invalid bootstrap-dataset thresholds")
+    images_dir = Path(args.images_dir)
+    if not images_dir.is_dir():
+        raise FileNotFoundError(f"--images-dir does not exist: {images_dir}")
     proposals = pd.read_csv(args.proposals, dtype=str, keep_default_na=False)
     summary = pd.read_csv(args.image_summary, dtype=str, keep_default_na=False)
     required = {"queue_id", "proposal_score", "source_image", "image_width", "image_height", "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2"}
     missing = required.difference(proposals.columns)
     if missing:
         raise ValueError(f"Proposal table missing columns: {sorted(missing)}")
+    if not {"queue_id", "source_image"}.issubset(summary.columns):
+        raise ValueError("Image summary must contain queue_id and source_image")
     work = proposals.copy()
     work["proposal_score"] = pd.to_numeric(work["proposal_score"], errors="coerce")
     work = work.loc[work["proposal_score"].ge(args.min_score)].sort_values(["queue_id", "proposal_score"], ascending=[True, False], kind="stable")
     work = work.groupby("queue_id", sort=False).head(args.max_boxes_per_image).copy()
-    usable_ids = set(work["queue_id"])
-    source_paths = summary.set_index("queue_id")["source_image"].to_dict()
+    source_paths = summary.drop_duplicates("queue_id").set_index("queue_id")["source_image"].to_dict()
     out_dir = Path(args.out_dir)
     images_root, labels_root = out_dir / "images", out_dir / "labels"
     records = []
+    skipped_missing_images = []
     for queue_id, part in work.groupby("queue_id", sort=True):
-        source = Path(str(source_paths.get(queue_id, "")))
+        source = resolve_source_path(source_paths.get(queue_id, ""), images_dir)
         if not source.is_file():
+            skipped_missing_images.append({"queue_id": queue_id, "source_image": str(source)})
             continue
         split = "val" if stable_fraction(str(queue_id), args.seed) < args.validation_fraction else "train"
         image_dest = images_root / split / f"{queue_id}{source.suffix.lower() or '.jpg'}"
@@ -89,6 +103,7 @@ def main() -> None:
         encoding="utf-8",
     )
     pd.DataFrame(records).to_csv(out_dir / "bootstrap_dataset_manifest.csv", index=False, encoding="utf-8-sig")
+    pd.DataFrame(skipped_missing_images, columns=["queue_id", "source_image"]).to_csv(out_dir / "bootstrap_dataset_missing_images.csv", index=False, encoding="utf-8-sig")
     report = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "n_open_vocab_proposal_rows": int(len(proposals)),
@@ -96,8 +111,10 @@ def main() -> None:
         "n_pseudo_labeled_images": int(len(records)),
         "n_train_images": int(sum(row["split"] == "train" for row in records)),
         "n_val_images": int(sum(row["split"] == "val" for row in records)),
+        "n_images_skipped_missing_after_restore": int(len(skipped_missing_images)),
         "min_score": args.min_score,
         "max_boxes_per_image": args.max_boxes_per_image,
+        "metric_interpretation": "Any validation metric from this dataset is agreement with pseudo-labels, not detector accuracy against independent human labels.",
         "semantic_status": "provisional pseudo-label dataset; not human-labeled ground truth",
     }
     (out_dir / "bootstrap_dataset_provenance.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
