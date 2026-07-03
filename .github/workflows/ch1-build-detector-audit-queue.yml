@@ -1,0 +1,171 @@
+name: Ch1 build detector audit queue
+
+on:
+  workflow_dispatch:
+    inputs:
+      merged_artifact_id:
+        description: "Immutable merged metadata artifact ID"
+        required: true
+        default: "8066010557"
+        type: string
+      n_images:
+        description: "Detector-audit source images; must cover all eligible species at the minimum allocation"
+        required: true
+        default: "1000"
+        type: string
+      min_images_per_species:
+        description: "Guaranteed source images for every eligible species"
+        required: true
+        default: "3"
+        type: string
+      max_images_per_species:
+        description: "Upper cap per species after the guaranteed baseline"
+        required: true
+        default: "12"
+        type: string
+      double_label_fraction:
+        description: "Fraction of source images independently annotated twice"
+        required: true
+        default: "0.25"
+        type: string
+      output_label:
+        description: "Safe output artifact label"
+        required: true
+        default: "global_1000_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-detector-audit-queue:
+    name: Build blinded detector-audit queue
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install audit-manifest dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements_data_collection.txt
+
+      - name: Validate audit request
+        env:
+          ARTIFACT_ID_RAW: ${{ inputs.merged_artifact_id }}
+          N_IMAGES_RAW: ${{ inputs.n_images }}
+          MIN_PER_SPECIES_RAW: ${{ inputs.min_images_per_species }}
+          MAX_PER_SPECIES_RAW: ${{ inputs.max_images_per_species }}
+          DOUBLE_FRACTION_RAW: ${{ inputs.double_label_fraction }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def integer(raw: str, name: str) -> int:
+              value = (raw or "").strip().replace(",", "").replace("_", "").replace(" ", "")
+              if not re.fullmatch(r"[0-9]+", value):
+                  raise SystemExit(f"{name} must be an integer, got {raw!r}")
+              return int(value)
+
+          artifact_id = integer(os.environ["ARTIFACT_ID_RAW"], "merged_artifact_id")
+          n_images = integer(os.environ["N_IMAGES_RAW"], "n_images")
+          min_per = integer(os.environ["MIN_PER_SPECIES_RAW"], "min_images_per_species")
+          max_per = integer(os.environ["MAX_PER_SPECIES_RAW"], "max_images_per_species")
+          try:
+              double_fraction = float(os.environ["DOUBLE_FRACTION_RAW"])
+          except ValueError as error:
+              raise SystemExit("double_label_fraction must be a number in [0, 1]") from error
+          label = os.environ["OUTPUT_LABEL_RAW"].strip()
+          if artifact_id < 1 or n_images < 1 or min_per < 1 or max_per < min_per:
+              raise SystemExit("Require artifact_id and n_images >= 1, and 1 <= min_images_per_species <= max_images_per_species.")
+          if not 0 <= double_fraction <= 1:
+              raise SystemExit("double_label_fraction must be in [0, 1].")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"MERGED_ARTIFACT_ID={artifact_id}\n")
+              handle.write(f"N_IMAGES={n_images}\n")
+              handle.write(f"MIN_PER_SPECIES={min_per}\n")
+              handle.write(f"MAX_PER_SPECIES={max_per}\n")
+              handle.write(f"DOUBLE_FRACTION={double_fraction}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download and validate merged metadata artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p merged_source
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${MERGED_ARTIFACT_ID}/zip" \
+            --output merged_source/merged_metadata.zip
+          unzip -tq merged_source/merged_metadata.zip
+          unzip -q merged_source/merged_metadata.zip -d merged_source/extracted
+          test -s merged_source/extracted/photo_metadata_merged.csv
+          test -s merged_source/extracted/merge_provenance.json
+
+      - name: Build globally stratified blinded detector-audit queue
+        run: |
+          python ch1_global/v2/16_build_detector_audit_manifest.py \
+            --metadata merged_source/extracted/photo_metadata_merged.csv \
+            --out-dir detector_audit \
+            --n-images "$N_IMAGES" \
+            --min-images-per-species "$MIN_PER_SPECIES" \
+            --max-images-per-species "$MAX_PER_SPECIES" \
+            --double-label-fraction "$DOUBLE_FRACTION" \
+            --spatial-block-deg 10 \
+            --seed 20260703
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report_path = Path("detector_audit/detector_audit_manifest_report.json")
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          report["merged_artifact_id"] = int(__import__("os").environ["MERGED_ARTIFACT_ID"])
+          report["source_metadata_file"] = "photo_metadata_merged.csv"
+          report["key_file_policy"] = "detector_audit_key.csv is deliberately not uploaded; regenerate it deterministically from this merged artifact ID and seed when taxon/locality diagnostics are required."
+          report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Summarize audit queue
+        run: |
+          {
+            echo "## Detector-audit queue"
+            echo
+            echo '```json'
+            cat detector_audit/detector_audit_manifest_report.json
+            echo '```'
+            echo
+            echo '### Per-species allocation (first 30 rows)'
+            echo '```csv'
+            head -n 31 detector_audit/detector_audit_species_qc.csv
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload blinded detector-audit packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-detector-audit-${{ inputs.output_label }}
+          path: |
+            detector_audit/detector_audit_queue.csv
+            detector_audit/detector_audit_blinded_manifest.csv
+            detector_audit/detector_audit_assignments.csv
+            detector_audit/detector_audit_annotation_template.csv
+            detector_audit/detector_audit_species_qc.csv
+            detector_audit/detector_audit_manifest_report.json
+          if-no-files-found: warn
+          retention-days: 90
