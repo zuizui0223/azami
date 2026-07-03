@@ -55,8 +55,12 @@ class TestAnnotationFoundation(unittest.TestCase):
             self.assertSetEqual(set(manifest["species"]), {"Cirsium a", "Cirsium b"})
             self.assertTrue(manifest["coordinate_usable_for_environment"].all())
 
-            # Annotation units are one per observation, and group keys survive for later CV/LOSO.
+            # Repeated crops from one observation are reduced to the highest-confidence crop.
+            self.assertIn("f.jpg", set(manifest["source_image"]))
+            self.assertNotIn("g.jpg", set(manifest["source_image"]))
             self.assertTrue(manifest["observation_group"].is_unique)
+
+            # Group keys survive for later CV/LOSO.
             self.assertTrue(manifest["annotation_unit_id"].is_unique)
             self.assertTrue(manifest["species_cv_fold"].between(1, 3).all())
             self.assertTrue(manifest["spatial_cv_fold"].between(1, 3).all())
