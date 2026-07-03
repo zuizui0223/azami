@@ -1,0 +1,203 @@
+name: Ch1 bootstrap new visible-capitulum detector
+
+on:
+  workflow_dispatch:
+    inputs:
+      qc_images_artifact_id:
+        description: "QC-fixed global detector-audit image artifact ID"
+        required: true
+        default: "8068122589"
+        type: string
+      seed_images:
+        description: "Global seed images for pseudo-label bootstrap; 320 is broad and CPU-feasible"
+        required: true
+        default: "320"
+        type: string
+      box_threshold:
+        description: "Open-vocabulary proposal box threshold"
+        required: true
+        default: "0.20"
+        type: string
+      pseudo_label_min_score:
+        description: "Minimum proposal score accepted into provisional YOLO dataset"
+        required: true
+        default: "0.35"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_seed320_bootstrap_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  bootstrap-visible-capitulum-detector:
+    name: Bootstrap a new visible-capitulum detector
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bootstrap dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas Pillow torch transformers ultralytics
+
+      - name: Validate bootstrap request
+        env:
+          QC_ARTIFACT_RAW: ${{ inputs.qc_images_artifact_id }}
+          SEED_IMAGES_RAW: ${{ inputs.seed_images }}
+          BOX_THRESHOLD_RAW: ${{ inputs.box_threshold }}
+          PSEUDO_SCORE_RAW: ${{ inputs.pseudo_label_min_score }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive_integer(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          artifact_id = positive_integer(os.environ["QC_ARTIFACT_RAW"], "qc_images_artifact_id")
+          seed_images = positive_integer(os.environ["SEED_IMAGES_RAW"], "seed_images")
+          try:
+              box_threshold = float(os.environ["BOX_THRESHOLD_RAW"])
+              pseudo_score = float(os.environ["PSEUDO_SCORE_RAW"])
+          except ValueError as error:
+              raise SystemExit("thresholds must be numeric") from error
+          if not 0 <= box_threshold <= 1 or not 0 <= pseudo_score <= 1:
+              raise SystemExit("thresholds must be in [0,1]")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QC_ARTIFACT_ID={artifact_id}\n")
+              handle.write(f"SEED_IMAGES={seed_images}\n")
+              handle.write(f"BOX_THRESHOLD={box_threshold}\n")
+              handle.write(f"PSEUDO_SCORE={pseudo_score}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download QC-fixed audit image artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${QC_ARTIFACT_ID}/zip" \
+            --output source/qc_images.zip
+          unzip -tq source/qc_images.zip
+          unzip -q source/qc_images.zip -d source/extracted
+          test -s source/extracted/downloaded_audit/download_results.csv
+          test -s source/extracted/audit_queue_source/extracted/detector_audit_queue.csv
+          test -d source/extracted/downloaded_audit/images
+
+      - name: Generate open-vocabulary thistle-head proposals
+        run: |
+          python ch1_global/v2/24_generate_capitulum_bootstrap_proposals.py \
+            --queue source/extracted/audit_queue_source/extracted/detector_audit_queue.csv \
+            --downloads source/extracted/downloaded_audit/download_results.csv \
+            --images-dir source/extracted/downloaded_audit/images \
+            --out-dir bootstrap/proposals \
+            --box-threshold "$BOX_THRESHOLD" \
+            --text-threshold 0.15 \
+            --max-images "$SEED_IMAGES"
+
+      - name: Build provisional YOLO training dataset
+        run: |
+          python ch1_global/v2/25_build_bootstrap_yolo_dataset.py \
+            --proposals bootstrap/proposals/open_vocab_capitulum_proposals.csv \
+            --image-summary bootstrap/proposals/open_vocab_proposal_image_summary.csv \
+            --out-dir bootstrap/dataset \
+            --min-score "$PSEUDO_SCORE" \
+            --max-boxes-per-image 8 \
+            --validation-fraction 0.20
+
+      - name: Train newly bootstrapped YOLO detector
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from ultralytics import YOLO
+
+          dataset_yaml = Path("bootstrap/dataset/visible_capitulum_bootstrap.yaml")
+          model = YOLO("yolo11n.pt")
+          result = model.train(
+              data=str(dataset_yaml),
+              epochs=40,
+              imgsz=640,
+              batch=8,
+              device="cpu",
+              workers=2,
+              project="bootstrap/training",
+              name="visible_capitulum_bootstrap",
+              exist_ok=True,
+              pretrained=True,
+              verbose=False,
+          )
+          run_dir = Path(getattr(result, "save_dir", "bootstrap/training/visible_capitulum_bootstrap"))
+          best = run_dir / "weights" / "best.pt"
+          if not best.is_file():
+              raise SystemExit(f"Training did not produce {best}")
+          report = {
+              "created_at_utc": datetime.now(timezone.utc).isoformat(),
+              "initialization": "Ultralytics yolo11n.pt COCO-pretrained weights",
+              "target": "visible_capitulum",
+              "training_labels": "open-vocabulary pseudo-label proposals only",
+              "status": "bootstrap proposal model; not validated and not for biological inference",
+              "best_weights": str(best),
+          }
+          Path("bootstrap/training/bootstrap_training_provenance.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Summarize bootstrap outputs
+        run: |
+          {
+            echo "## New detector bootstrap"
+            echo
+            echo '```json'
+            cat bootstrap/proposals/open_vocab_proposal_provenance.json
+            echo '```'
+            echo
+            echo '```json'
+            cat bootstrap/dataset/bootstrap_dataset_provenance.json
+            echo '```'
+            echo
+            echo '```json'
+            cat bootstrap/training/bootstrap_training_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload bootstrap detector package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-bootstrap-capitulum-detector-${{ inputs.output_label }}
+          path: |
+            bootstrap/proposals
+            bootstrap/dataset/bootstrap_dataset_manifest.csv
+            bootstrap/dataset/bootstrap_dataset_provenance.json
+            bootstrap/dataset/visible_capitulum_bootstrap.yaml
+            bootstrap/training/visible_capitulum_bootstrap/weights/best.pt
+            bootstrap/training/visible_capitulum_bootstrap/weights/last.pt
+            bootstrap/training/bootstrap_training_provenance.json
+          if-no-files-found: warn
+          retention-days: 90
