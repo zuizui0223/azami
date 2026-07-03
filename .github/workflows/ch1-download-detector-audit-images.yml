@@ -1,0 +1,166 @@
+name: Ch1 download detector audit images
+
+on:
+  workflow_dispatch:
+    inputs:
+      audit_queue_artifact_id:
+        description: "Immutable blinded detector-audit queue artifact ID"
+        required: true
+        default: "8066675131"
+        type: string
+      image_size:
+        description: "iNaturalist image rendition"
+        required: true
+        default: "medium"
+        type: choice
+        options:
+          - small
+          - medium
+          - large
+      output_label:
+        description: "Safe artifact label for downloaded image set"
+        required: true
+        default: "global_1000_medium_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  download-detector-audit-images:
+    name: Download and validate detector-audit images
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install downloader dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements_data_collection.txt
+          python -m pip install Pillow
+
+      - name: Validate download request
+        env:
+          AUDIT_ARTIFACT_ID_RAW: ${{ inputs.audit_queue_artifact_id }}
+          IMAGE_SIZE_RAW: ${{ inputs.image_size }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          raw_id = (os.environ["AUDIT_ARTIFACT_ID_RAW"] or "").strip().replace(",", "").replace("_", "")
+          if not re.fullmatch(r"[0-9]+", raw_id) or int(raw_id) < 1:
+              raise SystemExit("audit_queue_artifact_id must be a positive integer.")
+          image_size = (os.environ["IMAGE_SIZE_RAW"] or "").strip()
+          if image_size not in {"small", "medium", "large"}:
+              raise SystemExit("image_size must be small, medium, or large.")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"AUDIT_ARTIFACT_ID={raw_id}\n")
+              handle.write(f"IMAGE_SIZE={image_size}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download and validate blinded audit queue artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p audit_queue_source
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${AUDIT_ARTIFACT_ID}/zip" \
+            --output audit_queue_source/audit_queue.zip
+          unzip -tq audit_queue_source/audit_queue.zip
+          unzip -q audit_queue_source/audit_queue.zip -d audit_queue_source/extracted
+          test -s audit_queue_source/extracted/detector_audit_queue.csv
+          test -s audit_queue_source/extracted/detector_audit_manifest_report.json
+
+      - name: Download medium detector-audit images
+        run: |
+          python ch1_global/v2/06_download_inat_screening_queue.py \
+            --queue audit_queue_source/extracted/detector_audit_queue.csv \
+            --out-dir downloaded_audit \
+            --image-size "$IMAGE_SIZE" \
+            --sleep-sec 0.15 \
+            --timeout-sec 60
+
+      - name: Validate image decodability and write QC
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          import pandas as pd
+          from PIL import Image
+
+          root = Path("downloaded_audit")
+          result_path = root / "download_results.csv"
+          results = pd.read_csv(result_path, dtype=str, keep_default_na=False)
+          success = results.loc[results["download_status"].eq("success")].copy()
+          decoded = []
+          failures = []
+          for _, row in success.iterrows():
+              path = Path(row["image_local_path"])
+              try:
+                  with Image.open(path) as image:
+                      image.verify()
+                  with Image.open(path) as image:
+                      width, height = image.size
+                  decoded.append({"queue_id": row["queue_id"], "photo_id": row["photo_id"], "image_local_path": str(path), "width": width, "height": height})
+              except Exception as error:
+                  failures.append({"queue_id": row["queue_id"], "photo_id": row["photo_id"], "image_local_path": str(path), "reason": str(error)})
+          pd.DataFrame(decoded).to_csv(root / "image_decode_qc.csv", index=False, encoding="utf-8-sig")
+          pd.DataFrame(failures, columns=["queue_id", "photo_id", "image_local_path", "reason"]).to_csv(root / "image_decode_failures.csv", index=False, encoding="utf-8-sig")
+          report = {
+              "created_at_utc": datetime.now(timezone.utc).isoformat(),
+              "n_queue_rows": int(len(results)),
+              "n_download_success": int(results["download_status"].eq("success").sum()),
+              "n_download_non_success": int((~results["download_status"].eq("success")).sum()),
+              "n_decodable_images": int(len(decoded)),
+              "n_decode_failures": int(len(failures)),
+              "image_size_requested": "${IMAGE_SIZE}",
+              "audit_queue_artifact_id": int("${AUDIT_ARTIFACT_ID}"),
+              "note": "No detector predictions were used or generated in this workflow. Images remain a blinded source-image audit set.",
+          }
+          (root / "download_qc_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          if not decoded:
+              raise SystemExit("No decodable images were downloaded; do not proceed to detector inference.")
+          PY
+          {
+            echo "## Detector-audit image download"
+            echo
+            echo '```json'
+            cat downloaded_audit/download_qc_report.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload downloaded blinded image set
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-detector-audit-images-${{ inputs.output_label }}
+          path: |
+            downloaded_audit
+            audit_queue_source/extracted/detector_audit_queue.csv
+            audit_queue_source/extracted/detector_audit_blinded_manifest.csv
+            audit_queue_source/extracted/detector_audit_assignments.csv
+            audit_queue_source/extracted/detector_audit_annotation_template.csv
+            audit_queue_source/extracted/detector_audit_manifest_report.json
+          if-no-files-found: warn
+          retention-days: 90
