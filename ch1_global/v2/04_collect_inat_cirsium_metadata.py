@@ -144,7 +144,7 @@ def preferred_photo_url(photo: dict[str, Any], size: str) -> str:
     if not url:
         return ""
     import re
-    return re.sub(r"/(square|small|medium|large|original)\\.", f"/{size}.", url)
+    return re.sub(r"/(square|small|medium|large|original)\.", f"/{size}.", url)
 
 
 def parse_coordinates(observation: dict[str, Any]) -> tuple[float | None, float | None]:
