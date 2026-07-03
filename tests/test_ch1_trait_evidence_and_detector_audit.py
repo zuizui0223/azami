@@ -77,12 +77,12 @@ class TestTraitEvidenceAndDetectorAudit(unittest.TestCase):
             evidence_out = root / "validated"
             with patch.object(sys, "argv", ["evidence", "--ontology", str(ONTOLOGY), "--passages", str(passages), "--evidence", str(evidence), "--out-dir", str(evidence_out)]):
                 VALIDATE_EVIDENCE.main()
-            valid = pd.read_csv(evidence_out / "literature_evidence_valid.csv", dtype=str)
+            valid = pd.read_csv(evidence_out / "literature_evidence_valid.csv", dtype=str, keep_default_na=False)
             self.assertEqual(len(valid), 2)
             summary_out = root / "summary"
             with patch.object(sys, "argv", ["summary", "--evidence", str(evidence_out / "literature_evidence_valid.csv"), "--out-dir", str(summary_out)]):
                 COMPILE_EVIDENCE.main()
-            summary = pd.read_csv(summary_out / "literature_trait_summary.csv", dtype=str)
+            summary = pd.read_csv(summary_out / "literature_trait_summary.csv", dtype=str, keep_default_na=False)
             self.assertEqual(summary.loc[0, "interpretation"], "conflicting_reviewed_evidence")
             self.assertEqual(summary.loc[0, "trait_state_consensus"], "")
 
@@ -104,7 +104,7 @@ class TestTraitEvidenceAndDetectorAudit(unittest.TestCase):
                 "--min-images-per-species", "1", "--max-images-per-species", "2", "--double-label-fraction", "0.5", "--seed", "7",
             ]):
                 AUDIT_MANIFEST.main()
-            queue = pd.read_csv(audit_out / "detector_audit_queue.csv", dtype=str)
+            queue = pd.read_csv(audit_out / "detector_audit_queue.csv", dtype=str, keep_default_na=False)
             self.assertEqual(len(queue), 4)
             self.assertTrue(queue["screen_download_filename"].str.contains("Cirsium", regex=False).eq(False).all())
             first_id, second_id = queue.loc[0, "queue_id"], queue.loc[1, "queue_id"]
