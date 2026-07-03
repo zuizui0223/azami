@@ -1,0 +1,125 @@
+name: Ch1 merge iNaturalist metadata artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_ids:
+        description: "Comma-separated immutable metadata artifact IDs"
+        required: true
+        default: "8060200007,8060873937,8062930028,8063651256,8064261214,8065563950"
+        type: string
+      merge_label:
+        description: "Safe label for the merged output artifact"
+        required: true
+        default: "full_inventory_20260703"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  merge-metadata-artifacts:
+    name: Merge immutable metadata artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install merge dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements_data_collection.txt
+
+      - name: Validate merge request
+        env:
+          ARTIFACT_IDS_RAW: ${{ inputs.artifact_ids }}
+          MERGE_LABEL_RAW: ${{ inputs.merge_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          raw_ids = os.environ["ARTIFACT_IDS_RAW"]
+          artifact_ids = [part.strip() for part in raw_ids.split(",") if part.strip()]
+          if len(artifact_ids) < 2:
+              raise SystemExit("Provide at least two comma-separated artifact IDs.")
+          if len(artifact_ids) != len(set(artifact_ids)):
+              raise SystemExit(f"Artifact IDs must be unique: {artifact_ids}")
+          if any(not re.fullmatch(r"[0-9]+", artifact_id) for artifact_id in artifact_ids):
+              raise SystemExit(f"Artifact IDs must be decimal integers: {artifact_ids}")
+          label = os.environ["MERGE_LABEL_RAW"].strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("merge_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write("ARTIFACT_IDS_NORMALIZED=" + ",".join(artifact_ids) + "\n")
+              handle.write(f"MERGE_LABEL_NORMALIZED={label}\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
+              handle.write("## Metadata merge request\n\n")
+              handle.write(f"- artifact IDs: `{', '.join(artifact_ids)}`\n")
+              handle.write(f"- merged-output label: `{label}`\n")
+          PY
+
+      - name: Download and validate source artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source_artifacts
+          IFS=',' read -r -a artifact_ids <<< "$ARTIFACT_IDS_NORMALIZED"
+          for artifact_id in "${artifact_ids[@]}"; do
+            zip_path="source_artifacts/${artifact_id}.zip"
+            out_dir="source_artifacts/${artifact_id}"
+            echo "Downloading immutable artifact ${artifact_id}"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$out_dir"
+            unzip -q "$zip_path" -d "$out_dir"
+            test -s "$out_dir/photo_metadata.csv"
+            test -s "$out_dir/collection_summary.csv"
+            test -s "$out_dir/collection_provenance.json"
+          done
+          find source_artifacts -name photo_metadata.csv -printf '%p\n' | sort | tee source_artifacts/metadata_paths.txt
+
+      - name: Merge photo metadata and deduplicate photo IDs
+        run: |
+          python ch1_global/v2/10_merge_metadata_chunks.py \
+            --input-dir source_artifacts \
+            --out-dir merged_metadata
+
+      - name: Generate full-inventory QC
+        run: |
+          python ch1_global/v2/08_summarize_metadata_collection.py \
+            --metadata merged_metadata/photo_metadata_merged.csv \
+            --out-dir merged_metadata/qc
+          {
+            echo "## Merged metadata result"
+            echo
+            echo '```json'
+            cat merged_metadata/merge_provenance.json
+            echo '```'
+            echo
+            cat merged_metadata/qc/collection_qc_report.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload merged metadata artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-inat-metadata-merged-${{ inputs.merge_label }}
+          path: |
+            merged_metadata
+          if-no-files-found: warn
+          retention-days: 90
