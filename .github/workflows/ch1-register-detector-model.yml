@@ -1,0 +1,106 @@
+name: Ch1 register detector model package
+
+on:
+  workflow_dispatch:
+    inputs:
+      weights_url:
+        description: "HTTPS URL to one YOLO .pt weight file"
+        required: true
+        type: string
+      model_card_url:
+        description: "HTTPS URL to a completed model_card.json"
+        required: true
+        type: string
+      output_label:
+        description: "Safe artifact label for registered model package"
+        required: true
+        default: "visible_capitulum_v1"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  register-detector-model:
+    name: Register and fingerprint detector model
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install validator dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ultralytics
+
+      - name: Validate model package request
+        env:
+          WEIGHTS_URL_RAW: ${{ inputs.weights_url }}
+          MODEL_CARD_URL_RAW: ${{ inputs.model_card_url }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from urllib.parse import urlparse
+
+          def https_url(raw: str, field: str) -> str:
+              value = (raw or "").strip()
+              parsed = urlparse(value)
+              if parsed.scheme != "https" or not parsed.netloc:
+                  raise SystemExit(f"{field} must be an HTTPS URL")
+              return value
+
+          weights_url = https_url(os.environ["WEIGHTS_URL_RAW"], "weights_url")
+          card_url = https_url(os.environ["MODEL_CARD_URL_RAW"], "model_card_url")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"WEIGHTS_URL={weights_url}\n")
+              handle.write(f"MODEL_CARD_URL={card_url}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download model weights and model card
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p detector_model_package
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 "$WEIGHTS_URL" --output detector_model_package/model.pt
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 "$MODEL_CARD_URL" --output detector_model_package/model_card.json
+          test -s detector_model_package/model.pt
+          test -s detector_model_package/model_card.json
+
+      - name: Validate model semantics and record fingerprint
+        run: |
+          python ch1_global/v2/23_validate_detector_model_package.py \
+            --package-dir detector_model_package \
+            --out-dir detector_model_package/provenance \
+            --expected-semantic-target visible_capitulum
+          {
+            echo "## Registered detector model"
+            echo
+            echo '```json'
+            cat detector_model_package/provenance/detector_model_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload immutable registered model package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-detector-model-${{ inputs.output_label }}
+          path: |
+            detector_model_package/model.pt
+            detector_model_package/model_card.json
+            detector_model_package/provenance/detector_model_provenance.json
+          if-no-files-found: warn
+          retention-days: 90
