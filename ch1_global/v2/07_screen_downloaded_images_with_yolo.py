@@ -6,13 +6,9 @@ metadata but does *not* run the legacy upward/nodding classifier. Human image-
 level annotations, not inherited species labels, become the v2 trait ground
 truth after this stage.
 
-Example
--------
-python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
-  --queue "C:\\Users\\zuizui\\cirsium_inat\\ch1_v2_screen_queue\\image_screening_queue.csv" \
-  --downloads "C:\\Users\\zuizui\\cirsium_inat\\ch1_v2_screen_images\\download_results.csv" \
-  --weights "C:\\Users\\zuizui\\mc\\runs\\cirsium_detect\\weights\\best.pt" \
-  --out-dir "C:\\Users\\zuizui\\cirsium_inat\\ch1_v2_yolo"
+When download results were restored from a GitHub Actions artifact, their
+original absolute runner paths no longer exist. Supply --images-dir to resolve
+those rows by filename without modifying the immutable download manifest.
 """
 
 from __future__ import annotations
@@ -27,7 +23,7 @@ import pandas as pd
 from PIL import Image
 
 
-SCREEN_VERSION = "1.0.0"
+SCREEN_VERSION = "1.1.0"
 RESULT_FIELDS = ["queue_id", "screen_status", "n_detections", "max_yolo_conf", "source_image", "message"]
 
 
@@ -37,6 +33,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--downloads", required=True)
     parser.add_argument("--weights", required=True, help="Ultralytics YOLO head detector weights (.pt)")
     parser.add_argument("--out-dir", required=True)
+    parser.add_argument("--images-dir", default="", help="Optional restored artifact image directory; stale absolute paths are resolved by filename here.")
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--pad-ratio", type=float, default=0.12)
     parser.add_argument("--batch-size", type=int, default=16)
@@ -95,6 +92,18 @@ def latest_successful_downloads(path: Path) -> pd.DataFrame:
     downloads["_row_order"] = range(len(downloads))
     latest = downloads.sort_values("_row_order").groupby("queue_id", as_index=False).tail(1)
     return latest.loc[latest["download_status"].eq("success")].copy()
+
+
+def resolve_image_path(path_text: str, images_dir: Path | None) -> str:
+    """Keep valid paths; otherwise resolve an artifact-restored image by basename."""
+    original = Path(text(path_text))
+    if original.exists():
+        return str(original.resolve())
+    if images_dir is not None:
+        fallback = images_dir / original.name
+        if fallback.exists():
+            return str(fallback.resolve())
+    return str(original)
 
 
 def atomic_save_crop(image: Image.Image, path: Path) -> None:
@@ -167,6 +176,9 @@ def main() -> None:
     weights = Path(args.weights)
     if not weights.exists():
         raise FileNotFoundError(f"YOLO weights not found: {weights}")
+    images_dir = Path(args.images_dir) if text(args.images_dir) else None
+    if images_dir is not None and not images_dir.is_dir():
+        raise FileNotFoundError(f"--images-dir does not exist or is not a directory: {images_dir}")
 
     try:
         from ultralytics import YOLO
@@ -182,6 +194,7 @@ def main() -> None:
         raise ValueError("Queue has duplicate queue_id values")
     successes = latest_successful_downloads(Path(args.downloads))
     candidates = queue.merge(successes[["queue_id", "image_local_path"]], on="queue_id", how="inner", validate="one_to_one")
+    candidates["image_local_path"] = candidates["image_local_path"].map(lambda value: resolve_image_path(value, images_dir))
 
     out_dir = Path(args.out_dir)
     crop_dir = out_dir / "head_crops"
