@@ -1,0 +1,10 @@
+obs_id,photo_id,taxon_name,latitude,longitude,yolo_conf,source_image,crop_path,raw_image_url,positional_accuracy,geoprivacy,obscured,photo_index,det_index
+1,11,Cirsium a,35,135,0.90,a.jpg,a_c.jpg,u,10,,,0,0
+2,12,Cirsium a,36,136,0.90,b.jpg,b_c.jpg,u,10,,,0,0
+3,13,Cirsium a,37,137,0.90,c.jpg,c_c.jpg,u,10,,,0,0
+4,14,Cirsium b,40,140,0.90,d.jpg,d_c.jpg,u,10,,,0,0
+5,15,Cirsium b,41,141,0.90,e.jpg,e_c.jpg,u,10,,,0,0
+6,16,Cirsium b,42,142,0.90,f.jpg,f_c.jpg,u,10,,,0,0
+6,17,Cirsium b,42,142,0.85,g.jpg,g_c.jpg,u,10,,,0,1
+8,18,Cirsium c,45,145,0.10,h.jpg,h_c.jpg,u,10,,,0,0
+9,19,Cirsium c,45,145,0.90,i.jpg,i_c.jpg,u,10,obscured,,0,0

@@ -1,0 +1,85 @@
+name: Ch1 annotation foundation CI
+
+on:
+  push:
+    paths:
+      - "ch1_global/v2/**"
+      - "tests/**"
+      - ".github/workflows/ch1-annotation-ci.yml"
+  pull_request:
+    paths:
+      - "ch1_global/v2/**"
+      - "tests/**"
+      - ".github/workflows/ch1-annotation-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  annotation-foundation:
+    name: Annotation foundation checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas
+
+      - name: Compile annotation scripts
+        run: |
+          python -m py_compile ch1_global/v2/00_build_annotation_manifest.py
+          python -m py_compile ch1_global/v2/01_build_blinded_annotation_packets.py
+          python -m py_compile ch1_global/v2/02_compile_double_annotations.py
+
+      - name: Run annotation-foundation invariants tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Run reproducible annotation smoke workflow
+        run: |
+          python ch1_global/v2/00_build_annotation_manifest.py \
+            --input tests/fixtures/ch1_crop_metadata_small.csv \
+            --out-dir ci_artifacts/ch1_annotation_manifest_smoke \
+            --seed 123 \
+            --min-heads-per-species 2 \
+            --max-heads-per-species 3 \
+            --n-main 10 \
+            --n-calibration 4 \
+            --n-segmentation 3 \
+            --n-cv-folds 3
+          python ch1_global/v2/01_build_blinded_annotation_packets.py \
+            --manifest ci_artifacts/ch1_annotation_manifest_smoke/annotation_manifest.csv \
+            --out-dir ci_artifacts/ch1_annotation_packets_smoke \
+            --seed 123
+          {
+            echo "## Ch.1 annotation-foundation smoke run"
+            echo
+            echo '### Manifest'
+            echo '```csv'
+            cat ci_artifacts/ch1_annotation_manifest_smoke/annotation_manifest_run_info.csv
+            echo '```'
+            echo
+            echo '### Blinded packets'
+            echo '```csv'
+            cat ci_artifacts/ch1_annotation_packets_smoke/packet_qc.csv
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload smoke-workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-annotation-foundation-smoke
+          path: ci_artifacts
+          if-no-files-found: warn
+          retention-days: 14
