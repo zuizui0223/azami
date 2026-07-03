@@ -10,6 +10,7 @@ later human/adjudicated audit labels can supersede them.
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,6 +42,22 @@ def text(value: Any) -> str:
 def resolve_path(raw: str, images_dir: Path) -> Path:
     source = Path(text(raw))
     return source if source.exists() else images_dir / source.name
+
+
+def post_process(processor: Any, outputs: Any, input_ids: Any, target_sizes: Any, box_threshold: float, text_threshold: float) -> Any:
+    """Handle the published Grounding DINO post-processing API across versions."""
+    function = processor.post_process_grounded_object_detection
+    parameters = inspect.signature(function).parameters
+    kwargs: dict[str, Any] = {"target_sizes": target_sizes}
+    if "threshold" in parameters:
+        kwargs["threshold"] = box_threshold
+    elif "box_threshold" in parameters:
+        kwargs["box_threshold"] = box_threshold
+    else:
+        raise RuntimeError(f"Unsupported Grounding DINO post-process API: {sorted(parameters)}")
+    if "text_threshold" in parameters:
+        kwargs["text_threshold"] = text_threshold
+    return function(outputs, input_ids, **kwargs)
 
 
 def main() -> None:
@@ -81,12 +98,13 @@ def main() -> None:
             with torch.no_grad():
                 outputs = model(**inputs)
             target_sizes = torch.tensor([[image.height, image.width]])
-            result = processor.post_process_grounded_object_detection(
+            result = post_process(
+                processor,
                 outputs,
                 inputs.input_ids,
-                box_threshold=args.box_threshold,
-                text_threshold=args.text_threshold,
-                target_sizes=target_sizes,
+                target_sizes,
+                args.box_threshold,
+                args.text_threshold,
             )[0]
             boxes = result.get("boxes", [])
             scores = result.get("scores", [])
@@ -115,19 +133,25 @@ def main() -> None:
         "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2", "image_width", "image_height", "source_image", "proposal_status",
     ]).to_csv(out_dir / "open_vocab_capitulum_proposals.csv", index=False, encoding="utf-8-sig")
     pd.DataFrame(image_rows).to_csv(out_dir / "open_vocab_proposal_image_summary.csv", index=False, encoding="utf-8-sig")
+    n_errors = int(sum(bool(row["proposal_error"]) for row in image_rows))
     report = {
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "model_id": args.model_id,
+        "transformers_version": transformers_version,
         "prompt": PROMPT,
         "box_threshold": args.box_threshold,
         "text_threshold": args.text_threshold,
         "n_images_attempted": int(len(candidates)),
-        "n_images_with_errors": int(sum(bool(row["proposal_error"]) for row in image_rows)),
+        "n_images_with_errors": n_errors,
         "n_proposal_boxes": int(len(proposal_rows)),
         "semantic_status": "provisional pseudo-label proposals; not human ground truth and not an accuracy-evaluation set",
     }
     (out_dir / "open_vocab_proposal_provenance.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))
+    if n_errors == len(candidates):
+        raise RuntimeError("Open-vocabulary proposal generation failed for every image; see open_vocab_proposal_image_summary.csv")
+    if not proposal_rows:
+        raise RuntimeError("Open-vocabulary proposal generation produced zero boxes; do not train a bootstrap detector.")
 
 
 if __name__ == "__main__":
