@@ -62,7 +62,22 @@ jobs:
           python -m py_compile ch1_global/v2/22_attach_context_crops_to_manifest.py
 
       - name: Run collection and annotation invariants tests
-        run: python -m unittest discover -s tests -p "test_*.py" -v
+        shell: bash
+        run: |
+          mkdir -p ci_artifacts
+          set +e
+          python -m unittest discover -s tests -p "test_*.py" -v 2>&1 | tee ci_artifacts/unittest.log
+          test_status=${PIPESTATUS[0]}
+          {
+            echo "## Unit-test result"
+            echo
+            echo "Exit status: \`$test_status\`"
+            echo
+            echo '```text'
+            tail -n 160 ci_artifacts/unittest.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$test_status"
 
       - name: Run reproducible annotation smoke workflow
         run: |
