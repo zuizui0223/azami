@@ -1,0 +1,84 @@
+name: Ch1 live iNaturalist metadata pilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_observations:
+        description: "Observation cap for this bounded metadata chunk"
+        required: true
+        default: "500"
+        type: string
+      queue_max_photos:
+        description: "Candidate-image cap for the technical queue"
+        required: true
+        default: "250"
+        type: string
+  push:
+    branches:
+      - feature/ch1-inat-metadata-collection
+    paths:
+      - ".github/workflows/ch1-inat-live-metadata-pilot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  metadata-pilot:
+    name: Collect bounded metadata pilot
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install collection dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements_data_collection.txt
+
+      - name: Collect iNaturalist observation metadata
+        run: |
+          python ch1_global/v2/04_collect_inat_cirsium_metadata.py \
+            --out-dir live_pilot/raw \
+            --max-observations "${{ inputs.max_observations || '500' }}" \
+            --sleep-sec 0.8
+
+      - name: Create a small balanced candidate queue
+        run: |
+          python ch1_global/v2/05_build_image_screening_queue.py \
+            --input live_pilot/raw/photo_metadata.csv \
+            --out-dir live_pilot/queue \
+            --max-photos "${{ inputs.queue_max_photos || '250' }}" \
+            --min-photos-per-species 2 \
+            --max-photos-per-species 12 \
+            --seed 20260703
+
+      - name: Build technical QC report
+        run: |
+          python ch1_global/v2/08_summarize_metadata_collection.py \
+            --metadata live_pilot/raw/photo_metadata.csv \
+            --collection-summary live_pilot/raw/collection_summary.csv \
+            --queue-dir live_pilot/queue \
+            --out-dir live_pilot/qc \
+            --technical-pilot
+          cat live_pilot/qc/collection_qc_report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload metadata pilot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-inat-live-metadata-pilot
+          path: |
+            live_pilot/raw/collection_summary.csv
+            live_pilot/raw/collection_provenance.json
+            live_pilot/raw/photo_metadata.csv
+            live_pilot/queue
+            live_pilot/qc
+          if-no-files-found: warn
+          retention-days: 30
