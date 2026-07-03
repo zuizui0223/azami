@@ -101,15 +101,18 @@ jobs:
             mkdir -p "$extract_dir"
             unzip -q "$zip_path" -d "$extract_dir"
           done
+          echo "## Preserved proposal artifact contents" >> "$GITHUB_STEP_SUMMARY"
+          find source/proposals/extracted -maxdepth 2 -type f | sort | sed 's/^/- `/' | sed 's/$/`/' >> "$GITHUB_STEP_SUMMARY"
           test -d source/qc/extracted/downloaded_audit/images
-          test -s source/proposals/extracted/bootstrap/proposals/open_vocab_capitulum_proposals.csv
-          test -s source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_image_summary.csv
+          test -s source/proposals/extracted/proposals/open_vocab_capitulum_proposals.csv
+          test -s source/proposals/extracted/proposals/open_vocab_proposal_image_summary.csv
+          test -s source/proposals/extracted/proposals/open_vocab_proposal_provenance.json
 
       - name: Rebuild provisional YOLO dataset from preserved proposals
         run: |
           python ch1_global/v2/25_build_bootstrap_yolo_dataset.py \
-            --proposals source/proposals/extracted/bootstrap/proposals/open_vocab_capitulum_proposals.csv \
-            --image-summary source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_image_summary.csv \
+            --proposals source/proposals/extracted/proposals/open_vocab_capitulum_proposals.csv \
+            --image-summary source/proposals/extracted/proposals/open_vocab_proposal_image_summary.csv \
             --images-dir source/qc/extracted/downloaded_audit/images \
             --out-dir recovery/dataset \
             --min-score "$PSEUDO_SCORE" \
@@ -163,9 +166,9 @@ jobs:
         with:
           name: ch1-bootstrap-capitulum-detector-${{ inputs.output_label }}
           path: |
-            source/proposals/extracted/bootstrap/proposals/open_vocab_capitulum_proposals.csv
-            source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_image_summary.csv
-            source/proposals/extracted/bootstrap/proposals/open_vocab_proposal_provenance.json
+            source/proposals/extracted/proposals/open_vocab_capitulum_proposals.csv
+            source/proposals/extracted/proposals/open_vocab_proposal_image_summary.csv
+            source/proposals/extracted/proposals/open_vocab_proposal_provenance.json
             recovery/dataset/bootstrap_dataset_manifest.csv
             recovery/dataset/bootstrap_dataset_missing_images.csv
             recovery/dataset/bootstrap_dataset_provenance.json
