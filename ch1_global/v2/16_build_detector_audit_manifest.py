@@ -9,7 +9,6 @@ is a detector audit, not a trait-label dataset.
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a blinded Cirsium YOLO detector-audit manifest.")
     parser.add_argument("--metadata", required=True, help="Merged photo_metadata.csv")
     parser.add_argument("--out-dir", required=True)
-    parser.add_argument("--n-images", type=int, default=800)
+    parser.add_argument("--n-images", type=int, default=1000)
     parser.add_argument("--min-images-per-species", type=int, default=3)
     parser.add_argument("--max-images-per-species", type=int, default=12)
     parser.add_argument("--double-label-fraction", type=float, default=0.25)
@@ -60,37 +59,70 @@ def usable_url(row: pd.Series) -> str:
     return ""
 
 
-def choose_balanced(candidates: pd.DataFrame, n_images: int, max_per_species: int, rng: np.random.Generator) -> pd.DataFrame:
-    """Spread across species × spatial block first, then round-robin species."""
+def species_spatial_priority(part: pd.DataFrame, rng: np.random.Generator) -> list[int]:
+    """Order one species so distinct spatial blocks are selected before repeats."""
+    work = part.copy()
+    work["_random"] = rng.random(len(work))
+    first_per_block = (
+        work.sort_values(["spatial_block", "_random"], kind="stable")
+        .groupby("spatial_block", sort=False)
+        .head(1)
+        .sort_values("_random", kind="stable")
+    )
+    remaining = work.drop(index=first_per_block.index).sort_values("_random", kind="stable")
+    return [int(index) for index in pd.concat([first_per_block, remaining]).index.tolist()]
+
+
+def choose_balanced(
+    candidates: pd.DataFrame,
+    n_images: int,
+    min_per_species: int,
+    max_per_species: int,
+    rng: np.random.Generator,
+) -> pd.DataFrame:
+    """Guarantee a minimum taxon allocation, then fill round-robin by species.
+
+    Each species is internally ordered to prioritize distinct spatial blocks. The
+    caller must request at least `n_species * min_per_species`; silently failing
+    that contract would make a "minimum" setting misleading.
+    """
     if candidates.empty or n_images <= 0:
         return candidates.iloc[0:0].copy()
-    work = candidates.copy()
-    work["_random"] = rng.random(len(work))
-    work = work.sort_values(["taxon_name", "spatial_block", "_random"])
-    first = work.groupby(["taxon_name", "spatial_block"], sort=False).head(1).copy()
-    first_by_species = {name: list(part.index) for name, part in first.groupby("taxon_name", sort=True)}
+
+    species_names = sorted(candidates["taxon_name"].unique().tolist())
+    baseline_required = len(species_names) * min_per_species
+    if n_images < baseline_required:
+        raise ValueError(
+            f"n-images={n_images} cannot allocate min-images-per-species={min_per_species} "
+            f"to all {len(species_names)} eligible species; request at least {baseline_required}."
+        )
+
+    queues: dict[str, list[int]] = {}
     selected: list[int] = []
     counts: dict[str, int] = {}
-    while len(selected) < n_images and any(first_by_species.values()):
-        for species in sorted(first_by_species):
-            if len(selected) >= n_images:
+    for species in species_names:
+        ordered = species_spatial_priority(candidates.loc[candidates["taxon_name"].eq(species)], rng)
+        if len(ordered) < min_per_species:
+            raise ValueError(f"Species {species!r} has fewer than the requested minimum candidates.")
+        selected.extend(ordered[:min_per_species])
+        queues[species] = ordered[min_per_species:]
+        counts[species] = min_per_species
+
+    capacity = sum(min(max_per_species, len(candidates.loc[candidates["taxon_name"].eq(species)])) for species in species_names)
+    target = min(n_images, capacity)
+    while len(selected) < target:
+        progressed = False
+        for species in species_names:
+            if len(selected) >= target:
                 break
-            if first_by_species[species] and counts.get(species, 0) < max_per_species:
-                index = first_by_species[species].pop(0)
-                selected.append(index)
-                counts[species] = counts.get(species, 0) + 1
-    remaining = work.drop(index=selected, errors="ignore")
-    while len(selected) < n_images and not remaining.empty:
-        remaining = remaining.assign(_selected_n=remaining["taxon_name"].map(counts).fillna(0))
-        eligible = remaining.loc[remaining["_selected_n"] < max_per_species]
-        if eligible.empty:
+            if counts[species] < max_per_species and queues[species]:
+                selected.append(queues[species].pop(0))
+                counts[species] += 1
+                progressed = True
+        if not progressed:
             break
-        index = eligible.sort_values(["_selected_n", "_random"]).index[0]
-        species = text(remaining.loc[index, "taxon_name"])
-        selected.append(index)
-        counts[species] = counts.get(species, 0) + 1
-        remaining = remaining.drop(index=index)
-    return work.loc[selected].drop(columns=["_random"])
+
+    return candidates.loc[selected].copy()
 
 
 def main() -> None:
@@ -122,13 +154,26 @@ def main() -> None:
     rng = np.random.default_rng(args.seed)
     candidates["_random"] = rng.random(len(candidates))
     # One photograph per observation prevents serial-photo inflation in detector evaluation.
-    candidates = candidates.sort_values(["obs_id", "_random"]).groupby("obs_id", sort=False).head(1).drop(columns="_random")
+    candidates = candidates.sort_values(["obs_id", "_random"], kind="stable").groupby("obs_id", sort=False).head(1).drop(columns="_random")
     availability = candidates.groupby("taxon_name").size().rename("n_candidate_images").reset_index()
     eligible_species = set(availability.loc[availability["n_candidate_images"] >= args.min_images_per_species, "taxon_name"])
     candidates = candidates.loc[candidates["taxon_name"].isin(eligible_species)].copy()
     if candidates.empty:
         raise ValueError("No species meet --min-images-per-species")
-    selected = choose_balanced(candidates, min(args.n_images, len(candidates)), args.max_images_per_species, rng).reset_index(drop=True)
+    baseline_required = len(eligible_species) * args.min_images_per_species
+    if args.n_images < baseline_required:
+        raise ValueError(
+            f"n-images={args.n_images} is too small for {len(eligible_species)} eligible species at "
+            f"min-images-per-species={args.min_images_per_species}; use at least {baseline_required}, "
+            "or choose a different audit stratum explicitly."
+        )
+    selected = choose_balanced(
+        candidates,
+        args.n_images,
+        args.min_images_per_species,
+        args.max_images_per_species,
+        rng,
+    ).reset_index(drop=True)
     selected.insert(0, "audit_id", [f"det_audit_{i:05d}" for i in range(1, len(selected) + 1)])
     selected.insert(1, "queue_id", selected["audit_id"])
     selected["screen_download_filename"] = [f"detector_audit_{i:05d}_photo_{text(photo_id)}.jpg" for i, photo_id in enumerate(selected["photo_id"], start=1)]
@@ -179,6 +224,8 @@ def main() -> None:
         "metadata": str(Path(args.metadata).resolve()),
         "n_metadata_rows": int(len(raw)),
         "n_eligible_species": int(len(eligible_species)),
+        "min_images_per_species": int(args.min_images_per_species),
+        "minimum_images_required": int(baseline_required),
         "n_audit_images": int(len(selected)),
         "n_double_label_images": int(selected["double_label"].sum()),
         "seed": args.seed,
