@@ -48,6 +48,11 @@ def parse_bool(value: object, field: str, trait_id: str) -> bool:
     raise ValueError(f"trait_id={trait_id}: {field} must be true/false, got {value!r}")
 
 
+def bool_text(value: bool) -> str:
+    """Return the normalized string representation used by the ontology CSV contract."""
+    return "true" if value else "false"
+
+
 def validate(ontology: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     missing = REQUIRED.difference(ontology.columns)
     if missing:
@@ -68,7 +73,11 @@ def validate(ontology: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
 
     messages: list[str] = []
     state_counts: list[int] = []
-    for index, row in work.iterrows():
+    normalized_allow_multiple: list[str] = []
+    normalized_literature: list[str] = []
+    normalized_image: list[str] = []
+    normalized_states: list[str] = []
+    for _, row in work.iterrows():
         trait_id = row["trait_id"]
         layer = text(row["layer"]).lower()
         if layer not in ALLOWED_LAYERS:
@@ -94,14 +103,21 @@ def validate(ontology: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
             raise ValueError(f"trait_id={trait_id}: assessability_rule must not be blank")
         if not text(row["do_not_infer_from"]):
             raise ValueError(f"trait_id={trait_id}: do_not_infer_from must not be blank")
+        normalized_states.append("|".join(states))
+        normalized_allow_multiple.append(bool_text(allow_multiple))
+        normalized_literature.append(bool_text(literature))
+        normalized_image.append(bool_text(image))
         state_counts.append(len(states))
-        work.at[index, "allowed_states"] = "|".join(states)
-        work.at[index, "allow_multiple"] = allow_multiple
-        work.at[index, "literature_extractable"] = literature
-        work.at[index, "image_annotatable"] = image
         if allow_multiple:
             messages.append(f"{trait_id}: multiple states are permitted; downstream evidence must use one row per state.")
 
+    # Keep the validated CSV schema textual. Assigning Python bool objects into a
+    # pandas StringDtype column raises under pandas 3 and would also change the
+    # ontology's on-disk contract.
+    work["allowed_states"] = normalized_states
+    work["allow_multiple"] = normalized_allow_multiple
+    work["literature_extractable"] = normalized_literature
+    work["image_annotatable"] = normalized_image
     work["n_allowed_states"] = state_counts
     return work, messages
 
@@ -118,8 +134,8 @@ def main() -> None:
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "ontology": str(ontology_path.resolve()),
         "n_traits": int(len(validated)),
-        "n_literature_extractable": int(validated["literature_extractable"].astype(bool).sum()),
-        "n_image_annotatable": int(validated["image_annotatable"].astype(bool).sum()),
+        "n_literature_extractable": int(validated["literature_extractable"].map(lambda value: text(value).lower() in TRUE_VALUES).sum()),
+        "n_image_annotatable": int(validated["image_annotatable"].map(lambda value: text(value).lower() in TRUE_VALUES).sum()),
         "messages": messages,
     }
     (out_dir / "trait_ontology_validation.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
