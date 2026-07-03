@@ -4,17 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       start_obs_id:
-        description: "Collect records with observation ID greater than this cursor"
+        description: "Collect records with observation ID greater than this cursor (commas accepted)"
         required: true
         default: "0"
         type: string
       max_observations:
-        description: "Bounded observations in this chunk"
+        description: "Bounded observations in this chunk; 1 to 150,000 (commas accepted)"
         required: true
         default: "100000"
         type: string
       chunk_label:
-        description: "Unique safe label, e.g. id_017005071"
+        description: "Unique safe label, e.g. id_070743299"
         required: true
         default: "id_000000000"
         type: string
@@ -42,32 +42,54 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r ch1_global/v2/requirements_data_collection.txt
 
-      - name: Validate chunk inputs
+      - name: Validate and normalize chunk inputs
         env:
-          START_ID: ${{ inputs.start_obs_id }}
-          MAX_OBSERVATIONS: ${{ inputs.max_observations }}
-          CHUNK_LABEL: ${{ inputs.chunk_label }}
+          START_ID_RAW: ${{ inputs.start_obs_id }}
+          MAX_OBSERVATIONS_RAW: ${{ inputs.max_observations }}
+          CHUNK_LABEL_RAW: ${{ inputs.chunk_label }}
         run: |
           python - <<'PY'
           import os
           import re
-          start = int(os.environ["START_ID"])
-          maximum = int(os.environ["MAX_OBSERVATIONS"])
-          label = os.environ["CHUNK_LABEL"]
-          if start < 0 or maximum < 1:
-              raise SystemExit("start_obs_id must be >= 0 and max_observations must be >= 1")
-          if maximum > 150000:
-              raise SystemExit("max_observations must be <= 150000 per hosted-runner chunk")
+
+          def parse_nonnegative_integer(raw: str, name: str) -> int:
+              normalized = (raw or "").strip().replace("，", ",").replace("＿", "_").replace("　", " ")
+              normalized = normalized.replace(",", "").replace("_", "").replace(" ", "")
+              if not re.fullmatch(r"[0-9]+", normalized):
+                  raise SystemExit(
+                      f"Invalid {name}={raw!r}. Use digits only; commas, underscores, and spaces are allowed as separators."
+                  )
+              return int(normalized)
+
+          start = parse_nonnegative_integer(os.environ["START_ID_RAW"], "start_obs_id")
+          maximum = parse_nonnegative_integer(os.environ["MAX_OBSERVATIONS_RAW"], "max_observations")
+          label = (os.environ["CHUNK_LABEL_RAW"] or "").strip()
+          if maximum < 1 or maximum > 150000:
+              raise SystemExit(f"max_observations must be between 1 and 150000; received {maximum}.")
           if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
-              raise SystemExit("chunk_label may contain only letters, digits, dot, underscore, and hyphen")
+              raise SystemExit(
+                  f"Invalid chunk_label={label!r}. Use a label such as id_070743299 (letters, digits, dot, underscore, hyphen only)."
+              )
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"START_OBS_ID_NORMALIZED={start}\n")
+              handle.write(f"MAX_OBSERVATIONS_NORMALIZED={maximum}\n")
+              handle.write(f"CHUNK_LABEL_NORMALIZED={label}\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
+              handle.write("## Validated chunk request\n\n")
+              handle.write(f"- start_obs_id: `{start}`\n")
+              handle.write(f"- max_observations: `{maximum}`\n")
+              handle.write(f"- chunk_label: `{label}`\n")
           PY
 
       - name: Collect bounded observation-ID chunk
+        env:
+          START_OBS_ID: ${{ env.START_OBS_ID_NORMALIZED }}
+          MAX_OBSERVATIONS: ${{ env.MAX_OBSERVATIONS_NORMALIZED }}
         run: |
           python ch1_global/v2/11_collect_inat_id_chunk.py \
             --out-dir metadata_chunk \
-            --start-obs-id "${{ inputs.start_obs_id }}" \
-            --max-observations "${{ inputs.max_observations }}" \
+            --start-obs-id "$START_OBS_ID" \
+            --max-observations "$MAX_OBSERVATIONS" \
             --sleep-sec 0.8
 
       - name: Create chunk QC report
