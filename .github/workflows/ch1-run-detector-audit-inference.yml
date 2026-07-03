@@ -1,0 +1,178 @@
+name: Ch1 run detector audit inference
+
+on:
+  workflow_dispatch:
+    inputs:
+      qc_images_artifact_id:
+        description: "QC-fixed downloaded detector-audit images artifact ID"
+        required: true
+        default: "8068122589"
+        type: string
+      model_package_artifact_id:
+        description: "Registered detector model package artifact ID"
+        required: true
+        type: string
+      confidence_threshold:
+        description: "Detector confidence threshold in [0,1]"
+        required: true
+        default: "0.25"
+        type: string
+      output_label:
+        description: "Safe artifact label for detector predictions"
+        required: true
+        default: "global_1000_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  run-detector-audit-inference:
+    name: Run registered detector on audit images
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install inference dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas Pillow ultralytics
+
+      - name: Validate inference request
+        env:
+          QC_ARTIFACT_RAW: ${{ inputs.qc_images_artifact_id }}
+          MODEL_ARTIFACT_RAW: ${{ inputs.model_package_artifact_id }}
+          CONFIDENCE_RAW: ${{ inputs.confidence_threshold }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def integer(raw: str, name: str) -> int:
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{name} must be a positive integer")
+              return int(value)
+
+          qc_id = integer(os.environ["QC_ARTIFACT_RAW"], "qc_images_artifact_id")
+          model_id = integer(os.environ["MODEL_ARTIFACT_RAW"], "model_package_artifact_id")
+          try:
+              confidence = float(os.environ["CONFIDENCE_RAW"])
+          except ValueError as error:
+              raise SystemExit("confidence_threshold must be numeric") from error
+          if not 0 <= confidence <= 1:
+              raise SystemExit("confidence_threshold must be in [0,1]")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QC_ARTIFACT_ID={qc_id}\n")
+              handle.write(f"MODEL_ARTIFACT_ID={model_id}\n")
+              handle.write(f"CONFIDENCE_THRESHOLD={confidence}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download QC-fixed images and registered model package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qc_images_source model_source
+          for specification in "${QC_ARTIFACT_ID}:qc_images_source/qc_images.zip:qc_images_source/extracted" "${MODEL_ARTIFACT_ID}:model_source/model.zip:model_source/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$extract_dir"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -s qc_images_source/extracted/downloaded_audit/download_results.csv
+          test -s qc_images_source/extracted/audit_queue_source/extracted/detector_audit_queue.csv
+          test -d qc_images_source/extracted/downloaded_audit/images
+          test -s model_source/extracted/model.pt
+          test -s model_source/extracted/model_card.json
+
+      - name: Revalidate registered model package
+        run: |
+          python ch1_global/v2/23_validate_detector_model_package.py \
+            --package-dir model_source/extracted \
+            --out-dir detector_inference/model_provenance \
+            --expected-semantic-target visible_capitulum
+
+      - name: Run detector-only inference on all QC-fixed audit images
+        run: |
+          python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
+            --queue qc_images_source/extracted/audit_queue_source/extracted/detector_audit_queue.csv \
+            --downloads qc_images_source/extracted/downloaded_audit/download_results.csv \
+            --images-dir qc_images_source/extracted/downloaded_audit/images \
+            --weights model_source/extracted/model.pt \
+            --out-dir detector_inference/yolo \
+            --conf "$CONFIDENCE_THRESHOLD" \
+            --pad-ratio 0.12 \
+            --batch-size 16 \
+            --device cpu
+
+      - name: Summarize detector predictions
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import pandas as pd
+
+          out_dir = Path("detector_inference/yolo")
+          screening = pd.read_csv(out_dir / "screening_results.csv", dtype=str, keep_default_na=False)
+          crops_path = out_dir / "yolo_crop_metadata.csv"
+          crops = pd.read_csv(crops_path, dtype=str, keep_default_na=False) if crops_path.exists() else pd.DataFrame()
+          summary = {
+              "created_at_utc": datetime.now(timezone.utc).isoformat(),
+              "n_source_images": int(len(screening)),
+              "n_detected_images": int(screening["screen_status"].eq("detected").sum()),
+              "n_no_detection_images": int(screening["screen_status"].eq("no_detection").sum()),
+              "n_missing_images": int(screening["screen_status"].eq("missing_image").sum()),
+              "n_inference_errors": int(screening["screen_status"].eq("error").sum()),
+              "n_detection_boxes": int(len(crops)),
+              "confidence_threshold": float(__import__("os").environ["CONFIDENCE_THRESHOLD"]),
+              "model_package_artifact_id": int(__import__("os").environ["MODEL_ARTIFACT_ID"]),
+              "qc_images_artifact_id": int(__import__("os").environ["QC_ARTIFACT_ID"]),
+              "interpretation": "Detector outputs are predictions only. Independent human/adjudicated audit labels are required before any accuracy claim.",
+          }
+          (Path("detector_inference") / "detector_inference_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+          if summary["n_source_images"] != 1000 or summary["n_missing_images"] or summary["n_inference_errors"]:
+              raise SystemExit(json.dumps(summary, ensure_ascii=False))
+          PY
+          {
+            echo "## Detector audit inference"
+            echo
+            echo '```json'
+            cat detector_inference/model_provenance/detector_model_provenance.json
+            echo '```'
+            echo
+            echo '```json'
+            cat detector_inference/detector_inference_summary.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload detector predictions and crops
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-detector-audit-inference-${{ inputs.output_label }}
+          path: |
+            detector_inference
+          if-no-files-found: warn
+          retention-days: 90
