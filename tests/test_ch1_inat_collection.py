@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import gzip
 import importlib.util
+import json
 import sys
 import tempfile
 import unittest
@@ -57,6 +59,22 @@ class TestINaturalistCollectionFoundation(unittest.TestCase):
 
         obscured = COLLECT.observation_to_photo_rows(self.observation(2, [21], "Cirsium alpha", 35.0, 135.0, obscured=True))[0]
         self.assertFalse(obscured["coordinate_usable_for_environment"])
+
+    def test_streamed_gzip_raw_audit_trail_is_line_recoverable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = COLLECT.raw_payload_path(root, "gzip")
+            observations = [
+                self.observation(1, [11], "Cirsium alpha", 35.0, 135.0),
+                self.observation(2, [12], "Cirsium beta", 36.0, 136.0),
+            ]
+            COLLECT.append_raw_observations(path, observations, "gzip")
+            self.assertEqual(path.name, "observation_raw.ndjson.gz")
+            with gzip.open(path, "rt", encoding="utf-8") as handle:
+                recovered = [json.loads(line) for line in handle if line.strip()]
+            self.assertEqual([row["id"] for row in recovered], [1, 2])
+            with self.assertRaises(ValueError):
+                COLLECT.append_raw_observations(path, observations, "unsupported")
 
     def test_queue_deduplicates_observations_and_retains_species_balance(self) -> None:
         observations = [
