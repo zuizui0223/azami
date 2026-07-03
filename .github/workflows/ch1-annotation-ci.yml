@@ -58,6 +58,7 @@ jobs:
           python -m py_compile ch1_global/v2/17_evaluate_detector_audit.py
           python -m py_compile ch1_global/v2/18_build_head_context_crops.py
           python -m py_compile ch1_global/v2/19_trait_annotation_app_ontology.py
+          python -m py_compile ch1_global/v2/21_build_ontology_blinded_packets.py
 
       - name: Run collection and annotation invariants tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
