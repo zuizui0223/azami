@@ -1,4 +1,4 @@
-name: Ch1 annotation manifest CI
+name: Ch1 annotation foundation CI
 
 on:
   push:
@@ -17,8 +17,8 @@ permissions:
   contents: read
 
 jobs:
-  annotation-manifest:
-    name: Annotation manifest checks
+  annotation-foundation:
+    name: Annotation foundation checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -37,13 +37,15 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pandas
 
-      - name: Compile the manifest builder
-        run: python -m py_compile ch1_global/v2/00_build_annotation_manifest.py
+      - name: Compile annotation scripts
+        run: |
+          python -m py_compile ch1_global/v2/00_build_annotation_manifest.py
+          python -m py_compile ch1_global/v2/01_build_blinded_annotation_packets.py
 
       - name: Run manifest invariants test
         run: python -m unittest discover -s tests -p "test_*.py" -v
 
-      - name: Run a reproducible smoke manifest
+      - name: Run reproducible annotation smoke workflow
         run: |
           python ch1_global/v2/00_build_annotation_manifest.py \
             --input tests/fixtures/ch1_crop_metadata_small.csv \
@@ -55,19 +57,29 @@ jobs:
             --n-calibration 4 \
             --n-segmentation 3 \
             --n-cv-folds 3
+          python ch1_global/v2/01_build_blinded_annotation_packets.py \
+            --manifest ci_artifacts/ch1_annotation_manifest_smoke/annotation_manifest.csv \
+            --out-dir ci_artifacts/ch1_annotation_packets_smoke \
+            --seed 123
           {
-            echo "## Ch.1 annotation-manifest smoke run"
+            echo "## Ch.1 annotation-foundation smoke run"
             echo
+            echo '### Manifest'
             echo '```csv'
             cat ci_artifacts/ch1_annotation_manifest_smoke/annotation_manifest_run_info.csv
             echo '```'
+            echo
+            echo '### Blinded packets'
+            echo '```csv'
+            cat ci_artifacts/ch1_annotation_packets_smoke/packet_qc.csv
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload smoke-manifest artifact
+      - name: Upload smoke-workflow artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-annotation-manifest-smoke
-          path: ci_artifacts/ch1_annotation_manifest_smoke
+          name: ch1-annotation-foundation-smoke
+          path: ci_artifacts
           if-no-files-found: warn
           retention-days: 14
