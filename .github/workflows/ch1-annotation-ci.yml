@@ -46,6 +46,7 @@ jobs:
           python -m py_compile ch1_global/v2/05_build_image_screening_queue.py
           python -m py_compile ch1_global/v2/06_download_inat_screening_queue.py
           python -m py_compile ch1_global/v2/07_screen_downloaded_images_with_yolo.py
+          python -m py_compile ch1_global/v2/08_summarize_metadata_collection.py
 
       - name: Run collection and annotation invariants tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
