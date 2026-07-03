@@ -2,41 +2,36 @@
 """Collect reproducible global iNaturalist metadata for Chapter 1 v2.
 
 This stage deliberately collects **metadata only**. It does not download images,
-run YOLO, or infer traits. That separation prevents an old classifier from
-silently deciding which observations exist in the Chapter 1 sampling frame.
+run YOLO, or infer traits. That separation prevents a classifier from silently
+deciding which observations exist in the Chapter 1 sampling frame.
 
 Outputs
 -------
-- observation_raw.ndjson: one complete API observation object per line
+- observation_raw.ndjson or observation_raw.ndjson.gz: one complete API
+  observation object per line, optionally gzip-compressed while streaming
 - photo_metadata.csv: one row per photo, with observation/taxon/licence/geo fields
-- checkpoint.json: restart state using stable observation ID pagination
+- checkpoint.json: restart state using stable observation-ID pagination
 - collection_provenance.json: exact endpoint, taxon resolution, parameters, and time
 - collection_summary.csv: a compact accounting table
 
-Examples
---------
-# Pilot: stop after 5,000 observations.
-python ch1_global/v2/04_collect_inat_cirsium_metadata.py \
-  --out-dir "C:\\Users\\zuizui\\cirsium_inat\\ch1_v2_raw" \
-  --max-observations 5000
-
-# Full metadata inventory: 0 means no imposed observation limit.
-python ch1_global/v2/04_collect_inat_cirsium_metadata.py \
-  --out-dir "C:\\Users\\zuizui\\cirsium_inat\\ch1_v2_raw" \
-  --max-observations 0
+`--max-observations 0` means no imposed observation limit. For large hosted
+Actions sweeps, use `--raw-compression gzip` to avoid materialising a very large
+uncompressed raw API payload on the ephemeral runner disk.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import math
 import os
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator, TextIO
 
 import pandas as pd
 import requests
@@ -44,7 +39,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
-COLLECTOR_VERSION = "1.0.0"
+COLLECTOR_VERSION = "1.1.0"
 TAXA_ENDPOINT = "https://api.inaturalist.org/v1/taxa"
 OBSERVATIONS_ENDPOINT = "https://api.inaturalist.org/v1/observations"
 PHOTO_FIELDS = [
@@ -71,8 +66,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--photo-license", default="any", help="Optional iNaturalist photo_license filter, e.g. cc-by or cc0.")
     parser.add_argument("--sleep-sec", type=float, default=0.8)
     parser.add_argument("--timeout-sec", type=int, default=90)
+    parser.add_argument("--raw-compression", choices=["none", "gzip"], default="none", help="Store the raw API audit trail as NDJSON or streamed NDJSON.GZ.")
     parser.add_argument("--restart", action="store_true", help="Start a new collection only in a new output directory; existing files are never overwritten.")
-    parser.add_argument("--user-agent", default="azami-ch1-cirsium-metadata/1.0 (research use; contact: rachelzhang0223@gmail.com)")
+    parser.add_argument("--user-agent", default="azami-ch1-cirsium-metadata/1.1 (research use; contact: rachelzhang0223@gmail.com)")
     return parser.parse_args()
 
 
@@ -127,12 +123,7 @@ def get_json(session: requests.Session, url: str, params: dict[str, Any], timeou
 
 
 def resolve_genus_taxon(session: requests.Session, name: str, timeout_sec: int) -> dict[str, Any]:
-    payload = get_json(
-        session,
-        TAXA_ENDPOINT,
-        {"q": name, "rank": "genus", "is_active": "true", "per_page": 30},
-        timeout_sec,
-    )
+    payload = get_json(session, TAXA_ENDPOINT, {"q": name, "rank": "genus", "is_active": "true", "per_page": 30}, timeout_sec)
     for taxon in payload.get("results", []):
         if text(taxon.get("name")).lower() == name.lower() and text(taxon.get("rank")).lower() == "genus":
             return taxon
@@ -250,13 +241,36 @@ def append_rows(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
+def raw_payload_path(out_dir: Path, compression: str) -> Path:
+    return out_dir / ("observation_raw.ndjson.gz" if compression == "gzip" else "observation_raw.ndjson")
+
+
+@contextmanager
+def open_raw_payload(path: Path, compression: str) -> Iterator[TextIO]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if compression == "gzip":
+        with gzip.open(path, "at", encoding="utf-8") as handle:
+            yield handle
+    else:
+        with path.open("a", encoding="utf-8") as handle:
+            yield handle
+
+
+def append_raw_observations(path: Path, observations: list[dict[str, Any]], compression: str) -> None:
+    if compression not in {"none", "gzip"}:
+        raise ValueError(f"Unsupported raw compression: {compression}")
+    with open_raw_payload(path, compression) as handle:
+        for observation in observations:
+            handle.write(json.dumps(observation, ensure_ascii=False) + "\n")
+
+
 def load_seen_photo_ids(path: Path) -> set[str]:
     if not path.exists():
         return set()
     try:
         return set(pd.read_csv(path, usecols=["photo_id"], dtype=str)["photo_id"].dropna().tolist())
-    except ValueError:
-        raise RuntimeError(f"Existing metadata file has no photo_id column: {path}")
+    except ValueError as error:
+        raise RuntimeError(f"Existing metadata file has no photo_id column: {path}") from error
 
 
 def load_checkpoint(path: Path, restart: bool) -> dict[str, Any]:
@@ -300,7 +314,7 @@ def main() -> None:
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    raw_path = out_dir / "observation_raw.ndjson"
+    raw_path = raw_payload_path(out_dir, args.raw_compression)
     metadata_path = out_dir / "photo_metadata.csv"
     checkpoint_path = out_dir / "checkpoint.json"
     provenance_path = out_dir / "collection_provenance.json"
@@ -327,6 +341,8 @@ def main() -> None:
             "max_observations": args.max_observations,
             "quality_grade": args.quality_grade,
             "photo_license": args.photo_license,
+            "raw_compression": args.raw_compression,
+            "raw_payload_file": raw_path.name,
             "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
             "has": "photos",
         },
@@ -350,7 +366,7 @@ def main() -> None:
 
     total_results: int | None = None
     print("[INFO] collecting iNaturalist metadata only")
-    print(json.dumps({"out_dir": str(out_dir.resolve()), "taxon_id": taxon_id, "resume_from_obs_id": state["last_obs_id"]}, ensure_ascii=False))
+    print(json.dumps({"out_dir": str(out_dir.resolve()), "taxon_id": taxon_id, "resume_from_obs_id": state["last_obs_id"], "raw_payload": raw_path.name}, ensure_ascii=False))
 
     while True:
         if args.max_observations and state["observations_seen"] >= args.max_observations:
@@ -372,16 +388,15 @@ def main() -> None:
             remaining = args.max_observations - state["observations_seen"]
             allowed = observations[:remaining]
         rows: list[dict[str, Any]] = []
-        with raw_path.open("a", encoding="utf-8") as raw_handle:
-            for observation in allowed:
-                obs_id = observation.get("id")
-                if obs_id is None:
-                    continue
-                raw_handle.write(json.dumps(observation, ensure_ascii=False) + "\n")
-                for row in observation_to_photo_rows(observation):
-                    if str(row["photo_id"]) not in seen_photo_ids:
-                        rows.append(row)
-                        seen_photo_ids.add(str(row["photo_id"]))
+        for observation in allowed:
+            obs_id = observation.get("id")
+            if obs_id is None:
+                continue
+            for row in observation_to_photo_rows(observation):
+                if str(row["photo_id"]) not in seen_photo_ids:
+                    rows.append(row)
+                    seen_photo_ids.add(str(row["photo_id"]))
+        append_raw_observations(raw_path, allowed, args.raw_compression)
         append_rows(metadata_path, rows)
 
         ids = [int(obs["id"]) for obs in allowed if obs.get("id") is not None]
