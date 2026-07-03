@@ -26,7 +26,7 @@ on:
       output_label:
         description: "Safe artifact label"
         required: true
-        default: "global_seed320_bootstrap_v1"
+        default: "global_seed320_bootstrap_v2"
         type: string
 
 permissions:
@@ -125,48 +125,22 @@ jobs:
           python ch1_global/v2/25_build_bootstrap_yolo_dataset.py \
             --proposals bootstrap/proposals/open_vocab_capitulum_proposals.csv \
             --image-summary bootstrap/proposals/open_vocab_proposal_image_summary.csv \
+            --images-dir source/extracted/downloaded_audit/images \
             --out-dir bootstrap/dataset \
             --min-score "$PSEUDO_SCORE" \
             --max-boxes-per-image 8 \
             --validation-fraction 0.20
 
-      - name: Train newly bootstrapped YOLO detector
+      - name: Train and export stable bootstrap detector artifacts
         run: |
-          python - <<'PY'
-          import json
-          from datetime import datetime, timezone
-          from pathlib import Path
-          from ultralytics import YOLO
-
-          dataset_yaml = Path("bootstrap/dataset/visible_capitulum_bootstrap.yaml")
-          model = YOLO("yolo11n.pt")
-          result = model.train(
-              data=str(dataset_yaml),
-              epochs=40,
-              imgsz=640,
-              batch=8,
-              device="cpu",
-              workers=2,
-              project="bootstrap/training",
-              name="visible_capitulum_bootstrap",
-              exist_ok=True,
-              pretrained=True,
-              verbose=False,
-          )
-          run_dir = Path(getattr(result, "save_dir", "bootstrap/training/visible_capitulum_bootstrap"))
-          best = run_dir / "weights" / "best.pt"
-          if not best.is_file():
-              raise SystemExit(f"Training did not produce {best}")
-          report = {
-              "created_at_utc": datetime.now(timezone.utc).isoformat(),
-              "initialization": "Ultralytics yolo11n.pt COCO-pretrained weights",
-              "target": "visible_capitulum",
-              "training_labels": "open-vocabulary pseudo-label proposals only",
-              "status": "bootstrap proposal model; not validated and not for biological inference",
-              "best_weights": str(best),
-          }
-          Path("bootstrap/training/bootstrap_training_provenance.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-          PY
+          python ch1_global/v2/26_train_bootstrap_capitulum_detector.py \
+            --dataset-yaml bootstrap/dataset/visible_capitulum_bootstrap.yaml \
+            --out-dir bootstrap/model \
+            --epochs 40 \
+            --imgsz 640 \
+            --batch 8 \
+            --device cpu \
+            --workers 2
 
       - name: Summarize bootstrap outputs
         run: |
@@ -182,7 +156,7 @@ jobs:
             echo '```'
             echo
             echo '```json'
-            cat bootstrap/training/bootstrap_training_provenance.json
+            cat bootstrap/model/bootstrap_training_provenance.json
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -194,10 +168,9 @@ jobs:
           path: |
             bootstrap/proposals
             bootstrap/dataset/bootstrap_dataset_manifest.csv
+            bootstrap/dataset/bootstrap_dataset_missing_images.csv
             bootstrap/dataset/bootstrap_dataset_provenance.json
             bootstrap/dataset/visible_capitulum_bootstrap.yaml
-            bootstrap/training/visible_capitulum_bootstrap/weights/best.pt
-            bootstrap/training/visible_capitulum_bootstrap/weights/last.pt
-            bootstrap/training/bootstrap_training_provenance.json
+            bootstrap/model
           if-no-files-found: warn
           retention-days: 90
