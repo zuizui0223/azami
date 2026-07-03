@@ -34,16 +34,20 @@ jobs:
       - name: Install minimal validation dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install numpy pandas
+          python -m pip install numpy pandas requests Pillow
 
-      - name: Compile annotation scripts
+      - name: Compile collection and annotation scripts
         run: |
           python -m py_compile ch1_global/v2/00_build_annotation_manifest.py
           python -m py_compile ch1_global/v2/01_build_blinded_annotation_packets.py
           python -m py_compile ch1_global/v2/02_compile_double_annotations.py
           python -m py_compile ch1_global/v2/03_trait_annotation_app.py
+          python -m py_compile ch1_global/v2/04_collect_inat_cirsium_metadata.py
+          python -m py_compile ch1_global/v2/05_build_image_screening_queue.py
+          python -m py_compile ch1_global/v2/06_download_inat_screening_queue.py
+          python -m py_compile ch1_global/v2/07_screen_downloaded_images_with_yolo.py
 
-      - name: Run annotation-foundation invariants tests
+      - name: Run collection and annotation invariants tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
 
       - name: Run reproducible annotation smoke workflow
