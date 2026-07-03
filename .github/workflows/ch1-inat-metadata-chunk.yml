@@ -82,14 +82,11 @@ jobs:
           PY
 
       - name: Collect bounded observation-ID chunk
-        env:
-          START_OBS_ID: ${{ env.START_OBS_ID_NORMALIZED }}
-          MAX_OBSERVATIONS: ${{ env.MAX_OBSERVATIONS_NORMALIZED }}
         run: |
           python ch1_global/v2/11_collect_inat_id_chunk.py \
             --out-dir metadata_chunk \
-            --start-obs-id "$START_OBS_ID" \
-            --max-observations "$MAX_OBSERVATIONS" \
+            --start-obs-id "$START_OBS_ID_NORMALIZED" \
+            --max-observations "$MAX_OBSERVATIONS_NORMALIZED" \
             --sleep-sec 0.8
 
       - name: Create chunk QC report
