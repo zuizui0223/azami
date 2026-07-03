@@ -1,20 +1,9 @@
 #!/usr/bin/env python3
 """Collect one bounded iNaturalist metadata chunk beginning after a known ID.
 
-GitHub-hosted runners are ephemeral. Therefore full global collection is split
-into bounded, non-overlapping ID chunks, each stored as an Actions artifact.
-This wrapper seeds the existing auditable collector with a fresh checkpoint and
-then repairs the provenance record so the requested starting ID is preserved.
-
-The output folder must be empty. To collect the next chunk, use the previous
-chunk's `last_obs_id` in `collection_summary.csv` as `--start-obs-id`.
-
-Example
--------
-python ch1_global/v2/11_collect_inat_id_chunk.py \
-  --out-dir chunk_000 \
-  --start-obs-id 412326 \
-  --max-observations 25000
+GitHub-hosted runners are ephemeral. Each collection remains an immutable,
+non-overlapping ID range with its own checkpoint and provenance. Large final
+sweeps can retain the raw audit trail as streamed gzip to limit runner disk use.
 """
 
 from __future__ import annotations
@@ -38,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--photo-license", default="any")
     parser.add_argument("--sleep-sec", type=float, default=0.8)
     parser.add_argument("--timeout-sec", type=int, default=90)
+    parser.add_argument("--raw-compression", choices=["none", "gzip"], default="none")
     return parser.parse_args()
 
 
@@ -49,7 +39,10 @@ def main() -> None:
         raise ValueError("--max-observations must be at least 1 for a bounded chunk")
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    protected = ["checkpoint.json", "photo_metadata.csv", "observation_raw.ndjson", "collection_summary.csv", "collection_provenance.json"]
+    protected = [
+        "checkpoint.json", "photo_metadata.csv", "observation_raw.ndjson",
+        "observation_raw.ndjson.gz", "collection_summary.csv", "collection_provenance.json",
+    ]
     existing = [name for name in protected if (out_dir / name).exists()]
     if existing:
         raise FileExistsError(f"Chunk output directory must be fresh; found {existing} in {out_dir}")
@@ -72,15 +65,20 @@ def main() -> None:
         "--photo-license", args.photo_license,
         "--sleep-sec", str(args.sleep_sec),
         "--timeout-sec", str(args.timeout_sec),
+        "--raw-compression", args.raw_compression,
     ]
     if args.taxon_id is not None:
         command.extend(["--taxon-id", str(args.taxon_id)])
-    print("[INFO] starting bounded ID chunk", json.dumps({"start_obs_id": args.start_obs_id, "max_observations": args.max_observations}, ensure_ascii=False))
+    print("[INFO] starting bounded ID chunk", json.dumps({
+        "start_obs_id": args.start_obs_id,
+        "max_observations": args.max_observations,
+        "raw_compression": args.raw_compression,
+    }, ensure_ascii=False))
     subprocess.run(command, check=True)
 
     provenance_path = out_dir / "collection_provenance.json"
     provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
-    provenance["chunk_wrapper_version"] = "1.0.0"
+    provenance["chunk_wrapper_version"] = "1.1.0"
     provenance["chunk_requested_start_obs_id"] = int(args.start_obs_id)
     provenance["resume_state_at_start"] = initial_state
     provenance["chunk_completed_at_utc"] = datetime.now(timezone.utc).isoformat()
