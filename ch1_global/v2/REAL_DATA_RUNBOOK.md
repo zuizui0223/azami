@@ -27,14 +27,35 @@ python ch1_global\v2\01_build_blinded_annotation_packets.py `
 
 Give `annotator_1_packet.csv` and `annotator_2_packet.csv` to different annotators. The second packet contains the calibration subset only. Keep the original manifest private: it contains taxonomy, coordinates, and CV group fields.
 
-## 3. Complete and compile the two calibration packets
+## 3. Annotate in the local browser app
 
-Save completed copies without changing column names. Each annotator must mark a row `annotation_complete = yes` only when every assessable field has been considered.
+Install the annotation-only dependencies once:
+
+```powershell
+python -m pip install -r ch1_global\v2\requirements_annotation_app.txt
+```
+
+Run one app instance per annotator and give each instance its own output directory. Do not point two annotators at the same response directory.
+
+```powershell
+streamlit run ch1_global\v2\03_trait_annotation_app.py -- `
+  --packet "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\packets\annotator_1_packet.csv" `
+  --out-dir "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\responses\annotator_1" `
+  --annotator "annotator_1"
+```
+
+The app shows the head crop and source image, but not taxon, coordinates, model probability, or raw metadata. It saves `annotation_responses.csv` atomically after every Save action and can be stopped and restarted without losing progress. Complete all fields using either a biological state or `not_assessable`; a row becomes complete only when every trait has been considered.
+
+The first app must annotate all 3,000 heads. The second app is run on the 720-head calibration packet only. This app is for **human-scored trait labels and image-quality flags**; detector boxes, keypoints, and segmentation polygons are separate annotation phases.
+
+## 4. Compile the two calibration packets
+
+Use the two response files created by the app. Do not rename or edit their columns manually.
 
 ```powershell
 python ch1_global\v2\02_compile_double_annotations.py `
-  --primary "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\packets\annotator_1_packet_completed.csv" `
-  --secondary "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\packets\annotator_2_packet_completed.csv" `
+  --primary "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\responses\annotator_1\annotation_responses.csv" `
+  --secondary "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\responses\annotator_2\annotation_responses.csv" `
   --out-dir "C:\Users\zuizui\cirsium_inat\ch1_v2_annotation\agreement"
 ```
 
@@ -44,10 +65,10 @@ Read these in order:
 2. `annotation_agreement_summary.csv` — report the completed-pair count, assessable-pair count, percent agreement, and kappa for each trait. For orientation, colour, cover, and display, kappa is calculated only where both annotators regarded the trait as assessable.
 3. `annotation_adjudication_queue.csv` — a blinded queue of every disagreement. A third annotator or predeclared adjudication rule supplies `adjudicated_value`.
 
-## 4. Gate before training models
+## 5. Gate before training models
 
 Do not train the orientation classifier or segmentation model from the raw first-pass labels. First freeze an adjudicated calibration table, then set aside the evaluation partitions using the manifest's `observation_group`, `species_cv_fold`, and `spatial_cv_fold`. A random image split is only a descriptive baseline and is never the reported generalization result.
 
-## 5. What GitHub Actions checks
+## 6. What GitHub Actions checks
 
-The `Ch1 annotation foundation CI` workflow is deliberately lightweight. On every relevant branch/PR change it compiles the scripts, runs the manifest/packet/adjudication integration test, creates a small smoke dataset, and saves it as an artifact for 14 days. It does not download iNaturalist images or train YOLO models.
+The `Ch1 annotation foundation CI` workflow is deliberately lightweight. On every relevant branch/PR change it compiles the scripts, runs the manifest/packet/adjudication/app state integration tests, creates a small smoke dataset, and saves it as an artifact for 14 days. It does not download iNaturalist images or train YOLO models.
