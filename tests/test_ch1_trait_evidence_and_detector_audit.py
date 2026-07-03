@@ -41,6 +41,15 @@ class TestTraitEvidenceAndDetectorAudit(unittest.TestCase):
                 VALIDATE_ONTOLOGY.main()
             report = json.loads((ontology_out / "trait_ontology_validation.json").read_text(encoding="utf-8"))
             self.assertGreaterEqual(report["n_traits"], 5)
+            validated_ontology = pd.read_csv(
+                ontology_out / "trait_ontology_validated.csv", dtype=str, keep_default_na=False
+            )
+            for column in ("allow_multiple", "literature_extractable", "image_annotatable"):
+                self.assertTrue(validated_ontology[column].isin({"true", "false"}).all())
+            self.assertEqual(
+                validated_ontology.loc[validated_ontology["trait_id"].eq("visible_capitulum"), "allow_multiple"].iloc[0],
+                "false",
+            )
 
             passages = root / "passages.csv"
             pd.DataFrame([{
