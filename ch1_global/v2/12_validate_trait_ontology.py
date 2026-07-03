@@ -96,9 +96,9 @@ def validate(ontology: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
             raise ValueError(f"trait_id={trait_id}: do_not_infer_from must not be blank")
         state_counts.append(len(states))
         work.at[index, "allowed_states"] = "|".join(states)
-        work.at[index, "allow_multiple"] = allow_multiple
-        work.at[index, "literature_extractable"] = literature
-        work.at[index, "image_annotatable"] = image
+        work.at[index, "allow_multiple"] = str(allow_multiple).lower()
+        work.at[index, "literature_extractable"] = str(literature).lower()
+        work.at[index, "image_annotatable"] = str(image).lower()
         if allow_multiple:
             messages.append(f"{trait_id}: multiple states are permitted; downstream evidence must use one row per state.")
 
@@ -118,8 +118,8 @@ def main() -> None:
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "ontology": str(ontology_path.resolve()),
         "n_traits": int(len(validated)),
-        "n_literature_extractable": int(validated["literature_extractable"].astype(bool).sum()),
-        "n_image_annotatable": int(validated["image_annotatable"].astype(bool).sum()),
+        "n_literature_extractable": int(validated["literature_extractable"].eq("true").sum()),
+        "n_image_annotatable": int(validated["image_annotatable"].eq("true").sum()),
         "messages": messages,
     }
     (out_dir / "trait_ontology_validation.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
