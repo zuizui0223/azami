@@ -1,0 +1,10 @@
+{
+  "model_id": "cirsium_visible_capitulum_detector_v1",
+  "semantic_target": "visible_capitulum",
+  "detector_output_class": "REPLACE_WITH_EMBEDDED_WEIGHT_CLASS_NAME",
+  "training_data_id": "REPLACE_WITH_DATASET_IDENTIFIER",
+  "training_commit_or_run": "REPLACE_WITH_TRAINING_COMMIT_OR_RUN",
+  "training_split_definition": "REPLACE_WITH_HELD_OUT_TAXA_OR_GEOGRAPHY_SPLIT_DESCRIPTION",
+  "class_definition": "One visibly recognizable Cirsium capitulum/head, whether at anthesis or not, annotated according to the original detector training protocol.",
+  "notes": "This model is a detector gate. Its outputs are predictions and must be evaluated against the independent global detector-audit set before use in Chapter 1 analyses."
+}
