@@ -1,0 +1,200 @@
+name: Ch1 build detected-head trait packet
+
+on:
+  workflow_dispatch:
+    inputs:
+      qc_images_artifact_id:
+        description: "QC-fixed 1,000-image source-image artifact ID"
+        required: true
+        default: "8068122589"
+        type: string
+      detector_inference_artifact_id:
+        description: "Completed bootstrap-detector inference artifact ID"
+        required: true
+        default: "8076841931"
+        type: string
+      context_pad_ratio:
+        description: "Wide context margin in detector-box widths/heights; 1.5 produces a 4x box context"
+        required: true
+        default: "1.5"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_1413_detected_heads_context_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-detected-head-trait-packet:
+    name: Build context crops and blinded detected-head trait packet
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install packet dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas Pillow
+
+      - name: Validate packet request
+        env:
+          QC_ARTIFACT_RAW: ${{ inputs.qc_images_artifact_id }}
+          INFERENCE_ARTIFACT_RAW: ${{ inputs.detector_inference_artifact_id }}
+          CONTEXT_PAD_RAW: ${{ inputs.context_pad_ratio }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive_integer(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          qc_id = positive_integer(os.environ["QC_ARTIFACT_RAW"], "qc_images_artifact_id")
+          inference_id = positive_integer(os.environ["INFERENCE_ARTIFACT_RAW"], "detector_inference_artifact_id")
+          try:
+              context_pad = float(os.environ["CONTEXT_PAD_RAW"])
+          except ValueError as error:
+              raise SystemExit("context_pad_ratio must be numeric") from error
+          if context_pad < 0 or context_pad > 5:
+              raise SystemExit("context_pad_ratio must be in [0,5]")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QC_ARTIFACT_ID={qc_id}\n")
+              handle.write(f"INFERENCE_ARTIFACT_ID={inference_id}\n")
+              handle.write(f"CONTEXT_PAD_RATIO={context_pad}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download QC images and detector inference artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/qc source/inference
+          for specification in "${QC_ARTIFACT_ID}:source/qc/qc_images.zip:source/qc/extracted" "${INFERENCE_ARTIFACT_ID}:source/inference/inference.zip:source/inference/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$extract_dir"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -d source/qc/extracted/downloaded_audit/images
+          test -s source/inference/extracted/yolo/yolo_crop_metadata.csv
+          test -d source/inference/extracted/yolo/head_crops
+          echo "## Detector inference artifact inputs" >> "$GITHUB_STEP_SUMMARY"
+          find source/inference/extracted -maxdepth 2 -type f | sort | sed 's/^/- `/' | sed 's/$/`/' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build wide head-plus-peduncle context crops
+        run: |
+          python ch1_global/v2/18_build_head_context_crops.py \
+            --crops source/inference/extracted/yolo/yolo_crop_metadata.csv \
+            --images-dir source/qc/extracted/downloaded_audit/images \
+            --out-dir trait_work/context \
+            --context-pad-ratio "$CONTEXT_PAD_RATIO"
+
+      - name: Validate context-crop coverage
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+
+          crops = pd.read_csv("source/inference/extracted/yolo/yolo_crop_metadata.csv", dtype=str, keep_default_na=False)
+          context = pd.read_csv("trait_work/context/head_context_crop_metadata.csv", dtype=str, keep_default_na=False)
+          if len(crops) != len(context):
+              raise SystemExit(f"Context metadata row count mismatch: yolo={len(crops)}, context={len(context)}")
+          if context[["queue_id", "det_index"]].duplicated().any():
+              raise SystemExit("Context metadata has duplicate queue_id/det_index combinations")
+          failures = context.loc[~context["context_crop_status"].eq("success")]
+          if not failures.empty:
+              raise SystemExit(f"Context crop failures: {failures[['queue_id','det_index','context_crop_message']].head(10).to_dict('records')}")
+          missing_files = [path for path in context["context_crop_path"] if not Path(path).is_file()]
+          if missing_files:
+              raise SystemExit(f"Context crop files missing: {missing_files[:5]}")
+          print(f"[OK] context crops: {len(context)} / {len(crops)}")
+          PY
+
+      - name: Build self-contained blinded detected-head trait packet
+        run: |
+          python ch1_global/v2/28_build_detected_head_trait_packet.py \
+            --yolo-crops source/inference/extracted/yolo/yolo_crop_metadata.csv \
+            --context-metadata trait_work/context/head_context_crop_metadata.csv \
+            --source-images-dir source/qc/extracted/downloaded_audit/images \
+            --head-crops-dir source/inference/extracted/yolo/head_crops \
+            --out-dir trait_work/packet_build \
+            --batch-name "$OUTPUT_LABEL"
+
+      - name: Validate packet integrity and write summary
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import pandas as pd
+
+          packet_root = Path("trait_work/packet_build/trait_annotation_packet")
+          manifest = pd.read_csv(packet_root / "blinded_trait_annotation_manifest.csv", dtype=str, keep_default_na=False)
+          expected = len(pd.read_csv("source/inference/extracted/yolo/yolo_crop_metadata.csv", dtype=str, keep_default_na=False))
+          if len(manifest) != expected or manifest["annotation_unit_id"].duplicated().any():
+              raise SystemExit(f"Unexpected trait packet manifest: rows={len(manifest)}, expected={expected}")
+          for column in ("source_image", "crop_path", "context_crop_path"):
+              absent = [value for value in manifest[column] if not (packet_root / value).is_file()]
+              if absent:
+                  raise SystemExit(f"Packet references missing {column} files: {absent[:5]}")
+          report = json.loads(Path("trait_work/packet_build/trait_packet_report.json").read_text(encoding="utf-8"))
+          report["qc_images_artifact_id"] = int(os.environ["QC_ARTIFACT_ID"])
+          report["detector_inference_artifact_id"] = int(os.environ["INFERENCE_ARTIFACT_ID"])
+          report["context_pad_ratio"] = float(os.environ["CONTEXT_PAD_RATIO"])
+          Path("trait_work/packet_build/trait_packet_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Detected-head trait packet"
+            echo
+            echo '```json'
+            cat trait_work/packet_build/trait_packet_report.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload blinded self-contained trait packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-detected-head-trait-packet-${{ inputs.output_label }}
+          path: trait_work/packet_build/trait_annotation_packet
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Upload separate trait linkage key and context provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-detected-head-trait-key-${{ inputs.output_label }}
+          path: |
+            trait_work/packet_build/private_key/trait_annotation_key_private.csv
+            trait_work/packet_build/trait_packet_report.json
+            trait_work/context/head_context_crop_metadata.csv
+          if-no-files-found: warn
+          retention-days: 90
