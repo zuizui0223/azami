@@ -1,0 +1,184 @@
+name: Ch1 score detected-head traits with zero-shot CLIP
+
+on:
+  workflow_dispatch:
+    inputs:
+      trait_packet_artifact_id:
+        description: "Blinded detected-head trait-packet artifact ID"
+        required: true
+        default: "8076941312"
+        type: string
+      clip_model_id:
+        description: "Hugging Face CLIP model identifier"
+        required: true
+        default: "openai/clip-vit-base-patch32"
+        type: string
+      batch_size:
+        description: "CPU image batch size"
+        required: true
+        default: "16"
+        type: string
+      n_priority_review_units:
+        description: "Highest-uncertainty detected-head units to flag for later review"
+        required: true
+        default: "250"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_1413_clip_trait_proposals_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  score-detected-head-traits:
+    name: Score detected-head trait proposals with CLIP
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install zero-shot scoring dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy Pillow torch 'transformers>=4.41,<5'
+
+      - name: Validate scoring request
+        env:
+          PACKET_ARTIFACT_RAW: ${{ inputs.trait_packet_artifact_id }}
+          MODEL_ID_RAW: ${{ inputs.clip_model_id }}
+          BATCH_SIZE_RAW: ${{ inputs.batch_size }}
+          PRIORITY_N_RAW: ${{ inputs.n_priority_review_units }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive_integer(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          artifact_id = positive_integer(os.environ["PACKET_ARTIFACT_RAW"], "trait_packet_artifact_id")
+          batch_size = positive_integer(os.environ["BATCH_SIZE_RAW"], "batch_size")
+          priority_n = positive_integer(os.environ["PRIORITY_N_RAW"], "n_priority_review_units")
+          if batch_size > 64:
+              raise SystemExit("batch_size must be <= 64 on the CPU runner")
+          if priority_n > 1413:
+              raise SystemExit("n_priority_review_units must be <= 1413")
+          model_id = (os.environ["MODEL_ID_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+", model_id):
+              raise SystemExit("clip_model_id must look like owner/model")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"PACKET_ARTIFACT_ID={artifact_id}\n")
+              handle.write(f"CLIP_MODEL_ID={model_id}\n")
+              handle.write(f"BATCH_SIZE={batch_size}\n")
+              handle.write(f"PRIORITY_N={priority_n}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download and validate blinded trait packet
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/packet
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${PACKET_ARTIFACT_ID}/zip" \
+            --output source/packet/trait_packet.zip
+          unzip -tq source/packet/trait_packet.zip
+          unzip -q source/packet/trait_packet.zip -d source/packet/extracted
+          test -s source/packet/extracted/blinded_trait_annotation_manifest.csv
+          test -d source/packet/extracted/head_crops
+          test -d source/packet/extracted/context_crops
+          test -d source/packet/extracted/source_images
+
+      - name: Run zero-shot CLIP trait proposal scoring
+        run: |
+          python ch1_global/v2/29_score_detected_head_traits_clip.py \
+            --packet-manifest source/packet/extracted/blinded_trait_annotation_manifest.csv \
+            --packet-root source/packet/extracted \
+            --ontology ch1_global/v2/ontology/ch1_trait_ontology.csv \
+            --prompt-spec ch1_global/v2/ontology/clip_trait_prompt_spec.json \
+            --out-dir trait_ai \
+            --model-id "$CLIP_MODEL_ID" \
+            --device cpu \
+            --batch-size "$BATCH_SIZE" \
+            --n-priority-units "$PRIORITY_N"
+
+      - name: Validate candidate/provenance separation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          packet = pd.read_csv("source/packet/extracted/blinded_trait_annotation_manifest.csv", dtype=str, keep_default_na=False)
+          long = pd.read_csv("trait_ai/zero_shot_trait_proposals_long.csv", dtype=str, keep_default_na=False)
+          wide = pd.read_csv("trait_ai/zero_shot_trait_proposals_wide.csv", dtype=str, keep_default_na=False)
+          priority = pd.read_csv("trait_ai/zero_shot_trait_priority_review_subset.csv", dtype=str, keep_default_na=False)
+          provenance = json.loads(Path("trait_ai/zero_shot_trait_scoring_provenance.json").read_text(encoding="utf-8"))
+          expected_units = len(packet)
+          expected_traits = len(pd.read_csv("ch1_global/v2/ontology/ch1_trait_ontology.csv", dtype=str, keep_default_na=False).query("image_annotatable == 'true' and layer != 'detector'"))
+          if len(long) != expected_units * expected_traits:
+              raise SystemExit(f"Unexpected long proposal rows: {len(long)}; expected {expected_units * expected_traits}")
+          if len(wide) != expected_units or wide["annotation_unit_id"].duplicated().any():
+              raise SystemExit("Wide proposal file is not one row per annotation unit")
+          if len(priority) != min(250, expected_units):
+              raise SystemExit(f"Unexpected priority review subset size: {len(priority)}")
+          mucilage = long.loc[long["trait_id"].eq("external_mucilage_visible")]
+          if len(mucilage) != expected_units or not mucilage["proposal_status"].eq("not_scored_targeted_macro_required").all():
+              raise SystemExit("Mucilage must remain unscored by generic observer-photo CLIP proposals")
+          if Path("trait_ai/ontology_annotation_responses.csv").exists():
+              raise SystemExit("Model proposals must not be written as human annotation responses")
+          if provenance["n_annotation_units"] != expected_units:
+              raise SystemExit("Provenance annotation-unit count mismatch")
+          print(json.dumps({
+              "n_annotation_units": expected_units,
+              "n_trait_rows": len(long),
+              "n_priority_review_units": len(priority),
+              "model_id": provenance["model_id"],
+              "prompt_spec_sha256": provenance["prompt_spec_sha256"]
+          }, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Zero-shot CLIP trait proposals"
+            echo
+            echo '```json'
+            cat trait_ai/zero_shot_trait_scoring_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload zero-shot proposals and triage only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-zero-shot-trait-proposals-${{ inputs.output_label }}
+          path: |
+            trait_ai
+            ch1_global/v2/ontology/clip_trait_prompt_spec.json
+            ch1_global/v2/ontology/ch1_trait_ontology.csv
+            source/packet/extracted/blinded_trait_annotation_manifest.csv
+          if-no-files-found: warn
+          retention-days: 90
