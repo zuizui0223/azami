@@ -1,0 +1,285 @@
+name: Ch1 run global automated AI inference shard
+
+on:
+  workflow_dispatch:
+    inputs:
+      queue_shards_artifact_id:
+        description: "Partitioned global AI inference queue artifact ID"
+        required: true
+        type: string
+      shard_id:
+        description: "Shard number from the shard manifest, for example 1"
+        required: true
+        type: string
+      detector_model_artifact_id:
+        description: "Bootstrap visible-capitulum detector artifact ID"
+        required: true
+        default: "8076736948"
+        type: string
+      model_ids_csv:
+        description: "Comma-separated CLIP owner/model IDs"
+        required: true
+        default: "openai/clip-vit-base-patch32,openai/clip-vit-base-patch16"
+        type: string
+      output_label:
+        description: "Safe label for this shard result artifact"
+        required: true
+        default: "research_grade_shard"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  run-global-ai-inference-shard:
+    name: Run global automated AI inference shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONHASHSEED: "0"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install image detector and ensemble dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas Pillow requests ultralytics torch 'transformers>=4.41,<5'
+
+      - name: Validate shard request
+        env:
+          SHARDS_ARTIFACT_RAW: ${{ inputs.queue_shards_artifact_id }}
+          SHARD_RAW: ${{ inputs.shard_id }}
+          MODEL_ARTIFACT_RAW: ${{ inputs.detector_model_artifact_id }}
+          MODELS_RAW: ${{ inputs.model_ids_csv }}
+          LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive(raw, name):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{name} must be a positive integer")
+              return int(value)
+          shards_artifact = positive(os.environ["SHARDS_ARTIFACT_RAW"], "queue_shards_artifact_id")
+          shard_id = positive(os.environ["SHARD_RAW"], "shard_id")
+          model_artifact = positive(os.environ["MODEL_ARTIFACT_RAW"], "detector_model_artifact_id")
+          models = [item.strip() for item in (os.environ["MODELS_RAW"] or "").split(",") if item.strip()]
+          if len(models) < 2 or len(models) != len(set(models)):
+              raise SystemExit("model_ids_csv must contain at least two distinct models")
+          if not all(re.fullmatch(r"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+", model) for model in models):
+              raise SystemExit("Each model must use owner/model format")
+          label = (os.environ["LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QUEUE_SHARDS_ARTIFACT_ID={shards_artifact}\n")
+              handle.write(f"SHARD_ID={shard_id}\n")
+              handle.write(f"DETECTOR_MODEL_ARTIFACT_ID={model_artifact}\n")
+              handle.write(f"MODEL_IDS_CSV={','.join(models)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download shard queue and detector artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/shards/extracted source/model/extracted
+          for specification in \
+            "${QUEUE_SHARDS_ARTIFACT_ID}:source/shards/shards.zip:source/shards/extracted" \
+            "${DETECTOR_MODEL_ARTIFACT_ID}:source/model/model.zip:source/model/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -s source/shards/extracted/global_ai_inference_shard_manifest.csv
+          WEIGHTS="$(find source/model/extracted -type f -name best.pt | head -n 1)"
+          test -n "$WEIGHTS"
+          echo "DETECTOR_WEIGHTS=$WEIGHTS" >> "$GITHUB_ENV"
+
+      - name: Materialize selected queue shard with detector audit identifier
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from pathlib import Path
+          import os
+
+          root = Path("source/shards/extracted")
+          manifest = pd.read_csv(root / "global_ai_inference_shard_manifest.csv", dtype=str, keep_default_na=False)
+          wanted = str(int(os.environ["SHARD_ID"]))
+          match = manifest.loc[manifest["shard_id"].astype(str).eq(wanted)]
+          if len(match) != 1:
+              raise SystemExit(f"shard_id={wanted} is absent or ambiguous")
+          queue_path = root / match.iloc[0]["filename"]
+          queue = pd.read_csv(queue_path, dtype=str, keep_default_na=False)
+          if queue.empty or queue["queue_id"].duplicated().any():
+              raise SystemExit("Selected queue shard is invalid")
+          queue["audit_id"] = queue["queue_id"]
+          queue.to_csv("queue_shard.csv", index=False, encoding="utf-8-sig")
+          print({"shard_id": int(wanted), "n_observations": len(queue), "n_species": queue["taxon_name"].nunique()})
+          PY
+
+      - name: Download shard images
+        run: |
+          python ch1_global/v2/06_download_inat_screening_queue.py \
+            --queue queue_shard.csv \
+            --out-dir downloads \
+            --image-size medium \
+            --sleep-sec 0.12 \
+            --timeout-sec 60
+
+      - name: Validate downloaded image files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          from PIL import Image
+
+          results = pd.read_csv("downloads/download_results.csv", dtype=str, keep_default_na=False)
+          latest = results.assign(_order=range(len(results))).sort_values("_order").groupby("queue_id", as_index=False).tail(1)
+          success = latest.loc[latest["download_status"].eq("success")].copy()
+          if success.empty:
+              raise SystemExit("No successful image downloads in this shard")
+          failures = []
+          for _, row in success.iterrows():
+              path = Path(row["image_local_path"])
+              try:
+                  with Image.open(path) as image:
+                      image.verify()
+              except Exception as error:
+                  failures.append({"queue_id": row["queue_id"], "error": str(error)})
+          if failures:
+              raise SystemExit(f"Undecodable downloaded images: {failures[:10]}")
+          print({"n_queue": int(latest["queue_id"].nunique()), "n_download_success": len(success), "n_download_non_success": int(len(latest) - len(success))})
+          PY
+
+      - name: Detect visible capitula and write head crops
+        run: |
+          python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
+            --queue queue_shard.csv \
+            --downloads downloads/download_results.csv \
+            --images-dir downloads/images \
+            --weights "$DETECTOR_WEIGHTS" \
+            --out-dir detector \
+            --conf 0.25 \
+            --pad-ratio 0.12 \
+            --batch-size 16 \
+            --device cpu
+
+      - name: Build head-plus-peduncle context crops
+        run: |
+          test -s detector/yolo_crop_metadata.csv
+          python ch1_global/v2/18_build_head_context_crops.py \
+            --crops detector/yolo_crop_metadata.csv \
+            --images-dir downloads/images \
+            --out-dir context \
+            --context-pad-ratio 1.5
+          python - <<'PY'
+          import pandas as pd
+          context = pd.read_csv("context/head_context_crop_metadata.csv", dtype=str, keep_default_na=False)
+          if context.empty or not context["context_crop_status"].eq("success").all():
+              raise SystemExit("Every detector crop must have a successful context crop")
+          PY
+
+      - name: Assemble local trait packet
+        run: |
+          python ch1_global/v2/28_build_detected_head_trait_packet.py \
+            --yolo-crops detector/yolo_crop_metadata.csv \
+            --context-metadata context/head_context_crop_metadata.csv \
+            --source-images-dir downloads/images \
+            --head-crops-dir detector/head_crops \
+            --out-dir trait_packet_build \
+            --batch-name "global_ai_${OUTPUT_LABEL}_shard_${SHARD_ID}"
+
+      - name: Score all detected heads with two-model AI ensemble
+        shell: bash
+        run: |
+          set -euo pipefail
+          model_args=()
+          IFS=',' read -r -a models <<< "$MODEL_IDS_CSV"
+          for model_id in "${models[@]}"; do
+            model_args+=(--model-id "$model_id")
+          done
+          python ch1_global/v2/35_score_traits_ai_ensemble.py \
+            --packet-manifest trait_packet_build/trait_annotation_packet/blinded_trait_annotation_manifest.csv \
+            --packet-root trait_packet_build/trait_annotation_packet \
+            --ontology ch1_global/v2/ontology/ch1_trait_ontology.csv \
+            --prompt-spec ch1_global/v2/ontology/clip_trait_prompt_spec.json \
+            --out-dir trait_ai_ensemble \
+            "${model_args[@]}" \
+            --device cpu \
+            --batch-size 24 \
+            --threads 2 \
+            --seed 20260705 \
+            --strict-margin-percentile 0.50 \
+            --majority-vote-fraction 0.75
+
+      - name: Validate shard outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False)
+          crops = pd.read_csv("detector/yolo_crop_metadata.csv", dtype=str, keep_default_na=False)
+          long = pd.read_csv("trait_ai_ensemble/ai_ensemble_trait_measurements_long.csv", dtype=str, keep_default_na=False)
+          variants = pd.read_csv("trait_ai_ensemble/ai_ensemble_variant_predictions.csv", dtype=str, keep_default_na=False)
+          provenance = json.loads(Path("trait_ai_ensemble/ai_ensemble_measurement_provenance.json").read_text(encoding="utf-8"))
+          n_heads = crops[["audit_id", "det_index"]].drop_duplicates().shape[0]
+          if n_heads < 1 or len(long) != n_heads * 8 or long.duplicated(["annotation_unit_id", "trait_id"]).any():
+              raise SystemExit("Automated trait table does not cover each detected head and trait exactly once")
+          if len(variants) != n_heads * 7 * len(provenance["model_locks"]) * 2:
+              raise SystemExit("Variant prediction row count is invalid")
+          report = {
+              "n_queue_observations": int(len(queue)),
+              "n_detected_heads": int(n_heads),
+              "n_ai_trait_rows": int(len(long)),
+              "n_variant_predictions": int(len(variants)),
+              "n_models": int(len(provenance["model_locks"])),
+              "model_locks": provenance["model_locks"],
+          }
+          Path("shard_run_summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Global automated AI inference shard"
+            echo
+            echo '```json'
+            cat shard_run_summary.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload compact shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-global-ai-inference-shard-${{ inputs.output_label }}-${{ inputs.shard_id }}
+          path: |
+            queue_shard.csv
+            downloads/download_results.csv
+            downloads/download_manifest.json
+            detector/screening_results.csv
+            detector/yolo_crop_metadata.csv
+            trait_packet_build/trait_packet_report.json
+            trait_ai_ensemble
+            shard_run_summary.json
+          if-no-files-found: warn
+          retention-days: 90
