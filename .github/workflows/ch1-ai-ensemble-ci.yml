@@ -1,0 +1,39 @@
+name: Ch1 automated ensemble measurement CI
+
+on:
+  push:
+    paths:
+      - "ch1_global/v2/35_score_traits_ai_ensemble.py"
+      - "ch1_global/v2/ontology/ch1_trait_ontology.csv"
+      - "ch1_global/v2/ontology/clip_trait_prompt_spec.json"
+      - "tests/test_ch1_ai_ensemble_measurement.py"
+      - ".github/workflows/ch1-ai-ensemble-ci.yml"
+  pull_request:
+    paths:
+      - "ch1_global/v2/35_score_traits_ai_ensemble.py"
+      - "ch1_global/v2/ontology/ch1_trait_ontology.csv"
+      - "ch1_global/v2/ontology/clip_trait_prompt_spec.json"
+      - "tests/test_ch1_ai_ensemble_measurement.py"
+      - ".github/workflows/ch1-ai-ensemble-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  automated-ensemble-semantics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install lightweight test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas Pillow
+      - name: Compile automated ensemble script
+        run: python -m py_compile ch1_global/v2/35_score_traits_ai_ensemble.py
+      - name: Test automated ensemble consensus semantics
+        run: python -m unittest tests.test_ch1_ai_ensemble_measurement -v
