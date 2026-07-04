@@ -123,18 +123,24 @@ jobs:
       - name: Validate absence of private model-selection fields
         run: |
           python - <<'PY'
+          import csv
           from pathlib import Path
-          import pandas as pd
+
           root = Path("bundle/app")
-          tasks = pd.read_csv(root / "blinded_trait_audit_tasks.csv", dtype=str, keep_default_na=False)
+          with (root / "blinded_trait_audit_tasks.csv").open(encoding="utf-8-sig", newline="") as handle:
+              reader = csv.DictReader(handle)
+              columns = set(reader.fieldnames or [])
+              task_count = sum(1 for _ in reader)
           forbidden = {"ai_candidate_state", "runner_up_state", "similarity_margin", "selection_stratum", "double_label"}
-          leaked = forbidden.intersection(tasks.columns)
+          leaked = forbidden.intersection(columns)
           if leaked:
               raise SystemExit(f"Public task bundle leaks private fields: {sorted(leaked)}")
           for required in ("trait_audit_app.py", "ch1_trait_ontology.csv", "requirements.txt", "run_audit_windows.bat", "run_audit_macos_linux.sh"):
               if not (root / required).is_file():
                   raise SystemExit(f"Missing app bundle file: {required}")
-          print(f"[OK] public audit app bundle contains {len(tasks)} blinded tasks")
+          if task_count < 1:
+              raise SystemExit("Public audit bundle has no tasks")
+          print(f"[OK] public audit app bundle contains {task_count} blinded tasks")
           PY
 
       - name: Upload local focused trait-audit app bundle
