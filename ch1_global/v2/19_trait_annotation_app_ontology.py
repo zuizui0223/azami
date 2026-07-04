@@ -65,8 +65,13 @@ def load_traits(path: Path) -> list[dict[str, Any]]:
     return traits
 
 
-def safe_image(path_text: Any):
+def resolve_packet_path(path_text: Any, packet_dir: Path) -> Path:
     path = Path(text(path_text))
+    return path if path.is_absolute() else packet_dir / path
+
+
+def safe_image(path_text: Any, packet_dir: Path):
+    path = resolve_packet_path(path_text, packet_dir)
     if not path.exists():
         return None
     try:
@@ -111,7 +116,9 @@ def main() -> None:
         import streamlit as st
     except ImportError as error:
         raise SystemExit("Streamlit is required: python -m pip install -r ch1_global/v2/requirements_annotation_app.txt") from error
-    packet = pd.read_csv(args.packet, dtype=str, keep_default_na=False)
+    packet_path = Path(args.packet).resolve()
+    packet_dir = packet_path.parent
+    packet = pd.read_csv(packet_path, dtype=str, keep_default_na=False)
     missing = TASK_REQUIRED.difference(packet.columns)
     if missing:
         raise ValueError(f"Packet is missing columns: {sorted(missing)}")
@@ -148,7 +155,7 @@ def main() -> None:
     ]
     for column, (caption, field) in zip(columns, panels):
         with column:
-            image = safe_image(row.get(field, ""))
+            image = safe_image(row.get(field, ""), packet_dir)
             if image is not None:
                 st.image(image, caption=caption, use_container_width=True)
             elif field == "context_crop_path":
@@ -181,7 +188,7 @@ def main() -> None:
         atomic_csv(data, response_path)
         status_path.parent.mkdir(parents=True, exist_ok=True)
         status_path.write_text(json.dumps({
-            "packet": str(Path(args.packet).resolve()), "ontology": str(Path(args.ontology).resolve()),
+            "packet": str(packet_path), "ontology": str(Path(args.ontology).resolve()),
             "annotator": args.annotator, "n_total": len(data),
             "n_complete": int(data.apply(lambda row: ready(row, trait_fields), axis=1).sum()),
             "last_annotation_unit_id": text(row["annotation_unit_id"]),
