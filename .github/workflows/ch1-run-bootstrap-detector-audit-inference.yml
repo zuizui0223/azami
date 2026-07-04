@@ -1,0 +1,229 @@
+name: Ch1 run bootstrap detector audit inference
+
+on:
+  workflow_dispatch:
+    inputs:
+      qc_images_artifact_id:
+        description: "QC-fixed 1,000-image source-image artifact ID"
+        required: true
+        default: "8068122589"
+        type: string
+      bootstrap_detector_artifact_id:
+        description: "Recovered bootstrap detector artifact ID"
+        required: true
+        default: "8076736948"
+        type: string
+      confidence_threshold:
+        description: "Detector confidence threshold in [0,1]"
+        required: true
+        default: "0.25"
+        type: string
+      n_triage_review_images:
+        description: "Prediction-stratified audit subset size; does not create labels"
+        required: true
+        default: "200"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_1000_bootstrap_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  run-bootstrap-detector-audit-inference:
+    name: Run bootstrap detector on QC-fixed audit images
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install inference dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas Pillow ultralytics
+
+      - name: Validate inference request
+        env:
+          QC_ARTIFACT_RAW: ${{ inputs.qc_images_artifact_id }}
+          DETECTOR_ARTIFACT_RAW: ${{ inputs.bootstrap_detector_artifact_id }}
+          CONFIDENCE_RAW: ${{ inputs.confidence_threshold }}
+          TRIAGE_N_RAW: ${{ inputs.n_triage_review_images }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive_integer(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          qc_id = positive_integer(os.environ["QC_ARTIFACT_RAW"], "qc_images_artifact_id")
+          detector_id = positive_integer(os.environ["DETECTOR_ARTIFACT_RAW"], "bootstrap_detector_artifact_id")
+          triage_n = positive_integer(os.environ["TRIAGE_N_RAW"], "n_triage_review_images")
+          try:
+              confidence = float(os.environ["CONFIDENCE_RAW"])
+          except ValueError as error:
+              raise SystemExit("confidence_threshold must be numeric") from error
+          if not 0 <= confidence <= 1:
+              raise SystemExit("confidence_threshold must be in [0,1]")
+          if triage_n > 1000:
+              raise SystemExit("n_triage_review_images cannot exceed the 1,000-image audit set")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QC_ARTIFACT_ID={qc_id}\n")
+              handle.write(f"DETECTOR_ARTIFACT_ID={detector_id}\n")
+              handle.write(f"CONFIDENCE_THRESHOLD={confidence}\n")
+              handle.write(f"TRIAGE_N={triage_n}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download QC images and bootstrap detector artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/qc source/detector
+          for specification in "${QC_ARTIFACT_ID}:source/qc/images.zip:source/qc/extracted" "${DETECTOR_ARTIFACT_ID}:source/detector/detector.zip:source/detector/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$extract_dir"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -s source/qc/extracted/downloaded_audit/download_results.csv
+          test -s source/qc/extracted/audit_queue_source/extracted/detector_audit_queue.csv
+          test -s source/qc/extracted/audit_queue_source/extracted/detector_audit_blinded_manifest.csv
+          test -d source/qc/extracted/downloaded_audit/images
+          test -s source/detector/extracted/recovery/model/weights/best.pt
+          test -s source/detector/extracted/recovery/model/bootstrap_training_provenance.json
+
+      - name: Verify bootstrap detector fingerprint and class semantics
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          from ultralytics import YOLO
+
+          weights = Path("source/detector/extracted/recovery/model/weights/best.pt")
+          provenance = json.loads(Path("source/detector/extracted/recovery/model/bootstrap_training_provenance.json").read_text(encoding="utf-8"))
+          digest = hashlib.sha256(weights.read_bytes()).hexdigest()
+          if digest != provenance.get("best_weight_sha256"):
+              raise SystemExit(f"Bootstrap detector SHA256 mismatch: expected={provenance.get('best_weight_sha256')}, got={digest}")
+          model = YOLO(str(weights))
+          names = getattr(model, "names", {})
+          if isinstance(names, list):
+              names = {index: value for index, value in enumerate(names)}
+          if len(names) != 1 or str(next(iter(names.values()))) != "visible_capitulum":
+              raise SystemExit(f"Expected one visible_capitulum class; got {names}")
+          Path("inference").mkdir(parents=True, exist_ok=True)
+          Path("inference/bootstrap_model_fingerprint.json").write_text(json.dumps({
+              "bootstrap_detector_artifact_id": int(__import__("os").environ["DETECTOR_ARTIFACT_ID"]),
+              "best_weight_sha256": digest,
+              "model_names": names,
+              "training_status": provenance.get("status"),
+              "metric_interpretation": provenance.get("metric_interpretation"),
+          }, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Run detector-only inference on all 1,000 QC-fixed images
+        run: |
+          python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
+            --queue source/qc/extracted/audit_queue_source/extracted/detector_audit_queue.csv \
+            --downloads source/qc/extracted/downloaded_audit/download_results.csv \
+            --images-dir source/qc/extracted/downloaded_audit/images \
+            --weights source/detector/extracted/recovery/model/weights/best.pt \
+            --out-dir inference/yolo \
+            --conf "$CONFIDENCE_THRESHOLD" \
+            --pad-ratio 0.12 \
+            --batch-size 16 \
+            --device cpu
+
+      - name: Validate inference completion and build blinded prediction triage
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import pandas as pd
+
+          screening_path = Path("inference/yolo/screening_results.csv")
+          screening = pd.read_csv(screening_path, dtype=str, keep_default_na=False)
+          expected = 1000
+          if len(screening) != expected:
+              raise SystemExit(f"Expected {expected} detector result rows; found {len(screening)}")
+          if screening["queue_id"].duplicated().any():
+              raise SystemExit("Detector output contains duplicate queue_id rows")
+          failures = screening.loc[~screening["screen_status"].isin(["detected", "no_detection"])]
+          if not failures.empty:
+              raise SystemExit(f"Inference has incomplete rows: {failures[['queue_id','screen_status','message']].head(10).to_dict('records')}")
+          crops_path = Path("inference/yolo/yolo_crop_metadata.csv")
+          n_boxes = 0 if not crops_path.exists() else int(len(pd.read_csv(crops_path, dtype=str, keep_default_na=False)))
+          report = {
+              "created_at_utc": datetime.now(timezone.utc).isoformat(),
+              "n_source_images": int(len(screening)),
+              "n_detected_images": int(screening["screen_status"].eq("detected").sum()),
+              "n_no_detection_images": int(screening["screen_status"].eq("no_detection").sum()),
+              "n_detection_boxes": n_boxes,
+              "confidence_threshold": float(os.environ["CONFIDENCE_THRESHOLD"]),
+              "qc_images_artifact_id": int(os.environ["QC_ARTIFACT_ID"]),
+              "bootstrap_detector_artifact_id": int(os.environ["DETECTOR_ARTIFACT_ID"]),
+              "interpretation": "All outputs are bootstrap-detector predictions. They are not validated detections, source-image labels, nor biological measurements.",
+          }
+          Path("inference/detector_inference_summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+          python ch1_global/v2/27_build_detector_prediction_triage.py \
+            --screening inference/yolo/screening_results.csv \
+            --blinded-manifest source/qc/extracted/audit_queue_source/extracted/detector_audit_blinded_manifest.csv \
+            --out-dir inference/triage \
+            --n-review-images "$TRIAGE_N" \
+            --low-confidence 0.40 \
+            --high-confidence 0.75 \
+            --seed 20260704
+          {
+            echo "## Bootstrap detector inference on global audit set"
+            echo
+            echo '```json'
+            cat inference/bootstrap_model_fingerprint.json
+            echo '```'
+            echo
+            echo '```json'
+            cat inference/detector_inference_summary.json
+            echo '```'
+            echo
+            echo '```json'
+            cat inference/triage/bootstrap_detector_triage_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload predictions, crops, and blinded review triage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-bootstrap-detector-inference-${{ inputs.output_label }}
+          path: |
+            inference
+          if-no-files-found: warn
+          retention-days: 90
