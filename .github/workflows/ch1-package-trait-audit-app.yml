@@ -1,0 +1,146 @@
+name: Ch1 package focused trait audit app
+
+on:
+  workflow_dispatch:
+    inputs:
+      public_audit_packet_artifact_id:
+        description: "Public blinded trait-audit packet artifact ID"
+        required: true
+        default: "8077453828"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_250_trait_audit_app_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  package-focused-trait-audit-app:
+    name: Package local focused trait-audit app
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate package request
+        env:
+          PACKET_ARTIFACT_RAW: ${{ inputs.public_audit_packet_artifact_id }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          artifact_id = (os.environ["PACKET_ARTIFACT_RAW"] or "").strip().replace(",", "").replace("_", "")
+          if not re.fullmatch(r"[0-9]+", artifact_id) or int(artifact_id) < 1:
+              raise SystemExit("public_audit_packet_artifact_id must be a positive integer")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"PUBLIC_AUDIT_PACKET_ARTIFACT_ID={int(artifact_id)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download and validate public audit packet
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p bundle/source
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${PUBLIC_AUDIT_PACKET_ARTIFACT_ID}/zip" \
+            --output bundle/source/audit_packet.zip
+          unzip -tq bundle/source/audit_packet.zip
+          mkdir -p bundle/app
+          unzip -q bundle/source/audit_packet.zip -d bundle/app
+          test -s bundle/app/blinded_trait_audit_tasks.csv
+          test -d bundle/app/source_images
+          test -d bundle/app/head_crops
+          test -d bundle/app/context_crops
+
+      - name: Add app and launchers without private model information
+        run: |
+          set -euo pipefail
+          cp ch1_global/v2/31_trait_audit_app.py bundle/app/trait_audit_app.py
+          cp ch1_global/v2/ontology/ch1_trait_ontology.csv bundle/app/ch1_trait_ontology.csv
+          cp ch1_global/v2/requirements_trait_audit_app.txt bundle/app/requirements.txt
+          cat > bundle/app/run_audit_windows.bat <<'BAT'
+          @echo off
+          setlocal
+          set /p ANNOTATOR=Annotator ID (e.g. rachel): 
+          if "%ANNOTATOR%"=="" (
+            echo Annotator ID is required.
+            exit /b 1
+          )
+          py -m pip install -r requirements.txt
+          py -m streamlit run trait_audit_app.py -- --tasks blinded_trait_audit_tasks.csv --out-dir responses\%ANNOTATOR% --ontology ch1_trait_ontology.csv --annotator %ANNOTATOR%
+          BAT
+          cat > bundle/app/run_audit_macos_linux.sh <<'SH'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          read -r -p "Annotator ID (e.g. rachel): " ANNOTATOR
+          if [[ -z "${ANNOTATOR}" ]]; then
+            echo "Annotator ID is required." >&2
+            exit 1
+          fi
+          python3 -m pip install -r requirements.txt
+          python3 -m streamlit run trait_audit_app.py -- --tasks blinded_trait_audit_tasks.csv --out-dir "responses/${ANNOTATOR}" --ontology ch1_trait_ontology.csv --annotator "${ANNOTATOR}"
+          SH
+          chmod +x bundle/app/run_audit_macos_linux.sh
+          cat > bundle/app/README.txt <<'TXT'
+          Cirsium Chapter 1 — Focused blinded trait audit
+
+          This bundle is deliberately blinded. It contains task-specific images and trait IDs,
+          but no CLIP candidates, model confidence/margins, taxon names, locality, or selection strata.
+
+          Windows:
+            Double-click run_audit_windows.bat.
+
+          macOS/Linux (Terminal in this folder):
+            ./run_audit_macos_linux.sh
+
+          The app writes progress to responses/<annotator_id>/trait_audit_responses.csv.
+          Keep that folder intact. Do not merge it with a second annotator's responses.
+
+          Scoring rule:
+          - Score only the named trait for the evidence that is visibly available.
+          - Use unassessable whenever the required view cannot support a decision.
+          - Do not infer a state from species identity or prior expectation.
+
+          After annotation, provide the response CSV(s) for canonical compilation and comparison
+          against the separately stored private audit key. This bundle contains no private key.
+          TXT
+
+      - name: Validate absence of private model-selection fields
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          root = Path("bundle/app")
+          tasks = pd.read_csv(root / "blinded_trait_audit_tasks.csv", dtype=str, keep_default_na=False)
+          forbidden = {"ai_candidate_state", "runner_up_state", "similarity_margin", "selection_stratum", "double_label"}
+          leaked = forbidden.intersection(tasks.columns)
+          if leaked:
+              raise SystemExit(f"Public task bundle leaks private fields: {sorted(leaked)}")
+          for required in ("trait_audit_app.py", "ch1_trait_ontology.csv", "requirements.txt", "run_audit_windows.bat", "run_audit_macos_linux.sh"):
+              if not (root / required).is_file():
+                  raise SystemExit(f"Missing app bundle file: {required}")
+          print(f"[OK] public audit app bundle contains {len(tasks)} blinded tasks")
+          PY
+
+      - name: Upload local focused trait-audit app bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-focused-trait-audit-app-${{ inputs.output_label }}
+          path: bundle/app
+          if-no-files-found: error
+          retention-days: 90
