@@ -32,13 +32,17 @@ def text(value: Any) -> str:
     return "" if pd.isna(value) else str(value).strip()
 
 
+def as_bool(value: Any) -> bool:
+    return text(value).lower() in {"true", "1", "yes"}
+
+
 def wilson_lower(successes: int, total: int, z: float = 1.96) -> float | None:
     if total <= 0:
         return None
-    p = successes / total
+    proportion = successes / total
     denominator = 1 + z * z / total
-    centre = p + z * z / (2 * total)
-    spread = z * math.sqrt((p * (1 - p) + z * z / (4 * total)) / total)
+    centre = proportion + z * z / (2 * total)
+    spread = z * math.sqrt((proportion * (1 - proportion) + z * z / (4 * total)) / total)
     return (centre - spread) / denominator
 
 
@@ -48,23 +52,20 @@ def load_ontology(path: Path) -> dict[str, dict[str, Any]]:
     if missing := required.difference(table.columns):
         raise ValueError(f"Ontology missing columns: {sorted(missing)}")
     return {
-        text(row["trait_id"]): {"allow_multiple": text(row["allow_multiple"]).lower() in {"true", "1", "yes"}}
+        text(row["trait_id"]): {"allow_multiple": as_bool(row["allow_multiple"])}
         for row in table.to_dict("records")
     }
 
 
 def is_assessable(value: Any) -> bool:
-    return text(value) != "unassessable" and text(value) != ""
+    return text(value) not in {"", "unassessable"}
 
 
 def candidate_matches_human(candidate: Any, human_state: Any, allow_multiple: bool) -> bool | None:
-    candidate_text = text(candidate)
-    human_text = text(human_state)
+    candidate_text, human_text = text(candidate), text(human_state)
     if not candidate_text or not is_assessable(human_text):
         return None
-    if allow_multiple:
-        return candidate_text in {part for part in human_text.split("|") if part}
-    return candidate_text == human_text
+    return candidate_text in set(human_text.split("|")) if allow_multiple else candidate_text == human_text
 
 
 def summarize_group(frame: pd.DataFrame) -> dict[str, object]:
@@ -81,9 +82,9 @@ def summarize_group(frame: pd.DataFrame) -> dict[str, object]:
     }
 
 
-def pairwise_agreement(annotations: pd.DataFrame) -> pd.DataFrame:
+def pairwise_agreement(evaluated: pd.DataFrame) -> pd.DataFrame:
     records: list[dict[str, object]] = []
-    for task_id, group in annotations.groupby("task_id", sort=False):
+    for task_id, group in evaluated.groupby("task_id", sort=False):
         rows = group.sort_values("annotator_id").to_dict("records")
         for left, right in itertools.combinations(rows, 2):
             if left["annotator_id"] == right["annotator_id"]:
@@ -91,6 +92,7 @@ def pairwise_agreement(annotations: pd.DataFrame) -> pd.DataFrame:
             records.append({
                 "task_id": task_id,
                 "trait_id": left["trait_id"],
+                "double_label": as_bool(left["double_label"]),
                 "annotator_a": left["annotator_id"],
                 "annotator_b": right["annotator_id"],
                 "human_state_a": left["human_state"],
@@ -124,8 +126,8 @@ def main() -> None:
 
     evaluated = annotations.merge(key, on=["task_id", "trait_id"], how="left", validate="many_to_one", suffixes=("", "_key"))
     if evaluated["selection_stratum"].map(text).eq("").any():
-        missing = evaluated.loc[evaluated["selection_stratum"].map(text).eq(""), "task_id"].tolist()
-        raise ValueError(f"Annotations missing private-key matches: {missing[:10]}")
+        missing_task_ids = evaluated.loc[evaluated["selection_stratum"].map(text).eq(""), "task_id"].tolist()
+        raise ValueError(f"Annotations missing private-key matches: {missing_task_ids[:10]}")
     evaluated["human_assessable"] = evaluated["human_state"].map(is_assessable)
     evaluated["allow_multiple"] = evaluated["trait_id"].map(lambda trait: ontology[trait]["allow_multiple"])
     evaluated["model_candidate_match"] = [
@@ -136,25 +138,25 @@ def main() -> None:
     evaluated["similarity_margin"] = pd.to_numeric(evaluated["similarity_margin"], errors="raise")
     evaluated["margin_percentile_within_trait"] = pd.to_numeric(evaluated["margin_percentile_within_trait"], errors="raise")
 
-    summary_rows: list[dict[str, object]] = []
-    for (trait_id, stratum), group in evaluated.groupby(["trait_id", "selection_stratum"], sort=True):
-        summary_rows.append({"trait_id": trait_id, "selection_stratum": stratum, **summarize_group(group)})
-    summary = pd.DataFrame(summary_rows)
-
-    pairs = pairwise_agreement(annotations)
+    summary = pd.DataFrame([
+        {"trait_id": trait_id, "selection_stratum": stratum, **summarize_group(group)}
+        for (trait_id, stratum), group in evaluated.groupby(["trait_id", "selection_stratum"], sort=True)
+    ])
+    pairs = pairwise_agreement(evaluated)
     agreement_rows: list[dict[str, object]] = []
     if not pairs.empty:
         for trait_id, group in pairs.groupby("trait_id", sort=True):
-            assessable_pairs = group.loc[group["both_assessable"]]
-            agree = int(assessable_pairs["exact_agreement"].sum()) if not assessable_pairs.empty else 0
-            total = int(len(assessable_pairs))
+            designated = group.loc[group["double_label"]].copy()
+            assessable = designated.loc[designated["both_assessable"]]
+            successes, total = int(assessable["exact_agreement"].sum()) if not assessable.empty else 0, int(len(assessable))
             agreement_rows.append({
                 "trait_id": trait_id,
-                "n_pairwise_records": int(len(group)),
-                "n_both_assessable_pairs": total,
-                "n_exact_agreements": agree,
-                "exact_agreement_rate": agree / total if total else None,
-                "wilson_lower_95": wilson_lower(agree, total),
+                "n_pairwise_records_all_tasks": int(len(group)),
+                "n_pairwise_records_designated_double_label": int(len(designated)),
+                "n_both_assessable_pairs_designated_double_label": total,
+                "n_exact_agreements_designated_double_label": successes,
+                "exact_agreement_rate_designated_double_label": successes / total if total else None,
+                "wilson_lower_95_designated_double_label": wilson_lower(successes, total),
             })
     agreement = pd.DataFrame(agreement_rows)
 
@@ -163,18 +165,17 @@ def main() -> None:
         calibration = evaluated.loc[(evaluated["trait_id"] == trait_id) & (evaluated["selection_stratum"] == "high_margin_calibration")]
         calibration_stats = summarize_group(calibration)
         agreement_stats = agreement.loc[agreement["trait_id"].eq(trait_id)]
-        pair_count = int(agreement_stats.iloc[0]["n_both_assessable_pairs"]) if not agreement_stats.empty else 0
-        pair_lower = agreement_stats.iloc[0]["wilson_lower_95"] if not agreement_stats.empty else None
-        n_calibration = int(calibration_stats["n_assessable"])
-        lower = calibration_stats["wilson_lower_95"]
+        pair_count = int(agreement_stats.iloc[0]["n_both_assessable_pairs_designated_double_label"]) if not agreement_stats.empty else 0
+        pair_lower = agreement_stats.iloc[0]["wilson_lower_95_designated_double_label"] if not agreement_stats.empty else None
+        n_calibration, lower = int(calibration_stats["n_assessable"]), calibration_stats["wilson_lower_95"]
         if n_calibration < 15:
             recommendation = "manual_review_required_insufficient_high_margin_calibration"
         elif lower is None or lower < 0.80:
             recommendation = "manual_review_required_low_model_human_agreement"
         elif pair_count < 10:
-            recommendation = "candidate_assist_only_need_more_double_annotation"
+            recommendation = "candidate_assist_only_need_more_designated_double_annotation"
         elif pair_lower is None or pair_lower < 0.70:
-            recommendation = "candidate_assist_only_low_human_human_agreement"
+            recommendation = "candidate_assist_only_low_designated_human_agreement"
         else:
             recommendation = "candidate_assist_only_pending_independent_holdout"
         policy_rows.append({
@@ -182,8 +183,8 @@ def main() -> None:
             "n_high_margin_assessable": n_calibration,
             "high_margin_candidate_match_rate": calibration_stats["candidate_match_rate"],
             "high_margin_wilson_lower_95": lower,
-            "n_double_annotated_assessable_pairs": pair_count,
-            "human_human_wilson_lower_95": pair_lower,
+            "n_designated_double_annotated_assessable_pairs": pair_count,
+            "human_human_wilson_lower_95_designated_double_label": pair_lower,
             "recommendation": recommendation,
             "hard_limit": "No automatic trait acceptance is authorised by this selected first-pass audit alone.",
         })
@@ -201,7 +202,8 @@ def main() -> None:
         "n_human_annotation_records": int(len(annotations)),
         "n_unique_audited_tasks": int(annotations["task_id"].nunique()),
         "n_annotators": int(annotations["annotator_id"].nunique()),
-        "n_pairwise_human_records": int(len(pairs)),
+        "n_pairwise_human_records_all_tasks": int(len(pairs)),
+        "n_pairwise_human_records_designated_double_label": int(pairs["double_label"].sum()) if not pairs.empty else 0,
         "selection_scope": "Results are conditional on the deliberately selected low-margin uncertainty and high-margin calibration tasks. They are not estimates of global trait-classifier accuracy.",
         "acceptance_boundary": "This report never authorises unreviewed model predictions as final trait observations. A separate independent, representative holdout is required before any automatic acceptance policy.",
     }
