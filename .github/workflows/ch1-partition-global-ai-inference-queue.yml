@@ -1,0 +1,133 @@
+name: Ch1 partition global AI inference queue
+
+on:
+  workflow_dispatch:
+    inputs:
+      global_queue_artifact_id:
+        description: "Global AI inference queue artifact ID"
+        required: true
+        type: string
+      n_shards:
+        description: "Number of independent image/detector/AI shards"
+        required: true
+        default: "5"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "research_grade_216_species_shards5_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  partition-global-ai-inference-queue:
+    name: Partition global automated inference queue
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install partition dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+
+      - name: Validate partition request
+        env:
+          ARTIFACT_RAW: ${{ inputs.global_queue_artifact_id }}
+          SHARDS_RAW: ${{ inputs.n_shards }}
+          LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          artifact = (os.environ["ARTIFACT_RAW"] or "").strip().replace(",", "").replace("_", "")
+          shards = (os.environ["SHARDS_RAW"] or "").strip()
+          label = (os.environ["LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[0-9]+", artifact) or int(artifact) < 1:
+              raise SystemExit("global_queue_artifact_id must be a positive integer")
+          if not re.fullmatch(r"[0-9]+", shards) or not 1 <= int(shards) <= 50:
+              raise SystemExit("n_shards must be an integer between 1 and 50")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"GLOBAL_QUEUE_ARTIFACT_ID={int(artifact)}\n")
+              handle.write(f"N_SHARDS={int(shards)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download global queue artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/queue/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${GLOBAL_QUEUE_ARTIFACT_ID}/zip" \
+            --output source/queue/queue.zip
+          unzip -tq source/queue/queue.zip
+          unzip -q source/queue/queue.zip -d source/queue/extracted
+          test -s source/queue/extracted/global_ai_inference_queue.csv
+
+      - name: Partition queue
+        run: |
+          python ch1_global/v2/39_partition_global_ai_inference_queue.py \
+            --queue source/queue/extracted/global_ai_inference_queue.csv \
+            --out-dir queue_shards \
+            --n-shards "$N_SHARDS" \
+            --seed 20260705
+
+      - name: Validate shard coverage and balance
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path("queue_shards")
+          manifest = pd.read_csv(root / "global_ai_inference_shard_manifest.csv", dtype=str, keep_default_na=False)
+          report = json.loads((root / "global_ai_inference_shard_provenance.json").read_text(encoding="utf-8"))
+          if len(manifest) != report["n_shards"]:
+              raise SystemExit("Shard manifest count differs from requested shard count")
+          frames = [pd.read_csv(root / filename, dtype=str, keep_default_na=False) for filename in manifest["filename"]]
+          combined = pd.concat(frames, ignore_index=True)
+          if len(combined) != report["n_queue_observations"] or combined["queue_id"].duplicated().any() or combined["obs_id"].duplicated().any():
+              raise SystemExit("Shards do not preserve each queue observation exactly once")
+          sizes = manifest["n_observations"].astype(int)
+          if sizes.max() - sizes.min() > 1:
+              raise SystemExit("Shard sizes differ by more than one observation")
+          print(json.dumps({
+              "n_shards": int(report["n_shards"]),
+              "n_observations": int(len(combined)),
+              "shard_sizes": sizes.tolist(),
+              "species_per_shard": manifest["n_species"].astype(int).tolist(),
+              "spatial_blocks_per_shard": manifest["n_spatial_blocks"].astype(int).tolist()
+          }, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Global automated inference queue shards"
+            echo
+            echo '```json'
+            cat queue_shards/global_ai_inference_shard_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload queue shards
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-global-ai-inference-queue-shards-${{ inputs.output_label }}
+          path: queue_shards
+          if-no-files-found: error
+          retention-days: 90
