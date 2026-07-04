@@ -60,6 +60,17 @@ jobs:
           python -m py_compile ch1_global/v2/19_trait_annotation_app_ontology.py
           python -m py_compile ch1_global/v2/21_build_ontology_blinded_packets.py
           python -m py_compile ch1_global/v2/22_attach_context_crops_to_manifest.py
+          python -m py_compile ch1_global/v2/23_validate_detector_model_package.py
+          python -m py_compile ch1_global/v2/24_generate_capitulum_bootstrap_proposals.py
+          python -m py_compile ch1_global/v2/25_build_bootstrap_yolo_dataset.py
+          python -m py_compile ch1_global/v2/26_train_bootstrap_capitulum_detector.py
+          python -m py_compile ch1_global/v2/27_build_detector_prediction_triage.py
+          python -m py_compile ch1_global/v2/28_build_detected_head_trait_packet.py
+          python -m py_compile ch1_global/v2/29_score_detected_head_traits_clip.py
+          python -m py_compile ch1_global/v2/30_build_blinded_trait_audit_packet.py
+          python -m py_compile ch1_global/v2/31_trait_audit_app.py
+          python -m py_compile ch1_global/v2/32_compile_trait_audit_responses.py
+          python -m py_compile ch1_global/v2/33_evaluate_trait_audit_against_clip.py
 
       - name: Run collection and annotation invariants tests
         shell: bash
