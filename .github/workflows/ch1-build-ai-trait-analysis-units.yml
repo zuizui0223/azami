@@ -1,0 +1,171 @@
+name: Ch1 build AI trait analysis units
+
+on:
+  workflow_dispatch:
+    inputs:
+      ai_ensemble_artifact_id:
+        description: "Fully automated AI ensemble measurement artifact ID"
+        required: true
+        default: "8083890844"
+        type: string
+      detector_inference_artifact_id:
+        description: "Bootstrap detector inference artifact ID"
+        required: true
+        default: "8076841931"
+        type: string
+      merged_metadata_artifact_id:
+        description: "Merged iNaturalist photo metadata artifact ID"
+        required: true
+        default: "8066010557"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_849_observation_ai_traits_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-ai-trait-analysis-units:
+    name: Build automated trait observation analysis units
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install integration dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+
+      - name: Validate integration request
+        env:
+          AI_ARTIFACT_RAW: ${{ inputs.ai_ensemble_artifact_id }}
+          DETECTOR_ARTIFACT_RAW: ${{ inputs.detector_inference_artifact_id }}
+          METADATA_ARTIFACT_RAW: ${{ inputs.merged_metadata_artifact_id }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def artifact(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          ai = artifact(os.environ["AI_ARTIFACT_RAW"], "ai_ensemble_artifact_id")
+          detector = artifact(os.environ["DETECTOR_ARTIFACT_RAW"], "detector_inference_artifact_id")
+          metadata = artifact(os.environ["METADATA_ARTIFACT_RAW"], "merged_metadata_artifact_id")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"AI_ENSEMBLE_ARTIFACT_ID={ai}\n")
+              handle.write(f"DETECTOR_INFERENCE_ARTIFACT_ID={detector}\n")
+              handle.write(f"MERGED_METADATA_ARTIFACT_ID={metadata}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download source artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/ai source/detector source/metadata
+          for specification in \
+            "${AI_ENSEMBLE_ARTIFACT_ID}:source/ai/ai.zip:source/ai/extracted" \
+            "${DETECTOR_INFERENCE_ARTIFACT_ID}:source/detector/detector.zip:source/detector/extracted" \
+            "${MERGED_METADATA_ARTIFACT_ID}:source/metadata/metadata.zip:source/metadata/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$extract_dir"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -s source/ai/extracted/trait_ai_ensemble/ai_ensemble_trait_measurements_long.csv
+          test -s source/detector/extracted/yolo/yolo_crop_metadata.csv
+          test -s source/metadata/extracted/photo_metadata_merged.csv
+
+      - name: Build head photo and observation analysis tables
+        run: |
+          python ch1_global/v2/37_build_ai_trait_analysis_units.py \
+            --ai-measurements-long source/ai/extracted/trait_ai_ensemble/ai_ensemble_trait_measurements_long.csv \
+            --detector-crop-metadata source/detector/extracted/yolo/yolo_crop_metadata.csv \
+            --inat-photo-metadata source/metadata/extracted/photo_metadata_merged.csv \
+            --out-dir ai_trait_analysis_units \
+            --metadata-chunk-size 200000
+
+      - name: Validate analysis-unit nesting and coordinate coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path("ai_trait_analysis_units")
+          head = pd.read_csv(root / "ai_trait_head_level_with_metadata.csv", dtype=str, keep_default_na=False)
+          photo = pd.read_csv(root / "ai_trait_photo_level.csv", dtype=str, keep_default_na=False)
+          observation = pd.read_csv(root / "ai_trait_observation_level_long.csv", dtype=str, keep_default_na=False)
+          wide = pd.read_csv(root / "ai_trait_observation_level_wide.csv", dtype=str, keep_default_na=False)
+          provenance = json.loads((root / "ai_trait_analysis_units_provenance.json").read_text(encoding="utf-8"))
+          n_traits = head["trait_id"].nunique()
+          if head.duplicated(["annotation_unit_id", "trait_id"]).any():
+              raise SystemExit("Head table duplicates annotation_unit_id/trait_id")
+          if photo.duplicated(["photo_id", "trait_id"]).any():
+              raise SystemExit("Photo table duplicates photo_id/trait_id")
+          if observation.duplicated(["obs_id", "trait_id"]).any():
+              raise SystemExit("Observation table duplicates obs_id/trait_id")
+          if len(photo) != photo["photo_id"].nunique() * n_traits:
+              raise SystemExit("Photo table is not complete across its detected source photos and traits")
+          if len(observation) != observation["obs_id"].nunique() * n_traits:
+              raise SystemExit("Observation table is not complete across observations and traits")
+          if len(wide) != observation["obs_id"].nunique():
+              raise SystemExit("Observation wide table does not have one row per observation")
+          if not observation["recommended_analysis_unit"].eq("observation").all():
+              raise SystemExit("Recommended analysis unit must be observation")
+          if not provenance["semantic_status"].startswith("Fully automated model-derived"):
+              raise SystemExit("Provenance must preserve automated-measurement semantics")
+          print(json.dumps({
+              "n_head_trait_rows": len(head),
+              "n_detected_head_units": head["annotation_unit_id"].nunique(),
+              "n_source_photos": photo["photo_id"].nunique(),
+              "n_observations": observation["obs_id"].nunique(),
+              "n_observations_coordinate_usable": int(wide["coordinate_usable_for_environment"].astype(str).str.lower().isin(["true", "1", "yes"]).sum()),
+              "n_traits": n_traits
+          }, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Automated trait analysis-unit build"
+            echo
+            echo '```json'
+            cat ai_trait_analysis_units/ai_trait_analysis_units_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload automated trait analysis units
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-ai-trait-analysis-units-${{ inputs.output_label }}
+          path: |
+            ai_trait_analysis_units
+            source/ai/extracted/trait_ai_ensemble/ai_ensemble_measurement_provenance.json
+          if-no-files-found: warn
+          retention-days: 90
