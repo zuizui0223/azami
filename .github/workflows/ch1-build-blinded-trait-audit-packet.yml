@@ -1,0 +1,203 @@
+name: Ch1 build blinded trait audit packet
+
+on:
+  workflow_dispatch:
+    inputs:
+      trait_packet_artifact_id:
+        description: "Full blinded detected-head trait-packet artifact ID"
+        required: true
+        default: "8076941312"
+        type: string
+      trait_proposals_artifact_id:
+        description: "Zero-shot CLIP trait-proposals artifact ID"
+        required: true
+        default: "8077189280"
+        type: string
+      n_uncertainty_tasks:
+        description: "Low-margin trait tasks, weighted toward difficult morphological traits"
+        required: true
+        default: "180"
+        type: string
+      n_calibration_tasks:
+        description: "High-margin trait tasks, balanced across scored traits"
+        required: true
+        default: "70"
+        type: string
+      double_label_fraction:
+        description: "Share of tasks flagged in the private key for second annotation"
+        required: true
+        default: "0.25"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_250_trait_audit_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-blinded-trait-audit-packet:
+    name: Build compact blinded trait audit packet
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install audit-packet dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas Pillow
+
+      - name: Validate audit packet request
+        env:
+          PACKET_ARTIFACT_RAW: ${{ inputs.trait_packet_artifact_id }}
+          PROPOSAL_ARTIFACT_RAW: ${{ inputs.trait_proposals_artifact_id }}
+          UNCERTAINTY_RAW: ${{ inputs.n_uncertainty_tasks }}
+          CALIBRATION_RAW: ${{ inputs.n_calibration_tasks }}
+          DOUBLE_FRACTION_RAW: ${{ inputs.double_label_fraction }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def integer(raw, field):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{field} must be a positive integer")
+              return int(value)
+
+          packet_id = integer(os.environ["PACKET_ARTIFACT_RAW"], "trait_packet_artifact_id")
+          proposal_id = integer(os.environ["PROPOSAL_ARTIFACT_RAW"], "trait_proposals_artifact_id")
+          uncertainty = integer(os.environ["UNCERTAINTY_RAW"], "n_uncertainty_tasks")
+          calibration = integer(os.environ["CALIBRATION_RAW"], "n_calibration_tasks")
+          if uncertainty + calibration > 500:
+              raise SystemExit("This first-pass focused audit packet may contain at most 500 tasks")
+          try:
+              double_fraction = float(os.environ["DOUBLE_FRACTION_RAW"])
+          except ValueError as error:
+              raise SystemExit("double_label_fraction must be numeric") from error
+          if not 0 <= double_fraction <= 1:
+              raise SystemExit("double_label_fraction must be in [0,1]")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label may contain only letters, digits, dot, underscore, and hyphen.")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"TRAIT_PACKET_ARTIFACT_ID={packet_id}\n")
+              handle.write(f"TRAIT_PROPOSALS_ARTIFACT_ID={proposal_id}\n")
+              handle.write(f"N_UNCERTAINTY={uncertainty}\n")
+              handle.write(f"N_CALIBRATION={calibration}\n")
+              handle.write(f"DOUBLE_FRACTION={double_fraction}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download full packet and zero-shot proposal artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/packet source/proposals
+          for specification in "${TRAIT_PACKET_ARTIFACT_ID}:source/packet/full_packet.zip:source/packet/extracted" "${TRAIT_PROPOSALS_ARTIFACT_ID}:source/proposals/proposals.zip:source/proposals/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            mkdir -p "$extract_dir"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -s source/packet/extracted/blinded_trait_annotation_manifest.csv
+          test -d source/packet/extracted/source_images
+          test -d source/packet/extracted/head_crops
+          test -d source/packet/extracted/context_crops
+          test -s source/proposals/extracted/trait_ai/zero_shot_trait_proposals_long.csv
+
+      - name: Build blinded trait audit tasks and compact image packet
+        run: |
+          python ch1_global/v2/30_build_blinded_trait_audit_packet.py \
+            --packet-manifest source/packet/extracted/blinded_trait_annotation_manifest.csv \
+            --packet-root source/packet/extracted \
+            --proposals-long source/proposals/extracted/trait_ai/zero_shot_trait_proposals_long.csv \
+            --prompt-spec ch1_global/v2/ontology/clip_trait_prompt_spec.json \
+            --out-dir audit_build \
+            --batch-name "$OUTPUT_LABEL" \
+            --n-uncertainty-tasks "$N_UNCERTAINTY" \
+            --n-calibration-tasks "$N_CALIBRATION" \
+            --double-label-fraction "$DOUBLE_FRACTION" \
+            --seed 20260704
+
+      - name: Validate blinding and audit-packet integrity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          packet_root = Path("audit_build/blinded_trait_audit_packet")
+          public = pd.read_csv(packet_root / "blinded_trait_audit_tasks.csv", dtype=str, keep_default_na=False)
+          private = pd.read_csv("audit_build/private_audit_key/trait_audit_selection_key.csv", dtype=str, keep_default_na=False)
+          report = json.loads(Path("audit_build/trait_audit_packet_report.json").read_text(encoding="utf-8"))
+          expected = 250
+          if len(public) != expected or public["task_id"].duplicated().any():
+              raise SystemExit(f"Public audit tasks invalid: rows={len(public)}, expected={expected}")
+          forbidden = {"ai_candidate_state", "runner_up_state", "similarity_margin", "selection_stratum", "double_label"}
+          leaked = forbidden.intersection(public.columns)
+          if leaked:
+              raise SystemExit(f"Public packet leaks hidden model/selection fields: {sorted(leaked)}")
+          if len(private) != expected or not forbidden.issubset(private.columns):
+              raise SystemExit("Private audit key is incomplete")
+          if report["n_uncertainty_tasks"] != 180 or report["n_calibration_tasks"] != 70:
+              raise SystemExit(f"Unexpected audit design counts: {report}")
+          for field in ("source_image", "crop_path", "context_crop_path"):
+              absent = [value for value in public[field] if not (packet_root / value).is_file()]
+              if absent:
+                  raise SystemExit(f"Public packet references missing {field}: {absent[:5]}")
+          print(json.dumps({
+              "n_tasks": len(public),
+              "n_unique_annotation_units": report["n_unique_annotation_units"],
+              "n_uncertainty_tasks": report["n_uncertainty_tasks"],
+              "n_calibration_tasks": report["n_calibration_tasks"],
+              "n_double_label_tasks": report["n_double_label_tasks"],
+              "task_counts_by_trait": report["task_counts_by_trait"]
+          }, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Focused blinded trait audit packet"
+            echo
+            echo '```json'
+            cat audit_build/trait_audit_packet_report.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload compact blinded trait audit packet
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-blinded-trait-audit-packet-${{ inputs.output_label }}
+          path: audit_build/blinded_trait_audit_packet
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Upload private audit-selection key separately
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-private-trait-audit-key-${{ inputs.output_label }}
+          path: |
+            audit_build/private_audit_key
+            audit_build/trait_audit_packet_report.json
+          if-no-files-found: warn
+          retention-days: 90
