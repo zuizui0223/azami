@@ -1,0 +1,173 @@
+name: Ch1 automated ensemble trait measurement
+
+on:
+  workflow_dispatch:
+    inputs:
+      trait_packet_artifact_id:
+        description: "Detected-head trait-packet artifact ID"
+        required: true
+        default: "8076941312"
+        type: string
+      model_ids_csv:
+        description: "Comma-separated Hugging Face CLIP owner/model IDs"
+        required: true
+        default: "openai/clip-vit-base-patch32,openai/clip-vit-base-patch16"
+        type: string
+      batch_size:
+        description: "CPU batch size"
+        required: true
+        default: "24"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "global_1413_ai_ensemble_traits_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  automated-ai-ensemble:
+    name: Score automated AI ensemble trait measurements
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONHASHSEED: "0"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas Pillow torch 'transformers>=4.41,<5'
+
+      - name: Validate request
+        env:
+          PACKET_ARTIFACT_RAW: ${{ inputs.trait_packet_artifact_id }}
+          MODELS_RAW: ${{ inputs.model_ids_csv }}
+          BATCH_SIZE_RAW: ${{ inputs.batch_size }}
+          OUTPUT_LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          packet_id = (os.environ["PACKET_ARTIFACT_RAW"] or "").strip().replace(",", "").replace("_", "")
+          if not re.fullmatch(r"[0-9]+", packet_id) or int(packet_id) < 1:
+              raise SystemExit("trait_packet_artifact_id must be a positive integer")
+          model_ids = [value.strip() for value in (os.environ["MODELS_RAW"] or "").split(",") if value.strip()]
+          if len(model_ids) < 2 or len(model_ids) != len(set(model_ids)):
+              raise SystemExit("model_ids_csv must contain at least two distinct models")
+          if not all(re.fullmatch(r"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+", model_id) for model_id in model_ids):
+              raise SystemExit("Each model must use owner/model format")
+          batch_size = (os.environ["BATCH_SIZE_RAW"] or "").strip()
+          if not re.fullmatch(r"[0-9]+", batch_size) or not 1 <= int(batch_size) <= 64:
+              raise SystemExit("batch_size must be an integer between 1 and 64")
+          label = (os.environ["OUTPUT_LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("Invalid output_label")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"TRAIT_PACKET_ARTIFACT_ID={int(packet_id)}\n")
+              handle.write(f"BATCH_SIZE={int(batch_size)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+              handle.write(f"MODEL_IDS_CSV={','.join(model_ids)}\n")
+          PY
+
+      - name: Download trait packet
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/packet
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${TRAIT_PACKET_ARTIFACT_ID}/zip" \
+            --output source/packet/trait_packet.zip
+          unzip -tq source/packet/trait_packet.zip
+          unzip -q source/packet/trait_packet.zip -d source/packet/extracted
+          test -s source/packet/extracted/blinded_trait_annotation_manifest.csv
+          test -d source/packet/extracted/source_images
+          test -d source/packet/extracted/head_crops
+          test -d source/packet/extracted/context_crops
+
+      - name: Run ensemble scoring
+        shell: bash
+        run: |
+          set -euo pipefail
+          model_args=()
+          IFS=',' read -r -a models <<< "$MODEL_IDS_CSV"
+          for model_id in "${models[@]}"; do
+            model_args+=(--model-id "$model_id")
+          done
+          python ch1_global/v2/35_score_traits_ai_ensemble.py \
+            --packet-manifest source/packet/extracted/blinded_trait_annotation_manifest.csv \
+            --packet-root source/packet/extracted \
+            --ontology ch1_global/v2/ontology/ch1_trait_ontology.csv \
+            --prompt-spec ch1_global/v2/ontology/clip_trait_prompt_spec.json \
+            --out-dir trait_ai_ensemble \
+            "${model_args[@]}" \
+            --device cpu \
+            --batch-size "$BATCH_SIZE" \
+            --threads 2 \
+            --seed 20260705 \
+            --strict-margin-percentile 0.50 \
+            --majority-vote-fraction 0.75
+
+      - name: Validate output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          packet = pd.read_csv("source/packet/extracted/blinded_trait_annotation_manifest.csv", dtype=str, keep_default_na=False)
+          ontology = pd.read_csv("ch1_global/v2/ontology/ch1_trait_ontology.csv", dtype=str, keep_default_na=False)
+          long = pd.read_csv("trait_ai_ensemble/ai_ensemble_trait_measurements_long.csv", dtype=str, keep_default_na=False)
+          variants = pd.read_csv("trait_ai_ensemble/ai_ensemble_variant_predictions.csv", dtype=str, keep_default_na=False)
+          report = json.loads(Path("trait_ai_ensemble/ai_ensemble_measurement_provenance.json").read_text(encoding="utf-8"))
+          image_traits = ontology.loc[(ontology["image_annotatable"] == "true") & (ontology["layer"] != "detector"), "trait_id"].tolist()
+          scored_traits = [trait for trait in image_traits if trait != "external_mucilage_visible"]
+          expected_long = len(packet) * len(image_traits)
+          expected_variants = len(packet) * len(scored_traits) * len(report["model_locks"]) * 2
+          if len(long) != expected_long or long.duplicated(["annotation_unit_id", "trait_id"]).any():
+              raise SystemExit("Automated long measurement table is incomplete")
+          if len(variants) != expected_variants:
+              raise SystemExit("Automated variant prediction table is incomplete")
+          mucilage = long.loc[long["trait_id"].eq("external_mucilage_visible")]
+          if len(mucilage) != len(packet) or not mucilage["ai_measurement_status"].eq("not_auto_estimated_targeted_macro_required").all():
+              raise SystemExit("Mucilage status is invalid")
+          if not report["semantic_status"].startswith("Fully automated model-derived"):
+              raise SystemExit("Measurement provenance status is invalid")
+          print(json.dumps({
+              "n_units": len(packet),
+              "n_measurements": len(long),
+              "n_variant_predictions": len(variants),
+              "model_locks": report["model_locks"],
+              "status_counts_by_trait": report["status_counts_by_trait"]
+          }, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload automated ensemble measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-ai-ensemble-trait-measurements-${{ inputs.output_label }}
+          path: |
+            trait_ai_ensemble
+            ch1_global/v2/ontology/ch1_trait_ontology.csv
+            ch1_global/v2/ontology/clip_trait_prompt_spec.json
+            source/packet/extracted/blinded_trait_annotation_manifest.csv
+          if-no-files-found: warn
+          retention-days: 90
