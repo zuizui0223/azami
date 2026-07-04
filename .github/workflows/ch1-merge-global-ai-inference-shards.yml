@@ -1,0 +1,187 @@
+name: Ch1 merge global automated AI inference shards
+
+on:
+  workflow_dispatch:
+    inputs:
+      queue_shards_artifact_id:
+        description: "Partitioned global AI inference queue artifact ID"
+        required: true
+        type: string
+      shard_result_artifact_ids_csv:
+        description: "Exactly one completed compact shard-result artifact ID per queue shard, comma-separated"
+        required: true
+        type: string
+      merged_metadata_artifact_id:
+        description: "Merged global iNaturalist metadata artifact ID"
+        required: true
+        default: "8066010557"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "research_grade_216_species_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  merge-global-ai-inference-shards:
+    name: Merge global automated AI shards
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install merge dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+
+      - name: Validate merge request
+        env:
+          SHARDS_ARTIFACT_RAW: ${{ inputs.queue_shards_artifact_id }}
+          RESULT_ARTIFACTS_RAW: ${{ inputs.shard_result_artifact_ids_csv }}
+          METADATA_ARTIFACT_RAW: ${{ inputs.merged_metadata_artifact_id }}
+          LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive(raw, name):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{name} must be a positive integer")
+              return int(value)
+          shards = positive(os.environ["SHARDS_ARTIFACT_RAW"], "queue_shards_artifact_id")
+          metadata = positive(os.environ["METADATA_ARTIFACT_RAW"], "merged_metadata_artifact_id")
+          result_raw = [value.strip().replace("_", "") for value in (os.environ["RESULT_ARTIFACTS_RAW"] or "").split(",") if value.strip()]
+          if not result_raw or not all(re.fullmatch(r"[0-9]+", value) and int(value) > 0 for value in result_raw):
+              raise SystemExit("shard_result_artifact_ids_csv must contain comma-separated positive artifact IDs")
+          if len(result_raw) != len(set(result_raw)):
+              raise SystemExit("shard_result_artifact_ids_csv contains duplicates")
+          label = (os.environ["LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"QUEUE_SHARDS_ARTIFACT_ID={shards}\n")
+              handle.write(f"MERGED_METADATA_ARTIFACT_ID={metadata}\n")
+              handle.write(f"RESULT_ARTIFACT_IDS={','.join(result_raw)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download queue shards metadata and merged iNaturalist metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/shards/extracted source/metadata/extracted
+          for specification in \
+            "${QUEUE_SHARDS_ARTIFACT_ID}:source/shards/shards.zip:source/shards/extracted" \
+            "${MERGED_METADATA_ARTIFACT_ID}:source/metadata/metadata.zip:source/metadata/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+          test -s source/shards/extracted/global_ai_inference_shard_manifest.csv
+          test -s source/metadata/extracted/photo_metadata_merged.csv
+
+      - name: Download compact results from all shards
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p source/results
+          IFS=',' read -r -a artifacts <<< "$RESULT_ARTIFACT_IDS"
+          for artifact_id in "${artifacts[@]}"; do
+            target="source/results/artifact_${artifact_id}"
+            mkdir -p "$target"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$target/result.zip"
+            unzip -tq "$target/result.zip"
+            unzip -q "$target/result.zip" -d "$target/extracted"
+          done
+
+      - name: Merge compact detector and AI measurement results
+        run: |
+          python ch1_global/v2/41_merge_global_ai_inference_shards.py \
+            --shard-manifest source/shards/extracted/global_ai_inference_shard_manifest.csv \
+            --shard-results-root source/results \
+            --out-dir merged_shards
+
+      - name: Build global photo and observation analysis units
+        run: |
+          python ch1_global/v2/37_build_ai_trait_analysis_units.py \
+            --ai-measurements-long merged_shards/global_ai_merged_trait_measurements_long.csv \
+            --detector-crop-metadata merged_shards/global_ai_merged_yolo_crop_metadata.csv \
+            --inat-photo-metadata source/metadata/extracted/photo_metadata_merged.csv \
+            --out-dir global_ai_analysis_units \
+            --metadata-chunk-size 200000
+
+      - name: Validate merged global coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          merged = json.loads(Path("merged_shards/global_ai_shard_merge_provenance.json").read_text(encoding="utf-8"))
+          analysis = json.loads(Path("global_ai_analysis_units/ai_trait_analysis_units_provenance.json").read_text(encoding="utf-8"))
+          head = pd.read_csv("global_ai_analysis_units/ai_trait_head_level_with_metadata.csv", dtype=str, keep_default_na=False)
+          observation = pd.read_csv("global_ai_analysis_units/ai_trait_observation_level_long.csv", dtype=str, keep_default_na=False)
+          if len(head) != merged["n_ai_trait_rows"]:
+              raise SystemExit("Merged head trait rows do not match analysis-unit head table")
+          if observation.duplicated(["obs_id", "trait_id"]).any():
+              raise SystemExit("Global observation table duplicates observation/trait rows")
+          if not analysis["semantic_status"].startswith("Fully automated model-derived"):
+              raise SystemExit("Global analysis table lost automated-measurement semantics")
+          print(json.dumps({
+              "n_queue_observations": merged["n_queue_observations"],
+              "n_detected_heads": merged["n_detected_heads"],
+              "n_ai_trait_rows": merged["n_ai_trait_rows"],
+              "n_observations": analysis["n_observations"],
+              "n_coordinate_usable": analysis["n_observations_coordinate_usable"]
+          }, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Merged global automated AI inference"
+            echo
+            echo '### Shard merge'
+            echo '```json'
+            cat merged_shards/global_ai_shard_merge_provenance.json
+            echo '```'
+            echo
+            echo '### Observation analysis units'
+            echo '```json'
+            cat global_ai_analysis_units/ai_trait_analysis_units_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload merged global AI measurement and analysis units
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-global-ai-trait-analysis-${{ inputs.output_label }}
+          path: |
+            merged_shards
+            global_ai_analysis_units
+          if-no-files-found: warn
+          retention-days: 90
