@@ -1,0 +1,174 @@
+name: Ch1 build global AI inference queue
+
+on:
+  workflow_dispatch:
+    inputs:
+      merged_metadata_artifact_id:
+        description: "Merged global iNaturalist photo metadata artifact ID"
+        required: true
+        default: "8066010557"
+        type: string
+      min_observations_per_species:
+        description: "Minimum research-grade open-coordinate observations per species"
+        required: true
+        default: "3"
+        type: string
+      max_observations_per_species:
+        description: "Maximum queued observations per species"
+        required: true
+        default: "40"
+        type: string
+      max_per_species_spatial_block:
+        description: "Maximum queued observations per species in each 5-degree block"
+        required: true
+        default: "10"
+        type: string
+      spatial_block_deg:
+        description: "Spatial block width in decimal degrees"
+        required: true
+        default: "5"
+        type: string
+      output_label:
+        description: "Safe artifact label"
+        required: true
+        default: "research_grade_216_species_v1"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-global-ai-inference-queue:
+    name: Build global automated AI inference queue
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install queue dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas
+
+      - name: Validate queue request
+        env:
+          METADATA_ARTIFACT_RAW: ${{ inputs.merged_metadata_artifact_id }}
+          MIN_RAW: ${{ inputs.min_observations_per_species }}
+          MAX_RAW: ${{ inputs.max_observations_per_species }}
+          BLOCK_CAP_RAW: ${{ inputs.max_per_species_spatial_block }}
+          BLOCK_DEG_RAW: ${{ inputs.spatial_block_deg }}
+          LABEL_RAW: ${{ inputs.output_label }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          def positive(raw, name):
+              value = (raw or "").strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{name} must be a positive integer")
+              return int(value)
+          artifact = positive(os.environ["METADATA_ARTIFACT_RAW"], "merged_metadata_artifact_id")
+          minimum = positive(os.environ["MIN_RAW"], "min_observations_per_species")
+          maximum = positive(os.environ["MAX_RAW"], "max_observations_per_species")
+          block_cap = positive(os.environ["BLOCK_CAP_RAW"], "max_per_species_spatial_block")
+          if minimum > maximum:
+              raise SystemExit("minimum observations cannot exceed maximum")
+          try:
+              block_deg = float(os.environ["BLOCK_DEG_RAW"])
+          except ValueError as error:
+              raise SystemExit("spatial_block_deg must be numeric") from error
+          if not 0 < block_deg <= 30:
+              raise SystemExit("spatial_block_deg must be in (0, 30]")
+          label = (os.environ["LABEL_RAW"] or "").strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"METADATA_ARTIFACT_ID={artifact}\n")
+              handle.write(f"MIN_PER_SPECIES={minimum}\n")
+              handle.write(f"MAX_PER_SPECIES={maximum}\n")
+              handle.write(f"MAX_PER_BLOCK={block_cap}\n")
+              handle.write(f"SPATIAL_BLOCK_DEG={block_deg}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download merged metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/metadata/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${METADATA_ARTIFACT_ID}/zip" \
+            --output source/metadata/merged.zip
+          unzip -tq source/metadata/merged.zip
+          unzip -q source/metadata/merged.zip -d source/metadata/extracted
+          test -s source/metadata/extracted/photo_metadata_merged.csv
+
+      - name: Build research-grade spatially balanced queue
+        run: |
+          python ch1_global/v2/38_build_global_ai_inference_queue.py \
+            --input source/metadata/extracted/photo_metadata_merged.csv \
+            --out-dir global_ai_queue \
+            --quality-grades research \
+            --min-observations-per-species "$MIN_PER_SPECIES" \
+            --max-observations-per-species "$MAX_PER_SPECIES" \
+            --max-per-species-spatial-block "$MAX_PER_BLOCK" \
+            --spatial-block-deg "$SPATIAL_BLOCK_DEG" \
+            --seed 20260705
+
+      - name: Validate queue design
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path("global_ai_queue")
+          queue = pd.read_csv(root / "global_ai_inference_queue.csv", dtype=str, keep_default_na=False)
+          report = json.loads((root / "global_ai_queue_provenance.json").read_text(encoding="utf-8"))
+          if queue.empty or queue["queue_id"].duplicated().any() or queue["obs_id"].duplicated().any():
+              raise SystemExit("Queue must contain nonempty unique queue_id and obs_id values")
+          if not queue["quality_grade"].eq("research").all():
+              raise SystemExit("Queue contains non-research-grade observations")
+          if queue["captive"].astype(str).str.lower().isin(["true", "1", "yes"]).any():
+              raise SystemExit("Queue contains captive observations")
+          if not queue["coordinate_usable_for_environment"].astype(str).str.lower().isin(["true", "1", "yes"]).all():
+              raise SystemExit("Queue contains unusable environmental coordinates")
+          maximum = int(report["parameters"]["max_observations_per_species"])
+          per_species = queue.groupby("taxon_name").size()
+          if (per_species > maximum).any():
+              raise SystemExit("Species cap violated")
+          print(json.dumps({
+              "queue_observations": len(queue),
+              "species_in_queue": int(queue["taxon_name"].nunique()),
+              "max_per_species_observed": int(per_species.max()),
+              "median_per_species": float(per_species.median()),
+              "n_spatial_blocks": int(queue["spatial_block"].nunique())
+          }, ensure_ascii=False, indent=2))
+          PY
+          {
+            echo "## Global automated AI inference queue"
+            echo
+            echo '```json'
+            cat global_ai_queue/global_ai_queue_provenance.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload global AI inference queue
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-global-ai-inference-queue-${{ inputs.output_label }}
+          path: global_ai_queue
+          if-no-files-found: error
+          retention-days: 90
