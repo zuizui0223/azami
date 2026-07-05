@@ -38,89 +38,126 @@ permissions:
   contents: read
 
 jobs:
-  all-shards-and-merge:
-    name: Run shards 1 to 5 and build global trait table
+  run-shards:
+    name: Run global AI shard ${{ matrix.shard_id }}
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        shard_id: [1, 2, 3, 4, 5]
     env:
       HF_HUB_DISABLE_TELEMETRY: "1"
       TOKENIZERS_PARALLELISM: "false"
       PYTHONHASHSEED: "0"
       QUEUE_SHARDS_ARTIFACT_ID: ${{ inputs.queue_shards_artifact_id }}
       DETECTOR_MODEL_ARTIFACT_ID: ${{ inputs.detector_model_artifact_id }}
-      MERGED_METADATA_ARTIFACT_ID: ${{ inputs.merged_metadata_artifact_id }}
       MODEL_IDS_CSV: ${{ inputs.model_ids_csv }}
       OUTPUT_LABEL: ${{ inputs.output_label }}
-      DOWNLOAD_SLEEP_SEC: "0.50"
+      SHARD_ID: ${{ matrix.shard_id }}
+      DOWNLOAD_SLEEP_SEC: "0.75"
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install detector ensemble and merge dependencies
+      - name: Install detector and ensemble dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install numpy pandas Pillow requests ultralytics torch 'transformers>=4.41,<5'
-      - name: Validate request and shared shard runner
+      - name: Validate shard configuration
         run: |
           python - <<'PY'
           import os
           import re
-          for field in ["QUEUE_SHARDS_ARTIFACT_ID", "DETECTOR_MODEL_ARTIFACT_ID", "MERGED_METADATA_ARTIFACT_ID"]:
+          for field in ["QUEUE_SHARDS_ARTIFACT_ID", "DETECTOR_MODEL_ARTIFACT_ID"]:
               value = os.environ[field].strip().replace(",", "").replace("_", "")
               if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
                   raise SystemExit(f"{field} must be a positive artifact ID")
-          models = [model.strip() for model in os.environ["MODEL_IDS_CSV"].split(",") if model.strip()]
+          models = [value.strip() for value in os.environ["MODEL_IDS_CSV"].split(",") if value.strip()]
           if len(models) < 2 or len(models) != len(set(models)):
               raise SystemExit("MODEL_IDS_CSV must contain at least two distinct models")
-          if not all(re.fullmatch(r"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+", model) for model in models):
-              raise SystemExit("MODEL_IDS_CSV must use owner/model identifiers")
+          if not all(re.fullmatch(r"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+", value) for value in models):
+              raise SystemExit("MODEL_IDS_CSV must use owner/model values")
           if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", os.environ["OUTPUT_LABEL"]):
               raise SystemExit("OUTPUT_LABEL is invalid")
           PY
           bash -n ch1_global/v2/40_run_global_ai_inference_shard.sh
-      - name: Run all five shards sequentially
+      - name: Download images detect heads and score automated traits
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash ch1_global/v2/40_run_global_ai_inference_shard.sh
+      - name: Upload compact shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-global-ai-inference-shard-${{ inputs.output_label }}-${{ matrix.shard_id }}
+          path: |
+            queue_shard.csv
+            downloads/download_results.csv
+            downloads/download_manifest.json
+            detector/screening_results.csv
+            detector/yolo_crop_metadata.csv
+            trait_packet_build/trait_packet_report.json
+            trait_ai_ensemble
+            shard_run_summary.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  merge-and-build-analysis-units:
+    name: Merge five global shards and build observation table
+    needs: run-shards
+    if: ${{ needs.run-shards.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      QUEUE_SHARDS_ARTIFACT_ID: ${{ inputs.queue_shards_artifact_id }}
+      MERGED_METADATA_ARTIFACT_ID: ${{ inputs.merged_metadata_artifact_id }}
+      OUTPUT_LABEL: ${{ inputs.output_label }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+      - name: Download queue manifest and global metadata
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p all_shard_results
-          for shard_id in 1 2 3 4 5; do
-            echo "[INFO] Starting global AI inference shard ${shard_id}"
-            rm -rf source downloads detector context trait_packet_build trait_ai_ensemble queue_shard.csv shard_run_summary.json
-            export SHARD_ID="$shard_id"
-            bash ch1_global/v2/40_run_global_ai_inference_shard.sh
-            target="all_shard_results/shard_${shard_id}"
-            mkdir -p "$target/detector" "$target/trait_ai_ensemble"
-            cp queue_shard.csv "$target/queue_shard.csv"
-            cp detector/yolo_crop_metadata.csv "$target/detector/yolo_crop_metadata.csv"
-            cp -R trait_ai_ensemble/. "$target/trait_ai_ensemble/"
-            cp shard_run_summary.json "$target/shard_run_summary.json"
-            echo "[INFO] Finished global AI inference shard ${shard_id}"
+          mkdir -p source/shards/extracted source/metadata/extracted
+          for specification in \
+            "${QUEUE_SHARDS_ARTIFACT_ID}:source/shards/shards.zip:source/shards/extracted" \
+            "${MERGED_METADATA_ARTIFACT_ID}:source/metadata/metadata.zip:source/metadata/extracted"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            unzip -q "$zip_path" -d "$extract_dir"
           done
-      - name: Download merged iNaturalist metadata for final linkage
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          mkdir -p source/metadata/extracted
-          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
-            --header "Authorization: Bearer ${GH_TOKEN}" \
-            --header "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${MERGED_METADATA_ARTIFACT_ID}/zip" \
-            --output source/metadata/metadata.zip
-          unzip -tq source/metadata/metadata.zip
-          unzip -q source/metadata/metadata.zip -d source/metadata/extracted
           test -s source/shards/extracted/global_ai_inference_shard_manifest.csv
           test -s source/metadata/extracted/photo_metadata_merged.csv
-      - name: Merge five shard outputs
+      - name: Download all shard outputs from this workflow run
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-global-ai-inference-shard-${{ inputs.output_label }}-*
+          path: source/results
+          merge-multiple: false
+      - name: Merge compact detector and AI outputs
         run: |
           python ch1_global/v2/41_merge_global_ai_inference_shards.py \
             --shard-manifest source/shards/extracted/global_ai_inference_shard_manifest.csv \
-            --shard-results-root all_shard_results \
+            --shard-results-root source/results \
             --out-dir merged_shards
-      - name: Build final global photo and observation analysis units
+      - name: Build final global head photo and observation tables
         run: |
           python ch1_global/v2/37_build_ai_trait_analysis_units.py \
             --ai-measurements-long merged_shards/global_ai_merged_trait_measurements_long.csv \
@@ -134,15 +171,14 @@ jobs:
           import json
           from pathlib import Path
           import pandas as pd
-
           merged = json.loads(Path("merged_shards/global_ai_shard_merge_provenance.json").read_text(encoding="utf-8"))
           analysis = json.loads(Path("global_ai_analysis_units/ai_trait_analysis_units_provenance.json").read_text(encoding="utf-8"))
           observation = pd.read_csv("global_ai_analysis_units/ai_trait_observation_level_long.csv", dtype=str, keep_default_na=False)
           wide = pd.read_csv("global_ai_analysis_units/ai_trait_observation_level_wide.csv", dtype=str, keep_default_na=False)
           if observation.duplicated(["obs_id", "trait_id"]).any() or len(wide) != observation["obs_id"].nunique():
-              raise SystemExit("Global observation table has broken nesting")
+              raise SystemExit("Global observation nesting is invalid")
           if not merged["semantic_status"].startswith("Fully automated model-derived"):
-              raise SystemExit("Merged table lost fully automated semantics")
+              raise SystemExit("Merged result lost automated-measurement semantics")
           summary = {
               "n_queue_observations": merged["n_queue_observations"],
               "n_detected_heads": merged["n_detected_heads"],
@@ -153,22 +189,13 @@ jobs:
           Path("global_run_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
           print(json.dumps(summary, ensure_ascii=False, indent=2))
           PY
-          {
-            echo "## Fully automated global five-shard run"
-            echo
-            echo '```json'
-            cat global_run_summary.json
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload final global AI trait analysis
-        if: always()
+      - name: Upload final global automated trait analysis
         uses: actions/upload-artifact@v4
         with:
           name: ch1-global-ai-trait-analysis-${{ inputs.output_label }}
           path: |
-            all_shard_results
             merged_shards
             global_ai_analysis_units
             global_run_summary.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 90
