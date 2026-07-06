@@ -1,11 +1,12 @@
 {
-  "registry_version": "ch1_chelsa_v2_1_core_bioclim_v1",
+  "registry_version": "ch1_chelsa_v2_1_core_bioclim_v2",
   "semantic_status": "Predeclared environmental predictor registry for association analyses of fully automated model-derived trait measurements. The registry does not confer causal interpretation.",
   "dataset": {
     "name": "CHELSA V2.1 bioclim",
     "baseline_period": "1981-2010",
     "source_catalog": "https://www.chelsa-climate.org/",
-    "storage_base": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010",
+    "storage_base": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim",
+    "object_layout": "bioXX/1981-2010/CHELSA_bioXX_1981-2010_V.2.1.tif",
     "spatial_resolution_claim": "Source dataset is distributed as CHELSA global bioclim GeoTIFFs; native grid metadata are recorded at extraction time rather than hard-coded here."
   },
   "analysis_role": {
@@ -18,7 +19,7 @@
       "id": "chelsa_bio01",
       "display_name": "annual mean temperature",
       "ecological_axis": "thermal_mean",
-      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio01/CHELSA_bio01_1981-2010_V.2.1.tif",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio01/1981-2010/CHELSA_bio01_1981-2010_V.2.1.tif",
       "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
       "include_primary": true
     },
@@ -26,7 +27,7 @@
       "id": "chelsa_bio04",
       "display_name": "temperature seasonality",
       "ecological_axis": "thermal_seasonality",
-      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio04/CHELSA_bio04_1981-2010_V.2.1.tif",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio04/1981-2010/CHELSA_bio04_1981-2010_V.2.1.tif",
       "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
       "include_primary": true
     },
@@ -34,7 +35,7 @@
       "id": "chelsa_bio12",
       "display_name": "annual precipitation",
       "ecological_axis": "moisture_amount",
-      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio12/CHELSA_bio12_1981-2010_V.2.1.tif",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio12/1981-2010/CHELSA_bio12_1981-2010_V.2.1.tif",
       "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
       "include_primary": true
     },
@@ -42,7 +43,7 @@
       "id": "chelsa_bio15",
       "display_name": "precipitation seasonality",
       "ecological_axis": "moisture_seasonality",
-      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio15/CHELSA_bio15_1981-2010_V.2.1.tif",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio15/1981-2010/CHELSA_bio15_1981-2010_V.2.1.tif",
       "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
       "include_primary": true
     }
