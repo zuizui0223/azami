@@ -3,7 +3,10 @@
 
 Run only after inspecting `queue_species_qc.csv` and `queue_spatial_qc.csv` from
 05_build_image_screening_queue.py. This downloader does not select images, run
-YOLO, or create trait labels.
+YOLO, or create trait labels. HTTP Content-Type metadata is treated as advisory:
+files are accepted only after Pillow confirms that their bytes decode as an
+image. This handles valid iNaturalist/CDN images occasionally served as
+``application/octet-stream`` while still rejecting HTML or other payloads.
 """
 
 from __future__ import annotations
@@ -20,11 +23,12 @@ from typing import Any
 
 import pandas as pd
 import requests
+from PIL import Image, UnidentifiedImageError
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
-DOWNLOAD_VERSION = "1.0.0"
+DOWNLOAD_VERSION = "1.1.0"
 RESULT_FIELDS = ["queue_id", "photo_id", "download_status", "http_status", "bytes_written", "image_local_path", "image_url", "message", "finished_at_utc"]
 
 
@@ -36,7 +40,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-images", type=int, default=0, help="0 means all queue rows that are not already successful.")
     parser.add_argument("--sleep-sec", type=float, default=0.12)
     parser.add_argument("--timeout-sec", type=int, default=60)
-    parser.add_argument("--user-agent", default="azami-ch1-cirsium-image-download/1.0 (research use; contact: rachelzhang0223@gmail.com)")
+    parser.add_argument("--user-agent", default="azami-ch1-cirsium-image-download/1.1 (research use; contact: rachelzhang0223@gmail.com)")
     return parser.parse_args()
 
 
@@ -94,10 +98,27 @@ def append_result(results_path: Path, result: dict[str, Any]) -> None:
         writer.writerow(result)
 
 
+def verify_image(path: Path) -> tuple[bool, str]:
+    """Verify actual image bytes without trusting filename or HTTP MIME metadata."""
+    try:
+        with Image.open(path) as image:
+            image.verify()
+        return True, ""
+    except (UnidentifiedImageError, OSError, ValueError) as error:
+        return False, str(error)
+
+
 def download_one(session: requests.Session, url: str, destination: Path, timeout_sec: int) -> tuple[str, int | None, int, str]:
     if destination.exists() and destination.stat().st_size > 1000:
-        return "success", None, int(destination.stat().st_size), "already present"
+        valid, problem = verify_image(destination)
+        if valid:
+            return "success", None, int(destination.stat().st_size), "already present and Pillow-verified"
+        destination.unlink(missing_ok=True)
+
     temporary = destination.with_suffix(destination.suffix + ".part")
+    temporary.unlink(missing_ok=True)
+    status: int | None = None
+    content_type = ""
     try:
         with session.get(url, stream=True, timeout=(15, timeout_sec)) as response:
             status = response.status_code
@@ -106,8 +127,6 @@ def download_one(session: requests.Session, url: str, destination: Path, timeout
             if status >= 400:
                 return "failed", status, 0, f"HTTP {status}"
             content_type = text(response.headers.get("Content-Type", "")).lower()
-            if "image" not in content_type:
-                return "failed", status, 0, f"non-image content type: {content_type}"
             destination.parent.mkdir(parents=True, exist_ok=True)
             n_bytes = 0
             with temporary.open("wb") as handle:
@@ -118,11 +137,17 @@ def download_one(session: requests.Session, url: str, destination: Path, timeout
         if n_bytes < 1000:
             temporary.unlink(missing_ok=True)
             return "failed", status, n_bytes, "downloaded file is too small"
+        valid, problem = verify_image(temporary)
+        if not valid:
+            temporary.unlink(missing_ok=True)
+            mime_note = f"; content type: {content_type}" if content_type else ""
+            return "failed", status, n_bytes, f"downloaded payload is not a decodable image: {problem}{mime_note}"
         os.replace(temporary, destination)
-        return "success", status, n_bytes, ""
+        mime_note = "" if "image" in content_type else f"accepted after Pillow verification despite content type: {content_type or 'missing'}"
+        return "success", status, n_bytes, mime_note
     except requests.RequestException as error:
         temporary.unlink(missing_ok=True)
-        return "failed", None, 0, str(error)
+        return "failed", status, 0, str(error)
 
 
 def main() -> None:
@@ -169,7 +194,7 @@ def main() -> None:
         n_success += int(result["download_status"] == "success")
         print(f"[INFO] {attempted}/{len(candidates)} {row['queue_id']} -> {result['download_status']}")
         if result["download_status"] == "rate_limited":
-            raise RuntimeError("Stopped after HTTP 429. Wait before resuming; successful rows will be skipped.")
+            raise RuntimeError("Stopped after HTTP 429. Successful rows will be skipped on a subsequent run.")
         time.sleep(args.sleep_sec)
 
     manifest_path.write_text(json.dumps({"download_version": DOWNLOAD_VERSION, "finished_at_utc": utc_now(), "queue": str(queue_path.resolve()), "out_dir": str(out_dir.resolve()), "image_size": args.image_size, "attempted_this_run": attempted, "successful_this_run": n_success}, ensure_ascii=False, indent=2), encoding="utf-8")
