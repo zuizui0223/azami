@@ -1,0 +1,63 @@
+{
+  "registry_version": "ch1_chelsa_v2_1_core_bioclim_v1",
+  "semantic_status": "Predeclared environmental predictor registry for association analyses of fully automated model-derived trait measurements. The registry does not confer causal interpretation.",
+  "dataset": {
+    "name": "CHELSA V2.1 bioclim",
+    "baseline_period": "1981-2010",
+    "source_catalog": "https://www.chelsa-climate.org/",
+    "storage_base": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010",
+    "spatial_resolution_claim": "Source dataset is distributed as CHELSA global bioclim GeoTIFFs; native grid metadata are recorded at extraction time rather than hard-coded here."
+  },
+  "analysis_role": {
+    "primary_predictor_set": "Four predeclared macroclimate axes; no post-hoc variable mining is permitted in the primary association analysis.",
+    "spatial_coordinates": "Latitude and longitude are retained for spatial blocking and sensitivity analysis, not treated as substitutes for climate in the primary predictor set.",
+    "topography_soils": "Excluded from the initial primary predictor set and reserved for separately declared sensitivity analyses."
+  },
+  "predictors": [
+    {
+      "id": "chelsa_bio01",
+      "display_name": "annual mean temperature",
+      "ecological_axis": "thermal_mean",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio01/CHELSA_bio01_1981-2010_V.2.1.tif",
+      "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
+      "include_primary": true
+    },
+    {
+      "id": "chelsa_bio04",
+      "display_name": "temperature seasonality",
+      "ecological_axis": "thermal_seasonality",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio04/CHELSA_bio04_1981-2010_V.2.1.tif",
+      "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
+      "include_primary": true
+    },
+    {
+      "id": "chelsa_bio12",
+      "display_name": "annual precipitation",
+      "ecological_axis": "moisture_amount",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio12/CHELSA_bio12_1981-2010_V.2.1.tif",
+      "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
+      "include_primary": true
+    },
+    {
+      "id": "chelsa_bio15",
+      "display_name": "precipitation seasonality",
+      "ecological_axis": "moisture_seasonality",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/1981-2010/bio15/CHELSA_bio15_1981-2010_V.2.1.tif",
+      "value_handling": "Extract source-native raster values and record scale, offset, nodata, units, and tags. Primary model code standardizes extracted numeric values without assuming undocumented unit transformations.",
+      "include_primary": true
+    }
+  ],
+  "coordinate_policy": {
+    "environmental_coordinate_requirement": "Use only observations already marked coordinate_usable_for_environment=true.",
+    "precision_tiers_m": {
+      "high": 1000,
+      "moderate": 10000
+    },
+    "primary_model_precision_rule": "Do not silently discard observations by positional accuracy at environmental extraction. Export precision tier and run a <=10 km sensitivity analysis before interpretation."
+  },
+  "spatial_policy": {
+    "report_blocks_deg": [5, 10],
+    "primary_validation_block_deg": 10,
+    "rule": "Use spatial blocks for grouped validation and residual diagnostics; do not infer independence from multiple observations in the same block."
+  }
+}
