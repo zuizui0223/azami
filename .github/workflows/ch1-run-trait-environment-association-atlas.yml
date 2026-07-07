@@ -66,6 +66,7 @@ jobs:
           PY
           python -m py_compile ch1_global/v2/43_run_trait_environment_association_atlas.py
           python -m py_compile ch1_global/v2/44_run_trait_environment_association_atlas_hardened.py
+          python -m py_compile ch1_global/v2/46_run_trait_environment_association_atlas_reportfix.py
           python -m py_compile ch1_global/v2/45_run_trait_environment_association_sensitivity.py
 
       - name: Download CHELSA-enriched global trait artifact
