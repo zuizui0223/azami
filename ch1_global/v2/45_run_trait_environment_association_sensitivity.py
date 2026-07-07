@@ -5,8 +5,9 @@ The two cohorts are intentionally produced side by side:
 - all_coordinate_eligible: all rows with complete predeclared environmental predictors.
 - positional_accuracy_le_10km: rows with iNaturalist positional accuracy <=10 km.
 
-The script invokes the hardened atlas unchanged for each cohort, preventing the
-precision sensitivity comparison from using different modelling rules.
+The script invokes the report-safe hardened atlas unchanged for each cohort,
+preventing the precision sensitivity comparison from using different modelling
+rules while retaining a valid report/provenance output.
 """
 
 from __future__ import annotations
@@ -23,7 +24,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parent
-HARDENED = ROOT / "44_run_trait_environment_association_atlas_hardened.py"
+HARDENED = ROOT / "46_run_trait_environment_association_atlas_reportfix.py"
 
 
 def parse_args() -> argparse.Namespace:
