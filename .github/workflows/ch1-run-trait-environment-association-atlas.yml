@@ -6,6 +6,7 @@ on:
       environment_artifact_id:
         description: "CHELSA-enriched global AI trait artifact ID"
         required: true
+        default: "8140178517"
         type: string
       n_folds:
         description: "Requested grouped folds for spatial and held-out-species validation"
@@ -24,9 +25,9 @@ permissions:
 
 jobs:
   association-atlas:
-    name: Run spatial and species-aware climate association atlas
+    name: Run spatial species-aware and coordinate-precision climate atlas
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +41,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pandas scikit-learn tabulate
 
-      - name: Validate request
+      - name: Validate request and runner syntax
         env:
           ARTIFACT_RAW: ${{ inputs.environment_artifact_id }}
           FOLDS_RAW: ${{ inputs.n_folds }}
@@ -65,6 +66,7 @@ jobs:
           PY
           python -m py_compile ch1_global/v2/43_run_trait_environment_association_atlas.py
           python -m py_compile ch1_global/v2/44_run_trait_environment_association_atlas_hardened.py
+          python -m py_compile ch1_global/v2/45_run_trait_environment_association_sensitivity.py
 
       - name: Download CHELSA-enriched global trait artifact
         env:
@@ -85,9 +87,9 @@ jobs:
           test -n "$PROVENANCE"
           echo "ENVIRONMENT_ROOT=$(dirname "$LONG")" >> "$GITHUB_ENV"
 
-      - name: Run association atlas
+      - name: Run full and <=10 km coordinate-precision association atlases
         run: |
-          python ch1_global/v2/44_run_trait_environment_association_atlas_hardened.py \
+          python ch1_global/v2/45_run_trait_environment_association_sensitivity.py \
             --environment-long "$ENVIRONMENT_ROOT/global_ai_trait_observation_environment_long.csv" \
             --environment-provenance "$ENVIRONMENT_ROOT/environment_analysis_provenance.json" \
             --plan ch1_global/v2/ontology/ch1_trait_environment_association_plan.json \
@@ -95,7 +97,7 @@ jobs:
             --n-folds "$N_FOLDS" \
             --seed 20260706
 
-      - name: Validate association outputs
+      - name: Validate atlas and coordinate-precision sensitivity outputs
         run: |
           python - <<'PY'
           import json
@@ -103,32 +105,43 @@ jobs:
           import pandas as pd
 
           root = Path("trait_environment_association_atlas")
-          feasibility = pd.read_csv(root / "trait_environment_state_feasibility.csv", dtype=str, keep_default_na=False)
-          status = pd.read_csv(root / "trait_environment_model_status.csv", dtype=str, keep_default_na=False)
-          coefficients = pd.read_csv(root / "trait_environment_model_coefficients.csv", dtype=str, keep_default_na=False)
-          validation = pd.read_csv(root / "trait_environment_grouped_validation.csv", dtype=str, keep_default_na=False)
-          provenance = json.loads((root / "trait_environment_association_provenance.json").read_text(encoding="utf-8"))
-          required_modes = {"all_ensemble_winner", "conservative_strict_consensus"}
-          if feasibility.empty or not required_modes.issubset(set(feasibility["measurement_mode"])):
-              raise SystemExit("Both model-defined measurement modes must be screened")
-          if feasibility.duplicated(["measurement_mode", "trait_id", "trait_state"]).any():
-              raise SystemExit("Duplicate trait-state feasibility rows")
-          if not set(feasibility["trait_tier"]).issubset({"primary", "secondary", "exploratory", "not_predeclared"}):
-              raise SystemExit("Unexpected trait tier")
-          if not set(status["model_family"]).issubset({"all", "climate_only", "species_adjusted_within_species"}):
-              raise SystemExit("Unexpected model family")
-          if not coefficients.empty and not set(coefficients["model_family"]).issubset({"climate_only", "species_adjusted_within_species"}):
-              raise SystemExit("Coefficient model family is invalid")
-          allowed_schemes = {"spatial_block_10deg", "held_out_species", "spatial_block_10deg_within_species"}
-          if not validation.empty and not set(validation["validation_scheme"].dropna()).issubset(allowed_schemes):
-              raise SystemExit("Unexpected validation scheme")
+          comparison = pd.read_csv(root / "coordinate_precision_sensitivity_cohort_summary.csv", dtype=str, keep_default_na=False)
+          wrapper_provenance = json.loads((root / "coordinate_precision_sensitivity_provenance.json").read_text(encoding="utf-8"))
+          expected = {"all_coordinate_eligible", "positional_accuracy_le_10km"}
+          if set(comparison["cohort"]) != expected:
+              raise SystemExit("Both full and <=10 km coordinate-precision cohorts are required")
+          cohort_summaries = []
+          for cohort in sorted(expected):
+              cohort_root = root / cohort
+              feasibility = pd.read_csv(cohort_root / "trait_environment_state_feasibility.csv", dtype=str, keep_default_na=False)
+              status = pd.read_csv(cohort_root / "trait_environment_model_status.csv", dtype=str, keep_default_na=False)
+              coefficients = pd.read_csv(cohort_root / "trait_environment_model_coefficients.csv", dtype=str, keep_default_na=False)
+              validation = pd.read_csv(cohort_root / "trait_environment_grouped_validation.csv", dtype=str, keep_default_na=False)
+              provenance = json.loads((cohort_root / "trait_environment_association_provenance.json").read_text(encoding="utf-8"))
+              required_modes = {"all_ensemble_winner", "conservative_strict_consensus"}
+              if feasibility.empty or not required_modes.issubset(set(feasibility["measurement_mode"])):
+                  raise SystemExit(f"Both measurement modes must be screened for {cohort}")
+              if feasibility.duplicated(["measurement_mode", "trait_id", "trait_state"]).any():
+                  raise SystemExit(f"Duplicate trait-state feasibility rows for {cohort}")
+              if not set(feasibility["trait_tier"]).issubset({"primary", "secondary", "exploratory", "not_predeclared"}):
+                  raise SystemExit(f"Unexpected trait tier for {cohort}")
+              if not set(status["model_family"]).issubset({"all", "climate_only", "species_adjusted_within_species"}):
+                  raise SystemExit(f"Unexpected model family for {cohort}")
+              allowed_schemes = {"spatial_block_10deg", "held_out_species", "spatial_block_10deg_within_species"}
+              if not validation.empty and not set(validation["validation_scheme"].dropna()).issubset(allowed_schemes):
+                  raise SystemExit(f"Unexpected validation scheme for {cohort}")
+              cohort_summaries.append({
+                  "cohort": cohort,
+                  "n_state_outcomes_screened": int(len(feasibility)),
+                  "n_state_outcomes_eligible": int(feasibility["eligibility_status"].eq("eligible").sum()),
+                  "n_coefficient_rows": int(len(coefficients)),
+                  "n_validation_rows": int(len(validation)),
+                  "n_successful_grouped_validation_rows": int(validation["status"].eq("success").sum()) if not validation.empty else 0,
+                  "semantic_status": provenance["semantic_status"],
+              })
           summary = {
-              "n_state_outcomes_screened": int(len(feasibility)),
-              "n_state_outcomes_eligible": int(feasibility["eligibility_status"].eq("eligible").sum()),
-              "n_coefficient_rows": int(len(coefficients)),
-              "n_validation_rows": int(len(validation)),
-              "n_successful_grouped_validation_rows": int(validation["status"].eq("success").sum()) if not validation.empty else 0,
-              "semantic_status": provenance["semantic_status"],
+              "coordinate_precision_sensitivity": cohort_summaries,
+              "wrapper_semantic_status": wrapper_provenance["semantic_status"],
           }
           (root / "association_run_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
           print(json.dumps(summary, ensure_ascii=False, indent=2))
