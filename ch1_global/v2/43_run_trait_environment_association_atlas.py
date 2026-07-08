@@ -46,6 +46,9 @@ REQUIRED_COLUMNS = {
     "observation_ai_conservative_state",
 }
 
+MODEL_SOLVER = "liblinear"
+MODEL_MAX_ITER = 1000
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run spatial and species-aware climate association atlas for automated trait states.")
@@ -97,12 +100,14 @@ def fold_iterator(groups: pd.Series, n_requested: int):
 
 
 def make_classifier(C: float, class_weight: str | None, seed: int) -> LogisticRegression:
+    # liblinear is much faster and more stable for the small-to-medium binary
+    # L2 logistic models used here, especially the species-dummy fits. The model
+    # family remains an L2-regularized binary logistic classifier.
     return LogisticRegression(
-        penalty="l2",
         C=float(C),
         class_weight=class_weight,
-        solver="lbfgs",
-        max_iter=5000,
+        solver=MODEL_SOLVER,
+        max_iter=MODEL_MAX_ITER,
         random_state=int(seed),
     )
 
@@ -123,7 +128,7 @@ def full_climate_coefficients(
         x = scaler.fit_transform(frame[predictors].to_numpy(dtype=float))
         classifier = make_classifier(C, class_weight, seed)
         classifier.fit(x, y)
-    except Exception as error:  # explicit output status is more useful than a silent missing model
+    except Exception as error:
         return [], f"fit_error:{type(error).__name__}:{error}"
     rows: list[dict[str, Any]] = []
     for predictor, coefficient in zip(predictors, classifier.coef_[0].tolist()):
@@ -264,15 +269,13 @@ def cv_species_adjusted_spatial(
     x_all = frame[predictors].to_numpy(dtype=float)
     taxa = frame["taxon_name"].astype(str).to_numpy()
     for fold, (train_idx, test_idx) in enumerate(splitter.split(x_all, y, groups_array), start=1):
-        train = frame.iloc[train_idx].copy()
-        train_y = y[train_idx]
-        test = frame.iloc[test_idx].copy()
-        test_y = y[test_idx]
-        train["_outcome"] = train_y
-        variation = train.groupby("taxon_name", observed=True)["_outcome"].nunique()
+        train_y_all = y[train_idx]
+        train_taxa_all = taxa[train_idx]
+        test_taxa_all = taxa[test_idx]
+        variation = pd.DataFrame({"taxon_name": train_taxa_all, "outcome": train_y_all}).groupby("taxon_name", observed=True)["outcome"].nunique()
         variable_species = sorted(variation.loc[variation >= 2].index.astype(str).tolist())
-        train_keep = np.isin(taxa[train_idx], variable_species)
-        test_keep = np.isin(taxa[test_idx], variable_species)
+        train_keep = np.isin(train_taxa_all, variable_species)
+        test_keep = np.isin(test_taxa_all, variable_species)
         base = {
             **common,
             "model_family": "species_adjusted_within_species",
@@ -288,8 +291,8 @@ def cv_species_adjusted_spatial(
         if train_keep.sum() < 2 or test_keep.sum() < 2:
             rows.append({**base, "status": "insufficient_variable_species_overlap", "n_test_positive": np.nan, "positive_prevalence_test": np.nan, "roc_auc": np.nan, "balanced_accuracy": np.nan})
             continue
-        y_train = train_y[train_keep]
-        y_test = test_y[test_keep]
+        y_train = train_y_all[train_keep]
+        y_test = y[test_idx][test_keep]
         if len(np.unique(y_train)) < 2:
             rows.append({**base, "status": "unscorable_train_one_class", "n_test_positive": int(y_test.sum()), "positive_prevalence_test": float(y_test.mean()), "roc_auc": np.nan, "balanced_accuracy": np.nan})
             continue
@@ -300,10 +303,12 @@ def cv_species_adjusted_spatial(
             scaler = StandardScaler()
             climate_train = scaler.fit_transform(x_all[train_idx][train_keep])
             climate_test = scaler.transform(x_all[test_idx][test_keep])
-            train_taxa = pd.Series(taxa[train_idx][train_keep], name="taxon_name")
-            test_taxa = pd.Series(taxa[test_idx][test_keep], name="taxon_name")
-            train_dummy = pd.get_dummies(train_taxa, drop_first=True, dtype=float)
-            test_dummy = pd.get_dummies(test_taxa, drop_first=True, dtype=float).reindex(columns=train_dummy.columns, fill_value=0.0)
+            categories = sorted(set(train_taxa_all[train_keep].tolist()))
+            train_categories = pd.Categorical(train_taxa_all[train_keep], categories=categories)
+            test_categories = pd.Categorical(test_taxa_all[test_keep], categories=categories)
+            train_dummy = pd.get_dummies(train_categories, drop_first=True, dtype=float)
+            test_dummy = pd.get_dummies(test_categories, drop_first=True, dtype=float)
+            test_dummy = test_dummy.reindex(columns=train_dummy.columns, fill_value=0.0)
             x_train = np.column_stack([climate_train, train_dummy.to_numpy(dtype=float)])
             x_test = np.column_stack([climate_test, test_dummy.to_numpy(dtype=float)])
             classifier = make_classifier(C, class_weight, seed + fold)
@@ -319,7 +324,14 @@ def cv_species_adjusted_spatial(
                 "balanced_accuracy": float(balanced_accuracy_score(y_test, prediction)),
             })
         except Exception as error:
-            rows.append({**base, "status": f"fit_error:{type(error).__name__}:{error}", "n_test_positive": int(y_test.sum()), "positive_prevalence_test": float(y_test.mean()), "roc_auc": np.nan, "balanced_accuracy": np.nan})
+            rows.append({
+                **base,
+                "status": f"fit_error:{type(error).__name__}:{error}",
+                "n_test_positive": int(y_test.sum()),
+                "positive_prevalence_test": float(y_test.mean()),
+                "roc_auc": np.nan,
+                "balanced_accuracy": np.nan,
+            })
     return rows
 
 
@@ -337,7 +349,7 @@ def outcome_summary_markdown(
     predictors: list[str],
     plan: dict[str, Any],
 ) -> str:
-    eligible = statuses.loc[statuses["eligibility_status"].eq("eligible")].copy() if not statuses.empty else statuses
+    eligible = statuses.loc[statuses["eligibility_status"].eq("eligible")].copy() if "eligibility_status" in statuses.columns and not statuses.empty else statuses
     lines = [
         "# Ch.1 trait–environment association atlas",
         "",
@@ -347,12 +359,13 @@ def outcome_summary_markdown(
         f"- Predictors: {', '.join(predictors)}",
         "- Measurement modes: all-ensemble winner and conservative strict-consensus.",
         "- Validation: grouped 10-degree spatial blocks, plus held-out species for climate-only models.",
+        f"- Logistic model backend: L2 binary logistic regression, solver={MODEL_SOLVER}, max_iter={MODEL_MAX_ITER}.",
         "- No random-split headline metrics, p-values, phylogenetic claims, or causal interpretation are included.",
         "",
         "## Eligible state outcomes",
         f"- Number eligible for modelling: {len(eligible)}",
     ]
-    if not eligible.empty:
+    if not eligible.empty and {"measurement_mode", "trait_id", "trait_state", "trait_tier", "n_positive", "n_negative", "n_positive_species", "n_positive_spatial_blocks_10deg"}.issubset(eligible.columns):
         lines.append(eligible[["measurement_mode", "trait_id", "trait_state", "trait_tier", "n_positive", "n_negative", "n_positive_species", "n_positive_spatial_blocks_10deg"]].to_markdown(index=False))
     lines.extend(["", "## Validation summary", ""])
     if not validation.empty:
@@ -406,6 +419,22 @@ def main() -> None:
     if work.empty:
         raise ValueError("No environment-complete trait rows remain after numeric and grouping checks")
 
+    print(
+        json.dumps(
+            {
+                "event": "association_input_ready",
+                "n_trait_rows": int(len(work)),
+                "n_observations": int(work["obs_id"].nunique()),
+                "n_species": int(work["taxon_name"].nunique()),
+                "n_spatial_blocks_10deg": int(work["spatial_block_10deg"].nunique()),
+                "solver": MODEL_SOLVER,
+                "max_iter": MODEL_MAX_ITER,
+            },
+            ensure_ascii=False,
+        ),
+        flush=True,
+    )
+
     eligibility = plan["eligibility"]
     exclusion = {text(value) for value in plan["input_policy"]["exclude_states"]}
     excluded_traits = {text(value) for value in plan["input_policy"]["exclude_traits"]}
@@ -448,7 +477,7 @@ def main() -> None:
                     and int(positive["spatial_block_10deg"].nunique()) >= int(eligibility["minimum_positive_spatial_blocks_10deg"])
                     and int(frame["spatial_block_10deg"].nunique()) >= int(eligibility["minimum_total_spatial_blocks_10deg"])
                 )
-                feasibility_rows.append({
+                feasibility_row = {
                     **common,
                     "n_observations": int(len(frame)),
                     "n_positive": n_positive,
@@ -460,10 +489,26 @@ def main() -> None:
                     "n_precision_le_10km": int(frame["coordinate_precision_tier"].isin(["high_le_1km", "moderate_1_to_10km"]).sum()),
                     "eligibility_status": "eligible" if eligible else "insufficient_support",
                     "eligibility_rule": "positive>=100; negative>=100; positive species>=10; positive 10-degree blocks>=10; total 10-degree blocks>=10",
-                })
+                }
+                feasibility_rows.append(feasibility_row)
                 if not eligible:
                     status_rows.append({**common, "model_family": "all", "status": "not_run_insufficient_support"})
                     continue
+
+                print(
+                    json.dumps(
+                        {
+                            "event": "fit_trait_state",
+                            "measurement_mode": mode_id,
+                            "trait_id": trait_id,
+                            "trait_state": trait_state,
+                            "n_observations": int(len(frame)),
+                            "n_positive": n_positive,
+                        },
+                        ensure_ascii=False,
+                    ),
+                    flush=True,
+                )
 
                 climate_coefficients, climate_status = full_climate_coefficients(
                     frame, predictors, y, C, class_weight, args.seed, common
@@ -523,7 +568,6 @@ def main() -> None:
     statuses.to_csv(output / "trait_environment_model_status.csv", index=False, encoding="utf-8-sig")
     coefficients.to_csv(output / "trait_environment_model_coefficients.csv", index=False, encoding="utf-8-sig")
     validation.to_csv(output / "trait_environment_grouped_validation.csv", index=False, encoding="utf-8-sig")
-    outcome_summary_markdown(statuses, coefficients, validation, predictors, plan).replace("\r\n", "\n")
     (output / "trait_environment_association_report.md").write_text(
         outcome_summary_markdown(statuses, coefficients, validation, predictors, plan), encoding="utf-8"
     )
@@ -538,6 +582,13 @@ def main() -> None:
         "n_coefficient_rows": int(len(coefficients)),
         "n_validation_rows": int(len(validation)),
         "predictors": predictors,
+        "model_backend": {
+            "family": "L2-regularized binary logistic regression",
+            "solver": MODEL_SOLVER,
+            "max_iter": MODEL_MAX_ITER,
+            "class_weight": class_weight,
+            "regularization_C": C,
+        },
         "analysis_plan_version": plan.get("plan_version", ""),
         "environment_provenance_sha256": sha256_file(provenance_path),
         "input_sha256": {
@@ -551,7 +602,7 @@ def main() -> None:
     (output / "trait_environment_association_provenance.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    print(json.dumps(summary, ensure_ascii=False, indent=2))
+    print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
 
 
 if __name__ == "__main__":
