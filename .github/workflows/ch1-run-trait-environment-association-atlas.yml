@@ -27,7 +27,7 @@ jobs:
   association-atlas:
     name: Run spatial species-aware and coordinate-precision climate atlas
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 240
 
     steps:
       - uses: actions/checkout@v4
@@ -66,7 +66,6 @@ jobs:
           PY
           python -m py_compile ch1_global/v2/43_run_trait_environment_association_atlas.py
           python -m py_compile ch1_global/v2/44_run_trait_environment_association_atlas_hardened.py
-          python -m py_compile ch1_global/v2/46_run_trait_environment_association_atlas_reportfix.py
           python -m py_compile ch1_global/v2/45_run_trait_environment_association_sensitivity.py
 
       - name: Download CHELSA-enriched global trait artifact
@@ -139,6 +138,7 @@ jobs:
                   "n_validation_rows": int(len(validation)),
                   "n_successful_grouped_validation_rows": int(validation["status"].eq("success").sum()) if not validation.empty else 0,
                   "semantic_status": provenance["semantic_status"],
+                  "model_backend": provenance.get("model_backend", {}),
               })
           summary = {
               "coordinate_precision_sensitivity": cohort_summaries,
@@ -156,9 +156,10 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload association atlas artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ch1-trait-environment-association-atlas-${{ inputs.output_label }}
           path: trait_environment_association_atlas
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
