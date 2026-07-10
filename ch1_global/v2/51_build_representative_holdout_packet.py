@@ -29,23 +29,23 @@ UNASSESSABLE = {"", "unassessable"}
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser()
-    p.add_argument("--head-traits", required=True)
-    p.add_argument("--yolo-crops", required=True)
-    p.add_argument("--out-dir", required=True)
-    p.add_argument("--ontology", default=None, help="Optional ontology CSV copied into each public packet")
-    p.add_argument("--traits", nargs="+", default=list(DEFAULT_TRAITS))
-    p.add_argument("--measurement-mode", choices=["conservative", "all"], default="conservative")
-    p.add_argument("--n-tasks-per-trait", type=int, default=120)
-    p.add_argument("--double-label-fraction", type=float, default=0.25)
-    p.add_argument("--species-diagnostic-taxa", type=int, default=12)
-    p.add_argument("--species-diagnostic-records", type=int, default=7)
-    p.add_argument("--context-pad-ratio", type=float, default=1.5)
-    p.add_argument("--seed", default="20260710")
-    p.add_argument("--sleep-sec", type=float, default=0.15)
-    p.add_argument("--timeout-sec", type=float, default=60.0)
-    p.add_argument("--retries", type=int, default=4)
-    return p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--head-traits", required=True)
+    parser.add_argument("--yolo-crops", required=True)
+    parser.add_argument("--out-dir", required=True)
+    parser.add_argument("--ontology", default=None, help="Optional ontology CSV copied into each public packet")
+    parser.add_argument("--traits", nargs="+", default=list(DEFAULT_TRAITS))
+    parser.add_argument("--measurement-mode", choices=["conservative", "all"], default="conservative")
+    parser.add_argument("--n-tasks-per-trait", type=int, default=120)
+    parser.add_argument("--double-label-fraction", type=float, default=0.25)
+    parser.add_argument("--species-diagnostic-taxa", type=int, default=12)
+    parser.add_argument("--species-diagnostic-records", type=int, default=7)
+    parser.add_argument("--context-pad-ratio", type=float, default=1.5)
+    parser.add_argument("--seed", default="20260710")
+    parser.add_argument("--sleep-sec", type=float, default=0.15)
+    parser.add_argument("--timeout-sec", type=float, default=60.0)
+    parser.add_argument("--retries", type=int, default=4)
+    return parser.parse_args()
 
 
 def text(value: Any) -> str:
@@ -70,29 +70,42 @@ def block_10deg(latitude: Any, longitude: Any) -> str:
 
 
 def representative_sample(part: pd.DataFrame, n_target: int, seed: str) -> pd.DataFrame:
+    """Deterministic proportional sample over taxon x 10-degree spatial cells."""
     if part.empty or n_target <= 0:
         return part.head(0)
     part = part.copy()
-    part["_rank"] = part["annotation_unit_id"].map(lambda v: stable_rank(text(v), seed))
-    strata = [
-        group.sort_values("_rank")
-        for _, group in sorted(part.groupby(["taxon_name", "spatial_block_10deg"], sort=True), key=lambda kv: str(kv[0]))
-    ]
-    picked: list[pd.Series] = []
-    cursor = 0
     limit = min(n_target, len(part))
-    while len(picked) < limit:
-        advanced = False
-        for group in strata:
-            if cursor < len(group):
-                picked.append(group.iloc[cursor])
-                advanced = True
-                if len(picked) >= limit:
-                    break
-        if not advanced:
-            break
-        cursor += 1
-    return pd.DataFrame(picked).drop(columns="_rank", errors="ignore")
+    part["_rank"] = part["annotation_unit_id"].map(lambda value: stable_rank(text(value), seed))
+    group_columns = ["taxon_name", "spatial_block_10deg"]
+    counts = part.groupby(group_columns, sort=True).size().rename("cell_size").reset_index()
+    counts["exact_allocation"] = counts["cell_size"] * limit / len(part)
+    counts["allocation"] = counts["exact_allocation"].map(math.floor).astype(int)
+    counts["fractional_remainder"] = counts["exact_allocation"] - counts["allocation"]
+    counts["_tie_rank"] = [
+        stable_rank(f"{taxon}|{block}", f"{seed}:allocation")
+        for taxon, block in zip(counts["taxon_name"], counts["spatial_block_10deg"])
+    ]
+    remainder = limit - int(counts["allocation"].sum())
+    if remainder > 0:
+        order = counts.sort_values(
+            ["fractional_remainder", "_tie_rank"], ascending=[False, True]
+        ).index[:remainder]
+        counts.loc[order, "allocation"] += 1
+    if int(counts["allocation"].sum()) != limit or (counts["allocation"] > counts["cell_size"]).any():
+        raise ValueError("Proportional-stratified allocation failed")
+
+    allocation = counts.set_index(group_columns)["allocation"]
+    picked: list[pd.DataFrame] = []
+    for keys, group in part.groupby(group_columns, sort=True):
+        n = int(allocation.loc[keys])
+        if n:
+            picked.append(group.sort_values("_rank").head(n))
+    if not picked:
+        return part.head(0).drop(columns="_rank", errors="ignore")
+    result = pd.concat(picked, ignore_index=True).drop(columns="_rank", errors="ignore")
+    if len(result) != limit:
+        raise ValueError("Proportional-stratified sample has an unexpected size")
+    return result
 
 
 def require(frame: pd.DataFrame, columns: set[str], label: str) -> None:
@@ -105,9 +118,16 @@ def annotation_unit_from_yolo(row: pd.Series) -> str:
     return f"{queue}_head_{int(float(row['det_index'])) + 1:02d}"
 
 
-def download_image(session: requests.Session, urls: list[str], target: Path, timeout: float, retries: int, sleep_sec: float) -> str:
+def download_image(
+    session: requests.Session,
+    urls: list[str],
+    target: Path,
+    timeout: float,
+    retries: int,
+    sleep_sec: float,
+) -> str:
     last_error = ""
-    for url in [u for u in urls if u]:
+    for url in [value for value in urls if value]:
         for attempt in range(1, retries + 1):
             temporary: Path | None = None
             try:
@@ -141,12 +161,12 @@ def crop_box(image: Image.Image, row: pd.Series, pad_ratio: float) -> tuple[Imag
     bottom = max(top + 1, min(height, math.ceil(y2)))
     head = image.crop((left, top, right, bottom)).convert("RGB")
 
-    box_w, box_h = right - left, bottom - top
-    c_left = max(0, math.floor(left - pad_ratio * box_w))
-    c_top = max(0, math.floor(top - pad_ratio * box_h))
-    c_right = min(width, math.ceil(right + pad_ratio * box_w))
-    c_bottom = min(height, math.ceil(bottom + pad_ratio * box_h))
-    context = image.crop((c_left, c_top, c_right, c_bottom)).convert("RGB")
+    box_width, box_height = right - left, bottom - top
+    context_left = max(0, math.floor(left - pad_ratio * box_width))
+    context_top = max(0, math.floor(top - pad_ratio * box_height))
+    context_right = min(width, math.ceil(right + pad_ratio * box_width))
+    context_bottom = min(height, math.ceil(bottom + pad_ratio * box_height))
+    context = image.crop((context_left, context_top, context_right, context_bottom)).convert("RGB")
     return head, context
 
 
@@ -168,7 +188,7 @@ def main() -> None:
     require(yolo, {
         "queue_id", "obs_id", "photo_id", "det_index", "latitude", "longitude",
         "medium_image_url", "small_image_url", "source_file_stem",
-        "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2"
+        "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2",
     }, "YOLO crops")
     if head.duplicated(["annotation_unit_id", "trait_id"]).any():
         raise ValueError("Head-trait rows must be unique by annotation_unit_id/trait_id")
@@ -177,18 +197,23 @@ def main() -> None:
     yolo["annotation_unit_id"] = yolo.apply(annotation_unit_from_yolo, axis=1)
     if yolo["annotation_unit_id"].duplicated().any():
         raise ValueError("Derived YOLO annotation_unit_id values are not unique")
-    yolo["spatial_block_10deg"] = [block_10deg(a, b) for a, b in zip(yolo["latitude"], yolo["longitude"])]
+    yolo["spatial_block_10deg"] = [
+        block_10deg(latitude, longitude)
+        for latitude, longitude in zip(yolo["latitude"], yolo["longitude"])
+    ]
 
     selected_head = head.loc[head["trait_id"].isin(args.traits)].copy()
     selected_head["ai_candidate_state"] = selected_head[state_column].map(text)
     selected_head = selected_head[["annotation_unit_id", "trait_id", "taxon_name", "obs_id", "ai_candidate_state"]]
     selected_head = selected_head.loc[~selected_head["ai_candidate_state"].isin(UNASSESSABLE)].copy()
-    meta_columns = [
+    metadata_columns = [
         "annotation_unit_id", "queue_id", "obs_id", "photo_id", "det_index", "latitude", "longitude",
         "spatial_block_10deg", "medium_image_url", "small_image_url", "source_file_stem",
-        "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2"
+        "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2",
     ]
-    candidates = selected_head.merge(yolo[meta_columns], on=["annotation_unit_id", "obs_id"], how="inner", validate="many_to_one")
+    candidates = selected_head.merge(
+        yolo[metadata_columns], on=["annotation_unit_id", "obs_id"], how="inner", validate="many_to_one"
+    )
     candidates = candidates.loc[candidates["spatial_block_10deg"].ne("")].copy()
     if candidates.empty:
         raise ValueError("No representative holdout candidates remain")
@@ -203,7 +228,8 @@ def main() -> None:
         candidate_counts = part.groupby("taxon_name")["annotation_unit_id"].nunique()
         eligible_taxa = candidate_counts.loc[candidate_counts.ge(args.species_diagnostic_records)].index.tolist()
         diagnostic_taxa = sorted(
-            eligible_taxa, key=lambda taxon: stable_rank(taxon, f"{args.seed}:{trait}:species_diagnostic")
+            eligible_taxa,
+            key=lambda taxon: stable_rank(taxon, f"{args.seed}:{trait}:species_diagnostic"),
         )[: args.species_diagnostic_taxa]
         used_units = set(population["annotation_unit_id"])
         topups: list[pd.DataFrame] = []
@@ -224,12 +250,21 @@ def main() -> None:
             addition["selection_stratum"] = "species_diagnostic_topup"
             topups.append(addition)
             used_units.update(addition["annotation_unit_id"])
-        diagnostic_topup = pd.concat(topups, ignore_index=True) if topups else part.head(0).assign(selection_stratum="")
+        diagnostic_topup = (
+            pd.concat(topups, ignore_index=True)
+            if topups
+            else part.head(0).assign(selection_stratum="")
+        )
         chosen = pd.concat([population, diagnostic_topup], ignore_index=True)
         if chosen.duplicated(["annotation_unit_id", "trait_id"]).any():
             raise ValueError(f"Duplicate representative/species-diagnostic tasks for {trait}")
-        diagnostic_counts = chosen.loc[chosen["taxon_name"].isin(diagnostic_taxa)].groupby("taxon_name").size()
-        if diagnostic_taxa and (len(diagnostic_counts) != len(diagnostic_taxa) or diagnostic_counts.min() < args.species_diagnostic_records):
+        diagnostic_counts = chosen.loc[
+            chosen["taxon_name"].isin(diagnostic_taxa)
+        ].groupby("taxon_name").size()
+        if diagnostic_taxa and (
+            len(diagnostic_counts) != len(diagnostic_taxa)
+            or diagnostic_counts.min() < args.species_diagnostic_records
+        ):
             raise ValueError(f"Species diagnostic coverage is incomplete for {trait}")
 
         chosen_parts.append(chosen)
@@ -243,11 +278,14 @@ def main() -> None:
             "n_species_diagnostic_taxa": int(len(diagnostic_taxa)),
             "species_diagnostic_records_target": int(args.species_diagnostic_records),
         }
+
     selected = pd.concat(chosen_parts, ignore_index=True)
-    selected["task_id"] = [f"representative_holdout_{i:05d}" for i in range(1, len(selected) + 1)]
-    selected["_double_rank"] = selected["task_id"].map(lambda v: stable_rank(v, args.seed))
-    n_double = int(round(len(selected) * args.double_label_fraction))
-    double_ids = set(selected.sort_values("_double_rank").head(n_double)["task_id"])
+    selected["task_id"] = [f"representative_holdout_{index:05d}" for index in range(1, len(selected) + 1)]
+    selected["_double_rank"] = selected["task_id"].map(lambda value: stable_rank(value, args.seed))
+    double_ids: set[str] = set()
+    for trait, group in selected.groupby("trait_id", sort=True):
+        n_double = int(round(len(group) * args.double_label_fraction))
+        double_ids.update(group.sort_values("_double_rank").head(n_double)["task_id"])
     selected["double_label"] = selected["task_id"].isin(double_ids)
 
     out = Path(args.out_dir)
@@ -268,8 +306,8 @@ def main() -> None:
 
     for _, row in unique_units.iterrows():
         photo_id = text(row["photo_id"])
-        source_rel = f"source_images/inat_photo_{photo_id}.jpg"
-        source_path = public_root / source_rel
+        source_relative = f"source_images/inat_photo_{photo_id}.jpg"
+        source_path = public_root / source_relative
         try:
             if not source_path.exists():
                 used_url = download_image(
@@ -287,21 +325,30 @@ def main() -> None:
                 image.load()
                 head_crop, context_crop = crop_box(image, row, args.context_pad_ratio)
             unit = text(row["annotation_unit_id"])
-            head_rel = f"head_crops/{unit}.jpg"
-            context_rel = f"context_crops/{unit}.jpg"
-            head_crop.save(public_root / head_rel, format="JPEG", quality=94)
-            context_crop.save(public_root / context_rel, format="JPEG", quality=94)
-            public_paths[unit] = (source_rel, head_rel, context_rel)
+            head_relative = f"head_crops/{unit}.jpg"
+            context_relative = f"context_crops/{unit}.jpg"
+            head_crop.save(public_root / head_relative, format="JPEG", quality=94)
+            context_crop.save(public_root / context_relative, format="JPEG", quality=94)
+            public_paths[unit] = (source_relative, head_relative, context_relative)
             image_records.append({
-                "annotation_unit_id": unit, "photo_id": photo_id, "status": "success",
+                "annotation_unit_id": unit,
+                "photo_id": photo_id,
+                "status": "success",
                 "source_url_used": source_by_photo.get(photo_id, "cached"),
-                "source_image": source_rel, "crop_path": head_rel, "context_crop_path": context_rel,
+                "source_image": source_relative,
+                "crop_path": head_relative,
+                "context_crop_path": context_relative,
             })
         except Exception as error:
             image_records.append({
-                "annotation_unit_id": text(row["annotation_unit_id"]), "photo_id": photo_id,
-                "status": "failed", "source_url_used": "", "source_image": source_rel,
-                "crop_path": "", "context_crop_path": "", "message": f"{type(error).__name__}: {error}",
+                "annotation_unit_id": text(row["annotation_unit_id"]),
+                "photo_id": photo_id,
+                "status": "failed",
+                "source_url_used": "",
+                "source_image": source_relative,
+                "crop_path": "",
+                "context_crop_path": "",
+                "message": f"{type(error).__name__}: {error}",
             })
 
     image_status = pd.DataFrame(image_records)
@@ -315,14 +362,14 @@ def main() -> None:
 
     public_rows: list[dict[str, str]] = []
     for row in selected.to_dict("records"):
-        source_rel, head_rel, context_rel = public_paths[text(row["annotation_unit_id"])]
+        source_relative, head_relative, context_relative = public_paths[text(row["annotation_unit_id"])]
         public_rows.append({
             "task_id": text(row["task_id"]),
             "annotation_unit_id": text(row["annotation_unit_id"]),
             "trait_id": text(row["trait_id"]),
-            "source_image": source_rel,
-            "crop_path": head_rel,
-            "context_crop_path": context_rel,
+            "source_image": source_relative,
+            "crop_path": head_relative,
+            "context_crop_path": context_relative,
         })
     public = pd.DataFrame(public_rows)
     public.to_csv(public_root / "representative_trait_holdout_tasks.csv", index=False, encoding="utf-8-sig")
@@ -340,10 +387,10 @@ def main() -> None:
 
     private_columns = [
         "task_id", "annotation_unit_id", "trait_id", "taxon_name", "obs_id", "photo_id",
-        "spatial_block_10deg", "selection_stratum", "double_label", "ai_candidate_state"
+        "spatial_block_10deg", "selection_stratum", "double_label", "ai_candidate_state",
     ]
     private = selected[private_columns].copy()
-    private["double_label"] = private["double_label"].map(lambda v: str(bool(v)).lower())
+    private["double_label"] = private["double_label"].map(lambda flag: str(bool(flag)).lower())
     private.to_csv(private_root / "representative_trait_holdout_key.csv", index=False, encoding="utf-8-sig")
 
     readme = (
@@ -380,7 +427,7 @@ def main() -> None:
         "species_diagnostic_records": args.species_diagnostic_records,
         "context_pad_ratio": args.context_pad_ratio,
         "n_candidate_rows": int(len(candidates)),
-        "n_tasks_selected_before_image_build": int(sum(v["n_selected"] for v in per_trait.values())),
+        "n_tasks_selected_before_image_build": int(sum(value["n_selected"] for value in per_trait.values())),
         "n_tasks_public": int(len(public)),
         "n_unique_units_public": int(public["annotation_unit_id"].nunique()),
         "n_unique_photos_public": int(selected["photo_id"].nunique()),
@@ -397,10 +444,12 @@ def main() -> None:
             }
             for trait in args.traits
         },
-        "selection_design": "Population accuracy uses a deterministic round-robin sample across taxon x 10-degree spatial block. A separately marked, model-margin-free species diagnostic tops up twelve deterministic species to seven records each for the worst-species gate.",
+        "selection_design": "Population accuracy uses deterministic proportional allocation across taxon x 10-degree spatial cells, followed by stable-hash sampling within cells. A separately marked, model-margin-free species diagnostic tops up twelve deterministic species to seven records each for the worst-species gate.",
         "image_reconstruction": "Re-downloaded the same iNaturalist medium image size used by global inference and recreated YOLO head/context crops from stored boxes.",
     }
-    (out / "representative_trait_holdout_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out / "representative_trait_holdout_report.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
