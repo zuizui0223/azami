@@ -193,7 +193,9 @@ def main() -> None:
 
     trait_rows = head.loc[head["trait_id"].isin(args.traits)].copy()
     trait_rows["ai_candidate_state"] = trait_rows[state_column].map(text)
-    trait_rows = trait_rows.loc[~trait_rows["ai_candidate_state"].isin(UNASSESSABLE)].copy()
+    trait_rows = trait_rows.loc[~trait_rows["ai_candidate_state"].isin(UNASSESSABLE), [
+        "annotation_unit_id", "trait_id", "taxon_name", "obs_id", "ai_candidate_state",
+    ]].copy()
     metadata_columns = [
         "annotation_unit_id", "obs_id", "photo_id", "latitude", "longitude",
         "spatial_block_10deg", "medium_image_url", "bbox_x1", "bbox_y1", "bbox_x2", "bbox_y2",
