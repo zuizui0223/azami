@@ -24,6 +24,7 @@ on:
       - ch1_global/v2/52_measure_primary_traits_continuous.py
       - ch1_global/v2/53_aggregate_primary_trait_continuous.py
       - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
+      - ch1_global/v2/55_run_primary_traits_continuous.py
       - .github/workflows/ch1-run-continuous-primary-traits.yml
   push:
     branches: [feature/ch1-continuous-primary-traits]
@@ -31,6 +32,7 @@ on:
       - ch1_global/v2/52_measure_primary_traits_continuous.py
       - ch1_global/v2/53_aggregate_primary_trait_continuous.py
       - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
+      - ch1_global/v2/55_run_primary_traits_continuous.py
       - .github/workflows/ch1-run-continuous-primary-traits.yml
 
 permissions:
@@ -140,7 +142,7 @@ jobs:
 
       - name: Measure continuous colour shape and orientation
         run: |
-          python ch1_global/v2/52_measure_primary_traits_continuous.py \
+          python ch1_global/v2/55_run_primary_traits_continuous.py \
             --packet-manifest rebuilt/continuous_trait_manifest.csv \
             --packet-root rebuilt \
             --out-dir continuous \
