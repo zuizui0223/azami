@@ -7,14 +7,16 @@ on:
       - "README.md"
       - "ch1_global/**"
       - "tests/**"
-      - ".github/workflows/ch1-submission-ci.yml"
+      - ".gitignore"
+      - ".github/workflows/ch1-*.yml"
   push:
     branches: [main]
     paths:
       - "README.md"
       - "ch1_global/**"
       - "tests/**"
-      - ".github/workflows/ch1-submission-ci.yml"
+      - ".gitignore"
+      - ".github/workflows/ch1-*.yml"
   workflow_dispatch:
 
 permissions:
@@ -37,7 +39,7 @@ jobs:
       - name: Install submission dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r ch1_global/v2/requirements-submission.txt
+          python -m pip install -r ch1_global/v2/requirements-submission.txt PyYAML>=6,<7
           python -m pip check
 
       - name: Compile active Python submission scripts
@@ -64,9 +66,47 @@ jobs:
           Rscript -e 'parse(file="ch1_global/v2/65_audit_and_build_historical_trees.R")'
           Rscript -e 'parse(file="ch1_global/v2/66_run_historical_constraint_pgls.R")'
 
-      - name: Validate JSON configuration
+      - name: Validate JSON and workflow YAML
         run: |
           python -m json.tool ch1_global/v2/submission_config.json >/dev/null
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          workflows = sorted(Path(".github/workflows").glob("ch1-*.yml"))
+          if not workflows:
+              raise SystemExit("No Chapter 1 workflows found")
+          for path in workflows:
+              value = yaml.safe_load(path.read_text(encoding="utf-8"))
+              if not isinstance(value, dict) or "jobs" not in value:
+                  raise SystemExit(f"Invalid workflow structure: {path}")
+              print(path)
+          PY
+
+      - name: Enforce production workflow policy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          production = [
+              Path(".github/workflows/ch1-run-continuous-primary-traits.yml"),
+              Path(".github/workflows/ch1-qc-join-involucre.yml"),
+              Path(".github/workflows/ch1-integrate-continuous-prephylogenetic.yml"),
+              Path(".github/workflows/ch1-historical-constraint-sensitivity.yml"),
+              Path(".github/workflows/ch1-build-submission-bundle.yml"),
+          ]
+          for path in production:
+              text = path.read_text(encoding="utf-8")
+              if "workflow_dispatch:" not in text:
+                  raise SystemExit(f"Production workflow lacks manual dispatch: {path}")
+              if "pull_request:" in text or "branches: [feature/" in text:
+                  raise SystemExit(f"Research-scale workflow must not run automatically: {path}")
+              for line in text.splitlines():
+                  stripped = line.strip()
+                  if stripped.startswith("default:") and any(char.isdigit() for char in stripped):
+                      if "n_random_trees" not in text[max(0, text.find(line)-200):text.find(line)+len(line)]:
+                          raise SystemExit(f"Possible stale numeric artifact default in {path}: {line}")
+          PY
 
       - name: Reject stale active references
         run: |
