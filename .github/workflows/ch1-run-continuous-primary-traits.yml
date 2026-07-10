@@ -1,0 +1,237 @@
+name: Ch1 run continuous primary traits
+
+on:
+  workflow_dispatch:
+    inputs:
+      global_ai_analysis_artifact_id:
+        description: Merged 216-species global AI analysis artifact ID
+        required: true
+        default: "8099953404"
+        type: string
+      output_label:
+        description: Safe output label
+        required: true
+        default: continuous_primary_traits_v1
+        type: string
+      max_photos:
+        description: Optional photo limit; 0 runs all retained photos
+        required: true
+        default: "0"
+        type: string
+  pull_request:
+    branches: [main]
+    paths:
+      - ch1_global/v2/52_measure_primary_traits_continuous.py
+      - ch1_global/v2/53_aggregate_primary_trait_continuous.py
+      - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
+      - ch1_global/v2/55_run_primary_traits_continuous.py
+      - .github/workflows/ch1-run-continuous-primary-traits.yml
+  push:
+    branches: [feature/ch1-continuous-primary-traits]
+    paths:
+      - ch1_global/v2/52_measure_primary_traits_continuous.py
+      - ch1_global/v2/53_aggregate_primary_trait_continuous.py
+      - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
+      - ch1_global/v2/55_run_primary_traits_continuous.py
+      - .github/workflows/ch1-run-continuous-primary-traits.yml
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  continuous-primary-traits:
+    name: Rebuild and measure all retained heads
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GLOBAL_ARTIFACT_ID: ${{ inputs.global_ai_analysis_artifact_id || '8099953404' }}
+      OUTPUT_LABEL: ${{ inputs.output_label || 'continuous_primary_traits_v1' }}
+      MAX_PHOTOS: ${{ inputs.max_photos || '0' }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas opencv-python-headless Pillow requests
+
+      - name: Validate request
+        run: |
+          python - <<'PY'
+          import os
+          import re
+
+          artifact = os.environ["GLOBAL_ARTIFACT_ID"].strip().replace(",", "").replace("_", "")
+          if not re.fullmatch(r"[0-9]+", artifact) or int(artifact) < 1:
+              raise SystemExit("global_ai_analysis_artifact_id must be a positive integer")
+          maximum = os.environ["MAX_PHOTOS"].strip()
+          if not re.fullmatch(r"[0-9]+", maximum):
+              raise SystemExit("max_photos must be a non-negative integer")
+          label = os.environ["OUTPUT_LABEL"].strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"GLOBAL_ARTIFACT_ID={int(artifact)}\n")
+              handle.write(f"MAX_PHOTOS={int(maximum)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
+
+      - name: Download merged global analysis artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/global
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${GLOBAL_ARTIFACT_ID}/zip" \
+            --output source/global/global.zip
+          unzip -tq source/global/global.zip
+          unzip -q source/global/global.zip -d source/global/extracted
+          YOLO_METADATA="$(find source/global/extracted -type f -name global_ai_merged_yolo_crop_metadata.csv -print -quit)"
+          HEAD_METADATA="$(find source/global/extracted -type f -name ai_trait_head_level_with_metadata.csv -print -quit)"
+          test -n "$YOLO_METADATA"
+          test -n "$HEAD_METADATA"
+          test -s "$YOLO_METADATA"
+          test -s "$HEAD_METADATA"
+          echo "YOLO_METADATA=$YOLO_METADATA" >> "$GITHUB_ENV"
+          echo "HEAD_METADATA=$HEAD_METADATA" >> "$GITHUB_ENV"
+
+      - name: Reconstruct retained head and context crops
+        run: |
+          set -euo pipefail
+          extra_args=()
+          if [ "$MAX_PHOTOS" -gt 0 ]; then
+            extra_args+=(--max-photos "$MAX_PHOTOS")
+          fi
+          python ch1_global/v2/54_rebuild_global_continuous_trait_packet.py \
+            --yolo-metadata "$YOLO_METADATA" \
+            --out-dir rebuilt \
+            --context-pad-ratio 1.5 \
+            --timeout-sec 60 \
+            --retries 4 \
+            --sleep-sec 0.10 \
+            --allow-failures \
+            "${extra_args[@]}"
+
+      - name: Check reconstruction coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path("rebuilt/continuous_trait_rebuild_report.json").read_text(encoding="utf-8"))
+          input_heads = int(report["n_input_heads"])
+          rebuilt_heads = int(report["n_rebuilt_heads"])
+          coverage = rebuilt_heads / input_heads if input_heads else 0.0
+          print(json.dumps({**report, "reconstruction_coverage": coverage}, ensure_ascii=False, indent=2))
+          if input_heads < 1:
+              raise SystemExit("No input heads were found")
+          if coverage < 0.90:
+              raise SystemExit(f"Reconstruction coverage is below 90%: {coverage:.3f}")
+          PY
+
+      - name: Measure continuous colour shape and orientation
+        run: |
+          python ch1_global/v2/55_run_primary_traits_continuous.py \
+            --packet-manifest rebuilt/continuous_trait_manifest.csv \
+            --packet-root rebuilt \
+            --out-dir continuous \
+            --colour-confidence-floor 0.55 \
+            --shape-confidence-floor 0.50 \
+            --orientation-confidence-floor 0.65 \
+            --flip-angle-tolerance 20
+
+      - name: Aggregate to observation and species levels
+        run: |
+          python ch1_global/v2/53_aggregate_primary_trait_continuous.py \
+            --head-measurements continuous/primary_trait_continuous_head_measurements.csv \
+            --head-metadata "$HEAD_METADATA" \
+            --out-dir aggregated \
+            --min-heads-per-observation 1 \
+            --min-observations-per-species 3
+
+      - name: Validate automated outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          manifest = pd.read_csv("rebuilt/continuous_trait_manifest.csv", dtype=str, keep_default_na=False)
+          heads = pd.read_csv("continuous/primary_trait_continuous_head_measurements.csv", dtype=str, keep_default_na=False)
+          observations = pd.read_csv("aggregated/primary_trait_continuous_observation_level.csv", dtype=str, keep_default_na=False)
+          species = pd.read_csv("aggregated/primary_trait_continuous_species_level.csv", dtype=str, keep_default_na=False)
+          provenance = json.loads(Path("continuous/primary_trait_continuous_provenance.json").read_text(encoding="utf-8"))
+
+          if len(heads) != len(manifest) or heads["annotation_unit_id"].duplicated().any():
+              raise SystemExit("Continuous head table does not match the reconstructed manifest")
+          if observations.empty or species.empty:
+              raise SystemExit("Observation or species aggregation is empty")
+          forbidden = {"human_state", "capitulum_orientation", "corolla_colour_class", "capitulum_shape"}
+          if forbidden & set(heads.columns):
+              raise SystemExit("Human or forced categorical labels leaked into the continuous table")
+          required = {
+              "orientation_angle_degrees", "corolla_lab_lightness", "corolla_lab_chroma",
+              "corolla_hue_sin", "corolla_hue_cos", "shape_aspect_ratio",
+              "shape_circularity", "shape_solidity",
+          }
+          if missing := required.difference(heads.columns):
+              raise SystemExit(f"Missing continuous measurements: {sorted(missing)}")
+          usable = provenance["usable_fraction"]
+          print(json.dumps({
+              "n_heads": len(heads),
+              "n_observations": len(observations),
+              "n_species": len(species),
+              "usable_fraction": usable,
+          }, ensure_ascii=False, indent=2))
+          if not any(float(value) > 0 for value in usable.values()):
+              raise SystemExit("No trait has any usable measurements")
+          PY
+
+      - name: Remove temporary image crops before upload
+        if: always()
+        run: |
+          rm -rf rebuilt/head_crops rebuilt/context_crops
+
+      - name: Add run summary
+        if: always()
+        run: |
+          {
+            echo "## Continuous primary-trait run"
+            for path in \
+              rebuilt/continuous_trait_rebuild_report.json \
+              continuous/primary_trait_continuous_provenance.json \
+              aggregated/primary_trait_continuous_aggregation_report.json; do
+              if [ -s "$path" ]; then
+                echo
+                echo "### $path"
+                echo '```json'
+                cat "$path"
+                echo '```'
+              fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload continuous primary-trait results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-continuous-primary-traits-${{ env.OUTPUT_LABEL }}
+          path: |
+            continuous
+            aggregated
+            rebuilt/continuous_trait_manifest.csv
+            rebuilt/continuous_trait_rebuild_report.json
+            rebuilt/rebuild_status.csv
+          if-no-files-found: warn
+          retention-days: 90
