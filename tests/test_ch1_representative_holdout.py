@@ -72,6 +72,41 @@ class TestRepresentativeHoldout(unittest.TestCase):
             key2 = pd.read_csv(out2 / "representative_trait_holdout_key" / "representative_trait_holdout_key.csv")
             self.assertEqual(list(key["annotation_unit_id"]), list(key2["annotation_unit_id"]))
 
+    def test_app_ready_packet_copies_images_and_matches_app_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cand = root / "candidates.csv"
+            make_candidates().to_csv(cand, index=False)
+            # fake packet manifest + image files for every candidate unit
+            packet_root = root / "packet_src"
+            manifest_rows = []
+            for unit in make_candidates()["annotation_unit_id"].unique():
+                rels = {}
+                for col in ("source_image", "crop_path", "context_crop_path"):
+                    rel = f"{col}/{unit}.jpg"
+                    (packet_root / rel).parent.mkdir(parents=True, exist_ok=True)
+                    (packet_root / rel).write_bytes(b"fake-image-bytes")
+                    rels[col] = rel
+                manifest_rows.append({"annotation_unit_id": unit, **rels})
+            manifest = root / "packet_manifest.csv"
+            pd.DataFrame(manifest_rows).to_csv(manifest, index=False)
+            out = root / "build"
+            with patch.object(sys, "argv", [
+                "build", "--candidate-units", str(cand), "--out-dir", str(out), "--batch-name", "t",
+                "--n-tasks-per-trait", "12", "--seed", "s1",
+                "--packet-manifest", str(manifest), "--packet-root", str(packet_root),
+            ]):
+                BUILD.main()
+            public = pd.read_csv(out / "representative_trait_holdout_tasks" / "representative_trait_holdout_tasks.csv")
+            # app (31) REQUIRED columns present, and still blinded (no taxon/AI leak)
+            for col in ("task_id", "annotation_unit_id", "trait_id", "source_image", "crop_path", "context_crop_path"):
+                self.assertIn(col, public.columns)
+            self.assertNotIn("taxon_name", public.columns)
+            self.assertNotIn("ai_candidate_state", public.columns)
+            # images actually copied into the packet
+            first = public.iloc[0]
+            self.assertTrue((out / "representative_trait_holdout_tasks" / first["crop_path"]).is_file())
+
     def _run_eval(self, root: Path, ai_correct: bool, worst_species_wrong: bool):
         cand = root / "candidates.csv"
         make_candidates().to_csv(cand, index=False)

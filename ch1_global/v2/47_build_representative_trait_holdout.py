@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,7 @@ from typing import Any
 import pandas as pd
 
 CANDIDATE_REQUIRED = {"annotation_unit_id", "trait_id", "taxon_name", "spatial_block_10deg", "ai_candidate_state"}
+PACKET_IMAGE_COLUMNS = ("source_image", "crop_path", "context_crop_path")
 UNASSESSABLE = {"", "unassessable"}
 
 
@@ -39,6 +41,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-tasks-per-trait", type=int, default=120)
     parser.add_argument("--double-label-fraction", type=float, default=0.25)
     parser.add_argument("--min-block-taxa", type=int, default=1, help="Minimum candidates required in a taxon x block cell to be sampled")
+    parser.add_argument("--packet-manifest", default=None,
+                        help="Optional CSV mapping annotation_unit_id -> source_image/crop_path/context_crop_path. "
+                             "Provide it (with --packet-root) to emit an app-ready blinded packet the 31 audit app can open directly.")
+    parser.add_argument("--packet-root", default=None, help="Root directory the packet manifest image paths are relative to")
     parser.add_argument("--seed", default="20260710")
     return parser.parse_args()
 
@@ -53,6 +59,38 @@ def stable_rank(value: str, seed: str) -> str:
 
 def is_assessable(value: Any) -> bool:
     return text(value) not in UNASSESSABLE
+
+
+def copy_once(source: Path, target: Path) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if not target.exists() or target.stat().st_size != source.stat().st_size:
+        shutil.copy2(source, target)
+
+
+def attach_packet_images(public: pd.DataFrame, manifest_path: str, packet_root: str, public_root: Path) -> pd.DataFrame:
+    """Join image paths and copy images so the blinded 31 audit app can display each task."""
+    if not packet_root:
+        raise ValueError("--packet-root is required when --packet-manifest is given")
+    manifest = pd.read_csv(manifest_path, dtype=str, keep_default_na=False)
+    required = {"annotation_unit_id", *PACKET_IMAGE_COLUMNS}
+    if missing := required.difference(manifest.columns):
+        raise ValueError(f"Packet manifest missing columns: {sorted(missing)}")
+    if manifest["annotation_unit_id"].duplicated().any():
+        raise ValueError("Packet manifest annotation_unit_id values must be unique")
+    root = Path(packet_root)
+    by_unit = manifest.set_index("annotation_unit_id")
+    merged = public.merge(
+        by_unit[list(PACKET_IMAGE_COLUMNS)].reset_index(), on="annotation_unit_id", how="left", validate="many_to_one"
+    )
+    if merged[list(PACKET_IMAGE_COLUMNS)].apply(lambda col: col.map(text).eq("")).any().any():
+        raise ValueError("Some selected annotation units are absent from the packet manifest")
+    for _, row in merged.iterrows():
+        for column in PACKET_IMAGE_COLUMNS:
+            source = root / text(row[column])
+            if not source.is_file():
+                raise FileNotFoundError(f"Packet image missing: {source}")
+            copy_once(source, public_root / text(row[column]))
+    return merged
 
 
 def representative_sample(part: pd.DataFrame, n_target: int, seed: str) -> pd.DataFrame:
@@ -140,12 +178,21 @@ def main() -> None:
     private_root = out / "representative_trait_holdout_key"
     public_root.mkdir(parents=True, exist_ok=True)
     private_root.mkdir(parents=True, exist_ok=True)
+
+    app_ready = bool(args.packet_manifest)
+    if app_ready:
+        public = attach_packet_images(public, args.packet_manifest, args.packet_root, public_root)
+        public = public[["task_id", "annotation_unit_id", "trait_id", *PACKET_IMAGE_COLUMNS]]
     public.to_csv(public_root / "representative_trait_holdout_tasks.csv", index=False, encoding="utf-8-sig")
+    image_note = (
+        "Images are copied alongside this packet; open it directly with 31_trait_audit_app.py.\n"
+        if app_ready else
+        "No images attached: re-run with --packet-manifest/--packet-root to emit an app-ready packet.\n"
+    )
     (public_root / "README.txt").write_text(
         "One row is one representative trait audit task drawn by taxon x spatial-block strata.\n"
         "AI candidate, taxon, locality and stratum are hidden. Score visible evidence only;\n"
-        "choose unassessable when the required view is absent. Reuse the 30/31 packet+app\n"
-        "plumbing to attach and display images for these annotation_unit_id values.\n",
+        "choose unassessable when the required view is absent.\n" + image_note,
         encoding="utf-8",
     )
     private.to_csv(private_root / "representative_trait_holdout_key.csv", index=False, encoding="utf-8-sig")
@@ -155,6 +202,8 @@ def main() -> None:
         "n_tasks": int(len(selected)),
         "n_double_label_tasks": int(selected["double_label"].sum()),
         "n_traits": int(selected["trait_id"].nunique()),
+        "app_ready": app_ready,
+        "public_columns": list(public.columns),
         "per_trait": per_trait_report,
         "selection_design": "Representative random sample stratified by taxon x 10-degree spatial block. "
         "Selection does not use the model margin, so downstream agreement estimates population-level "
