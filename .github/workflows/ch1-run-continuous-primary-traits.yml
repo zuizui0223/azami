@@ -18,6 +18,13 @@ on:
         required: true
         default: "0"
         type: string
+  pull_request:
+    branches: [main]
+    paths:
+      - ch1_global/v2/52_measure_primary_traits_continuous.py
+      - ch1_global/v2/53_aggregate_primary_trait_continuous.py
+      - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
+      - .github/workflows/ch1-run-continuous-primary-traits.yml
   push:
     branches: [feature/ch1-continuous-primary-traits]
     paths:
