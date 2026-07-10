@@ -29,7 +29,9 @@ class TestSubmissionContract(unittest.TestCase):
     def build_bundle(self, root: Path) -> tuple[Path, dict]:
         bundle = root / "bundle"
         bundle.mkdir()
-        config = json.loads((V2 / "submission_config.json").read_text(encoding="utf-8"))
+        config = json.loads(
+            (V2 / "submission_config.json").read_text(encoding="utf-8")
+        )
 
         endpoint_rows = []
         for index in range(9):
@@ -47,11 +49,15 @@ class TestSubmissionContract(unittest.TestCase):
                 "species_variable": f"species_aux_{index}",
             })
         registry = pd.DataFrame(endpoint_rows)
-        registry.to_csv(bundle / "integrated_continuous_endpoint_registry.csv", index=False)
+        registry.to_csv(
+            bundle / "integrated_continuous_endpoint_registry.csv", index=False
+        )
 
         observation = pd.DataFrame({
             "obs_id": [f"obs_{index:04d}" for index in range(3725)],
-            "taxon_name": [f"Cirsium species_{index % 216:03d}" for index in range(3725)],
+            "taxon_name": [
+                f"Cirsium species_{index % 216:03d}" for index in range(3725)
+            ],
         })
         species = pd.DataFrame({
             "taxon_name": [f"Cirsium species_{index:03d}" for index in range(216)]
@@ -62,11 +68,33 @@ class TestSubmissionContract(unittest.TestCase):
         for index in range(3):
             observation[f"obs_aux_{index}"] = index + 0.3
             species[f"species_aux_{index}"] = index + 0.4
-        observation.to_csv(bundle / "integrated_primary_auxiliary_observation.csv", index=False)
-        species.to_csv(bundle / "integrated_primary_auxiliary_species.csv", index=False)
+        observation.to_csv(
+            bundle / "integrated_primary_auxiliary_observation.csv", index=False
+        )
+        species.to_csv(
+            bundle / "integrated_primary_auxiliary_species.csv", index=False
+        )
 
-        (bundle / "qc_bias_and_join_report.json").write_text(
-            json.dumps({"n_heads": 6626}), encoding="utf-8"
+        (bundle / "qc_bias_and_join_report.json").write_text(json.dumps({
+            "n_heads": 6626,
+            "n_observations": 3725,
+            "n_species": 216,
+            "overall_qc": [
+                {"trait": "colour", "n_usable": 5777},
+                {"trait": "shape", "n_usable": 5324},
+                {"trait": "orientation", "n_usable": 4585},
+            ],
+        }), encoding="utf-8")
+        (bundle / "integrated_continuous_join_report.json").write_text(
+            json.dumps({
+                "n_observations": 3725,
+                "n_species": 216,
+                "n_observations_with_auxiliary": 1292,
+                "n_species_with_auxiliary": 210,
+                "n_main_endpoints": 9,
+                "n_auxiliary_endpoints": 3,
+            }),
+            encoding="utf-8",
         )
 
         pre_rows = []
@@ -81,8 +109,28 @@ class TestSubmissionContract(unittest.TestCase):
                     "estimate_standardized": 0.0,
                     "p_fdr_within_tier_scale_cohort": 1.0,
                 })
+        while len(pre_rows) < 144:
+            index = len(pre_rows)
+            pre_rows.append({
+                "analysis_tier": "auxiliary" if index % 3 == 0 else "main",
+                "model_scale": "species_between",
+                "cohort": "all_species",
+                "endpoint": f"other_endpoint_{index}",
+                "predictor": f"env_{index % 4}",
+                "estimate_standardized": 0.0,
+                "p_fdr_within_tier_scale_cohort": 1.0,
+            })
         pd.DataFrame(pre_rows).to_csv(
             bundle / "continuous_environment_model_coefficients.csv", index=False
+        )
+        (bundle / "continuous_environment_model_report.json").write_text(
+            json.dumps({
+                "n_endpoints": 12,
+                "n_successful_models": 36,
+                "n_failed_models": 0,
+                "n_coefficient_rows": 144,
+            }),
+            encoding="utf-8",
         )
 
         (bundle / "historical_tree_audit_report.json").write_text(json.dumps({
@@ -101,8 +149,9 @@ class TestSubmissionContract(unittest.TestCase):
         pd.DataFrame([{
             "covariance_model": "PGLS_Pagel_lambda",
             "pagel_lambda": 0.5,
-        }]).to_csv(
-            bundle / "historical_constraint_model_coefficients_clean.csv", index=False
+        } for _ in range(2088)]).to_csv(
+            bundle / "historical_constraint_model_coefficients_clean.csv",
+            index=False,
         )
         pd.DataFrame([{
             "n_expected_random_trees": 50,
@@ -110,6 +159,14 @@ class TestSubmissionContract(unittest.TestCase):
             "complete_random_tree_support": True,
         } for _ in range(36)]).to_csv(
             bundle / "historical_constraint_random_tree_summary.csv", index=False
+        )
+        (bundle / "historical_sensitivity_final_report.json").write_text(
+            json.dumps({
+                "n_successful_model_fits": 522,
+                "n_failed_model_fits": 0,
+                "n_robust_candidates_across_random_graftings": 11,
+            }),
+            encoding="utf-8",
         )
         pd.DataFrame({
             "accepted_taxon": species["taxon_name"],
@@ -124,7 +181,7 @@ class TestSubmissionContract(unittest.TestCase):
             bundle, config = self.build_bundle(root)
             report = VALIDATE.validate_bundle(bundle, config)
             self.assertEqual(report["status"], "pass")
-            self.assertGreater(report["n_checks"], 30)
+            self.assertGreater(report["n_checks"], 60)
 
             validation_path = root / "validation.json"
             validation_path.write_text(json.dumps(report), encoding="utf-8")
@@ -136,8 +193,10 @@ class TestSubmissionContract(unittest.TestCase):
                 out_dir=output,
                 git_sha="fixture-sha",
             )
-            self.assertEqual(manifest["analysis_version"], config["analysis_version"])
-            self.assertEqual(manifest["n_files"], 10)
+            self.assertEqual(
+                manifest["analysis_version"], config["analysis_version"]
+            )
+            self.assertEqual(manifest["n_files"], 13)
             self.assertTrue((output / "submission_file_manifest.csv").is_file())
             self.assertTrue((output / "submission_environment.json").is_file())
 
@@ -147,6 +206,18 @@ class TestSubmissionContract(unittest.TestCase):
             bundle, config = self.build_bundle(root)
             (bundle / "accidental_best.pt").write_bytes(b"not a result table")
             with self.assertRaisesRegex(ValueError, "no_model_weights"):
+                VALIDATE.validate_bundle(bundle, config)
+
+    def test_duplicate_final_filename_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            bundle, config = self.build_bundle(root)
+            duplicate = bundle / "working_copy"
+            duplicate.mkdir()
+            (duplicate / "historical_constraint_random_tree_summary.csv").write_text(
+                "x\n1\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "exactly one final"):
                 VALIDATE.validate_bundle(bundle, config)
 
 
