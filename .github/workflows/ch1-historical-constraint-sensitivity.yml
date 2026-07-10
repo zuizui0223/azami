@@ -1,0 +1,199 @@
+name: Ch1 historical constraint sensitivity
+
+on:
+  workflow_dispatch:
+    inputs:
+      integrated_artifact_id:
+        description: Clean integrated continuous prephylogenetic artifact
+        required: true
+        default: "8226070460"
+        type: string
+      n_random_trees:
+        description: Number of randomized V.PhyloMaker2 scenario-2 trees
+        required: true
+        default: "50"
+        type: string
+  pull_request:
+    branches: [main]
+    paths:
+      - ch1_global/v2/65_audit_and_build_historical_trees.R
+      - ch1_global/v2/66_run_historical_constraint_pgls.R
+      - ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py
+      - ch1_global/v2/68_finalize_historical_sensitivity.py
+      - ch1_global/v2/HISTORICAL_CONSTRAINTS.md
+      - .github/workflows/ch1-historical-constraint-sensitivity.yml
+  push:
+    branches: [feature/ch1-historical-constraint-sensitivity]
+    paths:
+      - ch1_global/v2/65_audit_and_build_historical_trees.R
+      - ch1_global/v2/66_run_historical_constraint_pgls.R
+      - ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py
+      - ch1_global/v2/68_finalize_historical_sensitivity.py
+      - ch1_global/v2/HISTORICAL_CONSTRAINTS.md
+      - .github/workflows/ch1-historical-constraint-sensitivity.yml
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  historical-sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      INTEGRATED_ARTIFACT_ID: ${{ inputs.integrated_artifact_id || '8226070460' }}
+      N_RANDOM_TREES: ${{ inputs.n_random_trees || '50' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: historical-constraint-v2
+          packages: |
+            any::ape
+            any::jsonlite
+            any::nlme
+            any::remotes
+            any::rotl
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas matplotlib
+
+      - name: Install V.PhyloMaker2 backbone package
+        env:
+          GITHUB_PAT: ${{ github.token }}
+        run: |
+          Rscript - <<'RS'
+          options(timeout = 1800)
+          remotes::install_github(
+            "jinyizju/V.PhyloMaker2",
+            upgrade = "never",
+            dependencies = FALSE,
+            build_vignettes = FALSE,
+            quiet = FALSE
+          )
+          stopifnot(requireNamespace("V.PhyloMaker2", quietly = TRUE))
+          suppressPackageStartupMessages(library(V.PhyloMaker2))
+          stopifnot(inherits(GBOTB.extended.LCVP, "phylo"))
+          stopifnot(length(GBOTB.extended.LCVP$tip.label) > 60000)
+          cat("V.PhyloMaker2 backbone tips:", length(GBOTB.extended.LCVP$tip.label), "\n")
+          RS
+
+      - name: Download integrated continuous artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${INTEGRATED_ARTIFACT_ID}/zip" \
+            --output source/integrated.zip
+          unzip -tq source/integrated.zip
+          unzip -q source/integrated.zip -d source/extracted
+          SPECIES_TABLE="$(find source/extracted -type f -name integrated_primary_auxiliary_species.csv | head -n 1)"
+          REGISTRY="$(find source/extracted -type f -name integrated_continuous_endpoint_registry.csv | head -n 1)"
+          test -s "$SPECIES_TABLE"
+          test -s "$REGISTRY"
+          echo "SPECIES_TABLE=${SPECIES_TABLE}" >> "$GITHUB_ENV"
+          echo "ENDPOINT_REGISTRY=${REGISTRY}" >> "$GITHUB_ENV"
+
+      - name: Audit and build alternative historical trees
+        run: |
+          Rscript ch1_global/v2/65_audit_and_build_historical_trees.R \
+            --species "$SPECIES_TABLE" \
+            --out-dir historical_trees \
+            --n-random "$N_RANDOM_TREES" \
+            --seed 20260710
+
+      - name: Run PGLS historical sensitivities
+        run: |
+          Rscript ch1_global/v2/66_run_historical_constraint_pgls.R \
+            --species "$SPECIES_TABLE" \
+            --registry "$ENDPOINT_REGISTRY" \
+            --tree-dir historical_trees \
+            --out-dir historical_models \
+            --min-species 30
+
+      - name: Prepare ploidy and hybrid evidence queue
+        run: |
+          python ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py \
+            --species "$SPECIES_TABLE" \
+            --out-csv ploidy_hybrid/ploidy_hybrid_evidence_queue.csv \
+            --schema-json ploidy_hybrid/ploidy_hybrid_evidence_schema.json
+
+      - name: Finalize summaries and figures
+        run: |
+          python ch1_global/v2/68_finalize_historical_sensitivity.py \
+            --tree-audit-dir historical_trees \
+            --model-dir historical_models \
+            --out-dir historical_summary
+
+      - name: Validate historical sensitivity outputs
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import pandas as pd
+
+          tree = json.loads(Path("historical_trees/historical_tree_audit_report.json").read_text())
+          model = json.loads(Path("historical_models/historical_constraint_model_report.json").read_text())
+          final = json.loads(Path("historical_summary/historical_sensitivity_final_report.json").read_text())
+          queue = pd.read_csv("ploidy_hybrid/ploidy_hybrid_evidence_queue.csv")
+          coefficients = pd.read_csv("historical_summary/historical_constraint_model_coefficients_clean.csv")
+          status = pd.read_csv("historical_summary/historical_constraint_model_status_clean.csv")
+          random = pd.read_csv("historical_summary/historical_constraint_random_tree_summary.csv")
+
+          if tree["n_input_taxa"] != 216:
+              raise SystemExit("Historical tree audit did not retain 216 taxa")
+          if tree["gbotb_lcvp"]["scenario1_tips"] != 216 or tree["gbotb_lcvp"]["scenario3_tips"] != 216:
+              raise SystemExit("Deterministic GBOTB trees do not contain 216 tips")
+          if tree["gbotb_lcvp"]["n_randomized_scenario2_trees"] != int(os.environ["N_RANDOM_TREES"]):
+              raise SystemExit("Randomized tree count is incorrect")
+          if len(queue) != 216 or set(queue["ploidy_class"]) != {"unknown"}:
+              raise SystemExit("Ploidy/hybrid queue must start with 216 unknown taxa")
+          if model["n_successful_model_fits"] == 0 or len(coefficients) == 0:
+              raise SystemExit("No PGLS historical sensitivity succeeded")
+          lambda_rows = coefficients.loc[coefficients["covariance_model"].eq("PGLS_Pagel_lambda")]
+          if lambda_rows.empty or not lambda_rows["pagel_lambda"].between(0, 1).all():
+              raise SystemExit("Pagel lambda escaped [0,1] or was not estimated")
+          if "OLS_HC3_reference" in set(coefficients["covariance_model"]):
+              raise SystemExit("Incorrect OLS covariance label remains")
+          if len(random) != 36:
+              raise SystemExit(f"Expected 36 main endpoint-predictor random-tree summaries, got {len(random)}")
+          pngs = list(Path("historical_summary").glob("*.png"))
+          if len(pngs) != 3 or any(path.stat().st_size < 1000 for path in pngs):
+              raise SystemExit("Expected three nonempty historical-sensitivity figures")
+          print({
+              "tree_audit": tree,
+              "model_report": model,
+              "final_report": final,
+              "status_counts": status["status"].value_counts().to_dict(),
+          })
+          PY
+
+      - name: Upload historical sensitivity bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-historical-constraint-sensitivity
+          path: |
+            historical_trees
+            historical_models
+            historical_summary
+            ploidy_hybrid
+          if-no-files-found: warn
+          retention-days: 90
