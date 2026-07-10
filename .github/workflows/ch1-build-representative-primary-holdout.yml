@@ -9,7 +9,7 @@ on:
         default: "8099953404"
         type: string
       n_tasks_per_trait:
-        description: Representative tasks per primary trait
+        description: Representative population tasks per primary trait
         required: true
         default: "120"
         type: string
@@ -21,17 +21,21 @@ on:
       output_label:
         description: Safe output label
         required: true
-        default: primary_traits_120_per_trait_v1
+        default: primary_traits_120_plus_species_diagnostic_v1
         type: string
   pull_request:
     branches: [main]
     paths:
       - ch1_global/v2/51_build_representative_holdout_packet.py
+      - ch1_global/v2/48_evaluate_representative_trait_holdout.py
+      - ch1_global/v2/REPRESENTATIVE_HOLDOUT_RUNBOOK.md
       - .github/workflows/ch1-build-representative-primary-holdout.yml
   push:
     branches: [build/ch1-representative-holdout]
     paths:
       - ch1_global/v2/51_build_representative_holdout_packet.py
+      - ch1_global/v2/48_evaluate_representative_trait_holdout.py
+      - ch1_global/v2/REPRESENTATIVE_HOLDOUT_RUNBOOK.md
       - .github/workflows/ch1-build-representative-primary-holdout.yml
 
 permissions:
@@ -47,7 +51,9 @@ jobs:
       GLOBAL_AI_ARTIFACT_ID: ${{ inputs.global_ai_analysis_artifact_id || '8099953404' }}
       N_TASKS_PER_TRAIT: ${{ inputs.n_tasks_per_trait || '120' }}
       DOUBLE_LABEL_FRACTION: ${{ inputs.double_label_fraction || '0.25' }}
-      OUTPUT_LABEL: ${{ inputs.output_label || 'primary_traits_120_per_trait_v1' }}
+      OUTPUT_LABEL: ${{ inputs.output_label || 'primary_traits_120_plus_species_diagnostic_v1' }}
+      SPECIES_DIAGNOSTIC_TAXA: "12"
+      SPECIES_DIAGNOSTIC_RECORDS: "7"
 
     steps:
       - uses: actions/checkout@v4
@@ -70,8 +76,12 @@ jobs:
               raise SystemExit("global_ai_analysis_artifact_id must be positive")
           n_tasks = int(os.environ["N_TASKS_PER_TRAIT"])
           fraction = float(os.environ["DOUBLE_LABEL_FRACTION"])
+          diagnostic_taxa = int(os.environ["SPECIES_DIAGNOSTIC_TAXA"])
+          diagnostic_records = int(os.environ["SPECIES_DIAGNOSTIC_RECORDS"])
           if n_tasks < 50 or not 0 < fraction <= 1:
               raise SystemExit("Invalid task count or double-label fraction")
+          if diagnostic_taxa < 10 or diagnostic_records < 5:
+              raise SystemExit("Species diagnostic is below the certification gate")
           if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", os.environ["OUTPUT_LABEL"]):
               raise SystemExit("output_label is invalid")
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
@@ -107,15 +117,18 @@ jobs:
             --measurement-mode conservative \
             --n-tasks-per-trait "$N_TASKS_PER_TRAIT" \
             --double-label-fraction "$DOUBLE_LABEL_FRACTION" \
+            --species-diagnostic-taxa "$SPECIES_DIAGNOSTIC_TAXA" \
+            --species-diagnostic-records "$SPECIES_DIAGNOSTIC_RECORDS" \
             --context-pad-ratio 1.5 \
             --seed 20260710 --sleep-sec 0.15 --timeout-sec 60 --retries 4
 
-      - name: Validate packets
+      - name: Validate packets and sampling strata
         run: |
           python - <<'PY'
           import json, os
           from pathlib import Path
           import pandas as pd
+
           root = Path("representative_holdout")
           primary_root = root / "representative_trait_holdout_primary"
           secondary_root = root / "representative_trait_holdout_secondary"
@@ -123,27 +136,40 @@ jobs:
           secondary = pd.read_csv(secondary_root / "blinded_trait_audit_tasks.csv", dtype=str, keep_default_na=False)
           key = pd.read_csv(root / "representative_trait_holdout_key" / "representative_trait_holdout_key.csv", dtype=str, keep_default_na=False)
           report = json.loads((root / "representative_trait_holdout_report.json").read_text(encoding="utf-8"))
+
           forbidden = {"taxon_name", "ai_candidate_state", "selection_stratum", "double_label", "obs_id", "photo_id"}
           if forbidden & set(primary.columns) or forbidden & set(secondary.columns):
               raise SystemExit("Public packet leaks private fields")
-          expected = int(os.environ["N_TASKS_PER_TRAIT"]) * 3
+          expected = int(report["n_tasks_public"])
           expected_secondary = round(expected * float(os.environ["DOUBLE_LABEL_FRACTION"]))
           if (len(primary), len(secondary), len(key)) != (expected, expected_secondary, expected):
-              raise SystemExit({"primary": len(primary), "secondary": len(secondary), "key": len(key)})
+              raise SystemExit({"primary": len(primary), "secondary": len(secondary), "key": len(key), "expected": expected})
           if primary["task_id"].duplicated().any() or key["task_id"].duplicated().any():
               raise SystemExit("Duplicate task IDs")
           if not set(secondary["task_id"]).issubset(set(primary["task_id"])):
               raise SystemExit("Secondary packet is not a primary subset")
+          if set(key["selection_stratum"]) != {"representative_population", "species_diagnostic_topup"}:
+              raise SystemExit("Unexpected selection strata")
+
           for packet_root, table in ((primary_root, primary), (secondary_root, secondary)):
               for field in ("source_image", "crop_path", "context_crop_path"):
-                  missing = [v for v in table[field] if not (packet_root / v).is_file()]
+                  missing = [value for value in table[field] if not (packet_root / value).is_file()]
                   if missing:
                       raise SystemExit(f"Missing {field}: {missing[:5]}")
+
           for trait in ("capitulum_orientation", "corolla_colour_class", "capitulum_shape"):
-              if primary["trait_id"].eq(trait).sum() != int(os.environ["N_TASKS_PER_TRAIT"]):
-                  raise SystemExit(f"Unexpected count for {trait}")
-              if report["per_trait"][trait]["n_public_taxa"] < 10:
-                  raise SystemExit(f"Too few taxa for {trait}")
+              trait_key = key.loc[key["trait_id"].eq(trait)]
+              population = trait_key.loc[trait_key["selection_stratum"].eq("representative_population")]
+              if len(population) != int(os.environ["N_TASKS_PER_TRAIT"]):
+                  raise SystemExit(f"Unexpected representative population count for {trait}")
+              species_counts = trait_key.groupby("taxon_name").size()
+              if int(species_counts.ge(int(os.environ["SPECIES_DIAGNOSTIC_RECORDS"])).sum()) < int(os.environ["SPECIES_DIAGNOSTIC_TAXA"]):
+                  raise SystemExit(f"Species diagnostic coverage is too small for {trait}")
+              trait_report = report["per_trait"][trait]
+              if trait_report["n_species_diagnostic_taxa"] != int(os.environ["SPECIES_DIAGNOSTIC_TAXA"]):
+                  raise SystemExit(f"Unexpected diagnostic-taxon count for {trait}")
+              if trait_report["n_population_public"] != int(os.environ["N_TASKS_PER_TRAIT"]):
+                  raise SystemExit(f"Unexpected population-report count for {trait}")
           print(json.dumps(report, ensure_ascii=False, indent=2))
           PY
 
