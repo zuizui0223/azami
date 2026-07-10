@@ -4,33 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       integrated_artifact_id:
-        description: Clean integrated continuous prephylogenetic artifact
+        description: Frozen integrated continuous prephylogenetic artifact ID
         required: true
-        default: "8226070460"
         type: string
       n_random_trees:
         description: Number of randomized V.PhyloMaker2 scenario-2 trees
         required: true
         default: "50"
         type: string
-  pull_request:
-    branches: [main]
-    paths:
-      - ch1_global/v2/65_audit_and_build_historical_trees.R
-      - ch1_global/v2/66_run_historical_constraint_pgls.R
-      - ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py
-      - ch1_global/v2/68_finalize_historical_sensitivity.py
-      - ch1_global/v2/HISTORICAL_CONSTRAINTS.md
-      - .github/workflows/ch1-historical-constraint-sensitivity.yml
-  push:
-    branches: [feature/ch1-historical-constraint-sensitivity]
-    paths:
-      - ch1_global/v2/65_audit_and_build_historical_trees.R
-      - ch1_global/v2/66_run_historical_constraint_pgls.R
-      - ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py
-      - ch1_global/v2/68_finalize_historical_sensitivity.py
-      - ch1_global/v2/HISTORICAL_CONSTRAINTS.md
-      - .github/workflows/ch1-historical-constraint-sensitivity.yml
+      output_label:
+        description: Safe output label
+        required: true
+        default: submission_candidate
+        type: string
 
 permissions:
   actions: read
@@ -41,8 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
-      INTEGRATED_ARTIFACT_ID: ${{ inputs.integrated_artifact_id || '8226070460' }}
-      N_RANDOM_TREES: ${{ inputs.n_random_trees || '50' }}
+      INTEGRATED_ARTIFACT_ID: ${{ inputs.integrated_artifact_id }}
+      N_RANDOM_TREES: ${{ inputs.n_random_trees }}
+      OUTPUT_LABEL: ${{ inputs.output_label }}
 
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +40,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          cache-version: historical-constraint-v2
+          cache-version: historical-constraint-submission-v1
           packages: |
             any::ape
             any::jsonlite
@@ -64,11 +51,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pandas matplotlib
+          python -m pip install -r ch1_global/v2/requirements-submission.txt
+          python -m pip check
+
+      - name: Validate request
+        run: |
+          python - <<'PY'
+          import os, re
+          artifact = os.environ["INTEGRATED_ARTIFACT_ID"].strip().replace(",", "").replace("_", "")
+          random_trees = os.environ["N_RANDOM_TREES"].strip()
+          label = os.environ["OUTPUT_LABEL"].strip()
+          if not re.fullmatch(r"[0-9]+", artifact) or int(artifact) < 1:
+              raise SystemExit("integrated_artifact_id must be a positive integer")
+          if not re.fullmatch(r"[0-9]+", random_trees) or int(random_trees) < 1:
+              raise SystemExit("n_random_trees must be a positive integer")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("output_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              handle.write(f"INTEGRATED_ARTIFACT_ID={int(artifact)}\n")
+              handle.write(f"N_RANDOM_TREES={int(random_trees)}\n")
+              handle.write(f"OUTPUT_LABEL={label}\n")
+          PY
 
       - name: Install V.PhyloMaker2 backbone package
         env:
@@ -90,7 +99,7 @@ jobs:
           cat("V.PhyloMaker2 backbone tips:", length(GBOTB.extended.LCVP$tip.label), "\n")
           RS
 
-      - name: Download integrated continuous artifact
+      - name: Download frozen integrated artifact
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -102,13 +111,14 @@ jobs:
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${INTEGRATED_ARTIFACT_ID}/zip" \
             --output source/integrated.zip
           unzip -tq source/integrated.zip
+          sha256sum source/integrated.zip | tee source/input_artifact_sha256.txt
           unzip -q source/integrated.zip -d source/extracted
-          SPECIES_TABLE="$(find source/extracted -type f -name integrated_primary_auxiliary_species.csv | head -n 1)"
-          REGISTRY="$(find source/extracted -type f -name integrated_continuous_endpoint_registry.csv | head -n 1)"
-          test -s "$SPECIES_TABLE"
-          test -s "$REGISTRY"
-          echo "SPECIES_TABLE=${SPECIES_TABLE}" >> "$GITHUB_ENV"
-          echo "ENDPOINT_REGISTRY=${REGISTRY}" >> "$GITHUB_ENV"
+          mapfile -t SPECIES_MATCHES < <(find source/extracted -type f -name integrated_primary_auxiliary_species.csv | sort)
+          mapfile -t REGISTRY_MATCHES < <(find source/extracted -type f -name integrated_continuous_endpoint_registry.csv | sort)
+          test "${#SPECIES_MATCHES[@]}" -eq 1
+          test "${#REGISTRY_MATCHES[@]}" -eq 1
+          echo "SPECIES_TABLE=${SPECIES_MATCHES[0]}" >> "$GITHUB_ENV"
+          echo "ENDPOINT_REGISTRY=${REGISTRY_MATCHES[0]}" >> "$GITHUB_ENV"
 
       - name: Audit and build alternative historical trees
         run: |
@@ -118,7 +128,7 @@ jobs:
             --n-random "$N_RANDOM_TREES" \
             --seed 20260710
 
-      - name: Run PGLS historical sensitivities
+      - name: Run bounded-lambda PGLS sensitivities
         run: |
           Rscript ch1_global/v2/66_run_historical_constraint_pgls.R \
             --species "$SPECIES_TABLE" \
@@ -141,7 +151,7 @@ jobs:
             --model-dir historical_models \
             --out-dir historical_summary
 
-      - name: Validate historical sensitivity outputs
+      - name: Validate complete historical sensitivity
         run: |
           python - <<'PY'
           import json
@@ -149,47 +159,64 @@ jobs:
           from pathlib import Path
           import pandas as pd
 
+          expected_random = int(os.environ["N_RANDOM_TREES"])
           tree = json.loads(Path("historical_trees/historical_tree_audit_report.json").read_text())
           model = json.loads(Path("historical_models/historical_constraint_model_report.json").read_text())
-          final = json.loads(Path("historical_summary/historical_sensitivity_final_report.json").read_text())
-          queue = pd.read_csv("ploidy_hybrid/ploidy_hybrid_evidence_queue.csv")
           coefficients = pd.read_csv("historical_summary/historical_constraint_model_coefficients_clean.csv")
           status = pd.read_csv("historical_summary/historical_constraint_model_status_clean.csv")
           random = pd.read_csv("historical_summary/historical_constraint_random_tree_summary.csv")
+          queue = pd.read_csv("ploidy_hybrid/ploidy_hybrid_evidence_queue.csv")
 
           if tree["n_input_taxa"] != 216:
               raise SystemExit("Historical tree audit did not retain 216 taxa")
-          if tree["gbotb_lcvp"]["scenario1_tips"] != 216 or tree["gbotb_lcvp"]["scenario3_tips"] != 216:
-              raise SystemExit("Deterministic GBOTB trees do not contain 216 tips")
-          if tree["gbotb_lcvp"]["n_randomized_scenario2_trees"] != int(os.environ["N_RANDOM_TREES"]):
+          gbotb = tree["gbotb_lcvp"]
+          if gbotb["scenario1_tips"] != 216 or gbotb["scenario3_tips"] != 216:
+              raise SystemExit("Deterministic trees do not contain 216 tips")
+          if gbotb["n_randomized_scenario2_trees"] != expected_random:
               raise SystemExit("Randomized tree count is incorrect")
-          if len(queue) != 216 or set(queue["ploidy_class"]) != {"unknown"}:
-              raise SystemExit("Ploidy/hybrid queue must start with 216 unknown taxa")
-          if model["n_successful_model_fits"] == 0 or len(coefficients) == 0:
-              raise SystemExit("No PGLS historical sensitivity succeeded")
+          if gbotb["n_direct_backbone_tips"] != 54:
+              raise SystemExit("Direct-backbone coverage changed and requires review")
+          if model["n_successful_model_fits"] != 522 or model["n_failed_model_fits"] != 0:
+              raise SystemExit(f"Historical fits are incomplete: {model}")
+          if len(status) != 522 or not status["status"].eq("success").all():
+              raise SystemExit("Historical status table is incomplete")
           lambda_rows = coefficients.loc[coefficients["covariance_model"].eq("PGLS_Pagel_lambda")]
           if lambda_rows.empty or not lambda_rows["pagel_lambda"].between(0, 1).all():
               raise SystemExit("Pagel lambda escaped [0,1] or was not estimated")
-          if "OLS_HC3_reference" in set(coefficients["covariance_model"]):
-              raise SystemExit("Incorrect OLS covariance label remains")
           if len(random) != 36:
-              raise SystemExit(f"Expected 36 main endpoint-predictor random-tree summaries, got {len(random)}")
+              raise SystemExit(f"Expected 36 random-tree summaries, got {len(random)}")
+          if not random["n_successful_random_trees"].eq(expected_random).all():
+              raise SystemExit("At least one comparison did not finish all random trees")
+          if not random["n_expected_random_trees"].eq(expected_random).all():
+              raise SystemExit("Random-tree expectation does not match the requested run")
+          complete = random["complete_random_tree_support"].astype(str).str.lower().eq("true")
+          if not complete.all():
+              raise SystemExit("At least one random-tree comparison is incomplete")
+          if len(queue) != 216 or set(queue["ploidy_class"]) != {"unknown"}:
+              raise SystemExit("Evidence queue must start with 216 unknown taxa")
           pngs = list(Path("historical_summary").glob("*.png"))
           if len(pngs) != 3 or any(path.stat().st_size < 1000 for path in pngs):
-              raise SystemExit("Expected three nonempty historical-sensitivity figures")
+              raise SystemExit("Expected three nonempty historical figures")
           print({
               "tree_audit": tree,
               "model_report": model,
-              "final_report": final,
-              "status_counts": status["status"].value_counts().to_dict(),
+              "n_coefficients": len(coefficients),
+              "n_random_summaries": len(random),
           })
           PY
+
+      - name: Record software and input provenance
+        run: |
+          cp source/input_artifact_sha256.txt historical_summary/input_artifact_sha256.txt
+          printf '%s\n' "$GITHUB_SHA" > historical_summary/git_sha.txt
+          python -m pip freeze > historical_summary/python_environment.txt
+          Rscript -e 'writeLines(capture.output(sessionInfo()), "historical_summary/R_sessionInfo.txt")'
 
       - name: Upload historical sensitivity bundle
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-historical-constraint-sensitivity
+          name: ch1-historical-constraint-${{ env.OUTPUT_LABEL }}
           path: |
             historical_trees
             historical_models
