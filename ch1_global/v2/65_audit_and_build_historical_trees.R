@@ -127,6 +127,9 @@ if (!is.null(open_about)) {
 # ---------------------------------------------------------------------------
 # GBOTB/V.PhyloMaker2: dated backbone plus explicit grafting scenarios.
 # Direct backbone representation is audited before any PGLS is run.
+# IMPORTANT: output.tree=FALSE returns only the pruned user-species hypotheses.
+# output.tree=TRUE would retain one full ~73,000-tip backbone per replicate and
+# is neither necessary nor computationally appropriate here.
 # ---------------------------------------------------------------------------
 sp_list <- data.frame(
   species = taxa,
@@ -159,16 +162,16 @@ maker <- V.PhyloMaker2::phylo.maker(
   sp.list = sp_list,
   tree = V.PhyloMaker2::GBOTB.extended.LCVP,
   nodes = V.PhyloMaker2::nodes.info.1.LCVP,
-  output.tree = TRUE,
+  output.tree = FALSE,
   scenarios = c("S1", "S2", "S3"),
   r = n_random
 )
 
-scenario1 <- maker$tree.scenario.1
-scenario2 <- maker$tree.scenario.2
-scenario3 <- maker$tree.scenario.3
+scenario1 <- maker$scenario.1
+scenario2 <- maker$scenario.2
+scenario3 <- maker$scenario.3
 if (is.null(scenario1) || is.null(scenario2) || is.null(scenario3)) {
-  stop("V.PhyloMaker2 did not return all requested scenarios")
+  stop("V.PhyloMaker2 did not return all requested pruned scenarios")
 }
 if (!inherits(scenario2, "multiPhylo")) class(scenario2) <- "multiPhylo"
 expected <- sort(canonical_tip)
