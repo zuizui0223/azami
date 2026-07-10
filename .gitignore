@@ -1,0 +1,11 @@
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Local virtualenvs
+.venv/
+venv/
