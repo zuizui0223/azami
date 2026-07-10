@@ -90,14 +90,14 @@ jobs:
             --observation integrated/integrated_primary_auxiliary_observation.csv \
             --species integrated/integrated_primary_auxiliary_species.csv \
             --registry integrated/integrated_continuous_endpoint_registry.csv \
-            --out-dir models \
+            --out-dir prephylogenetic_models \
             --min-observations 100 --min-species 30
 
       - name: Build staged effect figures
         run: |
           python ch1_global/v2/64_build_prephylogenetic_effect_figures.py \
-            --coefficients models/continuous_environment_model_coefficients.csv \
-            --out-dir figures
+            --coefficients prephylogenetic_models/continuous_environment_model_coefficients.csv \
+            --out-dir prephylogenetic_figures
 
       - name: Validate integrated outputs
         run: |
@@ -107,9 +107,9 @@ jobs:
           import pandas as pd
 
           joined = json.loads(Path("integrated/integrated_continuous_join_report.json").read_text())
-          model = json.loads(Path("models/continuous_environment_model_report.json").read_text())
-          coefficients = pd.read_csv("models/continuous_environment_model_coefficients.csv")
-          statuses = pd.read_csv("models/continuous_environment_model_status.csv")
+          model = json.loads(Path("prephylogenetic_models/continuous_environment_model_report.json").read_text())
+          coefficients = pd.read_csv("prephylogenetic_models/continuous_environment_model_coefficients.csv")
+          statuses = pd.read_csv("prephylogenetic_models/continuous_environment_model_status.csv")
           if joined["n_observations"] != 3725 or joined["n_species"] != 216:
               raise SystemExit("Integrated dimensions are incorrect")
           if joined["n_observations_with_auxiliary"] != 1292 or joined["n_species_with_auxiliary"] != 210:
@@ -120,19 +120,22 @@ jobs:
               raise SystemExit("Unexpected coefficient/status dimensions")
           if not coefficients.loc[coefficients["model_scale"].eq("species_between"), "historical_constraint"].eq("not_yet_applied_PGLS_required").all():
               raise SystemExit("Between-species results are not labelled as pre-PGLS")
-          pngs = list(Path("figures").glob("*.png"))
+          pngs = list(Path("prephylogenetic_figures").glob("*.png"))
           if len(pngs) != 5 or any(path.stat().st_size < 1000 for path in pngs):
               raise SystemExit("Expected five nonempty effect figures")
+          forbidden = [path for path in Path("prephylogenetic_models").iterdir() if path.suffix in {".pt", ".onnx", ".keras"}]
+          if forbidden:
+              raise SystemExit(f"Unrelated model weights leaked into output: {forbidden}")
           print({"joined": joined, "model": model, "figures": [path.name for path in pngs]})
           PY
 
       - name: Upload integrated prephylogenetic bundle
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-integrated-continuous-prephylogenetic-screen
+          name: ch1-integrated-continuous-prephylogenetic-screen-clean
           path: |
             integrated
-            models
-            figures
+            prephylogenetic_models
+            prephylogenetic_figures
           if-no-files-found: error
           retention-days: 90
