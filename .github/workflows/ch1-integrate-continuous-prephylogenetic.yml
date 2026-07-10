@@ -1,0 +1,141 @@
+name: Ch1 integrate continuous traits before phylogeny
+
+on:
+  workflow_dispatch:
+    inputs:
+      next_stage_artifact_id:
+        description: QC/environment/involucre artifact ID
+        required: true
+        default: "8225909418"
+        type: string
+  pull_request:
+    branches: [main]
+    paths:
+      - ch1_global/v2/62_join_primary_auxiliary_continuous.py
+      - ch1_global/v2/63_run_prephylogenetic_continuous_environment_models.py
+      - ch1_global/v2/64_build_prephylogenetic_effect_figures.py
+      - .github/workflows/ch1-integrate-continuous-prephylogenetic.yml
+  push:
+    branches: [feature/ch1-qc-join-involucre]
+    paths:
+      - ch1_global/v2/62_join_primary_auxiliary_continuous.py
+      - ch1_global/v2/63_run_prephylogenetic_continuous_environment_models.py
+      - ch1_global/v2/64_build_prephylogenetic_effect_figures.py
+      - .github/workflows/ch1-integrate-continuous-prephylogenetic.yml
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  integrate-and-screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_STAGE_ARTIFACT_ID: ${{ inputs.next_stage_artifact_id || '8225909418' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas statsmodels matplotlib
+
+      - name: Download next-stage artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${NEXT_STAGE_ARTIFACT_ID}/zip" \
+            --output source/next_stage.zip
+          unzip -tq source/next_stage.zip
+          unzip -q source/next_stage.zip -d source/extracted
+
+      - name: Resolve input files
+        run: |
+          set -euo pipefail
+          resolve() {
+            local pattern="$1" variable="$2"
+            local value
+            value="$(find source/extracted -type f -name "$pattern" | head -n 1)"
+            test -n "$value"
+            echo "${variable}=${value}" >> "$GITHUB_ENV"
+          }
+          resolve primary_continuous_observation_environment.csv PRIMARY_OBSERVATION
+          resolve primary_continuous_species_environment.csv PRIMARY_SPECIES
+          resolve involucre_auxiliary_observation_level.csv AUXILIARY_OBSERVATION
+          resolve involucre_auxiliary_species_level.csv AUXILIARY_SPECIES
+
+      - name: Join primary and auxiliary tables
+        run: |
+          python ch1_global/v2/62_join_primary_auxiliary_continuous.py \
+            --primary-observation "$PRIMARY_OBSERVATION" \
+            --primary-species "$PRIMARY_SPECIES" \
+            --auxiliary-observation "$AUXILIARY_OBSERVATION" \
+            --auxiliary-species "$AUXILIARY_SPECIES" \
+            --out-dir integrated
+
+      - name: Run staged prephylogenetic models
+        run: |
+          python ch1_global/v2/63_run_prephylogenetic_continuous_environment_models.py \
+            --observation integrated/integrated_primary_auxiliary_observation.csv \
+            --species integrated/integrated_primary_auxiliary_species.csv \
+            --registry integrated/integrated_continuous_endpoint_registry.csv \
+            --out-dir prephylogenetic_models \
+            --min-observations 100 --min-species 30
+
+      - name: Build staged effect figures
+        run: |
+          python ch1_global/v2/64_build_prephylogenetic_effect_figures.py \
+            --coefficients prephylogenetic_models/continuous_environment_model_coefficients.csv \
+            --out-dir prephylogenetic_figures
+
+      - name: Validate integrated outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          joined = json.loads(Path("integrated/integrated_continuous_join_report.json").read_text())
+          model = json.loads(Path("prephylogenetic_models/continuous_environment_model_report.json").read_text())
+          coefficients = pd.read_csv("prephylogenetic_models/continuous_environment_model_coefficients.csv")
+          statuses = pd.read_csv("prephylogenetic_models/continuous_environment_model_status.csv")
+          if joined["n_observations"] != 3725 or joined["n_species"] != 216:
+              raise SystemExit("Integrated dimensions are incorrect")
+          if joined["n_observations_with_auxiliary"] != 1292 or joined["n_species_with_auxiliary"] != 210:
+              raise SystemExit("Auxiliary coverage changed unexpectedly")
+          if model["n_successful_models"] != 36 or model["n_failed_models"] != 0:
+              raise SystemExit("Not all staged models succeeded")
+          if len(coefficients) != 144 or len(statuses) != 36:
+              raise SystemExit("Unexpected coefficient/status dimensions")
+          if not coefficients.loc[coefficients["model_scale"].eq("species_between"), "historical_constraint"].eq("not_yet_applied_PGLS_required").all():
+              raise SystemExit("Between-species results are not labelled as pre-PGLS")
+          pngs = list(Path("prephylogenetic_figures").glob("*.png"))
+          if len(pngs) != 5 or any(path.stat().st_size < 1000 for path in pngs):
+              raise SystemExit("Expected five nonempty effect figures")
+          forbidden = [path for path in Path("prephylogenetic_models").iterdir() if path.suffix in {".pt", ".onnx", ".keras"}]
+          if forbidden:
+              raise SystemExit(f"Unrelated model weights leaked into output: {forbidden}")
+          print({"joined": joined, "model": model, "figures": [path.name for path in pngs]})
+          PY
+
+      - name: Upload integrated prephylogenetic bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-integrated-continuous-prephylogenetic-screen-clean
+          path: |
+            integrated
+            prephylogenetic_models
+            prephylogenetic_figures
+          if-no-files-found: error
+          retention-days: 90

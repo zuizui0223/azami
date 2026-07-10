@@ -1,0 +1,199 @@
+name: Ch1 QC join and involucre supplement
+
+on:
+  workflow_dispatch:
+    inputs:
+      continuous_artifact_id:
+        description: Corrected continuous primary-trait artifact
+        required: true
+        default: "8225059018"
+        type: string
+      environment_artifact_id:
+        description: CHELSA environment artifact
+        required: true
+        default: "8140178517"
+        type: string
+      global_analysis_artifact_id:
+        description: Global AI analysis artifact containing YOLO metadata
+        required: true
+        default: "8099953404"
+        type: string
+  pull_request:
+    branches: [main]
+    paths:
+      - ch1_global/v2/57_qc_bias_join_primary_continuous.py
+      - ch1_global/v2/58_prepare_high_resolution_involucre_subset.py
+      - ch1_global/v2/59_measure_involucre_auxiliary_continuous.py
+      - ch1_global/v2/60_prepare_microtrait_literature_queue.py
+      - ch1_global/v2/61_build_trait_qc_integration_figures.py
+      - .github/workflows/ch1-qc-join-involucre.yml
+  push:
+    branches: [feature/ch1-qc-join-involucre]
+    paths:
+      - ch1_global/v2/57_qc_bias_join_primary_continuous.py
+      - ch1_global/v2/58_prepare_high_resolution_involucre_subset.py
+      - ch1_global/v2/59_measure_involucre_auxiliary_continuous.py
+      - ch1_global/v2/60_prepare_microtrait_literature_queue.py
+      - ch1_global/v2/61_build_trait_qc_integration_figures.py
+      - .github/workflows/ch1-qc-join-involucre.yml
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  qc-join-involucre:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      CONTINUOUS_ARTIFACT_ID: ${{ inputs.continuous_artifact_id || '8225059018' }}
+      ENVIRONMENT_ARTIFACT_ID: ${{ inputs.environment_artifact_id || '8140178517' }}
+      GLOBAL_ANALYSIS_ARTIFACT_ID: ${{ inputs.global_analysis_artifact_id || '8099953404' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas statsmodels opencv-python-headless matplotlib requests Pillow
+
+      - name: Download input artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/continuous source/environment source/global
+          for pair in \
+            "continuous:${CONTINUOUS_ARTIFACT_ID}" \
+            "environment:${ENVIRONMENT_ARTIFACT_ID}" \
+            "global:${GLOBAL_ANALYSIS_ARTIFACT_ID}"; do
+            name="${pair%%:*}"
+            artifact="${pair##*:}"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact}/zip" \
+              --output "source/${name}/${name}.zip"
+            unzip -tq "source/${name}/${name}.zip"
+            unzip -q "source/${name}/${name}.zip" -d "source/${name}/extracted"
+          done
+
+      - name: Resolve input files
+        run: |
+          set -euo pipefail
+          resolve() {
+            local root="$1" pattern="$2" variable="$3"
+            local value
+            value="$(find "$root" -type f -name "$pattern" | head -n 1)"
+            test -n "$value"
+            echo "${variable}=${value}" >> "$GITHUB_ENV"
+          }
+          resolve source/continuous/extracted primary_trait_continuous_head_with_metadata.csv CONTINUOUS_HEAD
+          resolve source/continuous/extracted primary_trait_continuous_observation_level.csv CONTINUOUS_OBSERVATION
+          resolve source/continuous/extracted primary_trait_continuous_species_level.csv CONTINUOUS_SPECIES
+          resolve source/environment/extracted global_ai_observation_environment_metadata.csv ENVIRONMENT_METADATA
+          resolve source/global/extracted global_ai_merged_yolo_crop_metadata.csv YOLO_METADATA
+
+      - name: Audit QC bias and join environment
+        run: |
+          python ch1_global/v2/57_qc_bias_join_primary_continuous.py \
+            --head "$CONTINUOUS_HEAD" \
+            --observation "$CONTINUOUS_OBSERVATION" \
+            --species "$CONTINUOUS_SPECIES" \
+            --environment "$ENVIRONMENT_METADATA" \
+            --out-dir qc_environment_join
+
+      - name: Select high-resolution involucre subset
+        run: |
+          python ch1_global/v2/58_prepare_high_resolution_involucre_subset.py \
+            --yolo-metadata "$YOLO_METADATA" \
+            --out-csv involucre/high_resolution_yolo_metadata.csv \
+            --report involucre/high_resolution_subset_report.json \
+            --min-bbox-dimension 150
+
+      - name: Reconstruct only selected high-resolution crops
+        run: |
+          python ch1_global/v2/54_rebuild_global_continuous_trait_packet.py \
+            --yolo-metadata involucre/high_resolution_yolo_metadata.csv \
+            --out-dir involucre/rebuilt \
+            --context-pad-ratio 1.5 \
+            --timeout-sec 60 --retries 4 --sleep-sec 0.10
+
+      - name: Measure exploratory involucre proxies
+        run: |
+          python ch1_global/v2/59_measure_involucre_auxiliary_continuous.py \
+            --manifest involucre/rebuilt/continuous_trait_manifest.csv \
+            --packet-root involucre/rebuilt \
+            --metadata involucre/high_resolution_yolo_metadata.csv \
+            --out-dir involucre/measurements \
+            --min-dimension 150 --min-sharpness 55 --min-mask-quality 0.55
+
+      - name: Prepare hair and mucilage literature queue
+        run: |
+          python ch1_global/v2/60_prepare_microtrait_literature_queue.py \
+            --species qc_environment_join/primary_continuous_species_environment.csv \
+            --out-csv literature_microtraits/hair_mucilage_evidence_queue.csv \
+            --schema-json literature_microtraits/hair_mucilage_evidence_schema.json
+
+      - name: Build QC integration figures
+        run: |
+          python ch1_global/v2/61_build_trait_qc_integration_figures.py \
+            --primary-qc qc_environment_join/qc_overall_summary.csv \
+            --environment-gee qc_environment_join/qc_environment_species_clustered_gee.csv \
+            --involucre-status involucre/measurements/involucre_auxiliary_status_summary.csv \
+            --out-dir figures
+
+      - name: Validate outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          qc = json.loads(Path("qc_environment_join/qc_bias_and_join_report.json").read_text())
+          observations = pd.read_csv("qc_environment_join/primary_continuous_observation_environment.csv")
+          species = pd.read_csv("qc_environment_join/primary_continuous_species_environment.csv")
+          subset = json.loads(Path("involucre/high_resolution_subset_report.json").read_text())
+          auxiliary = pd.read_csv("involucre/measurements/involucre_auxiliary_head_level.csv")
+          queue = pd.read_csv("literature_microtraits/hair_mucilage_evidence_queue.csv")
+
+          if qc["n_heads"] != 6626 or len(observations) != 3725 or len(species) != 216:
+              raise SystemExit("Primary QC/join dimensions are incorrect")
+          if subset["n_selected_heads"] < 1700 or subset["n_selected_species"] < 200:
+              raise SystemExit("High-resolution subset unexpectedly small")
+          if len(auxiliary) != subset["n_selected_heads"]:
+              raise SystemExit("Auxiliary output does not cover the selected subset")
+          if not auxiliary["involucre_status"].eq("usable").any():
+              raise SystemExit("No auxiliary involucre measurements passed QC")
+          if len(queue) != 432 or set(queue["trait_state"]) != {"unknown"}:
+              raise SystemExit("Literature queue must contain two unknown rows for each of 216 taxa")
+          if "selection_stratum" in species.columns:
+              raise SystemExit("Legacy annotation strata leaked into analysis-ready species table")
+          for path in Path("figures").glob("*.png"):
+              if path.stat().st_size < 1000:
+                  raise SystemExit(f"Figure is empty: {path}")
+          print({
+              "qc": qc,
+              "high_resolution_subset": subset,
+              "n_auxiliary_usable": int(auxiliary["involucre_status"].eq("usable").sum()),
+          })
+          PY
+
+      - name: Upload next-stage analysis bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-qc-environment-involucre-next-stage
+          path: |
+            qc_environment_join
+            involucre/high_resolution_subset_report.json
+            involucre/measurements
+            literature_microtraits
+            figures
+          if-no-files-found: warn
+          retention-days: 90
