@@ -22,12 +22,12 @@ def load_module(filename: str, module_name: str):
     return module
 
 
-BUILD = load_module("51_build_representative_holdout_packet.py", "ch1_representative_primary_packet")
-EVAL = load_module("48_evaluate_representative_trait_holdout.py", "ch1_representative_primary_eval")
+BUILD = load_module("51_build_representative_holdout_packet.py", "ch1_simple_holdout_builder")
+EVAL = load_module("48_evaluate_representative_trait_holdout.py", "ch1_simple_holdout_eval")
 
 
-class TestRepresentativePrimaryPacket(unittest.TestCase):
-    def test_population_sample_is_proportional_across_cells(self) -> None:
+class TestSimpleRepresentativeHoldout(unittest.TestCase):
+    def test_sample_is_proportional_and_deterministic(self) -> None:
         rows = []
         for index in range(80):
             rows.append({
@@ -41,14 +41,16 @@ class TestRepresentativePrimaryPacket(unittest.TestCase):
                 "taxon_name": "Cirsium_rare",
                 "spatial_block_10deg": "block_rare",
             })
-        sample = BUILD.representative_sample(pd.DataFrame(rows), 20, "fixture")
-        counts = sample["taxon_name"].value_counts().to_dict()
-        self.assertEqual(len(sample), 20)
-        self.assertEqual(counts, {"Cirsium_common": 16, "Cirsium_rare": 4})
-        repeated = BUILD.representative_sample(pd.DataFrame(rows), 20, "fixture")
+        source = pd.DataFrame(rows)
+        sample = BUILD.representative_sample(source, 20, "fixture")
+        self.assertEqual(sample["taxon_name"].value_counts().to_dict(), {
+            "Cirsium_common": 16,
+            "Cirsium_rare": 4,
+        })
+        repeated = BUILD.representative_sample(source, 20, "fixture")
         self.assertEqual(list(sample["annotation_unit_id"]), list(repeated["annotation_unit_id"]))
 
-    def test_certification_separates_population_and_species_diagnostic(self) -> None:
+    def test_default_gate_uses_one_sample_and_human_agreement(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             pd.DataFrame([{
@@ -59,48 +61,40 @@ class TestRepresentativePrimaryPacket(unittest.TestCase):
             key_rows = []
             unit_rows = []
             annotation_rows = []
-            task_index = 0
-            for species_index in range(3):
-                for within_species in range(4):
-                    task_index += 1
-                    task_id = f"task_{task_index:03d}"
-                    unit_id = f"unit_{task_index:03d}"
-                    stratum = "representative_population" if within_species < 2 else "species_diagnostic_topup"
-                    key_rows.append({
-                        "task_id": task_id,
-                        "annotation_unit_id": unit_id,
-                        "trait_id": "capitulum_orientation",
-                        "taxon_name": f"Cirsium_{species_index}",
-                        "double_label": "true" if within_species == 0 else "false",
-                        "selection_stratum": stratum,
-                        "ai_candidate_state": "upright",
-                    })
-                    unit_rows.append({
-                        "annotation_unit_id": unit_id,
-                        "trait_id": "capitulum_orientation",
-                        "taxon_name": f"Cirsium_{species_index}",
-                        "analysis_state_ai_conservative": "upright",
-                    })
-                    human_state = (
-                        "nodding"
-                        if species_index == 0 and within_species == 0
-                        else "upright"
-                    )
+            for index in range(12):
+                task_id = f"task_{index:03d}"
+                unit_id = f"unit_{index:03d}"
+                double = index < 4
+                key_rows.append({
+                    "task_id": task_id,
+                    "annotation_unit_id": unit_id,
+                    "trait_id": "capitulum_orientation",
+                    "taxon_name": f"Cirsium_{index % 3}",
+                    "double_label": str(double).lower(),
+                    "ai_candidate_state": "upright",
+                })
+                unit_rows.append({
+                    "annotation_unit_id": unit_id,
+                    "trait_id": "capitulum_orientation",
+                    "taxon_name": f"Cirsium_{index % 3}",
+                    "analysis_state_ai_conservative": "upright",
+                })
+                human_state = "nodding" if index == 0 else "upright"
+                annotation_rows.append({
+                    "task_id": task_id,
+                    "annotation_unit_id": unit_id,
+                    "trait_id": "capitulum_orientation",
+                    "human_state": human_state,
+                    "annotator_id": "primary",
+                })
+                if double:
                     annotation_rows.append({
                         "task_id": task_id,
                         "annotation_unit_id": unit_id,
                         "trait_id": "capitulum_orientation",
                         "human_state": human_state,
-                        "annotator_id": "primary",
+                        "annotator_id": "secondary",
                     })
-                    if within_species == 0:
-                        annotation_rows.append({
-                            "task_id": task_id,
-                            "annotation_unit_id": unit_id,
-                            "trait_id": "capitulum_orientation",
-                            "human_state": human_state,
-                            "annotator_id": "secondary",
-                        })
 
             pd.DataFrame(key_rows).to_csv(root / "key.csv", index=False)
             pd.DataFrame(unit_rows).to_csv(root / "units.csv", index=False)
@@ -114,11 +108,8 @@ class TestRepresentativePrimaryPacket(unittest.TestCase):
                 "--ontology", str(root / "ontology.csv"),
                 "--out-dir", str(output),
                 "--primary-annotator", "primary",
-                "--min-assessable-per-trait", "5",
+                "--min-assessable-per-trait", "10",
                 "--accuracy-wilson-floor", "0",
-                "--min-species-per-trait", "3",
-                "--min-records-per-species", "4",
-                "--worst-species-accuracy-floor", "0",
                 "--human-human-wilson-floor", "0",
             ]
             with patch.object(sys, "argv", argv):
@@ -126,11 +117,11 @@ class TestRepresentativePrimaryPacket(unittest.TestCase):
 
             gate = pd.read_csv(output / "representative_holdout_trait_gate.csv")
             row = gate.iloc[0]
-            self.assertEqual(int(row["n_population_scoreable"]), 6)
-            self.assertEqual(int(row["n_species_diagnostic_scoreable"]), 12)
-            self.assertAlmostEqual(float(row["population_accuracy"]), 5 / 6)
-            self.assertEqual(int(row["n_species_eligible"]), 3)
+            self.assertEqual(int(row["n_scoreable"]), 12)
+            self.assertAlmostEqual(float(row["ai_human_accuracy"]), 11 / 12)
+            self.assertEqual(int(row["human_human_pairs"]), 4)
             self.assertEqual(row["gate_decision"], "accept_for_analysis")
+            self.assertNotIn("selection_stratum", pd.read_csv(root / "key.csv").columns)
 
 
 if __name__ == "__main__":
