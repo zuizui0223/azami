@@ -19,6 +19,28 @@ or locality), so the resulting agreement is an honest population estimate.
 - **Time:** budget a few seconds per task; ~1–2 hours per annotator per full
   packet is typical.
 
+## Step 0 — assemble `47`'s inputs from existing pipeline outputs
+
+`candidate_units.csv` is not a hand-made file: build it with the adapter from the
+head-level AI traits (`36` output `ai_trait_head_level_with_metadata.csv`) and the
+environment table (`42` output, which carries `obs_id -> spatial_block_10deg`).
+The packet manifest (image paths per head) comes from the head packet build
+(`28`); point `--packet-source` at it to normalise it here in one pass.
+
+```bash
+python ch1_global/v2/50_build_representative_holdout_inputs.py \
+  --head-traits   analysis/ai_trait_head_level_with_metadata.csv \
+  --environment   analysis/environment_extracted.csv \
+  --packet-source analysis/head_packet_manifest.csv \
+  --out-dir       analysis \
+  --measurement-mode conservative
+```
+
+Outputs `analysis/candidate_units.csv` and (if `--packet-source` given)
+`analysis/packet_manifest.csv` — the two inputs Step 1 consumes. The report lists
+how many head units survived, and how many were dropped as unassessable or
+without a spatial block.
+
 ## Step 1 — build the blinded, representative, app-ready packet
 
 Draw a representative sample stratified by taxon × 10° spatial block and copy the
