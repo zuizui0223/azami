@@ -1,0 +1,96 @@
+name: Ch1 submission code CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "ch1_global/**"
+      - "tests/**"
+      - ".github/workflows/ch1-submission-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "ch1_global/**"
+      - "tests/**"
+      - ".github/workflows/ch1-submission-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submission-code-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+
+      - name: Install submission dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements-submission.txt
+          python -m pip check
+
+      - name: Compile active Python submission scripts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          active = []
+          for path in sorted(Path("ch1_global/v2").glob("*.py")):
+              prefix = path.name.split("_", 1)[0]
+              if prefix.isdigit() and 52 <= int(prefix) <= 70:
+                  active.append(path)
+          if not active:
+              raise SystemExit("No active submission scripts found")
+          for path in active:
+              compile(path.read_text(encoding="utf-8"), str(path), "exec")
+              print(path)
+          PY
+
+      - name: Parse active R submission scripts
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Check R syntax
+        run: |
+          Rscript -e 'parse(file="ch1_global/v2/65_audit_and_build_historical_trees.R")'
+          Rscript -e 'parse(file="ch1_global/v2/66_run_historical_constraint_pgls.R")'
+
+      - name: Validate JSON configuration
+        run: |
+          python -m json.tool ch1_global/v2/submission_config.json >/dev/null
+
+      - name: Reject stale active references
+        run: |
+          set -euo pipefail
+          forbidden='47_build_representative_trait_holdout|48_evaluate_representative_trait_holdout|49_run_trait_integration_and_constraint|50_build_representative_holdout_inputs|51_build_representative_holdout_packet|REPRESENTATIVE_HOLDOUT_RUNBOOK|v2.*not yet implemented'
+          if grep -R -n -E "$forbidden" README.md ch1_global tests .github/workflows \
+             --exclude-dir=v1 --exclude='ch1-submission-ci.yml'; then
+            echo "Found stale submission-path references"
+            exit 1
+          fi
+
+      - name: Run unit and invariant tests
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p ci_artifacts
+          python -m unittest discover -s tests -p "test_*.py" -v 2>&1 \
+            | tee ci_artifacts/unittest.log
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-submission-ci-diagnostics
+          path: ci_artifacts
+          if-no-files-found: warn
+          retention-days: 14
