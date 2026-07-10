@@ -1,0 +1,188 @@
+name: Ch1 build validated submission bundle
+
+on:
+  workflow_dispatch:
+    inputs:
+      qc_artifact_id:
+        description: Frozen QC/environment/involucre artifact ID
+        required: true
+        type: string
+      integrated_artifact_id:
+        description: Frozen integrated/prephylogenetic artifact ID
+        required: true
+        type: string
+      historical_artifact_id:
+        description: Frozen historical-sensitivity artifact ID
+        required: true
+        type: string
+      release_label:
+        description: Safe release label
+        required: true
+        default: submission_candidate_1
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  assemble-validate-manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      QC_ARTIFACT_ID: ${{ inputs.qc_artifact_id }}
+      INTEGRATED_ARTIFACT_ID: ${{ inputs.integrated_artifact_id }}
+      HISTORICAL_ARTIFACT_ID: ${{ inputs.historical_artifact_id }}
+      RELEASE_LABEL: ${{ inputs.release_label }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+
+      - uses: r-lib/actions/setup-r@v2
+
+      - name: Install submission dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements-submission.txt
+          python -m pip check
+
+      - name: Validate request
+        run: |
+          python - <<'PY'
+          import os, re
+          normalized = {}
+          for key in ("QC_ARTIFACT_ID", "INTEGRATED_ARTIFACT_ID", "HISTORICAL_ARTIFACT_ID"):
+              value = os.environ[key].strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{key} must be a positive integer")
+              normalized[key] = str(int(value))
+          label = os.environ["RELEASE_LABEL"].strip()
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", label):
+              raise SystemExit("release_label is invalid")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
+              for key, value in normalized.items():
+                  handle.write(f"{key}={value}\n")
+              handle.write(f"RELEASE_LABEL={label}\n")
+          PY
+
+      - name: Download frozen analysis artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          for pair in \
+            "qc:${QC_ARTIFACT_ID}" \
+            "integrated:${INTEGRATED_ARTIFACT_ID}" \
+            "historical:${HISTORICAL_ARTIFACT_ID}"; do
+            name="${pair%%:*}"
+            artifact="${pair##*:}"
+            mkdir -p "source/${name}/extracted"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact}/zip" \
+              --output "source/${name}/${name}.zip"
+            unzip -tq "source/${name}/${name}.zip"
+            unzip -q "source/${name}/${name}.zip" -d "source/${name}/extracted"
+          done
+          sha256sum source/*/*.zip | tee source/input_artifact_sha256.txt
+
+      - name: Assemble one unambiguous result tree
+        run: |
+          set -euo pipefail
+          rm -rf submission_bundle submission_provenance release
+          mkdir -p submission_bundle submission_provenance release
+
+          copy_dir_one() {
+            local root="$1" name="$2" destination="$3"
+            mapfile -t matches < <(find "$root" -type d -name "$name" | sort)
+            if [ "${#matches[@]}" -ne 1 ]; then
+              printf 'Expected one directory %s, found %s\n' "$name" "${#matches[@]}" >&2
+              printf '%s\n' "${matches[@]}" >&2
+              exit 1
+            fi
+            cp -r "${matches[0]}" "$destination"
+          }
+          copy_file_one() {
+            local root="$1" name="$2" destination="$3"
+            mapfile -t matches < <(find "$root" -type f -name "$name" | sort)
+            if [ "${#matches[@]}" -ne 1 ]; then
+              printf 'Expected one file %s, found %s\n' "$name" "${#matches[@]}" >&2
+              printf '%s\n' "${matches[@]}" >&2
+              exit 1
+            fi
+            mkdir -p "$(dirname "$destination")"
+            cp "${matches[0]}" "$destination"
+          }
+
+          copy_dir_one source/qc/extracted qc_environment_join submission_bundle/
+          copy_dir_one source/qc/extracted measurements submission_bundle/involucre_measurements
+          copy_dir_one source/qc/extracted literature_microtraits submission_bundle/
+          copy_dir_one source/qc/extracted figures submission_bundle/qc_figures
+
+          copy_dir_one source/integrated/extracted integrated submission_bundle/
+          copy_dir_one source/integrated/extracted prephylogenetic_models submission_bundle/
+          copy_dir_one source/integrated/extracted prephylogenetic_figures submission_bundle/
+
+          copy_dir_one source/historical/extracted historical_trees submission_bundle/
+          copy_file_one source/historical/extracted historical_constraint_model_report.json \
+            submission_bundle/historical_models/historical_constraint_model_report.json
+          copy_dir_one source/historical/extracted historical_summary submission_bundle/
+          copy_dir_one source/historical/extracted ploidy_hybrid submission_bundle/
+
+          cp source/input_artifact_sha256.txt submission_provenance/input_artifact_sha256.txt
+          printf '%s\n' "$GITHUB_SHA" > submission_provenance/git_sha.txt
+
+      - name: Validate frozen result contract
+        run: |
+          python ch1_global/v2/69_validate_submission_outputs.py \
+            --bundle-root submission_bundle \
+            --config ch1_global/v2/submission_config.json \
+            --out-json submission_provenance/submission_validation.json
+
+      - name: Record R environment and build checksummed manifest
+        run: |
+          Rscript -e 'writeLines(capture.output(sessionInfo()), "submission_provenance/R_sessionInfo.txt")'
+          python ch1_global/v2/70_build_submission_manifest.py \
+            --bundle-root submission_bundle \
+            --validation-report submission_provenance/submission_validation.json \
+            --config ch1_global/v2/submission_config.json \
+            --out-dir submission_provenance \
+            --git-sha "$GITHUB_SHA" \
+            --r-session-info submission_provenance/R_sessionInfo.txt
+
+      - name: Package validated release
+        run: |
+          set -euo pipefail
+          cp ch1_global/v2/submission_config.json submission_provenance/submission_config.json
+          zip -qr "release/ch1_${RELEASE_LABEL}.zip" submission_bundle submission_provenance
+          sha256sum "release/ch1_${RELEASE_LABEL}.zip" \
+            | tee "release/ch1_${RELEASE_LABEL}.zip.sha256"
+          unzip -tq "release/ch1_${RELEASE_LABEL}.zip"
+
+      - name: Add run summary
+        run: |
+          {
+            echo "## Validated Chapter 1 submission bundle"
+            echo
+            echo '```json'
+            cat submission_provenance/submission_validation.json
+            echo '```'
+            echo
+            cat "release/ch1_${RELEASE_LABEL}.zip.sha256"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload validated submission candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-validated-submission-${{ env.RELEASE_LABEL }}
+          path: release
+          if-no-files-found: error
+          retention-days: 90

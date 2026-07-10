@@ -6,6 +6,29 @@ __pycache__/
 .mypy_cache/
 .ipynb_checkpoints/
 
-# Local virtualenvs
+# Local virtual environments
 .venv/
 venv/
+
+# R and editor state
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+.vscode/
+.idea/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Local research-scale working directories and assembled releases
+/source/
+/work/
+/rebuilt/
+/submission_bundle/
+/submission_provenance/
+
+# Local test and CI diagnostics
+/ci_artifacts/
+continuous_trait_test_output.txt
