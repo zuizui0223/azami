@@ -30,6 +30,9 @@ MEASURE = load_module(
 AGGREGATE = load_module(
     "53_aggregate_primary_trait_continuous.py", "continuous_primary_aggregation"
 )
+REBUILD = load_module(
+    "54_rebuild_global_continuous_trait_packet.py", "continuous_primary_rebuild"
+)
 
 
 class TestContinuousPrimaryTraits(unittest.TestCase):
@@ -85,6 +88,27 @@ class TestContinuousPrimaryTraits(unittest.TestCase):
         self.assertLess(
             abs(original["angle_degrees"] - flipped["angle_degrees"]), 3
         )
+
+    def test_rebuild_helpers_preserve_box_and_annotation_identity(self) -> None:
+        from PIL import Image
+
+        image = Image.new("RGB", (100, 80), "white")
+        row = {
+            "audit_id": "ch1atlas_0000001",
+            "queue_id": "ch1atlas_0000001",
+            "det_index": "0",
+            "bbox_x1": "20.2",
+            "bbox_y1": "15.8",
+            "bbox_x2": "60.1",
+            "bbox_y2": "55.2",
+        }
+        self.assertEqual(
+            REBUILD.annotation_unit_id(row), "ch1atlas_0000001_head_01"
+        )
+        head, context = REBUILD.crop_pair(image, row, 1.5)
+        self.assertEqual(head.size, (41, 41))
+        self.assertGreaterEqual(context.size[0], head.size[0])
+        self.assertGreaterEqual(context.size[1], head.size[1])
 
     def test_aggregation_outputs_observation_and_species_tables(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
