@@ -42,4 +42,18 @@ jobs:
             ch1_global/v2/53_aggregate_primary_trait_continuous.py \
             ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
       - name: Run continuous-trait tests
-        run: python -m unittest discover -s tests -p 'test_ch1_continuous_primary_traits.py' -v
+        shell: bash
+        run: |
+          set +e
+          python -m unittest discover -s tests -p 'test_ch1_continuous_primary_traits.py' -v > continuous_trait_test_output.txt 2>&1
+          status=$?
+          cat continuous_trait_test_output.txt
+          exit $status
+      - name: Upload test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-continuous-trait-test-diagnostics
+          path: continuous_trait_test_output.txt
+          if-no-files-found: error
+          retention-days: 7
