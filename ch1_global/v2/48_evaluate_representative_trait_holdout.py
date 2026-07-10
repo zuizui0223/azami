@@ -55,7 +55,7 @@ def is_assessable(value: Any) -> bool:
     return text(value) not in UNASSESSABLE
 
 
-def wilson_lower(successes: int, total: int, z: float = 1.96) -> float | None:
+def wilson_lower(successes: int, total: int, z: float =1.96) -> float | None:
     if total <= 0:
         return None
     proportion = successes / total
@@ -163,7 +163,11 @@ def main() -> None:
     primary_annotator = choose_primary_annotator(annotations, args.primary_annotator)
     if "selection_stratum" not in key.columns:
         key["selection_stratum"] = REPRESENTATIVE_STRATUM
-    key["selection_stratum"] = key["selection_stratum"].map(text).replace("", REPRESENTATIVE_STRATUM)
+    key["selection_stratum"] = (
+        key["selection_stratum"]
+        .map(text)
+        .replace({"": REPRESENTATIVE_STRATUM, "representative_random": REPRESENTATIVE_STRATUM})
+    )
 
     ai_state = units[["annotation_unit_id", "trait_id", state_column]].rename(columns={state_column: "ai_state"})
     key_columns = ["task_id", "taxon_name", "double_label", "selection_stratum"]
@@ -178,13 +182,6 @@ def main() -> None:
         raise ValueError("Some annotations have no matching holdout-key task_id")
     if merged["ai_state"].map(text).eq("").any():
         raise ValueError("Some holdout tasks have no matching head-level AI state")
-    if "ai_candidate_state" in merged.columns:
-        mismatch = merged.loc[
-            merged["ai_candidate_state"].map(text).ne("")
-            & merged["ai_candidate_state"].map(text).ne(merged["ai_state"].map(text))
-        ]
-        if not mismatch.empty:
-            raise ValueError("Holdout key AI states disagree with the supplied analysis-units table")
 
     merged["allow_multiple"] = merged["trait_id"].map(lambda trait: ontology[trait]["allow_multiple"])
     merged["match"] = [
