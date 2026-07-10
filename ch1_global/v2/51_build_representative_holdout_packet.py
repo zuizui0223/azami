@@ -38,6 +38,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--measurement-mode", choices=["conservative", "all"], default="conservative")
     p.add_argument("--n-tasks-per-trait", type=int, default=120)
     p.add_argument("--double-label-fraction", type=float, default=0.25)
+    p.add_argument("--species-diagnostic-taxa", type=int, default=12)
+    p.add_argument("--species-diagnostic-records", type=int, default=7)
     p.add_argument("--context-pad-ratio", type=float, default=1.5)
     p.add_argument("--seed", default="20260710")
     p.add_argument("--sleep-sec", type=float, default=0.15)
@@ -156,6 +158,8 @@ def main() -> None:
         raise ValueError("--double-label-fraction must be in [0,1]")
     if not 0 <= args.context_pad_ratio <= 5:
         raise ValueError("--context-pad-ratio must be in [0,5]")
+    if args.species_diagnostic_taxa < 0 or args.species_diagnostic_records < 1:
+        raise ValueError("Species-diagnostic settings are invalid")
 
     state_column = f"analysis_state_ai_{args.measurement_mode}"
     head = pd.read_csv(args.head_traits, dtype=str, keep_default_na=False)
@@ -193,17 +197,54 @@ def main() -> None:
     per_trait: dict[str, Any] = {}
     for trait in args.traits:
         part = candidates.loc[candidates["trait_id"].eq(trait)].copy()
-        chosen = representative_sample(part, args.n_tasks_per_trait, f"{args.seed}:{trait}")
+        population = representative_sample(part, args.n_tasks_per_trait, f"{args.seed}:{trait}").copy()
+        population["selection_stratum"] = "representative_population"
+
+        candidate_counts = part.groupby("taxon_name")["annotation_unit_id"].nunique()
+        eligible_taxa = candidate_counts.loc[candidate_counts.ge(args.species_diagnostic_records)].index.tolist()
+        diagnostic_taxa = sorted(
+            eligible_taxa, key=lambda taxon: stable_rank(taxon, f"{args.seed}:{trait}:species_diagnostic")
+        )[: args.species_diagnostic_taxa]
+        used_units = set(population["annotation_unit_id"])
+        topups: list[pd.DataFrame] = []
+        for taxon in diagnostic_taxa:
+            already = int(population["taxon_name"].eq(taxon).sum())
+            needed = max(0, args.species_diagnostic_records - already)
+            if needed == 0:
+                continue
+            pool = part.loc[
+                part["taxon_name"].eq(taxon) & ~part["annotation_unit_id"].isin(used_units)
+            ].copy()
+            pool["_diagnostic_rank"] = pool["annotation_unit_id"].map(
+                lambda unit: stable_rank(unit, f"{args.seed}:{trait}:{taxon}:topup")
+            )
+            addition = pool.sort_values("_diagnostic_rank").head(needed).drop(columns="_diagnostic_rank")
+            if len(addition) != needed:
+                raise ValueError(f"Could not construct species diagnostic for {trait} / {taxon}")
+            addition["selection_stratum"] = "species_diagnostic_topup"
+            topups.append(addition)
+            used_units.update(addition["annotation_unit_id"])
+        diagnostic_topup = pd.concat(topups, ignore_index=True) if topups else part.head(0).assign(selection_stratum="")
+        chosen = pd.concat([population, diagnostic_topup], ignore_index=True)
+        if chosen.duplicated(["annotation_unit_id", "trait_id"]).any():
+            raise ValueError(f"Duplicate representative/species-diagnostic tasks for {trait}")
+        diagnostic_counts = chosen.loc[chosen["taxon_name"].isin(diagnostic_taxa)].groupby("taxon_name").size()
+        if diagnostic_taxa and (len(diagnostic_counts) != len(diagnostic_taxa) or diagnostic_counts.min() < args.species_diagnostic_records):
+            raise ValueError(f"Species diagnostic coverage is incomplete for {trait}")
+
         chosen_parts.append(chosen)
         per_trait[trait] = {
             "n_candidates": int(len(part)),
+            "n_population_selected": int(len(population)),
+            "n_species_diagnostic_topup": int(len(diagnostic_topup)),
             "n_selected": int(len(chosen)),
-            "n_taxa": int(chosen["taxon_name"].nunique()),
-            "n_blocks_10deg": int(chosen["spatial_block_10deg"].nunique()),
+            "n_population_taxa": int(population["taxon_name"].nunique()),
+            "n_population_blocks_10deg": int(population["spatial_block_10deg"].nunique()),
+            "n_species_diagnostic_taxa": int(len(diagnostic_taxa)),
+            "species_diagnostic_records_target": int(args.species_diagnostic_records),
         }
     selected = pd.concat(chosen_parts, ignore_index=True)
     selected["task_id"] = [f"representative_holdout_{i:05d}" for i in range(1, len(selected) + 1)]
-    selected["selection_stratum"] = "representative_taxon_x_10deg_block"
     selected["_double_rank"] = selected["task_id"].map(lambda v: stable_rank(v, args.seed))
     n_double = int(round(len(selected) * args.double_label_fraction))
     double_ids = set(selected.sort_values("_double_rank").head(n_double)["task_id"])
@@ -335,6 +376,8 @@ def main() -> None:
         "seed": args.seed,
         "n_tasks_requested_per_trait": args.n_tasks_per_trait,
         "double_label_fraction": args.double_label_fraction,
+        "species_diagnostic_taxa": args.species_diagnostic_taxa,
+        "species_diagnostic_records": args.species_diagnostic_records,
         "context_pad_ratio": args.context_pad_ratio,
         "n_candidate_rows": int(len(candidates)),
         "n_tasks_selected_before_image_build": int(sum(v["n_selected"] for v in per_trait.values())),
@@ -349,10 +392,12 @@ def main() -> None:
                 "n_public_after_image_build": int(public["trait_id"].eq(trait).sum()),
                 "n_public_taxa": int(selected.loc[selected["trait_id"].eq(trait), "taxon_name"].nunique()),
                 "n_public_blocks_10deg": int(selected.loc[selected["trait_id"].eq(trait), "spatial_block_10deg"].nunique()),
+                "n_population_public": int((selected["trait_id"].eq(trait) & selected["selection_stratum"].eq("representative_population")).sum()),
+                "n_species_topup_public": int((selected["trait_id"].eq(trait) & selected["selection_stratum"].eq("species_diagnostic_topup")).sum()),
             }
             for trait in args.traits
         },
-        "selection_design": "Deterministic round-robin sample across taxon x 10-degree spatial block; model margin is not used.",
+        "selection_design": "Population accuracy uses a deterministic round-robin sample across taxon x 10-degree spatial block. A separately marked, model-margin-free species diagnostic tops up twelve deterministic species to seven records each for the worst-species gate.",
         "image_reconstruction": "Re-downloaded the same iNaturalist medium image size used by global inference and recreated YOLO head/context crops from stored boxes.",
     }
     (out / "representative_trait_holdout_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
