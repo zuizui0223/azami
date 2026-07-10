@@ -1,4 +1,4 @@
-name: Ch1 build representative primary-trait holdout
+name: Ch1 build simple representative trait holdout
 
 on:
   workflow_dispatch:
@@ -8,20 +8,10 @@ on:
         required: true
         default: "8099953404"
         type: string
-      n_tasks_per_trait:
-        description: Representative population tasks per primary trait
-        required: true
-        default: "120"
-        type: string
-      double_label_fraction:
-        description: Fraction included in the secondary annotator packet
-        required: true
-        default: "0.25"
-        type: string
       output_label:
         description: Safe output label
         required: true
-        default: primary_traits_120_plus_species_diagnostic_v1
+        default: primary_traits_simple_v1
         type: string
   pull_request:
     branches: [main]
@@ -32,9 +22,7 @@ on:
       - tests/test_ch1_representative_primary_packet.py
       - .github/workflows/ch1-build-representative-primary-holdout.yml
   push:
-    branches:
-      - main
-      - build/ch1-representative-holdout
+    branches: [main, simplify/ch1-representative-holdout]
     paths:
       - ch1_global/v2/51_build_representative_holdout_packet.py
       - ch1_global/v2/48_evaluate_representative_trait_holdout.py
@@ -47,17 +35,13 @@ permissions:
   contents: read
 
 jobs:
-  build-representative-holdout:
-    name: Build representative blinded holdout packets
+  build-simple-holdout:
+    name: Build 360-task primary and 90-task secondary packets
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
       GLOBAL_AI_ARTIFACT_ID: ${{ inputs.global_ai_analysis_artifact_id || '8099953404' }}
-      N_TASKS_PER_TRAIT: ${{ inputs.n_tasks_per_trait || '120' }}
-      DOUBLE_LABEL_FRACTION: ${{ inputs.double_label_fraction || '0.25' }}
-      OUTPUT_LABEL: ${{ inputs.output_label || 'primary_traits_120_plus_species_diagnostic_v1' }}
-      SPECIES_DIAGNOSTIC_TAXA: "12"
-      SPECIES_DIAGNOSTIC_RECORDS: "7"
+      OUTPUT_LABEL: ${{ inputs.output_label || 'primary_traits_simple_v1' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -78,20 +62,10 @@ jobs:
           artifact = os.environ["GLOBAL_AI_ARTIFACT_ID"].strip().replace(",", "").replace("_", "")
           if not re.fullmatch(r"[0-9]+", artifact) or int(artifact) < 1:
               raise SystemExit("global_ai_analysis_artifact_id must be positive")
-          n_tasks = int(os.environ["N_TASKS_PER_TRAIT"])
-          fraction = float(os.environ["DOUBLE_LABEL_FRACTION"])
-          diagnostic_taxa = int(os.environ["SPECIES_DIAGNOSTIC_TAXA"])
-          diagnostic_records = int(os.environ["SPECIES_DIAGNOSTIC_RECORDS"])
-          if n_tasks < 50 or not 0 < fraction <= 1:
-              raise SystemExit("Invalid task count or double-label fraction")
-          if diagnostic_taxa < 10 or diagnostic_records < 5:
-              raise SystemExit("Species diagnostic is below the certification gate")
           if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", os.environ["OUTPUT_LABEL"]):
               raise SystemExit("output_label is invalid")
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as handle:
               handle.write(f"GLOBAL_AI_ARTIFACT_ID={int(artifact)}\n")
-              handle.write(f"N_TASKS_PER_TRAIT={n_tasks}\n")
-              handle.write(f"DOUBLE_LABEL_FRACTION={fraction}\n")
           PY
 
       - name: Download merged global AI artifact
@@ -110,7 +84,7 @@ jobs:
           test -s source/global/extracted/global_ai_analysis_units/ai_trait_head_level_with_metadata.csv
           test -s source/global/extracted/merged_shards/global_ai_merged_yolo_crop_metadata.csv
 
-      - name: Build representative packets
+      - name: Build simple representative packets
         run: |
           python ch1_global/v2/51_build_representative_holdout_packet.py \
             --head-traits source/global/extracted/global_ai_analysis_units/ai_trait_head_level_with_metadata.csv \
@@ -119,17 +93,15 @@ jobs:
             --out-dir representative_holdout \
             --traits capitulum_orientation corolla_colour_class capitulum_shape \
             --measurement-mode conservative \
-            --n-tasks-per-trait "$N_TASKS_PER_TRAIT" \
-            --double-label-fraction "$DOUBLE_LABEL_FRACTION" \
-            --species-diagnostic-taxa "$SPECIES_DIAGNOSTIC_TAXA" \
-            --species-diagnostic-records "$SPECIES_DIAGNOSTIC_RECORDS" \
+            --n-tasks-per-trait 120 \
+            --double-label-fraction 0.25 \
             --context-pad-ratio 1.5 \
             --seed 20260710 --sleep-sec 0.15 --timeout-sec 60 --retries 4
 
-      - name: Validate packets and sampling strata
+      - name: Validate the simple design
         run: |
           python - <<'PY'
-          import json, os
+          import json
           from pathlib import Path
           import pandas as pd
 
@@ -141,83 +113,75 @@ jobs:
           key = pd.read_csv(root / "representative_trait_holdout_key" / "representative_trait_holdout_key.csv", dtype=str, keep_default_na=False)
           report = json.loads((root / "representative_trait_holdout_report.json").read_text(encoding="utf-8"))
 
-          forbidden = {"taxon_name", "ai_candidate_state", "selection_stratum", "double_label", "obs_id", "photo_id"}
+          forbidden = {"taxon_name", "ai_candidate_state", "double_label", "obs_id", "photo_id"}
           if forbidden & set(primary.columns) or forbidden & set(secondary.columns):
               raise SystemExit("Public packet leaks private fields")
-          expected = int(report["n_tasks_public"])
-          expected_secondary = int(report["n_secondary_double_label_tasks"])
-          if (len(primary), len(secondary), len(key)) != (expected, expected_secondary, expected):
-              raise SystemExit({"primary": len(primary), "secondary": len(secondary), "key": len(key), "expected": expected})
+          if (len(primary), len(secondary), len(key)) != (360, 90, 360):
+              raise SystemExit({"primary": len(primary), "secondary": len(secondary), "key": len(key)})
+          if report["n_primary_tasks"] != 360 or report["n_secondary_tasks"] != 90:
+              raise SystemExit("Report task counts are incorrect")
           if primary["task_id"].duplicated().any() or key["task_id"].duplicated().any():
               raise SystemExit("Duplicate task IDs")
           if not set(secondary["task_id"]).issubset(set(primary["task_id"])):
               raise SystemExit("Secondary packet is not a primary subset")
-          if set(key["selection_stratum"]) != {"representative_population", "species_diagnostic_topup"}:
-              raise SystemExit("Unexpected selection strata")
+          if "selection_stratum" in key.columns:
+              raise SystemExit("The simple key must not contain annotation strata")
+
+          for trait in ("capitulum_orientation", "corolla_colour_class", "capitulum_shape"):
+              if primary["trait_id"].eq(trait).sum() != 120:
+                  raise SystemExit(f"Primary count is incorrect for {trait}")
+              if secondary["trait_id"].eq(trait).sum() != 30:
+                  raise SystemExit(f"Secondary count is incorrect for {trait}")
 
           for packet_root, table in ((primary_root, primary), (secondary_root, secondary)):
               for field in ("source_image", "crop_path", "context_crop_path"):
                   missing = [value for value in table[field] if not (packet_root / value).is_file()]
                   if missing:
                       raise SystemExit(f"Missing {field}: {missing[:5]}")
-
-          for trait in ("capitulum_orientation", "corolla_colour_class", "capitulum_shape"):
-              trait_key = key.loc[key["trait_id"].eq(trait)]
-              population = trait_key.loc[trait_key["selection_stratum"].eq("representative_population")]
-              if len(population) != int(os.environ["N_TASKS_PER_TRAIT"]):
-                  raise SystemExit(f"Unexpected representative population count for {trait}")
-              species_counts = trait_key.groupby("taxon_name").size()
-              if int(species_counts.ge(int(os.environ["SPECIES_DIAGNOSTIC_RECORDS"])).sum()) < int(os.environ["SPECIES_DIAGNOSTIC_TAXA"]):
-                  raise SystemExit(f"Species diagnostic coverage is too small for {trait}")
-              trait_report = report["per_trait"][trait]
-              if trait_report["n_species_diagnostic_taxa"] != int(os.environ["SPECIES_DIAGNOSTIC_TAXA"]):
-                  raise SystemExit(f"Unexpected diagnostic-taxon count for {trait}")
-              if trait_report["n_population_public"] != int(os.environ["N_TASKS_PER_TRAIT"]):
-                  raise SystemExit(f"Unexpected population-report count for {trait}")
           print(json.dumps(report, ensure_ascii=False, indent=2))
           PY
 
       - name: Package direct-upload ZIP files
         run: |
           set -euo pipefail
-          (cd representative_holdout/representative_trait_holdout_primary && zip -qr ../representative_primary_public.zip .)
-          (cd representative_holdout/representative_trait_holdout_secondary && zip -qr ../representative_secondary_public.zip .)
+          (cd representative_holdout/representative_trait_holdout_primary && zip -qr ../representative_primary_360.zip .)
+          (cd representative_holdout/representative_trait_holdout_secondary && zip -qr ../representative_secondary_90.zip .)
           python - <<'PY'
           from pathlib import Path
           root = Path("representative_holdout")
-          for name in ("representative_primary_public.zip", "representative_secondary_public.zip"):
+          for name in ("representative_primary_360.zip", "representative_secondary_90.zip"):
               size = (root / name).stat().st_size / 1024 / 1024
               print(f"{name}: {size:.2f} MiB")
               if size > 195:
-                  raise SystemExit(f"{name} exceeds Streamlit's 200 MB upload limit")
+                  raise SystemExit(f"{name} exceeds Streamlit's upload limit")
           PY
 
       - name: Report summary
         run: |
           {
-            echo "## Representative primary-trait holdout"
+            echo "## Simple representative holdout"
             echo '```json'
             cat representative_holdout/representative_trait_holdout_report.json
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload primary public packet
+      - name: Upload primary 360-task packet
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-representative-primary-public-${{ env.OUTPUT_LABEL }}
-          path: representative_holdout/representative_primary_public.zip
+          name: ch1-representative-primary-360-${{ env.OUTPUT_LABEL }}
+          path: representative_holdout/representative_primary_360.zip
           if-no-files-found: error
           retention-days: 90
 
-      - name: Upload secondary public packet
+      - name: Upload secondary 90-task packet
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-representative-secondary-public-${{ env.OUTPUT_LABEL }}
-          path: representative_holdout/representative_secondary_public.zip
+          name: ch1-representative-secondary-90-${{ env.OUTPUT_LABEL }}
+          path: representative_holdout/representative_secondary_90.zip
           if-no-files-found: error
           retention-days: 90
 
-      - name: Upload private key and provenance
+      - name: Upload private key
         uses: actions/upload-artifact@v4
         with:
           name: ch1-representative-private-key-${{ env.OUTPUT_LABEL }}
