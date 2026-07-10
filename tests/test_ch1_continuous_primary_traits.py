@@ -13,21 +13,22 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V2 = ROOT / "ch1_global" / "v2"
+V2_DIR = ROOT / "ch1_global" / "v2"
 
 
 def load_module(filename: str, name: str):
-    spec = importlib.util.spec_from_file_location(name, V2 / filename)
+    spec = importlib.util.spec_from_file_location(name, V2_DIR / filename)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-COMPAT = load_module(
-    "55_run_primary_traits_continuous.py", "continuous_primary_compat"
+V2 = load_module(
+    "56_run_primary_traits_continuous_v2.py", "continuous_primary_v2"
 )
-MEASURE = COMPAT.MEASURE
+COMPAT = V2.COMPAT
+MEASURE = V2.MEASURE
 AGGREGATE = load_module(
     "53_aggregate_primary_trait_continuous.py", "continuous_primary_aggregation"
 )
@@ -43,19 +44,28 @@ class TestContinuousPrimaryTraits(unittest.TestCase):
             COMPAT._ORIGINAL_HOUGH_LINES_P = lambda *args, **kwargs: np.array(
                 [[1, 2, 3, 4]], dtype=np.int32
             )
-            normalized = COMPAT._normalized_hough_lines_p(np.zeros((4, 4), np.uint8))
+            normalized = COMPAT._normalized_hough_lines_p(
+                np.zeros((4, 4), np.uint8)
+            )
             self.assertEqual(normalized.shape, (1, 1, 4))
         finally:
             COMPAT._ORIGINAL_HOUGH_LINES_P = original
 
-    def test_colour_metrics_are_flip_invariant(self) -> None:
+    def test_colour_v2_is_exclusive_bounded_and_flip_invariant(self) -> None:
         image = np.full((128, 128, 3), (40, 120, 40), dtype=np.uint8)
         cv2.ellipse(
             image, (64, 60), (35, 28), 0, 0, 360, (180, 60, 220), -1
         )
-        left = MEASURE.colour_measurement(image)
-        right = MEASURE.colour_measurement(cv2.flip(image, 1))
-        self.assertGreater(left["floral_pixel_fraction"], 0.5)
+        left = V2.colour_measurement_v2(image)
+        right = V2.colour_measurement_v2(cv2.flip(image, 1))
+        fractions = [
+            left["white_fraction"],
+            left["redmagenta_fraction"],
+            left["purple_fraction"],
+            left["yellow_fraction"],
+        ]
+        self.assertLessEqual(left["floral_pixel_fraction"], 1.0)
+        self.assertAlmostEqual(sum(fractions), 1.0, places=7)
         self.assertAlmostEqual(
             left["median_lab_chroma"], right["median_lab_chroma"], places=5
         )
@@ -83,23 +93,56 @@ class TestContinuousPrimaryTraits(unittest.TestCase):
             round_result["circularity"], elongated_result["circularity"]
         )
 
-    def test_orientation_angle_is_flip_stable(self) -> None:
-        context = np.full((240, 240, 3), (225, 225, 225), dtype=np.uint8)
-        cv2.line(context, (120, 220), (120, 120), (35, 100, 35), 8)
-        cv2.ellipse(
-            context, (120, 88), (36, 32), 0, 0, 360, (55, 100, 55), -1
-        )
-        cv2.circle(context, (120, 68), 22, (180, 60, 220), -1)
-        head = context[45:122, 82:159].copy()
+    @staticmethod
+    def _orientation_fixture(direction: str) -> tuple[np.ndarray, np.ndarray]:
+        context = np.full((260, 260, 3), (225, 225, 225), dtype=np.uint8)
+        if direction == "up":
+            cv2.line(context, (130, 245), (130, 145), (35, 100, 35), 8)
+            cv2.ellipse(
+                context, (130, 110), (30, 48), 0, 0, 360, (55, 100, 55), -1
+            )
+            cv2.circle(context, (130, 73), 22, (180, 60, 220), -1)
+            head = context[55:166, 90:171].copy()
+        elif direction == "down":
+            cv2.line(context, (130, 15), (130, 115), (35, 100, 35), 8)
+            cv2.ellipse(
+                context, (130, 150), (30, 48), 0, 0, 360, (55, 100, 55), -1
+            )
+            cv2.circle(context, (130, 188), 22, (180, 60, 220), -1)
+            head = context[94:207, 90:171].copy()
+        elif direction == "right":
+            cv2.line(context, (15, 130), (105, 130), (35, 100, 35), 8)
+            cv2.ellipse(
+                context, (145, 130), (48, 30), 0, 0, 360, (55, 100, 55), -1
+            )
+            cv2.circle(context, (184, 130), 22, (180, 60, 220), -1)
+            head = context[90:171, 88:207].copy()
+        else:
+            raise ValueError(direction)
+        return head, context
 
-        original = MEASURE.orientation_measurement(head, context)
-        flipped = MEASURE.orientation_measurement(
-            cv2.flip(head, 1), cv2.flip(context, 1)
-        )
-        self.assertLess(original["angle_degrees"], 10)
-        self.assertLess(
-            abs(original["angle_degrees"] - flipped["angle_degrees"]), 3
-        )
+    def test_orientation_v2_is_signed_and_flip_stable(self) -> None:
+        expected = {
+            "up": (0, 25),
+            "right": (70, 110),
+            "down": (155, 180),
+        }
+        for direction, (lower, upper) in expected.items():
+            with self.subTest(direction=direction):
+                head, context = self._orientation_fixture(direction)
+                original = V2.orientation_measurement_v2(head, context)
+                flipped = V2.orientation_measurement_v2(
+                    cv2.flip(head, 1), cv2.flip(context, 1)
+                )
+                self.assertGreaterEqual(original["angle_degrees"], lower)
+                self.assertLessEqual(original["angle_degrees"], upper)
+                self.assertLess(
+                    abs(
+                        original["angle_degrees"]
+                        - flipped["angle_degrees"]
+                    ),
+                    3,
+                )
 
     def test_rebuild_helpers_preserve_box_and_annotation_identity(self) -> None:
         from PIL import Image

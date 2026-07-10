@@ -8,16 +8,18 @@ on:
       - ch1_global/v2/53_aggregate_primary_trait_continuous.py
       - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
       - ch1_global/v2/55_run_primary_traits_continuous.py
+      - ch1_global/v2/56_run_primary_traits_continuous_v2.py
       - ch1_global/v2/CONTINUOUS_PRIMARY_TRAITS.md
       - tests/test_ch1_continuous_primary_traits.py
       - .github/workflows/ch1-continuous-primary-traits-ci.yml
   push:
-    branches: [main, feature/ch1-continuous-primary-traits]
+    branches: [main, feature/ch1-continuous-primary-traits, fix/ch1-continuous-traits-v2]
     paths:
       - ch1_global/v2/52_measure_primary_traits_continuous.py
       - ch1_global/v2/53_aggregate_primary_trait_continuous.py
       - ch1_global/v2/54_rebuild_global_continuous_trait_packet.py
       - ch1_global/v2/55_run_primary_traits_continuous.py
+      - ch1_global/v2/56_run_primary_traits_continuous_v2.py
       - tests/test_ch1_continuous_primary_traits.py
       - .github/workflows/ch1-continuous-primary-traits-ci.yml
 
@@ -43,7 +45,8 @@ jobs:
             ch1_global/v2/52_measure_primary_traits_continuous.py \
             ch1_global/v2/53_aggregate_primary_trait_continuous.py \
             ch1_global/v2/54_rebuild_global_continuous_trait_packet.py \
-            ch1_global/v2/55_run_primary_traits_continuous.py
+            ch1_global/v2/55_run_primary_traits_continuous.py \
+            ch1_global/v2/56_run_primary_traits_continuous_v2.py
       - name: Run continuous-trait tests
         shell: bash
         run: |
