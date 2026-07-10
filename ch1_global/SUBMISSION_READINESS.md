@@ -111,9 +111,13 @@ representative, species-aware sample.
 
 ## Secondary items (do before submission, not blockers to start)
 
-- **Trait integration / constraint analysis** (`README.md` §3.5) is not yet in
-  the executed atlas; it is a core novelty leg (§1.4-2) and should be run at
-  species level on the certified traits.
+- **Trait integration / constraint analysis** (`README.md` §3.5) — *implemented
+  this review:* `ch1_global/v2/49_run_trait_integration_and_constraint.py`
+  computes, at species level, pairwise trait association (bias-corrected
+  Cramér's V), an integration-magnitude permutation test, and a constraint /
+  forbidden-combination test, from the observation-level long table. It is a
+  core novelty leg (§1.4-2). Run it on the certified traits once step 1 passes
+  (it consumes AI states, so headline only the accepted traits).
 - **Aggregation-level sensitivity** (species-mean and species×grid as headline)
   — confirm the atlas reports these, not only observation-level.
 - **Multiple-testing discipline** across 42 eligible outcomes: report effect
