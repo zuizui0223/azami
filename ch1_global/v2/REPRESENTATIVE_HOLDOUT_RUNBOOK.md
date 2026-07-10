@@ -30,9 +30,11 @@ suitable close-up images.
 
 Two validation questions require different samples and must not be mixed.
 
-1. **Population accuracy** — estimated from 120 tasks per trait sampled by a
-   deterministic round-robin across taxon × 10-degree spatial block. These rows
-   have `selection_stratum=representative_population` in the private key.
+1. **Population accuracy** — estimated from 120 tasks per trait. Tasks are
+   allocated to taxon × 10-degree spatial cells in proportion to the number of
+   eligible analysis records in each cell, then selected by a stable hash within
+   cells. These rows have `selection_stratum=representative_population` in the
+   private key.
 2. **Species transferability** — evaluated with a separately marked,
    model-margin-free top-up. Twelve deterministic taxa per trait are brought to
    seven records each when necessary. These extra rows have
