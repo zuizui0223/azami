@@ -20,6 +20,7 @@ on:
       - ch1_global/v2/66_run_historical_constraint_pgls.R
       - ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py
       - ch1_global/v2/68_finalize_historical_sensitivity.py
+      - ch1_global/v2/HISTORICAL_CONSTRAINTS.md
       - .github/workflows/ch1-historical-constraint-sensitivity.yml
   push:
     branches: [feature/ch1-historical-constraint-sensitivity]
@@ -28,6 +29,7 @@ on:
       - ch1_global/v2/66_run_historical_constraint_pgls.R
       - ch1_global/v2/67_prepare_ploidy_hybrid_evidence_queue.py
       - ch1_global/v2/68_finalize_historical_sensitivity.py
+      - ch1_global/v2/HISTORICAL_CONSTRAINTS.md
       - .github/workflows/ch1-historical-constraint-sensitivity.yml
 
 permissions:
@@ -49,16 +51,44 @@ jobs:
         with:
           use-public-rspm: true
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: historical-constraint-v2
+          packages: |
+            any::ape
+            any::jsonlite
+            any::nlme
+            any::remotes
+            any::rotl
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install R and Python dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install pandas matplotlib
-          Rscript -e 'install.packages(c("ape", "jsonlite", "nlme", "remotes", "rotl"), repos="https://cloud.r-project.org")'
-          Rscript -e 'remotes::install_github("jinyizju/V.PhyloMaker2", upgrade="never", dependencies=FALSE)'
+
+      - name: Install V.PhyloMaker2 backbone package
+        env:
+          GITHUB_PAT: ${{ github.token }}
+        run: |
+          Rscript - <<'RS'
+          options(timeout = 1800)
+          remotes::install_github(
+            "jinyizju/V.PhyloMaker2",
+            upgrade = "never",
+            dependencies = FALSE,
+            build_vignettes = FALSE,
+            quiet = FALSE
+          )
+          stopifnot(requireNamespace("V.PhyloMaker2", quietly = TRUE))
+          suppressPackageStartupMessages(library(V.PhyloMaker2))
+          stopifnot(inherits(GBOTB.extended.LCVP, "phylo"))
+          stopifnot(length(GBOTB.extended.LCVP$tip.label) > 60000)
+          cat("V.PhyloMaker2 backbone tips:", length(GBOTB.extended.LCVP$tip.label), "\n")
+          RS
 
       - name: Download integrated continuous artifact
         env:
@@ -115,6 +145,7 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
           import pandas as pd
 
@@ -130,14 +161,15 @@ jobs:
               raise SystemExit("Historical tree audit did not retain 216 taxa")
           if tree["gbotb_lcvp"]["scenario1_tips"] != 216 or tree["gbotb_lcvp"]["scenario3_tips"] != 216:
               raise SystemExit("Deterministic GBOTB trees do not contain 216 tips")
-          if tree["gbotb_lcvp"]["n_randomized_scenario2_trees"] != int("${N_RANDOM_TREES}"):
+          if tree["gbotb_lcvp"]["n_randomized_scenario2_trees"] != int(os.environ["N_RANDOM_TREES"]):
               raise SystemExit("Randomized tree count is incorrect")
           if len(queue) != 216 or set(queue["ploidy_class"]) != {"unknown"}:
               raise SystemExit("Ploidy/hybrid queue must start with 216 unknown taxa")
           if model["n_successful_model_fits"] == 0 or len(coefficients) == 0:
               raise SystemExit("No PGLS historical sensitivity succeeded")
-          if not coefficients.loc[coefficients["covariance_model"].eq("PGLS_Pagel_lambda"), "pagel_lambda"].between(0, 1).all():
-              raise SystemExit("Pagel lambda escaped [0,1]")
+          lambda_rows = coefficients.loc[coefficients["covariance_model"].eq("PGLS_Pagel_lambda")]
+          if lambda_rows.empty or not lambda_rows["pagel_lambda"].between(0, 1).all():
+              raise SystemExit("Pagel lambda escaped [0,1] or was not estimated")
           if "OLS_HC3_reference" in set(coefficients["covariance_model"]):
               raise SystemExit("Incorrect OLS covariance label remains")
           if len(random) != 36:
