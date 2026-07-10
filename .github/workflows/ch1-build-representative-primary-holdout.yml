@@ -29,13 +29,17 @@ on:
       - ch1_global/v2/51_build_representative_holdout_packet.py
       - ch1_global/v2/48_evaluate_representative_trait_holdout.py
       - ch1_global/v2/REPRESENTATIVE_HOLDOUT_RUNBOOK.md
+      - tests/test_ch1_representative_primary_packet.py
       - .github/workflows/ch1-build-representative-primary-holdout.yml
   push:
-    branches: [build/ch1-representative-holdout]
+    branches:
+      - main
+      - build/ch1-representative-holdout
     paths:
       - ch1_global/v2/51_build_representative_holdout_packet.py
       - ch1_global/v2/48_evaluate_representative_trait_holdout.py
       - ch1_global/v2/REPRESENTATIVE_HOLDOUT_RUNBOOK.md
+      - tests/test_ch1_representative_primary_packet.py
       - .github/workflows/ch1-build-representative-primary-holdout.yml
 
 permissions:
@@ -141,7 +145,7 @@ jobs:
           if forbidden & set(primary.columns) or forbidden & set(secondary.columns):
               raise SystemExit("Public packet leaks private fields")
           expected = int(report["n_tasks_public"])
-          expected_secondary = round(expected * float(os.environ["DOUBLE_LABEL_FRACTION"]))
+          expected_secondary = int(report["n_secondary_double_label_tasks"])
           if (len(primary), len(secondary), len(key)) != (expected, expected_secondary, expected):
               raise SystemExit({"primary": len(primary), "secondary": len(secondary), "key": len(key), "expected": expected})
           if primary["task_id"].duplicated().any() or key["task_id"].duplicated().any():
