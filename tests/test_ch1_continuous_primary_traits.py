@@ -24,9 +24,10 @@ def load_module(filename: str, name: str):
     return module
 
 
-MEASURE = load_module(
-    "52_measure_primary_traits_continuous.py", "continuous_primary_measurement"
+COMPAT = load_module(
+    "55_run_primary_traits_continuous.py", "continuous_primary_compat"
 )
+MEASURE = COMPAT.MEASURE
 AGGREGATE = load_module(
     "53_aggregate_primary_trait_continuous.py", "continuous_primary_aggregation"
 )
@@ -36,6 +37,17 @@ REBUILD = load_module(
 
 
 class TestContinuousPrimaryTraits(unittest.TestCase):
+    def test_hough_line_shape_is_normalized(self) -> None:
+        original = COMPAT._ORIGINAL_HOUGH_LINES_P
+        try:
+            COMPAT._ORIGINAL_HOUGH_LINES_P = lambda *args, **kwargs: np.array(
+                [[1, 2, 3, 4]], dtype=np.int32
+            )
+            normalized = COMPAT._normalized_hough_lines_p(np.zeros((4, 4), np.uint8))
+            self.assertEqual(normalized.shape, (1, 1, 4))
+        finally:
+            COMPAT._ORIGINAL_HOUGH_LINES_P = original
+
     def test_colour_metrics_are_flip_invariant(self) -> None:
         image = np.full((128, 128, 3), (40, 120, 40), dtype=np.uint8)
         cv2.ellipse(
