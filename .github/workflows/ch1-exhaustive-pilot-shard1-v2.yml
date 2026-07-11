@@ -15,9 +15,9 @@ jobs:
     env:
       QUEUE_SHARDS_ARTIFACT_ID: "8245076519"
       DETECTOR_MODEL_ARTIFACT_ID: "8076736948"
-      OUTPUT_LABEL: "all_photos_20260711_pilot_v2"
+      OUTPUT_LABEL: "all_photos_20260711_smoke100"
       SHARD_ID: "1"
-      DOWNLOAD_SLEEP_SEC: "0.25"
+      DOWNLOAD_SLEEP_SEC: "0.05"
 
     steps:
       - uses: actions/checkout@v4
@@ -34,8 +34,19 @@ jobs:
           python -m pip install -r ch1_global/v2/requirements-submission.txt ultralytics torch
           python -m pip check
 
-      - name: Validate shell
-        run: bash -n ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+      - name: Limit this execution copy to the first 100 photos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh")
+          text = path.read_text(encoding="utf-8")
+          needle = 'queue = pd.read_csv(queue_path, dtype=str, keep_default_na=False)\nif queue.empty or queue["queue_id"].duplicated().any() or queue["photo_id"].duplicated().any():'
+          replacement = 'queue = pd.read_csv(queue_path, dtype=str, keep_default_na=False)\nqueue = queue.head(100).copy()\nif queue.empty or queue["queue_id"].duplicated().any() or queue["photo_id"].duplicated().any():'
+          if text.count(needle) != 1:
+              raise SystemExit("Could not safely patch the execution copy for smoke testing")
+          path.write_text(text.replace(needle, replacement), encoding="utf-8")
+          PY
+          bash -n ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
 
       - name: Detect heads and measure corrected continuous traits
         env:
@@ -51,8 +62,8 @@ jobs:
 
           queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False, low_memory=False)
           screening = pd.read_csv("detector/screening_results.csv", dtype=str, keep_default_na=False, low_memory=False)
-          if len(queue) < 6000 or len(queue) > 6200:
-              raise SystemExit(f"Unexpected pilot shard size: {len(queue)}")
+          if len(queue) != 100:
+              raise SystemExit(f"Unexpected smoke-test size: {len(queue)}")
           if len(screening) != len(queue) or screening["queue_id"].duplicated().any():
               raise SystemExit("Not every queued photo has exactly one screening outcome")
           allowed = {"detected", "no_detection", "missing_image", "error"}
@@ -74,7 +85,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-exhaustive-continuous-pilot-shard1-v2-20260711
+          name: ch1-exhaustive-continuous-smoke100-20260711
           path: |
             queue_shard.csv
             downloads/download_results.csv
