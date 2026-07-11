@@ -42,17 +42,17 @@ jobs:
           python -m pip install -r ch1_global/v2/requirements-submission.txt "PyYAML>=6,<7"
           python -m pip check
 
-      - name: Compile active Python submission scripts
+      - name: Compile active Python scripts
         run: |
           python - <<'PY'
           from pathlib import Path
           active = []
           for path in sorted(Path("ch1_global/v2").glob("*.py")):
               prefix = path.name.split("_", 1)[0]
-              if prefix.isdigit() and 52 <= int(prefix) <= 70:
+              if prefix.isdigit() and 52 <= int(prefix) <= 74:
                   active.append(path)
           if not active:
-              raise SystemExit("No active submission scripts found")
+              raise SystemExit("No active Chapter 1 scripts found")
           for path in active:
               compile(path.read_text(encoding="utf-8"), str(path), "exec")
               print(path)
@@ -61,10 +61,11 @@ jobs:
       - name: Parse active R submission scripts
         uses: r-lib/actions/setup-r@v2
 
-      - name: Check R syntax
+      - name: Check R syntax and exhaustive shell runner
         run: |
           Rscript -e 'parse(file="ch1_global/v2/65_audit_and_build_historical_trees.R")'
           Rscript -e 'parse(file="ch1_global/v2/66_run_historical_constraint_pgls.R")'
+          bash -n ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
 
       - name: Validate JSON and workflow YAML
         run: |
@@ -72,7 +73,6 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import yaml
-
           workflows = sorted(Path(".github/workflows").glob("ch1-*.yml"))
           if not workflows:
               raise SystemExit("No Chapter 1 workflows found")
@@ -88,13 +88,14 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import re
-
           production = [
               Path(".github/workflows/ch1-run-continuous-primary-traits.yml"),
               Path(".github/workflows/ch1-qc-join-involucre.yml"),
               Path(".github/workflows/ch1-integrate-continuous-prephylogenetic.yml"),
               Path(".github/workflows/ch1-historical-constraint-sensitivity.yml"),
               Path(".github/workflows/ch1-build-submission-bundle.yml"),
+              Path(".github/workflows/ch1-build-exhaustive-photo-queue.yml"),
+              Path(".github/workflows/ch1-run-merge-exhaustive-continuous.yml"),
           ]
           stale_artifact_default = re.compile(
               r"^\s*default:\s*[\"']?[0-9]{6,}[\"']?\s*$",

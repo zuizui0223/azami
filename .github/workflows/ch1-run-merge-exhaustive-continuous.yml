@@ -1,0 +1,223 @@
+name: Ch1 run and merge exhaustive continuous traits
+
+on:
+  workflow_dispatch:
+    inputs:
+      queue_shards_artifact_id:
+        description: Exhaustive photo queue/shards artifact ID
+        required: true
+        type: string
+      detector_model_artifact_id:
+        description: Frozen visible-capitulum YOLO detector artifact ID
+        required: true
+        type: string
+      output_label:
+        description: Safe output label
+        required: true
+        default: exhaustive_continuous_v1
+        type: string
+
+concurrency:
+  group: ch1-exhaustive-continuous-${{ inputs.output_label }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      shard_ids: ${{ steps.matrix.outputs.shard_ids }}
+    env:
+      QUEUE_SHARDS_ARTIFACT_ID: ${{ inputs.queue_shards_artifact_id }}
+    steps:
+      - name: Validate and download shard manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          value="$(printf '%s' "$QUEUE_SHARDS_ARTIFACT_ID" | tr -d ',_')"
+          [[ "$value" =~ ^[0-9]+$ ]] && [ "$value" -gt 0 ]
+          echo "QUEUE_SHARDS_ARTIFACT_ID=$value" >> "$GITHUB_ENV"
+          mkdir -p source/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${value}/zip" \
+            --output source/shards.zip
+          unzip -tq source/shards.zip
+          unzip -q source/shards.zip -d source/extracted
+          mapfile -t matches < <(find source/extracted -type f -name global_ai_inference_shard_manifest.csv | sort)
+          test "${#matches[@]}" -eq 1
+          cp "${matches[0]}" shard_manifest.csv
+      - id: matrix
+        name: Build dynamic shard matrix
+        run: |
+          python - <<'PY'
+          import json, os
+          import pandas as pd
+          frame = pd.read_csv("shard_manifest.csv")
+          ids = [int(value) for value in frame["shard_id"]]
+          if not ids or len(ids) != len(set(ids)):
+              raise SystemExit("Shard IDs are empty or duplicated")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write("shard_ids=" + json.dumps(ids, separators=(",", ":")) + "\n")
+          print({"n_shards": len(ids), "shard_ids": ids})
+          PY
+
+  run-shards:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        shard_id: ${{ fromJSON(needs.prepare.outputs.shard_ids) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      QUEUE_SHARDS_ARTIFACT_ID: ${{ inputs.queue_shards_artifact_id }}
+      DETECTOR_MODEL_ARTIFACT_ID: ${{ inputs.detector_model_artifact_id }}
+      OUTPUT_LABEL: ${{ inputs.output_label }}
+      SHARD_ID: ${{ matrix.shard_id }}
+      DOWNLOAD_SLEEP_SEC: "0.25"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+      - name: Install detector and trait dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements-submission.txt ultralytics torch
+          python -m pip check
+      - name: Validate request and shell
+        run: |
+          python - <<'PY'
+          import os, re
+          for key in ("QUEUE_SHARDS_ARTIFACT_ID", "DETECTOR_MODEL_ARTIFACT_ID"):
+              value = os.environ[key].strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{key} must be a positive artifact ID")
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,79}", os.environ["OUTPUT_LABEL"]):
+              raise SystemExit("OUTPUT_LABEL is invalid")
+          PY
+          bash -n ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+      - name: Detect heads and measure corrected continuous traits
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+      - name: Upload compact shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-continuous-${{ inputs.output_label }}-${{ matrix.shard_id }}
+          path: |
+            queue_shard.csv
+            downloads/download_results.csv
+            detector/screening_results.csv
+            detector/yolo_crop_metadata.csv
+            trait_packet_build/private_key/trait_annotation_key_private.csv
+            continuous/primary_trait_continuous_head_measurements.csv
+            continuous/primary_trait_continuous_provenance.json
+            shard_run_summary.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  merge:
+    needs: [prepare, run-shards]
+    if: ${{ needs.run-shards.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      QUEUE_SHARDS_ARTIFACT_ID: ${{ inputs.queue_shards_artifact_id }}
+      OUTPUT_LABEL: ${{ inputs.output_label }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+      - name: Install merge dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy
+      - name: Download queue manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/queue/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${QUEUE_SHARDS_ARTIFACT_ID}/zip" \
+            --output source/queue.zip
+          unzip -tq source/queue.zip
+          unzip -q source/queue.zip -d source/queue/extracted
+          mapfile -t matches < <(find source/queue/extracted -type f -name global_ai_inference_shard_manifest.csv | sort)
+          test "${#matches[@]}" -eq 1
+          echo "SHARD_MANIFEST=${matches[0]}" >> "$GITHUB_ENV"
+          sha256sum source/queue.zip | tee source/input_artifact_sha256.txt
+      - name: Download every shard result
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-exhaustive-continuous-${{ inputs.output_label }}-*
+          path: source/results
+          merge-multiple: false
+      - name: Merge unthinned predictions and remove leaf-only photos from trait tables
+        run: |
+          python ch1_global/v2/73_merge_exhaustive_continuous_shards.py \
+            --shard-manifest "$SHARD_MANIFEST" \
+            --shard-results-root source/results \
+            --out-dir exhaustive_merged
+      - name: Build post-prediction analysis cohorts
+        run: |
+          python ch1_global/v2/74_build_postprediction_analysis_cohorts.py \
+            --observation exhaustive_merged/exhaustive_continuous_observation_level.csv \
+            --out-dir postprediction_cohorts \
+            --strict-positional-accuracy-m 10000 \
+            --cell-deg 0.25 \
+            --between-species-max-per-taxon 40 \
+            --seed 20260711
+      - name: Validate leaf-only exclusion and source preservation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          report = json.loads(Path("exhaustive_merged/exhaustive_continuous_merge_report.json").read_text())
+          audit = pd.read_csv("exhaustive_merged/exhaustive_photo_detection_audit.csv", dtype=str, keep_default_na=False)
+          observations = pd.read_csv("exhaustive_merged/exhaustive_continuous_observation_level.csv", low_memory=False)
+          all_detected = pd.read_csv("postprediction_cohorts/all_detected_observations.csv", low_memory=False)
+          balanced = pd.read_csv("postprediction_cohorts/between_species_balanced_40_observations.csv", low_memory=False)
+          if len(audit) != report["n_queue_photos"]:
+              raise SystemExit("Detection audit does not retain every queued photo")
+          if audit.loc[audit["screen_status"].eq("no_detection"), "eligible_for_trait_analysis"].astype(str).str.lower().isin(["true", "1"]).any():
+              raise SystemExit("Leaf/no-head photographs leaked into trait analysis")
+          if len(all_detected) != len(observations):
+              raise SystemExit("All detector-positive observations were not preserved before thinning")
+          if balanced.groupby("taxon_name").size().max() > 40:
+              raise SystemExit("Between-species derived cohort exceeds 40 observations per taxon")
+          print(report)
+          PY
+      - name: Record provenance
+        run: |
+          cp source/input_artifact_sha256.txt exhaustive_merged/input_artifact_sha256.txt
+          printf '%s\n' "$GITHUB_SHA" > exhaustive_merged/git_sha.txt
+          python -m pip freeze > exhaustive_merged/python_environment.txt
+      - name: Upload unthinned source predictions and derived cohorts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-continuous-merged-${{ inputs.output_label }}
+          path: |
+            exhaustive_merged
+            postprediction_cohorts
+          if-no-files-found: error
+          retention-days: 90
