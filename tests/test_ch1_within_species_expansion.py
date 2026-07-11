@@ -84,11 +84,13 @@ class TestExhaustivePhotoPipeline(unittest.TestCase):
         self.assertTrue(counts.eq(2).all())
 
     def test_trait_columns_never_control_queue_selection(self) -> None:
-        data = self.photo_fixture()
-        data["orientation_angle_degrees"] = range(len(data))
-        queue, _ = QUEUE.build_queue(data, self.queue_args())
-        self.assertEqual(len(queue), 10)
-        self.assertNotIn("orientation_angle_degrees", queue.columns)
+        base = self.photo_fixture()
+        first, _ = QUEUE.build_queue(base, self.queue_args())
+        modified = base.copy()
+        modified["orientation_angle_degrees"] = range(len(modified))
+        second, _ = QUEUE.build_queue(modified, self.queue_args())
+        self.assertEqual(list(first["photo_id"]), list(second["photo_id"]))
+        self.assertEqual(list(first["queue_id"]), list(second["queue_id"]))
 
     def observation_fixture(self) -> pd.DataFrame:
         rows = []
