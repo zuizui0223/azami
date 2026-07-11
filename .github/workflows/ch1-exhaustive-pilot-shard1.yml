@@ -1,0 +1,99 @@
+name: Ch1 exhaustive inference pilot shard 1
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  pilot-shard-1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      QUEUE_SHARDS_ARTIFACT_ID: "8245076519"
+      DETECTOR_MODEL_ARTIFACT_ID: "8076736948"
+      OUTPUT_LABEL: "all_photos_20260711_pilot"
+      SHARD_ID: "1"
+      DOWNLOAD_SLEEP_SEC: "0.25"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+
+      - name: Install detector and trait dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements-submission.txt ultralytics torch
+          python -m pip check
+
+      - name: Validate request and shell
+        run: |
+          python - <<'PY'
+          import os, re
+          for key in ("QUEUE_SHARDS_ARTIFACT_ID", "DETECTOR_MODEL_ARTIFACT_ID"):
+              value = os.environ[key].strip().replace(",", "").replace("_", "")
+              if not re.fullmatch(r"[0-9]+", value) or int(value) < 1:
+                  raise SystemExit(f"{key} must be a positive artifact ID")
+          if os.environ["SHARD_ID"] != "1":
+              raise SystemExit("Pilot must run shard 1")
+          PY
+          bash -n ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+
+      - name: Detect heads and measure corrected continuous traits
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+
+      - name: Validate pilot outputs
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False, low_memory=False)
+          screening = pd.read_csv("detector/screening_results.csv", dtype=str, keep_default_na=False, low_memory=False)
+          if len(queue) < 6000 or len(queue) > 6200:
+              raise SystemExit(f"Unexpected pilot shard size: {len(queue)}")
+          if screening["photo_id"].nunique() != queue["photo_id"].nunique():
+              raise SystemExit("Not every queued photo has one screening outcome")
+          allowed = {"detected", "no_detection", "download_error", "inference_error"}
+          statuses = set(screening["screen_status"])
+          if not statuses.issubset(allowed):
+              raise SystemExit(f"Unexpected screen status: {statuses}")
+          summary_path = Path("shard_run_summary.json")
+          if not summary_path.is_file():
+              raise SystemExit("Missing shard summary")
+          summary = json.loads(summary_path.read_text())
+          print({
+              "n_queue_photos": len(queue),
+              "screen_status_counts": screening["screen_status"].value_counts().to_dict(),
+              "summary": summary,
+          })
+          PY
+
+      - name: Upload compact pilot result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-continuous-pilot-shard1-20260711
+          path: |
+            queue_shard.csv
+            downloads/download_results.csv
+            detector/screening_results.csv
+            detector/yolo_crop_metadata.csv
+            trait_packet_build/private_key/trait_annotation_key_private.csv
+            continuous/primary_trait_continuous_head_measurements.csv
+            continuous/primary_trait_continuous_provenance.json
+            shard_run_summary.json
+          if-no-files-found: warn
+          retention-days: 90
