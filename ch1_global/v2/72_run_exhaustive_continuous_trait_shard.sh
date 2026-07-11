@@ -51,6 +51,21 @@ python ch1_global/v2/06_download_inat_screening_queue.py \
   --sleep-sec "$DOWNLOAD_SLEEP_SEC" \
   --timeout-sec 60
 
+python - <<'PY'
+import pandas as pd
+queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False)
+results = pd.read_csv("downloads/download_results.csv", dtype=str, keep_default_na=False)
+results["_order"] = range(len(results))
+latest = results.sort_values("_order").groupby("queue_id", as_index=False).tail(1)
+if set(latest["queue_id"]) != set(queue["queue_id"]):
+    raise SystemExit("Download results do not cover every queued photo")
+failed = latest.loc[~latest["download_status"].eq("success")]
+if not failed.empty:
+    print(failed[["queue_id", "download_status", "http_status", "message"]].head(20).to_dict("records"))
+    raise SystemExit("Incomplete image downloads; rerun the shard rather than silently losing photos")
+print({"n_download_success": len(latest)})
+PY
+
 python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
   --queue queue_shard.csv \
   --downloads downloads/download_results.csv \
