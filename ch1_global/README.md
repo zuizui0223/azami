@@ -3,9 +3,26 @@
 ## Status
 
 The Chapter 1 analysis is implemented and has been executed on the 216-taxon
-global dataset. This document is the scientific and computational entry point
-for the submission version. The frozen orientation-only baseline remains under
-`v1/`; the active submission code is under `v2/`.
+global dataset. The scope is now frozen for manuscript completion: the paper
+will be organized around the existing continuous traits, QC-retention analysis,
+present-climate comparison and alternative-tree historical sensitivity.
+
+MaxEnt, LGM hindcasting, palaeoclimate stability, a new genomic phylogeny, hair
+and mucilage are not part of Chapter 1. They remain possible follow-up projects.
+
+Manuscript-facing documents:
+
+- [`CH1_MANUSCRIPT_PLAN.md`](CH1_MANUSCRIPT_PLAN.md) — fixed questions,
+  structure, figures, exclusions and remaining work;
+- [`CH1_NOVELTY_REVIEW.md`](CH1_NOVELTY_REVIEW.md) — provisional literature
+  audit and defensible novelty wording;
+- [`SUBMISSION_READINESS.md`](SUBMISSION_READINESS.md) — remaining submission
+  gates;
+- [`CODE_REVIEW_SUBMISSION.md`](CODE_REVIEW_SUBMISSION.md) — code and
+  reproducibility review.
+
+The frozen orientation-only baseline remains under `v1/`; the active submission
+code is under `v2/`.
 
 ## Research question
 
@@ -123,6 +140,19 @@ geographic associations, not local environmental response.
 No auxiliary involucre/spine coefficient survives the deterministic PGLS FDR
 screen. Auxiliary results remain hypothesis-generating.
 
+## Provisional novelty boundary
+
+The paper must not claim that automated plant-trait inference, floral
+orientation ecology or PGLS are new methods. The likely contribution is their
+integration in *Cirsium*: multiple continuous capitulum traits derived from
+public photographs, explicit modelling of differential assessability,
+within-versus-between species climate inference and sensitivity to uncertain
+historical placement.
+
+Until the structured Web of Science/Scopus/Google Scholar audit is completed,
+the manuscript should use `to our knowledge` rather than an unconditional
+priority claim.
+
 ## Retired paths
 
 The earlier CLIP categorical states, representative human-holdout builders and
@@ -153,14 +183,15 @@ with the manuscript release.
 
 Before journal submission:
 
+- complete residual spatial and leave-one-region-out sensitivity;
+- complete detector and representative-measurement audits;
 - freeze accepted taxon names and input-data checksums;
+- complete the structured novelty search log;
 - run the canonical submission validator;
 - generate the provenance manifest on the final output bundle;
-- include detector/measurement examples and failure examples in supplements;
 - deposit output tables and required intermediate metadata in a durable archive;
 - record image licences and source identifiers;
 - obtain a repository licence decision and add the final manuscript citation.
 
-See [`SUBMISSION_READINESS.md`](SUBMISSION_READINESS.md) for the live gate and
-[`v2/HISTORICAL_CONSTRAINTS.md`](v2/HISTORICAL_CONSTRAINTS.md) for the tree
+See [`v2/HISTORICAL_CONSTRAINTS.md`](v2/HISTORICAL_CONSTRAINTS.md) for the tree
 interpretation boundary.
