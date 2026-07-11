@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run one exhaustive photo shard: download -> YOLO -> context crops -> corrected v2 continuous traits.
+# Run one exhaustive photo shard: download -> YOLO -> corrected v2 continuous traits.
 set -euo pipefail
 
 : "${GH_TOKEN:?GH_TOKEN is required}"
@@ -62,7 +62,35 @@ python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
   --batch-size 16 \
   --device cpu
 
-test -f detector/yolo_crop_metadata.csv
+test -s detector/screening_results.csv
+
+if [ ! -s detector/yolo_crop_metadata.csv ]; then
+  python - <<'PY'
+import json
+import os
+from pathlib import Path
+import pandas as pd
+queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False)
+screen = pd.read_csv("detector/screening_results.csv", dtype=str, keep_default_na=False)
+if len(screen) != len(queue) or not screen["screen_status"].eq("no_detection").all():
+    raise SystemExit("No crop table exists, but screening results are not complete no-detection rows")
+report = {
+    "shard_id": int(os.environ["SHARD_ID"]),
+    "n_queue_photos": int(len(queue)),
+    "n_queue_observations": int(queue["obs_id"].nunique()),
+    "n_detected_photos": 0,
+    "n_no_detection_photos": int(len(screen)),
+    "n_detected_heads": 0,
+    "n_colour_usable": 0,
+    "n_shape_usable": 0,
+    "n_orientation_usable": 0,
+}
+Path("shard_run_summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+print(json.dumps(report, ensure_ascii=False, indent=2))
+PY
+  rm -rf downloads/images
+  exit 0
+fi
 
 python ch1_global/v2/18_build_head_context_crops.py \
   --crops detector/yolo_crop_metadata.csv \
@@ -93,15 +121,18 @@ import os
 from pathlib import Path
 import pandas as pd
 queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False)
-crops = pd.read_csv("detector/yolo_crop_metadata.csv", dtype=str, keep_default_na=False)
+screen = pd.read_csv("detector/screening_results.csv", dtype=str, keep_default_na=False)
 traits = pd.read_csv("continuous/primary_trait_continuous_head_measurements.csv", low_memory=False)
-if traits["annotation_unit_id"].duplicated().any():
+if len(screen) != len(queue) or screen["queue_id"].duplicated().any():
+    raise SystemExit("Screening does not cover every queued photo exactly once")
+if traits["annotation_unit_id"].astype(str).duplicated().any():
     raise SystemExit("Continuous head measurements contain duplicate annotation units")
 report = {
     "shard_id": int(os.environ["SHARD_ID"]),
     "n_queue_photos": int(len(queue)),
     "n_queue_observations": int(queue["obs_id"].nunique()),
-    "n_detected_photos": int(crops["queue_id"].nunique()) if not crops.empty else 0,
+    "n_detected_photos": int(screen["screen_status"].eq("detected").sum()),
+    "n_no_detection_photos": int(screen["screen_status"].eq("no_detection").sum()),
     "n_detected_heads": int(len(traits)),
     "n_colour_usable": int(traits["colour_status"].eq("usable").sum()),
     "n_shape_usable": int(traits["shape_status"].eq("usable").sum()),
@@ -111,4 +142,4 @@ Path("shard_run_summary.json").write_text(json.dumps(report, ensure_ascii=False,
 print(json.dumps(report, ensure_ascii=False, indent=2))
 PY
 
-rm -rf downloads/images detector/head_crops context/head_context_crops trait_packet_build/trait_annotation_packet/images
+rm -rf downloads/images detector/head_crops context/head_context_crops trait_packet_build/trait_annotation_packet/source_images trait_packet_build/trait_annotation_packet/head_crops trait_packet_build/trait_annotation_packet/context_crops
