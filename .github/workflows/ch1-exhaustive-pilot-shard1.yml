@@ -50,10 +50,13 @@ jobs:
       - name: Detect heads and measure corrected continuous traits
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bash ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+        shell: bash
+        run: |
+          set -o pipefail
+          bash -x ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh 2>&1 | tee exhaustive_pilot_trace.log
 
       - name: Validate pilot outputs
-        if: always()
+        if: success()
         run: |
           python - <<'PY'
           import json
@@ -81,14 +84,16 @@ jobs:
           })
           PY
 
-      - name: Upload compact pilot result
+      - name: Upload compact pilot result and trace
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ch1-exhaustive-continuous-pilot-shard1-20260711
           path: |
+            exhaustive_pilot_trace.log
             queue_shard.csv
             downloads/download_results.csv
+            downloads/download_manifest.json
             detector/screening_results.csv
             detector/yolo_crop_metadata.csv
             trait_packet_build/private_key/trait_annotation_key_private.csv
