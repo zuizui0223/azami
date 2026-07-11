@@ -31,17 +31,53 @@ python - <<'PY'
 import os
 from pathlib import Path
 import pandas as pd
+
 root = Path("source/shards/extracted")
-manifest = pd.read_csv(root / "global_ai_inference_shard_manifest.csv", dtype=str, keep_default_na=False)
+manifest_matches = sorted(root.rglob("global_ai_inference_shard_manifest.csv"))
+if len(manifest_matches) != 1:
+    raise SystemExit(
+        f"Expected exactly one shard manifest, found {len(manifest_matches)}: "
+        f"{[str(path) for path in manifest_matches[:10]]}"
+    )
+manifest_path = manifest_matches[0]
+manifest = pd.read_csv(manifest_path, dtype=str, keep_default_na=False)
+
 wanted = str(int(os.environ["SHARD_ID"]))
 match = manifest.loc[manifest["shard_id"].astype(str).eq(wanted)]
 if len(match) != 1:
     raise SystemExit(f"shard_id={wanted} is absent or ambiguous")
-queue = pd.read_csv(root / match.iloc[0]["filename"], dtype=str, keep_default_na=False)
+
+listed = Path(match.iloc[0]["filename"])
+candidates = []
+for candidate in (
+    root / listed,
+    manifest_path.parent / listed,
+    manifest_path.parent / listed.name,
+):
+    if candidate.is_file():
+        candidates.append(candidate.resolve())
+for candidate in root.rglob(listed.name):
+    if candidate.is_file():
+        candidates.append(candidate.resolve())
+unique_candidates = sorted(set(candidates))
+if len(unique_candidates) != 1:
+    raise SystemExit(
+        f"Expected exactly one file for shard_id={wanted}, listed as {listed}; "
+        f"found {len(unique_candidates)}: {[str(path) for path in unique_candidates[:10]]}"
+    )
+queue_path = unique_candidates[0]
+queue = pd.read_csv(queue_path, dtype=str, keep_default_na=False)
 if queue.empty or queue["queue_id"].duplicated().any() or queue["photo_id"].duplicated().any():
     raise SystemExit("Selected exhaustive photo shard is invalid")
 queue.to_csv("queue_shard.csv", index=False, encoding="utf-8-sig")
-print({"shard_id": int(wanted), "n_photos": len(queue), "n_observations": queue["obs_id"].nunique(), "n_species": queue["taxon_name"].nunique()})
+print({
+    "shard_id": int(wanted),
+    "manifest": str(manifest_path),
+    "queue_path": str(queue_path),
+    "n_photos": len(queue),
+    "n_observations": queue["obs_id"].nunique(),
+    "n_species": queue["taxon_name"].nunique(),
+})
 PY
 
 python ch1_global/v2/06_download_inat_screening_queue.py \
