@@ -1,1 +1,95 @@
-placeholder
+name: Ch1 one-shot exhaustive queue build
+
+on:
+  push:
+    branches: [run/ch1-exhaustive-queue-20260711]
+    paths:
+      - ".github/workflows/ch1-one-shot-build-exhaustive-queue.yml"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      METADATA_ARTIFACT_ID: "8066010557"
+      N_SHARDS: "100"
+      OUTPUT_LABEL: "exhaustive_all_photos_20260711"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+      - name: Download complete metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${METADATA_ARTIFACT_ID}/zip" \
+            --output source/metadata.zip
+          unzip -tq source/metadata.zip
+          unzip -q source/metadata.zip -d source/extracted
+          PHOTO_METADATA="$(find source/extracted -type f -name photo_metadata_merged.csv -print -quit)"
+          test -s "$PHOTO_METADATA"
+          echo "PHOTO_METADATA=$PHOTO_METADATA" >> "$GITHUB_ENV"
+          sha256sum source/metadata.zip "$PHOTO_METADATA" | tee source/input_sha256.txt
+      - name: Build exhaustive queue
+        run: |
+          python ch1_global/v2/71_build_within_species_expansion_queue.py \
+            --input "$PHOTO_METADATA" \
+            --out-dir exhaustive_queue \
+            --quality-grades research \
+            --photo-licenses any
+      - name: Partition into 100 balanced shards
+        run: |
+          python ch1_global/v2/39_partition_global_ai_inference_queue.py \
+            --queue exhaustive_queue/exhaustive_photo_inference_queue.csv \
+            --out-dir exhaustive_shards \
+            --n-shards "$N_SHARDS" \
+            --seed 20260711
+      - name: Validate exhaustive counts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          q = pd.read_csv('exhaustive_queue/exhaustive_photo_inference_queue.csv', dtype=str, keep_default_na=False)
+          m = pd.read_csv('exhaustive_shards/global_ai_inference_shard_manifest.csv')
+          r = json.loads(Path('exhaustive_queue/exhaustive_photo_queue_report.json').read_text())
+          assert len(q) == r['n_queue_photos'] == int(m['n_photos'].sum())
+          assert len(q) == 614697, len(q)
+          assert q['obs_id'].nunique() == 358848
+          assert q['taxon_name'].nunique() == 278
+          assert not q['photo_id'].duplicated().any()
+          assert len(m) == 100
+          print({'photos': len(q), 'observations': q['obs_id'].nunique(), 'species': q['taxon_name'].nunique(), 'min_shard': int(m.n_photos.min()), 'max_shard': int(m.n_photos.max())})
+          PY
+      - name: Record provenance
+        run: |
+          cp source/input_sha256.txt exhaustive_queue/input_sha256.txt
+          printf '%s\n' "$GITHUB_SHA" > exhaustive_queue/git_sha.txt
+          python -m pip freeze > exhaustive_queue/python_environment.txt
+      - name: Upload exhaustive queue artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-photo-shards-${{ env.OUTPUT_LABEL }}
+          path: |
+            exhaustive_queue/exhaustive_photo_species_audit.csv
+            exhaustive_queue/exhaustive_photo_queue_report.json
+            exhaustive_queue/input_sha256.txt
+            exhaustive_queue/git_sha.txt
+            exhaustive_queue/python_environment.txt
+            exhaustive_shards
+          if-no-files-found: error
+          compression-level: 9
+          retention-days: 90
