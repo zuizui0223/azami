@@ -40,10 +40,9 @@ jobs:
         name: Build dynamic shard matrix
         run: |
           python - <<'PY'
-          import json, os
-          import pandas as pd
-          frame = pd.read_csv("shard_manifest.csv")
-          ids = [int(value) for value in frame["shard_id"]]
+          import csv, json, os
+          with open("shard_manifest.csv", newline="", encoding="utf-8-sig") as handle:
+              ids = [int(row["shard_id"]) for row in csv.DictReader(handle)]
           if not ids or len(ids) != len(set(ids)):
               raise SystemExit("Shard IDs are empty or duplicated")
           if len(ids) != 100:
