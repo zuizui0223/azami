@@ -1,0 +1,111 @@
+name: Ch1 one-off exhaustive queue build
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/ch1-exhaustive-queue-once.yml"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-exhaustive-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+
+      - name: Download complete metadata artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/8066010557/zip" \
+            --output source/metadata.zip
+          unzip -tq source/metadata.zip
+          unzip -q source/metadata.zip -d source/extracted
+          mapfile -t matches < <(find source/extracted -type f -name photo_metadata_merged.csv | sort)
+          test "${#matches[@]}" -eq 1
+          echo "PHOTO_METADATA=${matches[0]}" >> "$GITHUB_ENV"
+          sha256sum source/metadata.zip "${matches[0]}" | tee source/input_sha256.txt
+
+      - name: Build exhaustive all-photo queue
+        run: |
+          python ch1_global/v2/71_build_within_species_expansion_queue.py \
+            --input "$PHOTO_METADATA" \
+            --out-dir exhaustive_queue \
+            --quality-grades research \
+            --photo-licenses any
+
+      - name: Partition every photo into 100 shards
+        run: |
+          python ch1_global/v2/39_partition_global_ai_inference_queue.py \
+            --queue exhaustive_queue/exhaustive_photo_inference_queue.csv \
+            --out-dir exhaustive_shards \
+            --n-shards 100 \
+            --seed 20260711
+
+      - name: Validate preservation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          queue = pd.read_csv("exhaustive_queue/exhaustive_photo_inference_queue.csv", dtype=str, keep_default_na=False, low_memory=False)
+          manifest = pd.read_csv("exhaustive_shards/global_ai_inference_shard_manifest.csv")
+          report = json.loads(Path("exhaustive_queue/exhaustive_photo_queue_report.json").read_text())
+          if len(queue) != 614697:
+              raise SystemExit(f"Unexpected exhaustive queue size: {len(queue)}")
+          if queue["obs_id"].nunique() != 358848:
+              raise SystemExit("Unexpected observation count")
+          if queue["taxon_name"].nunique() != 278:
+              raise SystemExit("Unexpected species count")
+          if queue["photo_id"].duplicated().any() or queue["queue_id"].duplicated().any():
+              raise SystemExit("Duplicate photo or queue identifier")
+          if int(manifest["n_photos"].sum()) != len(queue) or len(manifest) != 100:
+              raise SystemExit("Shard manifest does not preserve every photo")
+          if set(queue["sampling_role"]) != {"exhaustive_pre_prediction"}:
+              raise SystemExit("Queue semantics changed")
+          print({
+              "n_photos": len(queue),
+              "n_observations": queue["obs_id"].nunique(),
+              "n_species": queue["taxon_name"].nunique(),
+              "n_shards": len(manifest),
+              "min_shard": int(manifest["n_photos"].min()),
+              "max_shard": int(manifest["n_photos"].max()),
+          })
+          print(report)
+          PY
+
+      - name: Record provenance
+        run: |
+          cp source/input_sha256.txt exhaustive_queue/input_sha256.txt
+          printf '%s\n' "$GITHUB_SHA" > exhaustive_queue/git_sha.txt
+          python -m pip freeze > exhaustive_queue/python_environment.txt
+
+      - name: Upload exhaustive queue and shards
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-photo-shards-all-20260711
+          path: |
+            exhaustive_queue
+            exhaustive_shards
+          if-no-files-found: error
+          retention-days: 90
