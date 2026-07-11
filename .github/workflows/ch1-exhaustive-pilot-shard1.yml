@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          bash -x ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh 2>&1 | tee exhaustive_pilot_trace.log
+          bash ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh 2>&1 | tee exhaustive_pilot_trace.log
 
       - name: Validate pilot outputs
         if: success()
