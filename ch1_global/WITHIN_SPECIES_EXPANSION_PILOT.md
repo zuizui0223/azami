@@ -1,66 +1,118 @@
-# Within-species expansion pilot
+# Exhaustive all-photo within-species expansion
 
-## Why
+## Decision
 
-The current global atlas caps each species at 40 observations and each 5-degree
-block at three observations. That design protects between-species comparisons
-from domination by common species, but it is underpowered for within-species
-trait–climate inference.
+The 40-observation cap belongs only to the balanced between-species atlas. It
+must not be applied before machine prediction when evaluating within-species
+variation.
 
-The expansion pilot therefore creates a second, independent sampling layer. The
-40-observation atlas remains frozen for between-species analysis.
+The high-density pipeline therefore follows this order:
 
-## Pilot design
+```text
+all eligible Cirsium photos
+        |
+YOLO visible-capitulum detection on every photo
+        |
+leaf-only / no-head photos retained as no_detection audit rows
+        |
+corrected continuous colour, orientation and outline measurement
+        |
+photo -> observation aggregation
+        |
+coordinate-quality and spatial sensitivity cohorts
+        |
+optional 40-observation balanced derivative for between-species comparison
+```
 
-Default eligibility:
+The unthinned prediction tables are the source of truth. Spatial thinning never
+overwrites them.
 
-- research-grade species-level iNaturalist observations;
-- non-captive;
-- public coordinates usable for environment extraction;
-- positional accuracy <=10 km;
-- at least 60 eligible observations per species;
-- at least eight 2-degree spatial blocks;
-- up to 250 selected observations per species;
-- up to 15 observations per species per block;
-- one primary photo per observation;
-- no measured trait or flower annotation used for selection.
+## Pre-prediction inclusion
 
-Selection proceeds round-robin across spatial blocks before taking additional
-observations from the same block. This prioritizes geographic and climatic spread
-rather than simply retaining the most photographed localities.
+The exhaustive queue applies only filters needed to define the intended public
+photo population:
 
-## Purpose
+- species-level *Cirsium* identification;
+- selected iNaturalist quality grade, normally research grade;
+- non-captive observation;
+- retrievable photo URL;
+- optional licence or coordinate policy.
 
-The pilot asks whether increasing within-species density changes:
+It does **not** apply:
 
-1. usable observations after detector and trait QC;
-2. within-species climatic range;
-3. precision of demeaned climate coefficients;
-4. consistency between full and <=10 km coordinate cohorts;
-5. power to detect small and moderate standardized effects.
+- a maximum number of photos or observations per species;
+- one-photo-per-observation selection;
+- spatial or environmental balancing;
+- flower/head annotations;
+- any measured or predicted trait value.
 
-It does not replace the 216-taxon between-species dataset and does not make a
-trait–climate association causal.
+Every photo from an eligible observation is queued. Multiple photographs from
+one observation are technical views of the same observation and are aggregated
+after head measurement.
 
-## Recommended first run
+## Leaf-only and no-head photographs
 
-Start with the default eligibility criteria and inspect
-`within_species_expansion_species_audit.csv`. Do not immediately process every
-eligible species. Select approximately 10–20 taxa spanning continents, head
-orientation and existing sample coverage, then run detector and continuous-trait
-measurement using the existing scripts 54–57.
+All photos are screened by the frozen YOLO detector. Photos with no detected
+visible capitulum, including leaf-only images, are:
 
-The pilot should continue only when most selected taxa retain:
+- labelled `no_detection`;
+- excluded from colour, orientation and outline tables;
+- retained in `exhaustive_photo_detection_audit.csv`;
+- summarized by species to quantify differential availability of head-bearing
+  photographs.
 
-- at least 50 QC-usable observations for the relevant endpoint;
-- at least eight independent spatial blocks;
-- non-trivial BIO1/BIO4/BIO12/BIO15 ranges;
-- no single block contributing a large majority of observations.
+Thus a leaf-only photo cannot receive a floral trait value, but it also does not
+vanish from the sampling audit.
+
+## Correct analysis units
+
+- detector box: one visible-capitulum candidate;
+- photo: median across usable detected heads in one photograph;
+- observation: median across all detector-positive photos for one `obs_id`;
+- species: derived only after observation aggregation.
+
+Multiple photos and multiple detected heads do not become independent plants.
+
+## Post-prediction cohorts
+
+`74_build_postprediction_analysis_cohorts.py` creates explicit derived tables:
+
+1. `all_detected_observations.csv` — every observation with at least one detected
+   head;
+2. `coordinate_usable_observations.csv` — public coordinates usable for
+   environment extraction;
+3. `strict_10km_observations.csv` — positional accuracy <=10 km;
+4. `strict_spatial_thinned_observations.csv` — one observation per species and
+   configurable spatial cell;
+5. `between_species_balanced_40_observations.csv` — a separate balanced
+   derivative, never the within-species source.
+
+Within-species models should compare the unthinned, strict-coordinate and
+spatially thinned cohorts. The 40-observation derivative exists only for a fair
+comparison with the original between-species atlas.
+
+## Workflows
+
+- `ch1-build-exhaustive-photo-queue.yml` builds the full queue and partitions
+  every photo exactly once across 1–100 shards.
+- `ch1-run-merge-exhaustive-continuous.yml` runs detector and corrected
+  continuous measurements, merges all shards, preserves leaf/no-head audit rows
+  and builds post-prediction cohorts.
+
+Large runs are manual and resumable by shard. Result artifacts contain metadata,
+screening status and numeric traits, not redistributed source photographs.
 
 ## Interpretation
 
-A stronger or newly detected coefficient after expansion would show that the
-40-observation atlas limited detectability. A result that remains weak after
-high-density, broad-gradient sampling would provide more informative evidence
-than the current null result, but still would not demonstrate absence of a
-biological effect.
+This expansion can materially improve within-species resolution for common
+species. It does not automatically remove:
+
+- observer and road-access bias;
+- non-random flowering photographs;
+- detector false negatives;
+- image-angle and colour-calibration error;
+- spatial autocorrelation;
+- uneven climatic ranges among species.
+
+Those limitations are evaluated after prediction rather than used as a reason
+to discard most photos beforehand.
