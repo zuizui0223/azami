@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Build the exhaustive public-photo queue for high-resolution within-species analysis.
 
-Every eligible licensed photo is retained for automated head detection and
-continuous-trait measurement. No species cap, environmental balancing, spatial
-thinning or trait-based selection is applied at this stage. Any thinning or
-weighting occurs only after prediction, and the unthinned predictions remain the
-source-of-truth table.
+Every eligible photo is retained for automated head detection and continuous-
+trait measurement. No species cap, environmental balancing, spatial thinning or
+trait-based selection is applied at this stage. Any thinning or weighting occurs
+only after prediction, and the unthinned predictions remain the source-of-truth
+table.
 """
 from __future__ import annotations
 
@@ -33,10 +33,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--quality-grades", default="research")
-    parser.add_argument("--photo-licenses", default="cc0,cc-by,cc-by-sa,cc-by-nc,cc-by-nc-sa")
+    parser.add_argument(
+        "--photo-licenses",
+        default="any",
+        help="Comma-separated licence codes, or 'any' to retain every photo for analysis without redistributing it.",
+    )
     parser.add_argument("--require-open-coordinate", action="store_true")
-    parser.add_argument("--max-positional-accuracy-m", type=float, default=0,
-                        help="0 keeps every public usable coordinate; positive values impose a limit.")
+    parser.add_argument(
+        "--max-positional-accuracy-m",
+        type=float,
+        default=0,
+        help="0 keeps every public usable coordinate; positive values impose a limit.",
+    )
     parser.add_argument("--target-species", default="", help="Optional comma-separated exact taxa.")
     return parser.parse_args()
 
@@ -64,6 +72,11 @@ def spatial_block(latitude: Any, longitude: Any, width: float) -> str:
     return f"lat{math.floor((lat + 90.0) / width):03d}_lon{math.floor((lon + 180.0) / width):03d}"
 
 
+def nonmissing_nunique(values: pd.Series) -> int:
+    series = values.astype(str)
+    return int(series.loc[series.ne("missing") & series.ne("")].nunique())
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -78,10 +91,11 @@ def build_queue(metadata: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Da
         raise ValueError(f"Merged metadata missing required columns: {missing}")
 
     quality = {item.strip().lower() for item in args.quality_grades.split(",") if item.strip()}
-    licenses = {item.strip().lower() for item in args.photo_licenses.split(",") if item.strip()}
+    requested_licenses = {item.strip().lower() for item in args.photo_licenses.split(",") if item.strip()}
     targets = {item.strip() for item in args.target_species.split(",") if item.strip()}
-    if not quality or not licenses:
-        raise ValueError("At least one quality grade and photo licence are required")
+    if not quality or not requested_licenses:
+        raise ValueError("At least one quality grade and a licence policy are required")
+    accept_any_license = "any" in requested_licenses
 
     work = metadata.copy()
     work["taxon_rank"] = work["taxon_rank"].map(text).str.lower()
@@ -91,16 +105,19 @@ def build_queue(metadata: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Da
     work["coordinate_usable_bool"] = work["coordinate_usable_for_environment"].map(as_bool)
     work["positional_accuracy_numeric"] = pd.to_numeric(work["positional_accuracy"], errors="coerce")
 
-    eligible = work.loc[
+    mask = (
         work["obs_id"].map(text).ne("")
         & work["photo_id"].map(text).ne("")
         & work["taxon_name"].map(text).ne("")
         & work["taxon_rank"].eq("species")
         & work["quality_grade"].isin(quality)
-        & work["photo_license_normalized"].isin(licenses)
         & ~work["captive_bool"]
         & work["medium_image_url"].map(text).ne("")
-    ].copy()
+    )
+    if not accept_any_license:
+        mask &= work["photo_license_normalized"].isin(requested_licenses)
+    eligible = work.loc[mask].copy()
+
     if args.require_open_coordinate:
         eligible = eligible.loc[eligible["coordinate_usable_bool"]].copy()
     if args.max_positional_accuracy_m > 0:
@@ -117,7 +134,8 @@ def build_queue(metadata: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Da
     for width in (1.0, 2.0, 5.0):
         label = str(int(width))
         eligible[f"spatial_block_{label}deg"] = [
-            spatial_block(lat, lon, width) for lat, lon in zip(eligible["latitude"], eligible["longitude"])
+            spatial_block(lat, lon, width)
+            for lat, lon in zip(eligible["latitude"], eligible["longitude"])
         ]
 
     eligible = eligible.sort_values(["taxon_name", "obs_id", "photo_index", "photo_id"]).reset_index(drop=True)
@@ -127,17 +145,19 @@ def build_queue(metadata: pd.DataFrame, args: argparse.Namespace) -> tuple[pd.Da
     eligible["sampling_role"] = "exhaustive_pre_prediction"
     eligible["screen_download_filename"] = eligible["source_file_stem"].map(lambda value: f"{text(value)}.jpg")
 
+    aggregations: dict[str, tuple[str, Any]] = {
+        "n_photos": ("photo_id", "size"),
+        "n_observations": ("obs_id", "nunique"),
+        "n_blocks_1deg": ("spatial_block_1deg", nonmissing_nunique),
+        "n_blocks_2deg": ("spatial_block_2deg", nonmissing_nunique),
+        "n_blocks_5deg": ("spatial_block_5deg", nonmissing_nunique),
+        "n_coordinate_usable": ("coordinate_usable_bool", "sum"),
+    }
+    if "user_id" in eligible.columns:
+        aggregations["n_users"] = ("user_id", "nunique")
     audit = (
         eligible.groupby("taxon_name", sort=True)
-        .agg(
-            n_photos=("photo_id", "size"),
-            n_observations=("obs_id", "nunique"),
-            n_users=("user_id", "nunique") if "user_id" in eligible.columns else ("obs_id", "size"),
-            n_blocks_1deg=("spatial_block_1deg", lambda values: sum(pd.Series(values).ne("missing").groupby(values).any())),
-            n_blocks_2deg=("spatial_block_2deg", lambda values: pd.Series(values)[pd.Series(values).ne("missing")].nunique()),
-            n_blocks_5deg=("spatial_block_5deg", lambda values: pd.Series(values)[pd.Series(values).ne("missing")].nunique()),
-            n_coordinate_usable=("coordinate_usable_bool", "sum"),
-        )
+        .agg(**aggregations)
         .reset_index()
         .sort_values(["n_photos", "taxon_name"], ascending=[False, True])
     )
@@ -180,10 +200,12 @@ def main() -> None:
         "n_queue_species": int(queue["taxon_name"].nunique()),
         "parameters": vars(args),
         "selection_boundary": {
-            "before_prediction": "taxonomic quality, licence, captivity and optional coordinate filters only",
-            "not_applied": "no species cap, no spatial thinning, no environmental balancing, no trait filtering",
-            "after_prediction": "all predictions are archived; weighting/thinning may create derived analysis cohorts only",
+            "before_prediction": "species-level research-grade, non-captive photos with a retrievable image URL; optional licence/coordinate filters only",
+            "not_applied": "no species cap, no one-photo-per-observation rule, no spatial thinning, no environmental balancing, no trait filtering",
+            "leaf_only": "leaf-only and other no-head images remain queued; YOLO decides detector-positive versus no-detection after download",
+            "after_prediction": "all screening and trait predictions are archived; weighting/thinning may create derived cohorts only",
         },
+        "licence_boundary": "Photos may be analysed under the requested policy, but images are never redistributed in result artifacts; IDs, URLs and licence metadata are retained.",
     }
     (out_dir / "exhaustive_photo_queue_report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
