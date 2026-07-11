@@ -88,18 +88,42 @@ python ch1_global/v2/06_download_inat_screening_queue.py \
   --timeout-sec 60
 
 python - <<'PY'
+from pathlib import Path
 import pandas as pd
+
 queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False)
 results = pd.read_csv("downloads/download_results.csv", dtype=str, keep_default_na=False)
 results["_order"] = range(len(results))
 latest = results.sort_values("_order").groupby("queue_id", as_index=False).tail(1)
 if set(latest["queue_id"]) != set(queue["queue_id"]):
     raise SystemExit("Download results do not cover every queued photo")
-failed = latest.loc[~latest["download_status"].eq("success")]
+
+failed = latest.loc[~latest["download_status"].eq("success")].copy()
+detector_dir = Path("detector")
+detector_dir.mkdir(parents=True, exist_ok=True)
 if not failed.empty:
-    print(failed[["queue_id", "download_status", "http_status", "message"]].head(20).to_dict("records"))
-    raise SystemExit("Incomplete image downloads; rerun the shard rather than silently losing photos")
-print({"n_download_success": len(latest)})
+    messages = (
+        "download_status=" + failed["download_status"].astype(str)
+        + "; http_status=" + failed["http_status"].astype(str)
+        + "; " + failed["message"].astype(str)
+    )
+    failure_rows = pd.DataFrame({
+        "queue_id": failed["queue_id"].astype(str),
+        "screen_status": "missing_image",
+        "n_detections": 0,
+        "max_yolo_conf": "",
+        "source_image": "",
+        "message": messages,
+    })
+    failure_rows.to_csv(
+        detector_dir / "screening_results.csv",
+        index=False,
+        encoding="utf-8-sig",
+    )
+print({
+    "n_download_success": int(latest["download_status"].eq("success").sum()),
+    "n_download_failed": int(len(failed)),
+})
 PY
 
 python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
@@ -123,14 +147,22 @@ from pathlib import Path
 import pandas as pd
 queue = pd.read_csv("queue_shard.csv", dtype=str, keep_default_na=False)
 screen = pd.read_csv("detector/screening_results.csv", dtype=str, keep_default_na=False)
-if len(screen) != len(queue) or not screen["screen_status"].eq("no_detection").all():
-    raise SystemExit("No crop table exists, but screening results are not complete no-detection rows")
+if len(screen) != len(queue) or screen["queue_id"].duplicated().any():
+    raise SystemExit("No-crop shard does not retain exactly one screening result per queued photo")
+if screen["screen_status"].eq("detected").any():
+    raise SystemExit("Detected photos exist but no crop metadata was produced")
+allowed = {"no_detection", "missing_image", "error"}
+unexpected = sorted(set(screen["screen_status"]).difference(allowed))
+if unexpected:
+    raise SystemExit(f"Unexpected no-crop screening statuses: {unexpected}")
 report = {
     "shard_id": int(os.environ["SHARD_ID"]),
     "n_queue_photos": int(len(queue)),
     "n_queue_observations": int(queue["obs_id"].nunique()),
     "n_detected_photos": 0,
-    "n_no_detection_photos": int(len(screen)),
+    "n_no_detection_photos": int(screen["screen_status"].eq("no_detection").sum()),
+    "n_missing_image_photos": int(screen["screen_status"].eq("missing_image").sum()),
+    "n_error_photos": int(screen["screen_status"].eq("error").sum()),
     "n_detected_heads": 0,
     "n_colour_usable": 0,
     "n_shape_usable": 0,
@@ -184,6 +216,8 @@ report = {
     "n_queue_observations": int(queue["obs_id"].nunique()),
     "n_detected_photos": int(screen["screen_status"].eq("detected").sum()),
     "n_no_detection_photos": int(screen["screen_status"].eq("no_detection").sum()),
+    "n_missing_image_photos": int(screen["screen_status"].eq("missing_image").sum()),
+    "n_error_photos": int(screen["screen_status"].eq("error").sum()),
     "n_detected_heads": int(len(traits)),
     "n_colour_usable": int(traits["colour_status"].eq("usable").sum()),
     "n_shape_usable": int(traits["shape_status"].eq("usable").sum()),
