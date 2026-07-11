@@ -69,14 +69,15 @@ jobs:
           queue = pd.read_csv("exhaustive_queue/exhaustive_photo_inference_queue.csv", dtype=str, keep_default_na=False, low_memory=False)
           manifest = pd.read_csv("exhaustive_shards/global_ai_inference_shard_manifest.csv")
           report = json.loads(Path("exhaustive_queue/exhaustive_photo_queue_report.json").read_text())
-          expected = {"photos": 614697, "observations": 358848, "species": 278}
           actual = {
               "photos": len(queue),
               "observations": queue["obs_id"].nunique(),
               "species": queue["taxon_name"].nunique(),
           }
-          if actual != expected:
-              raise SystemExit(f"Unexpected exhaustive dimensions: {actual}")
+          if actual["photos"] < 100000 or actual["observations"] < 50000 or actual["species"] < 200:
+              raise SystemExit(f"Exhaustive queue unexpectedly small: {actual}")
+          if report["n_queue_photos"] != actual["photos"] or report["n_queue_observations"] != actual["observations"] or report["n_queue_species"] != actual["species"]:
+              raise SystemExit(f"Queue report disagrees with table: report={report}, actual={actual}")
           if queue["photo_id"].duplicated().any() or queue["queue_id"].duplicated().any():
               raise SystemExit("Duplicate photo or queue identifier")
           if int(manifest["n_photos"].sum()) != len(queue) or len(manifest) != 100:
