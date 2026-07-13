@@ -1,4 +1,4 @@
-name: Ch1 one-off exhaustive merge-only recovery 20260712
+name: Ch1 one-off exhaustive merge recovery 20260712
 
 on:
   pull_request:
@@ -9,23 +9,143 @@ permissions:
   contents: read
 
 jobs:
-  merge-only:
+  discover-missing:
+    runs-on: ubuntu-latest
+    outputs:
+      missing_shards: ${{ steps.missing.outputs.missing_shards }}
+      missing_count: ${{ steps.missing.outputs.missing_count }}
+    env:
+      SOURCE_RUN_ID: "29141810064"
+      QUEUE_SHARDS_ARTIFACT_ID: "8245076519"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download queue manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/queue/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${QUEUE_SHARDS_ARTIFACT_ID}/zip" \
+            --output source/queue.zip
+          unzip -tq source/queue.zip
+          unzip -q source/queue.zip -d source/queue/extracted
+          mapfile -t matches < <(find source/queue/extracted -type f -name global_ai_inference_shard_manifest.csv | sort)
+          test "${#matches[@]}" -eq 1
+          cp "${matches[0]}" shard_manifest.csv
+
+      - name: Download completed shard artifacts from source run
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          pattern: ch1-exhaustive-continuous-all_photos_20260711_v1-*
+          path: source/results
+          merge-multiple: false
+
+      - id: missing
+        name: Detect missing shard IDs
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          import os
+          from pathlib import Path
+
+          with open("shard_manifest.csv", newline="", encoding="utf-8-sig") as handle:
+              expected = {int(row["shard_id"]) for row in csv.DictReader(handle)}
+
+          completed = set()
+          for path in Path("source/results").rglob("shard_run_summary.json"):
+              try:
+                  payload = json.loads(path.read_text(encoding="utf-8"))
+                  completed.add(int(payload["shard_id"]))
+              except Exception as exc:
+                  raise SystemExit(f"Invalid shard summary {path}: {exc}")
+
+          missing = sorted(expected - completed)
+          unexpected = sorted(completed - expected)
+          if unexpected:
+              raise SystemExit(f"Unexpected shard IDs in source artifacts: {unexpected}")
+          print({
+              "expected": len(expected),
+              "completed": len(completed),
+              "missing": missing,
+          })
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write("missing_shards=" + json.dumps(missing, separators=(",", ":")) + "\n")
+              handle.write(f"missing_count={len(missing)}\n")
+          PY
+
+  rerun-missing:
+    needs: discover-missing
+    if: ${{ needs.discover-missing.outputs.missing_count != '0' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        shard_id: ${{ fromJSON(needs.discover-missing.outputs.missing_shards) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      QUEUE_SHARDS_ARTIFACT_ID: "8245076519"
+      DETECTOR_MODEL_ARTIFACT_ID: "8076736948"
+      OUTPUT_LABEL: "all_photos_20260711_v1_recovery"
+      SHARD_ID: ${{ matrix.shard_id }}
+      DOWNLOAD_SLEEP_SEC: "0.25"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+      - name: Install detector and trait dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements-submission.txt ultralytics torch
+          python -m pip check
+      - name: Run missing shard only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash ch1_global/v2/72_run_exhaustive_continuous_trait_shard.sh
+      - name: Upload recovered shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-recovered-shard-${{ matrix.shard_id }}
+          path: |
+            queue_shard.csv
+            downloads/download_results.csv
+            detector/screening_results.csv
+            detector/yolo_crop_metadata.csv
+            trait_packet_build/private_key/trait_annotation_key_private.csv
+            continuous/primary_trait_continuous_head_measurements.csv
+            continuous/primary_trait_continuous_provenance.json
+            shard_run_summary.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  merge-all:
+    needs: [discover-missing, rerun-missing]
+    if: ${{ always() && needs.discover-missing.result == 'success' && (needs.rerun-missing.result == 'success' || needs.rerun-missing.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
       SOURCE_RUN_ID: "29141810064"
       QUEUE_SHARDS_ARTIFACT_ID: "8245076519"
       OUTPUT_LABEL: "all_photos_20260711_v1"
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: ch1_global/v2/requirements-submission.txt
-
       - name: Install merge dependencies
         run: |
           python -m pip install --upgrade pip
@@ -49,26 +169,44 @@ jobs:
           echo "SHARD_MANIFEST=${matches[0]}" >> "$GITHUB_ENV"
           sha256sum source/queue.zip | tee source/input_artifact_sha256.txt
 
-      - name: Download all 100 shard artifacts from the completed source run
+      - name: Download original completed shard artifacts
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ env.SOURCE_RUN_ID }}
           pattern: ch1-exhaustive-continuous-all_photos_20260711_v1-*
-          path: source/results
+          path: source/results/original
           merge-multiple: false
 
-      - name: Verify all shard result artifacts are present
+      - name: Download recovered missing shard artifacts
+        if: ${{ needs.discover-missing.outputs.missing_count != '0' }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-exhaustive-recovered-shard-*
+          path: source/results/recovered
+          merge-multiple: false
+
+      - name: Verify exactly 100 unique complete shard results
         run: |
           python - <<'PY'
+          import json
           from pathlib import Path
+
           summaries = list(Path("source/results").rglob("shard_run_summary.json"))
-          queues = list(Path("source/results").rglob("queue_shard.csv"))
-          screens = list(Path("source/results").rglob("screening_results.csv"))
-          print({"summaries": len(summaries), "queues": len(queues), "screens": len(screens)})
-          if not (len(summaries) == len(queues) == len(screens) == 100):
-              raise SystemExit("Expected exactly 100 complete shard result artifacts")
+          by_id = {}
+          for path in summaries:
+              payload = json.loads(path.read_text(encoding="utf-8"))
+              shard_id = int(payload["shard_id"])
+              if shard_id in by_id:
+                  raise SystemExit(f"Duplicate result for shard {shard_id}: {by_id[shard_id]} and {path}")
+              by_id[shard_id] = str(path)
+          expected = set(range(1, 101))
+          missing = sorted(expected - set(by_id))
+          unexpected = sorted(set(by_id) - expected)
+          print({"complete_shards": len(by_id), "missing": missing, "unexpected": unexpected})
+          if missing or unexpected or len(by_id) != 100:
+              raise SystemExit("Expected exactly 100 unique complete shard results")
           PY
 
       - name: Merge unthinned predictions and remove no-head photos from trait tables
@@ -117,6 +255,7 @@ jobs:
           cp source/input_artifact_sha256.txt exhaustive_merged/input_artifact_sha256.txt
           printf '%s\n' "$GITHUB_SHA" > exhaustive_merged/git_sha.txt
           printf '%s\n' "$SOURCE_RUN_ID" > exhaustive_merged/source_workflow_run_id.txt
+          printf '%s\n' '${{ needs.discover-missing.outputs.missing_shards }}' > exhaustive_merged/recovered_shard_ids.json
           python -m pip freeze > exhaustive_merged/python_environment.txt
 
       - name: Upload merged unthinned predictions and derived cohorts
