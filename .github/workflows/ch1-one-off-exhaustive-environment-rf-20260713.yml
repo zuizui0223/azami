@@ -1,0 +1,114 @@
+name: Ch1 one-off exhaustive environment RF 20260713
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      SOURCE_RUN_ID: "29216617585"
+      SOURCE_ARTIFACT_NAME: "ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+
+      - name: Install analysis dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy rasterio pyproj scikit-learn
+          python -m pip check
+
+      - name: Download final exhaustive merged artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          name: ${{ env.SOURCE_ARTIFACT_NAME }}
+          path: source/final
+
+      - name: Locate strict spatial cohort
+        run: |
+          set -euo pipefail
+          mapfile -t matches < <(find source/final -type f -name strict_spatial_thinned_observations.csv | sort)
+          test "${#matches[@]}" -eq 1
+          echo "STRICT_COHORT=${matches[0]}" >> "$GITHUB_ENV"
+          python - <<'PY'
+          import pandas as pd, os
+          path = os.environ.get("STRICT_COHORT")
+          # GITHUB_ENV applies to subsequent steps; re-discover here for immediate validation.
+          import glob
+          hits = glob.glob("source/final/**/strict_spatial_thinned_observations.csv", recursive=True)
+          if len(hits) != 1:
+              raise SystemExit(hits)
+          frame = pd.read_csv(hits[0], low_memory=False)
+          print({"strict_spatial_observations": len(frame), "species": frame["taxon_name"].nunique()})
+          if len(frame) < 40000 or frame["taxon_name"].nunique() < 200:
+              raise SystemExit("Unexpectedly small exhaustive strict spatial cohort")
+          PY
+
+      - name: Run climate topography soil RF comparison
+        run: |
+          python ch1_global/v2/76_run_exhaustive_within_species_environment_rf.py \
+            --observation "$STRICT_COHORT" \
+            --out-dir rf_environment_results \
+            --sample-batch-size 1024 \
+            --n-splits 5 \
+            --n-estimators 500 \
+            --min-samples-leaf 5 \
+            --permutation-max-n 3000 \
+            --permutation-repeats 2 \
+            --random-state 20260713
+
+      - name: Validate RF outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          out = Path("rf_environment_results")
+          summary = pd.read_csv(out / "rf_spatial_cv_summary.csv")
+          ablation = pd.read_csv(out / "rf_environment_group_ablation.csv")
+          coverage = pd.read_csv(out / "environment_predictor_coverage.csv")
+          report = json.loads((out / "exhaustive_within_species_environment_rf_report.json").read_text())
+          expected_groups = {"climate", "climate_topography", "climate_soil", "climate_topography_soil"}
+          if len(summary) != 36:
+              raise SystemExit(f"Expected 36 trait x model-group summaries, got {len(summary)}")
+          if set(summary["model_group"]) != expected_groups:
+              raise SystemExit("RF model groups are incomplete")
+          if len(ablation) != 9:
+              raise SystemExit("Expected 9 trait ablation rows")
+          if coverage["complete_fraction"].min() < 0.75:
+              raise SystemExit("Environmental predictor coverage below declared floor")
+          if report["input_observations"] < 40000:
+              raise SystemExit("Unexpected RF input size")
+          print(summary.sort_values(["trait", "model_group"]).to_string(index=False))
+          print(ablation.to_string(index=False))
+          PY
+
+      - name: Record provenance
+        run: |
+          printf '%s\n' "$GITHUB_SHA" > rf_environment_results/git_sha.txt
+          printf '%s\n' "$SOURCE_RUN_ID" > rf_environment_results/source_workflow_run_id.txt
+          python -m pip freeze > rf_environment_results/python_environment.txt
+
+      - name: Upload RF analysis results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-environment-rf-20260713
+          path: rf_environment_results
+          if-no-files-found: error
+          retention-days: 90
