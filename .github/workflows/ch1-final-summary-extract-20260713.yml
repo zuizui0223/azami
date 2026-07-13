@@ -1,0 +1,63 @@
+name: Ch1 final exhaustive summary extract 20260713
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install pandas
+      - name: Download final merged artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "29216617585"
+          name: ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery
+          path: final_artifact
+      - name: Build compact summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path('final_artifact')
+          report = next(root.rglob('exhaustive_continuous_merge_report.json'))
+          species = next(root.rglob('exhaustive_species_detection_audit.csv'))
+          cohorts = list(root.rglob('*cohort*report*.json')) + list(root.rglob('*postprediction*.json'))
+          out = Path('summary_extract')
+          out.mkdir()
+          out.joinpath('exhaustive_continuous_merge_report.json').write_bytes(report.read_bytes())
+          pd.read_csv(species).to_csv(out/'exhaustive_species_detection_audit.csv', index=False)
+          for p in cohorts:
+              out.joinpath(p.name).write_bytes(p.read_bytes())
+          obs = next(root.rglob('exhaustive_continuous_observation_level.csv'))
+          df = pd.read_csv(obs, low_memory=False)
+          stats = {
+              'n_observations': int(len(df)),
+              'n_species': int(df['taxon_name'].nunique()),
+              'trait_nonmissing': {c: int(df[c].notna().sum()) for c in df.columns if c.endswith('_median')},
+          }
+          (out/'observation_summary.json').write_text(json.dumps(stats, indent=2), encoding='utf-8')
+          print(json.dumps(json.loads(report.read_text()), indent=2))
+          print(json.dumps(stats, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-final-exhaustive-summary-20260713
+          path: summary_extract
+          if-no-files-found: error
+          retention-days: 90
