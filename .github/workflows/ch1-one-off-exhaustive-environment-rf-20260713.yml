@@ -9,91 +9,147 @@ permissions:
   contents: read
 
 jobs:
-  extract-environment:
+  prepare-cohort:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 90
     env:
       SOURCE_RUN_ID: "29216617585"
       SOURCE_ARTIFACT_NAME: "ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: ch1_global/v2/requirements-submission.txt
-      - name: Install extraction dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pandas numpy rasterio pyproj scikit-learn
-      - name: Download final exhaustive merged artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ env.SOURCE_RUN_ID }}
           name: ${{ env.SOURCE_ARTIFACT_NAME }}
           path: source/final
-      - name: Locate strict spatial cohort
+      - name: Extract strict cohort only
         run: |
           set -euo pipefail
           mapfile -t matches < <(find source/final -type f -name strict_spatial_thinned_observations.csv | sort)
           test "${#matches[@]}" -eq 1
-          echo "STRICT_COHORT=${matches[0]}" >> "$GITHUB_ENV"
-      - name: Extract climate topography and soil once
-        run: |
-          python ch1_global/v2/77_extract_exhaustive_environment_only.py \
-            --observation "$STRICT_COHORT" \
-            --out-dir enriched_environment \
-            --sample-batch-size 1024
-      - name: Validate environment extraction
-        run: |
-          python - <<'PY'
-          import pandas as pd
-          env=pd.read_csv('enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv',low_memory=False)
-          cov=pd.read_csv('enriched_environment/environment_predictor_coverage.csv')
-          print({'observations':len(env),'species':env.taxon_name.nunique(),'min_coverage':cov.complete_fraction.min()})
-          if len(env)<40000 or env.taxon_name.nunique()<200 or cov.complete_fraction.min()<0.75:
-              raise SystemExit('Environment extraction validation failed')
-          PY
+          mkdir -p strict_cohort
+          cp "${matches[0]}" strict_cohort/strict_spatial_thinned_observations.csv
       - uses: actions/upload-artifact@v4
         with:
-          name: ch1-exhaustive-enriched-environment-20260713
-          path: enriched_environment
-          if-no-files-found: error
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort/strict_spatial_thinned_observations.csv
           retention-days: 90
 
-  rf-traits:
-    needs: extract-environment
+  extract-layers:
+    needs: prepare-cohort
     strategy:
       fail-fast: false
-      max-parallel: 9
+      max-parallel: 12
       matrix:
-        trait:
-          - orientation_angle_degrees_median
-          - corolla_lab_lightness_median
-          - corolla_lab_chroma_median
-          - corolla_hue_sin_median
-          - corolla_hue_cos_median
-          - shape_aspect_ratio_median
-          - shape_circularity_median
-          - shape_solidity_median
-          - shape_width_cv_median
+        include:
+          - {id: chelsa_bio01, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio01/1981-2010/CHELSA_bio01_1981-2010_V.2.1.tif"}
+          - {id: chelsa_bio04, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio04/1981-2010/CHELSA_bio04_1981-2010_V.2.1.tif"}
+          - {id: chelsa_bio12, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio12/1981-2010/CHELSA_bio12_1981-2010_V.2.1.tif"}
+          - {id: chelsa_bio15, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio15/1981-2010/CHELSA_bio15_1981-2010_V.2.1.tif"}
+          - {id: topo_elevation, url: "https://data.earthenv.org/topography/elevation_1KMmd_GMTEDmd.tif"}
+          - {id: topo_slope, url: "https://data.earthenv.org/topography/slope_1KMmd_GMTEDmd.tif"}
+          - {id: topo_roughness, url: "https://data.earthenv.org/topography/roughness_1KMmd_GMTEDmd.tif"}
+          - {id: soil_bdod_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/bdod/bdod_0-5cm_mean.vrt"}
+          - {id: soil_bdod_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/bdod/bdod_5-15cm_mean.vrt"}
+          - {id: soil_bdod_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/bdod/bdod_15-30cm_mean.vrt"}
+          - {id: soil_cec_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/cec/cec_0-5cm_mean.vrt"}
+          - {id: soil_cec_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/cec/cec_5-15cm_mean.vrt"}
+          - {id: soil_cec_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/cec/cec_15-30cm_mean.vrt"}
+          - {id: soil_cfvo_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/cfvo/cfvo_0-5cm_mean.vrt"}
+          - {id: soil_cfvo_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/cfvo/cfvo_5-15cm_mean.vrt"}
+          - {id: soil_cfvo_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/cfvo/cfvo_15-30cm_mean.vrt"}
+          - {id: soil_clay_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/clay/clay_0-5cm_mean.vrt"}
+          - {id: soil_clay_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/clay/clay_5-15cm_mean.vrt"}
+          - {id: soil_clay_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/clay/clay_15-30cm_mean.vrt"}
+          - {id: soil_sand_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/sand/sand_0-5cm_mean.vrt"}
+          - {id: soil_sand_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/sand/sand_5-15cm_mean.vrt"}
+          - {id: soil_sand_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/sand/sand_15-30cm_mean.vrt"}
+          - {id: soil_silt_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/silt/silt_0-5cm_mean.vrt"}
+          - {id: soil_silt_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/silt/silt_5-15cm_mean.vrt"}
+          - {id: soil_silt_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/silt/silt_15-30cm_mean.vrt"}
+          - {id: soil_nitrogen_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/nitrogen/nitrogen_0-5cm_mean.vrt"}
+          - {id: soil_nitrogen_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/nitrogen/nitrogen_5-15cm_mean.vrt"}
+          - {id: soil_nitrogen_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/nitrogen/nitrogen_15-30cm_mean.vrt"}
+          - {id: soil_phh2o_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_0-5cm_mean.vrt"}
+          - {id: soil_phh2o_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_5-15cm_mean.vrt"}
+          - {id: soil_phh2o_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_15-30cm_mean.vrt"}
+          - {id: soil_soc_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/soc/soc_0-5cm_mean.vrt"}
+          - {id: soil_soc_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/soc/soc_5-15cm_mean.vrt"}
+          - {id: soil_soc_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/soc/soc_15-30cm_mean.vrt"}
+          - {id: soil_ocd_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/ocd/ocd_0-5cm_mean.vrt"}
+          - {id: soil_ocd_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/ocd/ocd_5-15cm_mean.vrt"}
+          - {id: soil_ocd_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/ocd/ocd_15-30cm_mean.vrt"}
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas numpy rasterio pyproj
+      - uses: actions/download-artifact@v4
         with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: ch1_global/v2/requirements-submission.txt
-      - name: Install RF dependencies
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort
+      - name: Sample one raster layer
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install pandas numpy rasterio pyproj scikit-learn
-      - name: Download enriched environment table
-        uses: actions/download-artifact@v4
+          python ch1_global/v2/79_sample_one_environment_layer.py \
+            --observation strict_cohort/strict_spatial_thinned_observations.csv \
+            --predictor-id "${{ matrix.id }}" \
+            --url "${{ matrix.url }}" \
+            --out-dir layer_result \
+            --sample-batch-size 1024
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-env-layer-${{ matrix.id }}-20260713
+          path: layer_result
+          retention-days: 90
+
+  merge-environment:
+    needs: extract-layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas numpy
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-env-layer-*-20260713
+          path: source/layers
+          merge-multiple: false
+      - name: Merge 37 layers and build 0-30 cm soil composites
+        run: |
+          python ch1_global/v2/80_merge_parallel_environment_layers.py \
+            --observation strict_cohort/strict_spatial_thinned_observations.csv \
+            --layers-root source/layers \
+            --out-dir enriched_environment
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+          retention-days: 90
+
+  rf-traits:
+    needs: merge-environment
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        trait: [orientation_angle_degrees_median, corolla_lab_lightness_median, corolla_lab_chroma_median, corolla_hue_sin_median, corolla_hue_cos_median, shape_aspect_ratio_median, shape_circularity_median, shape_solidity_median, shape_width_cv_median]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas numpy scikit-learn
+      - uses: actions/download-artifact@v4
         with:
           name: ch1-exhaustive-enriched-environment-20260713
           path: enriched_environment
@@ -103,17 +159,12 @@ jobs:
             --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --trait "${{ matrix.trait }}" \
             --out-dir "trait_results/${{ matrix.trait }}" \
-            --n-splits 5 \
-            --n-estimators 300 \
-            --min-samples-leaf 5 \
-            --permutation-max-n 2000 \
-            --permutation-repeats 1 \
-            --random-state 20260713
+            --n-splits 5 --n-estimators 300 --min-samples-leaf 5 \
+            --permutation-max-n 2000 --permutation-repeats 1 --random-state 20260713
       - uses: actions/upload-artifact@v4
         with:
           name: ch1-exhaustive-rf-${{ matrix.trait }}-20260713
           path: trait_results/${{ matrix.trait }}
-          if-no-files-found: error
           retention-days: 90
 
   merge-results:
@@ -131,38 +182,27 @@ jobs:
           name: ch1-exhaustive-enriched-environment-20260713
           path: source/environment
       - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+        with: {python-version: "3.11"}
       - run: python -m pip install pandas
       - name: Merge and validate all 9 trait results
         run: |
           python - <<'PY'
           from pathlib import Path
           import pandas as pd
-          root=Path('source/traits')
+          root=Path('source/traits'); out=Path('rf_environment_results'); out.mkdir()
           def read_all(name):
               files=list(root.rglob(name))
               if len(files)!=9: raise SystemExit(f'{name}: expected 9 files, got {len(files)}')
               return pd.concat([pd.read_csv(p) for p in files],ignore_index=True)
-          out=Path('rf_environment_results'); out.mkdir()
-          summary=read_all('rf_spatial_cv_summary.csv')
-          folds=read_all('rf_spatial_cv_folds.csv')
-          ablation=read_all('rf_environment_group_ablation.csv')
-          imp_files=list(root.rglob('rf_full_model_permutation_importance.csv'))
-          imp=pd.concat([pd.read_csv(p) for p in imp_files],ignore_index=True)
-          summary.to_csv(out/'rf_spatial_cv_summary.csv',index=False)
-          folds.to_csv(out/'rf_spatial_cv_folds.csv',index=False)
-          ablation.to_csv(out/'rf_environment_group_ablation.csv',index=False)
-          imp.to_csv(out/'rf_full_model_permutation_importance.csv',index=False)
-          cov=next(Path('source/environment').rglob('environment_predictor_coverage.csv'))
-          pd.read_csv(cov).to_csv(out/'environment_predictor_coverage.csv',index=False)
-          if len(summary)!=36 or len(ablation)!=9 or summary.trait.nunique()!=9:
-              raise SystemExit({'summary_rows':len(summary),'ablation_rows':len(ablation),'traits':summary.trait.nunique()})
+          summary=read_all('rf_spatial_cv_summary.csv'); folds=read_all('rf_spatial_cv_folds.csv'); ablation=read_all('rf_environment_group_ablation.csv')
+          imp=pd.concat([pd.read_csv(p) for p in root.rglob('rf_full_model_permutation_importance.csv')],ignore_index=True)
+          summary.to_csv(out/'rf_spatial_cv_summary.csv',index=False); folds.to_csv(out/'rf_spatial_cv_folds.csv',index=False); ablation.to_csv(out/'rf_environment_group_ablation.csv',index=False); imp.to_csv(out/'rf_full_model_permutation_importance.csv',index=False)
+          cov=next(Path('source/environment').rglob('environment_predictor_coverage.csv')); pd.read_csv(cov).to_csv(out/'environment_predictor_coverage.csv',index=False)
+          if len(summary)!=36 or len(ablation)!=9 or summary.trait.nunique()!=9: raise SystemExit({'summary_rows':len(summary),'ablation_rows':len(ablation),'traits':summary.trait.nunique()})
           print(ablation.sort_values('delta_full_over_climate',ascending=False).to_string(index=False))
           PY
       - uses: actions/upload-artifact@v4
         with:
           name: ch1-exhaustive-environment-rf-parallel-20260713
           path: rf_environment_results
-          if-no-files-found: error
           retention-days: 90
