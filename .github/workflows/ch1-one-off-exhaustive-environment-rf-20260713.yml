@@ -9,28 +9,23 @@ permissions:
   contents: read
 
 jobs:
-  analyze:
+  extract-environment:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
       SOURCE_RUN_ID: "29216617585"
       SOURCE_ARTIFACT_NAME: "ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery"
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: ch1_global/v2/requirements-submission.txt
-
-      - name: Install analysis dependencies
+      - name: Install extraction dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install pandas numpy rasterio pyproj scikit-learn
-          python -m pip check
-
       - name: Download final exhaustive merged artifact
         uses: actions/download-artifact@v4
         with:
@@ -39,76 +34,135 @@ jobs:
           run-id: ${{ env.SOURCE_RUN_ID }}
           name: ${{ env.SOURCE_ARTIFACT_NAME }}
           path: source/final
-
       - name: Locate strict spatial cohort
         run: |
           set -euo pipefail
           mapfile -t matches < <(find source/final -type f -name strict_spatial_thinned_observations.csv | sort)
           test "${#matches[@]}" -eq 1
           echo "STRICT_COHORT=${matches[0]}" >> "$GITHUB_ENV"
-          python - <<'PY'
-          import pandas as pd, os
-          path = os.environ.get("STRICT_COHORT")
-          # GITHUB_ENV applies to subsequent steps; re-discover here for immediate validation.
-          import glob
-          hits = glob.glob("source/final/**/strict_spatial_thinned_observations.csv", recursive=True)
-          if len(hits) != 1:
-              raise SystemExit(hits)
-          frame = pd.read_csv(hits[0], low_memory=False)
-          print({"strict_spatial_observations": len(frame), "species": frame["taxon_name"].nunique()})
-          if len(frame) < 40000 or frame["taxon_name"].nunique() < 200:
-              raise SystemExit("Unexpectedly small exhaustive strict spatial cohort")
-          PY
-
-      - name: Run climate topography soil RF comparison
+      - name: Extract climate topography and soil once
         run: |
-          python ch1_global/v2/76_run_exhaustive_within_species_environment_rf.py \
+          python ch1_global/v2/77_extract_exhaustive_environment_only.py \
             --observation "$STRICT_COHORT" \
-            --out-dir rf_environment_results \
-            --sample-batch-size 1024 \
-            --n-splits 5 \
-            --n-estimators 500 \
-            --min-samples-leaf 5 \
-            --permutation-max-n 3000 \
-            --permutation-repeats 2 \
-            --random-state 20260713
-
-      - name: Validate RF outputs
+            --out-dir enriched_environment \
+            --sample-batch-size 1024
+      - name: Validate environment extraction
         run: |
           python - <<'PY'
-          import json
+          import pandas as pd
+          env=pd.read_csv('enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv',low_memory=False)
+          cov=pd.read_csv('enriched_environment/environment_predictor_coverage.csv')
+          print({'observations':len(env),'species':env.taxon_name.nunique(),'min_coverage':cov.complete_fraction.min()})
+          if len(env)<40000 or env.taxon_name.nunique()<200 or cov.complete_fraction.min()<0.75:
+              raise SystemExit('Environment extraction validation failed')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+          if-no-files-found: error
+          retention-days: 90
+
+  rf-traits:
+    needs: extract-environment
+    strategy:
+      fail-fast: false
+      max-parallel: 9
+      matrix:
+        trait:
+          - orientation_angle_degrees_median
+          - corolla_lab_lightness_median
+          - corolla_lab_chroma_median
+          - corolla_hue_sin_median
+          - corolla_hue_cos_median
+          - shape_aspect_ratio_median
+          - shape_circularity_median
+          - shape_solidity_median
+          - shape_width_cv_median
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+      - name: Install RF dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy rasterio pyproj scikit-learn
+      - name: Download enriched environment table
+        uses: actions/download-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+      - name: Run one trait RF comparison
+        run: |
+          python ch1_global/v2/78_run_one_trait_environment_rf.py \
+            --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --trait "${{ matrix.trait }}" \
+            --out-dir "trait_results/${{ matrix.trait }}" \
+            --n-splits 5 \
+            --n-estimators 300 \
+            --min-samples-leaf 5 \
+            --permutation-max-n 2000 \
+            --permutation-repeats 1 \
+            --random-state 20260713
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-rf-${{ matrix.trait }}-20260713
+          path: trait_results/${{ matrix.trait }}
+          if-no-files-found: error
+          retention-days: 90
+
+  merge-results:
+    needs: rf-traits
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-exhaustive-rf-*-20260713
+          path: source/traits
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: source/environment
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install pandas
+      - name: Merge and validate all 9 trait results
+        run: |
+          python - <<'PY'
           from pathlib import Path
           import pandas as pd
-          out = Path("rf_environment_results")
-          summary = pd.read_csv(out / "rf_spatial_cv_summary.csv")
-          ablation = pd.read_csv(out / "rf_environment_group_ablation.csv")
-          coverage = pd.read_csv(out / "environment_predictor_coverage.csv")
-          report = json.loads((out / "exhaustive_within_species_environment_rf_report.json").read_text())
-          expected_groups = {"climate", "climate_topography", "climate_soil", "climate_topography_soil"}
-          if len(summary) != 36:
-              raise SystemExit(f"Expected 36 trait x model-group summaries, got {len(summary)}")
-          if set(summary["model_group"]) != expected_groups:
-              raise SystemExit("RF model groups are incomplete")
-          if len(ablation) != 9:
-              raise SystemExit("Expected 9 trait ablation rows")
-          if coverage["complete_fraction"].min() < 0.75:
-              raise SystemExit("Environmental predictor coverage below declared floor")
-          if report["input_observations"] < 40000:
-              raise SystemExit("Unexpected RF input size")
-          print(summary.sort_values(["trait", "model_group"]).to_string(index=False))
-          print(ablation.to_string(index=False))
+          root=Path('source/traits')
+          def read_all(name):
+              files=list(root.rglob(name))
+              if len(files)!=9: raise SystemExit(f'{name}: expected 9 files, got {len(files)}')
+              return pd.concat([pd.read_csv(p) for p in files],ignore_index=True)
+          out=Path('rf_environment_results'); out.mkdir()
+          summary=read_all('rf_spatial_cv_summary.csv')
+          folds=read_all('rf_spatial_cv_folds.csv')
+          ablation=read_all('rf_environment_group_ablation.csv')
+          imp_files=list(root.rglob('rf_full_model_permutation_importance.csv'))
+          imp=pd.concat([pd.read_csv(p) for p in imp_files],ignore_index=True)
+          summary.to_csv(out/'rf_spatial_cv_summary.csv',index=False)
+          folds.to_csv(out/'rf_spatial_cv_folds.csv',index=False)
+          ablation.to_csv(out/'rf_environment_group_ablation.csv',index=False)
+          imp.to_csv(out/'rf_full_model_permutation_importance.csv',index=False)
+          cov=next(Path('source/environment').rglob('environment_predictor_coverage.csv'))
+          pd.read_csv(cov).to_csv(out/'environment_predictor_coverage.csv',index=False)
+          if len(summary)!=36 or len(ablation)!=9 or summary.trait.nunique()!=9:
+              raise SystemExit({'summary_rows':len(summary),'ablation_rows':len(ablation),'traits':summary.trait.nunique()})
+          print(ablation.sort_values('delta_full_over_climate',ascending=False).to_string(index=False))
           PY
-
-      - name: Record provenance
-        run: |
-          printf '%s\n' "$GITHUB_SHA" > rf_environment_results/git_sha.txt
-          printf '%s\n' "$SOURCE_RUN_ID" > rf_environment_results/source_workflow_run_id.txt
-          python -m pip freeze > rf_environment_results/python_environment.txt
-
-      - name: Upload RF analysis results
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: ch1-exhaustive-environment-rf-20260713
+          name: ch1-exhaustive-environment-rf-parallel-20260713
           path: rf_environment_results
           if-no-files-found: error
           retention-days: 90
