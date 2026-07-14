@@ -1,4 +1,4 @@
-name: Ch1 one-off exhaustive environment RF 20260713
+name: Ch1 exhaustive environment SPDE-INLA plus RF baseline 20260713
 
 on:
   pull_request:
@@ -135,11 +135,53 @@ jobs:
           path: enriched_environment
           retention-days: 90
 
-  rf-traits:
+  spde-inla-traits:
     needs: merge-environment
     strategy:
       fail-fast: false
-      max-parallel: 9
+      max-parallel: 3
+      matrix:
+        trait: [orientation_angle_degrees_median, corolla_lab_lightness_median, corolla_lab_chroma_median, corolla_hue_sin_median, corolla_hue_cos_median, shape_aspect_ratio_median, shape_circularity_median, shape_solidity_median, shape_width_cv_median]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install INLA
+        shell: Rscript {0}
+        run: |
+          install.packages(
+            "INLA",
+            repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"),
+            dependencies = c("Depends", "Imports", "LinkingTo")
+          )
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+      - name: Run hierarchical SPDE-INLA model comparison
+        run: |
+          Rscript ch1_global/v2/81_run_one_trait_spde_inla.R \
+            --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --trait "${{ matrix.trait }}" \
+            --out-dir "trait_results/${{ matrix.trait }}" \
+            --mesh-max-edge-km 750 \
+            --mesh-cutoff-km 50 \
+            --mesh-offset-km 1000 \
+            --min-species-n 5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-spde-inla-${{ matrix.trait }}-20260713
+          path: trait_results/${{ matrix.trait }}
+          retention-days: 90
+
+  rf-baseline-traits:
+    needs: merge-environment
+    strategy:
+      fail-fast: false
+      max-parallel: 3
       matrix:
         trait: [orientation_angle_degrees_median, corolla_lab_lightness_median, corolla_lab_chroma_median, corolla_hue_sin_median, corolla_hue_cos_median, shape_aspect_ratio_median, shape_circularity_median, shape_solidity_median, shape_width_cv_median]
     runs-on: ubuntu-latest
@@ -153,7 +195,7 @@ jobs:
         with:
           name: ch1-exhaustive-enriched-environment-20260713
           path: enriched_environment
-      - name: Run one trait RF comparison
+      - name: Run RF baseline
         run: |
           python ch1_global/v2/78_run_one_trait_environment_rf.py \
             --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
@@ -163,19 +205,24 @@ jobs:
             --permutation-max-n 2000 --permutation-repeats 1 --random-state 20260713
       - uses: actions/upload-artifact@v4
         with:
-          name: ch1-exhaustive-rf-${{ matrix.trait }}-20260713
+          name: ch1-exhaustive-rf-baseline-${{ matrix.trait }}-20260713
           path: trait_results/${{ matrix.trait }}
           retention-days: 90
 
   merge-results:
-    needs: rf-traits
+    needs: [spde-inla-traits, rf-baseline-traits]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
       - uses: actions/download-artifact@v4
         with:
-          pattern: ch1-exhaustive-rf-*-20260713
-          path: source/traits
+          pattern: ch1-exhaustive-spde-inla-*-20260713
+          path: source/spde
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-exhaustive-rf-baseline-*-20260713
+          path: source/rf
           merge-multiple: false
       - uses: actions/download-artifact@v4
         with:
@@ -189,20 +236,45 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import pandas as pd
-          root=Path('source/traits'); out=Path('rf_environment_results'); out.mkdir()
-          def read_all(name):
-              files=list(root.rglob(name))
-              if len(files)!=9: raise SystemExit(f'{name}: expected 9 files, got {len(files)}')
-              return pd.concat([pd.read_csv(p) for p in files],ignore_index=True)
-          summary=read_all('rf_spatial_cv_summary.csv'); folds=read_all('rf_spatial_cv_folds.csv'); ablation=read_all('rf_environment_group_ablation.csv')
-          imp=pd.concat([pd.read_csv(p) for p in root.rglob('rf_full_model_permutation_importance.csv')],ignore_index=True)
-          summary.to_csv(out/'rf_spatial_cv_summary.csv',index=False); folds.to_csv(out/'rf_spatial_cv_folds.csv',index=False); ablation.to_csv(out/'rf_environment_group_ablation.csv',index=False); imp.to_csv(out/'rf_full_model_permutation_importance.csv',index=False)
-          cov=next(Path('source/environment').rglob('environment_predictor_coverage.csv')); pd.read_csv(cov).to_csv(out/'environment_predictor_coverage.csv',index=False)
-          if len(summary)!=36 or len(ablation)!=9 or summary.trait.nunique()!=9: raise SystemExit({'summary_rows':len(summary),'ablation_rows':len(ablation),'traits':summary.trait.nunique()})
-          print(ablation.sort_values('delta_full_over_climate',ascending=False).to_string(index=False))
+
+          out = Path('environment_results')
+          out.mkdir()
+
+          def merge_required(root, name, expected=9):
+              files = list(Path(root).rglob(name))
+              if len(files) != expected:
+                  raise SystemExit(f'{name}: expected {expected} files, got {len(files)}')
+              return pd.concat([pd.read_csv(p) for p in files], ignore_index=True)
+
+          spde_summary = merge_required('source/spde', 'spde_inla_model_summary.csv')
+          spde_fixed = merge_required('source/spde', 'spde_inla_fixed_effects.csv')
+          spde_hyper = merge_required('source/spde', 'spde_inla_hyperparameters.csv')
+          spde_mesh = merge_required('source/spde', 'spde_inla_mesh_metadata.csv')
+          rf_summary = merge_required('source/rf', 'rf_spatial_cv_summary.csv')
+          rf_folds = merge_required('source/rf', 'rf_spatial_cv_folds.csv')
+          rf_ablation = merge_required('source/rf', 'rf_environment_group_ablation.csv')
+          rf_importance = merge_required('source/rf', 'rf_full_model_permutation_importance.csv')
+
+          spde_summary.to_csv(out/'spde_inla_model_summary.csv', index=False)
+          spde_fixed.to_csv(out/'spde_inla_fixed_effects.csv', index=False)
+          spde_hyper.to_csv(out/'spde_inla_hyperparameters.csv', index=False)
+          spde_mesh.to_csv(out/'spde_inla_mesh_metadata.csv', index=False)
+          rf_summary.to_csv(out/'rf_baseline_spatial_cv_summary.csv', index=False)
+          rf_folds.to_csv(out/'rf_baseline_spatial_cv_folds.csv', index=False)
+          rf_ablation.to_csv(out/'rf_baseline_environment_group_ablation.csv', index=False)
+          rf_importance.to_csv(out/'rf_baseline_full_model_permutation_importance.csv', index=False)
+
+          coverage = next(Path('source/environment').rglob('environment_predictor_coverage.csv'))
+          pd.read_csv(coverage).to_csv(out/'environment_predictor_coverage.csv', index=False)
+
+          ok = spde_summary.loc[spde_summary['status'].eq('ok')]
+          if ok['trait'].nunique() != 9:
+              raise SystemExit(f'SPDE-INLA did not produce an OK model for all 9 traits: {ok.trait.nunique()}')
+          print('SPDE-INLA rows:', len(spde_summary))
+          print('RF baseline rows:', len(rf_summary))
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: ch1-exhaustive-environment-rf-parallel-20260713
-          path: rf_environment_results
+          name: ch1-exhaustive-environment-spde-inla-plus-rf-20260713
+          path: environment_results
           retention-days: 90
