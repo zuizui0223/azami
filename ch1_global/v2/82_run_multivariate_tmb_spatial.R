@@ -5,7 +5,7 @@ traits <- c("orientation_angle_degrees_median","corolla_lab_lightness_median","c
 climate <- c("chelsa_bio01","chelsa_bio04","chelsa_bio12","chelsa_bio15")
 topo <- c("topo_elevation","topo_slope","topo_roughness")
 soil <- paste0("soil_",c("bdod","cec","cfvo","clay","sand","silt","nitrogen","phh2o","soc","ocd"),"_0_30cm")
-predictors <- c(climate,topo,soil)
+requested_predictors <- c(climate,topo,soil)
 
 argv <- commandArgs(trailingOnly=TRUE)
 getarg <- function(key, default=NULL) {i <- match(paste0("--",key),argv); if(is.na(i)) return(default); argv[[i+1L]]}
@@ -16,16 +16,25 @@ max_edge <- as.numeric(getarg("mesh-max-edge-km","750")); cutoff <- as.numeric(g
 dir.create(out_dir,recursive=TRUE,showWarnings=FALSE)
 
 df <- read.csv(env_file,check.names=FALSE)
-need <- c("taxon_name","latitude","longitude",traits,predictors)
-miss <- setdiff(need,names(df)); if(length(miss)) stop("Missing columns: ",paste(miss,collapse=", "))
+need <- c("taxon_name","latitude","longitude",traits)
+miss <- setdiff(need,names(df)); if(length(miss)) stop("Missing required columns: ",paste(miss,collapse=", "))
+predictors <- intersect(requested_predictors,names(df))
+if(length(predictors)<3) stop("Fewer than three usable environmental predictors")
 for(v in c("latitude","longitude",traits,predictors)) df[[v]] <- suppressWarnings(as.numeric(df[[v]]))
 df <- df[is.finite(df$latitude)&is.finite(df$longitude),,drop=FALSE]
 keep <- names(which(table(df$taxon_name)>=min_species_n)); df <- df[df$taxon_name%in%keep,,drop=FALSE]
+usable <- predictors[vapply(predictors,function(p){v<-df[[p]]; sum(is.finite(v))>0 && sd(v,na.rm=TRUE)>0},logical(1))]
+dropped <- setdiff(requested_predictors,usable); predictors <- usable
+complete_n <- vapply(predictors,function(p)sum(is.finite(df[[p]])),numeric(1))
+predictors <- predictors[complete_n >= max(100,0.5*nrow(df))]
+dropped <- union(dropped,setdiff(usable,predictors))
+if(length(predictors)<3) stop("Fewer than three sufficiently covered predictors")
 df <- df[complete.cases(df[,predictors,drop=FALSE]) & rowSums(is.finite(as.matrix(df[,traits,drop=FALSE])))>0,,drop=FALSE]
 if(nrow(df)<100||length(unique(df$taxon_name))<3) stop("Insufficient data")
 
-X <- matrix(NA_real_,nrow(df),length(predictors),dimnames=list(NULL,predictors))
-for(j in seq_along(predictors)){v<-df[[predictors[j]]]; c0<-v-ave(v,df$taxon_name,FUN=mean); s<-sd(c0); if(!is.finite(s)||s<=0) stop("No within-species variation: ",predictors[j]); X[,j]<-c0/s}
+X <- matrix(NA_real_,nrow(df),length(predictors),dimnames=list(NULL,predictors)); final_predictors <- character()
+for(j in seq_along(predictors)){v<-df[[predictors[j]]]; c0<-v-ave(v,df$taxon_name,FUN=mean); s<-sd(c0); if(is.finite(s)&&s>0){X[,j]<-c0/s; final_predictors<-c(final_predictors,predictors[j])}}
+X <- X[,seq_along(final_predictors),drop=FALSE]; predictors <- final_predictors
 Y <- matrix(NA_real_,nrow(df),length(traits),dimnames=list(NULL,traits)); scale_meta <- data.frame(trait=traits,mean=NA_real_,sd=NA_real_)
 for(t in seq_along(traits)){v<-df[[traits[t]]]; m<-mean(v,na.rm=TRUE); s<-sd(v,na.rm=TRUE); if(!is.finite(s)||s<=0) stop("No trait variation: ",traits[t]); Y[,t]<-(v-m)/s; scale_meta$mean[t]<-m; scale_meta$sd[t]<-s}
 
@@ -46,9 +55,10 @@ opt <- nlminb(obj$par,obj$fn,obj$gr,control=list(iter.max=1000,eval.max=2000)); 
 
 beta_out <- expand.grid(predictor=predictors,trait=traits,stringsAsFactors=FALSE); beta_out$estimate_standardized_trait <- as.vector(ph$beta); beta_orig <- ph$beta; for(t in seq_len(n_traits)) beta_orig[,t] <- beta_orig[,t]*scale_meta$sd[t]; beta_out$estimate_original_trait_units_per_1sd_within_species_predictor <- as.vector(beta_orig)
 write.csv(beta_out,file.path(out_dir,"tmb_multivariate_environment_effects.csv"),row.names=FALSE)
+write.csv(data.frame(requested_predictor=requested_predictors,status=ifelse(requested_predictors%in%predictors,"used","dropped")),file.path(out_dir,"tmb_predictor_availability.csv"),row.names=FALSE)
 load_out <- expand.grid(trait=traits,factor=seq_len(n_factors),stringsAsFactors=FALSE); load_out$loading <- as.vector(ph$loadings); write.csv(load_out,file.path(out_dir,"tmb_spatial_factor_loadings.csv"),row.names=FALSE)
 write.csv(scale_meta,file.path(out_dir,"tmb_trait_scaling.csv"),row.names=FALSE)
 summary <- data.frame(n_observations=nrow(df),n_trait_values=length(y),n_species=n_species,n_traits=n_traits,n_predictors=ncol(X),n_spatial_factors=n_factors,n_mesh_vertices=mesh$n,optimizer_convergence=opt$convergence,objective=opt$objective,max_abs_gradient=max(abs(obj$gr(opt$par))))
 write.csv(summary,file.path(out_dir,"tmb_multivariate_model_summary.csv"),row.names=FALSE)
-saveRDS(list(optimizer=opt,sdreport=fit,parameters=ph,mesh=mesh,traits=traits,predictors=predictors,trait_scaling=scale_meta,species_levels=species_levels),file.path(out_dir,"tmb_multivariate_model_fit.rds"))
+saveRDS(list(optimizer=opt,sdreport=fit,parameters=ph,mesh=mesh,traits=traits,predictors=predictors,dropped_predictors=dropped,trait_scaling=scale_meta,species_levels=species_levels),file.path(out_dir,"tmb_multivariate_model_fit.rds"))
 print(summary)
