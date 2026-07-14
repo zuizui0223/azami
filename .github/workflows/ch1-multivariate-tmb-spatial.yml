@@ -11,10 +11,21 @@ on:
         description: Number of shared latent spatial factors
         required: true
         default: "3"
+  pull_request:
+    branches:
+      - run/ch1-exhaustive-rf-environment-20260713
+    paths:
+      - ".github/workflows/ch1-multivariate-tmb-spatial.yml"
+      - "ch1_global/v2/82_run_multivariate_tmb_spatial.R"
+      - "ch1_global/v2/tmb_multivariate_spatial.cpp"
 
 permissions:
   actions: read
   contents: read
+
+env:
+  DEFAULT_SOURCE_RUN_ID: "29306454759"
+  DEFAULT_N_SPATIAL_FACTORS: "3"
 
 jobs:
   multivariate-tmb:
@@ -38,11 +49,19 @@ jobs:
             repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"),
             dependencies = c("Depends", "Imports", "LinkingTo")
           )
+      - name: Resolve workflow parameters
+        id: params
+        shell: bash
+        run: |
+          SOURCE_RUN_ID="${{ github.event.inputs.source_run_id }}"
+          N_FACTORS="${{ github.event.inputs.n_spatial_factors }}"
+          echo "source_run_id=${SOURCE_RUN_ID:-$DEFAULT_SOURCE_RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "n_factors=${N_FACTORS:-$DEFAULT_N_SPATIAL_FACTORS}" >> "$GITHUB_OUTPUT"
       - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
-          run-id: ${{ inputs.source_run_id }}
+          run-id: ${{ steps.params.outputs.source_run_id }}
           name: ch1-exhaustive-enriched-environment-20260713
           path: enriched_environment
       - name: Fit joint multivariate hierarchical spatial model
@@ -50,7 +69,7 @@ jobs:
           Rscript ch1_global/v2/82_run_multivariate_tmb_spatial.R \
             --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --out-dir tmb_multivariate_results \
-            --n-factors "${{ inputs.n_spatial_factors }}" \
+            --n-factors "${{ steps.params.outputs.n_factors }}" \
             --min-species-n 5 \
             --mesh-max-edge-km 750 \
             --mesh-cutoff-km 50 \
