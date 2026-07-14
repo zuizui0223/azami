@@ -1,0 +1,284 @@
+name: Ch1 exhaustive environment SPDE-INLA plus XGBoost 20260713
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare-cohort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SOURCE_RUN_ID: "29216617585"
+      SOURCE_ARTIFACT_NAME: "ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery"
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          name: ${{ env.SOURCE_ARTIFACT_NAME }}
+          path: source/final
+      - name: Extract strict cohort only
+        run: |
+          set -euo pipefail
+          mapfile -t matches < <(find source/final -type f -name strict_spatial_thinned_observations.csv | sort)
+          test "${#matches[@]}" -eq 1
+          mkdir -p strict_cohort
+          cp "${matches[0]}" strict_cohort/strict_spatial_thinned_observations.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort/strict_spatial_thinned_observations.csv
+          retention-days: 90
+
+  extract-layers:
+    needs: prepare-cohort
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        include:
+          - {id: chelsa_bio01, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio01/1981-2010/CHELSA_bio01_1981-2010_V.2.1.tif"}
+          - {id: chelsa_bio04, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio04/1981-2010/CHELSA_bio04_1981-2010_V.2.1.tif"}
+          - {id: chelsa_bio12, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio12/1981-2010/CHELSA_bio12_1981-2010_V.2.1.tif"}
+          - {id: chelsa_bio15, url: "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio15/1981-2010/CHELSA_bio15_1981-2010_V.2.1.tif"}
+          - {id: topo_elevation, url: "https://data.earthenv.org/topography/elevation_1KMmd_GMTEDmd.tif"}
+          - {id: topo_slope, url: "https://data.earthenv.org/topography/slope_1KMmd_GMTEDmd.tif"}
+          - {id: topo_roughness, url: "https://data.earthenv.org/topography/roughness_1KMmd_GMTEDmd.tif"}
+          - {id: soil_bdod_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/bdod/bdod_0-5cm_mean.vrt"}
+          - {id: soil_bdod_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/bdod/bdod_5-15cm_mean.vrt"}
+          - {id: soil_bdod_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/bdod/bdod_15-30cm_mean.vrt"}
+          - {id: soil_cec_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/cec/cec_0-5cm_mean.vrt"}
+          - {id: soil_cec_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/cec/cec_5-15cm_mean.vrt"}
+          - {id: soil_cec_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/cec/cec_15-30cm_mean.vrt"}
+          - {id: soil_cfvo_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/cfvo/cfvo_0-5cm_mean.vrt"}
+          - {id: soil_cfvo_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/cfvo/cfvo_5-15cm_mean.vrt"}
+          - {id: soil_cfvo_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/cfvo/cfvo_15-30cm_mean.vrt"}
+          - {id: soil_clay_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/clay/clay_0-5cm_mean.vrt"}
+          - {id: soil_clay_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/clay/clay_5-15cm_mean.vrt"}
+          - {id: soil_clay_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/clay/clay_15-30cm_mean.vrt"}
+          - {id: soil_sand_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/sand/sand_0-5cm_mean.vrt"}
+          - {id: soil_sand_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/sand/sand_5-15cm_mean.vrt"}
+          - {id: soil_sand_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/sand/sand_15-30cm_mean.vrt"}
+          - {id: soil_silt_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/silt/silt_0-5cm_mean.vrt"}
+          - {id: soil_silt_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/silt/silt_5-15cm_mean.vrt"}
+          - {id: soil_silt_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/silt/silt_15-30cm_mean.vrt"}
+          - {id: soil_nitrogen_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/nitrogen/nitrogen_0-5cm_mean.vrt"}
+          - {id: soil_nitrogen_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/nitrogen/nitrogen_5-15cm_mean.vrt"}
+          - {id: soil_nitrogen_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/nitrogen/nitrogen_15-30cm_mean.vrt"}
+          - {id: soil_phh2o_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_0-5cm_mean.vrt"}
+          - {id: soil_phh2o_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_5-15cm_mean.vrt"}
+          - {id: soil_phh2o_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_15-30cm_mean.vrt"}
+          - {id: soil_soc_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/soc/soc_0-5cm_mean.vrt"}
+          - {id: soil_soc_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/soc/soc_5-15cm_mean.vrt"}
+          - {id: soil_soc_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/soc/soc_15-30cm_mean.vrt"}
+          - {id: soil_ocd_0_5cm, url: "https://files.isric.org/soilgrids/latest/data/ocd/ocd_0-5cm_mean.vrt"}
+          - {id: soil_ocd_5_15cm, url: "https://files.isric.org/soilgrids/latest/data/ocd/ocd_5-15cm_mean.vrt"}
+          - {id: soil_ocd_15_30cm, url: "https://files.isric.org/soilgrids/latest/data/ocd/ocd_15-30cm_mean.vrt"}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas numpy rasterio pyproj
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort
+      - name: Sample one raster layer
+        run: |
+          python ch1_global/v2/79_sample_one_environment_layer.py \
+            --observation strict_cohort/strict_spatial_thinned_observations.csv \
+            --predictor-id "${{ matrix.id }}" \
+            --url "${{ matrix.url }}" \
+            --out-dir layer_result \
+            --sample-batch-size 1024
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-env-layer-${{ matrix.id }}-20260713
+          path: layer_result
+          retention-days: 90
+
+  merge-environment:
+    needs: extract-layers
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas numpy
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-env-layer-*-20260713
+          path: source/layers
+          merge-multiple: false
+      - name: Merge 37 layers and build 0-30 cm soil composites
+        run: |
+          python ch1_global/v2/80_merge_parallel_environment_layers.py \
+            --observation strict_cohort/strict_spatial_thinned_observations.csv \
+            --layers-root source/layers \
+            --out-dir enriched_environment
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+          retention-days: 90
+
+  spde-inla-traits:
+    needs: merge-environment
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        trait: [orientation_angle_degrees_median, corolla_lab_lightness_median, corolla_lab_chroma_median, corolla_hue_sin_median, corolla_hue_cos_median, shape_aspect_ratio_median, shape_circularity_median, shape_solidity_median, shape_width_cv_median]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install INLA
+        shell: Rscript {0}
+        run: |
+          install.packages(
+            "INLA",
+            repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"),
+            dependencies = c("Depends", "Imports", "LinkingTo")
+          )
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+      - name: Run hierarchical SPDE-INLA model comparison
+        run: |
+          Rscript ch1_global/v2/81_run_one_trait_spde_inla.R \
+            --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --trait "${{ matrix.trait }}" \
+            --out-dir "trait_results/${{ matrix.trait }}" \
+            --mesh-max-edge-km 750 \
+            --mesh-cutoff-km 50 \
+            --mesh-offset-km 1000 \
+            --min-species-n 5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-spde-inla-${{ matrix.trait }}-20260713
+          path: trait_results/${{ matrix.trait }}
+          retention-days: 90
+
+  xgboost-benchmark-traits:
+    needs: merge-environment
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        trait: [orientation_angle_degrees_median, corolla_lab_lightness_median, corolla_lab_chroma_median, corolla_hue_sin_median, corolla_hue_cos_median, shape_aspect_ratio_median, shape_circularity_median, shape_solidity_median, shape_width_cv_median]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas numpy scikit-learn xgboost
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: enriched_environment
+      - name: Run XGBoost nonlinear benchmark
+        run: |
+          python ch1_global/v2/82_run_one_trait_environment_xgboost.py \
+            --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --trait "${{ matrix.trait }}" \
+            --out-dir "trait_results/${{ matrix.trait }}" \
+            --n-splits 5 --n-estimators 1000 --learning-rate 0.03 \
+            --max-depth 6 --min-child-weight 5 \
+            --subsample 0.8 --colsample-bytree 0.8 \
+            --permutation-max-n 2000 --permutation-repeats 1 --random-state 20260714
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-xgboost-${{ matrix.trait }}-20260713
+          path: trait_results/${{ matrix.trait }}
+          retention-days: 90
+
+  merge-results:
+    needs: [spde-inla-traits, xgboost-benchmark-traits]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-exhaustive-spde-inla-*-20260713
+          path: source/spde
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ch1-exhaustive-xgboost-*-20260713
+          path: source/xgb
+          merge-multiple: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: source/environment
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install pandas
+      - name: Merge and validate all 9 trait results
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+
+          out = Path('environment_results')
+          out.mkdir()
+
+          def merge_required(root, name, expected=9):
+              files = list(Path(root).rglob(name))
+              if len(files) != expected:
+                  raise SystemExit(f'{name}: expected {expected} files, got {len(files)}')
+              return pd.concat([pd.read_csv(p) for p in files], ignore_index=True)
+
+          spde_summary = merge_required('source/spde', 'spde_inla_model_summary.csv')
+          spde_fixed = merge_required('source/spde', 'spde_inla_fixed_effects.csv')
+          spde_hyper = merge_required('source/spde', 'spde_inla_hyperparameters.csv')
+          spde_mesh = merge_required('source/spde', 'spde_inla_mesh_metadata.csv')
+          xgb_summary = merge_required('source/xgb', 'xgb_spatial_cv_summary.csv')
+          xgb_folds = merge_required('source/xgb', 'xgb_spatial_cv_folds.csv')
+          xgb_ablation = merge_required('source/xgb', 'xgb_environment_group_ablation.csv')
+          xgb_importance = merge_required('source/xgb', 'xgb_full_model_permutation_importance.csv')
+
+          spde_summary.to_csv(out/'spde_inla_model_summary.csv', index=False)
+          spde_fixed.to_csv(out/'spde_inla_fixed_effects.csv', index=False)
+          spde_hyper.to_csv(out/'spde_inla_hyperparameters.csv', index=False)
+          spde_mesh.to_csv(out/'spde_inla_mesh_metadata.csv', index=False)
+          xgb_summary.to_csv(out/'xgboost_spatial_cv_summary.csv', index=False)
+          xgb_folds.to_csv(out/'xgboost_spatial_cv_folds.csv', index=False)
+          xgb_ablation.to_csv(out/'xgboost_environment_group_ablation.csv', index=False)
+          xgb_importance.to_csv(out/'xgboost_full_model_permutation_importance.csv', index=False)
+
+          coverage = next(Path('source/environment').rglob('environment_predictor_coverage.csv'))
+          pd.read_csv(coverage).to_csv(out/'environment_predictor_coverage.csv', index=False)
+
+          ok = spde_summary.loc[spde_summary['status'].eq('ok')]
+          if ok['trait'].nunique() != 9:
+              raise SystemExit(f'SPDE-INLA did not produce an OK model for all 9 traits: {ok.trait.nunique()}')
+          if xgb_summary['trait'].nunique() != 9:
+              raise SystemExit(f'XGBoost did not produce summaries for all 9 traits: {xgb_summary.trait.nunique()}')
+          print('SPDE-INLA rows:', len(spde_summary))
+          print('XGBoost rows:', len(xgb_summary))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-exhaustive-environment-spde-inla-plus-xgboost-20260713
+          path: environment_results
+          retention-days: 90
