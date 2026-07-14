@@ -1,0 +1,13 @@
+stage	file	status	manuscript_role
+environment_sampling	79_sample_one_environment_layer.py	active	Reproduce individual raster extraction when rebuilding frozen inputs
+environment_merge	80_merge_parallel_environment_layers.py	active	Merge successful layers and construct depth-weighted soil composites
+primary_inference	83_run_lightweight_spde_inla.R	active	Primary grouped hierarchical SPDE-INLA analysis
+primary_workflow	.github/workflows/ch1-lightweight-spde-inla.yml	active	Reproduce frozen-input manuscript analysis
+submission_ci	.github/workflows/ch1-submission-ci.yml	active	Validate submission code
+submission_bundle	.github/workflows/ch1-build-submission-bundle.yml	active	Package submission materials
+legacy_nonspatial	75_run_exhaustive_within_species_climate_analysis.py	removed	Superseded sensitivity analysis; available in Git history
+legacy_rf	76_run_exhaustive_within_species_environment_rf.py	removed	Not used in manuscript
+legacy_rf_extract	77_extract_exhaustive_environment_only.py	removed	Not used in manuscript
+legacy_rf_trait	78_run_one_trait_environment_rf.py	removed	Not used in manuscript
+legacy_inla	81_run_one_trait_spde_inla.R	removed	Superseded by grouped lightweight analysis
+legacy_xgboost	82_run_one_trait_environment_xgboost.py	removed	Exploratory prediction only; not used in manuscript
