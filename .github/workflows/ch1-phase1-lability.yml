@@ -25,35 +25,76 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python - <<'PY'
-          import io, json, os, urllib.request, zipfile
+          import json
+          import os
+          import subprocess
+          import tempfile
+          import urllib.request
+          import zipfile
+          from pathlib import Path
+
           repo = os.environ['GITHUB_REPOSITORY']
-          headers = {'Authorization': f"Bearer {os.environ['GH_TOKEN']}", 'Accept': 'application/vnd.github+json'}
-          req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100', headers=headers)
+          headers = {
+              'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+          }
+          req = urllib.request.Request(
+              f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100',
+              headers=headers,
+          )
           artifacts = json.load(urllib.request.urlopen(req))['artifacts']
-          artifacts = [a for a in artifacts if not a['expired']]
-          artifacts.sort(key=lambda a: a['created_at'], reverse=True)
-          os.makedirs('upstream_artifacts', exist_ok=True)
-          found = False
-          for a in artifacts:
-              req = urllib.request.Request(a['archive_download_url'], headers=headers)
-              data = urllib.request.urlopen(req).read()
-              try:
-                  with zipfile.ZipFile(io.BytesIO(data)) as z:
-                      names = set(z.namelist())
-                      if any(n.endswith('strict_spatial_thinned_with_chelsa.csv') for n in names) and any(n.endswith('exhaustive_within_species_climate_models.csv') for n in names):
-                          z.extractall('upstream_artifacts')
-                          print('Using artifact:', a['name'], a['created_at'])
-                          found = True
-                          break
-              except zipfile.BadZipFile:
-                  pass
-          if not found:
-              raise SystemExit('No non-expired artifact contains both required CSV files')
+          artifacts = sorted(
+              (a for a in artifacts if not a['expired']),
+              key=lambda a: a['created_at'],
+              reverse=True,
+          )
+
+          destination = Path('upstream_artifacts')
+          destination.mkdir(exist_ok=True)
+          required = {
+              'strict_spatial_thinned_with_chelsa.csv',
+              'exhaustive_within_species_climate_models.csv',
+          }
+
+          for artifact in artifacts:
+              with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
+                  endpoint = f"repos/{repo}/actions/artifacts/{artifact['id']}/zip"
+                  result = subprocess.run(
+                      ['gh', 'api', endpoint],
+                      stdout=tmp,
+                      stderr=subprocess.PIPE,
+                      check=False,
+                  )
+                  if result.returncode != 0:
+                      print(
+                          f"Skipping artifact {artifact['name']}: "
+                          f"gh api failed: {result.stderr.decode(errors='replace').strip()}"
+                      )
+                      continue
+                  tmp.flush()
+                  try:
+                      with zipfile.ZipFile(tmp.name) as archive:
+                          names = {Path(name).name for name in archive.namelist()}
+                          if not required.issubset(names):
+                              continue
+                          archive.extractall(destination)
+                  except zipfile.BadZipFile:
+                      print(f"Skipping artifact {artifact['name']}: invalid ZIP")
+                      continue
+
+              print('Using artifact:', artifact['name'], artifact['created_at'])
+              break
+          else:
+              raise SystemExit(
+                  'No non-expired artifact contains both required CSV files'
+              )
           PY
       - name: Run Phase 1 analysis
         run: |
           OBS=$(find upstream_artifacts -name strict_spatial_thinned_with_chelsa.csv -print -quit)
           COEF=$(find upstream_artifacts -name exhaustive_within_species_climate_models.csv -print -quit)
+          test -n "$OBS" && test -n "$COEF"
           python ch1_global/v2/77_build_lability_axes_and_supplement.py \
             --observations "$OBS" \
             --coefficients "$COEF" \
