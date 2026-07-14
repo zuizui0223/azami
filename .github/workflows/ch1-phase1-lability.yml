@@ -1,0 +1,65 @@
+name: ch1-phase1-lability
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ch1_global/v2/77_build_lability_axes_and_supplement.py'
+      - '.github/workflows/ch1-phase1-lability.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  analyse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas matplotlib
+      - name: Download newest compatible analysis artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import io, json, os, urllib.request, zipfile
+          repo = os.environ['GITHUB_REPOSITORY']
+          headers = {'Authorization': f"Bearer {os.environ['GH_TOKEN']}", 'Accept': 'application/vnd.github+json'}
+          req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100', headers=headers)
+          artifacts = json.load(urllib.request.urlopen(req))['artifacts']
+          artifacts = [a for a in artifacts if not a['expired']]
+          artifacts.sort(key=lambda a: a['created_at'], reverse=True)
+          os.makedirs('upstream_artifacts', exist_ok=True)
+          found = False
+          for a in artifacts:
+              req = urllib.request.Request(a['archive_download_url'], headers=headers)
+              data = urllib.request.urlopen(req).read()
+              try:
+                  with zipfile.ZipFile(io.BytesIO(data)) as z:
+                      names = set(z.namelist())
+                      if any(n.endswith('strict_spatial_thinned_with_chelsa.csv') for n in names) and any(n.endswith('exhaustive_within_species_climate_models.csv') for n in names):
+                          z.extractall('upstream_artifacts')
+                          print('Using artifact:', a['name'], a['created_at'])
+                          found = True
+                          break
+              except zipfile.BadZipFile:
+                  pass
+          if not found:
+              raise SystemExit('No non-expired artifact contains both required CSV files')
+          PY
+      - name: Run Phase 1 analysis
+        run: |
+          OBS=$(find upstream_artifacts -name strict_spatial_thinned_with_chelsa.csv -print -quit)
+          COEF=$(find upstream_artifacts -name exhaustive_within_species_climate_models.csv -print -quit)
+          python ch1_global/v2/77_build_lability_axes_and_supplement.py \
+            --observations "$OBS" \
+            --coefficients "$COEF" \
+            --out-dir phase1_results
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-phase1-lability-results
+          path: phase1_results/
+          if-no-files-found: error
