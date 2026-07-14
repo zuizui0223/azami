@@ -1,4 +1,4 @@
-name: Ch1 submission extensions: modules and niche
+name: Ch1 submission extensions: modules niche lability
 
 on:
   workflow_dispatch:
@@ -12,6 +12,7 @@ on:
     paths:
       - ".github/workflows/ch1-submission-extensions.yml"
       - "ch1_global/v2/84_trait_modules_and_niche.py"
+      - "ch1_global/v2/86_trait_lability_screen.py"
 
 permissions:
   actions: read
@@ -52,18 +53,32 @@ jobs:
           set -euo pipefail
           ENV_FILE=$(find source -type f -name strict_spatial_thinned_with_climate_topography_soil.csv | head -n1)
           FIXED_FILE=$(find source -type f -name spde_fixed_effects_by_group.csv | head -n1)
-          test -n "$ENV_FILE" && test -n "$FIXED_FILE"
+          STABILITY_FILE=$(find source -type f -name spde_effect_stability_across_groups.csv | head -n1)
+          HYPER_FILE=$(find source -type f -name spde_hyperparameters_by_group.csv | head -n1)
+          test -n "$ENV_FILE" && test -n "$FIXED_FILE" && test -n "$STABILITY_FILE"
           echo "environment=$ENV_FILE" >> "$GITHUB_OUTPUT"
           echo "fixed=$FIXED_FILE" >> "$GITHUB_OUTPUT"
+          echo "stability=$STABILITY_FILE" >> "$GITHUB_OUTPUT"
+          echo "hyper=$HYPER_FILE" >> "$GITHUB_OUTPUT"
       - name: Run trait-module and niche analyses
         run: |
           python ch1_global/v2/84_trait_modules_and_niche.py \
             --environment "${{ steps.files.outputs.environment }}" \
             --spde-fixed "${{ steps.files.outputs.fixed }}" \
             --out-dir submission_extensions
+      - name: Screen candidate trait lability and conservatism
+        run: |
+          python ch1_global/v2/86_trait_lability_screen.py \
+            --environment "${{ steps.files.outputs.environment }}" \
+            --spde-fixed "${{ steps.files.outputs.fixed }}" \
+            --spde-stability "${{ steps.files.outputs.stability }}" \
+            --spde-hyper "${{ steps.files.outputs.hyper }}" \
+            --out-dir submission_extensions \
+            --min-species-n 5 \
+            --bootstrap-repeats 200
       - uses: actions/upload-artifact@v4
         with:
-          name: ch1-trait-modules-and-niche
+          name: ch1-trait-modules-niche-and-lability
           path: submission_extensions
           if-no-files-found: error
           retention-days: 90
