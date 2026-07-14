@@ -63,11 +63,12 @@ def bhattacharyya_gaussian(a: np.ndarray, b: np.ndarray) -> float:
     c = (c1 + c2) / 2
     diff = (m1 - m2)[:, None]
     inv = np.linalg.pinv(c)
-    term1 = float((diff.T @ inv @ diff) / 8)
+    quadratic = (diff.T @ inv @ diff) / 8
+    term1 = float(np.asarray(quadratic).item())
     _, ld = np.linalg.slogdet(c)
     _, ld1 = np.linalg.slogdet(c1)
     _, ld2 = np.linalg.slogdet(c2)
-    db = term1 + 0.5 * (ld - 0.5 * (ld1 + ld2))
+    db = term1 + 0.5 * (float(ld) - 0.5 * (float(ld1) + float(ld2)))
     return float(np.exp(-max(db, 0.0)))
 
 
@@ -85,15 +86,17 @@ def main() -> None:
     if missing:
         raise SystemExit(f"Missing columns: {missing}")
 
-    # Species-level trait architecture.
     counts = df.groupby("taxon_name").size()
     keep = counts[counts >= a.min_species_n].index
     sp = df[df.taxon_name.isin(keep)].groupby("taxon_name")[traits + env].median(numeric_only=True)
     trait_cc = sp[traits].dropna()
     z = StandardScaler().fit_transform(trait_cc)
     pca = PCA().fit(z)
-    load = pd.DataFrame(pca.components_.T, index=traits,
-                        columns=[f"PC{i+1}" for i in range(pca.n_components_)])
+    load = pd.DataFrame(
+        pca.components_.T,
+        index=traits,
+        columns=[f"PC{i+1}" for i in range(pca.n_components_)],
+    )
     load.insert(0, "trait", load.index)
     load.to_csv(out / "species_trait_pca_loadings.csv", index=False)
     pd.DataFrame({
@@ -102,7 +105,6 @@ def main() -> None:
         "cumulative_variance": np.cumsum(pca.explained_variance_ratio_),
     }).to_csv(out / "species_trait_pca_variance.csv", index=False)
 
-    # Environmental responsiveness by predeclared trait module.
     fx = fx[fx["term"].ne("Intercept")].copy()
     trait_to_module = {t: m for m, ts in TRAIT_MODULES.items() for t in ts}
     fx["module"] = fx["trait"].map(trait_to_module)
@@ -116,7 +118,6 @@ def main() -> None:
     ).reset_index()
     module.to_csv(out / "trait_module_environment_responsiveness.csv", index=False)
 
-    # Niche contrasts: high vs low species quartiles for each trait in environmental PCA space.
     env_cc = sp[env].dropna()
     common = trait_cc.index.intersection(env_cc.index)
     env_z = StandardScaler().fit_transform(env_cc.loc[common])
@@ -140,8 +141,10 @@ def main() -> None:
         niche_rows.append({
             "trait": trait,
             "module": trait_to_module[trait],
-            "n_low": len(low), "n_high": len(high),
-            "low_threshold": float(q1), "high_threshold": float(q3),
+            "n_low": len(low),
+            "n_high": len(high),
+            "low_threshold": float(q1),
+            "high_threshold": float(q3),
             "environmental_centroid_distance": cdist,
             "niche_breadth_low": breadth_low,
             "niche_breadth_high": breadth_high,
@@ -159,7 +162,9 @@ def main() -> None:
             "niche": "High and low species quartiles are compared in the first three environmental PCA axes; overlap is descriptive, not causal.",
         },
     }
-    (out / "trait_module_niche_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    (out / "trait_module_niche_report.json").write_text(
+        json.dumps(report, indent=2), encoding="utf-8"
+    )
 
 
 if __name__ == "__main__":
