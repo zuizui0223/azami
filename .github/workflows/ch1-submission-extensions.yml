@@ -1,0 +1,95 @@
+name: Ch1 submission extensions: modules phylogeny niche
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Successful grouped SPDE-INLA workflow run
+        required: true
+        default: "29339137476"
+      tree_path:
+        description: Optional repository path to a Newick tree
+        required: false
+        default: "ch1_global/v2/data/cirsium_phylogeny.nwk"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/ch1-submission-extensions.yml"
+      - "ch1_global/v2/84_trait_modules_and_niche.py"
+      - "ch1_global/v2/85_phylogenetic_sensitivity.R"
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  DEFAULT_SOURCE_RUN_ID: "29339137476"
+
+jobs:
+  submission-extensions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install dependencies
+        run: |
+          python -m pip install pandas numpy scikit-learn
+          Rscript -e 'install.packages(c("ape","nlme","phytools"))'
+      - name: Resolve inputs
+        id: params
+        shell: bash
+        run: |
+          RUN_ID="${{ github.event.inputs.source_run_id }}"
+          TREE_PATH="${{ github.event.inputs.tree_path }}"
+          echo "run_id=${RUN_ID:-$DEFAULT_SOURCE_RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "tree_path=${TREE_PATH:-ch1_global/v2/data/cirsium_phylogeny.nwk}" >> "$GITHUB_OUTPUT"
+      - name: Download grouped SPDE-INLA artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ steps.params.outputs.run_id }}
+          name: ch1-lightweight-per-trait-spde-inla
+          path: source
+      - name: Locate canonical inputs
+        id: files
+        shell: bash
+        run: |
+          set -euo pipefail
+          ENV_FILE=$(find source -type f -name strict_spatial_thinned_with_climate_topography_soil.csv | head -n1)
+          FIXED_FILE=$(find source -type f -name spde_fixed_effects_by_group.csv | head -n1)
+          test -n "$ENV_FILE" && test -n "$FIXED_FILE"
+          echo "environment=$ENV_FILE" >> "$GITHUB_OUTPUT"
+          echo "fixed=$FIXED_FILE" >> "$GITHUB_OUTPUT"
+      - name: Run trait-module and niche analyses
+        run: |
+          python ch1_global/v2/84_trait_modules_and_niche.py \
+            --environment "${{ steps.files.outputs.environment }}" \
+            --spde-fixed "${{ steps.files.outputs.fixed }}" \
+            --out-dir submission_extensions
+      - name: Run phylogenetic sensitivity when tree exists
+        shell: bash
+        run: |
+          TREE="${{ steps.params.outputs.tree_path }}"
+          if [[ -f "$TREE" ]]; then
+            Rscript ch1_global/v2/85_phylogenetic_sensitivity.R \
+              --environment "${{ steps.files.outputs.environment }}" \
+              --tree "$TREE" \
+              --out-dir submission_extensions
+          else
+            Rscript ch1_global/v2/85_phylogenetic_sensitivity.R \
+              --environment "${{ steps.files.outputs.environment }}" \
+              --out-dir submission_extensions
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-submission-extensions
+          path: submission_extensions
+          if-no-files-found: error
+          retention-days: 90
