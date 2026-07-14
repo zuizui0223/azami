@@ -7,6 +7,8 @@ on:
       - ".github/workflows/ch1-lightweight-spde-inla.yml"
       - "ch1_global/v2/80_merge_parallel_environment_layers.py"
       - "ch1_global/v2/83_run_lightweight_spde_inla.R"
+      - "ch1_global/v2/84_trait_modules_and_niche.py"
+      - "ch1_global/v2/86_trait_lability_screen.py"
   workflow_dispatch:
     inputs:
       source_run_id:
@@ -38,7 +40,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev
       - name: Install Python dependencies
-        run: python -m pip install pandas numpy
+        run: python -m pip install pandas numpy scikit-learn
       - name: Install R dependencies
         shell: Rscript {0}
         run: |
@@ -88,12 +90,29 @@ jobs:
             --mesh-max-edge-km 1000 \
             --mesh-cutoff-km 100 \
             --mesh-offset-km 1500
+      - name: Run trait-module and niche analyses
+        run: |
+          python ch1_global/v2/84_trait_modules_and_niche.py \
+            --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --spde-fixed lightweight_spde_results/spde_fixed_effects_by_group.csv \
+            --out-dir submission_extensions
+      - name: Screen candidate trait lability and conservatism
+        run: |
+          python ch1_global/v2/86_trait_lability_screen.py \
+            --environment enriched_environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --spde-fixed lightweight_spde_results/spde_fixed_effects_by_group.csv \
+            --spde-stability lightweight_spde_results/spde_effect_stability_across_groups.csv \
+            --spde-hyper lightweight_spde_results/spde_hyperparameters_by_group.csv \
+            --out-dir submission_extensions \
+            --min-species-n 5 \
+            --bootstrap-repeats 200
       - name: Upload compact results
         uses: actions/upload-artifact@v4
         with:
           name: ch1-lightweight-per-trait-spde-inla
           path: |
             lightweight_spde_results
+            submission_extensions
             enriched_environment/parallel_environment_merge_report.json
             enriched_environment/environment_predictor_coverage.csv
           if-no-files-found: error
