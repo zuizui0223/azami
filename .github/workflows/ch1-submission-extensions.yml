@@ -1,4 +1,4 @@
-name: Ch1 submission extensions: modules niche lability
+name: "Ch1 submission extensions: modules niche lability"
 
 on:
   workflow_dispatch:
