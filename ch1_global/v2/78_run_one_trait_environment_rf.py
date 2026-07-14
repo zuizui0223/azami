@@ -15,7 +15,7 @@ def load_base():
 
 
 def main():
-    p=argparse.ArgumentParser()
+    p=argparse.ArgumentParser(description="Run the RF baseline used for comparison with the primary SPDE-INLA analysis.")
     p.add_argument("--environment", required=True)
     p.add_argument("--trait", required=True)
     p.add_argument("--out-dir", required=True)
@@ -41,9 +41,9 @@ def main():
     if len(summary)!=4: raise SystemExit(f"Expected 4 model-group summaries, got {len(summary)}")
     wide=summary.set_index("model_group")["mean_weighted_r2"]
     base=wide.get("climate",np.nan)
-    ab=pd.DataFrame([{"trait":args.trait,"r2_climate":base,"r2_climate_topography":wide.get("climate_topography",np.nan),"r2_climate_soil":wide.get("climate_soil",np.nan),"r2_full":wide.get("climate_topography_soil",np.nan),"delta_topography_over_climate":wide.get("climate_topography",np.nan)-base,"delta_soil_over_climate":wide.get("climate_soil",np.nan)-base,"delta_full_over_climate":wide.get("climate_topography_soil",np.nan)-base}])
+    ab=pd.DataFrame([{"trait":args.trait,"analysis_role":"nonlinear_prediction_baseline","r2_climate":base,"r2_climate_topography":wide.get("climate_topography",np.nan),"r2_climate_soil":wide.get("climate_soil",np.nan),"r2_full":wide.get("climate_topography_soil",np.nan),"delta_topography_over_climate":wide.get("climate_topography",np.nan)-base,"delta_soil_over_climate":wide.get("climate_soil",np.nan)-base,"delta_full_over_climate":wide.get("climate_topography_soil",np.nan)-base}])
     ab.to_csv(out/"rf_environment_group_ablation.csv",index=False,encoding="utf-8-sig")
-    (out/"trait_rf_report.json").write_text(json.dumps({"trait":args.trait,"rows":len(summary)},indent=2),encoding="utf-8")
+    (out/"trait_rf_report.json").write_text(json.dumps({"trait":args.trait,"analysis_role":"nonlinear_prediction_baseline","primary_analysis":"hierarchical_spde_inla","rows":len(summary)},indent=2),encoding="utf-8")
     print(summary.to_string(index=False)); print(ab.to_string(index=False))
 
 if __name__=="__main__": main()
