@@ -20,19 +20,13 @@ mesh_cutoff_km <- as.numeric(get_arg("--mesh-cutoff-km", "50"))
 mesh_offset_km <- as.numeric(get_arg("--mesh-offset-km", "1000"))
 min_species_n <- as.integer(get_arg("--min-species-n", "5"))
 
-if (is.null(input) || is.null(trait) || is.null(out_dir)) {
-  stop("Required: --environment FILE --trait NAME --out-dir DIR")
-}
+if (is.null(input) || is.null(trait) || is.null(out_dir)) stop("Required: --environment FILE --trait NAME --out-dir DIR")
 if (!file.exists(input)) stop(sprintf("Input not found: %s", input))
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 climate <- c("chelsa_bio01", "chelsa_bio04", "chelsa_bio12", "chelsa_bio15")
 topography <- c("topo_elevation", "topo_slope", "topo_roughness")
-soil <- paste0(
-  "soil_",
-  c("bdod", "cec", "cfvo", "clay", "sand", "silt", "nitrogen", "phh2o", "soc", "ocd"),
-  "_0_30cm"
-)
+soil <- paste0("soil_", c("bdod", "cec", "cfvo", "clay", "sand", "silt", "nitrogen", "phh2o", "soc", "ocd"), "_0_30cm")
 groups <- list(
   climate = climate,
   climate_topography = c(climate, topography),
@@ -44,34 +38,24 @@ required_base <- c("obs_id", "taxon_name", "latitude", "longitude", trait)
 df <- read.csv(input, stringsAsFactors = FALSE, check.names = FALSE)
 missing_base <- setdiff(required_base, names(df))
 if (length(missing_base)) stop(sprintf("Missing columns: %s", paste(missing_base, collapse = ", ")))
-
 for (nm in unique(c(trait, climate, topography, soil, "latitude", "longitude"))) {
   if (nm %in% names(df)) df[[nm]] <- suppressWarnings(as.numeric(df[[nm]]))
 }
 
-# Keep only taxa with enough observations and genuine within-species response variation.
 base_ok <- is.finite(df[[trait]]) & is.finite(df$latitude) & is.finite(df$longitude) & !is.na(df$taxon_name)
 df <- df[base_ok, , drop = FALSE]
 counts <- table(df$taxon_name)
-keep_taxa <- names(counts[counts >= min_species_n])
-df <- df[df$taxon_name %in% keep_taxa, , drop = FALSE]
+df <- df[df$taxon_name %in% names(counts[counts >= min_species_n]), , drop = FALSE]
 var_by_species <- tapply(df[[trait]], df$taxon_name, function(x) length(unique(x[is.finite(x)])))
-keep_taxa <- names(var_by_species[var_by_species >= 2])
-df <- df[df$taxon_name %in% keep_taxa, , drop = FALSE]
-if (nrow(df) < 100 || length(unique(df$taxon_name)) < 3) {
-  stop(sprintf("Insufficient data after filtering: n=%d species=%d", nrow(df), length(unique(df$taxon_name))))
-}
+df <- df[df$taxon_name %in% names(var_by_species[var_by_species >= 2]), , drop = FALSE]
+if (nrow(df) < 100 || length(unique(df$taxon_name)) < 3) stop(sprintf("Insufficient data after filtering: n=%d species=%d", nrow(df), length(unique(df$taxon_name))))
 
-# Equal Earth projection (EPSG:8857) implemented directly to avoid a heavy sf dependency.
-# Coordinates are returned in kilometres. This gives one globally continuous planar mesh;
-# it is an approximation to geodesic distance and is recorded explicitly in the output.
+# Equal Earth projection. The global planar mesh is intentionally an approximation;
+# projection and mesh settings are emitted with every result for sensitivity analysis.
 equal_earth_xy_km <- function(lon_deg, lat_deg) {
   lon <- lon_deg * pi / 180
   lat <- lat_deg * pi / 180
-  A1 <- 1.340264
-  A2 <- -0.081106
-  A3 <- 0.000893
-  A4 <- 0.003796
+  A1 <- 1.340264; A2 <- -0.081106; A3 <- 0.000893; A4 <- 0.003796
   M <- sqrt(3) / 2
   theta <- asin(M * sin(lat))
   theta2 <- theta * theta
@@ -84,18 +68,12 @@ equal_earth_xy_km <- function(lon_deg, lat_deg) {
 }
 
 loc_all <- equal_earth_xy_km(df$longitude, df$latitude)
-
-# Build one mesh per trait and reuse it across predictor-group fits. The mesh is based only
-# on observation locations, so model-group comparisons share exactly the same spatial basis.
 mesh <- inla.mesh.2d(
   loc = loc_all,
   max.edge = c(mesh_max_edge_km, mesh_max_edge_km * 2),
   cutoff = mesh_cutoff_km,
   offset = c(mesh_offset_km, mesh_offset_km * 2)
 )
-
-# Penalised-complexity priors: P(range < 500 km)=0.05 and P(sigma > 1)=0.05 after the
-# response has been standardised within each model fit.
 spde <- inla.spde2.pcmatern(
   mesh = mesh,
   alpha = 2,
@@ -116,9 +94,8 @@ fit_one_group <- function(group_name, predictors) {
     )))
   }
 
-  # Mundlak-style within-species decomposition for the environmental predictors.
-  # Only within-species deviations enter the fixed effects; the species random intercept
-  # absorbs persistent among-species differences in trait means.
+  # Mundlak-style decomposition: only within-species environmental deviations enter
+  # the fixed effects; species-specific trait baselines are absorbed by an iid intercept.
   for (p in predictors) {
     species_mean <- ave(work[[p]], work$taxon_name, FUN = mean)
     xw <- work[[p]] - species_mean
@@ -137,18 +114,14 @@ fit_one_group <- function(group_name, predictors) {
   work$y_std <- (work[[trait]] - y_mean) / y_sd
   work$species_id <- as.integer(factor(work$taxon_name))
   species_n <- ave(work$obs_id, work$taxon_name, FUN = length)
-  weights <- 1 / species_n
+  weights <- (1 / species_n)
   weights <- weights / mean(weights)
 
   loc <- equal_earth_xy_km(work$longitude, work$latitude)
   A <- inla.spde.make.A(mesh = mesh, loc = loc)
   spatial_index <- inla.spde.make.index("spatial", spde$n.spde)
   xcols <- paste0("xw__", predictors)
-
-  effects_fixed <- c(
-    list(intercept = rep(1, nrow(work)), species_id = work$species_id),
-    as.list(work[xcols])
-  )
+  effects_fixed <- c(list(intercept = rep(1, nrow(work)), species_id = work$species_id), as.list(work[xcols]))
   stk <- inla.stack(
     data = list(y = work$y_std),
     A = list(1, A),
@@ -158,10 +131,9 @@ fit_one_group <- function(group_name, predictors) {
 
   rhs <- c("-1", "intercept", xcols, "f(species_id, model='iid')", "f(spatial, model=spde)")
   formula <- as.formula(paste("y ~", paste(rhs, collapse = " + ")))
-
   fit <- inla(
     formula,
-    data = inla.stack.data(stk, spde = spde),
+    data = inla.stack.data(stk),
     family = "gaussian",
     weights = weights,
     control.predictor = list(A = inla.stack.A(stk), compute = TRUE),
@@ -171,43 +143,29 @@ fit_one_group <- function(group_name, predictors) {
   )
 
   fixed <- fit$summary.fixed
-  fixed$term <- rownames(fixed)
-  rownames(fixed) <- NULL
-  fixed$trait <- trait
-  fixed$model_group <- group_name
+  fixed$term <- rownames(fixed); rownames(fixed) <- NULL
+  fixed$trait <- trait; fixed$model_group <- group_name
   fixed$estimate_original_units_per_1sd_within_predictor <- fixed$mean * y_sd
   fixed$lower_0.025_original_units <- fixed$`0.025quant` * y_sd
   fixed$upper_0.975_original_units <- fixed$`0.975quant` * y_sd
 
   hyper <- fit$summary.hyperpar
-  hyper$parameter <- rownames(hyper)
-  rownames(hyper) <- NULL
-  hyper$trait <- trait
-  hyper$model_group <- group_name
+  hyper$parameter <- rownames(hyper); rownames(hyper) <- NULL
+  hyper$trait <- trait; hyper$model_group <- group_name
 
   cpo_fail <- if (!is.null(fit$cpo$failure)) sum(fit$cpo$failure > 0, na.rm = TRUE) else NA_integer_
   summary <- data.frame(
-    trait = trait,
-    model_group = group_name,
-    status = "ok",
-    n_observations = nrow(work),
-    n_species = length(unique(work$taxon_name)),
-    n_mesh_vertices = mesh$n,
-    waic = fit$waic$waic,
-    dic = fit$dic$dic,
+    trait = trait, model_group = group_name, status = "ok",
+    n_observations = nrow(work), n_species = length(unique(work$taxon_name)),
+    n_mesh_vertices = mesh$n, waic = fit$waic$waic, dic = fit$dic$dic,
     mean_log_cpo = if (!is.null(fit$cpo$cpo)) mean(log(fit$cpo$cpo), na.rm = TRUE) else NA_real_,
-    cpo_failures = cpo_fail,
-    response_mean = y_mean,
-    response_sd = y_sd,
+    cpo_failures = cpo_fail, response_mean = y_mean, response_sd = y_sd,
     stringsAsFactors = FALSE
   )
-
   list(status = "ok", summary = summary, fixed = fixed, hyper = hyper)
 }
 
-summaries <- list()
-fixed_all <- list()
-hyper_all <- list()
+summaries <- list(); fixed_all <- list(); hyper_all <- list()
 for (group_name in names(groups)) {
   message(sprintf("Fitting %s / %s", trait, group_name))
   result <- fit_one_group(group_name, groups[[group_name]])
@@ -220,12 +178,8 @@ for (group_name in names(groups)) {
 
 summary_df <- do.call(rbind, summaries)
 write.csv(summary_df, file.path(out_dir, "spde_inla_model_summary.csv"), row.names = FALSE)
-if (length(fixed_all)) {
-  write.csv(do.call(rbind, fixed_all), file.path(out_dir, "spde_inla_fixed_effects.csv"), row.names = FALSE)
-}
-if (length(hyper_all)) {
-  write.csv(do.call(rbind, hyper_all), file.path(out_dir, "spde_inla_hyperparameters.csv"), row.names = FALSE)
-}
+if (length(fixed_all)) write.csv(do.call(rbind, fixed_all), file.path(out_dir, "spde_inla_fixed_effects.csv"), row.names = FALSE)
+if (length(hyper_all)) write.csv(do.call(rbind, hyper_all), file.path(out_dir, "spde_inla_hyperparameters.csv"), row.names = FALSE)
 
 mesh_info <- data.frame(
   trait = trait,
@@ -242,6 +196,5 @@ mesh_info <- data.frame(
   stringsAsFactors = FALSE
 )
 write.csv(mesh_info, file.path(out_dir, "spde_inla_mesh_metadata.csv"), row.names = FALSE)
-
 cat(sprintf("Completed SPDE-INLA analysis for %s\n", trait))
 print(summary_df)
