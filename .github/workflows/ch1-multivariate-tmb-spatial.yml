@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: Run containing ch1-exhaustive-enriched-environment-20260713
+        description: Source run containing successful environment layer artifacts
         required: true
         default: "29306454759"
       n_spatial_factors:
@@ -16,6 +16,7 @@ on:
       - run/ch1-exhaustive-rf-environment-20260713
     paths:
       - ".github/workflows/ch1-multivariate-tmb-spatial.yml"
+      - "ch1_global/v2/80_merge_parallel_environment_layers.py"
       - "ch1_global/v2/82_run_multivariate_tmb_spatial.R"
       - "ch1_global/v2/tmb_multivariate_spatial.cpp"
 
@@ -33,6 +34,8 @@ jobs:
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
@@ -40,6 +43,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev
+      - name: Install Python dependencies
+        run: python -m pip install pandas numpy
       - name: Install R dependencies
         shell: Rscript {0}
         run: |
@@ -57,13 +62,30 @@ jobs:
           N_FACTORS="${{ github.event.inputs.n_spatial_factors }}"
           echo "source_run_id=${SOURCE_RUN_ID:-$DEFAULT_SOURCE_RUN_ID}" >> "$GITHUB_OUTPUT"
           echo "n_factors=${N_FACTORS:-$DEFAULT_N_SPATIAL_FACTORS}" >> "$GITHUB_OUTPUT"
-      - uses: actions/download-artifact@v4
+      - name: Download strict cohort
+        uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ steps.params.outputs.source_run_id }}
-          name: ch1-exhaustive-enriched-environment-20260713
-          path: enriched_environment
+          name: ch1-strict-spatial-cohort-only-20260713
+          path: strict_cohort
+      - name: Download all successful environment layers
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ steps.params.outputs.source_run_id }}
+          pattern: ch1-env-layer-*-20260713
+          path: source/layers
+          merge-multiple: false
+      - name: Merge available layers and skip missing predictors
+        run: |
+          python ch1_global/v2/80_merge_parallel_environment_layers.py \
+            --observation strict_cohort/strict_spatial_thinned_observations.csv \
+            --layers-root source/layers \
+            --out-dir enriched_environment \
+            --min-raw-layers 6
       - name: Fit joint multivariate hierarchical spatial model
         run: |
           Rscript ch1_global/v2/82_run_multivariate_tmb_spatial.R \
@@ -77,5 +99,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ch1-multivariate-hierarchical-tmb-spatial
-          path: tmb_multivariate_results
+          path: |
+            tmb_multivariate_results
+            enriched_environment/parallel_environment_merge_report.json
+            enriched_environment/environment_predictor_coverage.csv
           retention-days: 90
