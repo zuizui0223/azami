@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install numpy pandas matplotlib
-      - name: Download newest compatible analysis artifact
+      - name: Download required analysis artifacts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -56,8 +56,11 @@ jobs:
               'strict_spatial_thinned_with_chelsa.csv',
               'exhaustive_within_species_climate_models.csv',
           }
+          found = set()
 
           for artifact in artifacts:
+              if found == required:
+                  break
               with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
                   endpoint = f"repos/{repo}/actions/artifacts/{artifact['id']}/zip"
                   result = subprocess.run(
@@ -75,26 +78,37 @@ jobs:
                   tmp.flush()
                   try:
                       with zipfile.ZipFile(tmp.name) as archive:
-                          names = {Path(name).name for name in archive.namelist()}
-                          if not required.issubset(names):
+                          members = {
+                              Path(name).name: name
+                              for name in archive.namelist()
+                              if Path(name).name in required - found
+                          }
+                          if not members:
                               continue
-                          archive.extractall(destination)
+                          for basename, member in members.items():
+                              target = destination / basename
+                              with archive.open(member) as src, target.open('wb') as dst:
+                                  dst.write(src.read())
+                              found.add(basename)
+                              print(
+                                  f"Collected {basename} from artifact "
+                                  f"{artifact['name']} ({artifact['created_at']})"
+                              )
                   except zipfile.BadZipFile:
                       print(f"Skipping artifact {artifact['name']}: invalid ZIP")
-                      continue
 
-              print('Using artifact:', artifact['name'], artifact['created_at'])
-              break
-          else:
+          missing = required - found
+          if missing:
               raise SystemExit(
-                  'No non-expired artifact contains both required CSV files'
+                  'Missing required files after scanning non-expired artifacts: '
+                  + ', '.join(sorted(missing))
               )
           PY
       - name: Run Phase 1 analysis
         run: |
-          OBS=$(find upstream_artifacts -name strict_spatial_thinned_with_chelsa.csv -print -quit)
-          COEF=$(find upstream_artifacts -name exhaustive_within_species_climate_models.csv -print -quit)
-          test -n "$OBS" && test -n "$COEF"
+          OBS=upstream_artifacts/strict_spatial_thinned_with_chelsa.csv
+          COEF=upstream_artifacts/exhaustive_within_species_climate_models.csv
+          test -s "$OBS" && test -s "$COEF"
           python ch1_global/v2/77_build_lability_axes_and_supplement.py \
             --observations "$OBS" \
             --coefficients "$COEF" \
