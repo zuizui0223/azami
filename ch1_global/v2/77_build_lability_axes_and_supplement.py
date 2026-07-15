@@ -1,241 +1,189 @@
 #!/usr/bin/env python3
-"""Build two-axis lability summaries and manuscript supplement outputs.
+"""Final two-axis lability analysis for Chapter 1.
 
-Outputs
--------
-- species_lability_axes.csv
-- table_s1_all_coefficients.csv
-- figure_s1_effect_size_heatmap.png/pdf
-- figure_lability_quadrants.png/pdf
-- module_environmental_response_summary.csv
-
-The species within-variation index is a robust, trait-standardized median absolute
-within-species deviation. The environmental responsiveness index is the root mean
-square of standardized within-species slopes across the four predeclared CHELSA
-predictors. Circular hue is represented by a joint sine/cosine vector and reported
-as an effect magnitude and direction angle; sine and cosine are never interpreted
-as separate biological endpoints.
+Separates species-level within-species phenotypic variation from species-specific
+climate responsiveness. Circular hue is handled as a joint sine/cosine endpoint.
 """
 from __future__ import annotations
-
-import argparse
-import math
+import argparse, json, math
 from pathlib import Path
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 PREDICTORS = ["chelsa_bio01", "chelsa_bio04", "chelsa_bio12", "chelsa_bio15"]
 LINEAR_TRAITS = [
-    "orientation_angle_degrees_median",
-    "corolla_lab_lightness_median",
-    "corolla_lab_chroma_median",
-    "shape_aspect_ratio_median",
-    "shape_circularity_median",
-    "shape_solidity_median",
-    "shape_width_cv_median",
+    "orientation_angle_degrees_median", "corolla_lab_lightness_median",
+    "corolla_lab_chroma_median", "shape_aspect_ratio_median",
+    "shape_circularity_median", "shape_solidity_median", "shape_width_cv_median",
 ]
-HUE_SIN = "corolla_hue_sin_median"
-HUE_COS = "corolla_hue_cos_median"
+HUE_SIN, HUE_COS, HUE = "corolla_hue_sin_median", "corolla_hue_cos_median", "corolla_hue_angle"
 MODULE = {
     "orientation_angle_degrees_median": "orientation",
-    "corolla_lab_lightness_median": "colour",
-    "corolla_lab_chroma_median": "colour",
-    "corolla_hue_angle": "colour",
-    "shape_aspect_ratio_median": "shape",
-    "shape_circularity_median": "shape",
-    "shape_solidity_median": "shape",
+    "corolla_lab_lightness_median": "colour", "corolla_lab_chroma_median": "colour",
+    HUE: "colour", "shape_aspect_ratio_median": "shape",
+    "shape_circularity_median": "shape", "shape_solidity_median": "shape",
     "shape_width_cv_median": "shape",
 }
 
-
-def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser()
+def parse_args():
+    p=argparse.ArgumentParser()
     p.add_argument("--observations", required=True)
     p.add_argument("--coefficients", required=True)
     p.add_argument("--out-dir", required=True)
-    p.add_argument("--min-species-n", type=int, default=5)
+    p.add_argument("--min-species-n", type=int, default=10)
+    p.add_argument("--min-traits", type=int, default=6)
+    p.add_argument("--min-predictors", type=int, default=3)
     return p.parse_args()
 
+def numeric(s): return pd.to_numeric(s, errors="coerce")
+def mad_scale(s):
+    x=numeric(s); med=x.median(); sc=1.4826*(x-med).abs().median()
+    if not np.isfinite(sc) or sc<=0: sc=x.std(ddof=1)
+    return float(sc) if np.isfinite(sc) and sc>0 else np.nan
 
-def robust_scale(x: pd.Series) -> pd.Series:
-    x = pd.to_numeric(x, errors="coerce")
-    med = x.median()
-    mad = (x - med).abs().median()
-    scale = 1.4826 * mad
-    if not math.isfinite(scale) or scale <= 0:
-        scale = x.std(ddof=1)
-    if not math.isfinite(scale) or scale <= 0:
-        return pd.Series(np.nan, index=x.index)
-    return (x - med) / scale
+def hue_angle(df): return np.degrees(np.arctan2(numeric(df[HUE_SIN]), numeric(df[HUE_COS])))%360
+def circ_dist(x,c): return np.abs((x-c+180)%360-180)
+def circ_center(x):
+    r=np.radians(np.asarray(x,float)); return float(np.degrees(np.arctan2(np.nanmean(np.sin(r)),np.nanmean(np.cos(r))))%360)
 
+def variation_detail(obs,min_n):
+    obs=obs.copy(); obs[HUE]=hue_angle(obs); rows=[]
+    for trait in LINEAR_TRAITS:
+        sc=mad_scale(obs[trait])
+        if not np.isfinite(sc): continue
+        for taxon,g in obs.groupby("taxon_name",sort=True):
+            x=numeric(g[trait]).dropna()
+            if len(x)<min_n: continue
+            raw=float(np.median(np.abs(x-np.median(x))))
+            rows.append(dict(taxon_name=taxon,trait=trait,module=MODULE[trait],n_variation=len(x),within_variation_raw=raw,within_variation_standardized=raw/sc))
+    allh=numeric(obs[HUE]).dropna(); denom=np.nan
+    if len(allh):
+        denom=float(np.median(circ_dist(allh,circ_center(allh))))
+        if not np.isfinite(denom) or denom<=0: denom=float(np.std(circ_dist(allh,circ_center(allh)),ddof=1))
+    if np.isfinite(denom) and denom>0:
+        for taxon,g in obs.groupby("taxon_name",sort=True):
+            x=numeric(g[HUE]).dropna()
+            if len(x)<min_n: continue
+            raw=float(np.median(circ_dist(x,circ_center(x))))
+            rows.append(dict(taxon_name=taxon,trait=HUE,module="colour",n_variation=len(x),within_variation_raw=raw,within_variation_standardized=raw/denom))
+    return pd.DataFrame(rows)
 
-def circular_hue_angle(df: pd.DataFrame) -> pd.Series:
-    s = pd.to_numeric(df[HUE_SIN], errors="coerce")
-    c = pd.to_numeric(df[HUE_COS], errors="coerce")
-    return np.degrees(np.arctan2(s, c)) % 360.0
+def linear_slope(y,x):
+    w=pd.DataFrame({"y":numeric(y),"x":numeric(x)}).dropna()
+    if len(w)<3 or w.x.nunique()<2 or w.y.nunique()<2: return None
+    xs=float(w.x.std(ddof=1)); ys=float(w.y.std(ddof=1))
+    if xs<=0 or ys<=0: return None
+    xz=(w.x-w.x.mean())/xs; yz=(w.y-w.y.mean())/ys
+    beta=float(np.dot(xz,yz)/np.dot(xz,xz)); resid=yz-beta*xz
+    se=float(np.sqrt(np.dot(resid,resid)/(len(w)-1)/np.dot(xz,xz))) if len(w)>2 else np.nan
+    z=beta/se if np.isfinite(se) and se>0 else np.nan
+    p=math.erfc(abs(z)/math.sqrt(2)) if np.isfinite(z) else np.nan
+    return beta,se,p,len(w),float(w.x.max()-w.x.min())
 
+def hue_slope(g,pred,min_n):
+    w=g[[HUE_SIN,HUE_COS,pred]].apply(numeric).dropna()
+    if len(w)<min_n or w[pred].nunique()<2: return None
+    xs=float(w[pred].std(ddof=1)); joint=math.sqrt(float(w[HUE_SIN].var(ddof=1)+w[HUE_COS].var(ddof=1)))
+    if xs<=0 or joint<=0: return None
+    xz=(w[pred]-w[pred].mean())/xs
+    ys=(w[HUE_SIN]-w[HUE_SIN].mean())/joint; yc=(w[HUE_COS]-w[HUE_COS].mean())/joint
+    den=float(np.dot(xz,xz)); bs=float(np.dot(xz,ys)/den); bc=float(np.dot(xz,yc)/den)
+    return dict(beta_sin=bs,beta_cos=bc,effect_magnitude=math.hypot(bs,bc),effect_direction_degrees=math.degrees(math.atan2(bs,bc))%360,n_observations=len(w),predictor_range=float(w[pred].max()-w[pred].min()))
 
-def circular_distance_deg(x: pd.Series, center: float) -> pd.Series:
-    return ((x - center + 180.0) % 360.0 - 180.0).abs()
+def species_slopes(obs,min_n):
+    rows=[]
+    for taxon,g in obs.groupby("taxon_name",sort=True):
+        for trait in LINEAR_TRAITS:
+            for pred in PREDICTORS:
+                res=linear_slope(g[trait],g[pred])
+                if res is None or res[3]<min_n: continue
+                b,se,p,n,rng=res
+                rows.append(dict(taxon_name=taxon,trait=trait,module=MODULE[trait],predictor=pred,endpoint_type="linear",beta_std=b,se=se,p_value=p,effect_magnitude=abs(b),effect_direction_degrees=0.0 if b>=0 else 180.0,n_observations=n,predictor_range=rng))
+        for pred in PREDICTORS:
+            res=hue_slope(g,pred,min_n)
+            if res:
+                rows.append(dict(taxon_name=taxon,trait=HUE,module="colour",predictor=pred,endpoint_type="circular_joint",beta_std=np.nan,se=np.nan,p_value=np.nan,**res))
+    return pd.DataFrame(rows)
 
+def bh(p):
+    p=np.asarray(p,float); out=np.full(len(p),np.nan); ok=np.isfinite(p)
+    vals=p[ok]; order=np.argsort(vals); ranked=vals[order]; q=ranked*len(vals)/np.arange(1,len(vals)+1); q=np.minimum.accumulate(q[::-1])[::-1]; q=np.clip(q,0,1)
+    tmp=np.empty(len(vals)); tmp[order]=q; out[np.where(ok)[0]]=tmp; return out
 
-def species_variation(obs: pd.DataFrame, min_n: int) -> pd.DataFrame:
-    obs = obs.copy()
-    obs["corolla_hue_angle"] = circular_hue_angle(obs)
-    rows = []
-    trait_cols = LINEAR_TRAITS + ["corolla_hue_angle"]
-    for trait in trait_cols:
-        if trait == "corolla_hue_angle":
-            values = pd.to_numeric(obs[trait], errors="coerce")
-            radians = np.radians(values)
-            center = np.degrees(np.arctan2(np.nanmean(np.sin(radians)), np.nanmean(np.cos(radians)))) % 360
-            global_dev = circular_distance_deg(values, center)
-            denom = float(np.nanmedian(global_dev))
-            if not math.isfinite(denom) or denom <= 0:
-                denom = float(np.nanstd(global_dev, ddof=1))
-            for taxon, g in obs.groupby("taxon_name"):
-                x = pd.to_numeric(g[trait], errors="coerce").dropna()
-                if len(x) < min_n or not math.isfinite(denom) or denom <= 0:
-                    continue
-                rad = np.radians(x)
-                ctr = np.degrees(np.arctan2(np.mean(np.sin(rad)), np.mean(np.cos(rad)))) % 360
-                raw = float(np.median(circular_distance_deg(x, ctr)))
-                rows.append({"taxon_name": taxon, "trait": trait, "module": MODULE[trait], "n": len(x), "within_variation_raw": raw, "within_variation_standardized": raw / denom})
-        else:
-            z = robust_scale(obs[trait])
-            tmp = pd.DataFrame({"taxon_name": obs["taxon_name"], "z": z})
-            for taxon, g in tmp.groupby("taxon_name"):
-                x = g["z"].dropna()
-                if len(x) < min_n:
-                    continue
-                raw = float(np.median(np.abs(x - np.median(x))))
-                rows.append({"taxon_name": taxon, "trait": trait, "module": MODULE[trait], "n": len(x), "within_variation_raw": raw, "within_variation_standardized": raw})
-    detail = pd.DataFrame(rows)
-    if detail.empty:
-        return detail
-    species = detail.groupby("taxon_name", as_index=False).agg(
-        species_within_variation_index=("within_variation_standardized", "mean"),
-        n_traits_variation=("trait", "nunique"),
-    )
-    return detail.merge(species, on="taxon_name", how="left")
+def summarize_axes(var,slopes,min_traits,min_preds):
+    vr=var.groupby("taxon_name",as_index=False).agg(species_within_variation_index=("within_variation_standardized","mean"),n_traits_variation=("trait","nunique"),min_trait_n=("n_variation","min"))
+    tr=slopes.groupby(["taxon_name","trait","module"],as_index=False).agg(trait_environmental_responsiveness=("effect_magnitude",lambda x:float(np.sqrt(np.mean(np.square(x))))),n_predictors_response=("predictor","nunique"),min_response_n=("n_observations","min"))
+    tr=tr[tr.n_predictors_response>=min_preds].copy()
+    sr=tr.groupby("taxon_name",as_index=False).agg(species_environmental_responsiveness_index=("trait_environmental_responsiveness",lambda x:float(np.sqrt(np.mean(np.square(x))))),n_traits_response=("trait","nunique"),min_predictors_per_trait=("n_predictors_response","min"))
+    axes=vr.merge(sr,on="taxon_name",how="inner")
+    axes["primary_complete"]=(axes.n_traits_variation>=min_traits)&(axes.n_traits_response>=min_traits)
+    axes["quadrant_eligible"]=axes.primary_complete
+    modv=var.groupby(["taxon_name","module"],as_index=False).agg(module_within_variation=("within_variation_standardized","mean"),n_traits_variation=("trait","nunique"))
+    modr=tr.groupby(["taxon_name","module"],as_index=False).agg(module_environmental_responsiveness=("trait_environmental_responsiveness",lambda x:float(np.sqrt(np.mean(np.square(x))))),n_traits_response=("trait","nunique"))
+    modules=modv.merge(modr,on=["taxon_name","module"],how="inner")
+    return axes,tr,modules
 
+def combine_global(coef):
+    c=coef.copy(); ok=c[c.status.eq("ok")].copy() if "status" in c else c.copy(); non=ok[~ok.trait.isin([HUE_SIN,HUE_COS])].copy()
+    non["trait_endpoint"]=non.trait; non["module"]=non.trait_endpoint.map(MODULE); non["effect_magnitude"]=non.beta_std_within.abs(); non["effect_direction_degrees"]=np.where(non.beta_std_within>=0,0.,180.); non["endpoint_type"]="linear"
+    hrs=[]
+    for pred,g in ok[ok.trait.isin([HUE_SIN,HUE_COS])].groupby("predictor"):
+        v=g.set_index("trait").beta_std_within
+        if HUE_SIN in v and HUE_COS in v:
+            bs,bc=float(v[HUE_SIN]),float(v[HUE_COS]); hrs.append(dict(trait=HUE,trait_endpoint=HUE,module="colour",predictor=pred,status="ok",endpoint_type="circular_joint",beta_std_within=np.nan,effect_magnitude=math.hypot(bs,bc),effect_direction_degrees=math.degrees(math.atan2(bs,bc))%360,hue_beta_sin=bs,hue_beta_cos=bc,n_observations=int(g.n_observations.min()),n_species=int(g.n_species.min()),p_value=np.nan,q_fdr_bh=np.nan,fdr_significant_0_05=False))
+    return pd.concat([non,pd.DataFrame(hrs)],ignore_index=True,sort=False)
 
-def combine_hue_coefficients(coef: pd.DataFrame) -> pd.DataFrame:
-    coef = coef.copy()
-    ok = coef[coef.get("status", "ok").eq("ok")].copy() if "status" in coef else coef.copy()
-    hue = ok[ok["trait"].isin([HUE_SIN, HUE_COS])]
-    non = ok[~ok["trait"].isin([HUE_SIN, HUE_COS])].copy()
-    non["trait_endpoint"] = non["trait"]
-    non["effect_magnitude"] = non["beta_std_within"].abs()
-    non["effect_direction_degrees"] = np.where(non["beta_std_within"] >= 0, 0.0, 180.0)
-    hue_rows = []
-    for pred, g in hue.groupby("predictor"):
-        vals = g.set_index("trait")["beta_std_within"]
-        if HUE_SIN not in vals or HUE_COS not in vals:
-            continue
-        bs, bc = float(vals[HUE_SIN]), float(vals[HUE_COS])
-        hue_rows.append({
-            "trait": "corolla_hue_angle",
-            "trait_endpoint": "corolla_hue_angle",
-            "predictor": pred,
-            "status": "ok",
-            "beta_std_within": np.nan,
-            "effect_magnitude": math.hypot(bs, bc),
-            "effect_direction_degrees": math.degrees(math.atan2(bs, bc)) % 360.0,
-            "hue_beta_sin": bs,
-            "hue_beta_cos": bc,
-            "n_observations": int(g["n_observations"].min()) if "n_observations" in g else np.nan,
-            "n_species": int(g["n_species"].min()) if "n_species" in g else np.nan,
-        })
-    combined = pd.concat([non, pd.DataFrame(hue_rows)], ignore_index=True, sort=False)
-    combined["module"] = combined["trait_endpoint"].map(MODULE)
-    return combined
+def plot_heatmap(globalc,out):
+    order=["orientation_angle_degrees_median","corolla_lab_lightness_median","corolla_lab_chroma_median",HUE,"shape_aspect_ratio_median","shape_circularity_median","shape_solidity_median","shape_width_cv_median"]
+    mat=globalc.pivot_table(index="trait_endpoint",columns="predictor",values="beta_std_within",aggfunc="first").reindex(order).reindex(columns=PREDICTORS)
+    mag=globalc.pivot_table(index="trait_endpoint",columns="predictor",values="effect_magnitude",aggfunc="first").reindex(order).reindex(columns=PREDICTORS)
+    arr=mat.to_numpy(float); hi=order.index(HUE); arr[hi,:]=mag.loc[HUE].to_numpy(float)
+    vmax=np.nanmax(np.abs(arr)); fig,ax=plt.subplots(figsize=(8.8,6.6)); im=ax.imshow(arr,aspect="auto",vmin=-vmax,vmax=vmax,cmap="coolwarm")
+    ax.set_xticks(range(4),PREDICTORS,rotation=30,ha="right"); ax.set_yticks(range(8),[x.replace("_median","") for x in order]); ax.set_title("Figure S1. Standardized within-species climate effects")
+    for i,t in enumerate(order):
+        for j,p in enumerate(PREDICTORS):
+            v=arr[i,j]
+            if np.isfinite(v):
+                row=globalc[(globalc.trait_endpoint==t)&(globalc.predictor==p)].iloc[0]; star="*" if bool(row.get("fdr_significant_0_05",False)) else ""
+                txt=f"{v:.3f}{star}" if t!=HUE else f"|β|={v:.3f}"
+                ax.text(j,i,txt,ha="center",va="center",fontsize=8)
+    cb=fig.colorbar(im,ax=ax); cb.set_label("signed standardized β; hue row shows joint magnitude")
+    fig.tight_layout(); fig.savefig(out.with_suffix('.png'),dpi=300); fig.savefig(out.with_suffix('.pdf')); plt.close(fig)
 
+def plot_quadrants(axes,out):
+    p=axes[axes.quadrant_eligible].copy(); xm=p.species_within_variation_index.median(); ym=p.species_environmental_responsiveness_index.median()
+    p["quadrant"]=np.select([(p.species_within_variation_index>=xm)&(p.species_environmental_responsiveness_index>=ym),(p.species_within_variation_index<xm)&(p.species_environmental_responsiveness_index>=ym),(p.species_within_variation_index>=xm)&(p.species_environmental_responsiveness_index<ym)], ["high variation / high response","low variation / high response","high variation / low response"],default="low variation / low response")
+    fig,ax=plt.subplots(figsize=(9,7)); ax.scatter(p.species_within_variation_index,p.species_environmental_responsiveness_index,s=24,alpha=.65)
+    score=((p.species_within_variation_index-p.species_within_variation_index.median())/p.species_within_variation_index.std()).abs()+((p.species_environmental_responsiveness_index-p.species_environmental_responsiveness_index.median())/p.species_environmental_responsiveness_index.std()).abs()
+    for idx in score.nlargest(min(12,len(score))).index:
+        r=p.loc[idx]; ax.annotate(r.taxon_name.replace("Cirsium ","C. "),(r.species_within_variation_index,r.species_environmental_responsiveness_index),xytext=(3,3),textcoords="offset points",fontsize=7)
+    ax.axvline(xm,ls="--",lw=1); ax.axhline(ym,ls="--",lw=1); ax.set_xlabel("Species within-variation index"); ax.set_ylabel("Species environmental responsiveness index"); ax.set_title("Species-level decomposition of capitulum trait lability")
+    fig.tight_layout(); fig.savefig(out.with_suffix('.png'),dpi=300); fig.savefig(out.with_suffix('.pdf')); plt.close(fig)
+    return p
 
-def responsiveness(combined: pd.DataFrame) -> pd.DataFrame:
-    trait = combined.groupby(["trait_endpoint", "module"], as_index=False).agg(
-        environmental_responsiveness_index=("effect_magnitude", lambda x: float(np.sqrt(np.mean(np.square(x.dropna()))))),
-        n_predictors=("predictor", "nunique"),
-    )
-    module = combined.groupby("module", as_index=False).agg(
-        module_environmental_responsiveness=("effect_magnitude", lambda x: float(np.sqrt(np.mean(np.square(x.dropna()))))),
-        mean_abs_standardized_beta=("effect_magnitude", "mean"),
-        n_effects=("effect_magnitude", "count"),
-    )
-    return trait, module
+def run_threshold(obs,min_n,min_traits,min_preds):
+    v=variation_detail(obs,min_n); s=species_slopes(obs,min_n); a,t,m=summarize_axes(v,s,min_traits,min_preds); return v,s,a,t,m
 
-
-def plot_heatmap(combined: pd.DataFrame, out: Path) -> None:
-    pivot = combined.pivot_table(index="trait_endpoint", columns="predictor", values="effect_magnitude", aggfunc="first")
-    fig, ax = plt.subplots(figsize=(8.5, 6.5))
-    im = ax.imshow(pivot.to_numpy(float), aspect="auto")
-    ax.set_xticks(range(len(pivot.columns)), pivot.columns, rotation=35, ha="right")
-    ax.set_yticks(range(len(pivot.index)), pivot.index)
-    ax.set_title("Figure S1. Magnitude of standardized within-species effects")
-    cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label("|standardized beta|; hue = joint vector magnitude")
-    for i in range(len(pivot.index)):
-        for j in range(len(pivot.columns)):
-            v = pivot.iloc[i, j]
-            if pd.notna(v):
-                ax.text(j, i, f"{v:.2f}", ha="center", va="center")
-    fig.tight_layout()
-    fig.savefig(out.with_suffix(".png"), dpi=300)
-    fig.savefig(out.with_suffix(".pdf"))
-    plt.close(fig)
-
-
-def plot_quadrants(variation: pd.DataFrame, trait_resp: pd.DataFrame, out: Path) -> None:
-    vt = variation.groupby(["trait", "module"], as_index=False)["within_variation_standardized"].mean().rename(columns={"trait": "trait_endpoint", "within_variation_standardized": "within_variation_index"})
-    p = vt.merge(trait_resp, on=["trait_endpoint", "module"], how="inner")
-    xmid = p["within_variation_index"].median()
-    ymid = p["environmental_responsiveness_index"].median()
-    fig, ax = plt.subplots(figsize=(8, 7))
-    for module, g in p.groupby("module"):
-        ax.scatter(g["within_variation_index"], g["environmental_responsiveness_index"], label=module, s=70)
-    for _, r in p.iterrows():
-        ax.annotate(r["trait_endpoint"].replace("_median", ""), (r["within_variation_index"], r["environmental_responsiveness_index"]), xytext=(4, 4), textcoords="offset points", fontsize=8)
-    ax.axvline(xmid, linestyle="--", linewidth=1)
-    ax.axhline(ymid, linestyle="--", linewidth=1)
-    ax.set_xlabel("Within-species variation index")
-    ax.set_ylabel("Environmental responsiveness index")
-    ax.set_title("Trait lability decomposed into two independent axes")
-    ax.legend(title="module")
-    fig.tight_layout()
-    fig.savefig(out.with_suffix(".png"), dpi=300)
-    fig.savefig(out.with_suffix(".pdf"))
-    plt.close(fig)
-
-
-def main() -> None:
-    args = parse_args()
-    out = Path(args.out_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    obs = pd.read_csv(args.observations, low_memory=False)
-    coef = pd.read_csv(args.coefficients, low_memory=False)
-    required_obs = {"taxon_name", *LINEAR_TRAITS, HUE_SIN, HUE_COS}
-    required_coef = {"trait", "predictor", "beta_std_within"}
-    if missing := sorted(required_obs.difference(obs.columns)):
-        raise ValueError(f"Missing observation columns: {missing}")
-    if missing := sorted(required_coef.difference(coef.columns)):
-        raise ValueError(f"Missing coefficient columns: {missing}")
-
-    variation = species_variation(obs, args.min_species_n)
-    variation.to_csv(out / "species_trait_within_variation.csv", index=False, encoding="utf-8-sig")
-    species_axes = variation[["taxon_name", "species_within_variation_index", "n_traits_variation"]].drop_duplicates()
-    species_axes.to_csv(out / "species_lability_axes.csv", index=False, encoding="utf-8-sig")
-
-    combined = combine_hue_coefficients(coef)
-    combined.to_csv(out / "table_s1_all_coefficients.csv", index=False, encoding="utf-8-sig")
-    trait_resp, module_resp = responsiveness(combined)
-    trait_resp.to_csv(out / "trait_environmental_responsiveness.csv", index=False, encoding="utf-8-sig")
-    module_resp.to_csv(out / "module_environmental_response_summary.csv", index=False, encoding="utf-8-sig")
-
-    plot_heatmap(combined, out / "figure_s1_effect_size_heatmap")
-    plot_quadrants(variation, trait_resp, out / "figure_lability_quadrants")
-
-
-if __name__ == "__main__":
-    main()
+def main():
+    a=parse_args(); out=Path(a.out_dir); out.mkdir(parents=True,exist_ok=True)
+    obs=pd.read_csv(a.observations,low_memory=False); coef=pd.read_csv(a.coefficients,low_memory=False)
+    req={"taxon_name",*LINEAR_TRAITS,HUE_SIN,HUE_COS,*PREDICTORS}; miss=sorted(req-set(obs.columns))
+    if miss: raise ValueError(f"Missing observation columns: {miss}")
+    v,s,axes,tr,mods=run_threshold(obs,a.min_species_n,a.min_traits,a.min_predictors)
+    s["q_within_species_bh"]=bh(s.p_value); s["fdr_significant_0_05"]=s.q_within_species_bh<.05
+    axes=axes.merge(s.groupby("taxon_name",as_index=False).agg(n_species_specific_effects=("effect_magnitude","count"),n_fdr_significant_linear_effects=("fdr_significant_0_05","sum")),on="taxon_name",how="left")
+    quad=plot_quadrants(axes,out/"figure_species_lability_quadrants"); axes=axes.merge(quad[["taxon_name","quadrant"]],on="taxon_name",how="left")
+    globalc=combine_global(coef); plot_heatmap(globalc,out/"figure_s1_effect_size_heatmap")
+    v.to_csv(out/"species_trait_within_variation.csv",index=False); s.to_csv(out/"table_s2_species_specific_coefficients.csv",index=False); axes.to_csv(out/"species_lability_axes.csv",index=False); tr.to_csv(out/"species_trait_environmental_responsiveness.csv",index=False); mods.to_csv(out/"species_module_lability.csv",index=False); globalc.to_csv(out/"table_s1_all_global_coefficients.csv",index=False)
+    sens=[]; base=axes.set_index("taxon_name")
+    for n in [5,10,20]:
+        _,_,ax,_,_=run_threshold(obs,n,a.min_traits,a.min_predictors); ax.to_csv(out/f"species_lability_axes_min_n_{n}.csv",index=False)
+        j=base[["species_within_variation_index","species_environmental_responsiveness_index"]].join(ax.set_index("taxon_name")[["species_within_variation_index","species_environmental_responsiveness_index"]],lsuffix="_primary",rsuffix="_sensitivity",how="inner")
+        sens.append(dict(min_species_n=n,n_species_axes=len(ax),n_primary_complete=int(ax.primary_complete.sum()),variation_spearman=j.iloc[:,[0,2]].corr(method="spearman").iloc[0,1] if len(j)>2 else np.nan,responsiveness_spearman=j.iloc[:,[1,3]].corr(method="spearman").iloc[0,1] if len(j)>2 else np.nan))
+    pd.DataFrame(sens).to_csv(out/"sensitivity_minimum_sample_size.csv",index=False)
+    modsum=mods.groupby("module",as_index=False).agg(median_species_within_variation=("module_within_variation","median"),median_species_environmental_responsiveness=("module_environmental_responsiveness","median"),n_species=("taxon_name","nunique")); modsum.to_csv(out/"module_lability_summary.csv",index=False)
+    meta=dict(primary_definition={"min_species_n":a.min_species_n,"min_traits":a.min_traits,"min_predictors_per_trait":a.min_predictors,"variation":"mean trait-standardized MAD; circular median absolute angular deviation for hue","responsiveness":"RMS of species-specific standardized slopes across predictors and eligible traits","hue":"joint sine/cosine vector; no scalar-angle OLS"},counts={"input_observations":len(obs),"input_species":int(obs.taxon_name.nunique()),"species_with_variation":int(v.taxon_name.nunique()),"species_with_response":int(s.taxon_name.nunique()),"species_primary_complete":int(axes.primary_complete.sum())},interpretation_boundary="Indices describe image-derived within-species variation and climate association, not demonstrated plasticity or local adaptation.")
+    (out/"analysis_metadata.json").write_text(json.dumps(meta,indent=2),encoding="utf-8")
+    print(json.dumps(meta,indent=2))
+if __name__=="__main__": main()
