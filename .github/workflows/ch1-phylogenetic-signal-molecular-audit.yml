@@ -156,7 +156,7 @@ jobs:
                   )
           PY
 
-      - name: Resolve unique inputs
+      - name: Resolve and validate unique inputs
         run: |
           set -euo pipefail
           resolve_one() {
@@ -167,12 +167,32 @@ jobs:
               printf '%s\n' "${matches[@]}" >&2
               exit 1
             fi
-            echo "${variable}=${matches[0]}" >> "$GITHUB_ENV"
+            printf '%s=%s\n' "$variable" "${matches[0]}" >> "$GITHUB_ENV"
           }
           resolve_one source/integrated integrated_primary_auxiliary_species.csv SPECIES_TABLE
           resolve_one source/integrated integrated_continuous_endpoint_registry.csv ENDPOINT_REGISTRY
-          resolve_one source/historical gbotb_lcvp_scenario1.tre TREE_S1
-          echo "TREE_DIR=$(dirname "$TREE_S1")" >> "$GITHUB_ENV"
+
+          mapfile -t tree_matches < <(find source/historical -type f -name gbotb_lcvp_scenario1.tre | sort)
+          if [ "${#tree_matches[@]}" -ne 1 ]; then
+            printf 'Expected one scenario-1 tree, found %s\n' "${#tree_matches[@]}" >&2
+            printf '%s\n' "${tree_matches[@]}" >&2
+            exit 1
+          fi
+          tree_s1="${tree_matches[0]}"
+          tree_dir="$(dirname "$tree_s1")"
+          for required in \
+            gbotb_lcvp_scenario1.tre \
+            gbotb_lcvp_scenario3.tre \
+            gbotb_lcvp_scenario2_randomized.trees \
+            gbotb_lcvp_backbone_audit.csv; do
+            test -s "$tree_dir/$required" || {
+              echo "Missing or empty historical input: $tree_dir/$required" >&2
+              exit 1
+            }
+          done
+          printf 'TREE_S1=%s\n' "$tree_s1" >> "$GITHUB_ENV"
+          printf 'TREE_DIR=%s\n' "$tree_dir" >> "$GITHUB_ENV"
+          echo "Resolved TREE_DIR=$tree_dir"
 
       - name: Run live NCBI molecular coverage audit
         env:
