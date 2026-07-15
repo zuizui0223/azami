@@ -1,0 +1,209 @@
+name: Ch1 phylogenetic signal and molecular audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'analysis/audit_cirsium_molecular_coverage.py'
+      - 'ch1_global/v2/78_run_phylogenetic_signal_sensitivity.R'
+      - '.github/workflows/ch1-phylogenetic-signal-molecular-audit.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  audit-and-signal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: phylogenetic-signal-v1
+          packages: |
+            any::ape
+            any::jsonlite
+            any::phytools
+
+      - name: Find and download latest compatible artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/integrated source/historical
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import tempfile
+          import zipfile
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          repo = os.environ['GITHUB_REPOSITORY']
+          token = os.environ['GH_TOKEN']
+          request = Request(
+              f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100',
+              headers={
+                  'Authorization': f'Bearer {token}',
+                  'Accept': 'application/vnd.github+json',
+                  'X-GitHub-Api-Version': '2022-11-28',
+              },
+          )
+          artifacts = json.load(urlopen(request))['artifacts']
+          artifacts = sorted(
+              (a for a in artifacts if not a['expired']),
+              key=lambda a: a['created_at'],
+              reverse=True,
+          )
+          targets = {
+              'integrated': {
+                  'prefix': 'ch1-integrated-continuous-',
+                  'required': {
+                      'integrated_primary_auxiliary_species.csv',
+                      'integrated_continuous_endpoint_registry.csv',
+                  },
+              },
+              'historical': {
+                  'prefix': 'ch1-historical-constraint-',
+                  'required': {
+                      'gbotb_lcvp_scenario1.tre',
+                      'gbotb_lcvp_scenario3.tre',
+                      'gbotb_lcvp_scenario2_randomized.trees',
+                      'gbotb_lcvp_backbone_audit.csv',
+                  },
+              },
+          }
+
+          for label, config in targets.items():
+              found = False
+              for artifact in artifacts:
+                  if not artifact['name'].startswith(config['prefix']):
+                      continue
+                  with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
+                      endpoint = f"repos/{repo}/actions/artifacts/{artifact['id']}/zip"
+                      result = subprocess.run(
+                          ['gh', 'api', endpoint], stdout=tmp, stderr=subprocess.PIPE, check=False
+                      )
+                      if result.returncode != 0:
+                          continue
+                      tmp.flush()
+                      try:
+                          with zipfile.ZipFile(tmp.name) as archive:
+                              basenames = {Path(name).name for name in archive.namelist()}
+                              if not config['required'].issubset(basenames):
+                                  continue
+                              archive.extractall(Path('source') / label)
+                      except zipfile.BadZipFile:
+                          continue
+                  print(f"Using {label} artifact {artifact['name']} id={artifact['id']} created={artifact['created_at']}")
+                  Path('source', f'{label}_artifact.json').write_text(
+                      json.dumps(artifact, indent=2), encoding='utf-8'
+                  )
+                  found = True
+                  break
+              if not found:
+                  raise SystemExit(f"No compatible non-expired {label} artifact found")
+          PY
+
+      - name: Resolve unique inputs
+        run: |
+          set -euo pipefail
+          resolve_one() {
+            local root="$1" pattern="$2" variable="$3"
+            mapfile -t matches < <(find "$root" -type f -name "$pattern" | sort)
+            if [ "${#matches[@]}" -ne 1 ]; then
+              printf 'Expected one %s under %s, found %s\n' "$pattern" "$root" "${#matches[@]}" >&2
+              printf '%s\n' "${matches[@]}" >&2
+              exit 1
+            fi
+            echo "${variable}=${matches[0]}" >> "$GITHUB_ENV"
+          }
+          resolve_one source/integrated integrated_primary_auxiliary_species.csv SPECIES_TABLE
+          resolve_one source/integrated integrated_continuous_endpoint_registry.csv ENDPOINT_REGISTRY
+          resolve_one source/historical gbotb_lcvp_scenario1.tre TREE_S1
+          echo "TREE_DIR=$(dirname "$TREE_S1")" >> "$GITHUB_ENV"
+
+      - name: Run live NCBI molecular coverage audit
+        env:
+          NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+        run: |
+          python analysis/audit_cirsium_molecular_coverage.py \
+            --taxa "$SPECIES_TABLE" \
+            --out-dir molecular_audit
+
+      - name: Run phylogenetic signal sensitivity
+        run: |
+          Rscript ch1_global/v2/78_run_phylogenetic_signal_sensitivity.R \
+            --species "$SPECIES_TABLE" \
+            --registry "$ENDPOINT_REGISTRY" \
+            --tree-dir "$TREE_DIR" \
+            --out-dir phylogenetic_signal \
+            --min-species 20 \
+            --k-nsim 999
+
+      - name: Validate outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+
+          coverage = pd.read_csv('molecular_audit/cirsium_molecular_database_coverage.csv')
+          metadata = json.loads(Path('molecular_audit/cirsium_molecular_database_coverage_metadata.json').read_text())
+          signal = pd.read_csv('phylogenetic_signal/phylogenetic_signal_all_tree_fits.csv')
+          summary = pd.read_csv('phylogenetic_signal/phylogenetic_signal_random_tree_summary.csv')
+          report = json.loads(Path('phylogenetic_signal/phylogenetic_signal_report.json').read_text())
+
+          assert len(coverage) == 216
+          assert metadata['input_taxa'] == 216
+          assert report['n_input_taxa'] == 216
+          assert report['n_direct_backbone_taxa'] == 54
+          assert report['n_random_trees'] == 50
+          assert report['n_failed_fits'] == 0
+          assert len(summary) == report['n_endpoints']
+          assert signal.loc[signal['scenario'].eq('S2_random')].groupby('endpoint').size().eq(50).all()
+          for column in ['nuccore_all', 'nuccore_its', 'nuccore_plastid', 'nuccore_complete_plastome', 'sra_all']:
+              assert coverage[column].ge(0).all()
+          print({
+              'coverage_taxa': len(coverage),
+              'taxa_with_any_nucleotide': int(coverage.nuccore_all.gt(0).sum()),
+              'taxa_with_ITS': int(coverage.nuccore_its.gt(0).sum()),
+              'taxa_with_plastid': int(coverage.nuccore_plastid.gt(0).sum()),
+              'taxa_with_complete_plastome': int(coverage.nuccore_complete_plastome.gt(0).sum()),
+              'taxa_with_SRA': int(coverage.sra_all.gt(0).sum()),
+              'signal_report': report,
+          })
+          PY
+
+      - name: Record provenance
+        run: |
+          printf '%s\n' "$GITHUB_SHA" > molecular_audit/git_sha.txt
+          printf '%s\n' "$GITHUB_SHA" > phylogenetic_signal/git_sha.txt
+          cp source/integrated_artifact.json molecular_audit/integrated_artifact.json
+          cp source/integrated_artifact.json phylogenetic_signal/integrated_artifact.json
+          cp source/historical_artifact.json phylogenetic_signal/historical_artifact.json
+          python -m pip freeze > molecular_audit/python_environment.txt
+          Rscript -e 'writeLines(capture.output(sessionInfo()), "phylogenetic_signal/R_sessionInfo.txt")'
+
+      - name: Upload molecular and phylogenetic results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-molecular-coverage-and-phylogenetic-signal
+          path: |
+            molecular_audit
+            phylogenetic_signal
+          if-no-files-found: warn
+          retention-days: 90
