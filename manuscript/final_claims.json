@@ -1,0 +1,72 @@
+{
+  "analysis_release": "2026-07-final-freeze-candidate-1",
+  "headline": "Visible within-species phenotypic variation and climate tracking are distinct dimensions of capitulum-trait lability across thistles.",
+  "datasets": {
+    "continuous_species_comparison": {
+      "n_taxa": 216,
+      "n_heads": 6626,
+      "purpose": "between-species continuous trait and historical analyses"
+    },
+    "strict_within_species": {
+      "n_spatially_thinned_observations": 46276,
+      "n_input_taxa": 259,
+      "purpose": "within-species slope estimation and species-level lability"
+    },
+    "complete_lability_cohort": {
+      "n_taxa": 102,
+      "minimum_observations": 10,
+      "minimum_traits": 6,
+      "minimum_predictors_per_trait": 3
+    }
+  },
+  "primary_results": {
+    "lability_axis_spearman_rho": -0.333,
+    "quadrants": {
+      "high_variation_high_response": 22,
+      "low_variation_high_response": 29,
+      "high_variation_low_response": 29,
+      "low_variation_low_response": 22
+    },
+    "module_medians": {
+      "colour": {"within_variation": 0.553, "environmental_responsiveness": 0.175},
+      "orientation": {"within_variation": 0.630, "environmental_responsiveness": 0.129},
+      "shape": {"within_variation": 0.665, "environmental_responsiveness": 0.153}
+    }
+  },
+  "within_species_inference_levels": {
+    "strict_le_10km_primary_cohort": {
+      "n_bh_fdr_signals": 0,
+      "allowed_claim": "No primary endpoint-climate effect passed BH FDR in the strict <=10 km cohort."
+    },
+    "expanded_pooled_coefficient_table": {
+      "n_bh_fdr_signals": 4,
+      "allowed_claim": "Four pooled endpoint-climate combinations passed BH FDR, but all standardized effects were small."
+    },
+    "interpretation_rule": "These are different cohorts and inferential summaries and must never be presented as the same test."
+  },
+  "historical_sensitivity": {
+    "n_input_taxa": 216,
+    "n_direct_backbone_taxa": 54,
+    "n_random_trees": 50,
+    "n_signal_fits": 636,
+    "n_failed_signal_fits": 0,
+    "direct_backbone_supported_non_circular_endpoints": 0,
+    "grafting_sensitive_endpoints": ["shape_circularity", "shape_solidity"],
+    "joint_circular_test_required": ["hue_sin", "hue_cos"]
+  },
+  "molecular_database_coverage": {
+    "nucleotide": 138,
+    "its": 133,
+    "plastid": 129,
+    "complete_plastome": 11,
+    "sra": 120
+  },
+  "forbidden_causal_claims": [
+    "phenotypic plasticity",
+    "local adaptation",
+    "pollinator causation",
+    "evolutionary rate",
+    "resolved Cirsium species tree",
+    "rain-protection adaptation"
+  ]
+}
