@@ -14,13 +14,36 @@ permissions:
 jobs:
   analyse:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      SOURCE_RUN_ID: '29216617585'
+      SOURCE_ARTIFACT_NAME: ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install numpy pandas matplotlib
-      - name: Download required analysis artifacts
+
+      - name: Download strict observation cohort
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          name: ${{ env.SOURCE_ARTIFACT_NAME }}
+          path: source/final
+
+      - name: Locate strict observation cohort
+        run: |
+          set -euo pipefail
+          mapfile -t matches < <(find source/final -type f -name strict_spatial_thinned_observations.csv | sort)
+          test "${#matches[@]}" -eq 1
+          echo "OBS=${matches[0]}" >> "$GITHUB_ENV"
+          test -s "${matches[0]}"
+          wc -l "${matches[0]}"
+
+      - name: Download newest coefficient artifact
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -50,17 +73,12 @@ jobs:
               reverse=True,
           )
 
+          target_name = 'exhaustive_within_species_climate_models.csv'
           destination = Path('upstream_artifacts')
           destination.mkdir(exist_ok=True)
-          required = {
-              'strict_spatial_thinned_with_chelsa.csv',
-              'exhaustive_within_species_climate_models.csv',
-          }
-          found = set()
+          target = destination / target_name
 
           for artifact in artifacts:
-              if found == required:
-                  break
               with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
                   endpoint = f"repos/{repo}/actions/artifacts/{artifact['id']}/zip"
                   result = subprocess.run(
@@ -70,51 +88,52 @@ jobs:
                       check=False,
                   )
                   if result.returncode != 0:
-                      print(
-                          f"Skipping artifact {artifact['name']}: "
-                          f"gh api failed: {result.stderr.decode(errors='replace').strip()}"
-                      )
                       continue
                   tmp.flush()
                   try:
                       with zipfile.ZipFile(tmp.name) as archive:
-                          members = {
-                              Path(name).name: name
-                              for name in archive.namelist()
-                              if Path(name).name in required - found
-                          }
-                          if not members:
+                          matches = [
+                              name for name in archive.namelist()
+                              if Path(name).name == target_name
+                          ]
+                          if not matches:
                               continue
-                          for basename, member in members.items():
-                              target = destination / basename
-                              with archive.open(member) as src, target.open('wb') as dst:
-                                  dst.write(src.read())
-                              found.add(basename)
-                              print(
-                                  f"Collected {basename} from artifact "
-                                  f"{artifact['name']} ({artifact['created_at']})"
+                          if len(matches) != 1:
+                              raise SystemExit(
+                                  f'Artifact {artifact["name"]} contains '
+                                  f'{len(matches)} copies of {target_name}'
                               )
+                          with archive.open(matches[0]) as src, target.open('wb') as dst:
+                              dst.write(src.read())
                   except zipfile.BadZipFile:
-                      print(f"Skipping artifact {artifact['name']}: invalid ZIP")
-
-          missing = required - found
-          if missing:
-              raise SystemExit(
-                  'Missing required files after scanning non-expired artifacts: '
-                  + ', '.join(sorted(missing))
+                      continue
+              print(
+                  f'Collected {target_name} from artifact '
+                  f'{artifact["name"]} ({artifact["created_at"]})'
               )
+              break
+          else:
+              raise SystemExit(
+                  f'No non-expired artifact contains {target_name}'
+              )
+
+          if not target.is_file() or target.stat().st_size == 0:
+              raise SystemExit(f'Collected coefficient file is empty: {target}')
           PY
+
       - name: Run Phase 1 analysis
         run: |
-          OBS=upstream_artifacts/strict_spatial_thinned_with_chelsa.csv
+          set -euo pipefail
           COEF=upstream_artifacts/exhaustive_within_species_climate_models.csv
           test -s "$OBS" && test -s "$COEF"
           python ch1_global/v2/77_build_lability_axes_and_supplement.py \
             --observations "$OBS" \
             --coefficients "$COEF" \
             --out-dir phase1_results
+
       - uses: actions/upload-artifact@v4
         with:
           name: ch1-phase1-lability-results
           path: phase1_results/
           if-no-files-found: error
+          retention-days: 90
