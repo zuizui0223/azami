@@ -48,34 +48,46 @@ jobs:
           import tempfile
           import zipfile
           from pathlib import Path
+          from urllib.parse import urlencode
           from urllib.request import Request, urlopen
 
           repo = os.environ['GITHUB_REPOSITORY']
           token = os.environ['GH_TOKEN']
-          request = Request(
-              f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100',
-              headers={
-                  'Authorization': f'Bearer {token}',
-                  'Accept': 'application/vnd.github+json',
-                  'X-GitHub-Api-Version': '2022-11-28',
-              },
-          )
-          artifacts = json.load(urlopen(request))['artifacts']
-          artifacts = sorted(
-              (a for a in artifacts if not a['expired']),
-              key=lambda a: a['created_at'],
-              reverse=True,
-          )
+          headers = {
+              'Authorization': f'Bearer {token}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+          }
+
+          artifacts = []
+          page = 1
+          while True:
+              query = urlencode({'per_page': 100, 'page': page})
+              request = Request(
+                  f'https://api.github.com/repos/{repo}/actions/artifacts?{query}',
+                  headers=headers,
+              )
+              payload = json.load(urlopen(request))
+              batch = payload.get('artifacts', [])
+              artifacts.extend(a for a in batch if not a.get('expired', False))
+              print(f'Artifact page {page}: {len(batch)} records', flush=True)
+              if len(batch) < 100:
+                  break
+              page += 1
+
+          artifacts.sort(key=lambda a: a['created_at'], reverse=True)
+          print(f'Non-expired artifacts scanned: {len(artifacts)}', flush=True)
+
           targets = {
               'integrated': {
-                  'prefix': 'ch1-integrated-continuous-',
+                  'preferred_prefix': 'ch1-integrated-continuous-',
                   'required': {
                       'integrated_primary_auxiliary_species.csv',
                       'integrated_continuous_endpoint_registry.csv',
                   },
               },
               'historical': {
-                  'prefix': 'ch1-historical-constraint-',
+                  'preferred_prefix': 'ch1-historical-constraint-',
                   'required': {
                       'gbotb_lcvp_scenario1.tre',
                       'gbotb_lcvp_scenario3.tre',
@@ -85,35 +97,63 @@ jobs:
               },
           }
 
+          def candidates(config):
+              preferred = [
+                  a for a in artifacts
+                  if a['name'].startswith(config['preferred_prefix'])
+              ]
+              fallback = [a for a in artifacts if a not in preferred]
+              return preferred + fallback
+
           for label, config in targets.items():
               found = False
-              for artifact in artifacts:
-                  if not artifact['name'].startswith(config['prefix']):
-                      continue
+              inspected = 0
+              for artifact in candidates(config):
+                  inspected += 1
                   with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
                       endpoint = f"repos/{repo}/actions/artifacts/{artifact['id']}/zip"
                       result = subprocess.run(
-                          ['gh', 'api', endpoint], stdout=tmp, stderr=subprocess.PIPE, check=False
+                          ['gh', 'api', endpoint],
+                          stdout=tmp,
+                          stderr=subprocess.PIPE,
+                          check=False,
                       )
                       if result.returncode != 0:
+                          print(
+                              f"Skipping {artifact['name']} ({artifact['id']}): "
+                              f"download failed: {result.stderr.decode(errors='replace').strip()}",
+                              flush=True,
+                          )
                           continue
                       tmp.flush()
                       try:
                           with zipfile.ZipFile(tmp.name) as archive:
-                              basenames = {Path(name).name for name in archive.namelist()}
-                              if not config['required'].issubset(basenames):
+                              members = archive.namelist()
+                              basenames = {Path(name).name for name in members}
+                              missing = config['required'] - basenames
+                              if missing:
                                   continue
                               archive.extractall(Path('source') / label)
                       except zipfile.BadZipFile:
+                          print(f"Skipping {artifact['name']} ({artifact['id']}): invalid ZIP", flush=True)
                           continue
-                  print(f"Using {label} artifact {artifact['name']} id={artifact['id']} created={artifact['created_at']}")
+                  print(
+                      f"Using {label} artifact {artifact['name']} "
+                      f"id={artifact['id']} created={artifact['created_at']} "
+                      f"after inspecting {inspected} artifacts",
+                      flush=True,
+                  )
                   Path('source', f'{label}_artifact.json').write_text(
                       json.dumps(artifact, indent=2), encoding='utf-8'
                   )
                   found = True
                   break
               if not found:
-                  raise SystemExit(f"No compatible non-expired {label} artifact found")
+                  available = [a['name'] for a in artifacts[:40]]
+                  raise SystemExit(
+                      f"No compatible non-expired {label} artifact found after scanning "
+                      f"{len(artifacts)} artifacts. Recent names: {available}"
+                  )
           PY
 
       - name: Resolve unique inputs
