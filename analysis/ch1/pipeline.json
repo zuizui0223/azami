@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "submission-facing wrappers over frozen provenance paths",
+  "policy": {
+    "move_numbered_scripts": false,
+    "reason": "The numbered ch1_global/v2 paths generated the frozen results and remain stable provenance targets.",
+    "new_analysis_version_required_for": [
+      "trait definition changes",
+      "measurement threshold changes",
+      "taxon acceptance changes",
+      "environmental data changes",
+      "tree scenario changes"
+    ]
+  },
+  "stages": {
+    "climate_coefficients": {
+      "script": "ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py",
+      "inputs": ["strict spatial observation table"],
+      "outputs": [
+        "strict_spatial_thinned_with_chelsa.csv",
+        "exhaustive_within_species_climate_models.csv"
+      ],
+      "rerun_policy": "Only when the strict cohort, CHELSA source, or extraction code changes."
+    },
+    "lability": {
+      "script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
+      "inputs": [
+        "strict_spatial_thinned_with_chelsa.csv",
+        "exhaustive_within_species_climate_models.csv"
+      ],
+      "outputs": [
+        "analysis_metadata.json",
+        "species_lability_axes.csv",
+        "species_trait_within_variation.csv",
+        "species_trait_environmental_responsiveness.csv",
+        "species_module_lability.csv",
+        "module_lability_summary.csv",
+        "table_s1_all_global_coefficients.csv",
+        "table_s2_species_specific_coefficients.csv",
+        "sensitivity_minimum_sample_size.csv",
+        "figure_species_lability_quadrants.png",
+        "figure_species_lability_quadrants.pdf",
+        "figure_s1_effect_size_heatmap.png",
+        "figure_s1_effect_size_heatmap.pdf"
+      ]
+    },
+    "claims": {
+      "script": "analysis/validate_final_claims.py",
+      "inputs": ["manuscript/final_claims.json"],
+      "outputs": ["validated claim registry"]
+    },
+    "submission_validation": {
+      "script": "ch1_global/v2/69_validate_submission_outputs.py",
+      "config": "ch1_global/v2/submission_config.json"
+    },
+    "submission_manifest": {
+      "script": "ch1_global/v2/70_build_submission_manifest.py",
+      "config": "ch1_global/v2/submission_config.json",
+      "outputs": ["checksums", "table dimensions", "software versions", "commit identity"]
+    }
+  },
+  "primary_parameters": {
+    "minimum_species_trait_observations": 10,
+    "minimum_traits": 6,
+    "minimum_predictors_per_trait": 3,
+    "sample_size_sensitivities": [5, 20],
+    "hue_representation": "joint sine/cosine"
+  }
+}
