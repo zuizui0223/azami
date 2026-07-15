@@ -14,6 +14,15 @@ tracking and among-species environmental sorting are not equivalent.
 The analysis is observational and non-causal. Climate association is not proof of
 local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
 
+## Why Cirsium matters
+
+*Cirsium* is not merely a convenient image-rich genus. It is species rich,
+morphologically diverse and historically difficult: hybridization, polyploidy,
+regional endemism and uncertain taxonomic or phylogenetic boundaries make a single
+species mean and a single bifurcating tree especially questionable summaries. The
+paper uses that biological complexity as motivation while avoiding an unsupported
+claim of adaptive radiation.
+
 ## Executed datasets
 
 The image-measurement layer contains 6,626 detected capitula from 3,725 primary
@@ -80,10 +89,11 @@ Start here:
 
 1. `manuscript/RESULT_LED_STORY_REVIEW.md` — full result inventory and competing story comparison;
 2. `manuscript/FINAL_MANUSCRIPT_STRATEGY.md` — selected narrative and figure strategy;
-3. `manuscript/final_claims.json` — machine-readable frozen numbers;
-4. `manuscript/FINAL_FREEZE_CHECKLIST.md` — remaining submission gates;
-5. `manuscript/RUNBOOK.md` — reproducible execution and bundle rules;
-6. `ch1_global/SUBMISSION_READINESS.md` — current readiness verdict.
+3. `manuscript/CIRSIUM_EVOLUTIONARY_ECOLOGY_AND_DISCUSSION_STRATEGY.md` — genus biology, literature anchors and Discussion architecture;
+4. `manuscript/final_claims.json` — machine-readable frozen numbers;
+5. `manuscript/FINAL_FREEZE_CHECKLIST.md` — remaining submission gates;
+6. `manuscript/RUNBOOK.md` — reproducible execution and bundle rules;
+7. `ch1_global/SUBMISSION_READINESS.md` — current readiness verdict.
 
 The validator `analysis/validate_final_claims.py` and workflow
 `.github/workflows/ch1-final-manuscript-claims.yml` enforce the frozen claim set.
@@ -113,7 +123,7 @@ The final manuscript-claim workflow is
 ```text
 analysis/             submission-facing analysis definitions and validators
 workflows/            authoritative workflow documentation
-manuscript/           result review, final story, claim registry and runbook
+manuscript/           result review, final story, evolutionary context and runbook
 archive/              policy and destination for superseded material
 ch1_global/v1/        frozen orientation-only baseline
 ch1_global/v2/        current measurement and analysis implementation
