@@ -1,0 +1,100 @@
+name: ch1-phase1-lability
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py'
+      - 'ch1_global/v2/77_build_lability_axes_and_supplement.py'
+      - '.github/workflows/ch1-phase1-lability.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  analyse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CLIMATE_RUN_ID: '29380600763'
+      CLIMATE_ARTIFACT_NAME: ch1-lability-climate-diagnostics
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas matplotlib scipy statsmodels
+      - name: Download pinned CHELSA analysis inputs
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.CLIMATE_RUN_ID }}
+          name: ${{ env.CLIMATE_ARTIFACT_NAME }}
+          path: pinned_climate
+      - name: Validate pinned inputs
+        run: |
+          set -euo pipefail
+          echo "OBS=pinned_climate/exhaustive_within_species/strict_spatial_thinned_with_chelsa.csv" >> "$GITHUB_ENV"
+          echo "COEF=pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_models.csv" >> "$GITHUB_ENV"
+          echo "REPORT=pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_report.json" >> "$GITHUB_ENV"
+          test -s pinned_climate/exhaustive_within_species/strict_spatial_thinned_with_chelsa.csv
+          test -s pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_models.csv
+      - name: Ensure writable heatmap array
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('ch1_global/v2/77_build_lability_axes_and_supplement.py')
+          text = path.read_text(encoding='utf-8')
+          old = 'arr=mat.to_numpy(float); hi=order.index(HUE); arr[hi,:]=mag.loc[HUE].to_numpy(float)'
+          new = 'arr=mat.to_numpy(dtype=float, copy=True); hi=order.index(HUE); arr[hi,:]=mag.loc[HUE].to_numpy(dtype=float, copy=True)'
+          if old not in text:
+              raise SystemExit('Expected heatmap array line not found')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+      - name: Run final species-level lability analysis
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p diagnostics phase1_results
+          python ch1_global/v2/77_build_lability_axes_and_supplement.py \
+            --observations "$OBS" \
+            --coefficients "$COEF" \
+            --out-dir phase1_results \
+            --min-species-n 10 \
+            --min-traits 6 \
+            --min-predictors 3 \
+            2>&1 | tee diagnostics/final_analysis.log
+          exit ${PIPESTATUS[0]}
+      - name: Upload final-analysis diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-final-lability-diagnostics
+          path: |
+            diagnostics/
+            phase1_results/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Validate final outputs
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          meta=json.loads(Path('phase1_results/analysis_metadata.json').read_text())
+          axes=pd.read_csv('phase1_results/species_lability_axes.csv')
+          assert meta['counts']['input_observations'] == 46276
+          assert meta['counts']['input_species'] == 259
+          assert int(axes['primary_complete'].sum()) == 102
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-final-lability-results
+          path: |
+            phase1_results/
+            ${{ env.REPORT }}
+          if-no-files-found: error
+          retention-days: 90
