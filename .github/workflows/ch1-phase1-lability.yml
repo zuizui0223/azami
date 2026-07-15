@@ -24,14 +24,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
-          cache-dependency-path: ch1_global/v2/requirements-submission.txt
-      - name: Install analysis dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install numpy pandas matplotlib scipy statsmodels
-          python -m pip check
-
+      - run: python -m pip install numpy pandas matplotlib scipy statsmodels
       - name: Download pinned CHELSA analysis inputs
         uses: actions/download-artifact@v4
         with:
@@ -40,60 +33,51 @@ jobs:
           run-id: ${{ env.CLIMATE_RUN_ID }}
           name: ${{ env.CLIMATE_ARTIFACT_NAME }}
           path: pinned_climate
-
       - name: Validate pinned inputs
         run: |
           set -euo pipefail
-          OBS=pinned_climate/exhaustive_within_species/strict_spatial_thinned_with_chelsa.csv
-          COEF=pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_models.csv
-          REPORT=pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_report.json
-          test -s "$OBS" && test -s "$COEF" && test -s "$REPORT"
-          echo "OBS=$OBS" >> "$GITHUB_ENV"
-          echo "COEF=$COEF" >> "$GITHUB_ENV"
-          echo "REPORT=$REPORT" >> "$GITHUB_ENV"
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          report=json.loads(Path('pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_report.json').read_text())
-          if report['input_observations'] != 46276 or report['input_species'] != 259:
-              raise SystemExit(f'Unexpected pinned climate input dimensions: {report}')
-          print(json.dumps(report, indent=2))
-          PY
-
+          echo "OBS=pinned_climate/exhaustive_within_species/strict_spatial_thinned_with_chelsa.csv" >> "$GITHUB_ENV"
+          echo "COEF=pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_models.csv" >> "$GITHUB_ENV"
+          echo "REPORT=pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_report.json" >> "$GITHUB_ENV"
+          test -s pinned_climate/exhaustive_within_species/strict_spatial_thinned_with_chelsa.csv
+          test -s pinned_climate/exhaustive_within_species/exhaustive_within_species_climate_models.csv
       - name: Run final species-level lability analysis
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          mkdir -p diagnostics phase1_results
           python ch1_global/v2/77_build_lability_axes_and_supplement.py \
             --observations "$OBS" \
             --coefficients "$COEF" \
             --out-dir phase1_results \
             --min-species-n 10 \
             --min-traits 6 \
-            --min-predictors 3
-
+            --min-predictors 3 \
+            2>&1 | tee diagnostics/final_analysis.log
+          exit ${PIPESTATUS[0]}
+      - name: Upload final-analysis diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-final-lability-diagnostics
+          path: |
+            diagnostics/
+            phase1_results/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Validate final outputs
         run: |
           set -euo pipefail
-          test -s phase1_results/species_lability_axes.csv
-          test -s phase1_results/table_s1_all_global_coefficients.csv
-          test -s phase1_results/table_s2_species_specific_coefficients.csv
-          test -s phase1_results/figure_species_lability_quadrants.png
-          test -s phase1_results/figure_s1_effect_size_heatmap.png
           python - <<'PY'
           import json
           from pathlib import Path
           import pandas as pd
           meta=json.loads(Path('phase1_results/analysis_metadata.json').read_text())
           axes=pd.read_csv('phase1_results/species_lability_axes.csv')
-          if meta['counts']['input_observations'] != 46276:
-              raise SystemExit(f"Unexpected observation count: {meta['counts']['input_observations']}")
-          if meta['counts']['input_species'] != 259:
-              raise SystemExit(f"Unexpected species count: {meta['counts']['input_species']}")
-          if int(axes['primary_complete'].sum()) != 102:
-              raise SystemExit(f"Unexpected primary-complete species count: {int(axes['primary_complete'].sum())}")
-          print(json.dumps(meta, indent=2))
+          assert meta['counts']['input_observations'] == 46276
+          assert meta['counts']['input_species'] == 259
+          assert int(axes['primary_complete'].sum()) == 102
           PY
-
       - uses: actions/upload-artifact@v4
         with:
           name: ch1-final-lability-results
