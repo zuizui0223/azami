@@ -1,0 +1,26 @@
+name: Ch1 final manuscript claims
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'manuscript/final_claims.json'
+      - 'manuscript/FINAL_MANUSCRIPT_STRATEGY.md'
+      - 'analysis/validate_final_claims.py'
+      - '.github/workflows/ch1-final-claims.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen claims without third-party packages
+        run: python -S analysis/validate_final_claims.py
+      - name: Compile validator
+        run: python -m py_compile analysis/validate_final_claims.py
