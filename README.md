@@ -7,8 +7,9 @@ photographs.
 
 ## Chapter 1 in one sentence
 
-Public photographs reveal that visible within-species phenotypic variation and
-climate tracking are distinct dimensions of capitulum-trait lability.
+Species means conceal a scale-dependent and modular capitulum phenotype: most
+visible variation occurs within species, but total variation, within-species climate
+tracking and among-species environmental sorting are not equivalent.
 
 The analysis is observational and non-causal. Climate association is not proof of
 local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
@@ -26,10 +27,14 @@ completeness rule.
 
 ## Frozen result
 
-Species within-variation and species environmental responsiveness are distinct
-axes. Across the 102 complete taxa, their Spearman correlation is -0.333. Species
-with broad visible phenotypic variation are therefore not necessarily those whose
-traits most strongly track the four CHELSA gradients.
+Across the nine primary endpoints, approximately 82–99% of visible variance occurs
+within species. This is visible heterogeneity, not a claim that all variance is
+biological, because viewpoint and measurement conditions also contribute.
+
+Species within-variation and species environmental responsiveness are distinct axes.
+Across the 102 complete taxa, their Spearman correlation is -0.333. Species with
+broad visible phenotypic variation are therefore not necessarily those whose traits
+most strongly track the four CHELSA gradients.
 
 | Module | Median within-variation | Median environmental responsiveness | Species |
 |---|---:|---:|---:|
@@ -39,7 +44,8 @@ traits most strongly track the four CHELSA gradients.
 
 Colour has the strongest median climate tracking but the lowest median total
 variation. Shape has the largest visible variation without the largest climate
-responsiveness.
+responsiveness. Environmental niche contrasts between low- and high-trait species
+are strongest for orientation and colour and weaker for most outline traits.
 
 Two within-species summaries must remain distinct:
 
@@ -53,16 +59,17 @@ FDR count.
 
 ## Scientific logic
 
-Chapter 1 separates four levels that are often conflated:
+Chapter 1 separates five levels that are often conflated:
 
 1. **measurement assessability** — whether an uncontrolled photograph supports a
    valid trait estimate;
-2. **among-species climatic structure** — whether species summaries covary with
-   present climate;
+2. **visible within-species variation** — how broad the observed phenotype is;
 3. **within-species climate association** — whether traits track environmental
    gradients within species;
-4. **species lability decomposition** — whether a species is broadly variable,
-   climate responsive, both or neither.
+4. **among-species environmental sorting** — whether species with contrasting mean
+   phenotypes occupy different environments;
+5. **historical sensitivity** — whether conclusions survive uncertain tree
+   placement.
 
 Circular hue remains a joint sine/cosine endpoint. Angle is used for presentation,
 not as an ordinary linear response.
@@ -71,11 +78,12 @@ not as an ordinary linear response.
 
 Start here:
 
-1. `manuscript/FINAL_MANUSCRIPT_STRATEGY.md` — narrative and figure strategy;
-2. `manuscript/final_claims.json` — machine-readable frozen numbers;
-3. `manuscript/FINAL_FREEZE_CHECKLIST.md` — remaining submission gates;
-4. `manuscript/RUNBOOK.md` — reproducible execution and bundle rules;
-5. `ch1_global/SUBMISSION_READINESS.md` — current readiness verdict.
+1. `manuscript/RESULT_LED_STORY_REVIEW.md` — full result inventory and competing story comparison;
+2. `manuscript/FINAL_MANUSCRIPT_STRATEGY.md` — selected narrative and figure strategy;
+3. `manuscript/final_claims.json` — machine-readable frozen numbers;
+4. `manuscript/FINAL_FREEZE_CHECKLIST.md` — remaining submission gates;
+5. `manuscript/RUNBOOK.md` — reproducible execution and bundle rules;
+6. `ch1_global/SUBMISSION_READINESS.md` — current readiness verdict.
 
 The validator `analysis/validate_final_claims.py` and workflow
 `.github/workflows/ch1-final-manuscript-claims.yml` enforce the frozen claim set.
@@ -83,15 +91,15 @@ The validator `analysis/validate_final_claims.py` and workflow
 ## Canonical analysis path
 
 ```text
-frozen strict spatial cohort
+public images + trait-specific assessability
         |
-pinned CHELSA table + pooled coefficients
+continuous orientation, colour and outline distributions
         |
-species variation and species-specific slopes
+within-species variance + species-specific environmental slopes
         |
-minimum-n sensitivity + four-quadrant plot + Tables S1/S2
+module and among-species environmental-niche contrasts
         |
-phylogenetic uncertainty summary + frozen claim registry
+spatial/cohort and historical-placement sensitivity
         |
 validated durable submission bundle
 ```
@@ -105,7 +113,7 @@ The final manuscript-claim workflow is
 ```text
 analysis/             submission-facing analysis definitions and validators
 workflows/            authoritative workflow documentation
-manuscript/           final story, claim registry, freeze checklist and runbook
+manuscript/           result review, final story, claim registry and runbook
 archive/              policy and destination for superseded material
 ch1_global/v1/        frozen orientation-only baseline
 ch1_global/v2/        current measurement and analysis implementation
