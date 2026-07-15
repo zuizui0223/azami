@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - 'ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py'
       - 'ch1_global/v2/77_build_lability_axes_and_supplement.py'
       - '.github/workflows/ch1-phase1-lability.yml'
 
@@ -14,7 +15,7 @@ permissions:
 jobs:
   analyse:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 360
     env:
       SOURCE_RUN_ID: '29216617585'
       SOURCE_ARTIFACT_NAME: ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery
@@ -23,7 +24,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install numpy pandas matplotlib
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+      - name: Install analysis dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas matplotlib scipy statsmodels rasterio pyproj
+          python -m pip check
 
       - name: Download strict observation cohort
         uses: actions/download-artifact@v4
@@ -39,101 +46,58 @@ jobs:
           set -euo pipefail
           mapfile -t matches < <(find source/final -type f -name strict_spatial_thinned_observations.csv | sort)
           test "${#matches[@]}" -eq 1
-          echo "OBS=${matches[0]}" >> "$GITHUB_ENV"
+          echo "STRICT_COHORT=${matches[0]}" >> "$GITHUB_ENV"
           test -s "${matches[0]}"
           wc -l "${matches[0]}"
 
-      - name: Download newest coefficient artifact
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          import subprocess
-          import tempfile
-          import urllib.request
-          import zipfile
-          from pathlib import Path
-
-          repo = os.environ['GITHUB_REPOSITORY']
-          headers = {
-              'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
-              'Accept': 'application/vnd.github+json',
-              'X-GitHub-Api-Version': '2022-11-28',
-          }
-          req = urllib.request.Request(
-              f'https://api.github.com/repos/{repo}/actions/artifacts?per_page=100',
-              headers=headers,
-          )
-          artifacts = json.load(urllib.request.urlopen(req))['artifacts']
-          artifacts = sorted(
-              (a for a in artifacts if not a['expired']),
-              key=lambda a: a['created_at'],
-              reverse=True,
-          )
-
-          target_name = 'exhaustive_within_species_climate_models.csv'
-          destination = Path('upstream_artifacts')
-          destination.mkdir(exist_ok=True)
-          target = destination / target_name
-
-          for artifact in artifacts:
-              with tempfile.NamedTemporaryFile(suffix='.zip') as tmp:
-                  endpoint = f"repos/{repo}/actions/artifacts/{artifact['id']}/zip"
-                  result = subprocess.run(
-                      ['gh', 'api', endpoint],
-                      stdout=tmp,
-                      stderr=subprocess.PIPE,
-                      check=False,
-                  )
-                  if result.returncode != 0:
-                      continue
-                  tmp.flush()
-                  try:
-                      with zipfile.ZipFile(tmp.name) as archive:
-                          matches = [
-                              name for name in archive.namelist()
-                              if Path(name).name == target_name
-                          ]
-                          if not matches:
-                              continue
-                          if len(matches) != 1:
-                              raise SystemExit(
-                                  f'Artifact {artifact["name"]} contains '
-                                  f'{len(matches)} copies of {target_name}'
-                              )
-                          with archive.open(matches[0]) as src, target.open('wb') as dst:
-                              dst.write(src.read())
-                  except zipfile.BadZipFile:
-                      continue
-              print(
-                  f'Collected {target_name} from artifact '
-                  f'{artifact["name"]} ({artifact["created_at"]})'
-              )
-              break
-          else:
-              raise SystemExit(
-                  f'No non-expired artifact contains {target_name}'
-              )
-
-          if not target.is_file() or target.stat().st_size == 0:
-              raise SystemExit(f'Collected coefficient file is empty: {target}')
-          PY
-
-      - name: Run Phase 1 analysis
+      - name: Rebuild climate table and global within-species coefficients
         run: |
           set -euo pipefail
-          COEF=upstream_artifacts/exhaustive_within_species_climate_models.csv
-          test -s "$OBS" && test -s "$COEF"
+          python ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py \
+            --observation "$STRICT_COHORT" \
+            --out-dir exhaustive_within_species \
+            --min-species-model-n 5 \
+            --sample-batch-size 1024
+
+      - name: Run final species-level lability analysis
+        run: |
+          set -euo pipefail
           python ch1_global/v2/77_build_lability_axes_and_supplement.py \
-            --observations "$OBS" \
-            --coefficients "$COEF" \
-            --out-dir phase1_results
+            --observations exhaustive_within_species/strict_spatial_thinned_with_chelsa.csv \
+            --coefficients exhaustive_within_species/exhaustive_within_species_climate_models.csv \
+            --out-dir phase1_results \
+            --min-species-n 10 \
+            --min-traits 6 \
+            --min-predictors 3
+
+      - name: Validate final outputs
+        run: |
+          set -euo pipefail
+          test -s phase1_results/species_lability_axes.csv
+          test -s phase1_results/table_s1_all_global_coefficients.csv
+          test -s phase1_results/table_s2_species_specific_coefficients.csv
+          test -s phase1_results/figure_species_lability_quadrants.png
+          test -s phase1_results/figure_s1_effect_size_heatmap.png
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          meta=json.loads(Path('phase1_results/analysis_metadata.json').read_text())
+          axes=pd.read_csv('phase1_results/species_lability_axes.csv')
+          if meta['counts']['input_observations'] != 46276:
+              raise SystemExit(f"Unexpected observation count: {meta['counts']['input_observations']}")
+          if meta['counts']['input_species'] != 259:
+              raise SystemExit(f"Unexpected species count: {meta['counts']['input_species']}")
+          if axes['primary_complete'].sum() < 20:
+              raise SystemExit('Too few species pass the final completeness rule')
+          print(json.dumps(meta, indent=2))
+          PY
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ch1-phase1-lability-results
-          path: phase1_results/
+          name: ch1-final-lability-results
+          path: |
+            phase1_results/
+            exhaustive_within_species/exhaustive_within_species_climate_report.json
           if-no-files-found: error
           retention-days: 90
