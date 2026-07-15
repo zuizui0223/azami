@@ -9,6 +9,12 @@ This directory is the submission-facing entry point for executed analyses.
   within-species coefficient table.
 - `ch1_global/v2/77_build_lability_axes_and_supplement.py`
   produces the final two-axis lability analysis.
+- `analysis/audit_cirsium_molecular_coverage.py`
+  freezes taxon-level NCBI nucleotide, ITS, plastid and SRA record counts for the
+  Chapter 1 taxon list. It is a database-coverage audit, not a phylogeny builder.
+
+The scientific decision boundary for phylogenetic signal is documented in
+`manuscript/PHYLOGENETIC_SIGNAL_FEASIBILITY.md`.
 
 ## Frozen primary definition
 
