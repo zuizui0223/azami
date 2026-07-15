@@ -1,142 +1,126 @@
 # azami — global image-derived capitulum traits in *Cirsium*
 
-This repository contains code for a multi-chapter research project on the
-ecology and evolution of *Cirsium* floral architecture. Chapter 1 is currently
-the submission-focused component: a global macroecological analysis of
-continuous capitulum traits measured from public photographs.
+This repository contains a multi-chapter project on the ecology and evolution of
+*Cirsium* floral architecture. Chapter 1 is the submission-focused component: a
+global macroecological analysis of continuous capitulum traits measured from
+public biodiversity photographs.
 
 ## Chapter 1 in one sentence
 
-We use a capitulum detector and deterministic image measurements to quantify
-corolla colour, capitulum outline and image-referenced head orientation, test
-measurement assessability, join the traits to CHELSA climate, and evaluate
-species-level associations under alternative historical-tree hypotheses.
+We quantify continuous corolla colour, capitulum outline and image-referenced
+head orientation, model which photographs are measurable, compare climatic
+structure among and within species, and test whether conclusions survive
+uncertain historical-tree placement.
 
-The analysis is descriptive and non-causal. Species-level climate associations
-are not presented as evidence of local adaptation, plasticity or selection.
+The analysis is observational and non-causal. Climate association is not treated
+as proof of local adaptation, plasticity or selection.
 
 ## Current executed dataset
 
-The frozen analysis used:
+The frozen image-measurement layer contains:
 
 - 6,626 detected capitula;
-- 3,725 iNaturalist observations;
-- 216 accepted analysis taxa;
-- nine primary continuous endpoints;
-- three exploratory involucre/spine image proxies.
+- 3,725 primary public observations;
+- 216 accepted image-analysis taxa;
+- nine primary continuous measurement components;
+- exploratory high-resolution involucre/spine contour proxies.
 
-QC-retained head-level measurements were:
+The strict within-species climate cohort contains 46,276 spatially thinned
+observations representing 259 taxa. It is kept separate from the smaller
+head-level measurement accounting because the two tables answer different
+questions and have different sampling units.
 
-| Trait group | Usable heads | Retention |
-|---|---:|---:|
-| Corolla colour | 5,777 | 87.2% |
-| Capitulum outline | 5,324 | 80.4% |
-| Head orientation | 4,585 | 69.2% |
+## Main scientific logic
 
-These percentages are assessability/QC-retention rates, not classification
-accuracy.
+Chapter 1 separates four levels that are often conflated:
 
-The high-resolution involucre supplement retained 1,443 of 1,819 selected
-capitula, representing 1,292 observations and 210 taxa.
+1. **measurement assessability** — whether an uncontrolled photograph supports a
+   valid trait estimate;
+2. **among-species climatic structure** — whether species-level trait summaries
+   covary with present climate;
+3. **within-species climate association** — whether demeaned traits track
+   environmental gradients within species;
+4. **species lability decomposition** — whether a species is broadly variable,
+   environmentally responsive, both or neither.
 
-## Main interpretation
+The final lability analysis uses two independent axes:
 
-Several between-species trait–climate associations were stable across 50 random
-within-genus grafting trees. In contrast, the positional-accuracy <=10 km
-within-species models yielded no FDR-significant effect for the nine primary
-endpoints. The paper therefore distinguishes global species turnover and
-macroevolutionary/geographic association from within-species environmental
-response.
+- a species within-variation index based on trait-standardized robust dispersion;
+- a species environmental-responsiveness index based on species-specific
+  standardized slopes.
 
-The dated vascular-plant backbone directly contained only 54 of 216 taxa. The
-remaining taxa were grafted within *Cirsium*, so PGLS is used as a historical
-constraint sensitivity analysis rather than as a uniquely correct species tree.
+Circular hue remains a joint sine/cosine endpoint. A scalar hue angle is used for
+presentation, not as an ordinary linear response.
 
-## Canonical Chapter 1 pipeline
+## Canonical submission path
 
 ```text
-public photographs + metadata
+frozen strict spatial cohort
         |
-capitulum detection and crop reconstruction
+CHELSA extraction + pooled within-species models (script 75)
         |
-continuous primary traits (52–56)
+species variation and species-specific climate slopes (script 77)
         |
-QC-retention audit + CHELSA join (57)
+minimum-n sensitivity + four-quadrant plot + Tables S1/S2
         |
-high-resolution involucre supplement (58–60)
-        |
-trait integration tables and pre-tree models (61–64)
-        |
-historical-tree audit + bounded-lambda PGLS (65–68)
-        |
-submission validation and provenance manifest
+validated final artifact and durable submission bundle
 ```
 
-The authoritative run instructions are in:
+Authoritative entry points:
 
-- `ch1_global/README.md`
-- `ch1_global/v2/SUBMISSION_PIPELINE.md`
-- `ch1_global/v2/CONTINUOUS_PRIMARY_TRAITS.md`
-- `ch1_global/v2/HISTORICAL_CONSTRAINTS.md`
+- `analysis/README.md`
+- `workflows/README.md`
+- `manuscript/FINAL_STORY_AND_ANALYSIS.md`
+- `manuscript/RUNBOOK.md`
+- `REPOSITORY_REVIEW.md`
+- `ch1_global/CH1_MANUSCRIPT_PLAN.md`
 
 ## Repository structure
 
 ```text
-ch1_global/v1/       frozen orientation-only baseline
-ch1_global/v2/       current data, measurement and analysis scripts
-ch1_shared/          shared collection/training utilities
-ch1_japan/           regional exploratory machinery, not part of the current
-                     Chapter 1 headline analysis
-ch3_trait_architecture/
-protocols/
-models/               detector/model files retained for provenance
-.github/workflows/    lightweight CI plus manual research-scale workflows
+analysis/             submission-facing analysis definitions
+workflows/            documentation for authoritative Actions workflows
+manuscript/           final story, interpretation boundary and runbook
+archive/              policy and destination for superseded material
+ch1_global/v1/        frozen orientation-only baseline
+ch1_global/v2/        current measurement and analysis implementation
+ch1_shared/           shared collection and model utilities
+ch1_japan/            regional exploratory work outside the Chapter 1 headline
 tests/                deterministic unit and invariant tests
+.github/workflows/    executable GitHub Actions definitions
 ```
 
-## Primary and auxiliary traits
+The numbered v2 scripts remain in place for provenance. Mass renaming is deferred
+until the final bundle records original paths, commits and checksums.
 
-### Primary
+## Primary traits
 
 - orientation angle relative to EXIF-oriented image vertical;
 - corolla Lab lightness and chroma;
 - circular hue sine/cosine;
 - capitulum aspect ratio, circularity, solidity and width-profile variation.
 
-### Auxiliary
-
-High-resolution image proxies for involucral projection roughness, spread and
-spine-like protrusion. These are not categorical botanical claims such as
-`recurved`, `unarmed` or `long-spined`.
-
-Hair, mucilage, ploidy and hybrid status are kept in evidence queues. Missing
-textual evidence is coded `unknown`, never biological absence.
+High-resolution involucral projection and spine-like contours remain exploratory.
+Hair and mucilage remain evidence-backed queues; missing evidence is `unknown`,
+not biological absence.
 
 ## Reproducibility policy
 
-- Heavy global workflows are manually dispatched because they consume external
-  images and large intermediate artifacts.
-- Pull requests run lightweight syntax, unit and submission-contract checks.
-- Every submission bundle must include file SHA-256 checksums, table dimensions,
-  software versions, the Git commit and analysis configuration.
-- GitHub Actions artifacts are temporary working products and are not the final
-  citable archive. The accepted-paper release must be deposited in a durable
-  repository such as Zenodo.
+- The final workflow rebuilds the climate table and pooled coefficients rather
+  than silently combining artifacts from different commits.
+- Primary species-level lability requires at least 10 observations, 6 eligible
+  traits and 3 climate predictors per trait.
+- Minimum sample sizes of 5 and 20 are reported as sensitivity analyses.
+- Every submission bundle must contain CSVs, figures, metadata, software
+  versions, commit SHA, workflow run ID and SHA-256 checksums.
+- GitHub Actions artifacts are temporary working products; the frozen submission
+  bundle should be archived durably, for example in Zenodo.
 
-## Project chapters
+## Interpretation limits
 
-| Chapter | Role |
-|---|---|
-| Ch.1 | Global image-derived continuous traits and macroecological pattern |
-| Ch.2 | Molecular phylogeny and ancestral-state questions |
-| Ch.3 | Trait architecture and comparative evolutionary hypotheses |
-| Ch.4 | Field and experimental tests of pollination, antagonism and abiotic protection |
-
-## Important limitations
-
-Citizen-science photographs are not colour-calibrated, image vertical is only a
-proxy for gravity, and automated outline measures remain view dependent.
-Hybridization, chloroplast capture and allopolyploid history cannot be resolved
-by a bifurcating mega-tree. The code therefore preserves QC failures, separates
-within- and between-species inference, and labels auxiliary results as
-exploratory.
+Citizen-science photographs are not colour calibrated, image vertical is only a
+proxy for gravity, and outline measures remain viewpoint dependent. Species
+slopes may reflect geographic structure or unmeasured covariates. The grafted
+mega-tree is used only as a historical sensitivity analysis because hybridization,
+chloroplast capture and polyploid history are not resolved by a single
+bifurcating tree.
