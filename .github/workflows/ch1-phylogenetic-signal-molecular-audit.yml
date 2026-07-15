@@ -215,34 +215,64 @@ jobs:
 
       - name: Validate outputs
         run: |
-          python - <<'PY'
+          python -S - <<'PY'
+          import csv
           import json
+          from collections import Counter
           from pathlib import Path
-          import pandas as pd
 
-          coverage = pd.read_csv('molecular_audit/cirsium_molecular_database_coverage.csv')
-          metadata = json.loads(Path('molecular_audit/cirsium_molecular_database_coverage_metadata.json').read_text())
-          signal = pd.read_csv('phylogenetic_signal/phylogenetic_signal_all_tree_fits.csv')
-          summary = pd.read_csv('phylogenetic_signal/phylogenetic_signal_random_tree_summary.csv')
-          report = json.loads(Path('phylogenetic_signal/phylogenetic_signal_report.json').read_text())
+          def read_csv(path):
+              with Path(path).open(newline='', encoding='utf-8-sig') as handle:
+                  return list(csv.DictReader(handle))
 
-          assert len(coverage) == 216
-          assert metadata['input_taxa'] == 216
-          assert report['n_input_taxa'] == 216
-          assert report['n_direct_backbone_taxa'] == 54
-          assert report['n_random_trees'] == 50
-          assert report['n_failed_fits'] == 0
-          assert len(summary) == report['n_endpoints']
-          assert signal.loc[signal['scenario'].eq('S2_random')].groupby('endpoint').size().eq(50).all()
-          for column in ['nuccore_all', 'nuccore_its', 'nuccore_plastid', 'nuccore_complete_plastome', 'sra_all']:
-              assert coverage[column].ge(0).all()
+          coverage = read_csv('molecular_audit/cirsium_molecular_database_coverage.csv')
+          metadata = json.loads(
+              Path('molecular_audit/cirsium_molecular_database_coverage_metadata.json')
+              .read_text(encoding='utf-8')
+          )
+          signal = read_csv('phylogenetic_signal/phylogenetic_signal_all_tree_fits.csv')
+          summary = read_csv('phylogenetic_signal/phylogenetic_signal_random_tree_summary.csv')
+          report = json.loads(
+              Path('phylogenetic_signal/phylogenetic_signal_report.json')
+              .read_text(encoding='utf-8')
+          )
+
+          assert len(coverage) == 216, len(coverage)
+          assert metadata['input_taxa'] == 216, metadata['input_taxa']
+          assert report['n_input_taxa'] == 216, report['n_input_taxa']
+          assert report['n_direct_backbone_taxa'] == 54, report['n_direct_backbone_taxa']
+          assert report['n_random_trees'] == 50, report['n_random_trees']
+          assert report['n_failed_fits'] == 0, report['n_failed_fits']
+          assert len(summary) == report['n_endpoints'], (len(summary), report['n_endpoints'])
+
+          random_counts = Counter(
+              row['endpoint'] for row in signal
+              if row['scenario'] == 'S2_random'
+          )
+          assert random_counts, 'No S2_random fits found'
+          assert set(random_counts) == {row['endpoint'] for row in summary}
+          assert all(count == 50 for count in random_counts.values()), random_counts
+
+          columns = [
+              'nuccore_all',
+              'nuccore_its',
+              'nuccore_plastid',
+              'nuccore_complete_plastome',
+              'sra_all',
+          ]
+          for column in columns:
+              values = [int(row[column]) for row in coverage]
+              assert all(value >= 0 for value in values), column
+
           print({
               'coverage_taxa': len(coverage),
-              'taxa_with_any_nucleotide': int(coverage.nuccore_all.gt(0).sum()),
-              'taxa_with_ITS': int(coverage.nuccore_its.gt(0).sum()),
-              'taxa_with_plastid': int(coverage.nuccore_plastid.gt(0).sum()),
-              'taxa_with_complete_plastome': int(coverage.nuccore_complete_plastome.gt(0).sum()),
-              'taxa_with_SRA': int(coverage.sra_all.gt(0).sum()),
+              'taxa_with_any_nucleotide': sum(int(row['nuccore_all']) > 0 for row in coverage),
+              'taxa_with_ITS': sum(int(row['nuccore_its']) > 0 for row in coverage),
+              'taxa_with_plastid': sum(int(row['nuccore_plastid']) > 0 for row in coverage),
+              'taxa_with_complete_plastome': sum(
+                  int(row['nuccore_complete_plastome']) > 0 for row in coverage
+              ),
+              'taxa_with_SRA': sum(int(row['sra_all']) > 0 for row in coverage),
               'signal_report': report,
           })
           PY
