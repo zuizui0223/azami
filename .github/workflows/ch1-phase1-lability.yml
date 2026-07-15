@@ -51,13 +51,31 @@ jobs:
           wc -l "${matches[0]}"
 
       - name: Rebuild climate table and global within-species coefficients
+        id: climate
+        shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          mkdir -p diagnostics exhaustive_within_species
           python ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py \
             --observation "$STRICT_COHORT" \
             --out-dir exhaustive_within_species \
             --min-species-model-n 5 \
-            --sample-batch-size 1024
+            --sample-batch-size 1024 \
+            2>&1 | tee diagnostics/climate_rebuild.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+
+      - name: Upload climate diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-lability-climate-diagnostics
+          path: |
+            diagnostics/
+            exhaustive_within_species/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Run final species-level lability analysis
         run: |
