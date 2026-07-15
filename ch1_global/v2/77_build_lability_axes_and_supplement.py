@@ -81,16 +81,6 @@ def linear_slope_arrays(y, x):
     p=math.erfc(abs(z)/math.sqrt(2)) if np.isfinite(z) else np.nan
     return beta,se,p,len(y),float(x.max()-x.min())
 
-def hue_slope(g,pred,min_n):
-    w=g[[HUE_SIN,HUE_COS,pred]].apply(numeric).dropna()
-    if len(w)<min_n or w[pred].nunique()<2: return None
-    xs=float(w[pred].std(ddof=1)); joint=math.sqrt(float(w[HUE_SIN].var(ddof=1)+w[HUE_COS].var(ddof=1)))
-    if xs<=0 or joint<=0: return None
-    xz=(w[pred]-w[pred].mean())/xs
-    ys=(w[HUE_SIN]-w[HUE_SIN].mean())/joint; yc=(w[HUE_COS]-w[HUE_COS].mean())/joint
-    den=float(np.dot(xz,xz)); bs=float(np.dot(xz,ys)/den); bc=float(np.dot(xz,yc)/den)
-    return dict(beta_sin=bs,beta_cos=bc,effect_magnitude=math.hypot(bs,bc),effect_direction_degrees=math.degrees(math.atan2(bs,bc))%360,n_observations=len(w),predictor_range=float(w[pred].max()-w[pred].min()))
-
 def species_slopes(obs,min_n):
     rows=[]; cols=[*LINEAR_TRAITS,HUE_SIN,HUE_COS,*PREDICTORS]
     for taxon,g0 in obs.groupby("taxon_name",sort=True):
@@ -147,7 +137,7 @@ def plot_heatmap(globalc,out):
     order=["orientation_angle_degrees_median","corolla_lab_lightness_median","corolla_lab_chroma_median",HUE,"shape_aspect_ratio_median","shape_circularity_median","shape_solidity_median","shape_width_cv_median"]
     mat=globalc.pivot_table(index="trait_endpoint",columns="predictor",values="beta_std_within",aggfunc="first").reindex(order).reindex(columns=PREDICTORS)
     mag=globalc.pivot_table(index="trait_endpoint",columns="predictor",values="effect_magnitude",aggfunc="first").reindex(order).reindex(columns=PREDICTORS)
-    arr=mat.to_numpy(float); hi=order.index(HUE); arr[hi,:]=mag.loc[HUE].to_numpy(float)
+    arr=mat.to_numpy(dtype=float, copy=True); hi=order.index(HUE); arr[hi,:]=mag.loc[HUE].to_numpy(dtype=float, copy=True)
     vmax=np.nanmax(np.abs(arr)); fig,ax=plt.subplots(figsize=(8.8,6.6)); im=ax.imshow(arr,aspect="auto",vmin=-vmax,vmax=vmax,cmap="coolwarm")
     ax.set_xticks(range(4),PREDICTORS,rotation=30,ha="right"); ax.set_yticks(range(8),[x.replace("_median","") for x in order]); ax.set_title("Figure S1. Standardized within-species climate effects")
     for i,t in enumerate(order):
