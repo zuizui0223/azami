@@ -1,0 +1,102 @@
+name: Ch1 phylogenetic evidence summary
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'analysis/summarize_phylogenetic_signal_evidence.py'
+      - 'manuscript/PHYLOGENETIC_SIGNAL_DECISION.md'
+      - '.github/workflows/ch1-phylogenetic-evidence-summary.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE_RUN_ID: '29391037056'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download validated molecular and phylogenetic artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name ch1-molecular-coverage-and-phylogenetic-signal \
+            --dir source
+          test -s source/molecular_audit/cirsium_molecular_database_coverage.csv
+          test -s source/phylogenetic_signal/phylogenetic_signal_deterministic_and_direct.csv
+          test -s source/phylogenetic_signal/phylogenetic_signal_random_tree_summary.csv
+
+      - name: Build FDR and robustness summaries
+        run: |
+          python -S analysis/summarize_phylogenetic_signal_evidence.py \
+            --molecular-dir source/molecular_audit \
+            --signal-dir source/phylogenetic_signal
+
+      - name: Validate decision outputs without third-party packages
+        run: |
+          python -S - <<'PY'
+          import csv
+          import json
+          from collections import Counter
+          from pathlib import Path
+
+          molecular = Path('source/molecular_audit')
+          signal = Path('source/phylogenetic_signal')
+          with (molecular / 'cirsium_molecular_database_coverage_summary.csv').open(newline='', encoding='utf-8') as handle:
+              coverage = list(csv.DictReader(handle))
+          with (signal / 'phylogenetic_signal_evidence_summary.csv').open(newline='', encoding='utf-8') as handle:
+              evidence = list(csv.DictReader(handle))
+          decision = json.loads((signal / 'phylogenetic_signal_decision.json').read_text(encoding='utf-8'))
+
+          assert len(coverage) == 5
+          assert len(evidence) == 12
+          assert decision['n_endpoints'] == 12
+          assert sum(decision['evidence_tier_counts'].values()) == 12
+          assert not any(row['evidence_tier'] == 'direct_backbone_supported' for row in evidence)
+          assert Counter(row['evidence_tier'] for row in evidence) == Counter({
+              'no_FDR_robust_signal': 8,
+              'grafting_sensitive': 2,
+              'requires_joint_circular_test': 2,
+          })
+          expected = {
+              'nuccore_all': 138,
+              'nuccore_its': 133,
+              'nuccore_plastid': 129,
+              'nuccore_complete_plastome': 11,
+              'sra_all': 120,
+          }
+          observed = {row['database_category']: int(row['n_taxa_with_records']) for row in coverage}
+          assert observed == expected
+          print({'coverage': observed, 'evidence_tiers': decision['evidence_tier_counts']})
+          PY
+
+      - name: Record source provenance
+        run: |
+          printf '%s\n' "$SOURCE_RUN_ID" > source/source_run_id.txt
+          printf '%s\n' "$GITHUB_SHA" > source/summary_code_git_sha.txt
+
+      - name: Upload evidence summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-phylogenetic-evidence-summary
+          path: |
+            source/molecular_audit/cirsium_molecular_database_coverage_summary.csv
+            source/phylogenetic_signal/phylogenetic_signal_evidence_summary.csv
+            source/phylogenetic_signal/phylogenetic_signal_decision.json
+            source/source_run_id.txt
+            source/summary_code_git_sha.txt
+          if-no-files-found: error
+          retention-days: 90
