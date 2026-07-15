@@ -69,17 +69,17 @@ def variation_detail(obs,min_n):
             rows.append(dict(taxon_name=taxon,trait=HUE,module="colour",n_variation=len(x),within_variation_raw=raw,within_variation_standardized=raw/denom))
     return pd.DataFrame(rows)
 
-def linear_slope(y,x):
-    w=pd.DataFrame({"y":numeric(y),"x":numeric(x)}).dropna()
-    if len(w)<3 or w.x.nunique()<2 or w.y.nunique()<2: return None
-    xs=float(w.x.std(ddof=1)); ys=float(w.y.std(ddof=1))
+def linear_slope_arrays(y, x):
+    y=np.asarray(y,float); x=np.asarray(x,float); ok=np.isfinite(y)&np.isfinite(x); y=y[ok]; x=x[ok]
+    if len(y)<3 or np.unique(x).size<2 or np.unique(y).size<2: return None
+    xs=float(np.std(x,ddof=1)); ys=float(np.std(y,ddof=1))
     if xs<=0 or ys<=0: return None
-    xz=(w.x-w.x.mean())/xs; yz=(w.y-w.y.mean())/ys
-    beta=float(np.dot(xz,yz)/np.dot(xz,xz)); resid=yz-beta*xz
-    se=float(np.sqrt(np.dot(resid,resid)/(len(w)-1)/np.dot(xz,xz))) if len(w)>2 else np.nan
+    xz=(x-x.mean())/xs; yz=(y-y.mean())/ys; den=float(np.dot(xz,xz))
+    beta=float(np.dot(xz,yz)/den); resid=yz-beta*xz
+    se=float(np.sqrt(np.dot(resid,resid)/(len(y)-1)/den)) if len(y)>2 else np.nan
     z=beta/se if np.isfinite(se) and se>0 else np.nan
     p=math.erfc(abs(z)/math.sqrt(2)) if np.isfinite(z) else np.nan
-    return beta,se,p,len(w),float(w.x.max()-w.x.min())
+    return beta,se,p,len(y),float(x.max()-x.min())
 
 def hue_slope(g,pred,min_n):
     w=g[[HUE_SIN,HUE_COS,pred]].apply(numeric).dropna()
@@ -92,18 +92,27 @@ def hue_slope(g,pred,min_n):
     return dict(beta_sin=bs,beta_cos=bc,effect_magnitude=math.hypot(bs,bc),effect_direction_degrees=math.degrees(math.atan2(bs,bc))%360,n_observations=len(w),predictor_range=float(w[pred].max()-w[pred].min()))
 
 def species_slopes(obs,min_n):
-    rows=[]
-    for taxon,g in obs.groupby("taxon_name",sort=True):
+    rows=[]; cols=[*LINEAR_TRAITS,HUE_SIN,HUE_COS,*PREDICTORS]
+    for taxon,g0 in obs.groupby("taxon_name",sort=True):
+        g=g0[cols].apply(pd.to_numeric,errors="coerce")
+        arrays={c:g[c].to_numpy(float) for c in cols}
         for trait in LINEAR_TRAITS:
             for pred in PREDICTORS:
-                res=linear_slope(g[trait],g[pred])
+                res=linear_slope_arrays(arrays[trait],arrays[pred])
                 if res is None or res[3]<min_n: continue
                 b,se,p,n,rng=res
                 rows.append(dict(taxon_name=taxon,trait=trait,module=MODULE[trait],predictor=pred,endpoint_type="linear",beta_std=b,se=se,p_value=p,effect_magnitude=abs(b),effect_direction_degrees=0.0 if b>=0 else 180.0,n_observations=n,predictor_range=rng))
         for pred in PREDICTORS:
-            res=hue_slope(g,pred,min_n)
-            if res:
-                rows.append(dict(taxon_name=taxon,trait=HUE,module="colour",predictor=pred,endpoint_type="circular_joint",beta_std=np.nan,se=np.nan,p_value=np.nan,**res))
+            ok=np.isfinite(arrays[HUE_SIN])&np.isfinite(arrays[HUE_COS])&np.isfinite(arrays[pred])
+            n=int(ok.sum())
+            if n<min_n: continue
+            xs=arrays[pred][ok]; ss=arrays[HUE_SIN][ok]; cc=arrays[HUE_COS][ok]
+            if np.unique(xs).size<2: continue
+            xsd=float(np.std(xs,ddof=1)); joint=math.sqrt(float(np.var(ss,ddof=1)+np.var(cc,ddof=1)))
+            if xsd<=0 or joint<=0: continue
+            xz=(xs-xs.mean())/xsd; den=float(np.dot(xz,xz)); ys=(ss-ss.mean())/joint; yc=(cc-cc.mean())/joint
+            bs=float(np.dot(xz,ys)/den); bc=float(np.dot(xz,yc)/den)
+            rows.append(dict(taxon_name=taxon,trait=HUE,module="colour",predictor=pred,endpoint_type="circular_joint",beta_std=np.nan,se=np.nan,p_value=np.nan,beta_sin=bs,beta_cos=bc,effect_magnitude=math.hypot(bs,bc),effect_direction_degrees=math.degrees(math.atan2(bs,bc))%360,n_observations=n,predictor_range=float(xs.max()-xs.min())))
     return pd.DataFrame(rows)
 
 def bh(p):
@@ -117,7 +126,7 @@ def summarize_axes(var,slopes,min_traits,min_preds):
     tr=tr[tr.n_predictors_response>=min_preds].copy()
     sr=tr.groupby("taxon_name",as_index=False).agg(species_environmental_responsiveness_index=("trait_environmental_responsiveness",lambda x:float(np.sqrt(np.mean(np.square(x))))),n_traits_response=("trait","nunique"),min_predictors_per_trait=("n_predictors_response","min"))
     axes=vr.merge(sr,on="taxon_name",how="inner")
-    axes["primary_complete"]=(axes.n_traits_variation>=min_traits)&(axes.n_traits_response>=min_traits)
+    axes["primary_complete"]= (axes.n_traits_variation>=min_traits)&(axes.n_traits_response>=min_traits)
     axes["quadrant_eligible"]=axes.primary_complete
     modv=var.groupby(["taxon_name","module"],as_index=False).agg(module_within_variation=("within_variation_standardized","mean"),n_traits_variation=("trait","nunique"))
     modr=tr.groupby(["taxon_name","module"],as_index=False).agg(module_environmental_responsiveness=("trait_environmental_responsiveness",lambda x:float(np.sqrt(np.mean(np.square(x))))),n_traits_response=("trait","nunique"))
@@ -162,15 +171,17 @@ def plot_quadrants(axes,out):
     fig.tight_layout(); fig.savefig(out.with_suffix('.png'),dpi=300); fig.savefig(out.with_suffix('.pdf')); plt.close(fig)
     return p
 
-def run_threshold(obs,min_n,min_traits,min_preds):
-    v=variation_detail(obs,min_n); s=species_slopes(obs,min_n); a,t,m=summarize_axes(v,s,min_traits,min_preds); return v,s,a,t,m
+def summarize_threshold(v_all,s_all,min_n,min_traits,min_preds):
+    v=v_all[v_all.n_variation>=min_n].copy(); s=s_all[s_all.n_observations>=min_n].copy()
+    a,t,m=summarize_axes(v,s,min_traits,min_preds); return v,s,a,t,m
 
 def main():
     a=parse_args(); out=Path(a.out_dir); out.mkdir(parents=True,exist_ok=True)
     obs=pd.read_csv(a.observations,low_memory=False); coef=pd.read_csv(a.coefficients,low_memory=False)
     req={"taxon_name",*LINEAR_TRAITS,HUE_SIN,HUE_COS,*PREDICTORS}; miss=sorted(req-set(obs.columns))
     if miss: raise ValueError(f"Missing observation columns: {miss}")
-    v,s,axes,tr,mods=run_threshold(obs,a.min_species_n,a.min_traits,a.min_predictors)
+    base_min=min(5,a.min_species_n); v_all=variation_detail(obs,base_min); s_all=species_slopes(obs,base_min)
+    v,s,axes,tr,mods=summarize_threshold(v_all,s_all,a.min_species_n,a.min_traits,a.min_predictors)
     s["q_within_species_bh"]=bh(s.p_value); s["fdr_significant_0_05"]=s.q_within_species_bh<.05
     axes=axes.merge(s.groupby("taxon_name",as_index=False).agg(n_species_specific_effects=("effect_magnitude","count"),n_fdr_significant_linear_effects=("fdr_significant_0_05","sum")),on="taxon_name",how="left")
     quad=plot_quadrants(axes,out/"figure_species_lability_quadrants"); axes=axes.merge(quad[["taxon_name","quadrant"]],on="taxon_name",how="left")
@@ -178,7 +189,7 @@ def main():
     v.to_csv(out/"species_trait_within_variation.csv",index=False); s.to_csv(out/"table_s2_species_specific_coefficients.csv",index=False); axes.to_csv(out/"species_lability_axes.csv",index=False); tr.to_csv(out/"species_trait_environmental_responsiveness.csv",index=False); mods.to_csv(out/"species_module_lability.csv",index=False); globalc.to_csv(out/"table_s1_all_global_coefficients.csv",index=False)
     sens=[]; base=axes.set_index("taxon_name")
     for n in [5,10,20]:
-        _,_,ax,_,_=run_threshold(obs,n,a.min_traits,a.min_predictors); ax.to_csv(out/f"species_lability_axes_min_n_{n}.csv",index=False)
+        _,_,ax,_,_=summarize_threshold(v_all,s_all,n,a.min_traits,a.min_predictors); ax.to_csv(out/f"species_lability_axes_min_n_{n}.csv",index=False)
         j=base[["species_within_variation_index","species_environmental_responsiveness_index"]].join(ax.set_index("taxon_name")[["species_within_variation_index","species_environmental_responsiveness_index"]],lsuffix="_primary",rsuffix="_sensitivity",how="inner")
         sens.append(dict(min_species_n=n,n_species_axes=len(ax),n_primary_complete=int(ax.primary_complete.sum()),variation_spearman=j.iloc[:,[0,2]].corr(method="spearman").iloc[0,1] if len(j)>2 else np.nan,responsiveness_spearman=j.iloc[:,[1,3]].corr(method="spearman").iloc[0,1] if len(j)>2 else np.nan))
     pd.DataFrame(sens).to_csv(out/"sensitivity_minimum_sample_size.csv",index=False)
