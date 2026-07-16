@@ -2,87 +2,133 @@
 
 ## Purpose
 
-This note extends the Introduction literature audit into the trait-specific and taxon-specific evidence needed for the Discussion. It distinguishes direct experimental evidence from plausible mechanisms and from hypotheses that remain untested in *Cirsium*.
+This note extends the Introduction literature audit into the trait-specific and taxon-specific evidence needed for the Discussion. It separates direct manipulation, observational association, mechanistic plausibility and untested extrapolation. Mechanisms demonstrated in other plant systems are not treated as mechanisms demonstrated in *Cirsium*.
+
+## Evidence grades
+
+- **Grade A — direct manipulation:** floral orientation, colour or exposure was experimentally altered and a thermal, behavioural or reproductive response was measured.
+- **Grade B — comparative or observational evidence:** naturally varying orientations or colours were associated with temperature, visitors, environment or reproductive output.
+- **Grade C — mechanistic background:** biochemical, optical or physiological work establishes a plausible pathway without testing the focal ecological association.
+- **Grade D — hypothesis only:** a recurrent natural-history explanation with little direct experimental support for the focal trait or taxon.
 
 ## 1. Floral orientation
 
-### Experimental evidence
+### Direct and comparative evidence
 
-- **Atamian et al. (2016), Science.** Mature sunflower capitula forced to face east warmed more rapidly in the morning and received more pollinator visits than west-facing capitula. This is direct evidence that fixed floral orientation can alter floral temperature and pollinator visitation. It supports treating orientation as an ecological interface, but not assuming that the same mechanism applies to nodding thistles.
-- **Kudo (1995), Oikos.** Experimental work on the spring ephemeral *Adonis ramosa* linked floral heliotropism to higher floral temperature and reproductive performance. This supports a temperature-mediated route by which orientation can affect reproduction.
-- **Patiño, Jeffree & Grace (2002), Oecologia.** Orientation in tropical convolvulaceous flowers altered radiative loading and gynoecium temperature. The study is important because it shows that orientation may either enhance warming or prevent overheating depending on climate and floral geometry.
-- **Kevan (1975), Science** and related arctic-flower work showed that sun-tracking flowers can function as solar furnaces for flowers and visiting insects. This establishes a mechanistic link among orientation, floral temperature and pollinator behaviour in cold environments.
+- **Atamian et al. (2016), Science — Grade A.** Manipulating mature sunflower capitula away from their normal eastward orientation reduced morning warming and pollinator visitation; experimentally warming west-facing heads partly restored visitation. This is strong evidence that fixed capitulum orientation can alter floral temperature and visitor behaviour. It does not establish the function of nodding versus erect heads in thistles.
+- **Kudo (1995), Oikos — Grade A/B.** Work on the spring ephemeral *Adonis ramosa* showed that floral heliotropism increases floral temperature and examined consequences for floral function. It supports a temperature-mediated pathway in cold environments, but the exact fitness response should be quoted only after checking the full paper.
+- **Patiño, Jeffree & Grace (2002), Oecologia — Grade A/B.** Tropical convolvulaceous flowers were oriented in ways that altered solar loading and gynoecium temperature. The study is important because orientation can reduce overheating rather than simply maximize warming; the sign of the effect depends on climate, flower geometry and time of day.
+- **Kevan (1975), Science — Grade B/mechanistic field evidence.** Sun-facing Arctic flowers acted as thermal concentrators for floral tissues and visiting insects. This is foundational evidence for a thermal interface between orientation, flowers and pollinators, but not a direct analogue of fixed nodding capitula.
 
 ### Rain protection
 
-Rain can damage pollen, dilute nectar, reduce pollinator activity and alter floral temperature. Historical natural-history literature often interprets pendulous flowers as rain protection, but direct manipulative evidence is thinner than the temperature literature. The manuscript should therefore avoid writing that nodding capitula are an adaptation to rain. A safer statement is that orientation changes exposure to rainfall and may affect pollen, nectar and visitor access, with the direction and fitness consequences requiring species-specific tests.
+Rain can wet pollen, dilute or remove nectar, alter floral temperature and suppress visitor activity. Pendulous flowers have often been interpreted as rain-protective structures, but the literature located so far contains much less direct manipulation of floral angle under rainfall than it does thermal experiments. The manuscript should therefore not state that nodding capitula evolved as rain protection.
 
-### Safe interpretation for this study
+Safe wording:
 
-The global association of capitulum orientation with environmental niches can be discussed against three non-exclusive mechanisms:
+> Capitulum orientation changes the angle at which reproductive tissues encounter precipitation and solar radiation, but the relative importance of rain protection, thermal regulation and visitor presentation remains unresolved in thistles.
 
-1. radiative heating or cooling;
-2. exposure to rainfall and water retention;
-3. visual and mechanical presentation to floral visitors.
+### Evidence boundary for the present study
 
-The present analysis cannot distinguish these mechanisms and does not estimate selection.
+The global environmental structure of capitulum orientation may be discussed against three non-exclusive interfaces:
+
+1. radiative warming or avoidance of overheating;
+2. rainfall exposure and water retention;
+3. visual, thermal and mechanical presentation to floral visitors.
+
+The present analysis cannot distinguish these mechanisms, estimate selection or demonstrate adaptation. A causal test in *Cirsium* would require angle manipulation, floral-temperature logging, simulated or natural rainfall, pollen viability or nectar measurements, visitor observations and seed-set responses.
 
 ## 2. Floral colour
 
-### Pigment biology and abiotic environment
+### Evolution and pigment biology
 
-- **Rausher (2008), International Journal of Plant Sciences.** Synthesizes evolutionary transitions in floral colour and shows that repeated colour changes can arise through changes in anthocyanin-pathway genes and their regulation.
-- **Davies (2009), New Phytologist.** Reviews the biochemical and genetic control of anthocyanin production and the environmental sensitivity of pigment accumulation.
-- Anthocyanin accumulation can respond to temperature, light, oxidative stress and developmental state. These physiological responses make climatic associations plausible, but do not by themselves show adaptive evolution of floral colour.
-- Soil chemistry can influence colour in specific systems through pH, metal availability or pigment complexation. Such examples justify testing edaphic covariates, but should not be generalized to all thistles without chemical measurements.
+- **Rausher (2008), International Journal of Plant Sciences — Grade C/evolutionary synthesis.** Floral colour transitions repeatedly involve structural and regulatory changes in the anthocyanin pathway. This supports the evolutionary lability of pigment production but does not imply that image hue identifies a particular mutation or pigment concentration.
+- Anthocyanin accumulation is developmentally regulated and can respond to light, temperature, oxidative stress and resource status. Such physiology makes climate associations plausible, but vegetative stress responses cannot be assumed to explain petal colour without floral-tissue measurements.
+- Soil chemistry can modify floral colour in particular systems through pH, metal availability, co-pigmentation or pigment complexation. Hydrangea is a well-known special case, not a general model for all purple or blue flowers. Edaphic associations in thistles should therefore be interpreted as hypotheses requiring pigment chemistry and tissue elemental analysis.
 
-### Pollinator perception and behaviour
+### Receiver vision and pollinator behaviour
 
-- **Chittka (1992)** developed the bee colour hexagon, providing a receptor-based framework for comparing floral colours from a hymenopteran perspective.
-- **Chittka et al. (1994), Vision Research.** Demonstrated that ultraviolet reflection is a major component of floral signals and that human-visible colour categories do not capture hymenopteran perception.
-- **Briscoe & Chittka (2001), Annual Review of Entomology.** Reviews the diversity and evolution of insect colour vision.
-- **Weiss (1991), Nature** and later studies showed that floral colour change can guide pollinators toward rewarding or sexually functional flowers.
+- **Chittka (1992) — Grade C/methodological foundation.** The bee colour hexagon represents colour through hymenopteran photoreceptor excitation rather than human RGB categories.
+- **Chittka et al. (1994), Vision Research — Grade B/C.** Ultraviolet reflectance is a substantial component of many floral signals, and human-visible similarity does not imply similarity to Hymenoptera.
+- **Briscoe & Chittka (2001) — review.** Insect visual systems vary among lineages; a single pollinator colour space cannot be assumed for all visitors.
+- **Weiss (1991), Nature — Grade A/B.** Floral colour change can direct pollinators toward rewarding or reproductively functional flowers. This supports colour as an information signal, but not a universal preference for a particular hue.
+- Pollinator-mediated flower-colour divergence has been demonstrated in other systems, including *Phlox*, but such studies concern specific alleles, species interactions and pollinator communities. They establish that pollinator selection can act on colour, not that it explains the global thistle pattern.
 
-### Safe interpretation for this study
+### Evidence boundary for the present study
 
-Image-derived hue, chroma and lightness are measurements in a camera-dependent visible colour space. They are not direct estimates of pollinator-perceived colour, pigment concentration or anthocyanin-pathway activity. The observed colour-environment structure can motivate tests of pigment physiology, soil effects and pollinator vision, but those mechanisms require calibrated reflectance spectra, pigment chemistry and visitor-specific visual models.
+Image-derived hue, chroma and lightness are camera-derived visible traits. They are not direct measurements of:
+
+- reflectance spectra or ultraviolet patterns;
+- pollinator-receptor excitation;
+- anthocyanin identity or concentration;
+- vacuolar pH, metal complexation or co-pigmentation;
+- pollinator preference or reproductive fitness.
+
+Safe wording:
+
+> Colour showed environmental structure consistent with several physiological and signalling pathways, but resolving those pathways requires calibrated reflectance, pigment chemistry and visitor-specific visual models.
+
+The Taiwan–Ryukyu white/pink/purple system is an appropriate mechanistic extension because it can separate the origin of colour loss or re-expression from the contemporary maintenance of colour differences. It is not evidence for the mechanism of the present global correlations. This distinction is important in the current project plan. fileciteturn154file0
 
 ## 3. Shape and two-dimensional image geometry
 
-Two-dimensional outline measures combine biological structure with viewpoint, opening stage, occlusion and detector segmentation. Their value in this study is not that they provide a perfect three-dimensional morphology, but that they quantify reproducible visible form under explicit assessability and quality-control rules. High within-species shape dispersion with weak climate tracking should therefore be discussed as a mixture of developmental, ecological and technical variation rather than as demonstrated plasticity.
+Two-dimensional outline measures combine biological architecture with viewpoint, opening stage, occlusion and detector segmentation. Their value is that they quantify visible form under explicit quality-control rules, not that they reconstruct perfect three-dimensional morphology.
+
+High within-species shape dispersion with weak climate tracking is therefore compatible with several non-exclusive components:
+
+- developmental and phenological variation;
+- local biological differences;
+- unmeasured ecology;
+- viewing geometry and partial occlusion;
+- segmentation error.
+
+It should not be labelled plasticity without repeated genotypes or experimental environments. A stronger image-methods contribution is the explicit separation of assessable observations, model outputs and audited biological claims; the project already treats literature evidence, image observations and model predictions as distinct data layers. fileciteturn154file1
 
 ## 4. *Cirsium* hybridization, ploidy and lineage boundaries
 
 ### Primary evidence
 
-- **Ackerfield et al. (2020), TAXON.** Molecular phylogenetic analyses showed that traditional generic delimitations in the Carduus–Cirsium group do not map cleanly onto evolutionary clades.
-- **Bureš et al. (2018), Preslia.** *Cirsium greimleri* was separated from the formerly broader *C. waldsteinii* complex using chromosome number, morphology and genetic evidence. The diploid and tetraploid lineages illustrate how cytotype and morphology can reveal overlooked evolutionary units.
-- **Michálková et al. (2023), Plant Systematics and Evolution.** Documented hybridization threatening the restricted endemic *C. bertolonii*, providing direct evidence that contemporary gene flow can blur species boundaries and affect conservation.
-- **Bureš et al. (2023), Preslia.** Demonstrated extensive genome-size variation, dysploidy and polyploidy across Carduinae, while also showing that genome-size evolution retains broad phylogenetic structure.
-- **Moreyra et al. (2023), Plants.** Reclassified African mountain thistles into distinct genera, demonstrating that morphologically similar thistle lineages can represent separate clades.
+- **Ackerfield et al. (2020), Taxon.** Molecular analyses showed that traditional generic boundaries in the Carduus–Cirsium group do not map cleanly onto evolutionary clades.
+- **Bureš et al. (2018), Preslia.** *Cirsium greimleri* was separated from the formerly broader *C. waldsteinii* complex using chromosome number, morphology and genetic evidence. Diploid and tetraploid lineages illustrate how cytotype structure may reveal evolutionary units obscured by a broad species concept.
+- **Michálková et al. (2023), Plant Systematics and Evolution.** Contemporary hybridization involving the narrow endemic *C. bertolonii* provides direct evidence that gene flow can blur lineage boundaries and affect conservation.
+- **Bureš et al. (2023), Preslia.** Genome-size variation, dysploidy and polyploidy are widespread across Carduinae, although broad phylogenetic structure remains detectable.
+- **Moreyra et al. (2023), Plants.** African mountain thistles assigned to broad traditional genera were resolved as distinct clades and reclassified, demonstrating repeated mismatch between gross morphological similarity and lineage history.
 
 ### Interpretation boundary
 
-These studies establish systematic complexity, cytotype diversity and recurrent hybridization in the group. They do not prove that *Cirsium* as a whole underwent rapid adaptive radiation, nor that hybridization or polyploidy caused the trait patterns in the present analysis. They justify treating a single grafted bifurcating tree as uncertain and motivate future nuclear-genomic, cytotype and network analyses.
+These studies establish systematic complexity, cytotype diversity and hybridization within the broader group. They do not demonstrate that:
 
-## 5. Implications for manuscript structure
+- *Cirsium* as a whole is a rapid adaptive radiation;
+- weak phylogenetic signal in the present study was caused by hybridization or polyploidy;
+- a chloroplast tree alone represents the species history of allopolyploid or introgressed taxa;
+- the measured capitulum traits crossed phylogenetic boundaries because of adaptive convergence.
 
-### Introduction
+They justify propagating tree-placement uncertainty and motivate future nuclear-genomic, cytotype and network analyses. The current database audit also shows that available ITS, plastid, plastome and SRA records do not form one homogeneous nuclear dataset, so a new species-level tree cannot be assembled reliably by concatenating whatever sequence exists.
 
-Use trait-specific ecology only to explain why orientation, colour and form are biologically distinct modules. Keep mechanisms as hypotheses.
+## 5. Claim-level decisions for the manuscript
 
-### Results
+### Suitable for the Introduction
 
-Report associations and scale differences without mechanistic language.
+- Floral orientation changes thermal and visitor-facing conditions in several experimentally studied systems.
+- Floral colour is produced by biochemistry that is environmentally responsive and is perceived through receiver-specific visual systems.
+- The Carduus–Cirsium group combines conspicuous morphological diversity with systematic, cytogenetic and reticulate complexity.
+- Public photographs can complement trait databases only if assessability and observation bias are made explicit.
 
-### Discussion
+### Suitable for the Discussion as hypotheses
 
-1. interpret orientation against thermal, rain-exposure and visitor-presentation mechanisms;
-2. interpret colour against pigment physiology, edaphic context and receiver vision;
-3. interpret shape as a combination of developmental architecture and image geometry;
-4. use hybridization and ploidy to explain why historical interpretation is difficult, not as post-hoc causes of weak signal.
+- Orientation–environment structure may involve thermal regulation, rain exposure or visitor presentation.
+- Colour–environment structure may involve pigment physiology, edaphic context or pollinator communities.
+- Weak or grafting-sensitive historical patterns may reflect unresolved lineage history, but cannot be attributed to hybridization or polyploidy from the present data.
 
-## References to add to the working bibliography
+### Not suitable as conclusions
+
+- Nodding is a rain-avoidance adaptation.
+- Purple colour is caused by a particular climate variable.
+- Image hue measures bee-perceived colour or anthocyanin concentration.
+- Shape dispersion demonstrates plasticity.
+- *Cirsium* is a demonstrated rapid adaptive radiation.
+
+## References requiring final publisher-level verification
 
 - Atamian HS, Creux NM, Brown EA, Garner AG, Blackman BK, Harmer SL. 2016. Circadian regulation of sunflower heliotropism, floral orientation, and pollinator visits. *Science* 353: 587–590. https://doi.org/10.1126/science.aaf9793
 - Kudo G. 1995. Ecological significance of flower heliotropism in the spring ephemeral *Adonis ramosa* (Ranunculaceae). *Oikos* 72: 14–20.
@@ -93,5 +139,5 @@ Report associations and scale differences without mechanistic language.
 - Chittka L, Shmida A, Troje N, Menzel R. 1994. Ultraviolet as a component of flower reflections, and the colour perception of Hymenoptera. *Vision Research* 34: 1489–1508.
 - Briscoe AD, Chittka L. 2001. The evolution of color vision in insects. *Annual Review of Entomology* 46: 471–510.
 - Weiss MR. 1991. Floral colour changes as cues for pollinators. *Nature* 354: 227–229.
-- Bureš P, Knoll A, Michálková E, Šmarda P, Šmerda J. 2018. *Cirsium greimleri*: a new species of thistle endemic to the Eastern Alps and Dinarides. *Preslia* 90.
-- Michálková E, Šmerda J, Plačková K, Knoll A, Bureš P. 2023. Hybridization may endanger the rare North Apennine endemic *Cirsium bertolonii*. *Plant Systematics and Evolution* 309.
+- Bureš P, Knoll A, Michálková E, Šmarda P, Šmerda J. 2018. *Cirsium greimleri*: a new species of thistle endemic to the Eastern Alps and Dinarides. *Preslia* 90. Pagination remains to be verified from the publisher PDF.
+- Michálková E, Šmerda J, Plačková K, Knoll A, Bureš P. 2023. Hybridization may endanger the rare North Apennine endemic *Cirsium bertolonii*. *Plant Systematics and Evolution* 309. Article number and DOI remain to be verified from the publisher record.
