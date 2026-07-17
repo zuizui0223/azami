@@ -1,0 +1,100 @@
+name: Ch1 prepare spatial diagnostic input
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Workflow run containing frozen observation and prediction exports
+        required: true
+        type: string
+      artifact_name:
+        description: Exact artifact name to download
+        required: true
+        type: string
+      observations_csv:
+        description: CSV path inside artifact for frozen observations
+        required: true
+        type: string
+      predictions_csv:
+        description: CSV path inside artifact for observation-level fitted values or residuals
+        required: true
+        type: string
+      regions_csv:
+        description: Repository path to completed reviewed broad-region lookup CSV
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pandas
+
+      - name: Download frozen artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: source-artifact
+
+      - name: Resolve and validate input paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          OBS="source-artifact/${{ inputs.observations_csv }}"
+          PRED="source-artifact/${{ inputs.predictions_csv }}"
+          REG="${{ inputs.regions_csv }}"
+          test -f "$OBS" || { echo "Missing observations CSV: $OBS" >&2; exit 1; }
+          test -f "$PRED" || { echo "Missing predictions CSV: $PRED" >&2; exit 1; }
+          test -f "$REG" || { echo "Missing region lookup CSV: $REG" >&2; exit 1; }
+          echo "OBS=$OBS" >> "$GITHUB_ENV"
+          echo "PRED=$PRED" >> "$GITHUB_ENV"
+          echo "REG=$REG" >> "$GITHUB_ENV"
+
+      - name: Prepare diagnostic table
+        run: |
+          mkdir -p spatial-diagnostic-input
+          python analysis/prepare_spatial_diagnostic_input.py \
+            --observations "$OBS" \
+            --predictions "$PRED" \
+            --regions "$REG" \
+            --output spatial-diagnostic-input/spatial_diagnostic_input.csv
+
+      - name: Record workflow provenance
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = {
+              "source_run_id": "${{ inputs.source_run_id }}",
+              "artifact_name": "${{ inputs.artifact_name }}",
+              "observations_csv": "${{ inputs.observations_csv }}",
+              "predictions_csv": "${{ inputs.predictions_csv }}",
+              "regions_csv": "${{ inputs.regions_csv }}",
+              "repository": os.environ.get("GITHUB_REPOSITORY"),
+              "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
+              "commit_sha": os.environ.get("GITHUB_SHA"),
+          }
+          Path("spatial-diagnostic-input/workflow_provenance.json").write_text(
+              json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+          )
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-spatial-diagnostic-input-${{ github.run_id }}
+          path: spatial-diagnostic-input
+          if-no-files-found: error
