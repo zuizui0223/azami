@@ -1,0 +1,4 @@
+image_id,object_id,assessable_for_detection,x1,y1,x2,y2,missed_head_category,audit_notes
+example_image_001,head_001,true,100,80,260,250,,replace example row
+example_image_002,,true,,,,,,true no-head image
+example_image_003,,false,,,,,occluded,whole image cannot be audited reliably

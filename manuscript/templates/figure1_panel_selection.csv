@@ -1,0 +1,2 @@
+panel_id,annotation_unit_id,panel_role,source_image_path,tight_crop_path,context_crop_path,bbox_x1,bbox_y1,bbox_x2,bbox_y2,observation_id,photo_id,taxon,photo_license_code,photo_attribution,original_observation_url,access_date,crop_or_overlay_applied,licence_verified,notes
+A1,replace_annotation_unit,all_traits_assessable,/absolute/path/source.jpg,/absolute/path/tight.jpg,/absolute/path/context.jpg,100,80,260,250,replace_obs,replace_photo,replace_taxon,cc-by,replace attribution,replace URL,2026-07-17,true,true,replace example row
