@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Validate and freeze taxonomic decisions for Chapter 1.
+"""Build or validate the Chapter 1 taxonomic freeze table.
 
-The script compares every taxon name present in one or more analysis tables with a
-curated decision table. It fails closed when names are missing, duplicated,
-unresolved, or mapped inconsistently. It does not query an external taxonomy and
-therefore preserves a human-reviewed, citable decision trail.
+The script collects exact names from one or more frozen analysis tables. In
+``--initialize`` mode it writes a complete review template without making any
+taxonomic judgement. In validation mode it fails closed when names are missing,
+duplicated, unresolved, excluded while still active, or insufficiently sourced.
 """
 
 from __future__ import annotations
@@ -61,22 +61,68 @@ def detect_name_column(rows: list[dict[str, str]], explicit: str | None) -> str:
     )
 
 
-def collect_names(paths: Iterable[Path], explicit_column: str | None) -> tuple[set[str], dict[str, int]]:
+def collect_names(
+    paths: Iterable[Path], explicit_column: str | None
+) -> tuple[set[str], dict[str, int], dict[str, list[str]]]:
     names: set[str] = set()
     counts: Counter[str] = Counter()
+    sources: dict[str, list[str]] = defaultdict(list)
     for path in paths:
         rows = read_csv(path)
         column = detect_name_column(rows, explicit_column)
+        seen_here: set[str] = set()
         for row in rows:
             name = row.get(column, "").strip()
             if not name:
                 continue
             names.add(name)
             counts[name] += 1
-    return names, dict(counts)
+            seen_here.add(name)
+        for name in sorted(seen_here):
+            sources[name].append(str(path))
+    return names, dict(counts), dict(sources)
 
 
-def validate_decisions(rows: list[dict[str, str]]) -> tuple[dict[str, dict[str, str]], list[str]]:
+def write_initial_template(
+    output_path: Path,
+    observed_names: set[str],
+    counts: dict[str, int],
+    sources: dict[str, list[str]],
+) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fields = [
+        "input_name",
+        "accepted_name",
+        "decision",
+        "authority_source",
+        "authority_record",
+        "checked_date",
+        "analysis_row_count",
+        "source_tables",
+        "notes",
+    ]
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        for name in sorted(observed_names):
+            writer.writerow(
+                {
+                    "input_name": name,
+                    "accepted_name": name,
+                    "decision": "provisional",
+                    "authority_source": "",
+                    "authority_record": "",
+                    "checked_date": "",
+                    "analysis_row_count": counts.get(name, 0),
+                    "source_tables": ";".join(sources.get(name, [])),
+                    "notes": "",
+                }
+            )
+
+
+def validate_decisions(
+    rows: list[dict[str, str]],
+) -> tuple[dict[str, dict[str, str]], list[str]]:
     errors: list[str] = []
     if not rows:
         return {}, ["Decision table is empty"]
@@ -96,34 +142,66 @@ def validate_decisions(rows: list[dict[str, str]]) -> tuple[dict[str, dict[str, 
         by_input[input_name].append(row)
         if decision not in ALLOWED_DECISIONS:
             errors.append(
-                f"row {row_number}: decision {decision!r} is not one of {sorted(ALLOWED_DECISIONS)}"
+                f"row {row_number}: decision {decision!r} is not one of "
+                f"{sorted(ALLOWED_DECISIONS)}"
             )
         if decision != "excluded" and not accepted_name:
             errors.append(f"row {row_number}: accepted_name is required for {decision}")
         if not row["authority_source"].strip():
             errors.append(f"row {row_number}: authority_source is blank")
+        if not row["authority_record"].strip():
+            errors.append(f"row {row_number}: authority_record is blank")
         if not row["checked_date"].strip():
             errors.append(f"row {row_number}: checked_date is blank")
 
     for input_name, matches in by_input.items():
         if len(matches) != 1:
-            errors.append(f"{input_name!r}: {len(matches)} decision rows; exactly one required")
+            errors.append(
+                f"{input_name!r}: {len(matches)} decision rows; exactly one required"
+            )
 
-    unique = {name: rows[0] for name, rows in by_input.items() if len(rows) == 1}
+    unique = {name: matches[0] for name, matches in by_input.items() if len(matches) == 1}
     return unique, errors
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--taxon-table", action="append", required=True, type=Path)
-    parser.add_argument("--decisions", required=True, type=Path)
+    parser.add_argument("--decisions", type=Path)
+    parser.add_argument("--initialize", action="store_true")
     parser.add_argument("--name-column")
     parser.add_argument("--output-dir", required=True, type=Path)
     args = parser.parse_args()
 
-    observed_names, observation_counts = collect_names(args.taxon_table, args.name_column)
-    decisions, errors = validate_decisions(read_csv(args.decisions))
+    observed_names, observation_counts, sources = collect_names(
+        args.taxon_table, args.name_column
+    )
+    args.output_dir.mkdir(parents=True, exist_ok=True)
 
+    if args.initialize:
+        template_path = args.output_dir / "taxonomic_decisions_to_review.csv"
+        write_initial_template(
+            template_path, observed_names, observation_counts, sources
+        )
+        summary = {
+            "generated_utc": datetime.now(timezone.utc).isoformat(),
+            "mode": "initialize",
+            "input_tables": [str(path) for path in args.taxon_table],
+            "n_observed_names": len(observed_names),
+            "template": str(template_path),
+            "status": "review_required",
+        }
+        (args.output_dir / "taxonomic_freeze_summary.json").write_text(
+            json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        print(f"Wrote review template for {len(observed_names)} names: {template_path}")
+        return 0
+
+    if args.decisions is None:
+        parser.error("--decisions is required unless --initialize is used")
+
+    decisions, errors = validate_decisions(read_csv(args.decisions))
     missing = sorted(observed_names - set(decisions))
     unused = sorted(set(decisions) - observed_names)
     unresolved = sorted(
@@ -150,7 +228,6 @@ def main() -> int:
         if row["decision"].strip().lower() != "excluded":
             accepted_to_inputs[row["accepted_name"].strip()].append(name)
 
-    args.output_dir.mkdir(parents=True, exist_ok=True)
     output_rows = []
     for name in sorted(observed_names):
         row = decisions.get(name, {})
@@ -163,18 +240,23 @@ def main() -> int:
                 "authority_record": row.get("authority_record", ""),
                 "checked_date": row.get("checked_date", ""),
                 "analysis_row_count": observation_counts.get(name, 0),
+                "source_tables": ";".join(sources.get(name, [])),
                 "notes": row.get("notes", ""),
             }
         )
 
     table_path = args.output_dir / "taxonomic_freeze_decisions.csv"
     with table_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(output_rows[0]) if output_rows else ["input_name"])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(output_rows[0]) if output_rows else ["input_name"],
+        )
         writer.writeheader()
         writer.writerows(output_rows)
 
     summary = {
         "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "mode": "validate",
         "input_tables": [str(path) for path in args.taxon_table],
         "decision_table": str(args.decisions),
         "n_observed_names": len(observed_names),
