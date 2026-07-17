@@ -1,0 +1,77 @@
+name: Ch1 spatial robustness audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Workflow run containing the frozen diagnostic input artifact
+        required: true
+        type: string
+      artifact_name:
+        description: Exact artifact name containing one spatial diagnostic CSV
+        required: true
+        type: string
+      input_csv:
+        description: Relative path to the diagnostic CSV after extraction
+        required: true
+        type: string
+      permutations:
+        description: Moran permutation count
+        required: false
+        default: '999'
+        type: string
+      k_neighbors:
+        description: Number of nearest neighbours
+        required: false
+        default: '8'
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy pandas scipy
+      - name: Download frozen artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: source_artifact
+      - name: Run diagnostic audit
+        run: |
+          test -f "source_artifact/${{ inputs.input_csv }}"
+          python analysis/audit_spatial_robustness.py \
+            --input "source_artifact/${{ inputs.input_csv }}" \
+            --output-dir spatial_robustness_audit \
+            --permutations "${{ inputs.permutations }}" \
+            --k "${{ inputs.k_neighbors }}"
+      - name: Record workflow provenance
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          Path('spatial_robustness_audit/workflow_provenance.json').write_text(json.dumps({
+            'repository': os.environ['GITHUB_REPOSITORY'],
+            'commit': os.environ['GITHUB_SHA'],
+            'workflow_run_id': os.environ['GITHUB_RUN_ID'],
+            'source_run_id': '${{ inputs.source_run_id }}',
+            'source_artifact': '${{ inputs.artifact_name }}',
+            'source_csv': '${{ inputs.input_csv }}',
+            'permutations': int('${{ inputs.permutations }}'),
+            'k_neighbors': int('${{ inputs.k_neighbors }}')
+          }, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-spatial-robustness-audit-${{ github.run_id }}
+          path: spatial_robustness_audit
+          if-no-files-found: error
