@@ -1,0 +1,97 @@
+name: Ch1 Figure 1 and detector audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      input_artifact_id:
+        description: Artifact containing source images, crops, detector predictions, and completed audit CSVs
+        required: true
+        type: string
+      iou_threshold:
+        description: IoU threshold for one-to-one detector matching
+        required: true
+        default: '0.50'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-audits:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install audit dependencies
+        run: python -m pip install --upgrade pip pandas numpy opencv-python-headless pillow matplotlib
+      - name: Download audit input artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ inputs.input_artifact_id }}
+        run: |
+          mkdir -p audit_input
+          curl --fail --location --retry 4 --retry-all-errors \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" \
+            --output audit_input.zip
+          unzip -tq audit_input.zip
+          unzip -q audit_input.zip -d audit_input
+      - name: Resolve required inputs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          required = {
+              'annotations': 'detector_audit_annotations.csv',
+              'predictions': 'yolo_crop_metadata.csv',
+              'panels': 'figure1_panel_selection.csv',
+          }
+          root = Path('audit_input')
+          out = []
+          for key, name in required.items():
+              matches = list(root.rglob(name))
+              if len(matches) != 1:
+                  raise SystemExit(f'{name}: expected exactly one file, found {len(matches)}')
+              out.append(f'{key.upper()}={matches[0]}')
+          Path('audit_paths.env').write_text('\n'.join(out) + '\n', encoding='utf-8')
+          PY
+          cat audit_paths.env >> "$GITHUB_ENV"
+      - name: Evaluate frozen detector
+        run: |
+          python ch1_global/v2/79_evaluate_capitulum_detector.py \
+            --annotations "$ANNOTATIONS" \
+            --predictions "$PREDICTIONS" \
+            --out-dir detector_audit \
+            --iou-threshold "${{ inputs.iou_threshold }}"
+      - name: Build Figure 1 measurement audit panels
+        run: |
+          python ch1_global/v2/78_build_figure1_measurement_audit.py \
+            --selection "$PANELS" \
+            --input-root audit_input \
+            --out-dir figure1_audit
+      - name: Record workflow provenance
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = {
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'commit_sha': os.environ['GITHUB_SHA'],
+              'workflow_run_id': os.environ['GITHUB_RUN_ID'],
+              'input_artifact_id': '${{ inputs.input_artifact_id }}',
+              'iou_threshold': '${{ inputs.iou_threshold }}',
+          }
+          Path('audit_workflow_provenance.json').write_text(json.dumps(payload, indent=2), encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-figure1-detector-audit-${{ github.run_id }}
+          path: |
+            detector_audit/
+            figure1_audit/
+            audit_workflow_provenance.json
+          if-no-files-found: error
+          retention-days: 30
