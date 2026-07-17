@@ -1,0 +1,99 @@
+name: Ch1 taxonomic freeze audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Workflow run containing frozen Chapter 1 CSV artifacts
+        required: true
+        type: string
+      source_artifact_name:
+        description: Artifact containing taxon-bearing analysis tables
+        required: true
+        type: string
+      decisions_path:
+        description: Repository path to completed taxonomic decision CSV; leave blank to generate review template
+        required: false
+        default: ''
+        type: string
+      name_column:
+        description: Optional explicit taxon-name column shared by input tables
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download frozen source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.source_artifact_name }}
+          run-id: ${{ inputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: source_artifact
+
+      - name: Discover taxon-bearing CSV tables
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t tables < <(find source_artifact -type f -name '*.csv' | sort)
+          if [ "${#tables[@]}" -eq 0 ]; then
+            echo 'No CSV files found in source artifact' >&2
+            exit 1
+          fi
+          printf '%s\n' "${tables[@]}" > taxon_tables.txt
+          echo "Found ${#tables[@]} CSV files"
+
+      - name: Generate review template or validate completed decisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(--output-dir taxonomic_audit)
+          while IFS= read -r table; do
+            args+=(--taxon-table "$table")
+          done < taxon_tables.txt
+          if [ -n "${{ inputs.name_column }}" ]; then
+            args+=(--name-column "${{ inputs.name_column }}")
+          fi
+          if [ -z "${{ inputs.decisions_path }}" ]; then
+            args+=(--initialize)
+          else
+            test -f "${{ inputs.decisions_path }}"
+            args+=(--decisions "${{ inputs.decisions_path }}")
+          fi
+          python analysis/audit_taxonomic_freeze.py "${args[@]}"
+
+      - name: Record workflow provenance
+        shell: bash
+        run: |
+          cat > taxonomic_audit/workflow_provenance.json <<EOF
+          {
+            "repository": "${GITHUB_REPOSITORY}",
+            "commit": "${GITHUB_SHA}",
+            "workflow_run_id": "${GITHUB_RUN_ID}",
+            "source_run_id": "${{ inputs.source_run_id }}",
+            "source_artifact_name": "${{ inputs.source_artifact_name }}",
+            "decisions_path": "${{ inputs.decisions_path }}"
+          }
+          EOF
+
+      - name: Upload taxonomic audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-taxonomic-freeze-${{ github.run_id }}
+          path: taxonomic_audit
+          if-no-files-found: error
+          retention-days: 90
