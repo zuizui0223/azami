@@ -38,7 +38,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install numpy pandas scipy
+      - name: Install spatial audit dependencies
+        run: python -m pip install '.[spatial]'
       - name: Download frozen artifact
         uses: actions/download-artifact@v4
         with:
@@ -57,9 +58,11 @@ jobs:
       - name: Record workflow provenance
         run: |
           python - <<'PY'
-          import json, os
+          import os
           from pathlib import Path
-          Path('spatial_robustness_audit/workflow_provenance.json').write_text(json.dumps({
+          from azami_ch1.provenance import write_json
+
+          write_json(Path('spatial_robustness_audit/workflow_provenance.json'), {
             'repository': os.environ['GITHUB_REPOSITORY'],
             'commit': os.environ['GITHUB_SHA'],
             'workflow_run_id': os.environ['GITHUB_RUN_ID'],
@@ -68,7 +71,7 @@ jobs:
             'source_csv': '${{ inputs.input_csv }}',
             'permutations': int('${{ inputs.permutations }}'),
             'k_neighbors': int('${{ inputs.k_neighbors }}')
-          }, indent=2) + '\n')
+          })
           PY
       - uses: actions/upload-artifact@v4
         with:
