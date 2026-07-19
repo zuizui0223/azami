@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "README.md"
+      - "analysis/**"
+      - "src/**"
+      - "pyproject.toml"
       - "ch1_global/**"
       - "tests/**"
       - ".gitignore"
@@ -13,6 +16,9 @@ on:
     branches: [main]
     paths:
       - "README.md"
+      - "analysis/**"
+      - "src/**"
+      - "pyproject.toml"
       - "ch1_global/**"
       - "tests/**"
       - ".gitignore"
@@ -34,12 +40,15 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+          cache-dependency-path: |
+            pyproject.toml
+            ch1_global/v2/requirements-submission.txt
 
       - name: Install submission dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r ch1_global/v2/requirements-submission.txt "PyYAML>=6,<7"
+          python -m pip install --editable .
           python -m pip check
 
       - name: Compile active Python scripts
@@ -118,7 +127,7 @@ jobs:
         run: |
           set -euo pipefail
           forbidden='47_build_representative_trait_holdout|48_evaluate_representative_trait_holdout|49_run_trait_integration_and_constraint|50_build_representative_holdout_inputs|51_build_representative_holdout_packet|REPRESENTATIVE_HOLDOUT_RUNBOOK|v2.*not yet implemented'
-          if grep -R -n -E "$forbidden" README.md ch1_global tests .github/workflows \
+          if grep -R -n -E "$forbidden" README.md analysis src ch1_global tests .github/workflows \
              --exclude-dir=v1 --exclude='ch1-submission-ci.yml'; then
             echo "Found stale submission-path references"
             exit 1

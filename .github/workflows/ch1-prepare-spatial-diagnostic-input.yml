@@ -38,8 +38,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
-        run: python -m pip install --upgrade pandas
+      - name: Install submission utility package
+        run: python -m pip install .
 
       - name: Download frozen artifact
         uses: actions/download-artifact@v4
@@ -76,9 +76,11 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import json, os
+          import os
           from pathlib import Path
-          payload = {
+          from azami_ch1.provenance import write_json
+
+          write_json(Path("spatial-diagnostic-input/workflow_provenance.json"), {
               "source_run_id": "${{ inputs.source_run_id }}",
               "artifact_name": "${{ inputs.artifact_name }}",
               "observations_csv": "${{ inputs.observations_csv }}",
@@ -87,10 +89,7 @@ jobs:
               "repository": os.environ.get("GITHUB_REPOSITORY"),
               "workflow_run_id": os.environ.get("GITHUB_RUN_ID"),
               "commit_sha": os.environ.get("GITHUB_SHA"),
-          }
-          Path("spatial-diagnostic-input/workflow_provenance.json").write_text(
-              json.dumps(payload, indent=2) + "\n", encoding="utf-8"
-          )
+          })
           PY
 
       - uses: actions/upload-artifact@v4
