@@ -10,11 +10,11 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 
+from azami_ch1.provenance import write_json
 from azami_ch1.tabular import assert_unique, require_columns, require_complete_text
 
 OUTPUT_COLUMNS = [
@@ -128,7 +128,6 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     output.to_csv(args.output, index=False)
     metadata = {
-        "generated_utc": datetime.now(timezone.utc).isoformat(),
         "observations": str(args.observations),
         "predictions": str(args.predictions),
         "regions": str(args.regions),
@@ -139,11 +138,12 @@ def main() -> int:
         "n_endpoints": int(output["endpoint"].nunique()),
         "regions_present": sorted(output["broad_region"].astype(str).unique().tolist()),
     }
-    args.output.with_suffix(".metadata.json").write_text(
-        json.dumps(metadata, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
+    metadata_path = write_json(
+        args.output.with_suffix(".metadata.json"),
+        metadata,
+        include_generated_utc=True,
     )
-    print(json.dumps(metadata, indent=2, ensure_ascii=False))
+    print(metadata_path.read_text(encoding="utf-8"), end="")
     return 0
 
 
