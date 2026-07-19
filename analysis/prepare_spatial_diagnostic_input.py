@@ -15,6 +15,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from azami_ch1.tabular import assert_unique, require_columns, require_complete_text
+
 OUTPUT_COLUMNS = [
     "observation_id",
     "taxon_name",
@@ -26,19 +28,6 @@ OUTPUT_COLUMNS = [
     "residual",
     "broad_region",
 ]
-
-
-def require_columns(df: pd.DataFrame, columns: list[str], label: str) -> None:
-    missing = [column for column in columns if column not in df.columns]
-    if missing:
-        raise ValueError(f"{label} is missing required columns: {missing}")
-
-
-def assert_unique(df: pd.DataFrame, keys: list[str], label: str) -> None:
-    duplicated = df.duplicated(keys, keep=False)
-    if duplicated.any():
-        examples = df.loc[duplicated, keys].head(10).to_dict("records")
-        raise ValueError(f"{label} has duplicate keys {keys}: {examples}")
 
 
 def main() -> int:
@@ -77,6 +66,7 @@ def main() -> int:
     assert_unique(observations, [args.observation_id], "observation table")
     assert_unique(predictions, [args.observation_id, args.endpoint], "prediction table")
     assert_unique(regions, [args.observation_id], "region table")
+    require_complete_text(regions, "broad_region", "reviewed broad_region")
 
     obs_keep = [args.observation_id, args.taxon, args.latitude, args.longitude]
     if args.observed in observations.columns:
@@ -109,9 +99,7 @@ def main() -> int:
 
     if merged["taxon_name"].isna().any():
         raise ValueError("At least one prediction row did not match an observation")
-    missing_regions = merged["broad_region"].isna() | (merged["broad_region"].astype(str).str.strip() == "")
-    if missing_regions.any():
-        raise ValueError(f"{int(missing_regions.sum())} rows lack a reviewed broad_region")
+    require_complete_text(merged, "broad_region", "reviewed broad_region")
 
     if "observed_from_predictions" in merged.columns:
         merged["observed"] = merged["observed_from_predictions"]
@@ -130,10 +118,11 @@ def main() -> int:
 
     merged = merged.rename(columns={args.observation_id: "observation_id"})
     output = merged[OUTPUT_COLUMNS].copy()
-    for column in ["latitude", "longitude", "observed", "fitted", "residual"]:
+    numeric_columns = ["latitude", "longitude", "observed", "fitted", "residual"]
+    for column in numeric_columns:
         output[column] = pd.to_numeric(output[column], errors="coerce")
-    if output[["latitude", "longitude", "observed", "fitted", "residual"]].isna().any().any():
-        counts = output[["latitude", "longitude", "observed", "fitted", "residual"]].isna().sum().to_dict()
+    if output[numeric_columns].isna().any().any():
+        counts = output[numeric_columns].isna().sum().to_dict()
         raise ValueError(f"Missing or non-numeric diagnostic values: {counts}")
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
