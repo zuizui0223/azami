@@ -56,15 +56,23 @@ jobs:
 
       - name: Build Figure 1 from actual executed photographs
         run: |
+          mkdir -p figure1-real-output
+          set +e
           python analysis/build_real_image_figure1.py \
             --global-artifact-dir frozen/global \
             --continuous-artifact-dir frozen/continuous \
             --metadata-artifact-dir frozen/metadata \
             --repo-root . \
-            --out-dir figure1-real-output
+            --out-dir figure1-real-output \
+            > figure1-real-output/build.log 2>&1
+          status=$?
+          cat figure1-real-output/build.log
+          exit ${status}
 
       - name: Record workflow provenance
+        if: always()
         run: |
+          mkdir -p figure1-real-output
           python - <<'PY'
           import json, os
           from pathlib import Path
@@ -79,6 +87,7 @@ jobs:
           PY
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ch1-actual-photo-figure1
           path: figure1-real-output
