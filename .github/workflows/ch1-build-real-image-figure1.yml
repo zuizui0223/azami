@@ -1,0 +1,85 @@
+name: Ch1 build actual-photo Figure 1
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "analysis/build_real_image_figure1.py"
+      - ".github/workflows/ch1-build-real-image-figure1.yml"
+      - "ch1_global/v2/52_measure_primary_traits_continuous.py"
+      - "ch1_global/v2/55_run_primary_traits_continuous.py"
+      - "ch1_global/v2/56_run_primary_traits_continuous_v2.py"
+      - "ch1_global/v2/78_build_figure1_measurement_audit.py"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-real-image-figure1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install figure dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy matplotlib pillow requests opencv-python-headless
+
+      - name: Download frozen source artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p frozen/global frozen/continuous frozen/metadata
+          for spec in \
+            "8099953404 frozen/global.zip" \
+            "8225059018 frozen/continuous.zip" \
+            "8066010557 frozen/metadata.zip"; do
+            artifact_id="${spec%% *}"
+            destination="${spec#* }"
+            curl --fail --location \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "${destination}"
+          done
+          unzip -q frozen/global.zip -d frozen/global
+          unzip -q frozen/continuous.zip -d frozen/continuous
+          unzip -q frozen/metadata.zip -d frozen/metadata
+
+      - name: Build Figure 1 from actual executed photographs
+        run: |
+          python analysis/build_real_image_figure1.py \
+            --global-artifact-dir frozen/global \
+            --continuous-artifact-dir frozen/continuous \
+            --metadata-artifact-dir frozen/metadata \
+            --repo-root . \
+            --out-dir figure1-real-output
+
+      - name: Record workflow provenance
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = {
+            "repository": os.environ["GITHUB_REPOSITORY"],
+            "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+            "commit_sha": os.environ["GITHUB_SHA"],
+            "source_artifacts": [8099953404, 8225059018, 8066010557],
+            "scope": "presentation-only reconstruction from frozen YOLO metadata and v2 measurements",
+          }
+          Path("figure1-real-output/workflow_provenance.json").write_text(json.dumps(payload, indent=2) + "\n")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-actual-photo-figure1
+          path: figure1-real-output
+          retention-days: 90
