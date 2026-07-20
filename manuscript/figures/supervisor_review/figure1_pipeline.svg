@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+<style>text{font-family:Arial,sans-serif;fill:#222}.title{font-size:24px;font-weight:700}.axis{font-size:14px}.label{font-size:13px}.small{font-size:11px}.grid{stroke:#ddd;stroke-width:1}.line{stroke:#333;stroke-width:1.4}.dash{stroke:#666;stroke-width:1.2;stroke-dasharray:6 5}.bar1{fill:#5078a0}.bar2{fill:#c7d5e3}.dot{fill:#5078a0;fill-opacity:.75}.box{fill:#edf3f8;stroke:#5078a0;stroke-width:1.5}</style>
+<defs><marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#333"/></marker></defs>
+<text x="550.0" y="34" text-anchor="middle" class="title">Figure 1. Scale-explicit public-image phenomics workflow</text>
+<rect x="45" y="95" width="290" height="125" rx="14" class="box"/>
+<text x="190.0" y="137" text-anchor="middle" class="axis">Public observations</text>
+<text x="190.0" y="164" text-anchor="middle" class="label">3,725 observations</text>
+<text x="190.0" y="191" text-anchor="middle" class="label">216 image-analysis taxa</text>
+<rect x="405" y="95" width="290" height="125" rx="14" class="box"/>
+<text x="550.0" y="137" text-anchor="middle" class="axis">Capitulum detection</text>
+<text x="550.0" y="164" text-anchor="middle" class="label">6,626 detected heads</text>
+<text x="550.0" y="191" text-anchor="middle" class="label">tight + context crops</text>
+<rect x="765" y="95" width="290" height="125" rx="14" class="box"/>
+<text x="910.0" y="137" text-anchor="middle" class="axis">Continuous traits</text>
+<text x="910.0" y="164" text-anchor="middle" class="label">orientation, colour, outline</text>
+<text x="910.0" y="191" text-anchor="middle" class="label">trait-specific assessability</text>
+<rect x="90" y="360" width="290" height="125" rx="14" class="box"/>
+<text x="235.0" y="402" text-anchor="middle" class="axis">Species distributions</text>
+<text x="235.0" y="429" text-anchor="middle" class="label">within/among variance</text>
+<text x="235.0" y="456" text-anchor="middle" class="label">PCA and niche contrasts</text>
+<rect x="405" y="360" width="290" height="125" rx="14" class="box"/>
+<text x="550.0" y="402" text-anchor="middle" class="axis">Strict spatial layer</text>
+<text x="550.0" y="429" text-anchor="middle" class="label">46,276 thinned observations</text>
+<text x="550.0" y="456" text-anchor="middle" class="label">259 input taxa</text>
+<rect x="720" y="360" width="290" height="125" rx="14" class="box"/>
+<text x="865.0" y="402" text-anchor="middle" class="axis">Two-axis lability</text>
+<text x="865.0" y="429" text-anchor="middle" class="label">102 complete taxa</text>
+<text x="865.0" y="456" text-anchor="middle" class="label">variation ≠ responsiveness</text>
+<line x1="335" y1="158" x2="405" y2="158" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="695" y1="158" x2="765" y2="158" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="910" y1="220" x2="235" y2="360" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="930" y1="220" x2="550" y2="360" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="695" y1="423" x2="720" y2="423" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+<text x="550" y="565" text-anchor="middle" class="axis">Distinct cohorts answer distinct questions; measurement failure is retained as missingness rather than biological absence.</text>
+</svg>
