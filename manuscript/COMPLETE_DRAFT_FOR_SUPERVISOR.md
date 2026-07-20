@@ -16,12 +16,12 @@ This entry point assembles the complete manuscript in reading order without dupl
 Repository-resolvable work is complete for supervisor review:
 
 - Introduction, Methods, Results, Discussion and Conclusion exist as manuscript prose;
-- eight result-based review figures are generated from frozen outputs;
-- trait-retention, variance-partition, PCA, lability, niche, sensitivity and historical-coverage results are visualized;
-- figure provenance is tied to workflow run IDs, artifact IDs and digests;
+- Figure 1 uses actual open-licensed atlas photographs, stored YOLO detections, reconstructed tight/context crops and final v2 trait overlays;
+- Figures 2–8 visualize variance partitioning, PCA, lability, niche, sensitivity and historical-coverage results from frozen outputs;
+- figure provenance is tied to workflow run IDs, artifact IDs, source observation/photo identifiers, licences and digests;
 - no new model, trait, taxon or causal claim is introduced.
 
-The remaining tasks require external source material or human decisions and are listed separately in `EXTERNAL_COMPLETION_GATES.md`.
+The actual-photo panel is a production-output and face-validity demonstration. Independent detector precision/recall still requires the separately designed manual source-image audit. Other remaining tasks requiring external source material or human decisions are listed in `EXTERNAL_COMPLETION_GATES.md`.
 
 ## Figure files
 
