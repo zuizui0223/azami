@@ -85,9 +85,17 @@ def colour_overlay(v2: Any, tight: np.ndarray) -> tuple[np.ndarray, dict[str, An
     colours = {"redmagenta": (0, 0, 255), "purple_blue": (255, 0, 120), "white_or_cream": (0, 255, 0), "yellow_or_other": (0, 255, 255)}
     for name, mask in masks.items():
         selected = mask.astype(bool)
-        tint = np.zeros_like(out)
+        if not selected.any():
+            continue
+        tint = np.empty_like(out)
         tint[:] = colours[name]
-        out[selected] = cv2.addWeighted(out[selected], 0.55, tint[selected], 0.45, 0)
+        blended = np.clip(
+            out[selected].astype(np.float32) * 0.55
+            + tint[selected].astype(np.float32) * 0.45,
+            0,
+            255,
+        ).astype(np.uint8)
+        out[selected] = blended
     contours, _ = cv2.findContours((floral.astype(np.uint8) * 255), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(out, contours, -1, (255, 255, 255), 1)
     return out, v2.colour_measurement_v2(tight)
