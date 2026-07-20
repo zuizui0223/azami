@@ -13,13 +13,15 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 jobs:
   build-real-image-figure1:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - uses: actions/setup-python@v5
         with:
@@ -85,6 +87,28 @@ jobs:
           }
           Path("figure1-real-output/workflow_provenance.json").write_text(json.dumps(payload, indent=2) + "\n")
           PY
+
+      - name: Commit successful rendered Figure 1 to the PR branch
+        if: github.event_name == 'pull_request' && success()
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          target="manuscript/figures/supervisor_review"
+          mkdir -p "${target}"
+          cp figure1-real-output/figure1_real_photo_yolo_pipeline.png "${target}/figure1_real_photo_yolo_pipeline.png"
+          cp figure1-real-output/figure1_real_photo_yolo_pipeline.svg "${target}/figure1_real_photo_yolo_pipeline.svg"
+          cp figure1-real-output/figure1_real_photo_provenance.csv "${target}/figure1_real_photo_provenance.csv"
+          cp figure1-real-output/figure1_real_photo_build.json "${target}/figure1_real_photo_build.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}"
+          if git diff --cached --quiet; then
+            echo "Rendered Figure 1 is unchanged"
+          else
+            git commit -m "Add rendered actual-photo Figure 1"
+            git push origin "HEAD:${HEAD_BRANCH}"
+          fi
 
       - uses: actions/upload-artifact@v4
         if: always()
