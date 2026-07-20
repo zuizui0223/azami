@@ -24,9 +24,9 @@ import requests
 from PIL import Image
 
 SELECTED_UNITS = [
-    "ch1atlas_0002870_head_01",
-    "ch1atlas_0002331_head_01",
-    "ch1atlas_0003663_head_02",
+    "ch1atlas_0002870_head_01",  # purple, upright, CC BY
+    "ch1atlas_0002331_head_01",  # pale/white, inclined, CC0
+    "ch1atlas_0003663_head_02",  # pink, inclined, CC0
 ]
 
 
@@ -138,7 +138,7 @@ def main() -> None:
         head.save(head_path, quality=95)
         context.save(context_path, quality=95)
         selection_rows.append({
-            "panel_id": unit,
+            "panel_id": f"YOLO {float(row.yolo_conf):.2f}",
             "annotation_unit_id": unit,
             "panel_role": ["purple_upright", "pale_inclined", "pink_inclined"][int(row.display_order)],
             "source_image_path": str(source_path),
@@ -153,7 +153,8 @@ def main() -> None:
             "licence_verified": "true",
         })
     selection = pd.DataFrame(selection_rows)
-    selection.to_csv(work / "figure1_selection.csv", index=False)
+    selection_path = work / "figure1_selection.csv"
+    selection.to_csv(selection_path, index=False)
 
     audit_module = load_module(repo / "ch1_global/v2/78_build_figure1_measurement_audit.py", "figure1_audit")
     v2 = audit_module.load_v2_module()
@@ -185,7 +186,7 @@ def main() -> None:
 
     main_unit = SELECTED_UNITS[0]
     main_row = selected[selected.annotation_unit_id.eq(main_unit)].iloc[0]
-    fig = plt.figure(figsize=(13.2, 10.0))
+    fig = plt.figure(figsize=(13.2, 10.6))
     gs = fig.add_gridspec(3, 4, height_ratios=[1.05, 1.0, 1.0], hspace=0.25, wspace=0.08)
 
     for col, unit in enumerate(SELECTED_UNITS):
@@ -237,12 +238,14 @@ def main() -> None:
         ax.text(0.48, y, value, fontsize=11)
         ax.text(0.70, y, f"status: {status}", fontsize=10)
         y -= 0.105
-    ax.text(0.02, 0.06,
-            f"{main_row.taxon_name}; observation {int(main_row.obs_id)}; photo {int(main_row.photo_id)}\n"
-            f"{main_row.photo_attribution}; licence {str(main_row.photo_license_code).upper()}",
-            fontsize=9, va="bottom")
+    source_note = (
+        f"Detailed example: {main_row.taxon_name}; observation {int(main_row.obs_id)}; "
+        f"photo {int(main_row.photo_id)}; {main_row.photo_attribution}; "
+        f"licence {str(main_row.photo_license_code).upper()}"
+    )
+    fig.text(0.5, 0.012, source_note, ha="center", va="bottom", fontsize=8.5)
 
-    fig.suptitle("Figure 1. Actual photographs, YOLO capitulum detection and continuous trait extraction", fontsize=17, fontweight="bold", y=0.995)
+    fig.suptitle("Figure 1. Actual photographs, YOLO capitulum detection and continuous trait extraction", fontsize=17, fontweight="bold", y=0.985)
     fig.savefig(out / "figure1_real_photo_yolo_pipeline.png", dpi=300, bbox_inches="tight")
     fig.savefig(out / "figure1_real_photo_yolo_pipeline.svg", bbox_inches="tight")
     plt.close(fig)
