@@ -4,13 +4,17 @@
 
 The balanced image-comparison atlas contained 6,626 detected capitula from 3,725 observations and 216 accepted image-analysis taxa. The exhaustive all-photo stream contained 406,582 detector-positive observations from 286 taxa. After coordinate-quality filtering, a ≤10 km positional-accuracy restriction and taxon-by-0.25°-cell thinning, 46,276 observations from 259 taxa formed the exhaustive spatially thinned primary cohort for within-species climate coefficients.
 
-These layers are not interchangeable. The image-comparison atlas supports visible variance, PCA and historical summaries. The 46,276-observation cohort supports primary within-species coefficient and precision-aware cross-species analyses.
+These layers are not interchangeable. The image-comparison atlas supports nested visible variance, PCA and historical summaries. The 46,276-observation cohort supports primary within-species coefficient and precision-aware cross-species analyses.
 
-## Most visible image variance occurred within assigned species
+## Visible variance was distributed across photographs and heads within assigned species
 
-Across the nine primary endpoints, the estimated fraction of visible variance occurring within assigned species ranged from approximately 0.817 to 0.988. Variation among records carrying the same species name therefore exceeded the component attributable to differences among species means for every endpoint. These fractions describe uncontrolled image variance and can include biological heterogeneity, developmental state, viewpoint, illumination and measurement error.
+The nested decomposition separated differences among assigned species means, among photographs within species and among detected heads within photographs. The combined within-assigned-species fraction ranged from 0.589 for hue sine to 0.931 for width-profile variation. Species-cluster bootstrap intervals excluded 0.5 for every endpoint except the lower bound for hue sine approached it (95% CI 0.537–0.647).
 
-Species-level structure was multidimensional. PC1 explained 32.9% of variance, PCs 1–2 explained 56.1% and PCs 1–3 explained 69.3%. Orientation, colour and outline were not reducible to one dominant mean-trait axis.
+Most within-species image variance occurred among photographs: this component ranged from 0.440 for hue sine to 0.691 for hue cosine. Variation among heads within the same photograph contributed 0.143–0.379 of total sums of squares and was largest for shape aspect ratio. Thus, multiple detections from one image were not independent replicates, but within-photo multiplicity did not account for the full within-species pattern.
+
+Selecting one deterministic head per photograph retained within-assigned-species fractions of 0.582–0.899. In equal-replication sensitivities using 10 photographs per eligible species, median fractions ranged from 0.528 to 0.879 across endpoints. The conclusion that at least half of visible image variance occurred below the assigned-species level therefore survived removal of duplicate heads and strong balancing of species sample size, although the earlier two-level estimate of 0.817–0.988 overstated the common range.
+
+Species-level structure remained multidimensional. PC1 explained 32.9% of variance, PCs 1–2 explained 56.1% and PCs 1–3 explained 69.3%. Orientation, colour and outline were not reducible to one dominant mean-trait axis.
 
 ## The legacy negative lability relation was a precision artefact
 
