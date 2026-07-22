@@ -6,7 +6,7 @@ We used public biodiversity photographs to quantify continuous capitulum traits 
 
 ## Cohort definitions
 
-Two executed data streams served different purposes. The balanced image-comparison atlas contained 3,725 public observations, 6,626 detected capitula and 216 accepted image-analysis taxa. It was used for visible variance partitioning, species-level trait PCA, among-species summaries and historical-placement sensitivity.
+Two executed data streams served different purposes. The balanced image-comparison atlas contained 3,725 public observations, 6,626 detected capitula and 216 accepted image-analysis taxa. Each retained atlas observation contributed one photograph, but photographs could contain multiple detected capitula. The atlas was used for nested visible-variance partitioning, species-level trait PCA, among-species summaries and historical-placement sensitivity.
 
 The exhaustive stream ran the detector and continuous measurement workflow before trait-based thinning. It contained 406,582 observations with detected capitula from 286 taxa. Coordinate filtering retained 392,989 observations from 271 taxa; a positional-accuracy threshold of ≤10 km retained 297,293 observations from 259 taxa; and one observation per taxon × 0.25° cell yielded the **exhaustive spatially thinned primary cohort** of 46,276 observations from 259 taxa. The complete cohort flow, filenames and analysis permissions are fixed in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
 
@@ -20,9 +20,19 @@ Nine primary endpoints represented three capitulum modules: orientation; visible
 
 Four predeclared CHELSA v2.1 predictors represented mean annual temperature (BIO1), temperature seasonality (BIO4), annual precipitation (BIO12) and precipitation seasonality (BIO15). For each endpoint–predictor combination in the exhaustive spatially thinned cohort, outcome and predictor values were demeaned within species and standardized after demeaning. Ordinary least-squares coefficients were fitted without an intercept and used species-clustered standard errors. Benjamini–Hochberg correction was applied across the 36 endpoint-component models. Hue sine and cosine rows were retained for computation but were not interpreted as independent biological colour tests.
 
-## Visible variance and species-level trait structure
+## Nested decomposition of visible image variance
 
-For each endpoint in the image-comparison atlas, total sums of squares were separated into within-assigned-species and among-species-mean components. The within fraction describes uncontrolled image variance and can combine biological heterogeneity, developmental state, illumination, viewpoint and measurement error. Species medians were standardized and analysed by PCA to describe multivariate trait architecture.
+The earlier two-level decomposition combined all variation below the species mean. We replaced it with an exact nested sums-of-squares decomposition at the finest levels represented in the atlas. For each assessable endpoint, total visible image sums of squares were partitioned into:
+
+1. differences among assigned species means;
+2. differences among photographs/observations within assigned species; and
+3. differences among detected heads within the same photograph.
+
+Because the balanced atlas retained exactly one photograph per public observation, the photograph and observation levels were identical in this dataset. The three components sum exactly to total sums of squares. Fractions are descriptive properties of the observed image dataset, not latent genetic or developmental variance components.
+
+Uncertainty was quantified by resampling assigned species as clusters 2,000 times. Two sensitivities reduced unequal replication and within-photograph multiplicity. First, one head per photograph was selected by a deterministic hash of the annotation-unit identifier. Second, for species with at least 10 assessable photographs, 10 photographs per species were sampled without replacement in 500 repeated balanced subsamples. These analyses are implemented in `analysis/decompose_nested_visible_variance.py` and `.github/workflows/ch1-nested-visible-variance.yml`.
+
+Species medians were standardized and analysed by PCA to describe multivariate trait architecture. The submission figure builder requires all nine endpoints, including width-profile variation, and fails if any endpoint is absent.
 
 ## Reviewer-driven precision audit
 
@@ -54,4 +64,4 @@ Grouped spatial models and trait-extreme environmental PCA contrasts were kept s
 
 Every FDR count is reported with its cohort, endpoint family and number of tests. The 46,276-observation exhaustive primary cohort is not conflated with the earlier balanced-atlas ≤10 km sensitivity. The manuscript uses *visible dispersion*, *within-species spatial environment–trait association*, *among-species environmental sorting* and *historical-placement sensitivity*. It does not use *climate tracking* or *environmental responsiveness* as if temporal or experimental response had been measured.
 
-The revised analysis is implemented in `analysis/reanalyze_lability_precision.py`, rerun from frozen artifact `8330350031` by `.github/workflows/ch1-reviewer-precision-reanalysis.yml`, and validated against `manuscript/final_claims.json`.
+The precision-aware analysis is implemented in `analysis/reanalyze_lability_precision.py`, rerun from frozen artifact `8330350031` by `.github/workflows/ch1-reviewer-precision-reanalysis.yml`, and validated against `manuscript/final_claims.json`. The nested image-hierarchy decomposition is rerun from frozen artifact `8225059018`.
