@@ -1,5 +1,5 @@
 {
-  "analysis_release": "2026-07-reviewer-reanalysis-candidate-3",
+  "analysis_release": "2026-07-reviewer-reanalysis-candidate-4",
   "headline": "Visible phenotype is hierarchically distributed below assigned species means, while no common cross-module coupling between visible dispersion and within-species spatial climatic association remained after slope uncertainty was modelled.",
   "datasets": {
     "balanced_image_comparison_atlas": {
@@ -41,8 +41,8 @@
       "among heads within photograph"
     ],
     "n_endpoints": 9,
-    "within_assigned_species_fraction_range": [0.5886205437803064, 0.930740369095684],
-    "among_photographs_within_species_fraction_range": [0.4399574773032133, 0.6907205647398028],
+    "within_assigned_species_fraction_range": [0.5886205437803064, 0.9307403690956841],
+    "among_photographs_within_species_fraction_range": [0.43995747730321333, 0.6907205647398028],
     "among_heads_within_photo_fraction_range": [0.1432458422196825, 0.3785966109149292],
     "one_head_per_photo_within_fraction_range": [0.5815708655068837, 0.8985099254849123],
     "balanced_10_photo_median_within_fraction_range": [0.5284185457672588, 0.8791369865510499],
@@ -126,7 +126,10 @@
     "precision_reanalysis_run_id": 29894216905,
     "precision_reanalysis_artifact_id": 8519352787,
     "precision_reanalysis_digest": "sha256:5e9979faa290432997563ab884a9da9e74b7c69709fafe7ec3a10f7897e9c972",
-    "nested_variance_source_artifact_id": 8225059018
+    "nested_variance_source_artifact_id": 8225059018,
+    "nested_variance_run_id": 29895799287,
+    "nested_variance_artifact_id": 8519926578,
+    "nested_variance_digest": "sha256:120f8f87365cc2ec0ea84e906e9d394991df4a3a5613b10c5cc2a44055fa2434"
   },
   "forbidden_causal_claims": [
     "phenotypic plasticity",
