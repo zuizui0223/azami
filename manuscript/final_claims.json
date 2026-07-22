@@ -1,48 +1,90 @@
 {
-  "analysis_release": "2026-07-final-freeze-candidate-1",
-  "headline": "Visible within-species phenotypic variation and climate tracking are distinct dimensions of capitulum-trait lability across thistles.",
+  "analysis_release": "2026-07-reviewer-reanalysis-candidate-2",
+  "headline": "Visible dispersion, within-species spatial climatic association and among-species environmental sorting are distinct structures; no common cross-module coupling remained after slope uncertainty was modelled.",
   "datasets": {
-    "continuous_species_comparison": {
+    "balanced_image_comparison_atlas": {
       "n_taxa": 216,
+      "n_observations": 3725,
       "n_heads": 6626,
-      "purpose": "between-species continuous trait and historical analyses"
+      "purpose": "visible variance partitioning, species-level PCA, among-species summaries and historical sensitivity"
     },
-    "strict_within_species": {
+    "exhaustive_detected_layer": {
+      "n_observations": 406582,
+      "n_input_taxa": 286,
+      "purpose": "post-detection source layer before coordinate and spatial filtering"
+    },
+    "exhaustive_spatially_thinned_primary": {
       "n_spatially_thinned_observations": 46276,
       "n_input_taxa": 259,
-      "purpose": "within-species slope estimation and species-level lability"
+      "positional_accuracy_m": 10000,
+      "cell_degrees": 0.25,
+      "purpose": "primary within-species climate coefficients and precision-aware cross-species analysis"
     },
-    "complete_lability_cohort": {
+    "revised_precision_aware_cohort": {
+      "n_taxa": 101,
+      "minimum_observations_per_slope": 10,
+      "n_linear_traits": 7,
+      "n_predictors_per_trait": 4,
+      "module_weighting": "equal orientation, colour and shape weights"
+    },
+    "legacy_lability_cohort": {
       "n_taxa": 102,
-      "minimum_observations": 10,
-      "minimum_traits": 6,
-      "minimum_predictors_per_trait": 3
+      "status": "withdrawn as primary evidence after precision audit"
     }
   },
-  "primary_results": {
-    "lability_axis_spearman_rho": -0.333,
-    "quadrants": {
-      "high_variation_high_response": 22,
-      "low_variation_high_response": 29,
-      "high_variation_low_response": 29,
-      "low_variation_low_response": 22
+  "legacy_precision_audit": {
+    "variation_vs_legacy_absolute_slope_rms_rho": -0.33309961493008233,
+    "legacy_score_vs_median_slope_n_rho": -0.9194595732980716,
+    "legacy_score_vs_median_slope_se_rho": 0.9143233569502011,
+    "partial_rho_controlling_median_slope_n": 0.05580956321027713,
+    "partial_p_value": 0.577434002586757,
+    "decision": "withdraw the negative-correlation and median-split quadrant claims"
+  },
+  "revised_primary_results": {
+    "noise_adjusted_axis": {
+      "spearman_rho": -0.05686662783925451,
+      "p_value": 0.5721783308982907,
+      "species_bootstrap_ci95": [-0.2652427899441521, 0.15483770145148418],
+      "association_energy_vs_median_slope_n_rho": -0.038399799545104106,
+      "association_energy_vs_median_slope_se_rho": 0.020384391380314497
+    },
+    "hierarchical_variance_meta_regression": {
+      "n_slope_estimates": 2828,
+      "n_trait_predictor_groups": 28,
+      "log_variance_change_per_sd_visible_variation": -0.04160788581172032,
+      "profile_ci95": [-0.27434304176514007, 0.2004286907144721],
+      "likelihood_ratio_p_value": 0.7320248138273192
     },
     "module_medians": {
-      "colour": {"within_variation": 0.553, "environmental_responsiveness": 0.175},
-      "orientation": {"within_variation": 0.630, "environmental_responsiveness": 0.129},
-      "shape": {"within_variation": 0.665, "environmental_responsiveness": 0.153}
+      "orientation": {
+        "visible_variation": 0.6301664881457204,
+        "noise_adjusted_association_energy": -0.0012003324842962946
+      },
+      "colour": {
+        "visible_variation": 0.5558054071414766,
+        "noise_adjusted_association_energy": 0.004039121310251003
+      },
+      "shape": {
+        "visible_variation": 0.6665994574883936,
+        "noise_adjusted_association_energy": 0.00002110805364365926
+      }
     }
   },
   "within_species_inference_levels": {
-    "strict_le_10km_primary_cohort": {
-      "n_bh_fdr_signals": 0,
-      "allowed_claim": "No primary endpoint-climate effect passed BH FDR in the strict <=10 km cohort."
+    "exhaustive_spatially_thinned_primary_36_component_models": {
+      "n_bh_fdr_component_rows": 8,
+      "n_bh_fdr_non_circular_linear_rows": 4,
+      "n_bh_fdr_hue_component_rows": 4,
+      "allowed_claim": "Four non-circular linear endpoint-climate rows passed BH correction and were small; four hue-component rows also passed component-wise correction but require joint circular interpretation."
     },
-    "expanded_pooled_coefficient_table": {
-      "n_bh_fdr_signals": 4,
-      "allowed_claim": "Four pooled endpoint-climate combinations passed BH FDR, but all standardized effects were small."
+    "balanced_atlas_le_10km_sensitivity": {
+      "n_bh_fdr_main_rows": 0,
+      "allowed_claim": "No main endpoint-predictor row passed BH correction in the smaller balanced-atlas <=10 km sensitivity."
     },
-    "interpretation_rule": "These are different cohorts and inferential summaries and must never be presented as the same test."
+    "balanced_atlas_all_coordinate_sensitivity": {
+      "n_bh_fdr_main_rows": 2
+    },
+    "interpretation_rule": "The exhaustive 46,276-observation primary cohort and the earlier balanced-atlas sensitivities are different datasets and must never share an FDR label."
   },
   "historical_sensitivity": {
     "n_input_taxa": 216,
@@ -67,6 +109,7 @@
     "pollinator causation",
     "evolutionary rate",
     "resolved Cirsium species tree",
-    "rain-protection adaptation"
+    "rain-protection adaptation",
+    "temporal climate tracking"
   ]
 }
