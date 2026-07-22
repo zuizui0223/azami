@@ -1,6 +1,6 @@
 {
-  "schema_version": 3,
-  "status": "reviewer-revised submission pipeline with nested image variance and precision-aware lability",
+  "schema_version": 4,
+  "status": "reviewer-revised submission pipeline with nested image variance, precision-aware lability and leakage-free detector audit",
   "policy": {
     "move_numbered_scripts": false,
     "reason": "The numbered ch1_global/v2 paths generated the frozen observation and coefficient artifacts and remain stable provenance targets.",
@@ -9,10 +9,29 @@
       "measurement threshold changes",
       "taxon acceptance changes",
       "environmental data changes",
-      "tree scenario changes"
+      "tree scenario changes",
+      "material detector or measurement audit failure"
     ]
   },
   "stages": {
+    "independent_detector_audit": {
+      "status": "packet and evaluation infrastructure implemented; independent manual annotations pending",
+      "selection_script": "analysis/build_independent_detector_audit_packet.py",
+      "annotation_app": "analysis/detector_audit_annotation_app.py",
+      "finalizer": "analysis/finalize_detector_audit_annotations.py",
+      "evaluation_script": "analysis/evaluate_independent_detector_audit.py",
+      "workflow": ".github/workflows/ch1-independent-detector-audit-packet.yml",
+      "metadata_artifact": 8066010557,
+      "excluded_prior_source_artifact": 8068122589,
+      "detector_recovery_artifact": 8076736948,
+      "weight_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+      "production_confidence": 0.25,
+      "audit_inference_minimum_confidence": 0.01,
+      "matching_iou": 0.5,
+      "planned_images": 1000,
+      "double_label_fraction": 0.25,
+      "independence_rule": "exclude every prior proposal/training photo_id and obs_id before sampling"
+    },
     "nested_visible_variance": {
       "script": "analysis/decompose_nested_visible_variance.py",
       "workflow": ".github/workflows/ch1-nested-visible-variance.yml",
