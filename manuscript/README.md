@@ -8,7 +8,8 @@ Use this directory for submission assembly. Do not copy numbers from legacy note
 2. `COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
 3. `final_claims.json` — reviewer-revised machine-readable claims;
 4. `results/reviewer_precision_summary.json` — legacy precision audit and replacement results;
-5. `EXTERNAL_COMPLETION_GATES.md` — independent detector/measurement, taxonomy, spatial and archive gates.
+5. `SUBMISSION_FIGURE_MAP.md` — active and excluded figure definitions;
+6. `EXTERNAL_COMPLETION_GATES.md` — independent detector/measurement, taxonomy, spatial and archive gates.
 
 ## Current correction
 
@@ -31,4 +32,4 @@ The revised analysis contains 101 taxa with all seven linear endpoints and four 
 
 The revised analysis is implemented in `analysis/reanalyze_lability_precision.py` and `.github/workflows/ch1-reviewer-precision-reanalysis.yml`. All headline claims are validated by `analysis/validate_final_claims.py`.
 
-The older `COMPLETE_DRAFT_FOR_SUPERVISOR.md` and `SUPERVISOR_REVIEW_FIGURE_MAP.md` are retained only as historical provenance and are not submission entry points.
+The obsolete supervisor-review entry documents and invalid legacy figures have been removed from the active branch. Historical strategy files may still discuss the former analysis and are superseded wherever they conflict with this README, `SUBMISSION_MANUSCRIPT.md` or `final_claims.json`.
