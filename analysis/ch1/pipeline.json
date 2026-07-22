@@ -1,6 +1,6 @@
 {
-  "schema_version": 2,
-  "status": "reviewer-revised submission pipeline with precision-aware lability replacement",
+  "schema_version": 3,
+  "status": "reviewer-revised submission pipeline with nested image variance and precision-aware lability",
   "policy": {
     "move_numbered_scripts": false,
     "reason": "The numbered ch1_global/v2 paths generated the frozen observation and coefficient artifacts and remain stable provenance targets.",
@@ -13,6 +13,27 @@
     ]
   },
   "stages": {
+    "nested_visible_variance": {
+      "script": "analysis/decompose_nested_visible_variance.py",
+      "workflow": ".github/workflows/ch1-nested-visible-variance.yml",
+      "frozen_input_artifact": 8225059018,
+      "input": "aggregated/primary_trait_continuous_head_with_metadata.csv",
+      "outputs": [
+        "nested_visible_variance_summary.csv",
+        "nested_visible_variance_metadata.json",
+        "figure_nested_visible_variance.svg",
+        "figure_nested_visible_variance.png"
+      ],
+      "levels": [
+        "assigned species",
+        "photograph/observation within species",
+        "detected head within photograph"
+      ],
+      "sensitivities": [
+        "one deterministic head per photograph",
+        "10 photographs per eligible species across 500 balanced repeats"
+      ]
+    },
     "climate_coefficients": {
       "script": "ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py",
       "inputs": ["exhaustive spatially thinned primary observation table"],
@@ -63,12 +84,15 @@
     }
   },
   "revised_primary_parameters": {
+    "nested_variance_species_bootstrap_repeats": 2000,
+    "nested_variance_balanced_repeats": 500,
+    "nested_variance_balanced_photos_per_species": 10,
     "minimum_observations_per_species_trait_predictor": 10,
     "linear_traits": 7,
     "predictors_per_trait": 4,
     "module_weighting": "equal orientation, colour and shape weights",
     "hue_in_precision_test": "excluded because archived joint species hue vectors lack component standard errors",
-    "bootstrap_repeats": 5000,
-    "bootstrap_seed": 20260722
+    "precision_bootstrap_repeats": 5000,
+    "random_seed": 20260722
   }
 }
