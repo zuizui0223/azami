@@ -1,9 +1,9 @@
 {
-  "schema_version": 1,
-  "status": "submission-facing wrappers over frozen provenance paths",
+  "schema_version": 3,
+  "status": "reviewer-revised submission pipeline with nested image variance and precision-aware lability",
   "policy": {
     "move_numbered_scripts": false,
-    "reason": "The numbered ch1_global/v2 paths generated the frozen results and remain stable provenance targets.",
+    "reason": "The numbered ch1_global/v2 paths generated the frozen observation and coefficient artifacts and remain stable provenance targets.",
     "new_analysis_version_required_for": [
       "trait definition changes",
       "measurement threshold changes",
@@ -13,41 +13,65 @@
     ]
   },
   "stages": {
+    "nested_visible_variance": {
+      "script": "analysis/decompose_nested_visible_variance.py",
+      "workflow": ".github/workflows/ch1-nested-visible-variance.yml",
+      "frozen_input_artifact": 8225059018,
+      "input": "aggregated/primary_trait_continuous_head_with_metadata.csv",
+      "outputs": [
+        "nested_visible_variance_summary.csv",
+        "nested_visible_variance_metadata.json",
+        "figure_nested_visible_variance.svg",
+        "figure_nested_visible_variance.png"
+      ],
+      "levels": [
+        "assigned species",
+        "photograph/observation within species",
+        "detected head within photograph"
+      ],
+      "sensitivities": [
+        "one deterministic head per photograph",
+        "10 photographs per eligible species across 500 balanced repeats"
+      ]
+    },
     "climate_coefficients": {
       "script": "ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py",
-      "inputs": ["strict spatial observation table"],
+      "inputs": ["exhaustive spatially thinned primary observation table"],
       "outputs": [
         "strict_spatial_thinned_with_chelsa.csv",
         "exhaustive_within_species_climate_models.csv"
       ],
-      "rerun_policy": "Only when the strict cohort, CHELSA source, or extraction code changes."
+      "rerun_policy": "Only when the exhaustive spatial cohort, CHELSA source or extraction code changes."
     },
-    "lability": {
+    "legacy_lability_withdrawn": {
       "script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
+      "status": "retained for provenance; raw absolute-slope RMS and quadrants are not manuscript evidence",
+      "reason": "The legacy environmental-responsiveness score was strongly confounded with species slope sample size and standard error."
+    },
+    "precision_aware_lability": {
+      "script": "analysis/reanalyze_lability_precision.py",
+      "workflow": ".github/workflows/ch1-reviewer-precision-reanalysis.yml",
+      "frozen_input_artifact": 8330350031,
       "inputs": [
-        "strict_spatial_thinned_with_chelsa.csv",
-        "exhaustive_within_species_climate_models.csv"
-      ],
-      "outputs": [
-        "analysis_metadata.json",
         "species_lability_axes.csv",
         "species_trait_within_variation.csv",
-        "species_trait_environmental_responsiveness.csv",
-        "species_module_lability.csv",
-        "module_lability_summary.csv",
-        "table_s1_all_global_coefficients.csv",
-        "table_s2_species_specific_coefficients.csv",
-        "sensitivity_minimum_sample_size.csv",
-        "figure_species_lability_quadrants.png",
-        "figure_species_lability_quadrants.pdf",
-        "figure_s1_effect_size_heatmap.png",
-        "figure_s1_effect_size_heatmap.pdf"
+        "table_s2_species_specific_coefficients.csv"
+      ],
+      "outputs": [
+        "legacy_precision_diagnostic_species.csv",
+        "revised_species_axes.csv",
+        "revised_trait_association_energy.csv",
+        "revised_module_summary.csv",
+        "hierarchical_variance_group_summary.csv",
+        "reviewer_precision_summary.json",
+        "figure_precision_audit.svg",
+        "figure_revised_variation_association.svg"
       ]
     },
     "claims": {
       "script": "analysis/validate_final_claims.py",
       "inputs": ["manuscript/final_claims.json"],
-      "outputs": ["validated claim registry"]
+      "outputs": ["validated reviewer-revised claim registry"]
     },
     "submission_validation": {
       "script": "ch1_global/v2/69_validate_submission_outputs.py",
@@ -59,11 +83,16 @@
       "outputs": ["checksums", "table dimensions", "software versions", "commit identity"]
     }
   },
-  "primary_parameters": {
-    "minimum_species_trait_observations": 10,
-    "minimum_traits": 6,
-    "minimum_predictors_per_trait": 3,
-    "sample_size_sensitivities": [5, 20],
-    "hue_representation": "joint sine/cosine"
+  "revised_primary_parameters": {
+    "nested_variance_species_bootstrap_repeats": 2000,
+    "nested_variance_balanced_repeats": 500,
+    "nested_variance_balanced_photos_per_species": 10,
+    "minimum_observations_per_species_trait_predictor": 10,
+    "linear_traits": 7,
+    "predictors_per_trait": 4,
+    "module_weighting": "equal orientation, colour and shape weights",
+    "hue_in_precision_test": "excluded because archived joint species hue vectors lack component standard errors",
+    "precision_bootstrap_repeats": 5000,
+    "random_seed": 20260722
   }
 }

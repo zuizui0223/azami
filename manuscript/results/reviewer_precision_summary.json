@@ -1,0 +1,65 @@
+{
+  "analysis_status": "reviewer-driven replacement of the legacy absolute-slope RMS lability analysis",
+  "legacy_diagnostic": {
+    "n_species": 102,
+    "variation_vs_legacy_responsiveness_spearman_rho": -0.33309961493008233,
+    "variation_vs_legacy_responsiveness_p": 0.0006240939472585748,
+    "legacy_responsiveness_vs_median_n_rho": -0.9194595732980716,
+    "legacy_responsiveness_vs_median_n_p": 2.4899537516918366e-42,
+    "legacy_responsiveness_vs_median_se_rho": 0.9143233569502011,
+    "legacy_responsiveness_vs_median_se_p": 4.817370879212703e-41,
+    "partial_spearman_controlling_median_n": 0.05580956321027713,
+    "partial_spearman_p": 0.577434002586757,
+    "decision": "legacy negative correlation and median-split quadrants are withdrawn"
+  },
+  "revised_primary_cohort": {
+    "n_species": 101,
+    "traits": [
+      "orientation_angle_degrees_median",
+      "corolla_lab_lightness_median",
+      "corolla_lab_chroma_median",
+      "shape_aspect_ratio_median",
+      "shape_circularity_median",
+      "shape_solidity_median",
+      "shape_width_cv_median"
+    ],
+    "n_traits": 7,
+    "predictors": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15"
+    ],
+    "eligibility": "all seven linear endpoints, all four predictors per endpoint, minimum n >= 10",
+    "module_weighting": "orientation, colour and shape receive equal weight",
+    "hue": "excluded from this precision-corrected primary test because archived species-level circular vectors lack component standard errors"
+  },
+  "noise_adjusted_axis_test": {
+    "estimator": "mean(beta_std^2 - se^2) within trait, then equal module average",
+    "interpretation": "unbiased association-energy estimator under approximately normal slope errors; negative values indicate no resolved excess signal and are not negative biological responsiveness",
+    "spearman_rho": -0.05686662783925451,
+    "p_value": 0.5721783308982907,
+    "species_bootstrap_ci95_low": -0.2652427899441521,
+    "species_bootstrap_ci95_high": 0.15483770145148418,
+    "association_energy_vs_median_n_rho": -0.038399799545104106,
+    "association_energy_vs_median_n_p": 0.7030175242034062,
+    "association_energy_vs_median_se_rho": 0.020384391380314497,
+    "association_energy_vs_median_se_p": 0.8396574586519776
+  },
+  "hierarchical_variance_meta_regression": {
+    "n_species": 101,
+    "n_slope_estimates": 2828,
+    "n_trait_predictor_groups": 28,
+    "log_variance_change_per_sd_visible_variation": -0.04160792485278784,
+    "profile_ci95_low": -0.27434304176516855,
+    "profile_ci95_high": 0.20042869071450004,
+    "likelihood_ratio": 0.11726058129715966,
+    "p_value": 0.7320248138283185
+  },
+  "workflow_provenance": {
+    "run_id": 29894216905,
+    "artifact_id": 8519352787,
+    "artifact_digest": "sha256:5e9979faa290432997563ab884a9da9e74b7c69709fafe7ec3a10f7897e9c972"
+  },
+  "claim_boundary": "No common coupling between visible variation and latent environment-trait slope magnitude was detected after sampling precision was modelled. This is not evidence that every module is biologically invariant."
+}
