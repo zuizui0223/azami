@@ -4,7 +4,7 @@ This repository contains a multi-chapter project on the ecology and evolution of
 
 ## Chapter 1 in one sentence
 
-Species means conceal broad, multidimensional visible phenotype distributions, but no common coupling between visible dispersion and within-species spatial climatic association remains after slope uncertainty is modelled.
+Species means conceal hierarchically structured visible phenotype distributions, but no common coupling between visible dispersion and within-species spatial climatic association remains after slope uncertainty is modelled.
 
 The analysis is observational and non-causal. Spatial climatic association is not proof of temporal response, local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
 
@@ -14,12 +14,24 @@ Two data streams answer different questions.
 
 | Cohort | Observations | Taxa | Purpose |
 |---|---:|---:|---|
-| Balanced image-comparison atlas | 3,725 | 216 | 6,626-head visible variance, species PCA, among-species summaries and historical sensitivity |
+| Balanced image-comparison atlas | 3,725 | 216 | 6,626-head nested visible variance, species PCA, among-species summaries and historical sensitivity |
 | Exhaustive detector-positive layer | 406,582 | 286 | Post-detection source layer |
 | Exhaustive spatially thinned primary | 46,276 | 259 | Primary within-species climate coefficients |
 | Revised precision-aware lability cohort | 101 | 101 | Seven linear endpoints × four predictors with all slope standard errors |
 
 The full flow from 777,766 photographs to each derived table is recorded in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
+
+## Nested image hierarchy correction
+
+The balanced atlas retains one photograph per public observation and may contain multiple detected heads per photograph. The earlier two-level variance partition combined these levels. A revised exact decomposition separates:
+
+- differences among assigned species means;
+- differences among photographs within assigned species; and
+- differences among heads within photographs.
+
+Across nine endpoints, the combined below-species fraction is 0.589–0.931. The among-photograph component is 0.440–0.691 and the among-head-within-photo component is 0.143–0.379. One-head-per-photo sensitivities retain fractions of 0.582–0.899. Equal-replication sensitivities using 10 photographs per eligible species retain median fractions of 0.528–0.879.
+
+These are visible image sums-of-squares components, not genetic or standardized phenotypic variance. The correction is implemented in `analysis/decompose_nested_visible_variance.py` and `.github/workflows/ch1-nested-visible-variance.yml`.
 
 ## Reviewer-driven statistical correction
 
@@ -41,8 +53,6 @@ The correction is implemented in `analysis/reanalyze_lability_precision.py` and 
 
 ## Other retained results
 
-Across the nine image endpoints, approximately 82–99% of visible variance occurs within assigned species. This is uncontrolled image variance, not a claim that all variance is biological.
-
 Species-level PCA remains multidimensional: PC1 explains 32.9%, PCs 1–2 explain 56.1% and PCs 1–3 explain 69.3%.
 
 In the exhaustive 46,276-observation primary cohort, eight of 36 component rows pass BH correction. Four are non-circular linear associations and all are small in standardized magnitude. Four additional hue sine/cosine rows require joint circular interpretation. The earlier balanced-atlas ≤10 km sensitivity has zero BH-supported main rows; it is a different dataset and is not the primary exhaustive FDR result.
@@ -56,9 +66,10 @@ Start here:
 1. `manuscript/SUBMISSION_MANUSCRIPT.md` — submission-facing section order and status;
 2. `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
 3. `manuscript/final_claims.json` — reviewer-revised machine-readable claim registry;
-4. `manuscript/results/reviewer_precision_summary.json` — numerical precision audit;
-5. `analysis/ch1/pipeline.json` — canonical executable stages;
-6. `manuscript/EXTERNAL_COMPLETION_GATES.md` — detector, measurement, taxonomy, spatial and archive gates still requiring external input.
+4. `manuscript/results/nested_visible_variance_summary.csv` — image-hierarchy decomposition;
+5. `manuscript/results/reviewer_precision_summary.json` — numerical precision audit;
+6. `analysis/ch1/pipeline.json` — canonical executable stages;
+7. `manuscript/EXTERNAL_COMPLETION_GATES.md` — detector, measurement, taxonomy, spatial and archive gates still requiring external input.
 
 The validator `analysis/validate_final_claims.py` and workflow `.github/workflows/ch1-final-manuscript-claims.yml` enforce the revised claim set.
 
@@ -74,6 +85,7 @@ Circular hue remains a joint endpoint. It is retained in colour and PCA analyses
 ## Reproducibility policy
 
 - Every FDR count must name its cohort, endpoint family and number of tests.
+- Multiple heads from one photograph must remain a nested level or be reduced by one-head-per-photo sensitivity.
 - Raw absolute species-slope RMS and median-split quadrants are legacy provenance only.
 - The revised primary lability test requires all seven linear endpoints, four predictors per endpoint and n ≥ 10 for every slope.
 - Final artifacts must include CSVs, figures, metadata, package versions, commit SHA, workflow run IDs and SHA-256 checksums.
