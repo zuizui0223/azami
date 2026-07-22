@@ -1,39 +1,34 @@
 # Chapter 1 manuscript workspace
 
-Use this directory for writing and submission assembly. Do not copy numbers from old notes or workflow logs.
+Use this directory for submission assembly. Do not copy numbers from legacy notes, old figures or workflow logs.
 
-## Supervisor-review entry point
+## Canonical submission entry point
 
-1. `COMPLETE_DRAFT_FOR_SUPERVISOR.md` — complete integrated draft with eight result-based figures and one supplementary figure;
-2. `04_discussion.md` — standalone Discussion section;
-3. `05_conclusion_and_declarations.md` — conclusion and submission statements;
-4. `SUPERVISOR_REVIEW_FIGURE_MAP.md` — figure-source and artifact provenance;
-5. `EXTERNAL_COMPLETION_GATES.md` — remaining inputs that cannot be derived from the repository.
+1. `SUBMISSION_MANUSCRIPT.md` — current manuscript order and scientific status;
+2. `COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
+3. `final_claims.json` — reviewer-revised machine-readable claims;
+4. `results/reviewer_precision_summary.json` — legacy precision audit and replacement results;
+5. `EXTERNAL_COMPLETION_GATES.md` — independent detector/measurement, taxonomy, spatial and archive gates.
 
-## Scientific-control reading order
+## Current correction
 
-1. `RESULT_LED_STORY_REVIEW.md` — complete executed-result inventory and rejected story options;
-2. `FINAL_MANUSCRIPT_STRATEGY.md` — selected framing, novelty and interpretation limits;
-3. `CIRSIUM_EVOLUTIONARY_ECOLOGY_AND_DISCUSSION_STRATEGY.md` — literature-grounded genus context;
-4. `MANUSCRIPT_OUTLINE.md` — section-by-section writing skeleton;
-5. `FIGURE_TABLE_MAP.md` — frozen submission-output sources;
-6. `final_claims.json` — machine-readable headline numbers;
-7. `FINAL_FREEZE_CHECKLIST.md` and `RUNBOOK.md` — credibility gates and release procedure.
+The former environmental-responsiveness index was the RMS of unpooled absolute species slopes. It was strongly confounded with sample size and standard error, so the rho = -0.333 result and all median-split quadrants are withdrawn.
+
+The revised analysis contains 101 taxa with all seven linear endpoints and four climate predictors, gives equal weight to orientation, colour and shape, and uses every archived slope standard error. The primary hierarchical variance meta-regression detects no common coupling between visible variation and latent slope magnitude.
 
 ## Drafting rules
 
-- Write Results from frozen outputs, not from memory.
-- Record the source filename, workflow run ID, artifact digest and commit for every inserted number.
-- Name the cohort whenever reporting an FDR count.
-- Keep strict within-species, expanded pooled, among-species niche and historical-sensitivity results separate.
+- Write Results from `final_claims.json` and the current result ledgers, not from memory.
+- Name the exact cohort whenever reporting an FDR count.
+- Keep the 6,626-head image atlas, the 406,582-observation exhaustive layer and the 46,276-observation spatially thinned primary cohort separate.
 - Treat hue as a joint circular endpoint.
-- Use visible variation, environmental responsiveness and environmental sorting; do not claim demonstrated plasticity, adaptation, selection or evolutionary rate.
-- Mark proposed mechanisms in the Discussion as hypotheses.
+- Use *visible dispersion*, *within-species spatial environment–trait association* and *among-species environmental sorting*.
+- Do not use *climate tracking* or *environmental responsiveness* as temporal or experimental claims.
+- Do not restore legacy quadrants or raw absolute-slope RMS rankings.
+- Mark biological mechanisms as hypotheses.
 
-## Manuscript assembly order
+## Reproducibility
 
-1. Review the integrated supervisor draft and figures.
-2. Close only the external gates listed in `EXTERNAL_COMPLETION_GATES.md`.
-3. Revise section files for cross-section consistency.
-4. Validate all headline numbers against `final_claims.json`.
-5. Build and permanently archive the checksummed submission bundle.
+The revised analysis is implemented in `analysis/reanalyze_lability_precision.py` and `.github/workflows/ch1-reviewer-precision-reanalysis.yml`. All headline claims are validated by `analysis/validate_final_claims.py`.
+
+The older `COMPLETE_DRAFT_FOR_SUPERVISOR.md` and `SUPERVISOR_REVIEW_FIGURE_MAP.md` are retained only as historical provenance and are not submission entry points.
