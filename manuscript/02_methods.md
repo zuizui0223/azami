@@ -2,82 +2,56 @@
 
 ## Study design and analytical separation
 
-We used public biodiversity photographs to quantify continuous capitulum traits across *Cirsium* and related thistles while retaining repeated observations within species. The analysis was designed to distinguish three structures that are often conflated in comparative trait studies: visible within-species variation, within-species environmental responsiveness and among-species environmental sorting. These structures were estimated in separate analysis layers and were not combined into a single inference about plasticity, adaptation or evolutionary rate.
+We used public biodiversity photographs to quantify continuous capitulum traits across *Cirsium* and related thistles while retaining repeated observations within species. The design separated three structures that comparative trait studies often conflate: visible dispersion among records assigned to the same species, spatial environment–trait associations within species and environmental sorting among species. These layers were not combined into an inference about plasticity, adaptation or evolutionary rate.
 
-The submission-facing workflow is defined by the canonical Chapter 1 pipeline and frozen claim registry. Any change to accepted taxa, trait definitions, measurement thresholds, environmental data or historical-placement scenarios requires a new analysis version and full validation rather than an undocumented manuscript-layer edit.
+## Cohort definitions
 
-## Public-image observations and taxonomic scope
+Two executed data streams served different purposes. The balanced image-comparison atlas contained 3,725 public observations, 6,626 detected capitula and 216 accepted image-analysis taxa. It was used for visible variance partitioning, species-level trait PCA, among-species summaries and historical-placement sensitivity.
 
-Source observations were obtained from public biodiversity records with image, taxon and spatial provenance retained throughout processing. The continuous image-analysis dataset contained 3,725 public observations, 6,626 detected capitula and 216 accepted image-analysis taxa. The strict within-species layer contained 46,276 spatially thinned observations from 259 taxa. The primary two-axis lability analysis used the 102 taxa meeting all predeclared completeness criteria.
+The exhaustive stream ran the detector and continuous measurement workflow before trait-based thinning. It contained 406,582 observations with detected capitula from 286 taxa. Coordinate filtering retained 392,989 observations from 271 taxa; a positional-accuracy threshold of ≤10 km retained 297,293 observations from 259 taxa; and one observation per taxon × 0.25° cell yielded the **exhaustive spatially thinned primary cohort** of 46,276 observations from 259 taxa. The complete cohort flow, filenames and analysis permissions are fixed in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
 
-Taxon names were retained exactly as they occurred in frozen analysis inputs and are linked to a dated, human-reviewed accepted-name decision table. The taxonomic audit requires one decision per source name, an external authority record, decision date and rationale. Synonym collapses are recorded explicitly. Any decision that merges or removes active analysis units triggers a new analysis version.
+## Capitulum detection and continuous image measurements
 
-## Capitulum detection and context-preserving crops
+Capitula were detected from source photographs using the frozen production detector. Each retained detection preserved the source observation identifier, image provenance, bounding box and contextual crop. Tight crops were used for colour and two-dimensional outline; context crops retained stem and display information needed for image-referenced orientation.
 
-Capitula were detected from source photographs using the frozen production detector. Each retained detection preserved the source observation identifier, image provenance, bounding box and contextual crop. Tight crops were used for measurements requiring the capitulum boundary, whereas context crops retained stem and display information needed for orientation assessment.
+Nine primary endpoints represented three capitulum modules: orientation; visible corolla lightness, chroma and circular hue coordinates; and outline aspect ratio, circularity, solidity and width-profile variation. Trait measurements were deterministic production functions rather than human categories. A failed or unassessable measurement remained missing rather than being converted to zero or biological absence. Horizontal mirroring served as a technical repeatability check. Detector precision and continuous-trait accuracy require independent manual validation and are not inferred from quality-control retention.
 
-Detector credibility is evaluated independently using manually annotated source images and one-to-one intersection-over-union matching. Precision, recall, F1, false positives, false negatives, true no-capitulum images and human-unassessable images are reported separately. These metrics and the final licence-safe demonstration panels remain submission gates and are not inferred from the analysis dataset itself.
+## Environmental predictors and primary within-species coefficients
 
-## Continuous trait measurements
+Four predeclared CHELSA v2.1 predictors represented mean annual temperature (BIO1), temperature seasonality (BIO4), annual precipitation (BIO12) and precipitation seasonality (BIO15). For each endpoint–predictor combination in the exhaustive spatially thinned cohort, outcome and predictor values were demeaned within species and standardized after demeaning. Ordinary least-squares coefficients were fitted without an intercept and used species-clustered standard errors. Benjamini–Hochberg correction was applied across the 36 endpoint-component models. Hue sine and cosine rows were retained for computation but were not interpreted as independent biological colour tests.
 
-Nine primary endpoints represented three capitulum modules: orientation, visible corolla colour and two-dimensional outline. Measurements were generated deterministically from the frozen production functions rather than by manual scoring.
+## Visible variance and species-level trait structure
 
-Orientation was quantified from the capitulum–stem geometry retained in the context crop. Visible colour was summarized from the retained corolla mask using continuous colour coordinates, with hue represented jointly by sine and cosine components to respect circularity. Outline measurements were calculated from the segmented capitulum boundary and convex hull and included aspect-ratio and compactness-related endpoints.
+For each endpoint in the image-comparison atlas, total sums of squares were separated into within-assigned-species and among-species-mean components. The within fraction describes uncontrolled image variance and can combine biological heterogeneity, developmental state, illumination, viewpoint and measurement error. Species medians were standardized and analysed by PCA to describe multivariate trait architecture.
 
-Trait-specific assessability rules were applied before analysis. A failed or unassessable measurement was retained as missing data rather than converted to biological absence or a zero value. The measurement audit displays assessable and unassessable examples, tight and contextual crops, production-generated orientation lines, colour masks, outlines and convex hulls, together with horizontal-mirror technical checks and low-, middle- and high-value examples.
+## Reviewer-driven precision audit
 
-## Quality control and observation-level retention
+The legacy lability analysis summarized each species by the RMS absolute value of separately fitted slopes. Because an absolute noisy estimate is positive even under a zero true effect, this score is expected to increase as slope uncertainty increases. We therefore audited its relation to median species-specific sample size and median slope standard error and calculated a rank-based partial correlation between the legacy axes while controlling median sample size.
 
-All trait values were retained at observation level before aggregation. Quality-control rules were specific to each trait module because orientation, colour and outline fail for different photographic reasons. Coordinates, taxon names, source identifiers, image licences, detector outputs and measurement status were propagated into downstream tables.
+The negative legacy relation and median-split quadrants were withdrawn after this audit. The revised precision-aware cohort required all seven linear endpoints, all four climate predictors for each endpoint and at least 10 observations for every species × endpoint × predictor slope. This yielded 101 taxa. Circular hue was excluded from this specific correction because the archived joint species hue vectors lack component standard errors.
 
-The continuous comparison layer and strict within-species layer are distinct cohorts. Counts, false-discovery-rate summaries and sensitivity results are therefore always reported with their cohort and analysis scope. Missing endpoints were not interpreted as taxon-level absence.
+## Equal-module visible variation and sampling-noise-adjusted association energy
 
-## Environmental data and spatial cohorts
+Within-variation values were first averaged within orientation, colour and shape and then averaged across the three modules, so modules rather than endpoint counts received equal weight.
 
-Environmental predictors were extracted for georeferenced observations from the frozen environmental data sources recorded in the submission manifest. The strict primary within-species cohort was restricted to observations with coordinate uncertainty no greater than 10 km. Spatial thinning was applied before species-specific environmental modelling to reduce clustering of repeated public observations.
+For slope estimate \(\hat\beta\) with standard error \(s\), we used \(\hat\beta^2-s^2\) as a sampling-noise-adjusted estimator of squared true association magnitude, because under an approximately normal slope estimator \(E(\hat\beta^2-s^2)=\beta^2\). Values were averaged across predictors within trait, across traits within module and equally across modules. Negative realized values indicate that the data do not resolve excess association beyond sampling noise; they are not negative biological responsiveness. Spearman correlation described the relation between equal-module visible variation and this association-energy score. A 5,000-replicate species bootstrap provided a confidence interval.
 
-The accepted analysis includes separate coordinate-quality and pooled summaries. The strict primary cohort and the expanded pooled coefficient table are not combined into a single significance count. Environmental associations are interpreted as observational climate tracking or environmental responsiveness, not as demonstrated plasticity or local adaptation.
+## Hierarchical variance meta-regression
 
-## Partitioning visible variation and species-level trait structure
+As the primary uncertainty-aware test, all 2,828 archived linear slope estimates from the 101 complete taxa were modelled with their standard errors. For trait–predictor group \(g\) and species \(i\),
 
-For each primary endpoint, visible variance was partitioned into within- and among-species components using the frozen continuous-analysis workflow. The within-species fraction describes dispersion among uncontrolled photographs assigned to the same species and can include biological heterogeneity, developmental state, viewpoint and measurement components.
+\[
+\hat\beta_{ig} \sim \mathrm{Normal}(\mu_g,\; s_{ig}^2 + \tau_g^2\exp(bV_i)),
+\]
 
-Species-level trait structure was summarized with principal-component analysis on the accepted continuous endpoints. This analysis was used to assess whether orientation, colour and outline could be reduced to one dominant species-level axis.
+where \(V_i\) is the standardized equal-module visible-variation index, \(\mu_g\) is a group-specific mean, \(\tau_g^2\) is group-specific latent slope variance at mean visible variation and \(b\) is a common log-variance change per standard deviation of visible variation. Group means were profiled analytically and variance parameters by maximum likelihood. The common coefficient was tested against \(b=0\) with a likelihood-ratio test, and a 95% interval was obtained by profile likelihood.
 
-## Within-species variation and environmental responsiveness
+## Among-species environmental sorting and historical sensitivity
 
-Species-specific within-variation values were calculated for eligible trait–species combinations from the strict spatial observation table. Environmental responsiveness was calculated from standardized species-specific trait–environment coefficients in the exhaustive within-species climate analysis.
+Grouped spatial models and trait-extreme environmental PCA contrasts were kept separate from within-species coefficient analyses. Their outputs describe among-species environmental sorting, not within-species change. Historical sensitivity was evaluated across direct-backbone and alternative grafted placements. Direct and grafted results remained separate, and opportunistic molecular records were summarized only as a coverage audit.
 
-The primary species-level lability cohort required at least 10 observations per eligible trait–species combination, at least six measured traits per species and at least three environmental predictors per trait. Species-level indices were built only for the 102 taxa satisfying all completeness criteria. The within-variation and environmental-responsiveness indices were compared using Spearman rank correlation and divided at their cohort medians to describe four high/low combinations. Module summaries used medians rather than means.
+## Multiplicity, terminology and reproducibility
 
-Sensitivity analyses repeated the species rankings with minimum sample-size thresholds of five and 20 observations. Rank correlations with the primary threshold quantified whether the central two-axis result depended on the selected minimum sample size.
+Every FDR count is reported with its cohort, endpoint family and number of tests. The 46,276-observation exhaustive primary cohort is not conflated with the earlier balanced-atlas ≤10 km sensitivity. The manuscript uses *visible dispersion*, *within-species spatial environment–trait association*, *among-species environmental sorting* and *historical-placement sensitivity*. It does not use *climate tracking* or *environmental responsiveness* as if temporal or experimental response had been measured.
 
-## Among-species environmental sorting
-
-Among-species environmental structure was analysed separately from within-species responsiveness. Grouped spatial models evaluated orientation, colour and outline endpoints against climate and soil predictor groups while accounting for spatial structure. Model comparison and globally adjusted fixed-effect summaries were used to identify which trait modules showed the clearest environmental sorting.
-
-A complementary trait-extreme analysis compared environmental niches of species at opposite ends of each species-level trait distribution. Environmental niche centroid separation and overlap were interpreted as among-species sorting and not as direct evidence of selection or adaptive divergence.
-
-## Residual spatial and broad-region robustness
-
-The accepted models are not replaced by the diagnostic audit. Observation-level fitted values or residuals are joined back to frozen observations through explicit observation and endpoint identifiers. Residual spatial structure is quantified with endpoint-specific k-nearest-neighbour Moran's I and permutation p-values using a recorded seed.
-
-A manually reviewed broad-region lookup is required; regions are not inferred automatically from coordinates. Regional observation and taxon coverage are summarized, and leave-one-region-out analyses quantify the stability of taxon rankings after each broad region is omitted. Final diagnostic values and any resulting limitation language remain pending until the frozen prediction/residual export and reviewed region lookup are supplied.
-
-## Historical-placement sensitivity and molecular-data audit
-
-Historical sensitivity was evaluated across a dated backbone and alternative deterministic and randomized placements for taxa absent from that backbone. Direct-backbone and grafted-tree results were retained separately. Phylogenetic-signal and historical regression outputs were classified according to whether support survived restriction to directly represented tips and alternative placements.
-
-Hue sine and cosine components were not interpreted as independent biological tests; circular colour inference requires a joint treatment. The molecular-database audit summarized available nucleotide, ITS, plastid, plastome and sequence-read records and was used to evaluate whether a uniformly sampled resolved nuclear species tree could be assembled for the complete analysis set.
-
-## Multiplicity, sensitivity and claim control
-
-False-discovery-rate correction was applied within the predefined reporting families of the frozen workflows. Strict and expanded analyses were not pooled after correction. Effect size, cohort definition and model scope were considered together rather than using adjusted significance alone.
-
-All manuscript-facing numerical claims are validated against `manuscript/final_claims.json`. The manuscript uses the terms visible within-species variation, environmental responsiveness, climate tracking, among-species environmental sorting, module dependence and historical-placement sensitivity. It does not treat the observational analyses as demonstrations of plasticity, local adaptation, selection, rain protection, pollinator causation, evolutionary rate or a resolved *Cirsium* species tree.
-
-## Reproducibility and pending submission gates
-
-The canonical scripts, inputs and outputs are mapped in `analysis/ch1/pipeline.json` and executed through versioned GitHub Actions workflows. The durable submission bundle will include final CSV tables, PNG and PDF figures, software environments, workflow run identifiers, commit SHA, artifact digests, SHA-256 checksums and a file-level output map.
-
-Before this section is frozen for submission, three externally supplied audit products must be inserted without altering the accepted analyses: independent detector and measurement-audit outputs, the completed taxonomic decision table, and the residual spatial and broad-region diagnostic results. Public photographs will not be redistributed beyond their licence terms; the archive will preserve source identifiers and licence metadata.
+The revised analysis is implemented in `analysis/reanalyze_lability_precision.py`, rerun from frozen artifact `8330350031` by `.github/workflows/ch1-reviewer-precision-reanalysis.yml`, and validated against `manuscript/final_claims.json`.
