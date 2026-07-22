@@ -1,41 +1,39 @@
 # Results
 
-## Global image dataset and analysis cohorts
+## Cohort flow separated the image atlas from exhaustive within-species inference
 
-The continuous image-analysis dataset contained 6,626 detected capitula from 216 accepted taxa. These measurements were used for among-species trait comparisons, multivariate summaries and historical-sensitivity analyses. The strict within-species analysis layer contained 46,276 spatially thinned observations from 259 taxa. Of these, 102 taxa met the predeclared completeness criteria of at least 10 observations, at least six measured traits and at least three environmental predictors per trait, and therefore entered the primary two-axis lability analysis.
+The balanced image-comparison atlas contained 6,626 detected capitula from 3,725 observations and 216 accepted image-analysis taxa. The exhaustive all-photo stream contained 406,582 detector-positive observations from 286 taxa. After coordinate-quality filtering, a ≤10 km positional-accuracy restriction and taxon-by-0.25°-cell thinning, 46,276 observations from 259 taxa formed the exhaustive spatially thinned primary cohort for within-species climate coefficients.
 
-The nine primary endpoints represented three capitulum modules: orientation, visible corolla colour and two-dimensional outline. Measurements were retained only when the relevant trait was assessable under its trait-specific quality-control rules. Consequently, unavailable measurements were treated as missing observations rather than as biological absence.
+These layers are not interchangeable. The image-comparison atlas supports visible variance, PCA and historical summaries. The 46,276-observation cohort supports primary within-species coefficient and precision-aware cross-species analyses.
 
-## Visible trait variation was concentrated within species
+## Most visible image variance occurred within assigned species
 
-Across the nine primary endpoints, the estimated fraction of visible variance occurring within species ranged from approximately 0.817 to 0.988. Thus, for every measured endpoint, variation among observations assigned to the same species exceeded the component attributable to differences among species means. These fractions describe variation visible in uncontrolled photographs and may contain biological heterogeneity, developmental state, viewpoint and measurement components.
+Across the nine primary endpoints, the estimated fraction of visible variance occurring within assigned species ranged from approximately 0.817 to 0.988. Variation among records carrying the same species name therefore exceeded the component attributable to differences among species means for every endpoint. These fractions describe uncontrolled image variance and can include biological heterogeneity, developmental state, viewpoint, illumination and measurement error.
 
-The species-level multivariate trait structure was not dominated by a single axis. The first principal component explained 32.9% of variance, the first two components jointly explained 56.1%, and the first three explained 69.3%. Orientation, colour and outline therefore contributed to a multidimensional rather than one-dimensional species-level phenotype.
+Species-level structure was multidimensional. PC1 explained 32.9% of variance, PCs 1–2 explained 56.1% and PCs 1–3 explained 69.3%. Orientation, colour and outline were not reducible to one dominant mean-trait axis.
 
-## Within-species variation and environmental responsiveness formed separate axes
+## The legacy negative lability relation was a precision artefact
 
-Within the 102 complete taxa, the species within-variation index was negatively associated with the environmental-responsiveness index (Spearman's rho = -0.333). Species with broad visible phenotypic distributions were therefore not generally the species whose traits showed the strongest standardized associations with climate.
+The legacy environmental-association score was the RMS magnitude of unpooled absolute species-specific slopes. Among the original 102 complete taxa, it reproduced the previously reported correlation with visible variation (Spearman's rho = -0.333). However, the score was almost perfectly associated with the median number of observations per slope (rho = -0.919) and with median slope standard error (rho = 0.914). After controlling median sample size, the partial rank correlation between the legacy axes was 0.056 (P = 0.577). The negative relation and four median-split quadrants were therefore withdrawn.
 
-All four combinations of high and low variation and responsiveness were well represented. Twenty-two taxa had high variation and high responsiveness, 29 had low variation and high responsiveness, 29 had high variation and low responsiveness, and 22 had low variation and low responsiveness. The near-balanced occupancy of the four quadrants showed that neither index could serve as a proxy for the other.
+## No common coupling remained after slope uncertainty was modelled
 
-## Capitulum modules differed in variation and climate tracking
+The revised complete cohort contained 101 taxa with all seven linear endpoints, all four predictors per endpoint and at least 10 observations for every slope. The sampling-noise-adjusted association-energy score was no longer related to median sample size (rho = -0.038, P = 0.703) or median slope standard error (rho = 0.020, P = 0.840).
 
-The three trait modules occupied different positions in the variation–responsiveness space. Colour had the lowest median within-species variation (0.553) but the highest median environmental responsiveness (0.175). Shape had the highest median within-species variation (0.665), whereas its median responsiveness was intermediate (0.153). Orientation was intermediate in visible variation (0.630) and had the lowest median responsiveness (0.129).
+Equal-module visible variation was not associated with noise-adjusted association energy (Spearman's rho = -0.057, P = 0.572; 95% species-bootstrap CI -0.265 to 0.155). The hierarchical variance meta-regression likewise found no common change in latent slope magnitude with visible variation: the log-variance coefficient per standard deviation of visible variation was -0.042 (95% profile CI -0.274 to 0.200; likelihood-ratio P = 0.732). Thus, the data supported no common cross-module lability axis after sampling precision was incorporated.
 
-The grouped spatial models and environmental-niche contrasts likewise showed that environmental structure was not distributed uniformly across modules. Supported grouped spatial effects were concentrated in colour and orientation, while no shape effect received global BH support across the fitted predictor groups. Species at opposite ends of the orientation and hue/chroma distributions also showed stronger environmental niche separation than species at opposite ends of most outline traits. In particular, orientation produced the largest environmental niche centroid contrast among the measured traits, whereas aspect ratio, circularity and solidity retained comparatively high niche overlap.
+## Modules retained different descriptive structures
 
-## Environmental evidence depended on biological scale and cohort
+Equal-module visible variation remained greatest for shape (median 0.667), intermediate for orientation (0.630) and lowest for colour (0.556). Median noise-adjusted association energy was close to zero for orientation (-0.0012) and shape (0.00002) and small for colour (0.0040). These values are not directly comparable to the withdrawn absolute-slope RMS values.
 
-Within-species climate associations were generally small and depended on the inferential cohort. In the strict primary cohort restricted to observations with coordinate uncertainty of no more than 10 km, no primary endpoint–climate combination passed BH false-discovery-rate correction. In the expanded pooled coefficient table, four endpoint–climate combinations passed BH correction, but all standardized effects were small. These summaries refer to different cohorts and analyses and were therefore not combined as a single significance count.
+Among-species environmental structure remained stronger for orientation and visible colour than for most outline traits. Orientation produced the largest environmental-niche centroid contrast, while aspect ratio, circularity and solidity retained comparatively high overlap. These contrasts are descriptive among-species sorting and do not establish within-species response or causal mechanism.
 
-At the among-species scale, environmental sorting was more evident for orientation and visible colour than for most outline traits. Grouped SPDE-INLA model comparisons favoured climate-only structure for orientation, whereas adding soil information improved preferred models for visible lightness and chroma. These model comparisons identify scale-specific observational structure and do not establish causal climatic, edaphic or pollinator mechanisms.
+## Within-species coefficient evidence depended on the named cohort
 
-## The two-axis result was stable to the minimum-sample threshold
+In the exhaustive spatially thinned primary cohort, eight of the 36 component-wise endpoint–climate rows passed BH correction. Four were non-circular linear associations: orientation with BIO1, chroma with BIO12 and aspect ratio with BIO4 and BIO12. Their standardized coefficients ranged in absolute magnitude from 0.011 to 0.039. Four hue sine/cosine rows also passed component-wise correction but were not interpreted independently because circular hue requires a joint test.
 
-Changing the minimum number of observations required per species preserved the primary rank structure. Relative to the primary threshold of 10 observations, the minimum-five analysis retained rank correlations of 0.939 for within-species variation and 0.999 for environmental responsiveness. At a minimum of 20 observations, the corresponding correlations were 0.914 and 0.987. The separation between visible variation and environmental responsiveness was therefore not produced solely by the selected minimum sample size.
+The earlier balanced image-atlas sensitivity gave zero BH-supported main rows in its ≤10 km subset and two in its all-coordinate subset. These results concern a smaller, differently balanced cohort and are not the FDR result of the 46,276-observation primary analysis.
 
-## Apparent historical signal was sensitive to taxon placement
+## Historical inference remained placement sensitive
 
-The historical-sensitivity analysis included 216 taxa, but only 54 were directly represented in the dated phylogenetic backbone; the remaining taxa required alternative placements. Across deterministic and randomized tree scenarios, all 636 planned phylogenetic-signal fits completed successfully. However, no non-circular endpoint retained direct-backbone support after false-discovery-rate correction. Apparent signals for shape circularity and solidity were classified as grafting-sensitive, and the sine and cosine components of hue required a future joint circular test rather than separate biological interpretation.
-
-The accompanying molecular-database audit found nucleotide records for 138 of the 216 taxa, ITS records for 133, plastid records for 129, complete plastomes for 11 and SRA records for 120. These heterogeneous records were insufficient to construct a uniformly sampled, resolved nuclear species tree for the full analysis set.
+The historical-sensitivity analysis included 216 taxa, of which only 54 were directly represented in the dated backbone. All 636 planned signal fits completed, but no non-circular endpoint retained direct-backbone support after FDR correction. Apparent signals for circularity and solidity were grafting sensitive. Molecular-database coverage remained heterogeneous: 138 taxa had nucleotide records, 133 ITS, 129 plastid, 11 complete plastomes and 120 SRA records.
