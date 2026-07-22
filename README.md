@@ -1,140 +1,66 @@
 # azami — global image-derived capitulum traits in *Cirsium*
 
-This repository contains a multi-chapter project on the ecology and evolution of
-*Cirsium* floral architecture. Chapter 1 is the submission-focused component: a
-global analysis of continuous capitulum traits measured from public biodiversity
-photographs.
+This repository contains a multi-chapter project on the ecology and evolution of *Cirsium* floral architecture. Chapter 1 is the submission-focused component: a global analysis of continuous capitulum traits measured from public biodiversity photographs.
 
 ## Chapter 1 in one sentence
 
-Species means conceal a scale-dependent and modular capitulum phenotype: most
-visible variation occurs within species, but total variation, within-species climate
-tracking and among-species environmental sorting are not equivalent.
+Species means conceal broad, multidimensional visible phenotype distributions, but no common coupling between visible dispersion and within-species spatial climatic association remains after slope uncertainty is modelled.
 
-The analysis is observational and non-causal. Climate association is not proof of
-local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
+The analysis is observational and non-causal. Spatial climatic association is not proof of temporal response, local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
 
-## Why Cirsium matters
+## Canonical executed cohorts
 
-*Cirsium* is not merely a convenient image-rich genus. It is species rich,
-morphologically diverse and historically difficult: hybridization, polyploidy,
-regional endemism and uncertain taxonomic or phylogenetic boundaries make a single
-species mean and a single bifurcating tree especially questionable summaries. The
-paper uses that biological complexity as motivation while avoiding an unsupported
-claim of adaptive radiation.
+Two data streams answer different questions.
 
-## Executed datasets
+| Cohort | Observations | Taxa | Purpose |
+|---|---:|---:|---|
+| Balanced image-comparison atlas | 3,725 | 216 | 6,626-head visible variance, species PCA, among-species summaries and historical sensitivity |
+| Exhaustive detector-positive layer | 406,582 | 286 | Post-detection source layer |
+| Exhaustive spatially thinned primary | 46,276 | 259 | Primary within-species climate coefficients |
+| Revised precision-aware lability cohort | 101 | 101 | Seven linear endpoints × four predictors with all slope standard errors |
 
-The image-measurement layer contains 6,626 detected capitula from 3,725 primary
-public observations and 216 accepted image-analysis taxa. The strict within-species
-climate layer contains 46,276 spatially thinned observations from 259 taxa. These
-tables have different sampling units and are intentionally kept separate.
+The full flow from 777,766 photographs to each derived table is recorded in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
 
-The final two-axis lability analysis requires at least 10 observations, six eligible
-traits and three climate predictors per trait. A total of 102 taxa pass this
-completeness rule.
+## Reviewer-driven statistical correction
 
-## Frozen result
+The previous lability analysis used the RMS magnitude of unpooled absolute species-specific slopes. That score was strongly confounded with median slope sample size (Spearman rho = -0.919) and median slope standard error (rho = 0.914). The previously reported rho = -0.333 and median-split quadrants are withdrawn.
 
-Across the nine primary endpoints, approximately 82–99% of visible variance occurs
-within species. This is visible heterogeneity, not a claim that all variance is
-biological, because viewpoint and measurement conditions also contribute.
+The replacement analysis:
 
-Species within-variation and species environmental responsiveness are distinct axes.
-Across the 102 complete taxa, their Spearman correlation is -0.333. Species with
-broad visible phenotypic variation are therefore not necessarily those whose traits
-most strongly track the four CHELSA gradients.
+- uses a common 101-taxon cohort with all seven linear endpoints and all four climate predictors;
+- weights orientation, colour and shape equally;
+- subtracts slope sampling variance through `beta^2 - SE^2` for a transparent association-energy summary;
+- fits a hierarchical variance meta-regression to all 2,828 slope estimates with their standard errors.
 
-| Module | Median within-variation | Median environmental responsiveness | Species |
-|---|---:|---:|---:|
-| Colour | 0.553 | 0.175 | 104 |
-| Orientation | 0.630 | 0.129 | 101 |
-| Shape | 0.665 | 0.153 | 103 |
+No common coupling was detected:
 
-Colour has the strongest median climate tracking but the lowest median total
-variation. Shape has the largest visible variation without the largest climate
-responsiveness. Environmental niche contrasts between low- and high-trait species
-are strongest for orientation and colour and weaker for most outline traits.
+- noise-adjusted axis correlation: rho = -0.057, P = 0.572, 95% species-bootstrap CI -0.265 to 0.155;
+- hierarchical log-variance coefficient: -0.042, 95% profile CI -0.274 to 0.200, likelihood-ratio P = 0.732.
 
-Two within-species summaries must remain distinct:
+The correction is implemented in `analysis/reanalyze_lability_precision.py` and rerun by `.github/workflows/ch1-reviewer-precision-reanalysis.yml`.
 
-- the strict <=10 km primary cohort has zero BH-FDR-significant primary effects;
-- the expanded pooled coefficient table has four BH-FDR-significant effects, all
-  with small standardized magnitudes.
+## Other retained results
 
-These results are not contradictory because they use different cohorts and
-reporting scopes. The active manuscript must name the cohort whenever reporting an
-FDR count.
+Across the nine image endpoints, approximately 82–99% of visible variance occurs within assigned species. This is uncontrolled image variance, not a claim that all variance is biological.
 
-## Scientific logic
+Species-level PCA remains multidimensional: PC1 explains 32.9%, PCs 1–2 explain 56.1% and PCs 1–3 explain 69.3%.
 
-Chapter 1 separates five levels that are often conflated:
+In the exhaustive 46,276-observation primary cohort, eight of 36 component rows pass BH correction. Four are non-circular linear associations and all are small in standardized magnitude. Four additional hue sine/cosine rows require joint circular interpretation. The earlier balanced-atlas ≤10 km sensitivity has zero BH-supported main rows; it is a different dataset and is not the primary exhaustive FDR result.
 
-1. **measurement assessability** — whether an uncontrolled photograph supports a
-   valid trait estimate;
-2. **visible within-species variation** — how broad the observed phenotype is;
-3. **within-species climate association** — whether traits track environmental
-   gradients within species;
-4. **among-species environmental sorting** — whether species with contrasting mean
-   phenotypes occupy different environments;
-5. **historical sensitivity** — whether conclusions survive uncertain tree
-   placement.
-
-Circular hue remains a joint sine/cosine endpoint. Angle is used for presentation,
-not as an ordinary linear response.
+Among-species environmental sorting remains strongest for orientation and visible colour and weaker for most outline traits. Historical conclusions remain sensitive to grafted taxon placement because only 54 of 216 image-analysis taxa occur directly in the dated backbone.
 
 ## Canonical manuscript path
 
 Start here:
 
-1. `manuscript/RESULT_LED_STORY_REVIEW.md` — full result inventory and competing story comparison;
-2. `manuscript/FINAL_MANUSCRIPT_STRATEGY.md` — selected narrative and figure strategy;
-3. `manuscript/CIRSIUM_EVOLUTIONARY_ECOLOGY_AND_DISCUSSION_STRATEGY.md` — genus biology, literature anchors and Discussion architecture;
-4. `manuscript/final_claims.json` — machine-readable frozen numbers;
-5. `manuscript/FINAL_FREEZE_CHECKLIST.md` — remaining submission gates;
-6. `manuscript/RUNBOOK.md` — reproducible execution and bundle rules;
-7. `ch1_global/SUBMISSION_READINESS.md` — current readiness verdict.
+1. `manuscript/SUBMISSION_MANUSCRIPT.md` — submission-facing section order and status;
+2. `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
+3. `manuscript/final_claims.json` — reviewer-revised machine-readable claim registry;
+4. `manuscript/results/reviewer_precision_summary.json` — numerical precision audit;
+5. `analysis/ch1/pipeline.json` — canonical executable stages;
+6. `manuscript/EXTERNAL_COMPLETION_GATES.md` — detector, measurement, taxonomy, spatial and archive gates still requiring external input.
 
-The validator `analysis/validate_final_claims.py` and workflow
-`.github/workflows/ch1-final-manuscript-claims.yml` enforce the frozen claim set.
-
-## Canonical analysis path
-
-```text
-public images + trait-specific assessability
-        |
-continuous orientation, colour and outline distributions
-        |
-within-species variance + species-specific environmental slopes
-        |
-module and among-species environmental-niche contrasts
-        |
-spatial/cohort and historical-placement sensitivity
-        |
-validated durable submission bundle
-```
-
-The validated lability workflow is `.github/workflows/ch1-phase1-lability.yml`.
-The final manuscript-claim workflow is
-`.github/workflows/ch1-final-manuscript-claims.yml`.
-
-## Repository structure
-
-```text
-analysis/             submission-facing analysis definitions and validators
-workflows/            authoritative workflow documentation
-manuscript/           result review, final story, evolutionary context and runbook
-archive/              policy and destination for superseded material
-ch1_global/v1/        frozen orientation-only baseline
-ch1_global/v2/        current measurement and analysis implementation
-ch1_shared/           shared collection and model utilities
-ch1_japan/            regional exploratory work outside the Chapter 1 headline
-tests/                deterministic unit and invariant tests
-.github/workflows/    executable GitHub Actions definitions
-```
-
-The numbered v2 scripts remain in place for provenance. Mass renaming is deferred
-until the final bundle records original paths, commits and checksums.
+The validator `analysis/validate_final_claims.py` and workflow `.github/workflows/ch1-final-manuscript-claims.yml` enforce the revised claim set.
 
 ## Primary traits
 
@@ -143,23 +69,16 @@ until the final bundle records original paths, commits and checksums.
 - circular hue sine/cosine;
 - capitulum aspect ratio, circularity, solidity and width-profile variation.
 
-High-resolution involucral projection and spine-like contours remain exploratory.
-Hair and mucilage remain evidence-backed queues; missing evidence is `unknown`, not
-biological absence.
+Circular hue remains a joint endpoint. It is retained in colour and PCA analyses but excluded from the precision-corrected cross-species lability test because archived species-level joint hue vectors lack component standard errors.
 
 ## Reproducibility policy
 
-- Primary lability requires n >= 10, at least six traits and at least three climate
-  predictors per trait.
-- Minimum sample sizes 5 and 20 are reported as sensitivity analyses.
-- The final bundle must contain CSVs, figures, metadata, package versions, commit
-  SHA, workflow run IDs and SHA-256 checksums.
-- GitHub Actions artifacts are temporary; the submission bundle must be archived
-  durably before submission.
+- Every FDR count must name its cohort, endpoint family and number of tests.
+- Raw absolute species-slope RMS and median-split quadrants are legacy provenance only.
+- The revised primary lability test requires all seven linear endpoints, four predictors per endpoint and n ≥ 10 for every slope.
+- Final artifacts must include CSVs, figures, metadata, package versions, commit SHA, workflow run IDs and SHA-256 checksums.
+- GitHub Actions artifacts are temporary; the submission bundle must be archived durably before submission.
 
 ## Interpretation limits
 
-Citizen-science photographs are not colour calibrated, image vertical is only a
-proxy for gravity and outline measures remain viewpoint dependent. Species slopes
-may contain geographic structure or unmeasured covariates. The grafted mega-tree is
-a historical sensitivity analysis, not a resolved evolutionary history.
+Citizen-science photographs are not colour calibrated, image vertical is only a proxy for gravity and outline measures remain viewpoint dependent. Detector and continuous-measurement accuracy require independent validation. Taxonomic decisions and residual spatial/region-omission diagnostics remain submission gates. The grafted mega-tree is a historical sensitivity analysis, not a resolved evolutionary history.
