@@ -51,9 +51,9 @@
     "hierarchical_variance_meta_regression": {
       "n_slope_estimates": 2828,
       "n_trait_predictor_groups": 28,
-      "log_variance_change_per_sd_visible_variation": -0.04160788581172032,
-      "profile_ci95": [-0.27434304176514007, 0.2004286907144721],
-      "likelihood_ratio_p_value": 0.7320248138273192
+      "log_variance_change_per_sd_visible_variation": -0.04160792485278784,
+      "profile_ci95": [-0.27434304176516855, 0.20042869071450004],
+      "likelihood_ratio_p_value": 0.7320248138283185
     },
     "module_medians": {
       "orientation": {
@@ -102,6 +102,11 @@
     "plastid": 129,
     "complete_plastome": 11,
     "sra": 120
+  },
+  "workflow_provenance": {
+    "precision_reanalysis_run_id": 29894216905,
+    "precision_reanalysis_artifact_id": 8519352787,
+    "precision_reanalysis_digest": "sha256:5e9979faa290432997563ab884a9da9e74b7c69709fafe7ec3a10f7897e9c972"
   },
   "forbidden_causal_claims": [
     "phenotypic plasticity",
