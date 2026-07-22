@@ -1,0 +1,189 @@
+name: Ch1 evaluate independent detector audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      human_annotations_artifact_id:
+        description: Artifact containing annotator_1.csv, annotator_2.csv and optional adjudicator.csv
+        required: true
+        type: string
+      annotation_packet_artifact_id:
+        description: Blinded packet artifact from the frozen independent audit
+        required: true
+        default: "8521924881"
+        type: string
+      private_key_artifact_id:
+        description: Private sampling key artifact
+        required: true
+        default: "8521925441"
+        type: string
+      predictions_artifact_id:
+        description: Hidden frozen-detector predictions artifact
+        required: true
+        default: "8521926057"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  evaluate-independent-detector:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install evaluation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas numpy scipy matplotlib
+          python -m pip install --editable .
+
+      - name: Validate artifact IDs
+        env:
+          HUMAN_RAW: ${{ inputs.human_annotations_artifact_id }}
+          PACKET_RAW: ${{ inputs.annotation_packet_artifact_id }}
+          KEY_RAW: ${{ inputs.private_key_artifact_id }}
+          PRED_RAW: ${{ inputs.predictions_artifact_id }}
+        run: |
+          python - <<'PY'
+          import os, re
+          for env_name, output_name in [
+              ('HUMAN_RAW', 'HUMAN_ARTIFACT_ID'),
+              ('PACKET_RAW', 'PACKET_ARTIFACT_ID'),
+              ('KEY_RAW', 'KEY_ARTIFACT_ID'),
+              ('PRED_RAW', 'PREDICTIONS_ARTIFACT_ID'),
+          ]:
+              raw = (os.environ[env_name] or '').strip().replace(',', '').replace('_', '')
+              if not re.fullmatch(r'[0-9]+', raw) or int(raw) < 1:
+                  raise SystemExit(f'{env_name} must be a positive artifact ID')
+              with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as handle:
+                  handle.write(f'{output_name}={raw}\n')
+          PY
+
+      - name: Download frozen packet, private key, predictions and human responses
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/packet source/key source/predictions source/human
+          for specification in \
+            "${PACKET_ARTIFACT_ID}:source/packet.zip:source/packet" \
+            "${KEY_ARTIFACT_ID}:source/key.zip:source/key" \
+            "${PREDICTIONS_ARTIFACT_ID}:source/predictions.zip:source/predictions" \
+            "${HUMAN_ARTIFACT_ID}:source/human.zip:source/human"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+
+      - name: Resolve exact audit inputs
+        run: |
+          set -euo pipefail
+          MANIFEST="$(find source/packet -type f -name detector_independent_audit_blinded_manifest.csv -print -quit)"
+          ASSIGNMENTS="$(find source/packet -type f -name detector_independent_audit_assignments.csv -print -quit)"
+          PRIVATE_KEY="$(find source/key -type f -name detector_independent_audit_private_key.csv -print -quit)"
+          PREDICTIONS="$(find source/predictions -type f -name yolo_crop_metadata.csv -print -quit)"
+          ANNOTATOR_1="$(find source/human -type f -name annotator_1.csv -print -quit)"
+          ANNOTATOR_2="$(find source/human -type f -name annotator_2.csv -print -quit)"
+          ADJUDICATOR="$(find source/human -type f -name adjudicator.csv -print -quit || true)"
+          test -s "$MANIFEST"
+          test -s "$ASSIGNMENTS"
+          test -s "$PRIVATE_KEY"
+          test -s "$PREDICTIONS"
+          test -s "$ANNOTATOR_1"
+          test -s "$ANNOTATOR_2"
+          {
+            echo "MANIFEST=$MANIFEST"
+            echo "ASSIGNMENTS=$ASSIGNMENTS"
+            echo "PRIVATE_KEY=$PRIVATE_KEY"
+            echo "PREDICTIONS=$PREDICTIONS"
+            echo "ANNOTATOR_1=$ANNOTATOR_1"
+            echo "ANNOTATOR_2=$ANNOTATOR_2"
+            echo "ADJUDICATOR=$ADJUDICATOR"
+          } >> "$GITHUB_ENV"
+
+      - name: Validate, compare and adjudicate human ground truth
+        run: |
+          args=(
+            --manifest "$MANIFEST"
+            --assignments "$ASSIGNMENTS"
+            --annotations "$ANNOTATOR_1"
+            --annotations "$ANNOTATOR_2"
+            --out-dir detector_ground_truth
+            --iou-threshold 0.50
+          )
+          if [ -n "$ADJUDICATOR" ]; then
+            args+=(--adjudication "$ADJUDICATOR")
+          fi
+          python analysis/finalize_detector_audit_annotations.py "${args[@]}"
+
+      - name: Evaluate frozen production detector
+        run: |
+          python analysis/evaluate_independent_detector_audit.py \
+            --annotations detector_ground_truth/detector_independent_audit_annotations.csv \
+            --predictions "$PREDICTIONS" \
+            --private-key "$PRIVATE_KEY" \
+            --production-confidence 0.25 \
+            --minimum-prediction-confidence 0.01 \
+            --iou-threshold 0.50 \
+            --bootstrap-repeats 2000 \
+            --bootstrap-seed 20260722 \
+            --minimum-stratum-images 10 \
+            --out-dir detector_independent_evaluation
+
+      - name: Record immutable evaluation provenance
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = {
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'commit_sha': os.environ['GITHUB_SHA'],
+              'workflow_run_id': os.environ['GITHUB_RUN_ID'],
+              'human_annotations_artifact_id': int(os.environ['HUMAN_ARTIFACT_ID']),
+              'annotation_packet_artifact_id': int(os.environ['PACKET_ARTIFACT_ID']),
+              'private_key_artifact_id': int(os.environ['KEY_ARTIFACT_ID']),
+              'predictions_artifact_id': int(os.environ['PREDICTIONS_ARTIFACT_ID']),
+              'production_confidence': 0.25,
+              'matching_iou': 0.50,
+              'source_image_bootstrap_repeats': 2000,
+              'decision_boundary': 'Report manuscript detector metrics only from this adjudicated independent workflow.',
+          }
+          Path('detector_independent_evaluation/workflow_provenance.json').write_text(json.dumps(payload, indent=2) + '\n')
+          PY
+
+      - name: Summarize evaluation
+        run: |
+          {
+            echo "## Independent detector audit"
+            echo
+            echo '```json'
+            cat detector_independent_evaluation/detector_independent_metrics.json
+            echo '```'
+            echo
+            echo "### Human double-annotation agreement"
+            echo '```json'
+            cat detector_ground_truth/detector_human_agreement_metrics.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload adjudicated ground truth and detector metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-independent-detector-audit-evaluation-${{ github.run_id }}
+          path: |
+            detector_ground_truth/
+            detector_independent_evaluation/
+          if-no-files-found: error
+          retention-days: 90
