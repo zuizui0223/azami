@@ -1,0 +1,267 @@
+name: Ch1 independent detector audit packet
+
+on:
+  workflow_dispatch:
+    inputs:
+      metadata_artifact_id:
+        description: Immutable merged iNaturalist metadata artifact
+        required: true
+        default: "8066010557"
+        type: string
+      prior_audit_artifact_id:
+        description: Prior 1,000-image proposal/training source artifact to exclude
+        required: true
+        default: "8068122589"
+        type: string
+      detector_recovery_artifact_id:
+        description: Frozen production detector recovery artifact
+        required: true
+        default: "8076736948"
+        type: string
+      n_images:
+        description: Independent source images
+        required: true
+        default: "1000"
+        type: string
+  pull_request:
+    paths:
+      - "analysis/build_independent_detector_audit_packet.py"
+      - "analysis/detector_audit_annotation_app.py"
+      - "analysis/finalize_independent_detector_audit_packet.py"
+      - "analysis/finalize_detector_audit_annotations.py"
+      - "analysis/evaluate_independent_detector_audit.py"
+      - "src/azami_ch1/detection_audit.py"
+      - "tests/test_independent_detector_audit.py"
+      - ".github/workflows/ch1-independent-detector-audit-packet.yml"
+      - "manuscript/DETECTOR_INDEPENDENT_AUDIT_PROTOCOL.md"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build-independent-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      METADATA_ARTIFACT_ID: ${{ inputs.metadata_artifact_id || '8066010557' }}
+      PRIOR_AUDIT_ARTIFACT_ID: ${{ inputs.prior_audit_artifact_id || '8068122589' }}
+      DETECTOR_RECOVERY_ARTIFACT_ID: ${{ inputs.detector_recovery_artifact_id || '8076736948' }}
+      N_IMAGES: ${{ inputs.n_images || '1000' }}
+      EXPECTED_WEIGHT_SHA256: 4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements_data_collection.txt
+          python -m pip install pandas numpy Pillow ultralytics
+          python -m pip install --editable .
+
+      - name: Download frozen source artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p frozen/metadata frozen/prior frozen/model
+          for specification in \
+            "${METADATA_ARTIFACT_ID}:frozen/metadata.zip:frozen/metadata" \
+            "${PRIOR_AUDIT_ARTIFACT_ID}:frozen/prior.zip:frozen/prior" \
+            "${DETECTOR_RECOVERY_ARTIFACT_ID}:frozen/model.zip:frozen/model"; do
+            IFS=':' read -r artifact_id zip_path extract_dir <<< "$specification"
+            curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --header "Authorization: Bearer ${GH_TOKEN}" \
+              --header "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              --output "$zip_path"
+            unzip -tq "$zip_path"
+            unzip -q "$zip_path" -d "$extract_dir"
+          done
+
+      - name: Resolve frozen inputs and verify production weight
+        run: |
+          set -euo pipefail
+          METADATA="$(find frozen/metadata -type f -name photo_metadata_merged.csv -print -quit)"
+          PRIOR_QUEUE="$(find frozen/prior -type f -name detector_audit_queue.csv -print -quit)"
+          WEIGHTS="$(find frozen/model -type f -path '*/recovery/model/weights/best.pt' -print -quit)"
+          test -s "$METADATA"
+          test -s "$PRIOR_QUEUE"
+          test -s "$WEIGHTS"
+          ACTUAL_SHA="$(sha256sum "$WEIGHTS" | awk '{print $1}')"
+          test "$ACTUAL_SHA" = "$EXPECTED_WEIGHT_SHA256"
+          {
+            echo "METADATA=$METADATA"
+            echo "PRIOR_QUEUE=$PRIOR_QUEUE"
+            echo "WEIGHTS=$WEIGHTS"
+            echo "ACTUAL_WEIGHT_SHA256=$ACTUAL_SHA"
+          } >> "$GITHUB_ENV"
+
+      - name: Select leakage-free reserve sample
+        run: |
+          python analysis/build_independent_detector_audit_packet.py \
+            --metadata "$METADATA" \
+            --exclude-queue "$PRIOR_QUEUE" \
+            --out-dir independent_audit \
+            --n-images "$((N_IMAGES + 100))" \
+            --target-images-per-species 3 \
+            --max-images-per-species 10 \
+            --double-label-fraction 0.25 \
+            --spatial-block-deg 10 \
+            --seed 20260722 \
+            --audit-prefix det_ind
+
+      - name: Download reserve images and freeze 1,000 successful sources
+        run: |
+          python ch1_global/v2/06_download_inat_screening_queue.py \
+            --queue independent_audit/detector_independent_audit_queue.csv \
+            --out-dir independent_images \
+            --image-size medium \
+            --sleep-sec 0.10 \
+            --timeout-sec 60
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          from PIL import Image
+
+          results = pd.read_csv('independent_images/download_results.csv', dtype=str, keep_default_na=False)
+          results['_order'] = range(len(results))
+          latest = results.sort_values('_order').groupby('queue_id', as_index=False).tail(1).copy()
+          dimensions = []
+          for index, row in latest.loc[latest['download_status'].eq('success')].iterrows():
+              path = Path(row['image_local_path'])
+              try:
+                  with Image.open(path) as image:
+                      image.verify()
+                  with Image.open(path) as image:
+                      width, height = image.size
+                  dimensions.append({'audit_id': row['queue_id'], 'filename': path.name, 'width': width, 'height': height})
+              except Exception as error:
+                  latest.loc[index, 'download_status'] = 'decode_error'
+                  latest.loc[index, 'message'] = str(error)
+          latest.to_csv('independent_images/download_results_audited.csv', index=False)
+          pd.DataFrame(dimensions).to_csv('independent_images/image_dimensions_reserve.csv', index=False)
+          successes = int(latest['download_status'].eq('success').sum())
+          report = {'n_reserve_requested': len(latest), 'n_success_and_decodable': successes, 'n_failed': int(len(latest) - successes)}
+          Path('independent_images/download_qc.json').write_text(json.dumps(report, indent=2) + '\n')
+          if successes < int(__import__('os').environ['N_IMAGES']):
+              latest.loc[~latest['download_status'].eq('success')].to_csv('independent_images/download_failures.csv', index=False)
+              raise SystemExit(f'Insufficient successful reserve downloads: {report}')
+          PY
+          python analysis/finalize_independent_detector_audit_packet.py \
+            --selection-dir independent_audit \
+            --download-results independent_images/download_results_audited.csv \
+            --out-dir final_audit \
+            --n-images "$N_IMAGES" \
+            --double-label-fraction 0.25 \
+            --seed 20260722
+
+      - name: Run frozen detector below production threshold
+        run: |
+          python ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
+            --queue final_audit/detector_independent_audit_queue.csv \
+            --downloads independent_images/download_results_audited.csv \
+            --images-dir independent_images/images \
+            --weights "$WEIGHTS" \
+            --out-dir independent_predictions \
+            --conf 0.01 \
+            --pad-ratio 0.12 \
+            --batch-size 16 \
+            --device cpu
+
+      - name: Record detector and independence provenance
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          training = json.loads(next(Path('frozen/model').rglob('bootstrap_training_provenance.json')).read_text())
+          recovery = json.loads(next(Path('frozen/model').rglob('recovery_provenance.json')).read_text())
+          payload = {
+              'repository': os.environ['GITHUB_REPOSITORY'],
+              'commit_sha': os.environ['GITHUB_SHA'],
+              'workflow_run_id': os.environ['GITHUB_RUN_ID'],
+              'metadata_artifact_id': int(os.environ['METADATA_ARTIFACT_ID']),
+              'prior_audit_artifact_id': int(os.environ['PRIOR_AUDIT_ARTIFACT_ID']),
+              'detector_recovery_artifact_id': int(os.environ['DETECTOR_RECOVERY_ARTIFACT_ID']),
+              'weight_sha256': os.environ['ACTUAL_WEIGHT_SHA256'],
+              'production_confidence_threshold': 0.25,
+              'audit_inference_minimum_confidence': 0.01,
+              'training_provenance': training,
+              'recovery_provenance': recovery,
+              'critical_boundary': 'The model was trained on open-vocabulary pseudo-labels. No accuracy claim is allowed until independent manual boxes are adjudicated.',
+          }
+          Path('independent_predictions/detector_audit_model_provenance.json').write_text(json.dumps(payload, indent=2) + '\n')
+          PY
+
+      - name: Assemble blinded annotation packet
+        run: |
+          mkdir -p annotation_packet/images
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+          import pandas as pd
+          queue = pd.read_csv('final_audit/detector_independent_audit_queue.csv', dtype=str, keep_default_na=False)
+          for filename in queue['screen_download_filename']:
+              source = Path('independent_images/images') / filename
+              if not source.is_file():
+                  raise SystemExit(f'Missing final packet image: {source}')
+              shutil.copy2(source, Path('annotation_packet/images') / filename)
+          dimensions = pd.read_csv('independent_images/image_dimensions_reserve.csv', dtype=str, keep_default_na=False)
+          dimensions.loc[dimensions['audit_id'].isin(set(queue['audit_id']))].to_csv('annotation_packet/image_dimensions.csv', index=False)
+          PY
+          cp final_audit/detector_independent_audit_blinded_manifest.csv annotation_packet/
+          cp final_audit/detector_independent_audit_assignments.csv annotation_packet/
+          cp final_audit/detector_independent_audit_annotation_template.csv annotation_packet/
+          cp final_audit/detector_independent_audit_report.json annotation_packet/
+          cp analysis/detector_audit_annotation_app.py annotation_packet/
+          cat > annotation_packet/README.txt <<'EOF'
+          Independent visible-capitulum detector audit
+
+          This packet omits taxon, coordinates and detector predictions.
+          Run separately for each annotator:
+
+            python -m pip install pandas Pillow
+            python detector_audit_annotation_app.py --packet-dir . --annotator-id annotator_1 --output annotator_1.csv
+            python detector_audit_annotation_app.py --packet-dir . --annotator-id annotator_2 --output annotator_2.csv
+
+          Annotator 1 completes all images. Annotator 2 completes only the assigned 25% subset.
+          Draw every visible capitulum exactly once; use no_target for true zero-head images and unassessable only when all targets cannot be audited reliably.
+          EOF
+
+      - name: Upload blinded annotation packet
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-independent-detector-audit-annotation-packet-${{ github.run_id }}
+          path: annotation_packet/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload private audit key
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-independent-detector-audit-private-key-${{ github.run_id }}
+          path: |
+            final_audit/detector_independent_audit_private_key.csv
+            final_audit/detector_independent_audit_species_qc.csv
+            final_audit/detector_independent_audit_report.json
+            final_audit/detector_independent_audit_download_failures.csv
+            final_audit/detector_independent_audit_unused_reserve.csv
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload hidden frozen-detector predictions
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-independent-detector-audit-predictions-${{ github.run_id }}
+          path: |
+            independent_predictions/yolo_crop_metadata.csv
+            independent_predictions/screening_results.csv
+            independent_predictions/detector_audit_model_provenance.json
+          if-no-files-found: error
+          retention-days: 90
