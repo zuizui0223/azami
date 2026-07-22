@@ -16,19 +16,41 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     claims = json.loads(Path(parse_args().claims).read_text(encoding="utf-8"))
     datasets = claims["datasets"]
+    nested = claims["nested_visible_variance"]
     legacy = claims["legacy_precision_audit"]
     revised = claims["revised_primary_results"]
     inference = claims["within_species_inference_levels"]
     history = claims["historical_sensitivity"]
     molecular = claims["molecular_database_coverage"]
 
-    assert datasets["balanced_image_comparison_atlas"]["n_taxa"] == 216
-    assert datasets["balanced_image_comparison_atlas"]["n_heads"] == 6626
+    atlas = datasets["balanced_image_comparison_atlas"]
+    assert atlas["n_taxa"] == 216
+    assert atlas["n_observations"] == 3725
+    assert atlas["n_photos"] == 3725
+    assert atlas["n_heads"] == 6626
+    assert atlas["one_photo_per_observation"] is True
     assert datasets["exhaustive_detected_layer"]["n_observations"] == 406582
     assert datasets["exhaustive_spatially_thinned_primary"]["n_spatially_thinned_observations"] == 46276
     assert datasets["exhaustive_spatially_thinned_primary"]["n_input_taxa"] == 259
     assert datasets["revised_precision_aware_cohort"]["n_taxa"] == 101
     assert datasets["legacy_lability_cohort"]["n_taxa"] == 102
+
+    assert nested["n_endpoints"] == 9
+    for key in (
+        "within_assigned_species_fraction_range",
+        "among_photographs_within_species_fraction_range",
+        "among_heads_within_photo_fraction_range",
+        "one_head_per_photo_within_fraction_range",
+        "balanced_10_photo_median_within_fraction_range",
+    ):
+        low, high = nested[key]
+        assert 0 <= low <= high <= 1
+    assert nested["within_assigned_species_fraction_range"][0] > 0.5
+    assert nested["one_head_per_photo_within_fraction_range"][0] > 0.5
+    assert nested["balanced_10_photo_median_within_fraction_range"][0] > 0.5
+    assert nested["species_cluster_bootstrap_repeats"] == 2000
+    assert nested["balanced_subsample_repeats"] == 500
+    assert "not genetic" in nested["allowed_claim"].lower()
 
     assert abs(legacy["legacy_score_vs_median_slope_n_rho"]) > 0.9
     assert abs(legacy["legacy_score_vs_median_slope_se_rho"]) > 0.9
@@ -71,6 +93,7 @@ def main() -> None:
             {
                 "status": "valid",
                 "release": claims["analysis_release"],
+                "nested_within_fraction_range": nested["within_assigned_species_fraction_range"],
                 "revised_precision_aware_taxa": datasets["revised_precision_aware_cohort"]["n_taxa"],
                 "corrected_axis_rho": axis["spearman_rho"],
                 "meta_regression_p": meta["likelihood_ratio_p_value"],
