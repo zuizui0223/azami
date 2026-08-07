@@ -20,6 +20,29 @@ from azami_ch1.provenance import write_json
 from azami_ch1.tabular import require_columns, require_complete_text
 
 
+def lonlat_to_unit_xyz(lonlat: np.ndarray) -> np.ndarray:
+    """Map longitude/latitude degrees to the 3-D unit sphere for global kNN.
+
+    Moran's I below uses binary k-nearest-neighbour weights, so Euclidean chord
+    distance on the unit sphere gives a stable global neighbour ordering without
+    treating degrees of longitude as equal distances at all latitudes or breaking
+    neighbourhoods across the antimeridian.
+    """
+    lonlat = np.asarray(lonlat, dtype=float)
+    if lonlat.ndim != 2 or lonlat.shape[1] != 2:
+        raise ValueError("lonlat must be an n x 2 array ordered longitude, latitude")
+    lon = np.deg2rad(lonlat[:, 0])
+    lat = np.deg2rad(lonlat[:, 1])
+    cos_lat = np.cos(lat)
+    return np.column_stack(
+        [
+            cos_lat * np.cos(lon),
+            cos_lat * np.sin(lon),
+            np.sin(lat),
+        ]
+    )
+
+
 def morans_i(values: np.ndarray, xy: np.ndarray, k: int) -> float:
     n = len(values)
     if n < k + 2:
@@ -135,7 +158,8 @@ def main() -> int:
                 args.max_rows_per_endpoint,
                 random_state=args.seed + index,
             )
-        xy = clean[[args.longitude, args.latitude]].to_numpy(float)
+        lonlat = clean[[args.longitude, args.latitude]].to_numpy(float)
+        xy = lonlat_to_unit_xyz(lonlat)
         values = clean[args.residual].to_numpy(float)
         statistic, p_value = permutation_p(
             values,
@@ -182,6 +206,7 @@ def main() -> int:
             "k": args.k,
             "permutations": args.permutations,
             "seed": args.seed,
+            "neighbor_geometry": "kNN on 3-D unit-sphere chord distance from longitude/latitude",
             "scope": "diagnostic only; frozen models and claims unchanged",
         },
         include_generated_utc=True,
