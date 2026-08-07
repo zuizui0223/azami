@@ -1,4 +1,4 @@
-name: Ch1 export best-model SPDE residuals
+name: Ch1 export and audit best-model SPDE residuals
 
 on:
   workflow_dispatch:
@@ -17,23 +17,30 @@ on:
     branches: [main]
     paths:
       - "analysis/export_spde_best_model_residuals.R"
+      - "analysis/build_naturalearth_broad_region_lookup.py"
       - ".github/workflows/ch1-spde-residual-export.yml"
       - "analysis/prepare_spatial_diagnostic_input.py"
       - "analysis/audit_spatial_robustness.py"
+      - "tests/test_spatial_robustness_audit.py"
 
 permissions:
   actions: read
   contents: read
 
 jobs:
-  export-residuals:
+  export-and-audit-residuals:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
       DEFAULT_ENVIRONMENT_RUN: "29306454759"
       DEFAULT_SPDE_RUN: "29339137476"
+      NATURAL_EARTH_URL: "https://naturalearth.s3.amazonaws.com/50m_cultural/ne_50m_admin_0_countries.zip"
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -43,6 +50,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev
+
+      - name: Install Python diagnostic dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable . pandas numpy scipy geopandas pyogrio
 
       - name: Install R dependencies
         shell: Rscript {0}
@@ -132,10 +144,80 @@ jobs:
           printf '%s\n' "${GITHUB_SHA}" > spde_residual_export/git_sha.txt
           Rscript -e 'writeLines(capture.output(sessionInfo()), "spde_residual_export/R_sessionInfo.txt")'
 
-      - name: Upload residual diagnostic artifact
+      - name: Download Natural Earth admin-0 polygons
+        run: |
+          set -euo pipefail
+          mkdir -p source/naturalearth
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            "$NATURAL_EARTH_URL" --output source/naturalearth.zip
+          unzip -tq source/naturalearth.zip
+          unzip -q source/naturalearth.zip -d source/naturalearth
+          test -s source/naturalearth/ne_50m_admin_0_countries.shp
+          sha256sum source/naturalearth.zip > source/naturalearth_sha256.txt
+
+      - name: Build documented broad-region lookup
+        run: |
+          python analysis/build_naturalearth_broad_region_lookup.py \
+            --observations "$ENVIRONMENT" \
+            --countries source/naturalearth/ne_50m_admin_0_countries.shp \
+            --output spatial_regions/broad_region_lookup.csv \
+            --report spatial_regions/broad_region_lookup_report.json \
+            --observation-id obs_id \
+            --nearest-max-km 100
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("spatial_regions/broad_region_lookup_report.json").read_text())
+          if report["n_unmapped"] > max(10, report["n_observations"] * 0.005):
+              raise SystemExit(f"Too many unmapped observations: {report['n_unmapped']}")
+          print(report)
+          PY
+
+      - name: Assemble standardized spatial diagnostic input
+        run: |
+          python analysis/prepare_spatial_diagnostic_input.py \
+            --observations "$ENVIRONMENT" \
+            --predictions spde_residual_export/spde_best_model_observation_predictions.csv \
+            --regions spatial_regions/broad_region_lookup.csv \
+            --output spatial_diagnostic/spde_spatial_diagnostic_input.csv \
+            --observation-id obs_id
+
+      - name: Run global residual and region-omission audit
+        run: |
+          python analysis/audit_spatial_robustness.py \
+            --input spatial_diagnostic/spde_spatial_diagnostic_input.csv \
+            --output-dir spatial_robustness \
+            --value observed \
+            --k 8 \
+            --permutations 999 \
+            --seed 20260807 \
+            --max-rows-per-endpoint 10000
+
+      - name: Summarize spatial diagnostics
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          moran = pd.read_csv("spatial_robustness/residual_morans_i.csv")
+          loo = pd.read_csv("spatial_robustness/leave_one_region_out_rank_stability.csv")
+          coverage = pd.read_csv("spatial_robustness/broad_region_coverage.csv")
+          print("Residual Moran's I")
+          print(moran.to_string(index=False))
+          print("\nBroad-region coverage")
+          print(coverage.to_string(index=False))
+          print("\nMinimum leave-one-region-out Spearman rho by endpoint")
+          print(loo.groupby("endpoint")["spearman_rho"].min().sort_values().to_string())
+          PY
+          cp source/naturalearth_sha256.txt spatial_regions/naturalearth_sha256.txt
+          python -m pip freeze > spatial_robustness/python_environment.txt
+
+      - name: Upload complete spatial diagnostic artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-spde-best-model-residuals-${{ github.run_id }}
-          path: spde_residual_export
+          name: ch1-spde-spatial-robustness-${{ github.run_id }}
+          path: |
+            spde_residual_export
+            spatial_regions
+            spatial_diagnostic/spde_spatial_diagnostic_input.metadata.json
+            spatial_robustness
           if-no-files-found: error
           retention-days: 90
