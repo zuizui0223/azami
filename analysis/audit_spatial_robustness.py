@@ -43,17 +43,29 @@ def lonlat_to_unit_xyz(lonlat: np.ndarray) -> np.ndarray:
     )
 
 
-def morans_i(values: np.ndarray, xy: np.ndarray, k: int) -> float:
-    n = len(values)
-    if n < k + 2:
-        return float("nan")
-    z = values - np.nanmean(values)
+def knn_neighbors(xy: np.ndarray, k: int) -> np.ndarray:
+    xy = np.asarray(xy, dtype=float)
+    if len(xy) < k + 2:
+        return np.empty((0, k), dtype=int)
     tree = cKDTree(xy)
     _, indices = tree.query(xy, k=k + 1)
-    neighbours = indices[:, 1:]
+    return np.asarray(indices[:, 1:], dtype=int)
+
+
+def morans_i_from_neighbors(values: np.ndarray, neighbours: np.ndarray) -> float:
+    values = np.asarray(values, dtype=float)
+    n = len(values)
+    if neighbours.size == 0 or neighbours.shape[0] != n:
+        return float("nan")
+    k = neighbours.shape[1]
+    z = values - np.nanmean(values)
     numerator = np.sum(z[:, None] * z[neighbours])
     denominator = np.sum(z**2)
     return float((n / (n * k)) * numerator / denominator) if denominator else float("nan")
+
+
+def morans_i(values: np.ndarray, xy: np.ndarray, k: int) -> float:
+    return morans_i_from_neighbors(values, knn_neighbors(xy, k))
 
 
 def permutation_p(
@@ -63,12 +75,16 @@ def permutation_p(
     permutations: int,
     seed: int,
 ) -> tuple[float, float]:
-    observed = morans_i(values, xy, k)
+    neighbours = knn_neighbors(xy, k)
+    observed = morans_i_from_neighbors(values, neighbours)
     if not np.isfinite(observed):
         return observed, float("nan")
     rng = np.random.default_rng(seed)
     null = np.array(
-        [morans_i(rng.permutation(values), xy, k) for _ in range(permutations)]
+        [
+            morans_i_from_neighbors(rng.permutation(values), neighbours)
+            for _ in range(permutations)
+        ]
     )
     p = (1 + np.sum(np.abs(null) >= abs(observed))) / (permutations + 1)
     return observed, float(p)
@@ -207,6 +223,7 @@ def main() -> int:
             "permutations": args.permutations,
             "seed": args.seed,
             "neighbor_geometry": "kNN on 3-D unit-sphere chord distance from longitude/latitude",
+            "permutation_rule": "neighbor graph fixed once per endpoint; residual values permuted over fixed graph",
             "scope": "diagnostic only; frozen models and claims unchanged",
         },
         include_generated_utc=True,
