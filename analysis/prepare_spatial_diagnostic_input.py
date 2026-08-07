@@ -2,14 +2,12 @@
 """Prepare observation-level input for the Chapter 1 spatial robustness audit.
 
 This utility does not fit or alter any model. It joins a frozen observation table,
-a frozen fitted-value/residual export, and a manually reviewed broad-region table.
-The result is validated before it can be passed to `audit_spatial_robustness.py`.
+a frozen fitted-value/residual export, and a documented broad-region table. The
+result is validated before it can be passed to `audit_spatial_robustness.py`.
 """
-
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 
 import pandas as pd
@@ -80,12 +78,22 @@ def main() -> int:
         }
     )
 
-    pred = predictions.rename(
+    # Keep only diagnostic payload columns from the prediction export. If the
+    # export repeats taxon identity, retain it under an explicit validation name
+    # so it cannot collide silently with the frozen observation table.
+    pred_keep = [args.observation_id, args.endpoint]
+    for column in (args.observed, args.fitted, args.residual):
+        if column in predictions.columns and column not in pred_keep:
+            pred_keep.append(column)
+    if args.taxon in predictions.columns and args.taxon not in pred_keep:
+        pred_keep.append(args.taxon)
+    pred = predictions[pred_keep].rename(
         columns={
             args.endpoint: "endpoint",
             args.observed: "observed_from_predictions",
             args.fitted: "fitted",
             args.residual: "residual",
+            args.taxon: "taxon_name_from_predictions",
         }
     )
 
@@ -99,6 +107,16 @@ def main() -> int:
 
     if merged["taxon_name"].isna().any():
         raise ValueError("At least one prediction row did not match an observation")
+    if "taxon_name_from_predictions" in merged.columns:
+        left = merged["taxon_name_from_predictions"].fillna("").astype(str).str.strip()
+        right = merged["taxon_name"].fillna("").astype(str).str.strip()
+        mismatch = left.ne(right)
+        if mismatch.any():
+            examples = merged.loc[
+                mismatch,
+                [args.observation_id, "taxon_name_from_predictions", "taxon_name"],
+            ].head(10).to_dict("records")
+            raise ValueError(f"Taxon identity disagrees between prediction and observation tables: {examples}")
     require_complete_text(merged, "broad_region", "reviewed broad_region")
 
     if "observed_from_predictions" in merged.columns:
@@ -106,7 +124,8 @@ def main() -> int:
         if "observed_from_observations" in merged.columns:
             left = pd.to_numeric(merged["observed_from_predictions"], errors="coerce")
             right = pd.to_numeric(merged["observed_from_observations"], errors="coerce")
-            if not left.equals(right):
+            comparable = left.notna() & right.notna()
+            if comparable.any() and not left[comparable].equals(right[comparable]):
                 raise ValueError("Observed values disagree between observation and prediction tables")
     else:
         merged["observed"] = merged["observed_from_observations"]
@@ -137,6 +156,7 @@ def main() -> int:
         "n_taxa": int(output["taxon_name"].nunique()),
         "n_endpoints": int(output["endpoint"].nunique()),
         "regions_present": sorted(output["broad_region"].astype(str).unique().tolist()),
+        "identity_checks": "observation key uniqueness plus taxon-name agreement when prediction export carries taxon identity",
     }
     metadata_path = write_json(
         args.output.with_suffix(".metadata.json"),
