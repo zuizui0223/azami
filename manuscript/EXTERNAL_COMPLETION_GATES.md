@@ -1,6 +1,6 @@
 # External completion gates for Chapter 1
 
-The remaining work is now split into **completed reproducible diagnostics** and **genuinely external/human validation**. Completed diagnostics must not be rerun merely to change manuscript framing; they are rerun only if a frozen input, taxonomic unit, measurement definition or accepted model changes.
+The remaining work is now split into **completed reproducible diagnostics** and **genuinely external/human validation**. Completed diagnostics must not be rerun merely to change manuscript framing; they are rerun only if a frozen input, operational taxonomic unit, measurement definition or accepted model changes.
 
 ## 1. Independent detector audit — MANUAL ANNOTATION REMAINS
 
@@ -27,26 +27,36 @@ Horizontal-mirror stability and production overlays are technical checks, not in
 
 Any material failure requires an analysis-version increment and propagation of measurement uncertainty into headline sensitivities. This gate cannot be closed by a second automated interpretation of the same images.
 
-## 3. Authority-backed taxonomic freeze — AUTOMATED REVIEW PREP COMPLETE; 24 NAMES REQUIRE DECISION
+## 3. Taxonomic robustness — COMPLETED FOR THE OPERATIONAL-UNIT ANALYSIS
 
-A reproducible World Checklist of Vascular Plants (WCVP) review workflow is implemented in `analysis/build_wcvp_taxonomic_review_candidates.py` and `.github/workflows/ch1-wcvp-taxonomic-candidates.yml`.
+Chapter 1 now uses exact source-platform taxon assignments as **operational taxonomic units** rather than claiming to resolve genus-wide species limits. A reproducible WCVP authority audit reviewed the union of 259 frozen names in run `31152400481`:
 
-Successful run `31152400481` reviewed the union of 259 frozen source names:
+- 243 unique exact canonical-name matches;
+- 16 multiple exact canonical-name matches;
+- 235 routine accepted-name candidates;
+- 8 WCVP synonym candidates;
+- 24 high-priority nomenclatural-review rows;
+- 0 unmatched names.
 
-- 243 names had one exact WCVP canonical-name match;
-- 16 names had multiple exact canonical-name matches, typically because accepted and homonymous/synonym records share the same author-free canonical name;
-- 235 were routine accepted-name candidates;
-- 8 were WCVP synonym candidates;
-- 24 rows were flagged for high-priority human review;
-- no source name was unmatched.
+All eight synonym candidates map to names that are already separate active source-platform units. Run `31153385658` therefore collapsed all eight simultaneously as a sensitivity analysis rather than silently rewriting the primary taxonomy.
 
-The eight WCVP synonym candidates map onto names that are already active analysis units, so blindly accepting those synonymies would merge analysis units and trigger a new analysis version. They must therefore be reviewed as taxonomic decisions rather than silently applied. The manuscript should continue to use *assigned taxon/species* language until this freeze is final.
+The collapse changed the balanced atlas from 216 to 211 units and the exhaustive primary from 259 to 251 units, but:
+
+- all 8 original BH-supported primary component rows remained BH-supported;
+- no coefficient changed sign;
+- maximum absolute standardized-beta change was 0.000385;
+- the minimum below-unit visible-variance fraction increased from 0.5886 to 0.5970;
+- the largest absolute endpoint change in below-unit fraction was 0.0154.
+
+Full provenance is in `manuscript/results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md` and the operational policy in `manuscript/TAXONOMIC_FREEZE_PROTOCOL.md`.
+
+**Decision:** taxonomic uncertainty does not explain the two headline ecological result families. The scientific taxonomic-robustness gate is closed for the source-assigned operational-unit analysis. The 24 high-priority rows should still receive nomenclatural notes in the supplement, but they are no longer an untested source of the primary ecological conclusions.
 
 ## 4. Residual spatial and broad-region diagnostics — COMPLETED
 
 The original compact SPDE workflow did not archive observation-level residuals, so a diagnostic-only refit/export was added without replacing accepted coefficient tables. Run `31152400475`, artifact `8983877726`, reproduced the frozen best-WAIC specifications closely and exported observation-level residuals.
 
-Global k-nearest-neighbour Moran diagnostics now use spherical 3-D coordinates and a fixed neighbour graph across 999 permutations. Across all nine primary endpoints:
+Global k-nearest-neighbour Moran diagnostics use spherical 3-D coordinates and a fixed neighbour graph across 999 permutations. Across all nine primary endpoints:
 
 - Moran's I ranged from -0.0096 to 0.0030;
 - no endpoint had permutation P < 0.05;
@@ -54,7 +64,7 @@ Global k-nearest-neighbour Moran diagnostics now use spherical 3-D coordinates a
 
 Natural Earth continent assignments covered 46,274 of 46,276 source observations; two unmapped island observations were retained as an explicit diagnostic stratum. Full provenance and endpoint results are in `manuscript/results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md`.
 
-**Decision:** the residual-spatial and broad-region robustness gate is closed for the frozen analysis. A new spatial diagnostic is required only if the accepted cohort, model specification or taxonomic units change.
+**Decision:** the residual-spatial and broad-region robustness gate is closed for the frozen analysis. A new spatial diagnostic is required only if the accepted cohort or model specification changes materially.
 
 ## 5. Environmental-niche permutation and null tests — COMPLETED
 
@@ -64,22 +74,21 @@ For all 148 complete species, significant environmental sorting was concentrated
 
 Full results are frozen in `manuscript/results/NICHE_PERMUTATION_RESULTS_2026-08-07.md`.
 
-**Decision:** the niche-null gate is closed for the current taxonomic units. It must be rerun if the taxonomic freeze merges or removes active units.
+**Decision:** the niche-null gate is closed for the current operational taxonomic units.
 
 ## 6. Authorship and administrative metadata — TEAM CONFIRMATION REMAINS
 
 The final author order, affiliations, CRediT roles, acknowledgements, funding numbers and corresponding-author details require confirmation from the research team. These fields are intentionally not inferred from repository metadata.
 
-## 7. Durable release — FINAL STEP AFTER HUMAN SCIENTIFIC GATES
+## 7. Durable release — FINAL STEP AFTER HUMAN MEASUREMENT GATES
 
-After detector/measurement validation and taxonomic decisions are final, regenerate any sensitivity required by those decisions, freeze the manuscript, create an immutable release tag, produce SHA-256 manifests and deposit the licence-safe submission bundle in a durable repository with a persistent DOI.
+After detector and continuous-measurement validation are final, regenerate any sensitivity required by a material audit failure, freeze the manuscript, create an immutable release tag, produce SHA-256 manifests and deposit the licence-safe submission bundle in a durable repository with a persistent DOI.
 
-## Current submission-blocking items
+## Current submission-blocking scientific items
 
-Only the following scientific items still require information that cannot be created honestly from repository evidence alone:
+Only two scientific items still require information that cannot be created honestly from repository evidence alone:
 
 1. human boxes for the independent detector audit;
-2. genuinely independent reference measurements for orientation, colour and outline;
-3. review of the 24 high-priority WCVP taxonomic rows, especially the eight synonym conflicts that would merge active analysis units.
+2. genuinely independent reference measurements for orientation, colour and outline.
 
-All other previously listed computational credibility gates are now executable and, for the frozen analysis, completed.
+Nomenclatural annotations for the 24 high-priority WCVP rows and authorship/administrative fields still require human confirmation, but the computational spatial, niche-null and taxonomic-robustness gates are completed for the frozen operational-unit analysis.
