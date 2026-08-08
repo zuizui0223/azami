@@ -1,0 +1,227 @@
+name: Ch1 export and audit best-model SPDE residuals
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment_source_run_id:
+        description: Run containing the frozen enriched environment artifact
+        required: true
+        default: "29306454759"
+        type: string
+      spde_source_run_id:
+        description: Run containing the frozen grouped SPDE-INLA artifact
+        required: true
+        default: "29339137476"
+        type: string
+  pull_request:
+    branches: [main]
+    paths:
+      - "analysis/export_spde_best_model_residuals.R"
+      - "analysis/build_naturalearth_broad_region_lookup.py"
+      - ".github/workflows/ch1-spde-residual-export.yml"
+      - "analysis/prepare_spatial_diagnostic_input.py"
+      - "analysis/audit_spatial_robustness.py"
+      - "tests/test_spatial_robustness_audit.py"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  export-and-audit-residuals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      DEFAULT_ENVIRONMENT_RUN: "29306454759"
+      DEFAULT_SPDE_RUN: "29339137476"
+      NATURAL_EARTH_URL: "https://naturalearth.s3.amazonaws.com/50m_cultural/ne_50m_admin_0_countries.zip"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: "4.5"
+          use-public-rspm: true
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev
+
+      - name: Install Python diagnostic dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable . pandas numpy scipy geopandas pyogrio
+
+      - name: Install R dependencies
+        shell: Rscript {0}
+        run: |
+          install.packages(c("Matrix", "sf"))
+          install.packages(
+            "INLA",
+            repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"),
+            dependencies = c("Depends", "Imports", "LinkingTo")
+          )
+          stopifnot(requireNamespace("INLA", quietly = TRUE))
+          cat("R:", R.version.string, "\n")
+          cat("INLA:", as.character(packageVersion("INLA")), "\n")
+
+      - name: Resolve frozen source runs
+        id: params
+        shell: bash
+        run: |
+          ENV_RUN="${{ inputs.environment_source_run_id }}"
+          SPDE_RUN="${{ inputs.spde_source_run_id }}"
+          echo "environment_run=${ENV_RUN:-$DEFAULT_ENVIRONMENT_RUN}" >> "$GITHUB_OUTPUT"
+          echo "spde_run=${SPDE_RUN:-$DEFAULT_SPDE_RUN}" >> "$GITHUB_OUTPUT"
+
+      - name: Download frozen enriched environment
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ steps.params.outputs.environment_run }}
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: source/environment
+
+      - name: Download frozen grouped SPDE results
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ steps.params.outputs.spde_run }}
+          name: ch1-lightweight-per-trait-spde-inla
+          path: source/spde
+
+      - name: Validate immutable source inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          ENVIRONMENT="source/environment/strict_spatial_thinned_with_climate_topography_soil.csv"
+          MODEL_SUMMARY="source/spde/lightweight_spde_results/spde_model_group_summary.csv"
+          PREDICTOR_SELECTION="source/spde/lightweight_spde_results/spde_predictor_selection_by_group.csv"
+          RUN_METADATA="source/spde/lightweight_spde_results/spde_run_metadata.csv"
+          test -s "$ENVIRONMENT"
+          test -s "$MODEL_SUMMARY"
+          test -s "$PREDICTOR_SELECTION"
+          test -s "$RUN_METADATA"
+          sha256sum "$ENVIRONMENT" "$MODEL_SUMMARY" "$PREDICTOR_SELECTION" "$RUN_METADATA" \
+            | tee source/input_file_sha256.txt
+          {
+            echo "ENVIRONMENT=$ENVIRONMENT"
+            echo "MODEL_SUMMARY=$MODEL_SUMMARY"
+            echo "PREDICTOR_SELECTION=$PREDICTOR_SELECTION"
+            echo "RUN_METADATA=$RUN_METADATA"
+          } >> "$GITHUB_ENV"
+
+      - name: Refit frozen best-WAIC specifications and export residuals
+        run: |
+          Rscript analysis/export_spde_best_model_residuals.R \
+            --environment "$ENVIRONMENT" \
+            --model-summary "$MODEL_SUMMARY" \
+            --predictor-selection "$PREDICTOR_SELECTION" \
+            --run-metadata "$RUN_METADATA" \
+            --out-dir spde_residual_export \
+            --min-species-n 5
+
+      - name: Validate observation-level export
+        shell: bash
+        run: |
+          Rscript - <<'RS'
+          p <- read.csv("spde_residual_export/spde_best_model_observation_predictions.csv")
+          s <- read.csv("spde_residual_export/spde_best_model_refit_summary.csv")
+          stopifnot(length(unique(p$endpoint)) == 9L)
+          stopifnot(nrow(s) == 9L)
+          stopifnot(!anyDuplicated(p[c("obs_id", "endpoint")]))
+          stopifnot(all(is.finite(p$observed)))
+          stopifnot(all(is.finite(p$fitted)))
+          stopifnot(all(is.finite(p$residual)))
+          stopifnot(all(s$n_observations > 30000L))
+          stopifnot(all(s$n_species >= 139L))
+          print(s[, c("trait", "model_group", "n_observations", "n_species", "frozen_waic", "diagnostic_refit_waic", "waic_difference")])
+          RS
+          cp source/input_file_sha256.txt spde_residual_export/input_file_sha256.txt
+          printf '%s\n' "${GITHUB_SHA}" > spde_residual_export/git_sha.txt
+          Rscript -e 'writeLines(capture.output(sessionInfo()), "spde_residual_export/R_sessionInfo.txt")'
+
+      - name: Download Natural Earth admin-0 polygons
+        run: |
+          set -euo pipefail
+          mkdir -p source/naturalearth
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            "$NATURAL_EARTH_URL" --output source/naturalearth.zip
+          unzip -tq source/naturalearth.zip
+          unzip -q source/naturalearth.zip -d source/naturalearth
+          test -s source/naturalearth/ne_50m_admin_0_countries.shp
+          sha256sum source/naturalearth.zip > source/naturalearth_sha256.txt
+
+      - name: Build documented broad-region lookup
+        run: |
+          python analysis/build_naturalearth_broad_region_lookup.py \
+            --observations "$ENVIRONMENT" \
+            --countries source/naturalearth/ne_50m_admin_0_countries.shp \
+            --output spatial_regions/broad_region_lookup.csv \
+            --report spatial_regions/broad_region_lookup_report.json \
+            --observation-id obs_id \
+            --nearest-max-km 100
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("spatial_regions/broad_region_lookup_report.json").read_text())
+          if report["n_unmapped"] > max(10, report["n_observations"] * 0.005):
+              raise SystemExit(f"Too many unmapped observations: {report['n_unmapped']}")
+          print(report)
+          PY
+
+      - name: Assemble standardized spatial diagnostic input
+        run: |
+          python analysis/prepare_spatial_diagnostic_input.py \
+            --observations "$ENVIRONMENT" \
+            --predictions spde_residual_export/spde_best_model_observation_predictions.csv \
+            --regions spatial_regions/broad_region_lookup.csv \
+            --output spatial_diagnostic/spde_spatial_diagnostic_input.csv \
+            --observation-id obs_id
+
+      - name: Run global residual and region-omission audit
+        run: |
+          python analysis/audit_spatial_robustness.py \
+            --input spatial_diagnostic/spde_spatial_diagnostic_input.csv \
+            --output-dir spatial_robustness \
+            --value observed \
+            --k 8 \
+            --permutations 999 \
+            --seed 20260807 \
+            --max-rows-per-endpoint 10000
+
+      - name: Summarize spatial diagnostics
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          moran = pd.read_csv("spatial_robustness/residual_morans_i.csv")
+          loo = pd.read_csv("spatial_robustness/leave_one_region_out_rank_stability.csv")
+          coverage = pd.read_csv("spatial_robustness/broad_region_coverage.csv")
+          print("Residual Moran's I")
+          print(moran.to_string(index=False))
+          print("\nBroad-region coverage")
+          print(coverage.to_string(index=False))
+          print("\nMinimum leave-one-region-out Spearman rho by endpoint")
+          print(loo.groupby("endpoint")["spearman_rho"].min().sort_values().to_string())
+          PY
+          cp source/naturalearth_sha256.txt spatial_regions/naturalearth_sha256.txt
+          python -m pip freeze > spatial_robustness/python_environment.txt
+
+      - name: Upload complete spatial diagnostic artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-spde-spatial-robustness-${{ github.run_id }}
+          path: |
+            spde_residual_export
+            spatial_regions
+            spatial_diagnostic/spde_spatial_diagnostic_input.metadata.json
+            spatial_robustness
+          if-no-files-found: error
+          retention-days: 90

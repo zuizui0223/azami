@@ -20,17 +20,52 @@ from azami_ch1.provenance import write_json
 from azami_ch1.tabular import require_columns, require_complete_text
 
 
-def morans_i(values: np.ndarray, xy: np.ndarray, k: int) -> float:
-    n = len(values)
-    if n < k + 2:
-        return float("nan")
-    z = values - np.nanmean(values)
+def lonlat_to_unit_xyz(lonlat: np.ndarray) -> np.ndarray:
+    """Map longitude/latitude degrees to the 3-D unit sphere for global kNN.
+
+    Moran's I below uses binary k-nearest-neighbour weights, so Euclidean chord
+    distance on the unit sphere gives a stable global neighbour ordering without
+    treating degrees of longitude as equal distances at all latitudes or breaking
+    neighbourhoods across the antimeridian.
+    """
+    lonlat = np.asarray(lonlat, dtype=float)
+    if lonlat.ndim != 2 or lonlat.shape[1] != 2:
+        raise ValueError("lonlat must be an n x 2 array ordered longitude, latitude")
+    lon = np.deg2rad(lonlat[:, 0])
+    lat = np.deg2rad(lonlat[:, 1])
+    cos_lat = np.cos(lat)
+    return np.column_stack(
+        [
+            cos_lat * np.cos(lon),
+            cos_lat * np.sin(lon),
+            np.sin(lat),
+        ]
+    )
+
+
+def knn_neighbors(xy: np.ndarray, k: int) -> np.ndarray:
+    xy = np.asarray(xy, dtype=float)
+    if len(xy) < k + 2:
+        return np.empty((0, k), dtype=int)
     tree = cKDTree(xy)
     _, indices = tree.query(xy, k=k + 1)
-    neighbours = indices[:, 1:]
+    return np.asarray(indices[:, 1:], dtype=int)
+
+
+def morans_i_from_neighbors(values: np.ndarray, neighbours: np.ndarray) -> float:
+    values = np.asarray(values, dtype=float)
+    n = len(values)
+    if neighbours.size == 0 or neighbours.shape[0] != n:
+        return float("nan")
+    k = neighbours.shape[1]
+    z = values - np.nanmean(values)
     numerator = np.sum(z[:, None] * z[neighbours])
     denominator = np.sum(z**2)
     return float((n / (n * k)) * numerator / denominator) if denominator else float("nan")
+
+
+def morans_i(values: np.ndarray, xy: np.ndarray, k: int) -> float:
+    return morans_i_from_neighbors(values, knn_neighbors(xy, k))
 
 
 def permutation_p(
@@ -40,12 +75,16 @@ def permutation_p(
     permutations: int,
     seed: int,
 ) -> tuple[float, float]:
-    observed = morans_i(values, xy, k)
+    neighbours = knn_neighbors(xy, k)
+    observed = morans_i_from_neighbors(values, neighbours)
     if not np.isfinite(observed):
         return observed, float("nan")
     rng = np.random.default_rng(seed)
     null = np.array(
-        [morans_i(rng.permutation(values), xy, k) for _ in range(permutations)]
+        [
+            morans_i_from_neighbors(rng.permutation(values), neighbours)
+            for _ in range(permutations)
+        ]
     )
     p = (1 + np.sum(np.abs(null) >= abs(observed))) / (permutations + 1)
     return observed, float(p)
@@ -135,7 +174,8 @@ def main() -> int:
                 args.max_rows_per_endpoint,
                 random_state=args.seed + index,
             )
-        xy = clean[[args.longitude, args.latitude]].to_numpy(float)
+        lonlat = clean[[args.longitude, args.latitude]].to_numpy(float)
+        xy = lonlat_to_unit_xyz(lonlat)
         values = clean[args.residual].to_numpy(float)
         statistic, p_value = permutation_p(
             values,
@@ -182,6 +222,8 @@ def main() -> int:
             "k": args.k,
             "permutations": args.permutations,
             "seed": args.seed,
+            "neighbor_geometry": "kNN on 3-D unit-sphere chord distance from longitude/latitude",
+            "permutation_rule": "neighbor graph fixed once per endpoint; residual values permuted over fixed graph",
             "scope": "diagnostic only; frozen models and claims unchanged",
         },
         include_generated_utc=True,

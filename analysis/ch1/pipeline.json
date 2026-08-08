@@ -1,13 +1,13 @@
 {
-  "schema_version": 4,
-  "status": "reviewer-revised submission pipeline with nested image variance, precision-aware lability and leakage-free detector audit",
+  "schema_version": 5,
+  "status": "reviewer-revised submission pipeline with nested image variance, precision-aware audit, leakage-free detector audit, completed niche null tests and completed spatial robustness diagnostics",
   "policy": {
     "move_numbered_scripts": false,
     "reason": "The numbered ch1_global/v2 paths generated the frozen observation and coefficient artifacts and remain stable provenance targets.",
     "new_analysis_version_required_for": [
       "trait definition changes",
       "measurement threshold changes",
-      "taxon acceptance changes",
+      "taxon acceptance changes that merge, remove or reassign active units",
       "environmental data changes",
       "tree scenario changes",
       "material detector or measurement audit failure"
@@ -31,6 +31,24 @@
       "planned_images": 1000,
       "double_label_fraction": 0.25,
       "independence_rule": "exclude every prior proposal/training photo_id and obs_id before sampling"
+    },
+    "independent_measurement_validity": {
+      "status": "human/reference measurements pending",
+      "required_modules": ["orientation", "colour", "outline"],
+      "boundary": "production overlays and mirror repeatability are technical checks, not independent accuracy validation"
+    },
+    "taxonomic_review_candidates": {
+      "status": "WCVP candidate review completed; 24 high-priority human decisions remain",
+      "script": "analysis/build_wcvp_taxonomic_review_candidates.py",
+      "workflow": ".github/workflows/ch1-wcvp-taxonomic-candidates.yml",
+      "successful_run_id": 31152400481,
+      "n_input_names": 259,
+      "n_exact_unique": 243,
+      "n_exact_multiple": 16,
+      "n_routine_accepted_candidates": 235,
+      "n_synonym_candidates": 8,
+      "n_high_priority_review": 24,
+      "decision_boundary": "candidate matching never auto-finalizes accepted-name decisions"
     },
     "nested_visible_variance": {
       "script": "analysis/decompose_nested_visible_variance.py",
@@ -60,7 +78,46 @@
         "strict_spatial_thinned_with_chelsa.csv",
         "exhaustive_within_species_climate_models.csv"
       ],
-      "rerun_policy": "Only when the exhaustive spatial cohort, CHELSA source or extraction code changes."
+      "rerun_policy": "Only when the exhaustive spatial cohort, taxonomic units, CHELSA source or extraction code changes."
+    },
+    "spde_spatial_robustness": {
+      "status": "completed for frozen analysis",
+      "residual_export_script": "analysis/export_spde_best_model_residuals.R",
+      "region_script": "analysis/build_naturalearth_broad_region_lookup.py",
+      "input_builder": "analysis/prepare_spatial_diagnostic_input.py",
+      "audit_script": "analysis/audit_spatial_robustness.py",
+      "workflow": ".github/workflows/ch1-spde-residual-export.yml",
+      "successful_run_id": 31152400475,
+      "artifact_id": 8983877726,
+      "artifact_sha256": "151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
+      "residual_morans_i_range": [-0.009627, 0.003016],
+      "n_endpoints_with_permutation_p_lt_0_05": 0,
+      "minimum_leave_one_region_out_spearman_rho": 0.856241,
+      "neighbor_geometry": "kNN on 3-D unit-sphere chord distance",
+      "interpretation": "diagnostic only; accepted coefficient tables unchanged"
+    },
+    "environmental_niche_permutation": {
+      "status": "completed for current taxonomic units",
+      "script": "analysis/permutation_test_trait_niche_contrasts.py",
+      "workflow": ".github/workflows/ch1-niche-permutation-null.yml",
+      "successful_run_id": 31152400487,
+      "n_permutations": 10000,
+      "all_complete_species": 148,
+      "direct_backbone_complete_species": 49,
+      "all_species_bh_supported_centroid_traits": [
+        "orientation_angle_degrees_median",
+        "corolla_lab_chroma_median",
+        "corolla_hue_sin_median",
+        "corolla_hue_cos_median",
+        "shape_width_cv_median"
+      ],
+      "all_species_bh_supported_overlap_traits": [
+        "orientation_angle_degrees_median",
+        "corolla_lab_chroma_median",
+        "corolla_hue_sin_median",
+        "corolla_hue_cos_median"
+      ],
+      "rerun_policy": "rerun if taxonomic freeze merges or removes active species units"
     },
     "legacy_lability_withdrawn": {
       "script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
@@ -70,6 +127,7 @@
     "precision_aware_lability": {
       "script": "analysis/reanalyze_lability_precision.py",
       "workflow": ".github/workflows/ch1-reviewer-precision-reanalysis.yml",
+      "status": "completed statistical audit; no common cross-module coupling; not the primary biological story",
       "frozen_input_artifact": 8330350031,
       "inputs": [
         "species_lability_axes.csv",

@@ -1,63 +1,78 @@
-# Chapter 1 taxonomic freeze protocol
+# Chapter 1 operational taxonomic freeze protocol
 
 ## Purpose
 
-The manuscript uses several related but non-identical taxon scopes: 216 accepted image-analysis taxa, 259 taxa in the strict within-species layer and 102 taxa in the complete lability cohort. Before Methods, tables and the submission archive are frozen, every name appearing in each source table must have one explicit, dated taxonomic decision.
+Chapter 1 is an image-phenomics and macroecology analysis, not a taxonomic revision of *Cirsium*. Public observations arrive with source-platform taxon assignments, while global and regional authorities can legitimately differ in how several *Cirsium* boundaries are lumped or split. Retrospectively forcing one checklist treatment onto photographs cannot adjudicate those boundaries without specimen-level evidence.
 
-This protocol does not automatically choose a taxonomy. It separates external name checking from the reproducible validation of the decisions used in the analysis.
+The manuscript therefore distinguishes two questions:
 
-## Decision table
+1. **What taxonomic unit was assigned to each frozen public observation?** This is the operational analysis unit and must remain traceable exactly.
+2. **Would plausible authority-backed lumping change the ecological conclusions?** This is tested explicitly as taxonomic sensitivity rather than hidden inside name cleaning.
 
-Start from `manuscript/templates/taxonomic_decisions_template.csv` and create one row for every input name.
+The manuscript should use *source-assigned taxonomic unit*, *assigned taxon* or *assigned species* where the distinction matters. It must not imply that the analysis resolved genus-wide species limits.
 
-Required fields:
+## WCVP authority audit
 
-- `input_name`: exact spelling in the frozen analysis table;
-- `accepted_name`: manuscript-facing accepted name;
-- `decision`: `accepted`, `synonym`, `provisional` or `excluded`;
-- `authority_source`: taxonomic authority consulted, such as POWO, World Flora Online, Catalogue of Life or a regional revision;
-- `authority_record`: stable record identifier or URL where available;
-- `checked_date`: date of the manual decision;
-- `notes`: rationale for conflicts, infraspecific treatment, hybrids or regional usage.
+`analysis/build_wcvp_taxonomic_review_candidates.py` checks the union of frozen source names against the World Checklist of Vascular Plants (WCVP) through the GBIF checklist API and records raw responses and stable authority identifiers.
 
-A source name can map to one accepted name. Multiple source names may collapse to one accepted name only when the synonym decision is documented. Provisional names prevent the audit from passing.
+Successful run `31152400481` covered 259 source names:
 
-## Reproducible validation
+- 243 unique exact canonical-name matches;
+- 16 multiple exact canonical-name matches, generally because an accepted record and a homonymous/synonym record share an author-free canonical name;
+- 235 routine accepted-name candidates;
+- 8 WCVP synonym candidates;
+- 24 high-priority nomenclatural-review rows;
+- 0 unmatched names.
 
-Run:
+Automated matching remains candidate generation, not a claim that WCVP must define the operational analysis units.
 
-```bash
-python analysis/audit_taxonomic_freeze.py \
-  --taxon-table <continuous-species-table.csv> \
-  --taxon-table <strict-within-species-table.csv> \
-  --decisions <completed-taxonomic-decisions.csv> \
-  --output-dir <taxonomic-audit-output>
-```
+## Synonym-collapse sensitivity
 
-Use `--name-column` only when the table does not use one of the recognized names: `taxon_name`, `scientific_name`, `species`, `species_name` or `accepted_name`.
+All eight WCVP synonym candidates map to names that already occur as active source-platform analysis units. They were therefore collapsed simultaneously in an explicit sensitivity analysis rather than silently imposed on the primary data.
 
-The audit fails when:
+Workflow run `31153385658` shows:
 
-1. an observed name has no decision;
-2. a name has more than one decision row;
-3. a required authority or date is missing;
-4. a provisional name remains;
-5. an excluded name is still present in an analysis input.
+- balanced atlas: 216 source-assigned taxa -> 211 collapsed units;
+- exhaustive primary: 259 source-assigned taxa -> 251 collapsed units;
+- nested minimum below-unit visible-variance fraction: 0.5886 -> 0.5970;
+- maximum absolute endpoint change in below-unit fraction: 0.0154;
+- primary 36 climate models: 8 BH-supported component rows before and after collapse;
+- FDR decisions changed: 0;
+- coefficient signs changed: 0;
+- maximum absolute standardized-beta change: 0.000385.
 
-Outputs:
+Thus the two headline ecological result families are insensitive to simultaneously applying all eight WCVP synonym collapses.
 
-- `taxonomic_freeze_decisions.csv`: manuscript- and supplement-facing decision table;
-- `taxonomic_freeze_summary.json`: counts, synonym collapses, unused decisions, errors and provenance.
+Full provenance is recorded in `manuscript/results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md`.
 
-## Scope rule
+## Operational freeze rule
 
-A taxonomic decision that changes accepted taxa, merges analysis units or removes observations is not documentation-only. It triggers a new analysis version under `analysis/ch1/pipeline.json`. Spelling normalization that leaves analysis units unchanged may be applied at the manuscript layer, but the original input name must remain in the decision table.
+For the submitted primary analysis:
+
+- retain the exact source-platform taxon assignment as the observation-level operational unit;
+- preserve the WCVP candidate accepted name, status and authority record in the supplementary taxonomic audit table;
+- report the simultaneous WCVP synonym-collapse sensitivity;
+- do not silently relabel or merge source observations in manuscript-facing data products;
+- describe counts as assigned taxonomic units/taxa where a resolved accepted-species interpretation is not required.
+
+This policy prevents a global checklist from retroactively creating unverified specimen-level identifications while still testing whether checklist lumping explains the main ecological results.
+
+## When a new analysis version is required
+
+A new analysis version is required if the authors decide to make a different taxonomy the **primary analysis unit**, because merging, removing or reassigning source units changes cohort counts and species-level products. A spelling/authorship display correction that leaves the operational unit unchanged is documentation-only.
+
+## Supplementary nomenclatural review
+
+The 24 high-priority WCVP rows should remain visible in the supplementary taxonomic table. Regional authorities or a Cardueae specialist may add notes explaining preferred nomenclature, especially for the eight WCVP synonym conflicts. Such notes improve nomenclatural reporting but, under the operational-unit design and successful collapse sensitivity, are no longer a hidden prerequisite for the validity of the two headline ecological analyses.
 
 ## Submission gate
 
-Methods can describe the accepted-name procedure only after:
+The scientific taxonomic-robustness gate is satisfied when:
 
-- every name in all frozen source cohorts is represented;
-- no provisional or excluded name remains in an active cohort;
-- the decision table is reviewed by a botanist familiar with Cardueae;
-- the output table, source files, Git commit and SHA-256 checksums are copied into the durable submission bundle.
+- all source names are authority-audited and traceable;
+- synonym conflicts are explicitly identified;
+- a predeclared lumping sensitivity shows whether those conflicts alter headline results;
+- the manuscript consistently distinguishes source-assigned analysis units from a resolved species taxonomy;
+- authority tables, sensitivity outputs, code, commit identity and checksums enter the durable archive.
+
+Those conditions are met for the frozen Chapter 1 analysis. Final nomenclatural annotations for the 24 high-priority rows remain desirable supplementary metadata, not an untested source of ecological inference.
