@@ -27,7 +27,7 @@ Ancestry + expression + pigment + biological interaction + fitness
 
 Therefore Chapter 1 does **not** need to absorb definitive ancestral-state reconstruction, transition counts, pollinator causation or molecular regain mechanisms before submission. Those are downstream tests. The explicit boundary and handoff are recorded in `manuscript/EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md`.
 
-New candidate traits such as phyllary spreading / recurvature, spine architecture and visible involucral stickiness are treated as a **next-generation capitulum trait layer**, not as a reason to reopen the frozen Chapter 1 model unless they are required to repair a current validity problem.
+Chapter 1 already contains an **exploratory auxiliary involucre layer** derived from high-resolution head crops. It measures image-geometry proxies including involucre projection roughness, involucre spread fraction, spine-like peak count and maximum relative spine-like projection length, and screens their within-species and between-species climatic associations. These are auxiliary image proxies, not botanically validated phyllary-angle or spine measurements. Downstream work should carry these existing results into EAzami, then test whether they track explicit phyllary spreading/recurvature and spine architecture on the resolved nuclear history. Truly new/refined traits include botanically validated phyllary angle, actual spine length/orientation, visible involucral stickiness/glandularity and display architecture.
 
 ## Canonical executed cohorts
 
@@ -102,6 +102,15 @@ The validator `analysis/validate_final_claims.py` and workflow `.github/workflow
 - circular hue sine/cosine;
 - capitulum aspect ratio, circularity, solidity and width-profile variation.
 
+### Exploratory auxiliary involucre traits already analysed
+
+- involucre projection roughness;
+- involucre spread fraction;
+- spine-like peak count proxy;
+- maximum relative spine-like projection length proxy.
+
+These auxiliary endpoints are measured only on QC-passing high-resolution crops and are explicitly treated as image-geometry proxies. They have been included in continuous environment screening, including within-species and between-species analyses, with auxiliary historical sensitivity retained as exploratory rather than promoted to the Chapter 1 headline.
+
 Circular hue remains a joint endpoint. It is retained in colour and PCA analyses but excluded from the precision-corrected cross-species lability test because archived species-level joint hue vectors lack component standard errors.
 
 ## Reproducibility policy
@@ -115,4 +124,4 @@ Circular hue remains a joint endpoint. It is retained in colour and PCA analyses
 
 ## Interpretation limits
 
-Citizen-science photographs are not colour calibrated, image vertical is only a proxy for gravity and outline measures remain viewpoint dependent. Detector and continuous-measurement accuracy require independent validation. Taxonomic decisions and residual spatial/region-omission diagnostics remain submission gates. The grafted mega-tree is a historical sensitivity analysis, not a resolved evolutionary history.
+Citizen-science photographs are not colour calibrated, image vertical is only a proxy for gravity and outline measures remain viewpoint dependent. The auxiliary involucre/spine variables are image-geometry proxies rather than direct botanical measurements. Detector and continuous-measurement accuracy require independent validation. Taxonomic decisions and residual spatial/region-omission diagnostics remain submission gates. The grafted mega-tree is a historical sensitivity analysis, not a resolved evolutionary history.
