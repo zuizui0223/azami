@@ -8,6 +8,27 @@ Species means conceal hierarchically structured visible phenotype distributions,
 
 The analysis is observational and non-causal. Spatial climatic association is not proof of temporal response, local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
 
+## Role in the wider research program
+
+Chapter 1 is the **global macro-scale hypothesis-generation layer**. It deliberately views *Cirsium* from far away using a very large public-image dataset before a resolved species history is imposed.
+
+The next evolutionary-resolution stage is maintained in `zuizui0223/EAzami`:
+
+```text
+azami / Chapter 1
+Global public-image macro screen
+        ↓ hypotheses and trait distributions
+EAzami
+East Asian nuclear phylogeny + explicit transition histories
+        ↓ replicated focal transitions
+population / mechanism studies
+Ancestry + expression + pigment + biological interaction + fitness
+```
+
+Therefore Chapter 1 does **not** need to absorb definitive ancestral-state reconstruction, transition counts, pollinator causation or molecular regain mechanisms before submission. Those are downstream tests. The explicit boundary and handoff are recorded in `manuscript/EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md`.
+
+New candidate traits such as phyllary spreading / recurvature, spine architecture and visible involucral stickiness are treated as a **next-generation capitulum trait layer**, not as a reason to reopen the frozen Chapter 1 model unless they are required to repair a current validity problem.
+
 ## Canonical executed cohorts
 
 Two data streams answer different questions.
@@ -69,7 +90,8 @@ Start here:
 4. `manuscript/results/nested_visible_variance_summary.csv` — image-hierarchy decomposition;
 5. `manuscript/results/reviewer_precision_summary.json` — numerical precision audit;
 6. `analysis/ch1/pipeline.json` — canonical executable stages;
-7. `manuscript/EXTERNAL_COMPLETION_GATES.md` — detector, measurement, taxonomy, spatial and archive gates still requiring external input.
+7. `manuscript/EXTERNAL_COMPLETION_GATES.md` — detector, measurement, taxonomy, spatial and archive gates still requiring external input;
+8. `manuscript/EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md` — explicit macro→phylogeny→mechanism handoff and Chapter 1 stop rules.
 
 The validator `analysis/validate_final_claims.py` and workflow `.github/workflows/ch1-final-manuscript-claims.yml` enforce the revised claim set.
 
