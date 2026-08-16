@@ -1,43 +1,89 @@
 # Results
 
-## Cohort flow separated the image atlas from exhaustive within-species inference
+## Global image phenomics recovered repeated continuous capitulum phenotypes
 
-The balanced image-comparison atlas contained 6,626 detected capitula from 3,725 observations and 216 accepted image-analysis taxa. The exhaustive all-photo stream contained 406,582 detector-positive observations from 286 taxa. After coordinate-quality filtering, a ≤10 km positional-accuracy restriction and taxon-by-0.25°-cell thinning, 46,276 observations from 259 taxa formed the exhaustive spatially thinned primary cohort for within-species climate coefficients.
+The balanced atlas contained 6,626 detected heads from 3,725 photographs and 216 source-assigned taxa, whereas the exhaustive post-detection stream contained 406,582 detector-positive observations from 286 taxa. After positional-accuracy restriction and taxon × 0.25° spatial thinning, 46,276 observations from 259 taxa formed the primary within-taxon cohort. Trait-specific QC retained 87.2% of atlas heads for colour, 80.4% for outline and 69.2% for orientation. The high-resolution involucral layer retained 1,443 heads from 1,292 observations and 210 taxa.
 
-These layers are not interchangeable. The image-comparison atlas supports nested visible variance, PCA and historical summaries. The 46,276-observation cohort supports primary within-species coefficient and precision-aware cross-species analyses.
+The leakage-free detector-audit packet contained 1,000 source images spanning 323 species and 85 ten-degree spatial blocks, with 250 images assigned for blinded double annotation and zero photo or observation overlap with detector-development data. Human adjudication is incomplete; therefore no independent detector precision or recall is reported, and detector development metrics are not used as evidence for biological accuracy.
 
-## Visible variance was distributed across photographs and heads within assigned species
+The production workflow therefore generated repeated **numerical phenotype observations** rather than one categorical trait label per taxon. Every assessable head contributed values such as an orientation angle, colour coordinates or contour statistics, and those values were retained as distributions across observations within taxa.
 
-The nested decomposition separated differences among assigned species means, among photographs within species and among detected heads within photographs. The combined within-assigned-species fraction ranged from 0.589 for hue sine to 0.931 for width-profile variation. Species-cluster bootstrap intervals excluded 0.5 for every endpoint except the lower bound for hue sine approached it (95% CI 0.537–0.647).
+## Most visible primary-trait variation occurred below taxon means
 
-Most within-species image variance occurred among photographs: this component ranged from 0.440 for hue sine to 0.691 for hue cosine. Variation among heads within the same photograph contributed 0.143–0.379 of total sums of squares and was largest for shape aspect ratio. Thus, multiple detections from one image were not independent replicates, but within-photo multiplicity did not account for the full within-species pattern.
+Across the nine primary endpoints, the combined fraction of visible image sums of squares below assigned taxon means ranged from 0.589 for hue sine to 0.931 for width-profile variation. The among-photograph component within taxa was 0.440–0.691, while variation among heads within the same photograph contributed 0.143–0.379.
 
-Selecting one deterministic head per photograph retained within-assigned-species fractions of 0.582–0.899. In equal-replication sensitivities using 10 photographs per eligible species, median fractions ranged from 0.528 to 0.879 across endpoints. The conclusion that at least half of visible image variance occurred below the assigned-species level therefore survived removal of duplicate heads and strong balancing of species sample size, although the earlier two-level estimate of 0.817–0.988 overstated the common range.
+Selecting one deterministic head per photograph retained below-taxon fractions of 0.582–0.899. In equal-replication sensitivities using 10 photographs per eligible taxon, median fractions remained 0.528–0.879. Thus, the large below-taxon component was not explained solely by multiple detections from one photograph or by unequal taxon replication.
 
-Species-level structure remained multidimensional. PC1 explained 32.9% of variance, PCs 1–2 explained 56.1% and PCs 1–3 explained 69.3%. Orientation, colour and outline were not reducible to one dominant mean-trait axis.
+Taxon-level means nevertheless retained substantial multivariate structure. PC1 explained 32.9% of variance, PCs 1–2 explained 56.1% and PCs 1–3 explained 69.3%, with all nine primary endpoints contributing to the PCA. Variation was therefore substantial at both within- and among-taxon scales rather than reducible to one taxon-level trait axis.
 
-## The legacy negative lability relation was a precision artefact
+## Within-taxon environmental associations were trait specific
 
-The legacy environmental-association score was the RMS magnitude of unpooled absolute species-specific slopes. Among the original 102 complete taxa, it reproduced the previously reported correlation with visible variation (Spearman's rho = -0.333). However, the score was almost perfectly associated with the median number of observations per slope (rho = -0.919) and with median slope standard error (rho = 0.914). After controlling median sample size, the partial rank correlation between the legacy axes was 0.056 (P = 0.577). The negative relation and four median-split quadrants were therefore withdrawn.
+In the exhaustive spatially thinned primary cohort, eight of 36 endpoint-component rows passed BH correction.
 
-## No common coupling remained after slope uncertainty was modelled
+| Endpoint | Predictor | Standardized β | 95% CI | BH q |
+|---|---|---:|---|---:|
+| Orientation angle | BIO1 annual mean temperature | +0.0171 | 0.0046 to 0.0295 | 0.0363 |
+| Corolla chroma | BIO12 annual precipitation | +0.0393 | 0.0102 to 0.0684 | 0.0363 |
+| Hue sine | BIO4 temperature seasonality | +0.0534 | 0.0424 to 0.0643 | <0.0001 |
+| Hue sine | BIO12 annual precipitation | -0.0440 | -0.0608 to -0.0272 | <0.0001 |
+| Hue cosine | BIO4 temperature seasonality | -0.0283 | -0.0453 to -0.0113 | 0.0132 |
+| Hue cosine | BIO15 precipitation seasonality | +0.0201 | 0.0069 to 0.0334 | 0.0207 |
+| Outline aspect ratio | BIO4 temperature seasonality | +0.0137 | 0.0048 to 0.0226 | 0.0207 |
+| Outline aspect ratio | BIO12 annual precipitation | -0.0108 | -0.0187 to -0.0028 | 0.0363 |
 
-The revised complete cohort contained 101 taxa with all seven linear endpoints, all four predictors per endpoint and at least 10 observations for every slope. The sampling-noise-adjusted association-energy score was no longer related to median sample size (rho = -0.038, P = 0.703) or median slope standard error (rho = 0.020, P = 0.840).
+Higher annual mean temperature was associated with a larger image-referenced orientation angle, corresponding to a shift from upward toward more horizontal or downward heads relative to image vertical. Corolla chroma increased with annual precipitation. Outline aspect ratio increased with temperature seasonality and decreased with annual precipitation. Circular hue components were associated with temperature seasonality, annual precipitation and precipitation seasonality, but the biological colour direction cannot be assigned from one sine or cosine coefficient alone.
 
-Equal-module visible variation was not associated with noise-adjusted association energy (Spearman's rho = -0.057, P = 0.572; 95% species-bootstrap CI -0.265 to 0.155). The hierarchical variance meta-regression likewise found no common change in latent slope magnitude with visible variation: the log-variance coefficient per standard deviation of visible variation was -0.042 (95% profile CI -0.274 to 0.200; likelihood-ratio P = 0.732). Thus, the data supported no common cross-module lability axis after sampling precision was incorporated.
+## Grouped SPDE-INLA concentrated robust support in orientation and visible colour
 
-## Modules retained different descriptive structures
+All 36 grouped SPDE-INLA fits completed with no CPO failures. The most stable spatial-model effects were:
 
-Equal-module visible variation remained greatest for shape (median 0.667), intermediate for orientation (0.630) and lowest for colour (0.556). Median noise-adjusted association energy was close to zero for orientation (-0.0012) and shape (0.00002) and small for colour (0.0040). These values are not directly comparable to the withdrawn absolute-slope RMS values.
+- orientation angle: positive BIO1 association;
+- corolla lightness: positive BIO1 association and negative soil-pH association;
+- corolla chroma: negative BIO1 association and positive BIO12 association;
+- hue sine: positive BIO4 association;
+- hue cosine: negative BIO1 association and positive soil-pH association.
 
-Among-species environmental structure remained stronger for orientation and visible colour than for most outline traits. Orientation produced the largest environmental-niche centroid contrast, while aspect ratio, circularity and solidity retained comparatively high overlap. These contrasts are descriptive among-species sorting and do not establish within-species response or causal mechanism.
+The BIO1 effect on hue sine was q-supported only in the climate model and changed sign across model groups, so it is retained as model-dependent rather than a stable direction. No topographic predictor and no SPDE effect for aspect ratio, circularity, solidity or width-profile CV passed global BH correction. Thus, the aspect-ratio climate associations are specific to the exhaustive standardized within-taxon analysis, whereas soil-pH colour associations emerge only when wider spatial predictor sets are considered.
 
-## Within-species coefficient evidence depended on the named cohort
+## High-resolution involucral architecture tracked temperature seasonality
 
-In the exhaustive spatially thinned primary cohort, eight of the 36 component-wise endpoint–climate rows passed BH correction. Four were non-circular linear associations: orientation with BIO1, chroma with BIO12 and aspect ratio with BIO4 and BIO12. Their standardized coefficients ranged in absolute magnitude from 0.011 to 0.039. Four hue sine/cosine rows also passed component-wise correction but were not interpreted independently because circular hue requires a joint test.
+In the ≤10 km auxiliary cohort of 904 observations from 165 taxa, all three final auxiliary contour proxies increased with temperature seasonality and survived BH correction across the 12-test auxiliary family:
 
-The earlier balanced image-atlas sensitivity gave zero BH-supported main rows in its ≤10 km subset and two in its all-coordinate subset. These results concern a smaller, differently balanced cohort and are not the FDR result of the 46,276-observation primary analysis.
+- involucre projection roughness: β = +0.0975, 95% CI 0.0227–0.1723, q = 0.0424;
+- outward spread fraction: β = +0.0937, 95% CI 0.0271–0.1603, q = 0.0424;
+- maximum spine-like projection: β = +0.0911, 95% CI 0.0222–0.1599, q = 0.0424.
 
-## Historical inference remained placement sensitive
+The corresponding all-coordinate slopes had the same positive direction but did not survive FDR correction. These associations concern outward contour architecture and do not identify whether the underlying structure is a longer bract tip, greater spreading or recurvature.
 
-The historical-sensitivity analysis included 216 taxa, of which only 54 were directly represented in the dated backbone. All 636 planned signal fits completed, but no non-circular endpoint retained direct-backbone support after FDR correction. Apparent signals for circularity and solidity were grafting sensitive. Molecular-database coverage remained heterogeneous: 138 taxa had nucleotide records, 133 ITS, 129 plastid, 11 complete plastomes and 120 SRA records.
+## Among-taxon environmental sorting was concentrated in orientation and colour
+
+Among 148 taxa complete for all primary traits and environmental variables, 10,000 trait-label permutations showed non-random environmental sorting mainly for orientation and visible colour. Orientation, chroma and both hue components retained BH-supported centroid separation and lower-than-null niche overlap. Width-profile CV retained centroid-distance support only. Lightness, aspect ratio, circularity and solidity were unsupported in both all-taxa metrics.
+
+In the 49-taxon complete direct-backbone sensitivity, support narrowed. Hue cosine retained both centroid and overlap support; lightness and hue sine retained overlap support only. Thus, the strongest all-taxon environmental sorting was not a generic artifact of quartile splitting, but its historical robustness varied among traits.
+
+## Some among-taxon climate associations persisted across alternative phylogenetic placements
+
+Taxon-level PGLS identified six associations that were BH-supported in 100% of the 50 randomized scenario-2 trees:
+
+| Endpoint | Predictor | Median standardized β | 2.5–97.5% across trees | FDR-supported trees |
+|---|---|---:|---|---:|
+| Orientation angle | BIO12 annual precipitation | +0.304 | +0.304 to +0.313 | 50/50 |
+| Hue sine | BIO1 annual mean temperature | -0.410 | -0.410 to -0.410 | 50/50 |
+| Hue sine | BIO4 temperature seasonality | -0.274 | -0.274 to -0.274 | 50/50 |
+| Hue sine | BIO12 annual precipitation | -0.211 | -0.211 to -0.211 | 50/50 |
+| Solidity | BIO4 temperature seasonality | -0.357 | -0.357 to -0.347 | 50/50 |
+| Width-profile CV | BIO1 annual mean temperature | +0.248 | +0.234 to +0.269 | 50/50 |
+
+Pagel-λ was estimated at zero in the randomized-tree fits for these rows, so coefficient estimates were little altered by the tested covariance structures. However, only 54 of 216 image-analysis taxa were direct dated-backbone tips and 162 required within-genus grafting. Independent phylogenetic-signal analyses found no FDR-supported non-circular primary trait in the direct-backbone subset, and no auxiliary involucre/spine coefficient survived deterministic PGLS FDR correction. The six randomized-tree associations are therefore historical sensitivities rather than definitive evidence of resolved phylogenetically independent effects.
+
+## Spatial and taxonomic robustness did not overturn the headline results
+
+Diagnostic refits of the lowest-WAIC SPDE specification closely reproduced the frozen model support, with diagnostic-refit minus frozen WAIC ranging from -2.56 to +2.50. Residual Moran's I ranged from -0.0096 to 0.0030 across the nine primary endpoints, with no permutation P < 0.05. Removing one broad geographic region at a time retained taxon trait rankings strongly, with minimum endpoint-specific Spearman rho = 0.856–0.972. The weakest sensitivities followed removal of Europe.
+
+WCVP review identified eight synonym candidates whose accepted-name targets were already separate active source units. Collapsing all eight simultaneously reduced the balanced atlas from 216 to 211 operational units and the exhaustive primary cohort from 259 to 251, but all eight BH-supported primary component rows remained supported, no coefficient changed sign and the maximum absolute standardized-beta change was 0.000385. The minimum below-unit visible-variance fraction increased from 0.589 to 0.597.
+
+The computational spatial, niche-null and taxonomic-robustness diagnostics therefore did not overturn the central conclusions. Independent detector accuracy and continuous-trait biological validity remain the unresolved external scientific gates.
+
+## Legacy lability analysis is provenance only
+
+The former RMS of unpooled absolute taxon-specific slopes was strongly confounded with slope sample size and standard error. The previously reported negative variation–association relation and median-split quadrants were withdrawn. Precision-aware reanalysis detected no common cross-module coupling. This correction remains part of the audit trail but is not a submission-facing biological headline.
