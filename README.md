@@ -1,23 +1,49 @@
-# azami — global image-derived capitulum traits in *Cirsium*
+# azami — global continuous capitulum phenomics in *Cirsium*
 
-This repository contains a multi-chapter project on the ecology and evolution of *Cirsium* floral architecture. Chapter 1 is the submission-focused component: a global analysis of continuous capitulum traits measured from public biodiversity photographs.
+This repository contains a multi-chapter project on the ecology and evolution of *Cirsium* floral architecture. Chapter 1 is the submission-focused component: a global analysis that converts public biodiversity photographs into repeated **continuous head-level trait measurements** rather than one categorical state or one mean value per taxon.
 
 ## Chapter 1 in one sentence
 
-Species means conceal hierarchically structured visible phenotype distributions, but no common coupling between visible dispersion and within-species spatial climatic association remains after slope uncertainty is modelled.
+Global public photographs recover continuous within-taxon distributions of capitulum orientation, visible colour and outline that are largely hidden by taxon means, and part of that variation is structured along environmental gradients in a trait- and scale-specific manner.
 
-The analysis is observational and non-causal. Spatial climatic association is not proof of temporal response, local adaptation, phenotypic plasticity, pollinator selection or evolutionary rate.
+The analysis is observational and non-causal. Spatial climatic association is not proof of temporal response, local adaptation, phenotypic plasticity, pollinator selection, evolutionary rate or adaptive radiation.
+
+## Methodological contribution
+
+The core contribution is not simply large image volume. The production workflow is:
+
+```text
+public biodiversity photograph
+        ↓
+YOLO localization of visible capitula
+        ↓
+deterministic continuous measurement per assessable head
+        ↓
+orientation angle + colour coordinates + outline geometry
+        ↓
+repeated within-taxon trait distributions
+        ↓
+nested variance + within-taxon environment association + among-taxon sorting
+```
+
+The inferential traits are **not categorical classifier outputs**. Each assessable head contributes numerical values such as an orientation angle, CIELAB lightness/chroma and circular hue components, or outline statistics. Failed or unassessable measurements remain missing rather than being coded as biological absence.
+
+Across the nine primary endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means. One-head-per-photo and equal-replication sensitivities retain the same qualitative conclusion. These are visible image-variance components, not genetic variance estimates.
+
+## Why *Cirsium*
+
+*Cirsium* is useful because the same reproductive structure expresses conspicuous diversity in orientation, visible corolla colour, gross outline and involucral architecture. The lineage also includes recent regional radiations and has a complex history involving hybridization, incomplete lineage sorting, polyploidy and phenotypic convergence. That combination makes it a strong system for asking whether visible phenotype is environmentally structured at the level of repeated observations, among taxa, or both, without assuming that one species mean or one resolved bifurcating tree is sufficient.
+
+Chapter 1 does **not** itself demonstrate adaptive radiation. Rapid regional diversification is evolutionary context and motivation; explicit transition histories and resolved nuclear phylogeny are downstream EAzami tasks.
 
 ## Role in the wider research program
 
-Chapter 1 is the **global macro-scale hypothesis-generation layer**. It deliberately views *Cirsium* from far away using a very large public-image dataset before a resolved species history is imposed.
-
-The next evolutionary-resolution stage is maintained in `zuizui0223/EAzami`:
+Chapter 1 is the **global macro-scale hypothesis-generation layer**. The next evolutionary-resolution stage is maintained in `zuizui0223/EAzami`:
 
 ```text
 azami / Chapter 1
-Global public-image macro screen
-        ↓ hypotheses and trait distributions
+Global public-image continuous phenomics
+        ↓ trait distributions and macro-scale hypotheses
 EAzami
 East Asian nuclear phylogeny + explicit transition histories
         ↓ replicated focal transitions
@@ -27,101 +53,84 @@ Ancestry + expression + pigment + biological interaction + fitness
 
 Therefore Chapter 1 does **not** need to absorb definitive ancestral-state reconstruction, transition counts, pollinator causation or molecular regain mechanisms before submission. Those are downstream tests. The explicit boundary and handoff are recorded in `manuscript/EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md`.
 
-Chapter 1 already contains an **exploratory auxiliary involucre layer** derived from high-resolution head crops. It measures image-geometry proxies including involucre projection roughness, involucre spread fraction, spine-like peak count and maximum relative spine-like projection length, and screens their within-species and between-species climatic associations. These are auxiliary image proxies, not botanically validated phyllary-angle or spine measurements. Downstream work should carry these existing results into EAzami, then test whether they track explicit phyllary spreading/recurvature and spine architecture on the resolved nuclear history. Truly new/refined traits include botanically validated phyllary angle, actual spine length/orientation, visible involucral stickiness/glandularity and display architecture.
-
 ## Canonical executed cohorts
-
-Two data streams answer different questions.
 
 | Cohort | Observations | Taxa | Purpose |
 |---|---:|---:|---|
-| Balanced image-comparison atlas | 3,725 | 216 | 6,626-head nested visible variance, species PCA, among-species summaries and historical sensitivity |
+| Balanced image-comparison atlas | 3,725 | 216 | 6,626-head nested variance, PCA and among-taxon summaries |
 | Exhaustive detector-positive layer | 406,582 | 286 | Post-detection source layer |
-| Exhaustive spatially thinned primary | 46,276 | 259 | Primary within-species climate coefficients |
-| Revised precision-aware lability cohort | 101 | 101 | Seven linear endpoints × four predictors with all slope standard errors |
+| Exhaustive spatially thinned primary | 46,276 | 259 | Primary within-taxon climate coefficients |
+| Grouped SPDE-INLA complete cases | 31,666–34,472 per endpoint | 139–141 | Spatially explicit within-taxon models |
+| High-resolution involucre subset | 1,292 observations / 1,443 usable heads | 210 | Auxiliary involucre/spine-like contour proxies |
+| Species-level historical sensitivity | 213–214 primary taxa | 216 atlas taxa; 54 direct tips | PGLS across alternative grafting trees |
+| Independent detector audit | 1,000 source images | 323 | Human validation packet; annotation pending |
 
-The full flow from 777,766 photographs to each derived table is recorded in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
+The full flow from 777,766 photographs to derived tables is recorded in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
 
-## Nested image hierarchy correction
+## Primary and auxiliary traits
 
-The balanced atlas retains one photograph per public observation and may contain multiple detected heads per photograph. The earlier two-level variance partition combined these levels. A revised exact decomposition separates:
-
-- differences among assigned species means;
-- differences among photographs within assigned species; and
-- differences among heads within photographs.
-
-Across nine endpoints, the combined below-species fraction is 0.589–0.931. The among-photograph component is 0.440–0.691 and the among-head-within-photo component is 0.143–0.379. One-head-per-photo sensitivities retain fractions of 0.582–0.899. Equal-replication sensitivities using 10 photographs per eligible species retain median fractions of 0.528–0.879.
-
-These are visible image sums-of-squares components, not genetic or standardized phenotypic variance. The correction is implemented in `analysis/decompose_nested_visible_variance.py` and `.github/workflows/ch1-nested-visible-variance.yml`.
-
-## Reviewer-driven statistical correction
-
-The previous lability analysis used the RMS magnitude of unpooled absolute species-specific slopes. That score was strongly confounded with median slope sample size (Spearman rho = -0.919) and median slope standard error (rho = 0.914). The previously reported rho = -0.333 and median-split quadrants are withdrawn.
-
-The replacement analysis:
-
-- uses a common 101-taxon cohort with all seven linear endpoints and all four climate predictors;
-- weights orientation, colour and shape equally;
-- subtracts slope sampling variance through `beta^2 - SE^2` for a transparent association-energy summary;
-- fits a hierarchical variance meta-regression to all 2,828 slope estimates with their standard errors.
-
-No common coupling was detected:
-
-- noise-adjusted axis correlation: rho = -0.057, P = 0.572, 95% species-bootstrap CI -0.265 to 0.155;
-- hierarchical log-variance coefficient: -0.042, 95% profile CI -0.274 to 0.200, likelihood-ratio P = 0.732.
-
-The correction is implemented in `analysis/reanalyze_lability_precision.py` and rerun by `.github/workflows/ch1-reviewer-precision-reanalysis.yml`.
-
-## Other retained results
-
-Species-level PCA remains multidimensional: PC1 explains 32.9%, PCs 1–2 explain 56.1% and PCs 1–3 explain 69.3%.
-
-In the exhaustive 46,276-observation primary cohort, eight of 36 component rows pass BH correction. Four are non-circular linear associations and all are small in standardized magnitude. Four additional hue sine/cosine rows require joint circular interpretation. The earlier balanced-atlas ≤10 km sensitivity has zero BH-supported main rows; it is a different dataset and is not the primary exhaustive FDR result.
-
-Among-species environmental sorting remains strongest for orientation and visible colour and weaker for most outline traits. Historical conclusions remain sensitive to grafted taxon placement because only 54 of 216 image-analysis taxa occur directly in the dated backbone.
-
-## Canonical manuscript path
-
-Start here:
-
-1. `manuscript/SUBMISSION_MANUSCRIPT.md` — submission-facing section order and status;
-2. `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
-3. `manuscript/final_claims.json` — reviewer-revised machine-readable claim registry;
-4. `manuscript/results/nested_visible_variance_summary.csv` — image-hierarchy decomposition;
-5. `manuscript/results/reviewer_precision_summary.json` — numerical precision audit;
-6. `analysis/ch1/pipeline.json` — canonical executable stages;
-7. `manuscript/EXTERNAL_COMPLETION_GATES.md` — detector, measurement, taxonomy, spatial and archive gates still requiring external input;
-8. `manuscript/EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md` — explicit macro→phylogeny→mechanism handoff and Chapter 1 stop rules.
-
-The validator `analysis/validate_final_claims.py` and workflow `.github/workflows/ch1-final-manuscript-claims.yml` enforce the revised claim set.
-
-## Primary traits
+### Primary continuous endpoints
 
 - orientation angle relative to EXIF-oriented image vertical;
 - corolla Lab lightness and chroma;
 - circular hue sine/cosine;
 - capitulum aspect ratio, circularity, solidity and width-profile variation.
 
-### Exploratory auxiliary involucre traits already analysed
+### Auxiliary high-resolution involucre layer
+
+The final manuscript retains three inferential auxiliary contour proxies:
 
 - involucre projection roughness;
 - involucre spread fraction;
-- spine-like peak count proxy;
-- maximum relative spine-like projection length proxy.
+- maximum relative spine-like projection length.
 
-These auxiliary endpoints are measured only on QC-passing high-resolution crops and are explicitly treated as image-geometry proxies. They have been included in continuous environment screening, including within-species and between-species analyses, with auxiliary historical sensitivity retained as exploratory rather than promoted to the Chapter 1 headline.
+`spine_peak_count_proxy` also exists in the integrated derived table and is preserved for downstream provenance, but it is **not one of the three final manuscript auxiliary inferential endpoints**.
 
-Circular hue remains a joint endpoint. It is retained in colour and PCA analyses but excluded from the precision-corrected cross-species lability test because archived species-level joint hue vectors lack component standard errors.
+All involucre/spine variables are image-geometry proxies, not direct botanical measurements of phyllary angle, spine length, orientation, stiffness or defensive function.
 
-## Reproducibility policy
+## Main retained results
+
+- Below-taxon visible variance: 0.589–0.931 across nine primary endpoints.
+- Among-photograph within-taxon component: 0.440–0.691; among-head within-photo component: 0.143–0.379.
+- Primary within-taxon climate family: 8/36 BH-supported component rows, including orientation × BIO1, chroma × BIO12, aspect ratio × BIO4/BIO12 and four circular-hue component rows.
+- Grouped SPDE-INLA most consistently retains temperature associations with orientation and visible colour, precipitation with chroma and soil-pH associations with visible colour; gross-outline effects do not survive the global SPDE screen.
+- High-resolution auxiliary layer: roughness, outward spread and maximum spine-like projection all increase with temperature seasonality in the ≤10 km cohort.
+- Permutation-supported among-taxon environmental sorting is concentrated mainly in orientation and visible colour.
+- Residual Moran's I is near zero for all nine primary endpoints; leave-one-broad-region-out taxon rankings remain strong.
+- Simultaneous collapse of all eight WCVP synonym conflicts changes neither primary coefficient signs nor FDR decisions.
+- Historical/PGLS results remain sensitivity analyses because only 54/216 atlas taxa are direct dated-backbone tips.
+
+The withdrawn raw absolute-slope lability relationship and median-split quadrants are retained only as statistical provenance/QA and are **not** part of the current headline story.
+
+## Canonical manuscript path
+
+Start here:
+
+1. `manuscript/SUBMISSION_MANUSCRIPT.md` — current submission-facing story and section order;
+2. `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
+3. `manuscript/final_claims.json` — machine-readable frozen claims;
+4. `manuscript/results/nested_visible_variance_summary.csv` — image-hierarchy decomposition;
+5. `manuscript/results/NICHE_PERMUTATION_RESULTS_2026-08-07.md` — niche-null test;
+6. `manuscript/results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md` — residual and region-omission diagnostics;
+7. `manuscript/results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md` — synonym-collapse sensitivity;
+8. `analysis/ch1/pipeline.json` — canonical executable stages;
+9. `manuscript/EXTERNAL_COMPLETION_GATES.md` — genuinely external remaining validation;
+10. `manuscript/EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md` — macro → phylogeny → mechanism handoff.
+
+## Current submission gates
+
+The computational spatial, niche-null and taxonomic-robustness gates are complete for the frozen operational-unit analysis. The two remaining **scientific** submission blockers are genuinely external:
+
+1. adjudicated human boxes for the independent detector audit;
+2. genuinely independent reference measurements for orientation, colour and outline.
+
+Nomenclatural notes for the 24 high-priority WCVP rows and authorship/administrative metadata also require human confirmation. Durable archive/DOI release is the final step after the measurement gates close.
+
+## Reproducibility and interpretation limits
 
 - Every FDR count must name its cohort, endpoint family and number of tests.
-- Multiple heads from one photograph must remain a nested level or be reduced by one-head-per-photo sensitivity.
-- Raw absolute species-slope RMS and median-split quadrants are legacy provenance only.
-- The revised primary lability test requires all seven linear endpoints, four predictors per endpoint and n ≥ 10 for every slope.
-- Final artifacts must include CSVs, figures, metadata, package versions, commit SHA, workflow run IDs and SHA-256 checksums.
-- GitHub Actions artifacts are temporary; the submission bundle must be archived durably before submission.
-
-## Interpretation limits
-
-Citizen-science photographs are not colour calibrated, image vertical is only a proxy for gravity and outline measures remain viewpoint dependent. The auxiliary involucre/spine variables are image-geometry proxies rather than direct botanical measurements. Detector and continuous-measurement accuracy require independent validation. Taxonomic decisions and residual spatial/region-omission diagnostics remain submission gates. The grafted mega-tree is a historical sensitivity analysis, not a resolved evolutionary history.
+- Multiple heads from one photograph remain a nested level or are reduced by one-head-per-photo sensitivity.
+- Circular hue components are interpreted jointly and never as separate named flower colours.
+- Public photographs are not colour calibrated; image vertical is a reproducible image reference, not gravity; outline measures remain viewpoint dependent.
+- Production overlays and mirror repeatability are technical checks, not independent biological accuracy validation.
+- The grafted mega-tree is a historical sensitivity analysis, not a resolved *Cirsium* species tree.
