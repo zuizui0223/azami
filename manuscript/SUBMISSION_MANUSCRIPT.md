@@ -1,6 +1,10 @@
 # Chapter 1 submission manuscript
 
-This is the canonical manuscript entry point after the reviewer-driven precision reanalysis.
+This is the canonical submission-facing entry point for Chapter 1. The current story is the **global recovery of continuous within-taxon capitulum trait distributions from public photographs**, followed by scale-explicit environmental analysis. The former lability-axis story is no longer a headline result.
+
+## Preferred title
+
+**Global citizen-science images reveal continuous within-taxon variation and environmental structure in thistle capitulum traits**
 
 ## Manuscript order
 
@@ -11,26 +15,72 @@ This is the canonical manuscript entry point after the reviewer-driven precision
 5. [`04_discussion.md`](04_discussion.md)
 6. [`05_conclusion_and_declarations.md`](05_conclusion_and_declarations.md)
 
-## Scientific control files
-
-- [`COHORT_FLOW_AND_ANALYSIS_LEDGER.md`](COHORT_FLOW_AND_ANALYSIS_LEDGER.md) fixes every cohort name, count and permitted analysis.
-- [`final_claims.json`](final_claims.json) contains the reviewer-revised machine-readable claims.
-- [`results/reviewer_precision_summary.json`](results/reviewer_precision_summary.json) records the legacy confounding audit and corrected results.
-- [`../analysis/reanalyze_lability_precision.py`](../analysis/reanalyze_lability_precision.py) implements the precision-aware replacement analysis.
-- [`../analysis/ch1/pipeline.json`](../analysis/ch1/pipeline.json) maps the canonical executable stages.
-- [`EXTERNAL_COMPLETION_GATES.md`](EXTERNAL_COMPLETION_GATES.md) lists the independent validation, taxonomic, spatial and archive products still needed before submission.
-
 ## Current headline
 
-Most visible image variance occurs within assigned species and species-level capitulum phenotype is multidimensional. The former negative variation–association correlation and median-split quadrants are withdrawn because the legacy absolute-slope RMS was dominated by sample size and standard error. A revised 101-taxon, equal-module, precision-aware analysis detects no common cross-module coupling.
+Public biodiversity photographs can be converted into repeated **numerical phenotype observations** rather than one species-level category. Across nine primary continuous endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means. Some of that repeated within-taxon variation is structured along environmental gradients, but the pattern is trait- and scale-specific: orientation and visible colour show the clearest environmental structure, most gross-outline traits are weaker after spatial modelling, and fine involucral contour architecture is associated with temperature seasonality in the high-resolution layer.
 
-## Current figure priorities
+The central methodological contribution is therefore:
 
-1. actual-photo YOLO and deterministic measurement workflow;
-2. visible within/among-assigned-species variance and complete nine-endpoint PCA;
-3. legacy precision-confounding audit;
-4. revised variation versus noise-adjusted association energy without quadrants;
-5. named-cohort within-species coefficients and among-species niche contrasts;
-6. sampling, taxonomic, spatial and historical limitations.
+> global public photographs → detected capitula → continuous head-level measurements → within-taxon trait distributions → multiscale environmental analysis
 
-The final journal package must not use the obsolete supervisor-review title, legacy quadrants or the phrase *climate tracking* for cross-sectional spatial associations.
+The manuscript does not reduce the primary inference to upright/nodding, pale/pigmented or globose/elongate categories.
+
+## Why *Cirsium*
+
+The same capitulum expresses conspicuous diversity in orientation, visible colour, gross outline and involucral architecture, allowing multiple phenotype modules to be measured on one reproductive unit. *Cirsium* also includes recent regional radiations and has a complex evolutionary history involving hybridization, incomplete lineage sorting, polyploidy and phenotypic convergence. This makes it an informative system for asking whether trait diversity is environmentally structured within taxa, among taxa, or both. The current image analysis does **not** itself demonstrate adaptive radiation.
+
+## Current main-result structure
+
+1. **Repeated continuous phenotypes are recoverable globally.**
+2. **Species/taxon means conceal substantial below-taxon visible variation.**
+3. **That conclusion survives one-head-per-photo and equal-replication controls.**
+4. **Within-taxon environmental associations are trait specific.**
+5. **Grouped SPDE-INLA narrows the strongest robust pattern toward orientation and visible colour.**
+6. **High-resolution involucre architecture shows a small coherent temperature-seasonality association.**
+7. **Among-taxon permutation tests concentrate environmental sorting mainly in orientation and colour.**
+8. **Historical/PGLS results remain conditional on incomplete direct-backbone coverage.**
+9. **Spatial and taxonomic robustness diagnostics do not overturn the headline results.**
+
+## Figure priorities
+
+1. actual-photo YOLO localization followed by deterministic continuous measurements;
+2. global sampling and cohort separation;
+3. nested taxon → photograph → head variance decomposition;
+4. complete nine-endpoint taxon-level PCA;
+5. multiplicity-supported within-taxon environmental associations across primary, SPDE and auxiliary analyses;
+6. among-taxon historical/PGLS sensitivity across alternative grafted trees.
+
+The legacy precision-confounding audit and withdrawn lability quadrants belong in provenance/supplementary QA, not the main narrative.
+
+## Scientific control files
+
+- [`COHORT_FLOW_AND_ANALYSIS_LEDGER.md`](COHORT_FLOW_AND_ANALYSIS_LEDGER.md) fixes cohort names, counts and permitted analyses.
+- [`final_claims.json`](final_claims.json) contains the frozen machine-readable claims.
+- [`results/nested_visible_variance_summary.csv`](results/nested_visible_variance_summary.csv) records the revised image hierarchy.
+- [`results/NICHE_PERMUTATION_RESULTS_2026-08-07.md`](results/NICHE_PERMUTATION_RESULTS_2026-08-07.md) records the 10,000-permutation niche null.
+- [`results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md`](results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md) records residual Moran and region-omission diagnostics.
+- [`results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md`](results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md) records synonym-collapse sensitivity.
+- [`../analysis/ch1/pipeline.json`](../analysis/ch1/pipeline.json) maps canonical executable stages.
+- [`EXTERNAL_COMPLETION_GATES.md`](EXTERNAL_COMPLETION_GATES.md) records completed versus genuinely external validation gates.
+- [`EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md`](EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md) fixes the Chapter 1 → EAzami boundary.
+
+## Current submission blockers
+
+Only two scientific items remain genuinely external to repository computation:
+
+1. adjudicated human boxes for independent detector precision/recall;
+2. independent reference measurements for orientation, colour and outline.
+
+Taxonomic robustness, residual spatial autocorrelation, broad-region omission and environmental-niche permutation gates are complete for the frozen operational-unit analysis. Administrative metadata, nomenclatural notes and final durable DOI release remain human/finalization tasks.
+
+## Claim boundary
+
+The final journal package must not:
+
+- use the withdrawn negative lability relation or median-split quadrants as biological conclusions;
+- use *climate tracking* or *environmental responsiveness* for cross-sectional spatial associations;
+- equate visible image variance with genetic variance or plasticity;
+- interpret hue sine/cosine separately as named flower colours;
+- treat auxiliary image-geometry proxies as direct botanical spine/phyllary measurements;
+- claim resolved phylogenetic correction from the grafted historical layer;
+- convert macro-scale associations into adaptation, pollinator causation or evolutionary-rate claims.
