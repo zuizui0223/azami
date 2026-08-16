@@ -2,9 +2,7 @@
 
 ## Decision
 
-Chapter 1 remains a **global macro-scale hypothesis-generating analysis of visible capitulum traits from public images**. It does not need to become the definitive *Cirsium* phylogenetic or adaptive-evolution analysis before submission.
-
-The next evolutionary-resolution stage lives in `zuizui0223/EAzami`.
+Chapter 1 remains the **global macro-scale hypothesis-generating analysis**. It already includes primary colour/orientation/outline traits **and an exploratory auxiliary involucre/spine layer**. It does not need a resolved *Cirsium* nuclear history or causal adaptation tests before submission.
 
 ```text
 Azami / Chapter 1
@@ -14,134 +12,115 @@ EAzami
 East Asian nuclear tree + explicit trait-transition history
         ↓
 Focal systems
-Population genomics + floral mechanism + ecological fitness tests
+Population genomics + mechanism + ecological fitness tests
 ```
 
-## What Chapter 1 contributes downstream
+## What Chapter 1 already contains
 
-Chapter 1 supplies the broad empirical map from which later hypotheses are chosen:
+### Primary trait modules
 
-- observation-level and species-level distributions for orientation;
-- visible colour summaries including circular hue treatment;
-- continuous capitulum outline traits;
-- within-assigned-species image heterogeneity;
-- within-species spatial environment–trait association estimates;
-- among-species trait / environmental structure;
-- explicit measurement, sampling and phylogenetic limitations.
+1. orientation angle relative to EXIF-oriented image vertical;
+2. visible corolla colour: Lab lightness/chroma and circular hue;
+3. capitulum outline: aspect ratio, circularity, solidity and width-profile variation.
 
-The downstream value is **hypothesis generation**, not a claim that the current grafted historical tree is the resolved evolutionary history.
+### Exploratory auxiliary involucre/spine module
 
-## Canonical Chapter 1 scientific boundary
+Chapter 1 has already measured and analysed high-resolution image-geometry proxies for:
+
+- `involucre_projection_roughness`;
+- `involucre_spread_fraction`;
+- `spine_peak_count_proxy`;
+- `spine_relative_length_max_proxy`.
+
+These are retained only after explicit image-resolution, sharpness, segmentation and flip-repeatability QC. They have already entered the integrated continuous-trait tables and continuous environment screening, including within-species and between-species analyses. The fixed Chapter 1 plan places them in the **exploratory supplement**, including auxiliary historical/PGLS sensitivity, rather than the headline confirmatory trait set.
+
+They must therefore **not** be described as unanalysed or as wholly new future traits.
+
+## What remains unresolved about the involucre/spine traits
+
+The current variables are image-geometry proxies. They are not yet equivalent to botanically validated measurements such as:
+
+- actual phyllary spreading/recurvature angle;
+- actual spine length;
+- spine orientation or stiffness;
+- homologous phyllary rank/position;
+- direct florivore or pollinator accessibility.
+
+The downstream question is therefore not “add spines for the first time,” but:
+
+> Do the existing global involucre/spine proxy patterns correspond to reproducible botanical states, and how did those states evolve on the resolved nuclear tree?
+
+Visible involucre stickiness/glandularity remains a genuinely separate trait requiring its own assessability and provenance work.
+
+## Chapter 1 scientific boundary
 
 ### Keep in Chapter 1
 
-- public-image phenomics workflow and validation gates;
-- visible trait distributions at multiple observational levels;
-- precision-aware environment–trait association analysis;
-- among-species multivariate trait structure;
-- historical / phylogenetic sensitivity as sensitivity only;
-- careful distinction among colour, orientation and shape modules;
-- non-causal discussion of candidate mechanisms and testable future hypotheses.
+- global public-image phenomics;
+- primary orientation/colour/outline analyses;
+- existing exploratory involucre/spine proxy analyses;
+- within- and between-species climatic screening;
+- historical-tree sensitivity as sensitivity only;
+- explicit measurement and sampling limitations.
 
 ### Hand off to EAzami
 
-- accepted East Asian / Japanese nuclear species tree;
-- 2 vs 3 vs 4+ Japanese colonization-history tests;
-- ancestral-state reconstruction;
-- independent transition counts and directions;
+- accepted East Asian/Japanese nuclear species-tree ensemble;
+- Japanese 2 vs 3 vs 4+ origin-history tests;
+- ancestral-state reconstruction and independent transition histories;
 - repeated white-loss / candidate-regain inference;
-- explicit topology-ensemble uncertainty;
-- population-aware state coding;
-- reticulation / ploidy / cytonuclear discordance;
-- correlated evolution among capitulum modules.
+- phylogenetic mapping of the existing involucre/spine proxies;
+- tests of whether image proxies correspond to explicit botanical phyllary/spine states;
+- correlated or decoupled evolution among colour, orientation, outline and defensive architecture;
+- reticulation, ploidy and cytonuclear uncertainty.
 
 ### Hand off to focal empirical studies
 
 - pollinator preference and effective pollination;
-- rain / UV / thermal protection experiments for orientation;
-- florivore / seed-predator tests for phyllary spines;
+- rain/UV/thermal protection experiments for orientation;
+- florivore/seed-predator tests for phyllary/spine architecture;
 - sticky-involucre defence tests;
 - population ancestry and gene flow;
 - floral RNA, pigment chemistry and candidate-locus tests;
-- genotype → expression → pigment → phenotype → fitness causal chains.
+- genotype → expression → pigment → phenotype → interaction → fitness chains.
 
-## Why this boundary is necessary
+## Cross-repository trait bridge
 
-The current Chapter 1 historical layer does not justify definitive ancestral-state claims because only a minority of image-analysis taxa are direct tips in the dated backbone and many positions are grafted. Adding stronger causal wording or a new ancestral-state analysis to Chapter 1 would therefore mix two evidence resolutions.
+The Azami→EAzami bridge should preserve more than one species mean. For each endpoint retain:
 
-Chapter 1 is stronger if it says:
-
-> From a very large global image dataset, capitulum traits are visibly heterogeneous and multidimensional, and their environmental structure is not reducible to one lability axis; these patterns identify evolutionary questions that require a resolved nuclear framework.
-
-EAzami then asks:
-
-> On a real East Asian nuclear history, how many times did the candidate trait states arise, in what direction, and under what topology uncertainty?
-
-## Cross-repository trait handoff
-
-The future bridge should not pass only one species mean per trait. It should preserve enough information for EAzami to decide whether a taxon is fixed, variable or poorly observed.
-
-Recommended fields:
-
-- source taxon name;
-- accepted analysis taxon;
+- source and accepted taxon names;
 - trait module and endpoint;
-- continuous / discrete / circular / polymorphic state type;
-- estimate or state;
-- uncertainty / observed range;
-- number of source observations;
-- spatial / population coverage when recoverable;
-- assessability / QC state;
-- direct EAzami nuclear-tip match status;
-- provenance and claim boundary.
+- continuous/discrete/circular/polymorphic state type;
+- estimate/state and uncertainty/range;
+- number of observations and usable images;
+- assessability/QC status;
+- direct nuclear-tip match status;
+- evidence provenance and claim boundary.
 
-Documented polymorphic taxa must not be forced to a single state simply to make ancestral-state software easier to run.
-
-## Current trait modules
-
-### Chapter 1 modules
-
-1. **Orientation** — image-derived orientation relative to EXIF-oriented image vertical; ecological hypotheses include pollinator presentation and protection from rain / radiation / thermal exposure, but these are not established causal mechanisms in Chapter 1.
-2. **Visible colour** — Lab / chroma and circular hue; candidate hypotheses include pollinator signalling, abiotic stress physiology and their interaction.
-3. **Outline shape** — aspect ratio, circularity, solidity and width-profile variation; interpretation remains sensitive to viewpoint / developmental state and does not imply one functional axis.
-
-## Next-generation capitulum traits
-
-Do **not** reopen the current Chapter 1 model simply to add these. Build them as the next trait layer after the Chapter 1 submission path is stable.
-
-High-value candidates:
-
-- phyllary spreading / recurvature angle;
-- phyllary spine length and orientation;
-- visible involucral stickiness / glandularity where assessable;
-- capitulum size and display architecture;
-- possibly branching / floral-height context.
-
-These traits are attractive because they could connect the capitulum to a broader biological-interaction framework: pollinator access, florivore / seed-predator defence and physical protection may impose partly competing demands on the same floral display.
-
-The first step for these traits is **ontology + assessability + provenance**, not immediate automated classification.
+For the auxiliary involucre/spine layer, the bridge must explicitly label the values as **image proxies** so that later botanical validation does not silently reinterpret them as direct phyllary measurements.
 
 ## Downstream analysis sequence
 
-Once the accepted EAzami nuclear tree / topology ensemble exists:
+Once the accepted EAzami nuclear topology ensemble exists:
 
-1. map Chapter 1 colour states / distributions onto direct nuclear tips;
-2. estimate colour transition histories and repeated white origins;
-3. map orientation and estimate ancestral / transition uncertainty;
-4. map continuous shape traits with measurement uncertainty;
-5. compare whether colour, orientation and shape transitions are coupled or decoupled;
-6. later add phyllary/spine/stickiness traits under the same framework;
-7. select replicated high-information transitions for population and ecological experiments.
+1. flower colour transition-history analysis;
+2. orientation ancestral/transition analysis;
+3. continuous outline history;
+4. map existing involucre spread/roughness/spine proxies onto the same tree;
+5. quantify whether those proxy patterns are phylogenetically structured and whether they covary with other capitulum modules;
+6. validate or replace proxy endpoints with explicit botanical phyllary/spine measurements in targeted material;
+7. add genuinely new traits such as stickiness only after assessability/provenance are established;
+8. promote high-information transitions to population and ecological experiments.
 
-## Stop rules for Chapter 1
+## Stop rules
 
-- No definitive ancestral-state reconstruction from the current grafted tree.
-- No adaptation claim from global macro correlation alone.
-- No pollinator or herbivore causation without direct interaction / fitness data.
+- No definitive ancestral-state reconstruction from the current grafted Chapter 1 tree.
+- No adaptation claim from macro correlation alone.
+- No pollinator/herbivore causation without interaction and fitness data.
 - No molecular regain claim from Chapter 1 images.
-- No new trait family added merely because it is interesting.
-- Any future trait expansion should be a new comparative layer unless needed to fix a validity problem in the submitted Chapter 1 dataset.
+- Do not call the already-analysed involucre/spine proxy layer “new” or “unanalysed.”
+- Do not equate image proxies with botanical phyllary/spine characters without validation.
 
 ## Current next action
 
-For this repository, continue only the existing Chapter 1 submission / credibility gates. The next evolutionary-analysis action is external to this repository: complete the EAzami maximum-public nuclear tree, then build a provenance-preserving Azami→EAzami trait-tip bridge.
+Keep Chapter 1 on its submission/credibility gates. In parallel, complete the EAzami nuclear tree and build a provenance-preserving trait-tip bridge that includes **both the primary traits and the already-existing auxiliary involucre/spine proxies**.
