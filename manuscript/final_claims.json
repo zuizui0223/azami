@@ -1,6 +1,13 @@
 {
-  "analysis_release": "2026-07-reviewer-reanalysis-candidate-4",
-  "headline": "Visible phenotype is hierarchically distributed below assigned species means, while no common cross-module coupling between visible dispersion and within-species spatial climatic association remained after slope uncertainty was modelled.",
+  "analysis_release": "2026-08-continuous-phenomics-submission-candidate",
+  "headline": "Global public photographs recover continuous within-taxon capitulum trait distributions that are largely hidden by taxon means, with trait- and scale-specific environmental structure strongest for orientation and visible colour.",
+  "methodological_headline": "YOLO localizes visible capitula; inferential traits are deterministic continuous head-level measurements rather than categorical classifier outputs. Repeated numerical values are retained as within-taxon distributions.",
+  "current_submission_story": {
+    "primary": "continuous within-taxon public-image phenomics at global extent",
+    "biological": "substantial below-taxon visible variation plus trait-specific within- and among-taxon environmental structure",
+    "legacy_lability_status": "withdrawn from headline; retained as statistical provenance/QA only",
+    "causal_scope": "observational associations only"
+  },
   "datasets": {
     "balanced_image_comparison_atlas": {
       "n_taxa": 216,
@@ -8,7 +15,7 @@
       "n_photos": 3725,
       "n_heads": 6626,
       "one_photo_per_observation": true,
-      "purpose": "nested visible variance, species-level PCA, among-species summaries and historical sensitivity"
+      "purpose": "nested visible variance, taxon-level PCA, among-taxon summaries and historical sensitivity"
     },
     "exhaustive_detected_layer": {
       "n_observations": 406582,
@@ -20,24 +27,67 @@
       "n_input_taxa": 259,
       "positional_accuracy_m": 10000,
       "cell_degrees": 0.25,
-      "purpose": "primary within-species climate coefficients and precision-aware cross-species analysis"
+      "purpose": "primary within-taxon climate coefficients"
+    },
+    "grouped_spde_complete_cases": {
+      "n_observations_per_endpoint_range": [31666, 34472],
+      "n_taxa_range": [139, 141],
+      "purpose": "spatially explicit within-taxon models with climate, topography and soil predictor groups"
+    },
+    "high_resolution_involucre": {
+      "n_usable_heads": 1443,
+      "n_observations": 1292,
+      "n_taxa": 210,
+      "n_le_10km_observations": 904,
+      "n_le_10km_taxa": 165,
+      "purpose": "auxiliary high-resolution involucre/spine-like contour proxies"
     },
     "revised_precision_aware_cohort": {
       "n_taxa": 101,
       "minimum_observations_per_slope": 10,
       "n_linear_traits": 7,
       "n_predictors_per_trait": 4,
-      "module_weighting": "equal orientation, colour and shape weights"
+      "module_weighting": "equal orientation, colour and shape weights",
+      "status": "statistical provenance and QA; not current biological headline"
     },
     "legacy_lability_cohort": {
       "n_taxa": 102,
       "status": "withdrawn as primary evidence after precision audit"
+    },
+    "independent_detector_audit": {
+      "n_source_images": 1000,
+      "n_taxa": 323,
+      "n_spatial_blocks_10deg": 85,
+      "n_double_labelled": 250,
+      "human_adjudication_complete": false
     }
+  },
+  "trait_scope": {
+    "primary_endpoints": [
+      "orientation_angle_degrees",
+      "corolla_lab_lightness",
+      "corolla_lab_chroma",
+      "corolla_hue_sin",
+      "corolla_hue_cos",
+      "shape_aspect_ratio",
+      "shape_circularity",
+      "shape_solidity",
+      "shape_width_cv"
+    ],
+    "final_auxiliary_inferential_endpoints": [
+      "involucre_projection_roughness",
+      "involucre_spread_fraction",
+      "spine_relative_length_max_proxy"
+    ],
+    "auxiliary_provenance_only_endpoint": "spine_peak_count_proxy",
+    "orientation_reference": "EXIF-oriented image vertical, not gravity",
+    "colour_scope": "uncalibrated camera-recorded visible colour",
+    "auxiliary_scope": "2D image-geometry proxies, not direct botanical phyllary/spine states"
   },
   "nested_visible_variance": {
     "levels": [
-      "among assigned species means",
-      "among photographs within assigned species",
+      "among assigned taxon means",
+      "among photographs within assigned taxa",
       "among heads within photograph"
     ],
     "n_endpoints": 9,
@@ -49,7 +99,99 @@
     "balanced_10_photo_taxa_range": [116, 124],
     "species_cluster_bootstrap_repeats": 2000,
     "balanced_subsample_repeats": 500,
-    "allowed_claim": "Across all nine endpoints, at least about half of visible image variance occurred below the assigned-species mean after one-head-per-photo and equal-10-photo sensitivities. The components are image-level, not genetic variance."
+    "allowed_claim": "Across all nine endpoints, at least about half of visible image variance occurred below the assigned-taxon mean after one-head-per-photo and equal-10-photo sensitivities. The components are image-level, not genetic variance."
+  },
+  "within_species_inference_levels": {
+    "exhaustive_spatially_thinned_primary_36_component_models": {
+      "n_bh_fdr_component_rows": 8,
+      "n_bh_fdr_non_circular_linear_rows": 4,
+      "n_bh_fdr_hue_component_rows": 4,
+      "supported_non_circular_rows": [
+        {"endpoint": "orientation_angle", "predictor": "BIO1", "beta": 0.017059, "q": 0.0363},
+        {"endpoint": "corolla_chroma", "predictor": "BIO12", "beta": 0.039324, "q": 0.0363},
+        {"endpoint": "shape_aspect_ratio", "predictor": "BIO4", "beta": 0.013723, "q": 0.0207},
+        {"endpoint": "shape_aspect_ratio", "predictor": "BIO12", "beta": -0.010796, "q": 0.0363}
+      ],
+      "allowed_claim": "Eight component rows passed BH correction; four were non-circular linear associations and four were circular hue components requiring joint interpretation."
+    },
+    "balanced_atlas_le_10km_sensitivity": {
+      "n_bh_fdr_main_rows": 0,
+      "allowed_claim": "No main endpoint-predictor row passed BH correction in the smaller balanced-atlas <=10 km sensitivity."
+    },
+    "balanced_atlas_all_coordinate_sensitivity": {
+      "n_bh_fdr_main_rows": 2
+    },
+    "interpretation_rule": "The exhaustive 46,276-observation primary cohort and the earlier balanced-atlas sensitivities are different datasets and must never share an FDR label."
+  },
+  "grouped_spde": {
+    "n_fits": 36,
+    "cpo_failures": 0,
+    "stable_supported_patterns": [
+      "orientation BIO1 positive",
+      "lightness BIO1 positive",
+      "lightness soil pH negative",
+      "chroma BIO1 negative",
+      "chroma BIO12 positive",
+      "hue sine BIO4 positive",
+      "hue cosine BIO1 negative",
+      "hue cosine soil pH positive"
+    ],
+    "gross_outline_global_bh_support": 0,
+    "interpretation": "orientation and visible colour retain the clearest spatial-model environmental structure; shape effects are weaker/model-dependent"
+  },
+  "auxiliary_involucre": {
+    "family_n_tests": 12,
+    "supported_rows": [
+      {"endpoint": "involucre_projection_roughness", "predictor": "BIO4", "beta": 0.0975, "q": 0.0424},
+      {"endpoint": "involucre_spread_fraction", "predictor": "BIO4", "beta": 0.0937, "q": 0.0424},
+      {"endpoint": "spine_relative_length_max_proxy", "predictor": "BIO4", "beta": 0.0911, "q": 0.0424}
+    ],
+    "allowed_claim": "Within taxa, more temperature-seasonal environments were associated with rougher involucre contours, greater outward projection fraction and greater maximum spine-like projection. These are small 2D image-proxy associations, not demonstrated defensive adaptation."
+  },
+  "niche_permutation": {
+    "n_permutations": 10000,
+    "all_taxa_complete_n": 148,
+    "direct_backbone_complete_n": 49,
+    "all_taxa_supported_both_metrics": ["orientation", "chroma", "hue_sin", "hue_cos"],
+    "all_taxa_centroid_only": ["shape_width_cv"],
+    "direct_backbone_supported_both_metrics": ["hue_cos"],
+    "direct_backbone_overlap_only": ["lightness", "hue_sin"],
+    "allowed_claim": "Among-taxon environmental sorting exceeded permutation-null expectation mainly for orientation and visible colour; direct-backbone support narrowed."
+  },
+  "historical_sensitivity": {
+    "n_input_taxa": 216,
+    "n_direct_backbone_taxa": 54,
+    "n_random_trees": 50,
+    "n_signal_fits": 636,
+    "n_failed_signal_fits": 0,
+    "direct_backbone_supported_non_circular_endpoints": 0,
+    "grafting_sensitive_endpoints": ["shape_circularity", "shape_solidity"],
+    "joint_circular_test_required": ["hue_sin", "hue_cos"],
+    "randomized_tree_rows_supported_50_of_50": [
+      "orientation_angle~BIO12",
+      "hue_sin~BIO1",
+      "hue_sin~BIO4",
+      "hue_sin~BIO12",
+      "shape_solidity~BIO4",
+      "shape_width_cv~BIO1"
+    ],
+    "allowed_claim": "Several among-taxon coefficients were insensitive to tested grafting placements, but the historical layer is not a resolved phylogenetic correction."
+  },
+  "spatial_robustness": {
+    "residual_moran_i_range": [-0.009627, 0.003016],
+    "n_endpoints_with_permutation_p_lt_0_05": 0,
+    "leave_one_broad_region_out_min_spearman_range": [0.856241, 0.971742],
+    "decision": "closed for frozen analysis"
+  },
+  "taxonomic_robustness": {
+    "wcvp_union_names": 259,
+    "wcvp_synonym_conflicts_collapsed": 8,
+    "balanced_units_before_after": [216, 211],
+    "exhaustive_units_before_after": [259, 251],
+    "fdr_decisions_changed": 0,
+    "coefficient_signs_changed": 0,
+    "max_abs_standardized_beta_change": 0.000385,
+    "decision": "closed for source-assigned operational-unit analysis"
   },
   "legacy_precision_audit": {
     "variation_vs_legacy_absolute_slope_rms_rho": -0.33309961493008233,
@@ -57,9 +199,10 @@
     "legacy_score_vs_median_slope_se_rho": 0.9143233569502011,
     "partial_rho_controlling_median_slope_n": 0.05580956321027713,
     "partial_p_value": 0.577434002586757,
-    "decision": "withdraw the negative-correlation and median-split quadrant claims"
+    "decision": "withdraw the negative-correlation and median-split quadrant claims; retain as provenance only"
   },
   "revised_primary_results": {
+    "status": "precision-aware QA/provenance, not current submission headline",
     "noise_adjusted_axis": {
       "spearman_rho": -0.05686662783925451,
       "p_value": 0.5721783308982907,
@@ -75,45 +218,10 @@
       "likelihood_ratio_p_value": 0.7320248138283185
     },
     "module_medians": {
-      "orientation": {
-        "visible_variation": 0.6301664881457204,
-        "noise_adjusted_association_energy": -0.0012003324842962946
-      },
-      "colour": {
-        "visible_variation": 0.5558054071414766,
-        "noise_adjusted_association_energy": 0.004039121310251003
-      },
-      "shape": {
-        "visible_variation": 0.6665994574883936,
-        "noise_adjusted_association_energy": 0.00002110805364365926
-      }
+      "orientation": {"visible_variation": 0.6301664881457204, "noise_adjusted_association_energy": -0.0012003324842962946},
+      "colour": {"visible_variation": 0.5558054071414766, "noise_adjusted_association_energy": 0.004039121310251003},
+      "shape": {"visible_variation": 0.6665994574883936, "noise_adjusted_association_energy": 0.00002110805364365926}
     }
-  },
-  "within_species_inference_levels": {
-    "exhaustive_spatially_thinned_primary_36_component_models": {
-      "n_bh_fdr_component_rows": 8,
-      "n_bh_fdr_non_circular_linear_rows": 4,
-      "n_bh_fdr_hue_component_rows": 4,
-      "allowed_claim": "Four non-circular linear endpoint-climate rows passed BH correction and were small; four hue-component rows also passed component-wise correction but require joint circular interpretation."
-    },
-    "balanced_atlas_le_10km_sensitivity": {
-      "n_bh_fdr_main_rows": 0,
-      "allowed_claim": "No main endpoint-predictor row passed BH correction in the smaller balanced-atlas <=10 km sensitivity."
-    },
-    "balanced_atlas_all_coordinate_sensitivity": {
-      "n_bh_fdr_main_rows": 2
-    },
-    "interpretation_rule": "The exhaustive 46,276-observation primary cohort and the earlier balanced-atlas sensitivities are different datasets and must never share an FDR label."
-  },
-  "historical_sensitivity": {
-    "n_input_taxa": 216,
-    "n_direct_backbone_taxa": 54,
-    "n_random_trees": 50,
-    "n_signal_fits": 636,
-    "n_failed_signal_fits": 0,
-    "direct_backbone_supported_non_circular_endpoints": 0,
-    "grafting_sensitive_endpoints": ["shape_circularity", "shape_solidity"],
-    "joint_circular_test_required": ["hue_sin", "hue_cos"]
   },
   "molecular_database_coverage": {
     "nucleotide": 138,
@@ -122,6 +230,14 @@
     "complete_plastome": 11,
     "sra": 120
   },
+  "submission_gates": {
+    "taxonomic_robustness": "complete",
+    "residual_spatial_and_region_omission": "complete",
+    "environmental_niche_null": "complete",
+    "independent_detector_human_boxes": "pending_external",
+    "independent_orientation_colour_outline_reference": "pending_external",
+    "durable_release_doi": "final_step_after_human_measurement_gates"
+  },
   "workflow_provenance": {
     "precision_reanalysis_run_id": 29894216905,
     "precision_reanalysis_artifact_id": 8519352787,
@@ -129,13 +245,20 @@
     "nested_variance_source_artifact_id": 8225059018,
     "nested_variance_run_id": 29895799287,
     "nested_variance_artifact_id": 8519926578,
-    "nested_variance_digest": "sha256:120f8f87365cc2ec0ea84e906e9d394991df4a3a5613b10c5cc2a44055fa2434"
+    "nested_variance_digest": "sha256:120f8f87365cc2ec0ea84e906e9d394991df4a3a5613b10c5cc2a44055fa2434",
+    "spatial_residual_run_id": 31152400475,
+    "spatial_residual_artifact_id": 8983877726,
+    "niche_permutation_run_id": 31152400487,
+    "wcvp_taxonomic_audit_run_id": 31152400481,
+    "wcvp_synonym_collapse_run_id": 31153385658,
+    "wcvp_synonym_collapse_artifact_id": 8984168407
   },
   "forbidden_causal_claims": [
     "phenotypic plasticity",
     "local adaptation",
     "pollinator causation",
     "evolutionary rate",
+    "adaptive radiation demonstrated by Chapter 1",
     "resolved Cirsium species tree",
     "rain-protection adaptation",
     "temporal climate tracking",

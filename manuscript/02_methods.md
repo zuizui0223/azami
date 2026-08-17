@@ -1,67 +1,83 @@
 # Methods
 
-## Study design and analytical separation
+## Study design and cohort separation
 
-We used public biodiversity photographs to quantify continuous capitulum traits across *Cirsium* and related thistles while retaining repeated observations within species. The design separated three structures that comparative trait studies often conflate: visible dispersion among records assigned to the same species, spatial environment–trait associations within species and environmental sorting among species. These layers were not combined into an inference about plasticity, adaptation or evolutionary rate.
+We used public biodiversity photographs to quantify continuous capitulum traits across *Cirsium* and related thistles while retaining repeated observations within source-assigned taxa. Taxon names attached to the frozen public observations were retained as operational taxonomic units rather than treated as a resolved genus-wide species taxonomy. This preserved exact observation provenance while allowing authority-backed lumping to be tested explicitly as sensitivity.
 
-## Cohort definitions
+Two executed data streams answered complementary questions. The balanced image-comparison atlas contained 3,725 observations, 3,725 photographs, 6,626 detected capitula and 216 source-assigned taxa. Each atlas observation contributed one photograph, while photographs could contain multiple heads. This layer was used for trait extraction summaries, nested visible-variance decomposition, taxon-level trait PCA and among-taxon historical analyses.
 
-Two executed data streams served different purposes. The balanced image-comparison atlas contained 3,725 public observations, 6,626 detected capitula and 216 accepted image-analysis taxa. Each retained atlas observation contributed one photograph, but photographs could contain multiple detected capitula. The atlas was used for nested visible-variance partitioning, species-level trait PCA, among-species summaries and historical-placement sensitivity.
+The exhaustive stream ran detection and continuous measurement before trait-based thinning. It contained 406,582 observations with detected capitula from 286 taxa. Coordinate filtering retained 392,989 observations from 271 taxa; a positional-accuracy threshold of ≤10 km retained 297,293 observations from 259 taxa; and one observation per taxon × 0.25° cell yielded the exhaustive spatially thinned primary cohort of 46,276 observations from 259 taxa. These cohorts were not pooled under one FDR family.
 
-The exhaustive stream ran the detector and continuous measurement workflow before trait-based thinning. It contained 406,582 observations with detected capitula from 286 taxa. Coordinate filtering retained 392,989 observations from 271 taxa; a positional-accuracy threshold of ≤10 km retained 297,293 observations from 259 taxa; and one observation per taxon × 0.25° cell yielded the **exhaustive spatially thinned primary cohort** of 46,276 observations from 259 taxa. The complete cohort flow, filenames and analysis permissions are fixed in `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`.
+## Trait scope, capitulum detection and continuous image measurements
 
-## Capitulum detection and continuous image measurements
+Trait selection was deliberately criterion-based rather than morphologically exhaustive. We targeted capitulum features that (i) are repeatedly visible in heterogeneous public photographs, (ii) can be quantified with a reproducible image reference, colour region or contour, (iii) permit an explicit usable versus unassessable decision and (iv) span complementary dimensions of visible capitulum phenotype. Fine characters that were rarely or inconsistently resolved in ordinary photographs, including detailed indumentum or glandularity, mucilage, absolute size without a scale reference and whole-plant characters, were not coded as absent.
 
-Capitula were detected from source photographs using the frozen production detector. Each retained detection preserved the source observation identifier, image provenance, bounding box and contextual crop. Tight crops were used for colour and two-dimensional outline; context crops retained stem and display information needed for image-referenced orientation.
+Capitula were localized with a frozen single-class YOLO11n detector initialized from `yolo11n.pt` and trained for 40 epochs at 640-pixel input size on 270 pseudo-labelled source images. The production confidence threshold was 0.25. Detector output defined regions of interest only; downstream trait inference did not use the legacy species-level upward/nodding classifier. Each retained detection preserved source observation and photo identifiers, bounding-box coordinates and contextual crops.
 
-Nine primary endpoints represented three capitulum modules: orientation; visible corolla lightness, chroma and circular hue coordinates; and outline aspect ratio, circularity, solidity and width-profile variation. Trait measurements were deterministic production functions rather than human categories. A failed or unassessable measurement remained missing rather than being converted to zero or biological absence. Horizontal mirroring served as a technical repeatability check. Detector precision and continuous-trait accuracy require independent manual validation and are not inferred from quality-control retention.
+Nine primary continuous endpoints represented three whole-capitulum modules. **Continuous** means that each assessable detected head returned a numerical measurement on a defined image-derived scale rather than membership in a biological category.
 
-## Environmental predictors and primary within-species coefficients
+- **Orientation:** signed head-axis angle relative to EXIF-oriented image vertical, with 0° upward, 90° horizontal and 180° downward.
+- **Visible corolla colour:** CIELAB lightness and chroma plus sine and cosine components of circular hue.
+- **Capitulum outline:** aspect ratio, circularity, solidity and width-profile coefficient of variation.
 
-Four predeclared CHELSA v2.1 predictors represented mean annual temperature (BIO1), temperature seasonality (BIO4), annual precipitation (BIO12) and precipitation seasonality (BIO15). For each endpoint–predictor combination in the exhaustive spatially thinned cohort, outcome and predictor values were demeaned within species and standardized after demeaning. Ordinary least-squares coefficients were fitted without an intercept and used species-clustered standard errors. Benjamini–Hochberg correction was applied across the 36 endpoint-component models. Hue sine and cosine rows were retained for computation but were not interpreted as independent biological colour tests.
+Measurements were deterministic image-processing functions. Horizontal mirroring served as a technical replicate, and failed or unstable measurements remained missing rather than being coded as biological absence. In the 6,626-head atlas, 5,777 heads were usable for colour, 5,324 for outline and 4,585 for orientation.
 
-## Nested decomposition of visible image variance
+The continuous design retained information that would be lost by forcing images into categories such as upright/nodding or globose/cylindrical. Categories may be used descriptively for examples or maps, but inferential analyses use the numerical endpoints. Hue sine and cosine are mathematical components of one circular response and are interpreted jointly. Image vertical is a reproducible image reference rather than a direct inclinometer measurement of gravity.
 
-The earlier two-level decomposition combined all variation below the species mean. We replaced it with an exact nested sums-of-squares decomposition at the finest levels represented in the atlas. For each assessable endpoint, total visible image sums of squares were partitioned into:
+A leakage-free detector-audit packet was selected independently of detector development. All proposal/training photo and observation identifiers were excluded before sampling, yielding 1,000 source images across 323 species and 85 ten-degree spatial blocks, with 250 images assigned to a second annotator. Because adjudicated human boxes are not yet complete, detector precision and recall are not used as biological evidence.
 
-1. differences among assigned species means;
-2. differences among photographs/observations within assigned species; and
-3. differences among detected heads within the same photograph.
+## High-resolution involucral-bract architecture
 
-Because the balanced atlas retained exactly one photograph per public observation, the photograph and observation levels were identical in this dataset. The three components sum exactly to total sums of squares. Fractions are descriptive properties of the observed image dataset, not latent genetic or developmental variance components.
+A minimum detected-head dimension of 150 pixels selected 1,819 heads from 1,595 photographs and 214 taxa for high-resolution analysis. After resolution, sharpness, segmentation and horizontal-flip QC, 1,443 heads from 1,292 observations and 210 taxa were usable.
 
-Uncertainty was quantified by resampling assigned species as clusters 2,000 times. Two sensitivities reduced unequal replication and within-photograph multiplicity. First, one head per photograph was selected by a deterministic hash of the annotation-unit identifier. Second, for species with at least 10 assessable photographs, 10 photographs per species were sampled without replacement in 500 repeated balanced subsamples. These analyses are implemented in `analysis/decompose_nested_visible_variance.py` and `.github/workflows/ch1-nested-visible-variance.yml`.
+Three auxiliary continuous proxies entered the final inferential layer:
 
-Species medians were standardized and analysed by PCA to describe multivariate trait architecture. The submission figure builder requires all nine endpoints, including width-profile variation, and fails if any endpoint is absent.
+- involucre projection roughness;
+- fraction of outward-positive radial projection;
+- maximum spine-like projection relative to head radius.
 
-## Reviewer-driven precision audit
+`spine_peak_count_proxy` is retained in integrated derived tables for provenance and downstream handoff but is not one of the three final manuscript auxiliary inferential endpoints.
 
-The legacy lability analysis summarized each species by the RMS absolute value of separately fitted slopes. Because an absolute noisy estimate is positive even under a zero true effect, this score is expected to increase as slope uncertainty increases. We therefore audited its relation to median species-specific sample size and median slope standard error and calculated a rank-based partial correlation between the legacy axes while controlling median sample size.
+These auxiliary variables describe two-dimensional contour geometry rather than botanical categories. The algorithm cannot distinguish a long bract tip from a spreading or recurved bract when both generate outward contour projections. Accordingly, the variables are interpreted as exploratory involucral architecture and not as direct measurements of defensive spine length, bract recurvature or stiffness.
 
-The negative legacy relation and median-split quadrants were withdrawn after this audit. The revised precision-aware cohort required all seven linear endpoints, all four climate predictors for each endpoint and at least 10 observations for every species × endpoint × predictor slope. This yielded 101 taxa. Circular hue was excluded from this specific correction because the archived joint species hue vectors lack component standard errors.
+## Visible variation within and among taxa
 
-## Equal-module visible variation and sampling-noise-adjusted association energy
+For each assessable primary endpoint in the balanced atlas, total visible image sums of squares were decomposed exactly into differences among assigned taxon means, among photographs/observations within assigned taxa and among detected heads within photographs. Because the atlas retained one photograph per observation, photograph and observation were the same nested level. Assigned taxa were resampled as clusters 2,000 times for uncertainty intervals.
 
-Within-variation values were first averaged within orientation, colour and shape and then averaged across the three modules, so modules rather than endpoint counts received equal weight.
+Two sensitivities reduced unequal replication and within-photograph multiplicity. First, one deterministic head was retained per photograph. Second, 10 photographs per eligible taxon were repeatedly sampled without replacement across 500 balanced replicates. Taxon medians for all nine primary endpoints were standardized and analysed by PCA to describe among-taxon multivariate trait architecture. These quantities are visible image variance and do not represent genetic variance components.
 
-For slope estimate \(\hat\beta\) with standard error \(s\), we used \(\hat\beta^2-s^2\) as a sampling-noise-adjusted estimator of squared true association magnitude, because under an approximately normal slope estimator \(E(\hat\beta^2-s^2)=\beta^2\). Values were averaged across predictors within trait, across traits within module and equally across modules. Negative realized values indicate that the data do not resolve excess association beyond sampling noise; they are not negative biological responsiveness. Spearman correlation described the relation between equal-module visible variation and this association-energy score. A 5,000-replicate species bootstrap provided a confidence interval.
+## Within-taxon environmental associations
 
-## Hierarchical variance meta-regression
+Four CHELSA v2.1 predictors represented annual mean temperature (BIO1), temperature seasonality (BIO4), annual precipitation (BIO12) and precipitation seasonality (BIO15), using 1981–2010 normals. In the exhaustive spatially thinned primary cohort, outcome and predictor values were demeaned within taxon and standardized after demeaning. Ordinary least-squares coefficients were fitted without an intercept with taxon-clustered standard errors. BH correction was applied across the 36 endpoint-component models. Hue sine and cosine were retained computationally but interpreted as components of one circular colour response.
 
-As the primary uncertainty-aware test, all 2,828 archived linear slope estimates from the 101 complete taxa were modelled with their standard errors. For trait–predictor group \(g\) and species \(i\),
+As a spatial robustness analysis, each primary endpoint was fitted separately with Gaussian SPDE-INLA under four predeclared predictor groups: climate, climate + topography, climate + soil and full environment. Predictors were centred within taxon and standardized; models included a taxon iid random intercept and a Matérn spatial field. Within each endpoint, the four predictor groups used the same complete-case cohort. Posterior two-sided tail-area values were BH-adjusted globally and within model groups, while sign consistency and 95% credible intervals were tracked across groups.
 
-\[
-\hat\beta_{ig} \sim \mathrm{Normal}(\mu_g,\; s_{ig}^2 + \tau_g^2\exp(bV_i)),
-\]
+The high-resolution auxiliary traits were analysed separately because their assessability depended on image resolution. Within-taxon models used the same four CHELSA predictors, with all-coordinate and positional-accuracy ≤10 km cohorts kept distinct. In the ≤10 km auxiliary family, 904 observations from 165 taxa were available and BH correction was applied across the 12 auxiliary endpoint–predictor tests.
 
-where \(V_i\) is the standardized equal-module visible-variation index, \(\mu_g\) is a group-specific mean, \(\tau_g^2\) is group-specific latent slope variance at mean visible variation and \(b\) is a common log-variance change per standard deviation of visible variation. Group means were profiled analytically and variance parameters by maximum likelihood. The common coefficient was tested against \(b=0\) with a likelihood-ratio test, and a 95% interval was obtained by profile likelihood.
+## Among-taxon environmental sorting
 
-## Among-species environmental sorting and historical sensitivity
+For taxa represented by at least five observations, medians of all nine primary traits and available climate, topographic and soil predictors were calculated. Complete taxa were projected into the first three principal components of standardized environmental space, and lower versus upper trait quartiles were compared using centroid distance and Gaussian Bhattacharyya overlap.
 
-Grouped spatial models and trait-extreme environmental PCA contrasts were kept separate from within-species coefficient analyses. Their outputs describe among-species environmental sorting, not within-species change. Historical sensitivity was evaluated across direct-backbone and alternative grafted placements. Direct and grafted results remained separate, and opportunistic molecular records were summarized only as a coverage audit.
+To test whether apparent separation could arise from quartile splitting alone, each trait was permuted among the same taxa 10,000 times while environmental PCA coordinates, environmental availability and the trait distribution were held fixed. Benjamini–Hochberg correction was applied across the nine traits separately for centroid-distance and overlap tests. The procedure was repeated for the complete subset of taxa directly represented in the dated backbone.
 
-## Multiplicity, terminology and reproducibility
+## Among-taxon climate associations and phylogenetic sensitivity
 
-Every FDR count is reported with its cohort, endpoint family and number of tests. The 46,276-observation exhaustive primary cohort is not conflated with the earlier balanced-atlas ≤10 km sensitivity. The manuscript uses *visible dispersion*, *within-species spatial environment–trait association*, *among-species environmental sorting* and *historical-placement sensitivity*. It does not use *climate tracking* or *environmental responsiveness* as if temporal or experimental response had been measured.
+Taxon-level medians from the balanced atlas were related to the same four standardized CHELSA predictors. Ordinary least-squares models provided uncorrected references. Historical sensitivity was evaluated with Brownian PGLS and maximum-likelihood Pagel-λ PGLS using the dated `GBOTB.extended.LCVP` backbone.
 
-The precision-aware analysis is implemented in `analysis/reanalyze_lability_precision.py`, rerun from frozen artifact `8330350031` by `.github/workflows/ch1-reviewer-precision-reanalysis.yml`, and validated against `manuscript/final_claims.json`. The nested image-hierarchy decomposition is rerun from frozen artifact `8225059018`.
+Only 54 of 216 atlas taxa are direct dated-backbone tips. Remaining taxa were therefore placed within genus using alternative `V.PhyloMaker2` scenarios rather than treating one grafted tree as known history. Deterministic scenarios S1 and S3 were compared, and scenario S2 was repeated across 50 randomized grafting trees for the nine primary endpoints. A taxon-level association was treated as robust across tree-placement uncertainty only when direction was stable, the 2.5–97.5% coefficient range excluded zero and nominal support was widespread; we additionally report the fraction of randomized-tree fits passing the within-tree FDR screen. Auxiliary involucre/spine-like endpoints were included in deterministic PGLS but not promoted as resolved historical effects.
+
+## Taxonomic and spatial robustness
+
+The union of 259 source names was audited against the World Checklist of Vascular Plants (WCVP). All eight WCVP synonym candidates that would merge active source units were collapsed simultaneously, after which the nested variance decomposition and all 36 primary within-taxon climate models were recomputed. This was a sensitivity analysis, not a silent replacement of source-platform identities.
+
+Because the compact SPDE workflow had not archived observation-level fitted values, the lowest-WAIC frozen specification for each primary endpoint was refitted diagnostically using the same centering, archived predictor selection, global mesh and PC-Matérn priors solely to export fitted values and residuals. Global residual Moran's I used eight nearest neighbours on three-dimensional unit-sphere coordinates with a fixed neighbour graph and 999 permutations. Taxon trait ranks were also compared after removing each Natural Earth broad region in turn. These diagnostics did not replace accepted coefficient tables.
+
+## Multiplicity, terminology and interpretation limits
+
+FDR families were kept separate by analysis tier, cohort and model family. Primary exhaustive coefficients, auxiliary high-resolution coefficients, grouped SPDE-INLA posterior screens, taxon-level niche-null tests and tree-based models were not pooled under one multiplicity correction.
+
+Trait–environment coefficients are cross-sectional spatial associations and are not interpreted as phenotypic plasticity, local adaptation, temporal climate response, pollinator-mediated selection, evolutionary rate or adaptive radiation. Circular hue components are never counted as independent flower-colour states.
+
+The former raw absolute-slope lability analysis and median-split quadrants are retained only as statistical provenance/QA after their precision confounding was identified. They are not part of the current submission-facing biological inference.
+
+Independent detector accuracy and continuous-trait biological validity remain genuinely external human/reference-data gates. Production overlays and horizontal-mirror repeatability are technical checks and are not treated as accuracy validation.

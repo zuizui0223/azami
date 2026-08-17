@@ -1,20 +1,24 @@
 # Conclusion
 
-Species means conceal substantial hierarchy in image-derived thistle capitulum traits. Across all nine endpoints, 0.589–0.931 of visible image sums of squares occurred below the assigned-species mean, with most of that component distributed among photographs and a smaller but non-negligible component among heads within photographs. The pattern survived one-head-per-photo and equal-10-photo-per-species sensitivities, although it must not be interpreted as a genetic variance decomposition. Species-level phenotype was also multidimensional. The previously reported negative relation between visible variation and environmental-association magnitude was driven by unequal slope precision and is withdrawn. After equal module weighting and explicit modelling of all slope standard errors, no common cross-module coupling was detected. Environmental structure remained scale dependent and descriptively stronger for orientation and visible colour than for most outline traits, while historical conclusions remained limited by incomplete direct-backbone coverage and grafting sensitivity. Public-image phenomics can extend comparative trait ecology when it retains nested observation structure, measurement assessability, cohort identity and estimation uncertainty. The framework identifies patterns hidden by species means without converting spatial associations into claims of plasticity, adaptation or temporal response.
+Global citizen-science images can be converted into continuous capitulum-trait observations at a scale large enough to analyse within-taxon phenotype globally. Rather than assigning each taxon or photograph to a small number of morphological categories, automated object detection and deterministic image measurement returned head-level numerical values for orientation, visible colour and outline, with additional high-resolution proxies for involucral architecture.
+
+Retaining those repeated values showed that across all nine primary endpoints at least about half of visible image variance occurred below source-assigned taxon means, while taxon means still retained multidimensional differences. Environmental associations were trait specific: temperature was most consistently linked to orientation and colour, precipitation to chroma, hue and aspect ratio, soil pH to colour, and temperature seasonality to aspect ratio and outward involucral projections. Among-taxon permutation tests confirmed that environmental sorting was strongest for orientation and visible colour. Six climate associations persisted across 50 alternative Pagel-λ PGLS trees, although incomplete direct-backbone coverage makes these historical sensitivities rather than definitive phylogenetically independent effects.
+
+Residual Moran diagnostics, broad-region omission and simultaneous WCVP synonym collapse did not overturn the headline patterns. The main contribution is therefore both biological and methodological: public-image phenomics can recover continuous, repeated within-taxon trait distributions across a global domain and connect them to environmental structure, provided that detector and image-measurement validity remain independently tested and observational associations are not converted into claims of plasticity, adaptation, pollinator causation or evolutionary rate.
+
+The former raw absolute-slope lability relationship and median-split quadrants are withdrawn from the biological narrative and retained only as statistical provenance.
 
 # Declarations
 
-## Data availability
+## Data and code availability
 
-The final licence-safe package will contain derived trait tables, taxonomic decisions, environmental metadata, model outputs, provenance manifests and source-observation identifiers. Public photographs will not be redistributed beyond their licence terms. The permanent archive DOI will be added after the final bundle is deposited.
+An anonymized, read-only repository for peer review will contain analysis code, frozen YOLO weights and training provenance, source-observation identifiers, licence metadata, derived tables, model outputs, taxonomic-authority and synonym-collapse audits, niche-permutation null tests, spatial-residual diagnostics, figure sources and reproducibility manifests. Detector development diagnostics will remain explicitly separated from the adjudicated independent audit. Source photographs will not be redistributed beyond their individual licence terms.
 
-## Code availability
-
-The analysis code is maintained at https://github.com/zuizui0223/azami. The submitted version will cite an immutable release, the precision-reanalysis and nested-variance workflow runs and archived software environments.
+After the independent detector and continuous-measurement validation gates are complete, the final checksummed release will be frozen under an immutable tag and deposited in a durable public repository with a persistent DOI.
 
 ## Author contributions
 
-To be completed after the final author list is agreed.
+To be completed after the final author list and CRediT roles are confirmed by the research team.
 
 ## Acknowledgements
 
@@ -31,3 +35,12 @@ The authors declare no competing interests. This statement must be confirmed by 
 ## Ethics and permits
 
 The study used publicly available biodiversity observations and did not involve experimental manipulation or collection of organisms.
+
+## Remaining submission gates
+
+The computational taxonomic-robustness, residual-spatial, broad-region and environmental-niche-null gates are complete for the frozen analysis. The two remaining scientific blockers require genuinely external information:
+
+1. adjudicated human boxes for the independent detector audit;
+2. independent reference measurements for orientation, colour and outline.
+
+Nomenclatural notes, final authorship metadata and the durable DOI release remain human/finalization tasks.
