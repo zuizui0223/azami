@@ -41,5 +41,21 @@ For each primary endpoint, the lowest-WAIC frozen SPDE specification is refitted
 ### S12. Withdrawn lability result and current claim boundary
 The former species environmental-responsiveness score was the RMS magnitude of unpooled absolute taxon-specific slopes and was strongly confounded with slope sample size and standard error. The negative variation–responsiveness relation and median-split quadrants are therefore withdrawn. A noise-adjusted association-energy summary and hierarchical variance meta-regression detect no common cross-module coupling. These analyses remain statistical QA/provenance and are not part of the biological headline. All current trait–environment results are cross-sectional spatial associations, not demonstrated plasticity, adaptation, pollinator selection or evolutionary rate.
 
-## Tables and figures
-The summary tables currently committed in `tables/` are frozen to the current claim registry. High-volume coefficient/model tables and Figures S1–S5 remain release-generation products until the submission branch passes the cleanup regression checks and the external measurement gates close.
+## Frozen Supplement tables
+
+The submission-facing machine-readable summary set is now complete as `tables/S01`–`S12`:
+
+- S01 canonical cohorts;
+- S02 trait scope and assessability;
+- S03 eight BH-supported rows from the 36-component primary within-taxon family;
+- S04 endpoint-level nested visible-variance decomposition and one-head/equal-replication sensitivities;
+- S05 grouped SPDE-INLA stable supported patterns and the zero global-BH support result for gross outline;
+- S06 BH-supported high-resolution involucre rows;
+- S07 niche-permutation summary;
+- S08 randomized-PGLS retained rows;
+- S09 spatial robustness;
+- S10 WCVP synonym candidates;
+- S11 precision-confounding audit summary;
+- S12 submission gates.
+
+S03 and S06 contain the submission-relevant BH-supported coefficient rows rather than silently reconstructing unsupported rows from prose. S05 records only directions that the frozen claim registry classifies as stable supported patterns; full posterior coefficient/model tables remain workflow artifacts and are not re-created from rounded manuscript values. Supplement figures remain release-generation products. The two unresolved external scientific gates remain independent detector human annotation and independent reference measurements for orientation, colour and outline.
