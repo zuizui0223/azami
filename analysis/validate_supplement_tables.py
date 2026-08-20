@@ -75,7 +75,8 @@ def main() -> None:
     hue = s4.loc[s4["endpoint_type"].eq("circular_joint")]
     require(len(linear) == 28, "S4 must contain 28 non-circular linear rows")
     require(len(hue) == 4, "S4 must contain four joint hue-vector rows")
-    require(int(linear["fdr_significant_0_05"].astype(bool).sum()) == claims["within_species_inference_levels"]["exhaustive_spatially_thinned_primary_36_component_models"]["n_bh_fdr_non_circular_linear_rows"], "S4 non-circular BH-supported count")
+    linear_supported = linear["fdr_significant_0_05"].astype(str).str.strip().str.lower().isin({"true", "1", "yes"}).sum()
+    require(int(linear_supported) == claims["within_species_inference_levels"]["exhaustive_spatially_thinned_primary_36_component_models"]["n_bh_fdr_non_circular_linear_rows"], "S4 non-circular BH-supported count")
     require(hue["q_fdr_bh"].isna().all(), "S4 joint hue rows must not invent scalar q values")
     require(hue[["hue_beta_sin", "hue_beta_cos"]].notna().all().all(), "S4 joint hue vectors incomplete")
     checks.append("S4 36-component-family presentation")
@@ -93,9 +94,8 @@ def main() -> None:
 
     # S7 niche permutation and S8 historical sensitivity.
     s7 = pd.read_csv(tables / "S07_niche_permutation_summary.csv")
-    expected_niche = set(claims["niche_permutation"]["all_taxa_supported_both_metrics"]) | set(claims["niche_permutation"]["all_taxa_centroid_only"])
-    normalized = set(s7["Endpoint"].str.lower().str.replace(" ", "_"))
-    require({"orientation", "chroma", "hue_sin", "hue_cos", "width-profile_cv"}.issubset(normalized), "S7 supported all-taxa niche traits")
+    normalized = set(s7["Endpoint"].str.lower().str.replace(" ", "_", regex=False))
+    require({"orientation", "chroma", "hue_sine", "hue_cosine", "width-profile_cv"}.issubset(normalized), "S7 supported all-taxa niche traits")
     require(claims["niche_permutation"]["n_permutations"] == 10000, "claim registry permutation count")
     s8 = pd.read_csv(tables / "S08_randomized_PGLS_retained_rows.csv")
     require(len(s8) == len(claims["historical_sensitivity"]["randomized_tree_rows_supported_50_of_50"]), "S8 retained randomized-tree row count")
