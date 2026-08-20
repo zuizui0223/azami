@@ -1,0 +1,9 @@
+endpoint,predictor,standardized_beta,ci95_low,ci95_high,bh_q,interpretation_scope
+orientation_angle,BIO1,0.0171,0.0046,0.0295,0.0363,non_circular_linear
+corolla_chroma,BIO12,0.0393,0.0102,0.0684,0.0363,non_circular_linear
+hue_sin,BIO4,0.0534,0.0424,0.0643,<0.0001,circular_component_joint_interpretation_required
+hue_sin,BIO12,-0.0440,-0.0608,-0.0272,<0.0001,circular_component_joint_interpretation_required
+hue_cos,BIO4,-0.0283,-0.0453,-0.0113,0.0132,circular_component_joint_interpretation_required
+hue_cos,BIO15,0.0201,0.0069,0.0334,0.0207,circular_component_joint_interpretation_required
+shape_aspect_ratio,BIO4,0.0137,0.0048,0.0226,0.0207,non_circular_linear
+shape_aspect_ratio,BIO12,-0.0108,-0.0187,-0.0028,0.0363,non_circular_linear
