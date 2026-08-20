@@ -1,0 +1,7 @@
+comparison,estimate,statistic,interpretation
+legacy variation vs raw absolute-slope RMS,-0.3330996149,Spearman rho,withdrawn headline relation
+legacy score vs median slope n,-0.9194595733,Spearman rho,diagnostic: strong precision confounding
+legacy score vs median slope SE,0.91432335695,Spearman rho,diagnostic: strong precision confounding
+variation vs legacy score controlling median slope n,0.0558095632,partial Spearman rho,P=0.5774
+revised noise-adjusted axis,-0.0568666278,Spearman rho,P=0.5722; bootstrap 95% CI -0.2652 to 0.1548
+hierarchical variance meta-regression,-0.04160792485,log-variance coefficient per SD visible variation,profile 95% CI -0.2743 to 0.2004; LRT P=0.7320

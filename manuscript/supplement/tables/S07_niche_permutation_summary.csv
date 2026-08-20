@@ -1,0 +1,7 @@
+Endpoint,All-taxa centroid q,All-taxa overlap q,Direct-backbone centroid q,Direct-backbone overlap q,Supported pattern
+Orientation,0.00090,0.00060,0.1519,0.0517,All-taxa centroid + overlap
+Lightness,0.4059,0.0787,0.2364,0.00765,Direct-backbone overlap only
+Chroma,0.0185,0.00060,0.1305,0.1656,All-taxa centroid + overlap
+Hue sine,0.00990,0.0227,0.0882,0.0480,All-taxa both; direct overlap
+Hue cosine,0.00090,0.00060,0.00180,0.00090,Both scopes; both metrics
+Width-profile CV,0.0185,0.0581,0.1519,0.1932,All-taxa centroid only

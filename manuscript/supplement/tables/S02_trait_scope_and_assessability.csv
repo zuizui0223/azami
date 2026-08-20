@@ -1,0 +1,5 @@
+Layer / module,Endpoints,Usable data,Interpretation
+Primary — Orientation,Signed head-axis angle,"4,585 / 6,626 heads","0° upward, 90° horizontal, 180° downward relative to image vertical"
+Primary — Visible corolla colour,"Lightness, chroma, hue sine/cosine","5,777 / 6,626 heads",Camera-recorded visible colour; hue interpreted jointly
+Primary — Capitulum outline,"Aspect ratio, circularity, solidity, width-profile CV","5,324 / 6,626 heads",Two-dimensional outline geometry
+Auxiliary — Involucral-bract architecture,"Roughness, outward spread fraction, maximum spine-like projection","1,443 heads / 1,292 observations / 210 taxa",High-resolution contour proxies; not direct bract categories
