@@ -1,63 +1,30 @@
-# Chapter 1 active and legacy code map
+# Chapter 1 submission repository map
 
-## Author-facing active layer
-
-These are the files manuscript authors should use directly:
-
-- `analysis/ch1/run_submission.py` — stable CLI for checks, lability, claims and manifest generation;
-- `analysis/ch1/pipeline.json` — machine-readable mapping to exact implementation paths;
-- `manuscript/MANUSCRIPT_OUTLINE.md` — drafting skeleton;
-- `manuscript/FIGURE_TABLE_MAP.md` — output-to-manuscript mapping;
-- `manuscript/final_claims.json` — frozen numerical claims;
+## Active author-facing layer
+- `analysis/ch1/run_submission.py` — control checks, claim validation and current-status summary.
+- `analysis/ch1/pipeline.json` — machine-readable scientific stage map.
+- `analysis/ch1/submission_contract.json` — compact current submission contract.
+- `manuscript/SUBMISSION_MANUSCRIPT.md` — canonical narrative map.
+- `manuscript/final_claims.json` — frozen numerical claim registry.
+- `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort meanings.
 - `manuscript/RUNBOOK.md` — release procedure.
 
 ## Frozen implementation layer
+`ch1_global/v2/` remains in place because exact numbered paths are embedded in workflow/artifact provenance. Do not rename or move those files before the durable release.
 
-These paths generated or validate the frozen analysis and must remain stable:
+## Current active analyses
+1. continuous head-level trait extraction and integration;
+2. nested taxon → photograph → head visible-variance decomposition;
+3. exhaustive within-taxon climate coefficients;
+4. grouped SPDE-INLA spatial models;
+5. high-resolution involucre contour proxies;
+6. among-taxon niche permutation tests;
+7. historical/PGLS placement sensitivity;
+8. residual-spatial, broad-region and WCVP robustness;
+9. independent detector and continuous-measurement validation gates.
 
-- scripts 52–56: continuous image measurement and integration;
-- scripts 59–64: continuous endpoints, within-species and between-species analyses;
-- scripts 65–70: historical sensitivity, validation and submission manifest;
-- script 75: strict CHELSA observation and pooled coefficient reconstruction;
-- script 77: two-axis species lability and supplement;
-- script 78: phylogenetic-signal sensitivity;
-- script 79: live molecular database audit;
-- script 80: manuscript-facing phylogenetic evidence summary.
-
-They remain in `ch1_global/v2/` because workflows and frozen provenance refer to
-those exact paths. Consolidation is achieved with wrappers and manifests, not by
-renaming executed source immediately before submission.
-
-## Supporting active tools
-
-- detector and measurement audit applications;
-- taxonomic and tree-placement audits;
-- grouped SPDE-INLA sensitivity;
-- workflow definitions required to reproduce frozen artifacts;
-- tests enforcing the submission contract.
-
-Supporting tools may be cited in Methods or Supplement but are not separate
-headline analyses.
-
-## Legacy or exploratory material
-
-The following should not define manuscript claims:
-
-- v1 orientation-only baselines;
-- superseded categorical CLIP classifications;
-- abandoned RF/XGBoost comparisons;
-- unexecuted multivariate TMB experiments;
-- exploratory hair, mucilage and high-resolution spine proxies;
-- regional analyses outside the Chapter 1 sampling frame.
-
-Legacy files remain recoverable through Git history or clearly labelled directories.
-They must not be imported by the canonical runner or required by the final bundle.
+## Provenance only
+The legacy raw absolute-slope lability relation, median-split quadrants and related precision audit are retained only to document why the old headline was withdrawn. They are not active biological results.
 
 ## Cleanup rule
-
-Delete or move an existing executed file only after:
-
-1. the durable submission bundle records its path and SHA-256 checksum;
-2. all workflows and documentation have been updated;
-3. numerical regression tests show that the replacement is identical;
-4. the cleanup is released as a new analysis version.
+An executed v2 path may be removed only after the final checksummed archive records its source and a new analysis version replaces it. Side projects and superseded categorical/model assets may be deleted from the active submission branch because Git history preserves them and the canonical pipeline does not depend on them.
