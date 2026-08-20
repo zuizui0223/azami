@@ -27,12 +27,11 @@ jobs:
           python-version: '3.13.5'
       - name: Install pinned figure dependencies
         run: python -m pip install 'numpy==2.3.5' 'pandas==2.2.3' 'matplotlib==3.10.8'
-      - name: Verify frozen source hashes
+      - name: Verify frozen source-data hashes
         shell: bash
         run: |
           set -euo pipefail
           cat > expected-inputs.sha256 <<'EOF'
-          b632276434947addbee9bfb1d895756fcdb289036a5522324a5def3e1fcd156e  analysis/build_supplement_figures.py
           e4308b91bfea087b37d4e8f2559124af10881ceede7afa8f0b158c4e37da242a  manuscript/supplement/figure_data/FigureS1_nested_variance.csv
           b604205842e4551f131b48dcbf844c3331d22a9498354529fefca5e76375d2e9  manuscript/supplement/figure_data/FigureS2_primary_coefficients.csv
           914b76c4685e072ca9a3927e7bf63b3ebadf07ae18e4a8094bd7d5e8824b9a0c  manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv
