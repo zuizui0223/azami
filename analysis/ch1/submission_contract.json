@@ -1,11 +1,38 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "analysis/ch1/pipeline.json",
     "manuscript/SUBMISSION_MANUSCRIPT.md"
+  ],
+  "required_submission_paths": [
+    "README.md",
+    "manuscript/SUBMISSION_MANUSCRIPT.md",
+    "manuscript/final_claims.json",
+    "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
+    "manuscript/EXTERNAL_COMPLETION_GATES.md",
+    "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
+    "analysis/ch1/pipeline.json"
+  ],
+  "forbidden_active_paths": [
+    "ch1_japan",
+    "ch1_shared",
+    "ch3_trait_architecture",
+    "models",
+    "protocols",
+    "reports",
+    "archive",
+    "workflows",
+    "57回種生物学会.R",
+    "第57回種生物学会supp.R"
+  ],
+  "forbidden_active_workflows": [
+    ".github/workflows/ch1-phase1-lability.yml",
+    ".github/workflows/ch1-build-submission-bundle.yml",
+    ".github/workflows/ch1-export-eazami-trait-handoff.yml",
+    ".github/workflows/ch1-export-eazami-japan38-exhaustive-traits.yml"
   ],
   "frozen_headline_counts": {
     "balanced_atlas_observations": 3725,
