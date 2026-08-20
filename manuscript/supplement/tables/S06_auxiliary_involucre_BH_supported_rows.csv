@@ -1,0 +1,4 @@
+endpoint,predictor,standardized_beta,ci95_low,ci95_high,bh_q,cohort,interpretation_scope
+involucre_projection_roughness,BIO4,0.0975,0.0227,0.1723,0.0424,le_10km,2D_contour_proxy_not_defensive_adaptation
+involucre_spread_fraction,BIO4,0.0937,0.0271,0.1603,0.0424,le_10km,2D_contour_proxy_not_defensive_adaptation
+spine_relative_length_max_proxy,BIO4,0.0911,0.0222,0.1599,0.0424,le_10km,2D_contour_proxy_not_defensive_adaptation
