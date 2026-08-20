@@ -1,23 +1,71 @@
 # Chapter 1 figure, table and supplement map
 
+This file fixes the submission-facing relationship among the main manuscript, frozen Supplement tables and release figures. Items are mapped by analysis role so cohorts or inferential families cannot be silently interchanged.
+
 ## Main figures
-1. Actual photographs → YOLO localization → continuous trait extraction.
-2. Global sampling and cohort separation.
-3. Nested assigned-taxon → photograph → head visible-variance decomposition.
-4. Complete nine-endpoint taxon-level PCA.
-5. Multiplicity-supported within-taxon environmental associations across exhaustive primary, grouped SPDE and auxiliary analyses.
-6. Among-taxon climate associations retained across 50 randomized Pagel-lambda PGLS trees.
+
+1. **Figure 1 — image-to-phenotype workflow:** actual photographs → YOLO localization → deterministic continuous trait extraction.
+2. **Figure 2 — global sampling and cohort separation:** balanced atlas, exhaustive detector-positive layer, spatially thinned primary cohort, endpoint-specific SPDE cohorts and high-resolution involucre cohort.
+3. **Figure 3 — nested visible variance:** assigned taxon → photograph → head decomposition across all nine primary endpoints.
+4. **Figure 4 — taxon-level multivariate structure:** complete nine-endpoint taxon-level PCA.
+5. **Figure 5 — within-taxon environmental structure:** multiplicity-supported exhaustive primary, grouped SPDE and high-resolution auxiliary associations.
+6. **Figure 6 — historical-placement sensitivity:** among-taxon climate associations retained across 50 randomized Pagel-lambda PGLS trees.
 
 ## Main tables
-1. Canonical cohorts and roles.
-2. Trait modules and bounded measurement scope.
-3. Multiplicity-supported exhaustive primary and high-resolution auxiliary associations.
-4. Unique grouped SPDE-INLA associations with global BH q < 0.05.
-5. Permutation-supported among-taxon niche contrasts.
-6. Randomized-tree PGLS retained associations.
 
-## Supplement
-- S1 cohorts; S2 trait definitions; S3 full nested variance + sensitivities; S4 full primary within-taxon coefficients; S5 SPDE model fits; S6 full SPDE effects/stability/hyperparameters; S7 niche permutation; S8 randomized-tree PGLS; S9 residual spatial / region omission; S10 WCVP sensitivity; S11 withdrawn-lability precision audit; S12 completion gates/provenance.
-- Figures S1–S5 show nested-variance sensitivities, complete primary coefficient map, SPDE ΔWAIC, residual Moran I and leave-one-region-out rank stability.
+1. **Table 1:** canonical cohorts and analysis roles.
+2. **Table 2:** trait modules, endpoints and bounded measurement scope.
+3. **Table 3:** multiplicity-supported exhaustive primary and high-resolution auxiliary associations.
+4. **Table 4:** unique grouped SPDE-INLA associations with global BH q < 0.05.
+5. **Table 5:** permutation-supported among-taxon niche contrasts.
+6. **Table 6:** randomized-tree PGLS retained associations.
 
-The old rho=-0.333 quadrant figure is statistical provenance only and is not a main or supplementary biological result.
+## Supplement tables
+
+- **S01** `S01_canonical_cohorts.csv` — canonical cohorts and inferential roles.
+- **S02** `S02_trait_scope_and_assessability.csv` — trait scope and assessability boundaries.
+- **S03** `S03_primary_within_taxon_BH_supported_rows.csv` — eight BH-supported primary within-taxon component rows.
+- **S04** `S04_nested_visible_variance.csv` — full nine-endpoint nested visible-variance decomposition and sampling sensitivities.
+- **S05** `S05_grouped_SPDE_stable_supported_patterns.csv` — stable grouped SPDE-INLA supported directions.
+- **S06** `S06_auxiliary_involucre_BH_supported_rows.csv` — BH-supported high-resolution involucre rows.
+- **S07** `S07_niche_permutation_summary.csv` — niche-permutation support.
+- **S08** `S08_randomized_PGLS_retained_rows.csv` — randomized-tree PGLS retained rows.
+- **S09** `S09_spatial_robustness.csv` — residual spatial and broad-region omission robustness.
+- **S10** `S10_wcvp_synonym_candidates.csv` — WCVP synonym-collapse sensitivity.
+- **S11** `S11_precision_confounding_audit_summary.csv` — withdrawn-lability precision audit.
+- **S12** `S12_submission_gates.csv` — completion gates and release boundary.
+
+## Supplement figures
+
+The hash-verified `ch1-supplement-figures-S1-S5` release artifact contains each figure as SVG, PNG and PDF. The filenames below are stable across formats.
+
+- **Figure S1** `Figure_S1_nested_variance_sensitivities.*` — full, one-head-per-photo and balanced-10-photo below-taxon variance sensitivities.
+- **Figure S2** `Figure_S2_primary_coefficient_map.*` — complete 36-component within-taxon CHELSA coefficient map; the eight BH-supported cells are marked and hue sine/cosine remain separate.
+- **Figure S3** `Figure_S3_spde_delta_waic.*` — endpoint-specific ΔWAIC across four grouped SPDE-INLA predictor sets; this is model-fit comparison rather than significance coding.
+- **Figure S4** `Figure_S4_residual_morans_I.*` — residual Moran's I after frozen SPDE control.
+- **Figure S5** `Figure_S5_leave_one_region_out_stability.*` — minimum taxon-rank stability under broad-region omission.
+
+All five figures are regenerated by `analysis/build_supplement_figures.py` from `manuscript/supplement/figure_data/`. `.github/workflows/ch1-supplement-figures-ci.yml` verifies all source and release hashes and uploads the figure bundle. Source artifact IDs and SHA-256 values are recorded in `manuscript/supplement/FIGURE_MANIFEST.md`.
+
+## Main manuscript ↔ Supplement crosswalk
+
+| Main item / result layer | Frozen Supplement support | Purpose |
+|---|---|---|
+| Figure 1 — image-to-phenotype workflow | S02, S12 | defines what is and is not measurable; keeps detector/measurement validation gates explicit |
+| Figure 2 — cohort separation | S01 | fixes cohort counts, filtering and analysis permissions |
+| Figure 3 — nested visible variance | S04, Figure S1 | provides the complete endpoint table and both pseudoreplication/equal-sampling sensitivities |
+| Figure 4 — taxon-level PCA | S02 plus frozen taxon-level result tables | fixes endpoint scope; no redundant Supplement figure is required |
+| Figure 5 — within-taxon environment | S03, S05, S06, Figures S2–S3 | separates exhaustive OLS support, grouped spatial-model support and auxiliary high-resolution results |
+| Figure 6 — randomized-tree PGLS | S08 | exposes the retained historical-placement sensitivity rows |
+| Table 1 | S01 | complete cohort audit |
+| Table 2 | S02 | complete trait/assessability audit |
+| Table 3 | S03, S06 | complete submission-facing supported rows for the two coefficient families |
+| Table 4 | S05, Figure S3 | stable SPDE directions plus full four-group model-fit comparison |
+| Table 5 | S07 | permutation-null support by metric and scope |
+| Table 6 | S08 | randomized-tree retained rows |
+| Spatial robustness Results | S09, Figures S4–S5 | residual autocorrelation and region-omission diagnostics |
+| Taxonomic robustness Results | S10 | WCVP synonym-collapse sensitivity |
+| Withdrawn lability audit | S11 only | statistical provenance/QA; not a biological result |
+| External completion status | S12 | detector and continuous-measurement validation gates |
+
+The old rho = -0.333 quadrant figure is statistical provenance only and is not a main or supplementary biological result. EAzami mechanism-reduction outputs are downstream context and are not inputs to any Chapter 1 figure or table.

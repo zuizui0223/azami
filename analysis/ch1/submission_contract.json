@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 7,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
@@ -13,6 +13,8 @@
     "manuscript/final_claims.json",
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "manuscript/EXTERNAL_COMPLETION_GATES.md",
+    "manuscript/FIGURE_TABLE_MAP.md",
+    "manuscript/supplement/README.md",
     "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
     "manuscript/supplement/tables/S01_canonical_cohorts.csv",
     "manuscript/supplement/tables/S02_trait_scope_and_assessability.csv",
@@ -26,6 +28,13 @@
     "manuscript/supplement/tables/S10_wcvp_synonym_candidates.csv",
     "manuscript/supplement/tables/S11_precision_confounding_audit_summary.csv",
     "manuscript/supplement/tables/S12_submission_gates.csv",
+    "manuscript/supplement/FIGURE_MANIFEST.md",
+    "manuscript/supplement/figure_data/FigureS1_nested_variance.csv",
+    "manuscript/supplement/figure_data/FigureS2_primary_coefficients.csv",
+    "manuscript/supplement/figure_data/FigureS3_spde_model_group_summary.csv",
+    "manuscript/supplement/figure_data/FigureS45_spatial_robustness.csv",
+    "analysis/build_supplement_figures.py",
+    ".github/workflows/ch1-supplement-figures-ci.yml",
     "analysis/ch1/pipeline.json"
   ],
   "forbidden_active_paths": [
@@ -71,5 +80,7 @@
     "median-split lability quadrants",
     "categorical CLIP/AI trait proposals and their categorical environment atlas"
   ],
-  "do_not_move": ["ch1_global/v2/"]
+  "do_not_move": [
+    "ch1_global/v2/"
+  ]
 }
