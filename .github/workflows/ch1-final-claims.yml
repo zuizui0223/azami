@@ -5,7 +5,9 @@ on:
   pull_request:
     paths:
       - 'manuscript/final_claims.json'
-      - 'manuscript/FINAL_MANUSCRIPT_STRATEGY.md'
+      - 'manuscript/SUBMISSION_MANUSCRIPT.md'
+      - 'manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md'
+      - 'analysis/ch1/pipeline.json'
       - 'analysis/validate_final_claims.py'
       - '.github/workflows/ch1-final-claims.yml'
 

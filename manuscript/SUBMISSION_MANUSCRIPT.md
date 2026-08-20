@@ -1,86 +1,85 @@
 # Chapter 1 submission manuscript
 
-This is the canonical submission-facing entry point for Chapter 1. The current story is the **global recovery of continuous within-taxon capitulum trait distributions from public photographs**, followed by scale-explicit environmental analysis. The former lability-axis story is no longer a headline result.
+This is the canonical submission-facing entry point for the global continuous within-taxon public-image phenomics study.
 
 ## Preferred title
 
 **Global citizen-science images reveal continuous within-taxon variation and environmental structure in thistle capitulum traits**
 
-## Manuscript order
+## Active manuscript sections
 
-1. [`00_title_abstract.md`](00_title_abstract.md)
-2. [`01_introduction.md`](01_introduction.md)
-3. [`02_methods.md`](02_methods.md)
-4. [`03_results.md`](03_results.md)
-5. [`04_discussion.md`](04_discussion.md)
-6. [`05_conclusion_and_declarations.md`](05_conclusion_and_declarations.md)
+1. `00_title_abstract.md`
+2. `01_introduction.md`
+3. `02_methods.md`
+4. `03_results.md`
+5. `04_discussion.md`
+6. `05_conclusion_and_declarations.md`
 
 ## Current headline
 
-Public biodiversity photographs can be converted into repeated **numerical phenotype observations** rather than one species-level category. Across nine primary continuous endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means. Some of that repeated within-taxon variation is structured along environmental gradients, but the pattern is trait- and scale-specific: orientation and visible colour show the clearest environmental structure, most gross-outline traits are weaker after spatial modelling, and fine involucral contour architecture is associated with temperature seasonality in the high-resolution layer.
+Public biodiversity photographs are converted into repeated numerical head-level phenotype observations rather than one taxon-level category. Across nine primary endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means. Environmental structure is trait- and scale-specific: orientation and visible colour are clearest, most gross-outline effects weaken after spatial modelling, and high-resolution involucral contour architecture shows a small temperature-seasonality association.
 
-The central methodological contribution is therefore:
+## Main result sequence
 
-> global public photographs → detected capitula → continuous head-level measurements → within-taxon trait distributions → multiscale environmental analysis
+1. Repeated continuous phenotype observations are recoverable globally.
+2. Taxon means conceal substantial below-taxon visible image variation.
+3. One-head-per-photo and equal-replication sensitivities retain that conclusion.
+4. The 46,276-observation primary within-taxon climate family contains eight BH-supported component rows, four of them non-circular linear effects.
+5. Grouped SPDE-INLA concentrates the most stable environmental structure in orientation and visible colour.
+6. High-resolution involucre proxies show coherent but modest positive associations with temperature seasonality.
+7. Among-taxon permutation tests concentrate environmental sorting mainly in orientation and visible colour.
+8. Randomized-tree PGLS results remain historical sensitivity because direct backbone coverage is incomplete.
+9. Residual-spatial, broad-region and WCVP synonym-collapse audits do not overturn the headline results.
 
-The manuscript does not reduce the primary inference to upright/nodding, pale/pigmented or globose/elongate categories.
+The former raw absolute-slope lability relation and median-split quadrants are withdrawn from the biological story and retained only as statistical provenance.
 
-## Why *Cirsium*
+## Main figures
 
-The same capitulum expresses conspicuous diversity in orientation, visible colour, gross outline and involucral architecture, allowing multiple phenotype modules to be measured on one reproductive unit. *Cirsium* also includes recent regional radiations and has a complex evolutionary history involving hybridization, incomplete lineage sorting, polyploidy and phenotypic convergence. This makes it an informative system for asking whether trait diversity is environmentally structured within taxa, among taxa, or both. The current image analysis does **not** itself demonstrate adaptive radiation.
+1. Actual photographs, YOLO localization and deterministic continuous trait extraction.
+2. Geographic sampling and cohort separation.
+3. Nested assigned-taxon → photograph → head visible-variance decomposition.
+4. Nine-endpoint taxon-level PCA.
+5. Multiplicity-supported within-taxon environmental associations across primary, SPDE and auxiliary analyses.
+6. Among-taxon coefficients retained across 50 randomized Pagel-lambda PGLS trees.
 
-## Current main-result structure
+## Main tables
 
-1. **Repeated continuous phenotypes are recoverable globally.**
-2. **Species/taxon means conceal substantial below-taxon visible variation.**
-3. **That conclusion survives one-head-per-photo and equal-replication controls.**
-4. **Within-taxon environmental associations are trait specific.**
-5. **Grouped SPDE-INLA narrows the strongest robust pattern toward orientation and visible colour.**
-6. **High-resolution involucre architecture shows a small coherent temperature-seasonality association.**
-7. **Among-taxon permutation tests concentrate environmental sorting mainly in orientation and colour.**
-8. **Historical/PGLS results remain conditional on incomplete direct-backbone coverage.**
-9. **Spatial and taxonomic robustness diagnostics do not overturn the headline results.**
-
-## Figure priorities
-
-1. actual-photo YOLO localization followed by deterministic continuous measurements;
-2. global sampling and cohort separation;
-3. nested taxon → photograph → head variance decomposition;
-4. complete nine-endpoint taxon-level PCA;
-5. multiplicity-supported within-taxon environmental associations across primary, SPDE and auxiliary analyses;
-6. among-taxon historical/PGLS sensitivity across alternative grafted trees.
-
-The legacy precision-confounding audit and withdrawn lability quadrants belong in provenance/supplementary QA, not the main narrative.
+1. Canonical cohorts and roles.
+2. Trait modules and bounded measurement scope.
+3. Supported exhaustive-primary and high-resolution auxiliary associations.
+4. Unique grouped SPDE-INLA associations passing global BH screening.
+5. Permutation-supported among-taxon niche contrasts.
+6. Randomized-tree PGLS retained associations.
 
 ## Scientific control files
 
-- [`COHORT_FLOW_AND_ANALYSIS_LEDGER.md`](COHORT_FLOW_AND_ANALYSIS_LEDGER.md) fixes cohort names, counts and permitted analyses.
-- [`final_claims.json`](final_claims.json) contains the frozen machine-readable claims.
-- [`results/nested_visible_variance_summary.csv`](results/nested_visible_variance_summary.csv) records the revised image hierarchy.
-- [`results/NICHE_PERMUTATION_RESULTS_2026-08-07.md`](results/NICHE_PERMUTATION_RESULTS_2026-08-07.md) records the 10,000-permutation niche null.
-- [`results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md`](results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md) records residual Moran and region-omission diagnostics.
-- [`results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md`](results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md) records synonym-collapse sensitivity.
-- [`../analysis/ch1/pipeline.json`](../analysis/ch1/pipeline.json) maps canonical executable stages.
-- [`EXTERNAL_COMPLETION_GATES.md`](EXTERNAL_COMPLETION_GATES.md) records completed versus genuinely external validation gates.
-- [`EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md`](EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md) fixes the Chapter 1 → EAzami boundary.
+- `COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — canonical cohort labels, counts and analysis permissions.
+- `final_claims.json` — frozen machine-readable numerical claims.
+- `results/` — executed robustness/result summaries.
+- `../analysis/ch1/pipeline.json` — active executable stage map and rerun policy.
+- `FIGURE_TABLE_MAP.md` — main/supplement mapping.
+- `supplement/` — Supplementary Information and machine-readable tables.
+- `DETECTOR_INDEPENDENT_AUDIT_PROTOCOL.md` and `FIGURE1_MEASUREMENT_AUDIT_PROTOCOL.md` — remaining independent-validation design.
+- `EXTERNAL_COMPLETION_GATES.md` — completed and external gates.
+- `RUNBOOK.md` — submission/release procedure.
 
 ## Current submission blockers
 
-Only two scientific items remain genuinely external to repository computation:
+Only two scientific blockers remain external to repository computation:
 
 1. adjudicated human boxes for independent detector precision/recall;
-2. independent reference measurements for orientation, colour and outline.
+2. genuinely independent reference measurements for orientation, colour and outline.
 
-Taxonomic robustness, residual spatial autocorrelation, broad-region omission and environmental-niche permutation gates are complete for the frozen operational-unit analysis. Administrative metadata, nomenclatural notes and final durable DOI release remain human/finalization tasks.
+Taxonomic robustness, residual spatial autocorrelation, broad-region omission and environmental-niche permutation gates are complete for the frozen operational-unit analysis. Nomenclatural notes, authorship/administrative metadata and the durable DOI are finalization tasks.
 
 ## Claim boundary
 
-The final journal package must not:
+The submission must not:
 
-- use the withdrawn negative lability relation or median-split quadrants as biological conclusions;
-- use *climate tracking* or *environmental responsiveness* for cross-sectional spatial associations;
+- restore the withdrawn negative lability relation or median-split quadrants;
+- use climate tracking or environmental responsiveness as temporal/experimental claims;
 - equate visible image variance with genetic variance or plasticity;
-- interpret hue sine/cosine separately as named flower colours;
-- treat auxiliary image-geometry proxies as direct botanical spine/phyllary measurements;
-- claim resolved phylogenetic correction from the grafted historical layer;
-- convert macro-scale associations into adaptation, pollinator causation or evolutionary-rate claims.
+- interpret hue sine/cosine as separate named flower colours;
+- interpret auxiliary contour proxies as direct botanical spine/phyllary measurements;
+- treat the grafted historical layer as a resolved phylogenetic correction;
+- infer adaptation, pollinator causation, selection or evolutionary rate from the observational associations.
