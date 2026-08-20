@@ -64,7 +64,6 @@ def main() -> None:
     }
     precision_map = {
         "table_s2_species_specific_coefficients.csv": "release_only/S11_species_specific_coefficients_archived.csv",
-        "reviewer_precision_summary.json": "release_only/S11_reviewer_precision_summary.json",
     }
 
     files: list[dict[str, object]] = []
@@ -78,6 +77,7 @@ def main() -> None:
         "scientific_effect": "none; exact archived outputs copied without refitting",
         "spde_artifact_id": str(a.spde_artifact_id),
         "precision_artifact_id": str(a.precision_artifact_id),
+        "precision_summary_source": "manuscript/results/reviewer_precision_summary.json",
         "git_sha": a.git_sha,
         "files": files,
     }
