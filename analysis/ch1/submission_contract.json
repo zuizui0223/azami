@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "status": "2026-08 continuous-phenomics submission control contract",
+  "authoritative_files": [
+    "manuscript/final_claims.json",
+    "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
+    "analysis/ch1/pipeline.json",
+    "manuscript/SUBMISSION_MANUSCRIPT.md"
+  ],
+  "frozen_headline_counts": {
+    "balanced_atlas_observations": 3725,
+    "balanced_atlas_heads": 6626,
+    "balanced_atlas_taxa": 216,
+    "exhaustive_detected_observations": 406582,
+    "exhaustive_primary_observations": 46276,
+    "exhaustive_primary_taxa": 259,
+    "primary_endpoint_component_tests": 36,
+    "primary_BH_supported_component_rows": 8,
+    "direct_backbone_tips": 54,
+    "randomized_trees": 50
+  },
+  "submission_blockers": [
+    "independent detector human boxes",
+    "independent orientation/colour/outline reference measurements"
+  ],
+  "withdrawn_from_headline": [
+    "raw absolute-slope lability relation",
+    "median-split lability quadrants"
+  ],
+  "do_not_move": [
+    "ch1_global/v2/"
+  ]
+}

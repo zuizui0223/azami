@@ -2,62 +2,30 @@
 
 ## Author-facing active layer
 
-These are the files manuscript authors should use directly:
+Authors and reviewers should enter the repository through:
 
-- `analysis/ch1/run_submission.py` — stable CLI for checks, lability, claims and manifest generation;
-- `analysis/ch1/pipeline.json` — machine-readable mapping to exact implementation paths;
-- `manuscript/MANUSCRIPT_OUTLINE.md` — drafting skeleton;
-- `manuscript/FIGURE_TABLE_MAP.md` — output-to-manuscript mapping;
+- `README.md` — project scope and current submission status;
+- `manuscript/SUBMISSION_MANUSCRIPT.md` — canonical manuscript story;
 - `manuscript/final_claims.json` — frozen numerical claims;
+- `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — cohort definitions;
+- `analysis/ch1/pipeline.json` — executable stage map;
+- `analysis/ch1/run_submission.py` — submission control checks;
 - `manuscript/RUNBOOK.md` — release procedure.
 
 ## Frozen implementation layer
 
-These paths generated or validate the frozen analysis and must remain stable:
+Exact numbered paths under `ch1_global/v2/` remain stable because executed workflows, artifacts and manifests cite them. They are provenance targets, not the navigation interface.
 
-- scripts 52–56: continuous image measurement and integration;
-- scripts 59–64: continuous endpoints, within-species and between-species analyses;
-- scripts 65–70: historical sensitivity, validation and submission manifest;
-- script 75: strict CHELSA observation and pooled coefficient reconstruction;
-- script 77: two-axis species lability and supplement;
-- script 78: phylogenetic-signal sensitivity;
-- script 79: live molecular database audit;
-- script 80: manuscript-facing phylogenetic evidence summary.
+Active scientific stages include continuous measurement/integration, nested visible variance, exhaustive within-taxon climate models, grouped SPDE-INLA, high-resolution involucre proxies, niche permutation, historical placement sensitivity, WCVP synonym sensitivity and spatial diagnostics.
 
-They remain in `ch1_global/v2/` because workflows and frozen provenance refer to
-those exact paths. Consolidation is achieved with wrappers and manifests, not by
-renaming executed source immediately before submission.
+## Statistical provenance only
 
-## Supporting active tools
+The raw absolute-slope lability relationship, median-split quadrants and their supporting exploratory scripts may remain only where required to document the precision-confounding audit. They are not active biological evidence and are not exposed by the submission runner.
 
-- detector and measurement audit applications;
-- taxonomic and tree-placement audits;
-- grouped SPDE-INLA sensitivity;
-- workflow definitions required to reproduce frozen artifacts;
-- tests enforcing the submission contract.
+## Removed from the submission branch
 
-Supporting tools may be cited in Methods or Supplement but are not separate
-headline analyses.
-
-## Legacy or exploratory material
-
-The following should not define manuscript claims:
-
-- v1 orientation-only baselines;
-- superseded categorical CLIP classifications;
-- abandoned RF/XGBoost comparisons;
-- unexecuted multivariate TMB experiments;
-- exploratory hair, mucilage and high-resolution spine proxies;
-- regional analyses outside the Chapter 1 sampling frame.
-
-Legacy files remain recoverable through Git history or clearly labelled directories.
-They must not be imported by the canonical runner or required by the final bundle.
+Japan/pollinator side analyses, future-chapter placeholders, v1 categorical/orientation-only code, legacy categorical direction classifiers, superseded checkpoints and development tables are recoverable from Git history rather than the active tree.
 
 ## Cleanup rule
 
-Delete or move an existing executed file only after:
-
-1. the durable submission bundle records its path and SHA-256 checksum;
-2. all workflows and documentation have been updated;
-3. numerical regression tests show that the replacement is identical;
-4. the cleanup is released as a new analysis version.
+Do not move or rewrite executed `ch1_global/v2` numbered scripts before the durable release. Cleanup should remove unreachable side material and stale author-facing pointers while preserving frozen coefficients, cohorts, thresholds, environmental inputs and tree scenarios.

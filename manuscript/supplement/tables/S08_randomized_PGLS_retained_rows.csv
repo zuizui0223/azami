@@ -1,0 +1,7 @@
+Endpoint,Predictor,Median β,2.5–97.5% across trees,Trees with FDR support,Taxa
+Orientation angle,BIO12 annual precipitation,+0.304,+0.304 to +0.313,50 / 50,213
+Hue sine,BIO1 annual mean temperature,−0.410,−0.410 to −0.410,50 / 50,214
+Hue sine,BIO4 temperature seasonality,−0.274,−0.274 to −0.274,50 / 50,214
+Hue sine,BIO12 annual precipitation,−0.211,−0.211 to −0.211,50 / 50,214
+Solidity,BIO4 temperature seasonality,−0.357,−0.357 to −0.347,50 / 50,214
+Width-profile CV,BIO1 annual mean temperature,+0.248,+0.234 to +0.269,50 / 50,214

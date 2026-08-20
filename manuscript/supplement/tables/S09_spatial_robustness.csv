@@ -1,0 +1,10 @@
+endpoint,residual_morans_I,permutation_P,minimum_leave_one_region_out_spearman_rho
+Corolla hue cosine,0.0024,0.604,0.877
+Corolla hue sine,0.0028,0.574,0.866
+Corolla chroma,-0.0096,0.059,0.936
+Corolla lightness,-0.0019,0.716,0.972
+Orientation,-0.0068,0.126,0.874
+Aspect ratio,0.0023,0.658,0.859
+Circularity,0.003,0.532,0.879
+Solidity,-0.0031,0.508,0.856
+Width-profile CV,0.0013,0.774,0.882

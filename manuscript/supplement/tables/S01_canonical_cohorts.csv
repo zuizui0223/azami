@@ -1,0 +1,10 @@
+cohort,observations,heads,taxa,purpose
+balanced_image_comparison_atlas,3725,6626,216,"nested visible variance; taxon PCA; among-taxon summaries; historical sensitivity"
+exhaustive_detector_positive,406582,,286,"post-detection source layer"
+exhaustive_spatially_thinned_primary,46276,,259,"primary within-taxon climate coefficients"
+grouped_spde_complete_cases,"31666-34472",,"139-141","spatially explicit within-taxon models"
+high_resolution_involucre,1292,1443,210,"auxiliary involucre/spine-like contour proxies"
+high_resolution_involucre_le10km,904,,165,"auxiliary climate family"
+environmental_niche_complete,148,,148,"all-taxon niche-permutation analysis"
+direct_backbone_niche_complete,49,,49,"direct-backbone niche sensitivity"
+independent_detector_audit,1000,,323,"human detector validation; 250 double-labelled"
