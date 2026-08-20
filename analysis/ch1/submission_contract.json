@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
@@ -32,7 +32,11 @@
     ".github/workflows/ch1-phase1-lability.yml",
     ".github/workflows/ch1-build-submission-bundle.yml",
     ".github/workflows/ch1-export-eazami-trait-handoff.yml",
-    ".github/workflows/ch1-export-eazami-japan38-exhaustive-traits.yml"
+    ".github/workflows/ch1-export-eazami-japan38-exhaustive-traits.yml",
+    ".github/workflows/ch1-score-detected-head-traits-clip.yml",
+    ".github/workflows/ch1-score-traits-ai-ensemble.yml",
+    ".github/workflows/ch1-run-global-ai-inference-shard.yml",
+    ".github/workflows/ch1-run-trait-environment-association-atlas.yml"
   ],
   "frozen_headline_counts": {
     "balanced_atlas_observations": 3725,
@@ -52,7 +56,8 @@
   ],
   "withdrawn_from_headline": [
     "raw absolute-slope lability relation",
-    "median-split lability quadrants"
+    "median-split lability quadrants",
+    "categorical CLIP/AI trait proposals and their categorical environment atlas"
   ],
   "do_not_move": ["ch1_global/v2/"]
 }
