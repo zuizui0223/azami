@@ -14,10 +14,12 @@ Nine primary endpoints span image-referenced orientation, visible corolla colour
 For each primary endpoint in the balanced atlas, total image sums of squares are partitioned exactly into among assigned-taxon means, among photographs within assigned taxa, and among heads within photographs. Species/taxa are resampled as clusters for uncertainty. One-head-per-photo and equal-10-photo sensitivities reduce within-photograph multiplicity and unequal taxon replication.
 
 ### S4. Exhaustive within-taxon climate coefficients
-The primary 46,276-observation cohort uses one observation per source-assigned taxon × 0.25-degree cell after the ≤10 km positional-accuracy filter. Four CHELSA v2.1 predictors are demeaned within taxon and standardized. Nine endpoint components × four predictors yield 36 models with taxon-clustered standard errors and one BH family.
+The primary 46,276-observation cohort uses one observation per source-assigned taxon × 0.25-degree cell after the ≤10 km positional-accuracy filter. Four CHELSA v2.1 predictors are demeaned within taxon and standardized. The inferential multiplicity family contains 36 component-wise models: nine endpoint components × four predictors, with taxon-clustered standard errors and one BH correction.
+
+For readable Supplement presentation, Table S4 does **not** pretend that circular hue has a single scalar coefficient test. It contains 28 ordinary linear endpoint–predictor rows plus four joint hue-vector summaries that pair the archived sine and cosine coefficients. The original 36-component BH family remains the inferential family; joint hue rows are descriptive vector summaries and therefore do not receive invented scalar q values. Component-level supported hue rows are reported in the main manuscript and frozen claim registry.
 
 ### S5. Grouped SPDE-INLA
-Each primary endpoint is analysed separately under four predeclared predictor groups: climate, climate + topography, climate + soil, and full environment. Groups for a given endpoint share the same complete-case cohort. Models include a source-assigned taxon iid random intercept and a Matérn spatial field. Full model summaries, fixed effects, stability summaries, hyperparameters and predictor selections are provided as Tables S5–S6d.
+Each primary endpoint is analysed separately under four predeclared predictor groups: climate, climate + topography, climate + soil, and full environment. Groups for a given endpoint share the same complete-case cohort. Models include a source-assigned taxon iid random intercept and a Matérn spatial field. Full model summaries, fixed effects, stability summaries, hyperparameters, predictor selections and run metadata are provided as Tables S5–S6e.
 
 ### S6. High-resolution involucral architecture
 Detected heads meeting the minimum resolution requirement are subjected to sharpness, segmentation and mirror-repeatability QC. The final inferential auxiliary endpoints are projection roughness, outward spread fraction and maximum spine-like projection relative to head radius. These are two-dimensional contour proxies and are not direct botanical measurements of bract angle, recurvature, spine length or defence.
@@ -35,7 +37,7 @@ For each primary endpoint, the lowest-WAIC frozen SPDE specification was refitte
 The union of frozen source names was checked against WCVP through the GBIF checklist interface. Eight synonym conflicts would merge active operational units. All eight are collapsed simultaneously in a sensitivity rerun of nested visible variance and the full 36-model primary climate family.
 
 ### S11. Withdrawn lability analysis and precision audit
-The former environmental-association score was the RMS magnitude of unpooled absolute taxon-specific slopes. It was strongly associated with slope sample size and standard error. The former negative variation–association relationship and median-split quadrants are therefore withdrawn. A precision-aware reanalysis using noise-adjusted association energy and hierarchical variance meta-regression found no common cross-module coupling. The full archived species-specific coefficient table is supplied only for statistical provenance.
+The former environmental-association score was the RMS magnitude of unpooled absolute taxon-specific slopes. It was strongly associated with slope sample size and standard error. The former negative variation–association relationship and median-split quadrants are therefore withdrawn. A precision-aware reanalysis using noise-adjusted association energy and hierarchical variance meta-regression found no common cross-module coupling. The full archived taxon-specific coefficient table is supplied only as release provenance, not as current biological headline evidence.
 
 ### S12. Independent validation gates
 The leakage-free detector audit comprises 1,000 images, including 250 double-labelled images, with zero observation/photo overlap with detector development. Independent human adjudication remains incomplete. Orientation, colour and outline also require genuinely independent reference measurements. Internal overlays and mirror repeatability are technical checks, not biological accuracy validation.
@@ -45,20 +47,20 @@ The leakage-free detector audit comprises 1,000 images, including 250 double-lab
 - **Table S1.** Canonical cohorts and analysis roles.
 - **Table S2.** Trait definitions, measurement references and assessability limits.
 - **Table S3.** Full nested visible-variance decomposition and replication sensitivities.
-- **Table S4.** Complete 36-row exhaustive within-taxon climate coefficient family.
+- **Table S4.** Primary within-taxon climate coefficient presentation: 28 non-circular linear rows plus four joint hue-vector summaries. The inferential BH family remains the original 36 component-wise tests.
 - **Table S5.** Grouped SPDE model-group summary and WAIC.
-- **Table S6.** Full grouped SPDE fixed-effect table; S6a lists globally BH-supported rows, S6b effect stability, S6c hyperparameters and S6d predictor selection.
+- **Table S6.** Full grouped SPDE fixed-effect table; S6a lists globally BH-supported rows, S6b effect stability, S6c hyperparameters, S6d predictor selection and S6e run metadata.
 - **Table S7.** Among-taxon niche-permutation summary.
 - **Table S8.** Randomized-tree PGLS rows retained in all 50 trees.
 - **Table S9.** Residual Moran and leave-one-region-out robustness.
 - **Table S10.** WCVP synonym conflicts used in simultaneous-collapse sensitivity.
-- **Table S11.** Withdrawn-lability precision-confounding audit; archived taxon-specific coefficients are supplied as a separate machine-readable table.
+- **Table S11.** Withdrawn-lability precision-confounding audit; archived taxon-specific coefficients are supplied separately as release-only machine-readable provenance.
 - **Table S12.** Submission-completion gates.
 
 ## Supplementary Figures
 
 - **Figure S1.** Nested visible-variance sensitivities.
-- **Figure S2.** Complete exhaustive primary endpoint–climate coefficient map.
+- **Figure S2.** Non-circular exhaustive-primary endpoint–climate coefficient map; asterisks mark rows supported within the original 36-component BH family.
 - **Figure S3.** SPDE model-group ΔWAIC by endpoint.
 - **Figure S4.** Residual Moran's I for the nine primary endpoints.
 - **Figure S5.** Leave-one-broad-region-out taxon-rank stability.

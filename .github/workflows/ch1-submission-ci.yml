@@ -60,6 +60,10 @@ jobs:
           python analysis/ch1/run_submission.py summary > /tmp/ch1_submission_summary.json
           python -m json.tool /tmp/ch1_submission_summary.json >/dev/null
 
+      - name: Validate Supplement tables against frozen claims
+        run: |
+          python analysis/validate_supplement_tables.py
+
       - name: Compile active Python control and analysis scripts
         run: |
           python - <<'PY'
