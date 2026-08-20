@@ -1,5 +1,5 @@
 {
-  "schema_version": 6,
+  "schema_version": 7,
   "status": "continuous within-taxon public-image phenomics submission pipeline; taxonomic, niche-null and spatial robustness complete; independent detector and continuous-measurement validation pending",
   "submission_story": {
     "primary_methodological_claim": "public photographs are converted into repeated continuous head-level phenotype measurements rather than categorical trait labels",
@@ -21,6 +21,7 @@
   "stages": {
     "continuous_trait_extraction": {
       "status": "frozen production extraction",
+      "workflow": ".github/workflows/ch1-run-continuous-primary-traits.yml",
       "detector_role": "localize visible capitula only",
       "measurement_role": "deterministic numerical extraction per assessable head",
       "primary_endpoints": [
@@ -43,6 +44,7 @@
       "finalizer": "analysis/finalize_detector_audit_annotations.py",
       "evaluation_script": "analysis/evaluate_independent_detector_audit.py",
       "workflow": ".github/workflows/ch1-independent-detector-audit-packet.yml",
+      "evaluation_workflow": ".github/workflows/ch1-evaluate-independent-detector-audit.yml",
       "metadata_artifact": 8066010557,
       "excluded_prior_source_artifact": 8068122589,
       "detector_recovery_artifact": 8076736948,
@@ -56,6 +58,7 @@
     },
     "independent_measurement_validity": {
       "status": "human/reference measurements pending",
+      "selection_script": "analysis/build_independent_trait_validation_packet.py",
       "required_modules": ["orientation", "colour", "outline"],
       "boundary": "production overlays and mirror repeatability are technical checks, not independent accuracy validation"
     },
@@ -83,6 +86,7 @@
     "climate_coefficients": {
       "status": "frozen primary within-taxon coefficient family",
       "script": "ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py",
+      "workflow": ".github/workflows/ch1-run-merge-exhaustive-continuous.yml",
       "inputs": ["exhaustive spatially thinned primary observation table"],
       "outputs": [
         "strict_spatial_thinned_with_chelsa.csv",
@@ -94,6 +98,8 @@
     },
     "grouped_spde": {
       "status": "frozen spatial-model coefficient family",
+      "script": "ch1_global/v2/83_run_lightweight_spde_inla.R",
+      "workflow": ".github/workflows/ch1-lightweight-spde-inla.yml",
       "model_groups": ["climate", "climate_topography", "climate_soil", "full"],
       "interpretation": "orientation and visible colour retain the clearest supported spatial-model structure; gross-outline effects are weaker/model-dependent"
     },
@@ -101,6 +107,7 @@
       "status": "completed auxiliary high-resolution layer",
       "measurement_script": "ch1_global/v2/59_measure_involucre_auxiliary_continuous.py",
       "join_script": "ch1_global/v2/62_join_primary_auxiliary_continuous.py",
+      "workflow": ".github/workflows/ch1-qc-join-involucre.yml",
       "final_inferential_endpoints": [
         "involucre_projection_roughness",
         "involucre_spread_fraction",
@@ -119,6 +126,7 @@
       "input_builder": "analysis/prepare_spatial_diagnostic_input.py",
       "audit_script": "analysis/audit_spatial_robustness.py",
       "workflow": ".github/workflows/ch1-spde-residual-export.yml",
+      "audit_workflow": ".github/workflows/ch1-spatial-robustness-audit.yml",
       "successful_run_id": 31152400475,
       "artifact_id": 8983877726,
       "artifact_sha256": "151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
@@ -177,6 +185,7 @@
     },
     "historical_sensitivity": {
       "status": "sensitivity only; not resolved phylogenetic correction",
+      "workflow": ".github/workflows/ch1-historical-constraint-sensitivity.yml",
       "n_atlas_taxa": 216,
       "n_direct_backbone_taxa": 54,
       "n_randomized_trees": 50,
@@ -184,7 +193,7 @@
     },
     "legacy_lability_withdrawn": {
       "script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
-      "status": "retained for provenance; raw absolute-slope RMS and quadrants are not manuscript evidence",
+      "status": "retained for provenance only; raw absolute-slope RMS and quadrants are not manuscript evidence",
       "reason": "The legacy environmental-association score was strongly confounded with taxon slope sample size and standard error."
     },
     "precision_aware_lability": {
@@ -208,26 +217,20 @@
         "figure_revised_variation_association.svg"
       ]
     },
-    "eazami_trait_handoff": {
-      "status": "implemented in PR57",
-      "summary_exporter": "analysis/export_eazami_trait_handoff.py",
-      "japan38_observation_exporter": "analysis/export_eazami_japan38_exhaustive_traits.py",
-      "summary_boundary": "taxon median/MAD bridge does not preserve full within-taxon distributions",
-      "distribution_rule": "use frozen observation-level export whenever downstream inference depends on within-taxon structure"
-    },
     "claims": {
       "script": "analysis/validate_final_claims.py",
       "inputs": ["manuscript/final_claims.json"],
       "outputs": ["validated current claim registry"]
     },
-    "submission_validation": {
-      "script": "ch1_global/v2/69_validate_submission_outputs.py",
-      "config": "ch1_global/v2/submission_config.json"
+    "supplement": {
+      "status": "in assembly from frozen result families",
+      "source": "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
+      "tables": "manuscript/supplement/tables/"
     },
-    "submission_manifest": {
-      "script": "ch1_global/v2/70_build_submission_manifest.py",
-      "config": "ch1_global/v2/submission_config.json",
-      "outputs": ["checksums", "table dimensions", "software versions", "commit identity"]
+    "submission_release": {
+      "status": "blocked until external detector and measurement-validation gates close",
+      "contract": "analysis/ch1/submission_contract.json",
+      "rule": "do not use the superseded July submission_config/69/70 bundle contract as the current scientific release contract"
     }
   },
   "current_submission_gates": {

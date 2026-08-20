@@ -31,17 +31,15 @@ def command_check(_: argparse.Namespace) -> None:
         "region_script",
         "input_builder",
         "audit_script",
-        "summary_exporter",
-        "japan38_observation_exporter",
+        "workflow",
+        "evaluation_workflow",
+        "audit_workflow",
     )
     for stage in pipeline.get("stages", {}).values():
         for key in path_keys:
             value = stage.get(key)
             if value and not (ROOT / value).is_file():
                 missing.append(value)
-        workflow = stage.get("workflow")
-        if workflow and not (ROOT / workflow).is_file():
-            missing.append(workflow)
 
     required = [
         "README.md",
@@ -51,6 +49,8 @@ def command_check(_: argparse.Namespace) -> None:
         "manuscript/EXTERNAL_COMPLETION_GATES.md",
         "manuscript/FIGURE_TABLE_MAP.md",
         "manuscript/RUNBOOK.md",
+        "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
+        "analysis/ch1/submission_contract.json",
     ]
     missing.extend(path for path in required if not (ROOT / path).is_file())
     if missing:
