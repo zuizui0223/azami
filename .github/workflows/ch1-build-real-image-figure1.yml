@@ -5,7 +5,6 @@ on:
   pull_request:
     paths:
       - "analysis/build_real_image_figure1.py"
-      - ".github/workflows/ch1-build-real-image-figure1.yml"
       - "ch1_global/v2/52_measure_primary_traits_continuous.py"
       - "ch1_global/v2/55_run_primary_traits_continuous.py"
       - "ch1_global/v2/56_run_primary_traits_continuous_v2.py"

@@ -4,7 +4,6 @@ on:
   pull_request:
     paths:
       - "analysis/assemble_supplement_machine_tables.py"
-      - ".github/workflows/ch1-assemble-supplement-machine-tables.yml"
   workflow_dispatch:
 
 permissions:
