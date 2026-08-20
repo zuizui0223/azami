@@ -59,7 +59,6 @@ jobs:
       - name: Build Figure 1 from actual executed photographs
         run: |
           mkdir -p figure1-real-output
-          set +e
           python analysis/build_real_image_figure1.py \
             --global-artifact-dir frozen/global \
             --continuous-artifact-dir frozen/continuous \
@@ -67,9 +66,7 @@ jobs:
             --repo-root . \
             --out-dir figure1-real-output \
             > figure1-real-output/build.log 2>&1
-          status=$?
           cat figure1-real-output/build.log
-          exit ${status}
 
       - name: Record workflow provenance
         if: always()
@@ -83,18 +80,18 @@ jobs:
             "workflow_run_id": os.environ["GITHUB_RUN_ID"],
             "commit_sha": os.environ["GITHUB_SHA"],
             "source_artifacts": [8099953404, 8225059018, 8066010557],
-            "scope": "presentation-only reconstruction from frozen YOLO metadata and v2 measurements",
+            "scope": "presentation-only reconstruction from frozen YOLO metadata and continuous v2 measurements",
           }
           Path("figure1-real-output/workflow_provenance.json").write_text(json.dumps(payload, indent=2) + "\n")
           PY
 
-      - name: Commit successful rendered Figure 1 to the PR branch
+      - name: Commit rendered Figure 1 to PR branch
         if: github.event_name == 'pull_request' && success()
         env:
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           set -euo pipefail
-          target="manuscript/figures/supervisor_review"
+          target="manuscript/figures/main"
           mkdir -p "${target}"
           cp figure1-real-output/figure1_real_photo_yolo_pipeline.png "${target}/figure1_real_photo_yolo_pipeline.png"
           cp figure1-real-output/figure1_real_photo_yolo_pipeline.svg "${target}/figure1_real_photo_yolo_pipeline.svg"
@@ -106,7 +103,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Rendered Figure 1 is unchanged"
           else
-            git commit -m "Add rendered actual-photo Figure 1"
+            git commit -m "Refresh rendered actual-photo Figure 1"
             git push origin "HEAD:${HEAD_BRANCH}"
           fi
 

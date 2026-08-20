@@ -75,6 +75,15 @@ jobs:
           print(f"compiled {count} Python files")
           PY
 
+      - name: Smoke-build Supplement figures
+        run: |
+          rm -rf /tmp/ch1-supplement-figures
+          python analysis/build_supplement_figures.py \
+            --tables-dir manuscript/supplement/tables \
+            --out-dir /tmp/ch1-supplement-figures
+          test "$(find /tmp/ch1-supplement-figures -maxdepth 1 -name 'Figure_S*.png' | wc -l)" -eq 5
+          test "$(find /tmp/ch1-supplement-figures -maxdepth 1 -name 'Figure_S*.svg' | wc -l)" -eq 5
+
       - name: Parse active R submission scripts
         uses: r-lib/actions/setup-r@v2
 

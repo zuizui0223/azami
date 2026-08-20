@@ -1,5 +1,17 @@
 # Supplement status
 
-The supplement source is now part of the active submission branch. Small summary tables are committed directly. Large machine-readable tables (full grouped SPDE fixed effects/hyperparameters and the archived species-specific slope table used only for the withdrawn-lability precision audit) are generated from frozen workflow artifacts and belong in the final checksummed submission bundle; they should not be hand-edited.
+The Supplement is part of the active submission branch. Frozen summary tables are committed under `tables/`; large release-only machine-readable tables are copied from the pinned workflow artifacts into the final checksummed archive rather than hand-edited.
 
-The supplement must remain synchronized with `manuscript/final_claims.json`, `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` and `analysis/ch1/pipeline.json`.
+Generate the five Supplement figures from the committed frozen summary tables with:
+
+```bash
+python analysis/build_supplement_figures.py \
+  --tables-dir manuscript/supplement/tables \
+  --out-dir manuscript/supplement/figures
+```
+
+The figure builder is presentation-only: it does not refit models or alter cohorts. It writes PNG and SVG versions of Figures S1–S5. The generator has been smoke-tested against the frozen Supplement tables.
+
+The Supplement must remain synchronized with `manuscript/final_claims.json`, `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` and `analysis/ch1/pipeline.json`.
+
+Release-only full tables include the complete grouped-SPDE fixed effects/hyperparameters and the archived taxon-specific slope table used solely for the withdrawn-lability precision audit. The latter is provenance, not biological headline evidence.
