@@ -1,0 +1,46 @@
+{
+  "purpose": "machine-readable Supplement packaging from frozen artifacts",
+  "scientific_effect": "none; exact archived outputs copied without refitting",
+  "spde_artifact_id": "8313574392",
+  "precision_artifact_id": "8330350031",
+  "precision_summary_source": "manuscript/results/reviewer_precision_summary.json",
+  "git_sha": "a7420eae313b6a7d37a06bc619aca71f45f89391",
+  "files": [
+    {
+      "source_name": "spde_fixed_effects_by_group.csv",
+      "output": "supplement-machine-output/tables/S06_spde_fixed_effects_full.csv",
+      "size_bytes": 95723,
+      "sha256": "10b9488d6dccbae73c05cda9100d34aac44c8774fa67ac6d2a442db5e43c7fac"
+    },
+    {
+      "source_name": "spde_effect_stability_across_groups.csv",
+      "output": "supplement-machine-output/tables/S06b_spde_effect_stability.csv",
+      "size_bytes": 13217,
+      "sha256": "92ea196404b06301ce157784fe1ba570a92957b1fd913ea0ceb571830700fdba"
+    },
+    {
+      "source_name": "spde_hyperparameters_by_group.csv",
+      "output": "supplement-machine-output/tables/S06c_spde_hyperparameters.csv",
+      "size_bytes": 24814,
+      "sha256": "b2e20e29f64cc3935fc5881bbc4190eeb1578901ecefe27b3f4c13a7ef14c30d"
+    },
+    {
+      "source_name": "spde_predictor_selection_by_group.csv",
+      "output": "supplement-machine-output/tables/S06d_spde_predictor_selection.csv",
+      "size_bytes": 1623,
+      "sha256": "cceb44b60f06886f6ebca578e8e5a1c1adecc927d7ff632d27c9fba91783bb6d"
+    },
+    {
+      "source_name": "spde_run_metadata.csv",
+      "output": "supplement-machine-output/tables/S06e_spde_run_metadata.csv",
+      "size_bytes": 164,
+      "sha256": "9eff85242756ba6c8660a0d5cd0724ce5230cc4fef93f573e77cb2de484e0a17"
+    },
+    {
+      "source_name": "table_s2_species_specific_coefficients.csv",
+      "output": "supplement-machine-output/release_only/S11_species_specific_coefficients_archived.csv",
+      "size_bytes": 628518,
+      "sha256": "75fbb55b5e3e2ad317bbd2daa7b0fe03e053cff957d4043870a2d16ec3d1cb12"
+    }
+  ]
+}
