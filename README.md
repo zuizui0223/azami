@@ -13,6 +13,16 @@ The current headline is deliberately scale-explicit:
 
 Across nine primary endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means. Orientation and visible colour show the clearest environmental structure after spatial modelling; most gross-outline effects are weaker or model-dependent. These are observational image-derived associations, not genetic variance, plasticity, local adaptation, pollinator causation or evolutionary rate.
 
+## Azami → EAzami boundary
+
+Azami is the **observational macro layer**: it freezes the global environment–trait and within-taxon pattern bundle without assigning causal mechanisms.
+
+`zuizui0223/EAzami` is the downstream **mechanism-reduction layer**: it combines frozen Azami targets with quantitative pollination, herbivory and fitness evidence and asks whether minimal ecological/evolutionary models can reproduce the joint pattern bundle.
+
+Do not move pollinator/antagonist causation or pattern-reduction simulation into Chapter 1. The explicit boundary is documented in:
+
+`manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md`.
+
 ## Start here
 1. `manuscript/SUBMISSION_MANUSCRIPT.md` — manuscript-facing story and section order.
 2. `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — frozen cohort names, counts and permitted analyses.
@@ -21,6 +31,7 @@ Across nine primary endpoints, 0.589–0.931 of visible image variance occurs be
 5. `analysis/ch1/run_submission.py` — structural/claim checks and status summary.
 6. `manuscript/supplement/` — Supporting Information source and tables.
 7. `manuscript/EXTERNAL_COMPLETION_GATES.md` — remaining external validation.
+8. `manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md` — explicit observation → mechanism handoff.
 
 ## Frozen implementation
 Exact numbered files under `ch1_global/v2/` remain in place because executed workflows and artifact provenance cite those paths. Do not rename or rewrite them merely to simplify the tree. The active author/reviewer interface is `analysis/ch1/`.
