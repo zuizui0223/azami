@@ -1,0 +1,88 @@
+name: Ch1 assemble Supplement machine tables
+
+on:
+  pull_request:
+    paths:
+      - "analysis/assemble_supplement_machine_tables.py"
+      - ".github/workflows/ch1-assemble-supplement-machine-tables.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download pinned frozen artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p frozen/spde frozen/precision
+          curl --fail --location \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${REPOSITORY}/actions/artifacts/8313574392/zip" \
+            --output frozen/spde.zip
+          curl --fail --location \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${REPOSITORY}/actions/artifacts/8330350031/zip" \
+            --output frozen/precision.zip
+          unzip -q frozen/spde.zip -d frozen/spde
+          unzip -q frozen/precision.zip -d frozen/precision
+
+      - name: Assemble Supplement tables
+        run: |
+          rm -rf supplement-machine-output
+          python analysis/assemble_supplement_machine_tables.py \
+            --spde-root frozen/spde \
+            --precision-root frozen/precision \
+            --out-dir supplement-machine-output \
+            --spde-artifact-id 8313574392 \
+            --precision-artifact-id 8330350031 \
+            --git-sha "${GITHUB_SHA}"
+
+      - name: Commit submission-facing SPDE tables and provenance
+        if: github.event_name == 'pull_request' && success()
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          mkdir -p manuscript/supplement/tables
+          cp supplement-machine-output/tables/S06_spde_fixed_effects_full.csv manuscript/supplement/tables/
+          cp supplement-machine-output/tables/S06b_spde_effect_stability.csv manuscript/supplement/tables/
+          cp supplement-machine-output/tables/S06c_spde_hyperparameters.csv manuscript/supplement/tables/
+          cp supplement-machine-output/tables/S06d_spde_predictor_selection.csv manuscript/supplement/tables/
+          cp supplement-machine-output/tables/S06e_spde_run_metadata.csv manuscript/supplement/tables/
+          cp supplement-machine-output/SUPPLEMENT_MACHINE_TABLE_PROVENANCE.json manuscript/supplement/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manuscript/supplement/tables/S06*.csv manuscript/supplement/SUPPLEMENT_MACHINE_TABLE_PROVENANCE.json
+          if git diff --cached --quiet; then
+            echo "Supplement machine tables are unchanged"
+          else
+            git commit -m "Refresh frozen Supplement machine tables"
+            git push origin "HEAD:${HEAD_BRANCH}"
+          fi
+
+      - name: Upload complete Supplement machine bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-supplement-machine-tables
+          path: supplement-machine-output
+          retention-days: 90
