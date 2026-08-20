@@ -21,7 +21,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out-dir", type=Path, required=True)
     p.add_argument("--spde-artifact-id", required=True)
     p.add_argument("--precision-artifact-id", required=True)
-    p.add_argument("--git-sha", default="")
     return p.parse_args()
 
 
@@ -78,7 +77,6 @@ def main() -> None:
         "spde_artifact_id": str(a.spde_artifact_id),
         "precision_artifact_id": str(a.precision_artifact_id),
         "precision_summary_source": "manuscript/results/reviewer_precision_summary.json",
-        "git_sha": a.git_sha,
         "files": files,
     }
     target = a.out_dir / "SUPPLEMENT_MACHINE_TABLE_PROVENANCE.json"

@@ -4,7 +4,6 @@
   "spde_artifact_id": "8313574392",
   "precision_artifact_id": "8330350031",
   "precision_summary_source": "manuscript/results/reviewer_precision_summary.json",
-  "git_sha": "b9bd1f155f9dbed8a6c378e36a6bd20c987462dc",
   "files": [
     {
       "source_name": "spde_fixed_effects_by_group.csv",

@@ -49,14 +49,12 @@ jobs:
       - name: Assemble Supplement tables
         run: |
           rm -rf supplement-machine-output
-          checkout_sha="$(git rev-parse HEAD)"
           python analysis/assemble_supplement_machine_tables.py \
             --spde-root frozen/spde \
             --precision-root frozen/precision \
             --out-dir supplement-machine-output \
             --spde-artifact-id 8313574392 \
-            --precision-artifact-id 8330350031 \
-            --git-sha "${checkout_sha}"
+            --precision-artifact-id 8330350031
 
       - name: Commit submission-facing SPDE tables and provenance
         if: github.event_name == 'pull_request' && success()
