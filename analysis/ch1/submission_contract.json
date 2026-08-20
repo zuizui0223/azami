@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
@@ -14,6 +14,18 @@
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "manuscript/EXTERNAL_COMPLETION_GATES.md",
     "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
+    "manuscript/supplement/tables/S01_canonical_cohorts.csv",
+    "manuscript/supplement/tables/S02_trait_scope_and_assessability.csv",
+    "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv",
+    "manuscript/supplement/tables/S04_nested_visible_variance.csv",
+    "manuscript/supplement/tables/S05_grouped_SPDE_stable_supported_patterns.csv",
+    "manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv",
+    "manuscript/supplement/tables/S07_niche_permutation_summary.csv",
+    "manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv",
+    "manuscript/supplement/tables/S09_spatial_robustness.csv",
+    "manuscript/supplement/tables/S10_wcvp_synonym_candidates.csv",
+    "manuscript/supplement/tables/S11_precision_confounding_audit_summary.csv",
+    "manuscript/supplement/tables/S12_submission_gates.csv",
     "analysis/ch1/pipeline.json"
   ],
   "forbidden_active_paths": [
