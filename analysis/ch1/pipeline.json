@@ -1,14 +1,14 @@
 {
-  "schema_version": 6,
-  "status": "continuous within-taxon public-image phenomics submission pipeline; taxonomic, niche-null and spatial robustness complete; independent detector and continuous-measurement validation pending",
+  "schema_version": 7,
+  "status": "submission-only continuous within-taxon public-image phenomics pipeline; computational robustness complete; independent detector and continuous-measurement validation pending",
   "submission_story": {
     "primary_methodological_claim": "public photographs are converted into repeated continuous head-level phenotype measurements rather than categorical trait labels",
     "primary_biological_claim": "substantial visible variation occurs below taxon means and environmental structure is trait- and scale-specific, strongest for orientation and visible colour",
-    "legacy_lability_status": "precision-confounded legacy result withdrawn from headline and retained as provenance only"
+    "legacy_lability_status": "withdrawn from biological headline; retained only as statistical provenance/QA"
   },
   "policy": {
     "move_numbered_scripts": false,
-    "reason": "The numbered ch1_global/v2 paths generated the frozen observation and coefficient artifacts and remain stable provenance targets.",
+    "reason": "Exact ch1_global/v2 paths are embedded in executed workflow/artifact provenance.",
     "new_analysis_version_required_for": [
       "trait definition changes",
       "measurement threshold changes",
@@ -33,26 +33,19 @@
         "shape_circularity",
         "shape_solidity",
         "shape_width_cv"
-      ],
-      "interpretation": "continuous visible image phenotypes; not categorical classifier outputs"
+      ]
     },
     "independent_detector_audit": {
-      "status": "packet and evaluation infrastructure implemented; independent manual annotations pending",
+      "status": "packet/evaluator implemented; human annotation pending",
       "selection_script": "analysis/build_independent_detector_audit_packet.py",
       "annotation_app": "analysis/detector_audit_annotation_app.py",
       "finalizer": "analysis/finalize_detector_audit_annotations.py",
       "evaluation_script": "analysis/evaluate_independent_detector_audit.py",
       "workflow": ".github/workflows/ch1-independent-detector-audit-packet.yml",
-      "metadata_artifact": 8066010557,
-      "excluded_prior_source_artifact": 8068122589,
-      "detector_recovery_artifact": 8076736948,
-      "weight_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
-      "production_confidence": 0.25,
-      "audit_inference_minimum_confidence": 0.01,
-      "matching_iou": 0.5,
       "planned_images": 1000,
       "double_label_fraction": 0.25,
-      "independence_rule": "exclude every prior proposal/training photo_id and obs_id before sampling"
+      "production_confidence": 0.25,
+      "matching_iou": 0.5
     },
     "independent_measurement_validity": {
       "status": "human/reference measurements pending",
@@ -63,37 +56,18 @@
       "script": "analysis/decompose_nested_visible_variance.py",
       "workflow": ".github/workflows/ch1-nested-visible-variance.yml",
       "frozen_input_artifact": 8225059018,
-      "input": "aggregated/primary_trait_continuous_head_with_metadata.csv",
-      "outputs": [
-        "nested_visible_variance_summary.csv",
-        "nested_visible_variance_metadata.json",
-        "figure_nested_visible_variance.svg",
-        "figure_nested_visible_variance.png"
-      ],
-      "levels": [
-        "assigned taxon",
-        "photograph/observation within taxon",
-        "detected head within photograph"
-      ],
-      "sensitivities": [
-        "one deterministic head per photograph",
-        "10 photographs per eligible taxon across 500 balanced repeats"
-      ]
+      "levels": ["assigned taxon", "photograph/observation within taxon", "detected head within photograph"]
     },
     "climate_coefficients": {
       "status": "frozen primary within-taxon coefficient family",
       "script": "ch1_global/v2/75_run_exhaustive_within_species_climate_analysis.py",
-      "inputs": ["exhaustive spatially thinned primary observation table"],
-      "outputs": [
-        "strict_spatial_thinned_with_chelsa.csv",
-        "exhaustive_within_species_climate_models.csv"
-      ],
       "n_component_tests": 36,
-      "n_bh_supported_component_rows": 8,
-      "rerun_policy": "Only when the exhaustive spatial cohort, taxonomic units, CHELSA source or extraction code changes."
+      "n_bh_supported_component_rows": 8
     },
     "grouped_spde": {
       "status": "frozen spatial-model coefficient family",
+      "script": "ch1_global/v2/83_run_lightweight_spde_inla.R",
+      "workflow": ".github/workflows/ch1-lightweight-spde-inla.yml",
       "model_groups": ["climate", "climate_topography", "climate_soil", "full"],
       "interpretation": "orientation and visible colour retain the clearest supported spatial-model structure; gross-outline effects are weaker/model-dependent"
     },
@@ -101,79 +75,43 @@
       "status": "completed auxiliary high-resolution layer",
       "measurement_script": "ch1_global/v2/59_measure_involucre_auxiliary_continuous.py",
       "join_script": "ch1_global/v2/62_join_primary_auxiliary_continuous.py",
-      "final_inferential_endpoints": [
-        "involucre_projection_roughness",
-        "involucre_spread_fraction",
-        "spine_relative_length_max_proxy"
-      ],
-      "provenance_only_endpoint": "spine_peak_count_proxy",
-      "le_10km_observations": 904,
-      "le_10km_taxa": 165,
-      "supported_pattern": "all three final endpoints positive with BIO4 temperature seasonality after auxiliary-family BH correction",
+      "final_inferential_endpoints": ["involucre_projection_roughness", "involucre_spread_fraction", "spine_relative_length_max_proxy"],
       "boundary": "2D image-geometry proxies, not direct botanical phyllary/spine states"
     },
     "spde_spatial_robustness": {
-      "status": "completed for frozen analysis",
+      "status": "complete",
       "residual_export_script": "analysis/export_spde_best_model_residuals.R",
       "region_script": "analysis/build_naturalearth_broad_region_lookup.py",
       "input_builder": "analysis/prepare_spatial_diagnostic_input.py",
       "audit_script": "analysis/audit_spatial_robustness.py",
       "workflow": ".github/workflows/ch1-spde-residual-export.yml",
       "successful_run_id": 31152400475,
-      "artifact_id": 8983877726,
-      "artifact_sha256": "151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
       "residual_morans_i_range": [-0.009627, 0.003016],
-      "n_endpoints_with_permutation_p_lt_0_05": 0,
-      "minimum_leave_one_region_out_spearman_rho": 0.856241,
-      "neighbor_geometry": "kNN on 3-D unit-sphere chord distance",
-      "interpretation": "diagnostic only; accepted coefficient tables unchanged"
+      "minimum_leave_one_region_out_spearman_rho": 0.856241
     },
     "environmental_niche_permutation": {
-      "status": "completed for current operational taxonomic units",
+      "status": "complete",
       "script": "analysis/permutation_test_trait_niche_contrasts.py",
       "workflow": ".github/workflows/ch1-niche-permutation-null.yml",
       "successful_run_id": 31152400487,
       "n_permutations": 10000,
       "all_complete_taxa": 148,
-      "direct_backbone_complete_taxa": 49,
-      "all_taxa_bh_supported_centroid_traits": [
-        "orientation_angle_degrees_median",
-        "corolla_lab_chroma_median",
-        "corolla_hue_sin_median",
-        "corolla_hue_cos_median",
-        "shape_width_cv_median"
-      ],
-      "all_taxa_bh_supported_overlap_traits": [
-        "orientation_angle_degrees_median",
-        "corolla_lab_chroma_median",
-        "corolla_hue_sin_median",
-        "corolla_hue_cos_median"
-      ],
-      "rerun_policy": "rerun if taxonomic freeze merges or removes active units"
+      "direct_backbone_complete_taxa": 49
     },
     "taxonomic_review_candidates": {
-      "status": "WCVP candidate audit complete; 24 high-priority nomenclatural notes remain",
+      "status": "candidate audit complete; 24 nomenclatural notes remain human review",
       "script": "analysis/build_wcvp_taxonomic_review_candidates.py",
       "workflow": ".github/workflows/ch1-wcvp-taxonomic-candidates.yml",
-      "successful_run_id": 31152400481,
       "n_input_names": 259,
-      "n_exact_unique": 243,
-      "n_exact_multiple": 16,
-      "n_routine_accepted_candidates": 235,
-      "n_synonym_candidates": 8,
-      "n_high_priority_review": 24,
-      "decision_boundary": "candidate matching never auto-finalizes accepted-name decisions"
+      "n_synonym_candidates": 8
     },
     "taxonomic_synonym_collapse": {
-      "status": "completed for source-assigned operational-unit analysis",
+      "status": "complete",
       "script": "analysis/audit_wcvp_synonym_collapse_sensitivity.py",
       "workflow": ".github/workflows/ch1-wcvp-synonym-collapse-sensitivity.yml",
-      "successful_run_id": 31153385658,
-      "artifact_id": 8984168407,
       "n_conflicts_collapsed": 8,
       "fdr_decisions_changed": 0,
-      "coefficient_signs_changed": 0,
-      "max_abs_standardized_beta_change": 0.000385
+      "coefficient_signs_changed": 0
     },
     "historical_sensitivity": {
       "status": "sensitivity only; not resolved phylogenetic correction",
@@ -182,53 +120,20 @@
       "n_randomized_trees": 50,
       "n_rows_bh_supported_in_all_randomized_trees": 6
     },
-    "legacy_lability_withdrawn": {
-      "script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
-      "status": "retained for provenance; raw absolute-slope RMS and quadrants are not manuscript evidence",
-      "reason": "The legacy environmental-association score was strongly confounded with taxon slope sample size and standard error."
-    },
-    "precision_aware_lability": {
+    "precision_audit_provenance": {
+      "status": "complete statistical QA; not a biological headline",
       "script": "analysis/reanalyze_lability_precision.py",
-      "workflow": ".github/workflows/ch1-reviewer-precision-reanalysis.yml",
-      "status": "completed statistical QA; no common cross-module coupling; not the primary biological story",
-      "frozen_input_artifact": 8330350031,
-      "inputs": [
-        "species_lability_axes.csv",
-        "species_trait_within_variation.csv",
-        "table_s2_species_specific_coefficients.csv"
-      ],
-      "outputs": [
-        "legacy_precision_diagnostic_species.csv",
-        "revised_species_axes.csv",
-        "revised_trait_association_energy.csv",
-        "revised_module_summary.csv",
-        "hierarchical_variance_group_summary.csv",
-        "reviewer_precision_summary.json",
-        "figure_precision_audit.svg",
-        "figure_revised_variation_association.svg"
-      ]
-    },
-    "eazami_trait_handoff": {
-      "status": "implemented in PR57",
-      "summary_exporter": "analysis/export_eazami_trait_handoff.py",
-      "japan38_observation_exporter": "analysis/export_eazami_japan38_exhaustive_traits.py",
-      "summary_boundary": "taxon median/MAD bridge does not preserve full within-taxon distributions",
-      "distribution_rule": "use frozen observation-level export whenever downstream inference depends on within-taxon structure"
+      "workflow": ".github/workflows/ch1-reviewer-precision-reanalysis.yml"
     },
     "claims": {
       "script": "analysis/validate_final_claims.py",
-      "inputs": ["manuscript/final_claims.json"],
-      "outputs": ["validated current claim registry"]
-    },
-    "submission_validation": {
-      "script": "ch1_global/v2/69_validate_submission_outputs.py",
-      "config": "ch1_global/v2/submission_config.json"
-    },
-    "submission_manifest": {
-      "script": "ch1_global/v2/70_build_submission_manifest.py",
-      "config": "ch1_global/v2/submission_config.json",
-      "outputs": ["checksums", "table dimensions", "software versions", "commit identity"]
+      "inputs": ["manuscript/final_claims.json"]
     }
+  },
+  "provenance_only": {
+    "withdrawn_lability_script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
+    "legacy_july_submission_contract": ["ch1_global/v2/submission_config.json", "ch1_global/v2/69_validate_submission_outputs.py"],
+    "rule": "preserve executed historical files but do not expose them through the active submission runner"
   },
   "current_submission_gates": {
     "completed": [
@@ -247,15 +152,5 @@
       "authorship and administrative metadata",
       "durable release and DOI"
     ]
-  },
-  "revised_precision_parameters": {
-    "status": "provenance/QA only",
-    "minimum_observations_per_taxon_trait_predictor": 10,
-    "linear_traits": 7,
-    "predictors_per_trait": 4,
-    "module_weighting": "equal orientation, colour and shape weights",
-    "hue_in_precision_test": "excluded because archived joint taxon hue vectors lack component standard errors",
-    "precision_bootstrap_repeats": 5000,
-    "random_seed": 20260722
   }
 }

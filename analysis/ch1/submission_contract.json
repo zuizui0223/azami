@@ -1,0 +1,63 @@
+{
+  "schema_version": 3,
+  "status": "2026-08 continuous-phenomics submission control contract",
+  "authoritative_files": [
+    "manuscript/final_claims.json",
+    "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
+    "analysis/ch1/pipeline.json",
+    "manuscript/SUBMISSION_MANUSCRIPT.md"
+  ],
+  "required_submission_paths": [
+    "README.md",
+    "manuscript/SUBMISSION_MANUSCRIPT.md",
+    "manuscript/final_claims.json",
+    "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
+    "manuscript/EXTERNAL_COMPLETION_GATES.md",
+    "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
+    "analysis/ch1/pipeline.json"
+  ],
+  "forbidden_active_paths": [
+    "ch1_japan",
+    "ch1_shared",
+    "ch3_trait_architecture",
+    "models",
+    "protocols",
+    "reports",
+    "archive",
+    "workflows",
+    "57回種生物学会.R",
+    "第57回種生物学会supp.R"
+  ],
+  "forbidden_active_workflows": [
+    ".github/workflows/ch1-phase1-lability.yml",
+    ".github/workflows/ch1-build-submission-bundle.yml",
+    ".github/workflows/ch1-export-eazami-trait-handoff.yml",
+    ".github/workflows/ch1-export-eazami-japan38-exhaustive-traits.yml",
+    ".github/workflows/ch1-score-detected-head-traits-clip.yml",
+    ".github/workflows/ch1-score-traits-ai-ensemble.yml",
+    ".github/workflows/ch1-run-global-ai-inference-shard.yml",
+    ".github/workflows/ch1-run-trait-environment-association-atlas.yml"
+  ],
+  "frozen_headline_counts": {
+    "balanced_atlas_observations": 3725,
+    "balanced_atlas_heads": 6626,
+    "balanced_atlas_taxa": 216,
+    "exhaustive_detected_observations": 406582,
+    "exhaustive_primary_observations": 46276,
+    "exhaustive_primary_taxa": 259,
+    "primary_endpoint_component_tests": 36,
+    "primary_BH_supported_component_rows": 8,
+    "direct_backbone_tips": 54,
+    "randomized_trees": 50
+  },
+  "submission_blockers": [
+    "independent detector human boxes",
+    "independent orientation/colour/outline reference measurements"
+  ],
+  "withdrawn_from_headline": [
+    "raw absolute-slope lability relation",
+    "median-split lability quadrants",
+    "categorical CLIP/AI trait proposals and their categorical environment atlas"
+  ],
+  "do_not_move": ["ch1_global/v2/"]
+}

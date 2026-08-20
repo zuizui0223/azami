@@ -1,66 +1,21 @@
-# Chapter 1 submission analysis
+# Chapter 1 frozen submission analysis
 
-## Scope
+This directory is the executed implementation layer behind the current continuous within-taxon public-image phenomics manuscript. New users should enter through `analysis/ch1/`; the numbered scripts here retain their exact paths because workflows, artifacts and provenance manifests cite them.
 
-This directory contains the reproducible analysis used for the Chapter 1 manuscript on global image-derived capitulum traits in *Cirsium*.
+## Current inferential structure
+- deterministic continuous head-level measurements after YOLO localization;
+- nested visible-variance decomposition across assigned taxa, photographs and heads;
+- exhaustive spatially thinned within-taxon climate coefficients;
+- grouped SPDE-INLA spatial models;
+- high-resolution involucre contour proxies;
+- among-taxon environmental-niche permutation tests;
+- PGLS/tree-placement historical sensitivity;
+- residual-spatial, region-omission and WCVP synonym-collapse robustness.
 
-The submission analysis is the lightweight grouped SPDE-INLA workflow. Experimental Random Forest, XGBoost, multivariate TMB, and phylogenetic analyses are not part of the manuscript analysis and remain only in Git history.
+The former raw lability/quadrant result is withdrawn from the biological headline. Scripts that produced it remain only as executed provenance/QA and must not be used as the submission entry point.
 
-## Primary analysis
+## Interpretation boundary
+All environment–trait results are observational spatial associations. They do not demonstrate plasticity, local adaptation, pollinator selection, evolutionary rate or adaptive radiation. The grafted historical layer is a sensitivity analysis, not a resolved Cirsium species phylogeny.
 
-The primary inferential model is implemented in:
-
-- `79_sample_one_environment_layer.py` — samples one environmental raster for the strict spatial cohort.
-- `80_merge_parallel_environment_layers.py` — merges available climate, topography, and SoilGrids layers and builds partial-depth 0–30 cm soil composites.
-- `83_run_lightweight_spde_inla.R` — fits the final grouped per-trait hierarchical SPDE-INLA models.
-- `.github/workflows/ch1-lightweight-spde-inla.yml` — reproduces the analysis from the frozen environment-layer artifacts.
-
-Nine continuous image-derived traits are analysed separately. Four predeclared predictor groups are compared: climate, climate + topography, climate + soil, and full environment. For each trait, the four groups use the same complete-case cohort. Environmental predictors are centred within species and globally standardized. Models include a species iid random intercept and a Matérn SPDE spatial field.
-
-## Frozen data provenance
-
-The strict spatial cohort and extracted environmental layers currently come from GitHub Actions run `29306454759`. The grouped SPDE-INLA outputs reused by the submission extensions come from run `29339137476`. The workflows download those frozen artifacts rather than resampling remote rasters.
-
-## Submission extensions
-
-The lightweight extension workflow adds analyses that do not repeat raster extraction or SPDE fitting:
-
-1. a priori orientation, colour, and shape module summaries;
-2. species-level multivariate trait PCA;
-3. descriptive environmental niche contrasts between low- and high-trait species quartiles;
-4. a candidate phenotypic lability/conservatism screen.
-
-The lability screen combines:
-
-- the fraction of total trait variance occurring within species, with species-bootstrap intervals;
-- median absolute standardized environmental effects from grouped SPDE-INLA;
-- the fraction of environmental effects retained after global BH screening;
-- consistency of effect direction across predictor groups.
-
-This is a comparative screening index, not an evolutionary-rate estimate. Without a defensible species-level phylogeny, manuscript language must use **candidate phenotypic lability**, **environmental responsiveness**, or **candidate conservatism**, not demonstrated evolutionary lability or phylogenetic conservatism.
-
-## Main outputs
-
-The primary workflow artifact contains:
-
-- `spde_model_group_summary.csv`;
-- `spde_fixed_effects_by_group.csv`;
-- `spde_effect_stability_across_groups.csv`;
-- `spde_hyperparameters_by_group.csv`;
-- `spde_predictor_selection_by_group.csv`;
-- `spde_run_metadata.csv`;
-- environment coverage and missing-layer reports.
-
-The extension artifact contains:
-
-- trait-module summaries and species trait PCA;
-- environmental niche contrast tables;
-- `trait_lability_conservatism_screen.csv`;
-- `module_lability_conservatism_summary.csv`;
-- `lability_screen_metadata.json`.
-
-## Interpretation rules
-
-SPDE-INLA remains the inferential analysis. Effects should be emphasized only when their direction is stable across relevant model groups and uncertainty is adequately narrow. BH-adjusted posterior tail-area values are screening summaries, not frequentist p-values.
-
-`corolla_hue_sin_median` and `corolla_hue_cos_median` are components of circular hue and should be interpreted jointly. Shape traits bounded near 0–1 require residual and sensitivity checks before strong biological interpretation. The candidate lability score must not be treated as a substitute for phylogenetic comparative analysis.
+## Frozen-path rule
+Do not rename, move or edit executed numbered scripts merely to make the tree prettier. Consolidation occurs through `analysis/ch1/pipeline.json`, current control files and the Supplement. A scientific input change requires a new analysis version and downstream rerun.

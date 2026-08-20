@@ -78,7 +78,9 @@ jobs:
 
       - name: Validate JSON and workflow YAML
         run: |
-          python -m json.tool ch1_global/v2/submission_config.json >/dev/null
+          python -m json.tool analysis/ch1/submission_contract.json >/dev/null
+          python -m json.tool analysis/ch1/pipeline.json >/dev/null
+          python -m json.tool manuscript/final_claims.json >/dev/null
           python - <<'PY'
           from pathlib import Path
           import yaml
@@ -92,7 +94,7 @@ jobs:
               print(path)
           PY
 
-      - name: Enforce production workflow policy
+      - name: Enforce retained production workflow policy
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -102,7 +104,6 @@ jobs:
               Path(".github/workflows/ch1-qc-join-involucre.yml"),
               Path(".github/workflows/ch1-integrate-continuous-prephylogenetic.yml"),
               Path(".github/workflows/ch1-historical-constraint-sensitivity.yml"),
-              Path(".github/workflows/ch1-build-submission-bundle.yml"),
               Path(".github/workflows/ch1-build-exhaustive-photo-queue.yml"),
               Path(".github/workflows/ch1-run-merge-exhaustive-continuous.yml"),
           ]
@@ -111,6 +112,8 @@ jobs:
               flags=re.MULTILINE,
           )
           for path in production:
+              if not path.is_file():
+                  raise SystemExit(f"Required retained production workflow missing: {path}")
               text = path.read_text(encoding="utf-8")
               if "workflow_dispatch:" not in text:
                   raise SystemExit(f"Production workflow lacks manual dispatch: {path}")
@@ -122,6 +125,11 @@ jobs:
                       f"Stale numeric artifact default in {path}: {match.group(0).strip()}"
                   )
           PY
+
+      - name: Enforce submission-only active path
+        run: |
+          python analysis/ch1/run_submission.py check
+          python analysis/ch1/run_submission.py claims
 
       - name: Reject stale active references
         run: |

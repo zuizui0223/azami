@@ -1,0 +1,8 @@
+Cohort,Size,Taxa,Purpose
+Balanced image-comparison atlas,"3,725 observations/photos; 6,626 heads",216,"Trait extraction summaries, nested head–photo–species variance, PCA and species-level historical analyses"
+Exhaustive detector-positive layer,"406,582 observations",286,Post-detection source layer before coordinate and spatial filtering
+Exhaustive spatially thinned primary,"46,276 observations",259,Primary within-species climate coefficients after ≤10 km restriction and taxon × 0.25° thinning
+Grouped SPDE-INLA complete cases,"31,666–34,472 observations per endpoint",139–141,"Spatially explicit within-species models with climate, topography and soil predictor groups"
+High-resolution involucre subset,"1,443 usable heads; 1,292 observations",210,Auxiliary involucre/spine-like proxies; ≤10 km tests used 904 observations from 165 taxa
+Species-level phylogenetic sensitivity,213–214 primary taxa; 210 auxiliary taxa,216 atlas taxa; 54 direct backbone tips,OLS/PGLS and 50 alternative randomized grafting trees for four CHELSA predictors
+Independent detector audit,"1,000 source images; 250 double-labelled",323,Leakage-free detector validation packet; human adjudication pending
