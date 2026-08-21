@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 10,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
@@ -22,6 +22,9 @@
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "manuscript/EXTERNAL_COMPLETION_GATES.md",
     "manuscript/FIGURE_TABLE_MAP.md",
+    "manuscript/MAIN_FIGURE_CAPTIONS.md",
+    "manuscript/FIGURE2_GEOGRAPHY_MANIFEST.md",
+    "manuscript/INTERPRETIVE_FIGURES_MANIFEST.md",
     "manuscript/supplement/README.md",
     "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
     "manuscript/supplement/REFERENCES.md",
@@ -44,6 +47,13 @@
     "manuscript/supplement/figure_data/FigureS45_spatial_robustness.csv",
     "analysis/build_supplement_figures.py",
     ".github/workflows/ch1-supplement-figures-ci.yml",
+    "analysis/build_main_figure2_geography.py",
+    ".github/workflows/ch1-main-figure2-geography-ci.yml",
+    "analysis/build_ch1_interpretive_figures.py",
+    "analysis/build_ch1_interpretive_figures_v2.py",
+    "analysis/build_ch1_interpretive_figures_v3.py",
+    "analysis/augment_figure1_with_analysis_scales.py",
+    ".github/workflows/ch1-interpretive-figures-ci.yml",
     "analysis/ch1/pipeline.json"
   ],
   "forbidden_active_paths": [
@@ -73,6 +83,8 @@
     "balanced_atlas_heads": 6626,
     "balanced_atlas_taxa": 216,
     "exhaustive_detected_observations": 406582,
+    "exhaustive_coordinate_usable_observations": 392989,
+    "exhaustive_strict_10km_observations": 297293,
     "exhaustive_primary_observations": 46276,
     "exhaustive_primary_taxa": 259,
     "primary_endpoint_component_tests": 36,
