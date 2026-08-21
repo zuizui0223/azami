@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "analysis/build_ch1_interpretive_figures.py"
+      - "analysis/build_ch1_interpretive_figures_v2.py"
       - ".github/workflows/ch1-interpretive-figures-ci.yml"
       - "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv"
       - "manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv"
@@ -64,7 +65,7 @@ jobs:
 
       - name: Build interpretive figures
         run: |
-          python analysis/build_ch1_interpretive_figures.py \
+          python analysis/build_ch1_interpretive_figures_v2.py \
             --environment source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --spde-fixed source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
             --primary-supported manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
