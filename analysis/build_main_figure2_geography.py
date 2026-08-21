@@ -130,16 +130,16 @@ def save(fig, out: Path, stem: str) -> None:
     plt.close(fig)
 
 
-def flow_box(ax, x: float, y: float, text: str) -> None:
+def flow_box(ax, x: float, y: float, text: str, fontsize: float = 7.25) -> None:
     ax.text(
-        x, y, text, transform=ax.transAxes, ha="center", va="center", fontsize=7.5,
-        bbox=dict(boxstyle="round,pad=0.32", facecolor="white", edgecolor="#555555", linewidth=0.8),
+        x, y, text, transform=ax.transAxes, ha="center", va="center", fontsize=fontsize,
+        bbox=dict(boxstyle="round,pad=0.28", facecolor="white", edgecolor="#555555", linewidth=0.75),
     )
 
 
 def arrow(ax, start: tuple[float, float], end: tuple[float, float]) -> None:
     ax.annotate("", xy=end, xytext=start, xycoords=ax.transAxes,
-                arrowprops=dict(arrowstyle="->", linewidth=0.85, color="#666666"))
+                arrowprops=dict(arrowstyle="->", linewidth=0.8, color="#666666"))
 
 
 def plot_main(world, densities, primary, env, out: Path, mappable_counts: dict[str, int]) -> None:
@@ -171,28 +171,30 @@ def plot_main(world, densities, primary, env, out: Path, mappable_counts: dict[s
     ax.axis("off")
     panel_label(ax, "C")
     ax.set_title("Two analysis streams and derived cohorts", fontsize=9, pad=4)
-    flow_box(ax, 0.50, 0.91, "Public biodiversity photographs")
-    flow_box(ax, 0.25, 0.72, "Balanced image atlas\n3,725 observations · 6,626 heads\n216 taxa")
-    flow_box(ax, 0.75, 0.72, "Exhaustive detector-positive stream\n406,582 observations · 286 taxa")
-    arrow(ax, (0.46, 0.87), (0.28, 0.78))
-    arrow(ax, (0.54, 0.87), (0.72, 0.78))
+    flow_box(ax, 0.50, 0.93, "Public biodiversity photographs", fontsize=7.4)
 
-    flow_box(ax, 0.14, 0.43, "Nested variance + taxon PCA\n+ historical sensitivity")
-    flow_box(ax, 0.38, 0.43, "High-resolution involucre\n1,443 heads · 1,292 observations\n210 taxa\n≤10 km tests: 904 obs · 165 taxa")
-    arrow(ax, (0.22, 0.65), (0.15, 0.50))
-    arrow(ax, (0.28, 0.65), (0.37, 0.50))
+    # Balanced image-comparison stream (left column)
+    flow_box(ax, 0.23, 0.75, "Balanced image atlas\n3,725 obs · 6,626 heads · 216 taxa")
+    flow_box(ax, 0.23, 0.49, "Nested variance · PCA · PGLS")
+    flow_box(ax, 0.23, 0.24, "High-resolution involucre\n1,443 heads · 1,292 obs · 210 taxa\n≤10 km: 904 obs · 165 taxa", fontsize=6.9)
+    arrow(ax, (0.46, 0.89), (0.27, 0.80))
+    arrow(ax, (0.23, 0.68), (0.23, 0.56))
+    arrow(ax, (0.23, 0.68), (0.23, 0.33))
 
-    flow_box(ax, 0.75, 0.54, "Coordinate usable\n392,989 observations · 271 taxa")
-    flow_box(ax, 0.75, 0.37, "≤10 km positional accuracy\n297,293 observations · 259 taxa")
-    flow_box(ax, 0.75, 0.20, "Primary thinned\n46,276 observations · 259 taxa")
-    flow_box(ax, 0.47, 0.17, "Grouped SPDE-INLA\n31,666–34,472 obs/endpoint\n139–141 taxa")
-    arrow(ax, (0.75, 0.65), (0.75, 0.60))
-    arrow(ax, (0.75, 0.48), (0.75, 0.43))
-    arrow(ax, (0.75, 0.31), (0.75, 0.26))
-    arrow(ax, (0.67, 0.20), (0.56, 0.18))
+    # Exhaustive spatial stream (right column)
+    flow_box(ax, 0.76, 0.77, "Detector-positive\n406,582 obs · 286 taxa")
+    flow_box(ax, 0.76, 0.62, "Coordinate usable\n392,989 obs · 271 taxa")
+    flow_box(ax, 0.76, 0.47, "≤10 km accuracy\n297,293 obs · 259 taxa")
+    flow_box(ax, 0.76, 0.32, "Primary thinned\n46,276 obs · 259 taxa")
+    flow_box(ax, 0.76, 0.15, "Grouped SPDE-INLA\n31,666–34,472 obs/endpoint · 139–141 taxa", fontsize=6.9)
+    arrow(ax, (0.54, 0.89), (0.72, 0.82))
+    arrow(ax, (0.76, 0.71), (0.76, 0.67))
+    arrow(ax, (0.76, 0.56), (0.76, 0.52))
+    arrow(ax, (0.76, 0.41), (0.76, 0.37))
+    arrow(ax, (0.76, 0.26), (0.76, 0.21))
 
     ax.text(0.02, 0.03, "Separate streams answer different scales; cohorts are not pooled under one FDR family.",
-            transform=ax.transAxes, fontsize=6.6, color="#555555", ha="left", va="bottom")
+            transform=ax.transAxes, fontsize=6.5, color="#555555", ha="left", va="bottom")
 
     ax = fig.add_subplot(gs[1, 1])
     bio1_c = pd.to_numeric(env["chelsa_bio01"], errors="coerce") * 0.1 - 273.15
