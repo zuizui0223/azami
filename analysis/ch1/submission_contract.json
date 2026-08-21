@@ -1,21 +1,30 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "analysis/ch1/pipeline.json",
-    "manuscript/SUBMISSION_MANUSCRIPT.md"
+    "manuscript/SUBMISSION_MANUSCRIPT.md",
+    "manuscript/06_references.md"
   ],
   "required_submission_paths": [
     "README.md",
     "manuscript/SUBMISSION_MANUSCRIPT.md",
+    "manuscript/00_title_abstract.md",
+    "manuscript/01_introduction.md",
+    "manuscript/02_methods.md",
+    "manuscript/03_results.md",
+    "manuscript/04_discussion.md",
+    "manuscript/05_conclusion_and_declarations.md",
+    "manuscript/06_references.md",
     "manuscript/final_claims.json",
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "manuscript/EXTERNAL_COMPLETION_GATES.md",
     "manuscript/FIGURE_TABLE_MAP.md",
     "manuscript/supplement/README.md",
     "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
+    "manuscript/supplement/REFERENCES.md",
     "manuscript/supplement/tables/S01_canonical_cohorts.csv",
     "manuscript/supplement/tables/S02_trait_scope_and_assessability.csv",
     "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv",

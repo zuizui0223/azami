@@ -14,10 +14,15 @@ This is the canonical submission-facing entry point for Chapter 1. The current s
 4. [`03_results.md`](03_results.md)
 5. [`04_discussion.md`](04_discussion.md)
 6. [`05_conclusion_and_declarations.md`](05_conclusion_and_declarations.md)
+7. [`06_references.md`](06_references.md)
+
+`06_references.md` is the submission-wide reference list. The older Introduction-only literature files remain drafting provenance and are not the reference source for the final manuscript.
 
 ## Current headline
 
 Public biodiversity photographs can be converted into repeated **numerical phenotype observations** rather than one species-level category. Across nine primary continuous endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means. Some of that repeated within-taxon variation is structured along environmental gradients, but the pattern is trait- and scale-specific: orientation and visible colour show the clearest environmental structure, most gross-outline traits are weaker after spatial modelling, and fine involucral contour architecture is associated with temperature seasonality in the high-resolution layer.
+
+The central biological conclusion is that capitulum phenotype is **modular rather than one climate-associated thistle syndrome**: orientation, visible colour, gross outline and fine involucral architecture show different environmental signatures, and within-taxon versus among-taxon analyses emphasize partly different gradients. The literature-backed mechanistic interpretation therefore generates separate hypotheses about reproductive microclimate/exposure, colour-mediated abiotic and biotic interactions, and antagonist/protection functions of involucral architecture rather than assigning one adaptive mechanism to all traits.
 
 The central methodological contribution is therefore:
 
@@ -60,6 +65,7 @@ The legacy precision-confounding audit and withdrawn lability quadrants belong i
 - [`results/NICHE_PERMUTATION_RESULTS_2026-08-07.md`](results/NICHE_PERMUTATION_RESULTS_2026-08-07.md) records the 10,000-permutation niche null.
 - [`results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md`](results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md) records residual Moran and region-omission diagnostics.
 - [`results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md`](results/WCVP_TAXONOMIC_SENSITIVITY_2026-08-07.md) records synonym-collapse sensitivity.
+- [`06_references.md`](06_references.md) is the submission-wide bibliography for citations in the manuscript.
 - [`../analysis/ch1/pipeline.json`](../analysis/ch1/pipeline.json) maps canonical executable stages.
 - [`EXTERNAL_COMPLETION_GATES.md`](EXTERNAL_COMPLETION_GATES.md) records completed versus genuinely external validation gates.
 - [`EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md`](EAzami_HANDOFF_AND_CHAPTER_BOUNDARY_2026-08-16.md) fixes the Chapter 1 → EAzami boundary.

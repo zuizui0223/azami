@@ -1,6 +1,8 @@
-# Introduction reference list
+# Introduction reference list — drafting provenance only
 
-This is the author-facing reference list corresponding to `01_introduction.md`. The BibTeX source of record is `references_introduction.bib`.
+> **Deprecated for submission assembly.** This file and `references_introduction.bib` preserve the earlier Introduction-only literature audit. The authoritative submission-wide bibliography is now [`06_references.md`](06_references.md), and Supporting Information has its own [`supplement/REFERENCES.md`](supplement/REFERENCES.md). Do not assemble a submission bibliography from this legacy list.
+
+The material below is retained only to preserve the literature-search trail that preceded the manuscript-wide reference audit.
 
 ## Intraspecific trait variation and ecological scale
 
@@ -31,9 +33,9 @@ This is the author-facing reference list corresponding to `01_introduction.md`. 
 16. Ackerfield, J. et al. (2020). A prickly puzzle: Generic delimitations in the Carduus–Cirsium group (Compositae: Cardueae: Carduinae). *Taxon*. Publisher metadata still requires final verification.
 17. Bureš, P., Knoll, A., Michálková, E., Šmarda, P. & Šmerda, J. (2018). *Cirsium greimleri*: a new species of thistle endemic to the Eastern Alps and Dinarides. *Preslia*, 90. Pagination requires final full-text verification.
 18. Bureš, P. et al. (2023). Evolution of genome size and GC content in the tribe Carduinae (Asteraceae): rare descending dysploidy and polyploidy, limited environmental control and strong phylogenetic signal. *Preslia*, 95. Complete metadata requires final verification.
-19. Michálková, E., Šmerda, J., Plačková, K., Knoll, A. & Bureš, P. (2023). Hybridization may endanger the rare North Apennine endemic *Cirsium bertolonii*. *Plant Systematics and Evolution*. Complete publisher metadata requires final verification.
+19. Michálková, E., Šmerda, J., Plačková, K., Knoll, Aleš & Bureš, Petr. (2023). Hybridization may endanger the rare North Apennine endemic *Cirsium bertolonii*. *Plant Systematics and Evolution*. Complete publisher metadata requires final verification.
 20. Moreyra, L. D. et al. (2023). African Mountain Thistles: Three New Genera in the Carduus–Cirsium Group. *Plants*, 12, 3083. https://doi.org/10.3390/plants12173083
 
-## Verification policy
+## Historical verification note
 
-References 1–15 and 20 have sufficiently stable bibliographic metadata for drafting. References 16–19 remain in the manuscript because they support essential genus-specific claims, but their publisher records and full texts must be checked before submission. No claim that *Cirsium* is a demonstrated adaptive radiation is supported by this list.
+The verification statuses above describe this earlier audit only. Current submission metadata must be taken from `06_references.md`, not from this file.
