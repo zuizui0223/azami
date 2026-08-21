@@ -6,7 +6,9 @@ on:
     paths:
       - "analysis/build_ch1_interpretive_figures.py"
       - "analysis/build_ch1_interpretive_figures_v2.py"
+      - "analysis/augment_figure1_with_analysis_scales.py"
       - ".github/workflows/ch1-interpretive-figures-ci.yml"
+      - "manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png"
       - "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv"
       - "manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv"
       - "manuscript/supplement/tables/S07_niche_permutation_summary.csv"
@@ -31,7 +33,7 @@ jobs:
       - name: Install pinned plotting dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install numpy==2.3.5 pandas==2.2.3 matplotlib==3.10.8 scikit-learn==1.7.2
+          python -m pip install numpy==2.3.5 pandas==2.2.3 matplotlib==3.10.8 scikit-learn==1.7.2 pillow==12.3.0
 
       - name: Download frozen enriched primary environment
         uses: actions/download-artifact@v4
@@ -57,6 +59,7 @@ jobs:
           sha256sum \
             source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
+            manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png \
             manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
             manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv \
             manuscript/supplement/tables/S07_niche_permutation_summary.csv \
@@ -65,6 +68,10 @@ jobs:
 
       - name: Build interpretive figures
         run: |
+          mkdir -p interpretive_release
+          python analysis/augment_figure1_with_analysis_scales.py \
+            --input-figure manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png \
+            --out-dir interpretive_release
           python analysis/build_ch1_interpretive_figures_v2.py \
             --environment source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --spde-fixed source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
@@ -77,11 +84,12 @@ jobs:
       - name: Validate release products
         run: |
           set -euo pipefail
+          test -s interpretive_release/Figure_1_image_to_multiscale_analysis.png
           test -s interpretive_release/Figure_4_taxon_trait_architecture.png
           test -s interpretive_release/Figure_5_environmental_effect_sizes.png
           test -s interpretive_release/Figure_6_scale_specificity_and_historical_sensitivity.png
           test -s interpretive_release/Figure_S8_environmental_sorting.png
-          test "$(find interpretive_release -maxdepth 1 -type f \( -name '*.png' -o -name '*.svg' -o -name '*.pdf' \) | wc -l)" -eq 12
+          test "$(find interpretive_release -maxdepth 1 -type f \( -name '*.png' -o -name '*.svg' -o -name '*.pdf' \) | wc -l)" -eq 15
           cp interpretive_source_sha256.txt interpretive_release/source_sha256.txt
           sha256sum interpretive_release/*.png interpretive_release/*.svg interpretive_release/*.pdf > interpretive_release/release_sha256.txt
           printf '%s\n' "$GITHUB_SHA" > interpretive_release/git_sha.txt
