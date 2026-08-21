@@ -1,5 +1,5 @@
 {
-  "schema_version": 9,
+  "schema_version": 10,
   "status": "2026-08 continuous-phenomics submission control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
@@ -22,7 +22,9 @@
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "manuscript/EXTERNAL_COMPLETION_GATES.md",
     "manuscript/FIGURE_TABLE_MAP.md",
+    "manuscript/MAIN_FIGURE_CAPTIONS.md",
     "manuscript/FIGURE2_GEOGRAPHY_MANIFEST.md",
+    "manuscript/INTERPRETIVE_FIGURES_MANIFEST.md",
     "manuscript/supplement/README.md",
     "manuscript/supplement/SUPPLEMENTARY_INFORMATION.md",
     "manuscript/supplement/REFERENCES.md",
@@ -47,6 +49,11 @@
     ".github/workflows/ch1-supplement-figures-ci.yml",
     "analysis/build_main_figure2_geography.py",
     ".github/workflows/ch1-main-figure2-geography-ci.yml",
+    "analysis/build_ch1_interpretive_figures.py",
+    "analysis/build_ch1_interpretive_figures_v2.py",
+    "analysis/build_ch1_interpretive_figures_v3.py",
+    "analysis/augment_figure1_with_analysis_scales.py",
+    ".github/workflows/ch1-interpretive-figures-ci.yml",
     "analysis/ch1/pipeline.json"
   ],
   "forbidden_active_paths": [
