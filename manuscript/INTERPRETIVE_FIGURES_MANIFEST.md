@@ -15,6 +15,7 @@ Source presentation image: `manuscript/figures/supervisor_review/figure1_real_ph
 `Figure_4_taxon_trait_architecture.*`
 
 - Panel A shows the actual PC1–PC2 scores for the 148 taxa complete for all nine primary endpoints and overlays the nine loading directions.
+- The main PC1–PC2 panel uses a central view so the dense taxon cloud and loading directions remain legible; a labelled inset preserves the complete range, including *Cirsium kawakamii* at PC1 = −15.6 rather than silently dropping the extreme point.
 - Panel B shows PC3 loadings so the third independent dimension is not hidden by a PC1–PC2 plot.
 - The same frozen standardized taxon-median PCA is used as in the manuscript result: PC1 = 32.9335%, PC2 = 23.1590%, PC3 = 13.2429%, cumulative PC1–PC3 = 69.3354%.
 
@@ -40,7 +41,7 @@ The panels retain their own coefficient definitions; their numerical scales are 
 
 `Figure_6_scale_specificity_and_historical_sensitivity.*`
 
-- Panel A places supported primary within-taxon (`W`) and randomized-tree historical (`H`) climate associations in the same endpoint × CHELSA matrix. It is designed to make agreement, disagreement, and sign reversal across ecological scales visible.
+- Panel A places supported primary within-taxon (`W`) and randomized-tree historical (`H`) climate associations in the same endpoint × CHELSA matrix. It is designed to make agreement, scale-specific support and sign reversal across ecological scales visible.
 - Panel B retains the six frozen standardized PGLS coefficients supported in all 50 randomized scenario-2 trees with their 2.5–97.5% ranges.
 
 Sources:
@@ -54,15 +55,20 @@ The historical layer remains a placement sensitivity because only 54 of 216 atla
 
 `Figure_S8_environmental_sorting.*`
 
-All nine primary endpoints are plotted by observed low-versus-high taxon environmental centroid distance and Gaussian Bhattacharyya overlap. The observed metrics are recomputed deterministically from the exact frozen enriched-environment table using the same complete-taxon medians, fixed environmental PCA and quartile definitions as the permutation analysis. Marker emphasis is taken from the frozen BH-supported permutation summary (`S07`); no permutation test is rerun by the figure builder.
+All nine primary endpoints are plotted by observed low-versus-high taxon environmental centroid distance and Gaussian Bhattacharyya overlap. The observed metrics are recomputed deterministically from the exact frozen enriched-environment table using the same complete-taxon medians, fixed environmental PCA and quartile definitions as the permutation analysis. Marker size is taken from the frozen all-taxa BH support and black rings from the direct-backbone sensitivity in `S07`; no unused colour coding is introduced and no permutation test is rerun by the figure builder.
 
 This figure visualizes among-taxon environmental sorting only. It does not imply within-taxon response or causal adaptation.
 
 ## Reproduction
 
-- core generator: `analysis/build_ch1_interpretive_figures.py`;
-- fixed entrypoint: `analysis/build_ch1_interpretive_figures_v2.py`;
+- core generator and validation logic: `analysis/build_ch1_interpretive_figures.py`;
+- PGLS column-safe compatibility layer: `analysis/build_ch1_interpretive_figures_v2.py`;
+- final presentation entrypoint: `analysis/build_ch1_interpretive_figures_v3.py`;
 - Figure 1 augmenter: `analysis/augment_figure1_with_analysis_scales.py`;
 - workflow: `.github/workflows/ch1-interpretive-figures-ci.yml`.
 
-The CI downloads frozen source artifacts, validates the PCA cohort and explained variance, validates supported-row counts and SPDE sign stability, regenerates every SVG/PNG/PDF, records source/release SHA-256 hashes, and uploads a release artifact. Large observation-level data are not duplicated in Git.
+The CI downloads frozen source artifacts, validates the 148-taxon PCA cohort and exact PC1–PC3 explained variance, validates primary/auxiliary supported-row counts and the signs of all eight stable SPDE pairs, regenerates every SVG/PNG/PDF, records source/release SHA-256 hashes, and uploads a release artifact. Large observation-level data are not duplicated in Git.
+
+## Visual QA record
+
+The final presentation pass was explicitly checked for the failure modes that were difficult to see in tables: duplicated Figure 1 headings, PC1 compression by the *C. kawakamii* extreme, overlapping biplot labels, misleading unused colour categories in Figure S8, and unreadable coefficient/support matrices. Figure 5 and Figure 6 required no further data/layout changes after the quantitative release was inspected.
