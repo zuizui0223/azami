@@ -69,6 +69,18 @@ This figure visualizes among-taxon environmental sorting only. It does not imply
 
 The CI downloads frozen source artifacts, validates the 148-taxon PCA cohort and exact PC1–PC3 explained variance, validates primary/auxiliary supported-row counts and the signs of all eight stable SPDE pairs, regenerates every SVG/PNG/PDF, records source/release SHA-256 hashes, and uploads a release artifact. Large observation-level data are not duplicated in Git.
 
+## Verified release
+
+The final presentation code was independently executed in GitHub Actions on head `63ce7a58889bfa3e0b351999c66db85d51fbd064`:
+
+- workflow run: `32448807380`;
+- artifact ID: `9434958333`;
+- artifact name: `ch1-interpretive-figures-32448807380`;
+- artifact digest: `sha256:f9365eddba862d4703e86d4fd38f03d308fd0ff035f3f7d2cf6640ce52c4ea1c`;
+- 15 rendered products: five figures × SVG/PNG/PDF.
+
+Subsequent manuscript-map/caption/contract edits do not alter the figure generator or frozen input data.
+
 ## Visual QA record
 
 The final presentation pass was explicitly checked for the failure modes that were difficult to see in tables: duplicated Figure 1 headings, PC1 compression by the *C. kawakamii* extreme, overlapping biplot labels, misleading unused colour categories in Figure S8, and unreadable coefficient/support matrices. Figure 5 and Figure 6 required no further data/layout changes after the quantitative release was inspected.
