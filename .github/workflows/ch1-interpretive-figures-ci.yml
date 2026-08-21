@@ -66,12 +66,9 @@ jobs:
             manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
             > interpretive_source_sha256.txt
 
-      - name: Build interpretive figures
+      - name: Build quantitative interpretive figures
         run: |
           mkdir -p interpretive_release
-          python analysis/augment_figure1_with_analysis_scales.py \
-            --input-figure manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png \
-            --out-dir interpretive_release
           python analysis/build_ch1_interpretive_figures_v2.py \
             --environment source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --spde-fixed source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
@@ -79,6 +76,13 @@ jobs:
             --aux-supported manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv \
             --niche-summary manuscript/supplement/tables/S07_niche_permutation_summary.csv \
             --pgls-supported manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
+            --out-dir interpretive_release
+          test "$(find interpretive_release -maxdepth 1 -type f \( -name '*.png' -o -name '*.svg' -o -name '*.pdf' \) | wc -l)" -eq 12
+
+      - name: Add multiscale Figure 1
+        run: |
+          python analysis/augment_figure1_with_analysis_scales.py \
+            --input-figure manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png \
             --out-dir interpretive_release
 
       - name: Validate release products
