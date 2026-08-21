@@ -48,19 +48,25 @@ The same capitulum expresses conspicuous diversity in orientation, visible colou
 
 ## Figure priorities
 
-1. actual-photo YOLO localization followed by deterministic continuous measurements;
-2. global sampling and cohort separation;
-3. nested taxon → photograph → head variance decomposition;
-4. complete nine-endpoint taxon-level PCA;
-5. multiplicity-supported within-taxon environmental associations across primary, SPDE and auxiliary analyses;
-6. among-taxon historical/PGLS sensitivity across alternative grafted trees.
+The six main figures are now organized to minimize table-like cognitive load and make the study design and scale-specific results visually explicit:
 
-The legacy precision-confounding audit and withdrawn lability quadrants belong in provenance/supplementary QA, not the main narrative.
+1. **image → phenotype → ecological questions:** retain actual-photo YOLO/measurement evidence and connect repeated numerical phenotypes to the three executed inferential scales;
+2. **geographic sampling and analytical domain:** show detector-positive sampling density, the primary spatial cohort, the two analysis streams and occupied BIO1 × BIO12 space;
+3. **nested visible variance:** retain the stacked taxon → photograph → head decomposition across all nine primary endpoints;
+4. **actual taxon-level multivariate structure:** show PC1–PC2 taxon scores with all nine trait directions and expose PC3 rather than presenting a loading table alone;
+5. **environmental effect sizes:** replace a symbol-only support matrix with primary, grouped-SPDE and high-resolution coefficient intervals while keeping the three inferential families visually separate;
+6. **ecological scale specificity + historical sensitivity:** juxtapose supported within-taxon and among-taxon climate axes before showing the six randomized-tree PGLS effect sizes.
+
+Supplement Figures S6–S8 then carry the sampling-filter geography, geographic trait assessability and observed among-taxon environmental-separation geometry that would otherwise make the main figures too dense. The legacy precision-confounding audit and withdrawn lability quadrants remain provenance/supplementary QA, not the main narrative.
 
 ## Scientific control files
 
 - [`COHORT_FLOW_AND_ANALYSIS_LEDGER.md`](COHORT_FLOW_AND_ANALYSIS_LEDGER.md) fixes cohort names, counts and permitted analyses.
 - [`final_claims.json`](final_claims.json) contains the frozen machine-readable claims.
+- [`FIGURE_TABLE_MAP.md`](FIGURE_TABLE_MAP.md) fixes the main/Supplement figure–table crosswalk.
+- [`MAIN_FIGURE_CAPTIONS.md`](MAIN_FIGURE_CAPTIONS.md) contains the authoritative captions for the six main figures.
+- [`FIGURE2_GEOGRAPHY_MANIFEST.md`](FIGURE2_GEOGRAPHY_MANIFEST.md) records the frozen sources for main Figure 2 and Figures S6–S7.
+- [`INTERPRETIVE_FIGURES_MANIFEST.md`](INTERPRETIVE_FIGURES_MANIFEST.md) records the frozen sources and claim boundaries for main Figures 1/4/5/6 and Figure S8.
 - [`results/nested_visible_variance_summary.csv`](results/nested_visible_variance_summary.csv) records the revised image hierarchy.
 - [`results/NICHE_PERMUTATION_RESULTS_2026-08-07.md`](results/NICHE_PERMUTATION_RESULTS_2026-08-07.md) records the 10,000-permutation niche null.
 - [`results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md`](results/SPATIAL_ROBUSTNESS_RESULTS_2026-08-07.md) records residual Moran and region-omission diagnostics.
