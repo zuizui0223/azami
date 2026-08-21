@@ -1,0 +1,94 @@
+name: Ch1 interpretive figure release CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "analysis/build_ch1_interpretive_figures.py"
+      - ".github/workflows/ch1-interpretive-figures-ci.yml"
+      - "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv"
+      - "manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv"
+      - "manuscript/supplement/tables/S07_niche_permutation_summary.csv"
+      - "manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  interpretive-figure-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.5"
+
+      - name: Install pinned plotting dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy==2.3.5 pandas==2.2.3 matplotlib==3.10.8 scikit-learn==1.7.2
+
+      - name: Download frozen enriched primary environment
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "29306454759"
+          name: ch1-exhaustive-enriched-environment-20260713
+          path: source/environment
+
+      - name: Download frozen grouped SPDE results
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "29339137476"
+          name: ch1-lightweight-per-trait-spde-inla
+          path: source/spde
+
+      - name: Record source hashes
+        run: |
+          set -euo pipefail
+          sha256sum \
+            source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
+            manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
+            manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv \
+            manuscript/supplement/tables/S07_niche_permutation_summary.csv \
+            manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
+            > interpretive_source_sha256.txt
+
+      - name: Build interpretive figures
+        run: |
+          python analysis/build_ch1_interpretive_figures.py \
+            --environment source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --spde-fixed source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
+            --primary-supported manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
+            --aux-supported manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv \
+            --niche-summary manuscript/supplement/tables/S07_niche_permutation_summary.csv \
+            --pgls-supported manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
+            --out-dir interpretive_release
+
+      - name: Validate release products
+        run: |
+          set -euo pipefail
+          test -s interpretive_release/Figure_4_taxon_trait_architecture.png
+          test -s interpretive_release/Figure_5_environmental_effect_sizes.png
+          test -s interpretive_release/Figure_6_scale_specificity_and_historical_sensitivity.png
+          test -s interpretive_release/Figure_S8_environmental_sorting.png
+          test "$(find interpretive_release -maxdepth 1 -type f \( -name '*.png' -o -name '*.svg' -o -name '*.pdf' \) | wc -l)" -eq 12
+          cp interpretive_source_sha256.txt interpretive_release/source_sha256.txt
+          sha256sum interpretive_release/*.png interpretive_release/*.svg interpretive_release/*.pdf > interpretive_release/release_sha256.txt
+          printf '%s\n' "$GITHUB_SHA" > interpretive_release/git_sha.txt
+
+      - name: Upload verified interpretive figure bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-interpretive-figures-${{ github.run_id }}
+          path: interpretive_release
+          if-no-files-found: error
+          retention-days: 90
