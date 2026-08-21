@@ -63,6 +63,17 @@ Natural Earth admin-0 50 m country polygons are downloaded during the workflow o
 
 The workflow downloads the frozen source artifacts directly, validates exact cohort counts, generates the three figures and their aggregated plotting data, records source and release hashes, and uploads one release artifact. Large observation-level source tables are not duplicated in Git.
 
+## Verified release
+
+The final visually reviewed geographic release was generated on head `506daeee5f6f0a51fe25a704174237979c4792ac`:
+
+- workflow run: `32447087820`;
+- artifact ID: `9434454145`;
+- artifact name: `ch1-main-figure2-geography-32447087820`;
+- artifact digest: `sha256:53ac8e074e47c47f2107dd469b52e33fb51b9a292cdc08372861042ab1234e10`.
+
+Subsequent manuscript-map/caption/contract edits do not alter the geographic generator or frozen input data.
+
 ## Interpretation boundary
 
 The maps visualize where public-image observations occur, how filtering changes spatial representation, where the primary analytical cohort lies in geographic/environmental space, and whether image-trait assessability varies geographically. They do not demonstrate sampling representativeness of all global *Cirsium*, causal environmental effects, adaptation, or absence of residual observation bias. Figure S7 shows measurement availability in images; unassessable images are not biological absences.
