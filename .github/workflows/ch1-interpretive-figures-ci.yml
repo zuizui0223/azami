@@ -6,6 +6,7 @@ on:
     paths:
       - "analysis/build_ch1_interpretive_figures.py"
       - "analysis/build_ch1_interpretive_figures_v2.py"
+      - "analysis/build_ch1_interpretive_figures_v3.py"
       - "analysis/augment_figure1_with_analysis_scales.py"
       - ".github/workflows/ch1-interpretive-figures-ci.yml"
       - "manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png"
@@ -69,7 +70,7 @@ jobs:
       - name: Build quantitative interpretive figures
         run: |
           mkdir -p interpretive_release
-          python analysis/build_ch1_interpretive_figures_v2.py \
+          python analysis/build_ch1_interpretive_figures_v3.py \
             --environment source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --spde-fixed source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
             --primary-supported manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
