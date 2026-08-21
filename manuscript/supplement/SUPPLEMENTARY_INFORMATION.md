@@ -43,19 +43,22 @@ The former species environmental-responsiveness score was the RMS magnitude of u
 
 ## Frozen Supplement tables
 
-The submission-facing machine-readable summary set is now complete as `tables/S01`–`S12`:
+The submission-facing machine-readable summary set is complete as `tables/S01`–`S12`. S03 and S06 contain submission-relevant BH-supported rows rather than silently reconstructing unsupported rows from prose. S05 records only directions classified as stable in the frozen claim registry; full posterior coefficient/model tables remain workflow-artifact provenance.
 
-- S01 canonical cohorts;
-- S02 trait scope and assessability;
-- S03 eight BH-supported rows from the 36-component primary within-taxon family;
-- S04 endpoint-level nested visible-variance decomposition and one-head/equal-replication sensitivities;
-- S05 grouped SPDE-INLA stable supported patterns and the zero global-BH support result for gross outline;
-- S06 BH-supported high-resolution involucre rows;
-- S07 niche-permutation summary;
-- S08 randomized-PGLS retained rows;
-- S09 spatial robustness;
-- S10 WCVP synonym candidates;
-- S11 precision-confounding audit summary;
-- S12 submission gates.
+## Supplement figures
 
-S03 and S06 contain the submission-relevant BH-supported coefficient rows rather than silently reconstructing unsupported rows from prose. S05 records only directions that the frozen claim registry classifies as stable supported patterns; full posterior coefficient/model tables remain workflow artifacts and are not re-created from rounded manuscript values. Supplement figures remain release-generation products. The two unresolved external scientific gates remain independent detector human annotation and independent reference measurements for orientation, colour and outline.
+Figures S1–S5 are frozen release products defined by the committed numerical inputs, deterministic generator and SHA-256 manifest. The pinned Supplement-figure CI regenerates each figure as SVG, PNG and PDF, verifies all 15 hashes and uploads the resulting submission bundle. Figure generation is descriptive/release assembly only and does not create a new inferential family.
+
+**Figure S1. Nested visible-variance sensitivities.** For each of the nine primary endpoints, the figure compares the fraction of visible variance below the assigned-taxon mean in the full nested decomposition with the one-head-per-photo sensitivity and the median of 500 balanced repeats using 10 photographs per eligible taxon. The large below-taxon component remains under both sampling sensitivities.
+
+**Figure S2. Complete primary within-taxon climate coefficient map.** Standardized within-taxon coefficients are shown for all 9 endpoint components × 4 CHELSA predictors (36 component tests). Asterisks mark the eight component rows with BH q < 0.05. Hue sine and hue cosine are displayed separately and must be interpreted jointly as components of a circular colour response; the map does not assign a single signed biological hue direction.
+
+**Figure S3. Grouped SPDE-INLA model comparison.** ΔWAIC within each endpoint is shown for the climate, climate + topography, climate + soil and full predictor groups, with zero denoting the best-fitting group for that endpoint. These values come from the original grouped-SPDE model summary. The panel compares model fit and is not a significance heatmap.
+
+**Figure S4. Residual spatial autocorrelation after frozen SPDE control.** Residual Moran's I is shown for diagnostic refits of the lowest-WAIC frozen SPDE specification for each primary endpoint. The neighbour graph uses eight nearest neighbours on unit-sphere coordinates and 999 residual permutations; no endpoint had permutation P < 0.05.
+
+**Figure S5. Taxon-rank stability under broad-region omission.** For each endpoint, the plotted value is the minimum Spearman correlation between full-data taxon trait rankings and rankings recomputed after omitting one broad geographic region. All endpoint minima remain high, with the weakest values occurring after Europe was removed.
+
+Full source provenance, artifact identifiers, interpretation boundaries and SHA-256 hashes are recorded in `FIGURE_MANIFEST.md`. The withdrawn rho = -0.333 lability/quadrant graphic is not included.
+
+The two unresolved external scientific gates remain independent detector human annotation and independent reference measurements for orientation, colour and outline.

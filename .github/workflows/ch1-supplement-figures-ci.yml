@@ -1,0 +1,80 @@
+name: Ch1 Supplement figure release CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'analysis/build_supplement_figures.py'
+      - 'manuscript/FIGURE_TABLE_MAP.md'
+      - 'manuscript/supplement/FIGURE_MANIFEST.md'
+      - 'manuscript/supplement/SUPPLEMENTARY_INFORMATION.md'
+      - 'manuscript/supplement/figure_data/**'
+      - 'manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv'
+      - '.github/workflows/ch1-supplement-figures-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  supplement-figure-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.5'
+      - name: Install pinned figure dependencies
+        run: python -m pip install 'numpy==2.3.5' 'pandas==2.2.3' 'matplotlib==3.10.8'
+      - name: Verify frozen source-data hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > expected-inputs.sha256 <<'EOF'
+          e4308b91bfea087b37d4e8f2559124af10881ceede7afa8f0b158c4e37da242a  manuscript/supplement/figure_data/FigureS1_nested_variance.csv
+          b604205842e4551f131b48dcbf844c3331d22a9498354529fefca5e76375d2e9  manuscript/supplement/figure_data/FigureS2_primary_coefficients.csv
+          914b76c4685e072ca9a3927e7bf63b3ebadf07ae18e4a8094bd7d5e8824b9a0c  manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv
+          2a1da1ec1eb61680df5ca60c8084e2bb7bed03b9c9ad93b33402a0b5415e1be4  manuscript/supplement/figure_data/FigureS3_spde_model_group_summary.csv
+          f38797f7d3bae5661b3a3bd54fb5ecefd25184be07f37629d82d6aa0caf739a7  manuscript/supplement/figure_data/FigureS45_spatial_robustness.csv
+          EOF
+          sha256sum --check expected-inputs.sha256
+      - name: Generate Supplement figures S1-S5
+        env:
+          MPLCONFIGDIR: ${{ runner.temp }}/mplconfig
+        run: |
+          python analysis/build_supplement_figures.py \
+            --data-dir manuscript/supplement/figure_data \
+            --tables-dir manuscript/supplement/tables \
+            --out-dir supplement-figure-release
+      - name: Verify frozen release hashes
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd supplement-figure-release
+          cat > expected-release.sha256 <<'EOF'
+          70f7844e8e89b08e96280ac4125f544ea3aad4b43e71f0b22a3e5c10a87a62b1  Figure_S1_nested_variance_sensitivities.svg
+          134a210cf47b00ea822e3412f944b2d2ac95f57bf2362cf0989e24fda54e842d  Figure_S1_nested_variance_sensitivities.pdf
+          aa785c09a9ccba1d3b2284c3238c5b406382126eb53c56093678e1cbd8d6611c  Figure_S1_nested_variance_sensitivities.png
+          d020af036a493247f0f205a515e3756485878a05c8e33b9b63fcc21aff34a569  Figure_S2_primary_coefficient_map.svg
+          5f967c62a408c9b87160de00917c81792fad6c59c0977084a8eab9087aaf1860  Figure_S2_primary_coefficient_map.pdf
+          846aeb13d2f68ba274f659c7e061094c4f35935af4caa2da446560e89dd3dc68  Figure_S2_primary_coefficient_map.png
+          5fb70fe941ad08dd8d83cb41f1c6f7508efb4a2936b1211a58e3a27f75d8a88b  Figure_S3_spde_delta_waic.svg
+          477ac44be5a75098b7829c4e1851a29a627b38ca1bf9bdaf651be6ac5a99f6e0  Figure_S3_spde_delta_waic.pdf
+          2aa97c5d9e771964004056800665c8c2167d24d06d631256824d453f8d8b2686  Figure_S3_spde_delta_waic.png
+          3af7d6247bcdd8455f2e07426d9947f77a5c92c449e8adfc1fe67334d2206b57  Figure_S4_residual_morans_I.svg
+          16057f96ce2a39d2ddac99035535d8b06bd0b7c9332c14ceeba2ee25ab6c23f9  Figure_S4_residual_morans_I.pdf
+          afb7305135659d5c0e450580e09488e09b6b210a76d1b228e865ba5b07db1285  Figure_S4_residual_morans_I.png
+          5054c76620bca4cefc7dff397c41065e25106e9bcafd2bbda7d05cbd0928c900  Figure_S5_leave_one_region_out_stability.svg
+          13e5b41aba216b166a8ff6189f05df4b4202fbdbdeb21db79a97ffd814bc0210  Figure_S5_leave_one_region_out_stability.pdf
+          bf46be5bcba031dde78c681e379d701566b75a6af0c83671c421801814570dbe  Figure_S5_leave_one_region_out_stability.png
+          EOF
+          sha256sum --check expected-release.sha256
+          rm expected-release.sha256
+      - name: Upload verified Supplement figure bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-supplement-figures-S1-S5
+          path: supplement-figure-release/
+          if-no-files-found: error
+          retention-days: 90
