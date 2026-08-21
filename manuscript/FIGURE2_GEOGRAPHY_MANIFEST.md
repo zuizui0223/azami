@@ -5,16 +5,16 @@ This manifest defines the submission-facing geographic visualization layer for C
 ## Canonical products
 
 - **Main Figure 2** `Figure_2_geographic_sampling_and_analysis_domain.*`
-  - A: 1° density of all 406,582 detector-positive observations before spatial filtering;
-  - B: coordinates of the 46,276-observation spatially thinned primary cohort;
-  - C: frozen cohort flow and analysis roles;
+  - A: 1° density of detector-positive observations before spatial filtering. The frozen detector-positive cohort contains 406,582 observations; 406,178 have finite longitude/latitude values that can be rendered geographically, while the full 406,582 count remains the cohort total.
+  - B: coordinates of the 46,276-observation spatially thinned primary cohort.
+  - C: the two executed analysis streams and their derived cohorts. The balanced image atlas leads to nested variance/PCA/historical analyses and the high-resolution involucre subset; the exhaustive detector-positive stream passes through coordinate and positional-accuracy filtering and taxon × 0.25° thinning before the primary and grouped SPDE analyses.
   - D: CHELSA BIO1 × BIO12 environmental domain of the primary cohort.
 - **Figure S6** `Figure_S6_sampling_geography_across_filters.*`
-  - 1° sampling density for all detected, coordinate-usable, ≤10 km and primary-thinned stages on a common scale.
+  - 1° sampling density for detector-positive, coordinate-usable, ≤10 km and primary-thinned stages on a common log-count scale. The first panel labels both the frozen detector-positive total and the number of mappable coordinates.
 - **Figure S7** `Figure_S7_geographic_trait_assessability.*`
   - 2° cell-level usable fractions for orientation, colour, outline and the mean across all nine primary endpoints; cells require at least 20 coordinate-usable observations.
 
-Each figure is released as SVG, PNG and PDF. The release artifact also contains the aggregated plotting tables and SHA-256 inventories.
+Each figure is released as SVG, PNG and PDF. The release artifact also contains the aggregated plotting tables, a summary JSON and SHA-256 inventories.
 
 ## Frozen source runs
 
@@ -38,6 +38,8 @@ Frozen cohort checks:
 | Coordinate usable | 392,989 | 271 |
 | ≤10 km positional accuracy | 297,293 | 259 |
 | Primary spatially thinned | 46,276 | 259 |
+
+The geographic generator additionally records the number of rows with finite coordinates at every stage. This rendering check is separate from the frozen cohort definition and never changes cohort membership.
 
 ### Enriched primary environment
 
@@ -63,4 +65,4 @@ The workflow downloads the frozen source artifacts directly, validates exact coh
 
 ## Interpretation boundary
 
-The maps visualize where public-image observations occur, how filtering changes spatial representation, where the primary analytical cohort lies in geographic/environmental space, and whether image-trait assessability varies geographically. They do not demonstrate sampling representativeness of all global *Cirsium*, causal environmental effects, adaptation, or absence of residual observation bias.
+The maps visualize where public-image observations occur, how filtering changes spatial representation, where the primary analytical cohort lies in geographic/environmental space, and whether image-trait assessability varies geographically. They do not demonstrate sampling representativeness of all global *Cirsium*, causal environmental effects, adaptation, or absence of residual observation bias. Figure S7 shows measurement availability in images; unassessable images are not biological absences.
