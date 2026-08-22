@@ -15,11 +15,33 @@ Across nine primary endpoints, 0.589–0.931 of visible image variance occurs be
 
 ## Azami → EAzami boundary
 
-Azami is the **observational macro layer**: it freezes the global environment–trait and within-taxon pattern bundle without assigning causal mechanisms.
+Azami is the **global observational discovery layer**. It ends after freezing:
 
-`zuizui0223/EAzami` is the downstream **mechanism-reduction layer**: it combines frozen Azami targets with quantitative pollination, herbivory and fitness evidence and asks whether minimal ecological/evolutionary models can reproduce the joint pattern bundle.
+`continuous visible capitulum variation -> within/among-taxon environmental structure`
 
-Do not move pollinator/antagonist causation or pattern-reduction simulation into Chapter 1. The explicit boundary is documented in:
+Azami does **not** own inference about:
+
+- pollinator- or antagonist-mediated selection;
+- defensive function of spine/phyllary or sticky traits;
+- East Asian/Japanese phylogenetic or biogeographic history;
+- repeated loss/regain of floral colour;
+- repeated/parallel erect↔nodding transitions;
+- trait-specific evolutionary rates or modular evolvability;
+- rapid/adaptive radiation.
+
+Those questions belong to `zuizui0223/EAzami`, the downstream **mechanism + evolutionary-history zoom**. EAzami combines the frozen Azami pattern bundle with quantitative ecological literature, East Asian evolutionary history and ancestry-resolved focal experiments. Its current doctoral architecture is:
+
+`Azami global phenotype landscape`
+
+`-> mechanism meta-analysis`
+
+`-> East Asian/Japanese rapid-radiation history`
+
+`-> repeated-state / parallel-evolution tests`
+
+`-> focal trait -> interaction/protection -> reproductive fitness`
+
+Do not move EAzami mechanism-reduction, East Asian repeated-state analysis or adaptive-radiation inference back into Chapter 1. The original observation→mechanism handoff is documented in:
 
 `manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md`.
 
