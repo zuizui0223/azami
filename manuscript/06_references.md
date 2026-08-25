@@ -34,7 +34,7 @@ Kattge, J. et al. (2020). TRY plant trait database—enhanced coverage and open 
 
 Kelch, D. G. & Baldwin, B. G. (2003). Phylogeny and ecological radiation of New World thistles (*Cirsium*, Cardueae–Compositae) based on ITS and ETS rDNA sequence data. *Molecular Ecology*, 12, 141–151. https://doi.org/10.1046/j.1365-294X.2003.01710.x
 
-Lamp, W. O. & McCarty, M. K. (1982). Pre-dispersal seed predation of a native thistle, *Cirsium canescens*. *Environmental Entomology*, 11, 847–851.
+Lamp, W. O. & McCarty, M. K. (1982). Predispersal seed predation of a native thistle, *Cirsium canescens*. *Environmental Entomology*, 11, 847–851. https://doi.org/10.1093/ee/11.4.847
 
 Maitner, B. S. et al. (2018). The BIEN R package: a tool to access the Botanical Information and Ecology Network database. *Methods in Ecology and Evolution*, 9, 373–379. https://doi.org/10.1111/2041-210X.12861
 
@@ -78,7 +78,7 @@ Vaidya, P., McDurmon, A., Mattoon, E., Keefe, M., Carley, L., Lee, C.-R., Bingha
 
 van der Kooi, C. J., Kevan, P. G. & Koski, M. H. (2019). The thermal ecology of flowers. *Annals of Botany*, 124, 343–353. https://doi.org/10.1093/aob/mcz073
 
-Van Horn, G. et al. (2018). The iNaturalist Species Classification and Detection Dataset. In *Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition*, 8769–8778.
+Van Horn, G. et al. (2018). The iNaturalist Species Classification and Detection Dataset. In *Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition*, 8769–8778. https://doi.org/10.1109/CVPR.2018.00914
 
 Violle, C. et al. (2012). The return of the variance: intraspecific variability in community ecology. *Trends in Ecology & Evolution*, 27, 244–252. https://doi.org/10.1016/j.tree.2011.11.014
 
