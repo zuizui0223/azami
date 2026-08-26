@@ -38,6 +38,10 @@ BUILD = load("build_continuous_universe", V2 / "88_build_continuous_trait_univer
 MEASURE = load("measure_extended_continuous", V2 / "89_measure_extended_continuous_traits.py") if cv2 is not None else None
 ANALYSE = load("analyse_continuous_universe", V2 / "90_run_continuous_trait_universe_climate.py") if statsmodels is not None else None
 PREPARE = load("prepare_extended_cohort", V2 / "91_prepare_exhaustive_extended_cohort.py")
+BRIDGE = load(
+    "bridge_pr69_involucre",
+    ROOT / "analysis" / "bridge_pr69_involucre_to_continuous_contract.py",
+)
 
 
 class ContinuousTraitContractTests(unittest.TestCase):
@@ -96,6 +100,45 @@ class ContinuousTraitContractTests(unittest.TestCase):
         self.assertEqual(len(species), len(contract))
         self.assertNotIn("trait_state", observation.columns)
         self.assertTrue(observation["measurement_available"].all())
+
+
+class ReviewerBridgeTests(unittest.TestCase):
+    def test_pr69_aliases_map_to_one_canonical_endpoint_each(self):
+        contract = pd.read_csv(CONTRACT, dtype=str, keep_default_na=False)
+        observations = pd.DataFrame([{
+            "obs_id": "o1",
+            "taxon_name": "Cirsium test",
+            "n_usable_heads": 2,
+            "coordinate_precision_tier": "high_le_1km",
+            "log_min_dimension": 5.2,
+            "log1p_sharpness": 7.0,
+            "resolution_stratum": "150_199",
+            "involucre_projection_roughness": 0.11,
+            "involucre_spread_fraction": 0.22,
+            "spine_relative_length_max_proxy": 0.33,
+            "env_chelsa_bio01_native": 1.0,
+            "env_chelsa_bio04_native": 2.0,
+            "env_chelsa_bio12_native": 3.0,
+            "env_chelsa_bio15_native": 4.0,
+        }])
+        audit = BRIDGE.validate_inputs(
+            contract,
+            observations,
+            pd.DataFrame({"obs_id": ["o1"], "taxon_name": ["Cirsium test"]}),
+        )
+        observation, species, environment, environment_le10km = BRIDGE.build_extended_tables(
+            contract, observations
+        )
+        self.assertEqual(audit["n_taxon_name_mismatches"], 0)
+        self.assertEqual(
+            observation.loc[0, "involucre_projection_max_observation_median"], 0.33
+        )
+        self.assertNotIn("spine_relative_length_max_proxy", observation.columns)
+        self.assertEqual(
+            species.loc[0, "involucre_projection_max_species_median"], 0.33
+        )
+        self.assertEqual(len(environment), 1)
+        self.assertEqual(len(environment_le10km), 1)
 
 
 class ExhaustiveCohortTests(unittest.TestCase):
@@ -242,8 +285,14 @@ class ContinuousAnalysisTests(unittest.TestCase):
                         "circular_group": circular,
                         "value": value,
                     })
+        # Exercise the real CSV boundary: empty circular-group cells are read
+        # back as NaN unless the analysis normalizes registry metadata.
+        with tempfile.TemporaryDirectory() as directory:
+            traits_path = Path(directory) / "traits.csv"
+            pd.DataFrame(records).to_csv(traits_path, index=False)
+            traits = pd.read_csv(traits_path)
         coefficients, coverage, report = ANALYSE.run_models(
-            pd.DataFrame(records),
+            traits,
             pd.DataFrame(environment_rows),
             ["bio1"],
             minimum_observations=100,
@@ -253,7 +302,9 @@ class ContinuousAnalysisTests(unittest.TestCase):
         )
         self.assertEqual(report["n_linear_endpoints_modelled"], 1)
         self.assertEqual(report["n_circular_traits_modelled"], 1)
+        self.assertEqual(report["submission_claims_created"], 0)
         self.assertEqual(set(coefficients["inferential_unit"]), {"linear_endpoint", "circular_joint"})
+        self.assertFalse(coefficients["submission_claim_eligible"].any())
         orientation = coefficients[coefficients["endpoint_id"].eq("orientation_image_vertical_angle")].iloc[0]
         self.assertGreater(orientation["beta_std_within"], 0.5)
         self.assertIn("corolla_hue", set(coefficients["endpoint_id"]))

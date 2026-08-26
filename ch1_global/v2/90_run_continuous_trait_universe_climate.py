@@ -155,6 +155,11 @@ def run_models(
         raise ValueError(f"Environment table is missing predictors: {absent_predictors}")
 
     eligible = traits[_as_bool(traits["analysis_eligible"]) & traits["analysis_tier"].isin(["primary", "candidate"])].copy()
+    # Empty CSV fields are parsed as NaN by pandas.  Without normalizing the
+    # registry metadata after the on-disk round trip, every ordinary linear
+    # endpoint is silently excluded because ``NaN.astype(str)`` becomes
+    # ``"nan"`` rather than the contract's empty circular-group marker.
+    eligible["circular_group"] = eligible["circular_group"].fillna("").astype(str).str.strip()
     endpoint_meta = eligible.drop_duplicates("endpoint_id").set_index("endpoint_id")
     coverage_rows: list[dict[str, Any]] = []
     result_rows: list[dict[str, Any]] = []
@@ -260,6 +265,17 @@ def run_models(
             coefficients.loc[index, "p_value"].astype(float), method="fdr_bh"
         )[1]
     coefficients["fdr_significant_0_05"] = coefficients["q_fdr_bh_within_tier"].lt(0.05)
+    # This registry-wide pass is a discovery screen. Endpoint-specific image
+    # quality, seasonal/taxon-composition, native-range and reference-
+    # validation gates are separate frozen analyses and cannot be inferred from
+    # a small q value in this table.
+    coefficients["screening_only"] = True
+    coefficients["submission_claim_eligible"] = False
+    coefficients["required_gate"] = np.where(
+        coefficients["analysis_tier"].eq("candidate"),
+        "endpoint_specific_image_quality_resolution_and_botanical_validation",
+        "pr69_primary_timing_taxon_composition_native_range_and_external_validation",
+    )
     report = {
         "n_trait_rows": int(len(traits)),
         "n_environment_rows": int(len(environment)),
@@ -275,6 +291,13 @@ def run_models(
         "n_primary_fdr_signals": int((coefficients["analysis_tier"].eq("primary") & coefficients["fdr_significant_0_05"]).sum()),
         "n_candidate_fdr_signals": int((coefficients["analysis_tier"].eq("candidate") & coefficients["fdr_significant_0_05"]).sum()),
         "multiplicity": "BH within primary and candidate tiers separately; circular hue contributes one joint test per predictor",
+        "claim_status": "screening_only_not_submission_claims",
+        "submission_claims_created": 0,
+        "required_gates": [
+            "PR69 timing, dominant-taxon and native-range controls for primary rows",
+            "endpoint-specific resolution and image-quality controls for candidate rows",
+            "independent continuous botanical reference validation before proxy promotion",
+        ],
         "interpretation_boundary": "Cross-sectional within-taxon image-phenotype association; not demonstrated plasticity or adaptation.",
     }
     return coefficients, coverage, report
