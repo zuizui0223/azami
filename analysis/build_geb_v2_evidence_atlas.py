@@ -17,6 +17,7 @@ import pandas as pd
 
 PRIMARY_NAME_MAP = {
     "orientation_angle": "orientation_image_vertical_angle",
+    "corolla_lightness": "corolla_lab_lightness",
     "corolla_chroma": "corolla_lab_chroma",
     "hue_sin": "corolla_hue",
     "hue_cos": "corolla_hue",
@@ -50,6 +51,12 @@ def parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
+def as_bool(value: object) -> bool:
+    if isinstance(value, (bool, np.bool_)):
+        return bool(value)
+    return str(value).strip().lower() in {"true", "1", "yes"}
+
+
 def direction(value: float) -> str:
     return "positive" if value > 0 else "negative" if value < 0 else "zero"
 
@@ -80,26 +87,27 @@ def main() -> None:
     for record in primary.to_dict("records"):
         endpoint_raw = str(record["endpoint"])
         endpoint_id = PRIMARY_NAME_MAP.get(endpoint_raw, endpoint_raw)
-        predictor = PREDICTOR_MAP.get(str(record["predictor"]), str(record["predictor"]))
+        predictor_raw = str(record["predictor"])
+        predictor = PREDICTOR_MAP.get(predictor_raw, predictor_raw)
         beta = float(record["standardized_beta"])
         q_text = str(record["bh_q"]).replace("<", "")
         q = float(q_text)
         grade = "B_supported_global"
         robustness = "frozen global primary BH support"
         if endpoint_raw in {"orientation_angle", "corolla_chroma", "shape_aspect_ratio"}:
-            n = native[(native["endpoint"].eq(endpoint_raw)) & (native["predictor"].eq(str(record["predictor"])))]
-            s = season[(season["endpoint"].eq(endpoint_raw)) & (season["predictor"].eq(str(record["predictor"])))]
-            h = hemisphere[(hemisphere["endpoint"].eq(endpoint_raw)) & (hemisphere["predictor"].eq(str(record["predictor"])))]
-            native_ok = bool(n.iloc[0]["native_range_robust"]) if not n.empty else False
+            n = native[(native["endpoint"].eq(endpoint_raw)) & (native["predictor"].eq(predictor_raw))]
+            s = season[(season["endpoint"].eq(endpoint_raw)) & (season["predictor"].eq(predictor_raw))]
+            h = hemisphere[(hemisphere["endpoint"].eq(endpoint_raw)) & (hemisphere["predictor"].eq(predictor_raw))]
+            native_ok = as_bool(n.iloc[0]["native_range_robust"]) if not n.empty else False
             if native_ok:
                 grade = "A_robust"
                 robustness = "global + seasonal + dominant-taxon + hemisphere + native-range support"
             else:
                 grade = "B_supported_range_sensitive"
                 robustness = "global + seasonal/dominant-taxon/hemisphere support; native-only loses BH support with direction retained"
-            if not s.empty and not bool(s.iloc[0]["strict_retention"]):
+            if not s.empty and not as_bool(s.iloc[0]["strict_retention"]):
                 robustness += "; seasonal audit not retained"
-            if not h.empty and not bool(h.iloc[0]["strict_retention"]):
+            if not h.empty and not as_bool(h.iloc[0]["strict_retention"]):
                 robustness += "; hemisphere audit not retained"
         elif endpoint_raw.startswith("hue_"):
             grade = "B_supported_colour_uncalibrated"
@@ -133,12 +141,13 @@ def main() -> None:
         robustness = "candidate-tier FDR-supported continuous image phenotype; botanical calibration pending"
         if not match.empty:
             m = match.iloc[0]
-            q2 = float(m["quality_adjusted_q"])
-            same = bool(m["same_sign_all_successful_strata"])
-            if q2 < 0.05 and same:
+            q2 = pd.to_numeric(pd.Series([m["quality_adjusted_q"]]), errors="coerce").iloc[0]
+            same = as_bool(m["same_sign_all_successful_strata"])
+            strata_n = int(m["successful_resolution_strata"])
+            if np.isfinite(q2) and q2 < 0.05 and same:
                 grade = "C_exploratory_quality_robust"
                 robustness = "candidate FDR support persists after resolution/sharpness adjustment with same-sign successful strata; botanical calibration pending"
-            elif not same and int(m["successful_resolution_strata"]) > 0:
+            elif not same and strata_n > 0:
                 grade = "C_exploratory_image_sensitive"
                 robustness = "candidate FDR signal shows resolution-stratum sign instability; retain as image-sensitive pattern only"
             else:
