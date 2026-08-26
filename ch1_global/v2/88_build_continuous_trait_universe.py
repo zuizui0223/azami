@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build one long, category-free trait table from primary and extended outputs."""
+"""Build one long, category-free trait table from source and extended outputs."""
 from __future__ import annotations
 
 import argparse
@@ -75,20 +75,39 @@ def _build_long(frame: pd.DataFrame, contract: pd.DataFrame, grain: str) -> pd.D
     for endpoint in contract.to_dict("records"):
         variable = str(endpoint[variable_column])
         status = str(endpoint["source_status_column"])
-        if grain == "species" and status not in frame.columns:
+        if variable not in frame.columns:
+            continue
+
+        status_column: str | None = status if status in frame.columns else None
+        if grain == "species" and status_column is None:
             observation_count = status.replace("n_usable_heads_", "n_observations_usable_")
             if observation_count in frame.columns:
-                status = observation_count
-        required = {key, variable, status}
-        missing = sorted(required.difference(frame.columns))
-        if missing:
-            # Extended endpoints may be absent before the expanded image run. Preserve
-            # the contract and make the missing execution explicit in the audit table.
-            continue
-        part = frame[metadata + [variable, status]].copy()
-        part = part.rename(columns={variable: "value", status: "n_usable_source_heads"})
+                status_column = observation_count
+
+        selected = metadata + [variable]
+        if status_column is not None:
+            selected.append(status_column)
+        part = frame[selected].copy()
+        part = part.rename(columns={variable: "value"})
         part["value"] = pd.to_numeric(part["value"], errors="coerce")
-        part["n_usable_source_heads"] = pd.to_numeric(part["n_usable_source_heads"], errors="coerce").fillna(0).astype(int)
+
+        if status_column is not None:
+            part = part.rename(columns={status_column: "n_usable_source_heads"})
+            part["n_usable_source_heads"] = (
+                pd.to_numeric(part["n_usable_source_heads"], errors="coerce")
+                .fillna(0).astype(int)
+            )
+            part["availability_source"] = f"status_column:{status_column}"
+        else:
+            # Frozen strict-observation tables predate the PR70 contract and can
+            # contain already-QC'd continuous values without carrying the old
+            # n_usable_heads_* counters. A finite retained value is itself
+            # evidence that at least one usable measurement entered that frozen
+            # observation/species summary. Preserve it rather than silently
+            # dropping the endpoint merely because a legacy counter is absent.
+            part["n_usable_source_heads"] = np.where(np.isfinite(part["value"]), 1, 0).astype(int)
+            part["availability_source"] = "finite_value_fallback_no_legacy_status_column"
+
         for column, value in endpoint.items():
             part[column] = value
         part["grain"] = grain
@@ -132,16 +151,19 @@ def build_universe(
     available = set(observation_long["endpoint_id"]).intersection(species_long["endpoint_id"])
     expected = set(contract["endpoint_id"])
     missing = sorted(expected - available)
-    measured_observation = set(
-        observation_long.loc[observation_long["measurement_available"], "endpoint_id"]
-    )
-    measured_species = set(
-        species_long.loc[species_long["measurement_available"], "endpoint_id"]
-    )
+    measured_observation = set(observation_long.loc[observation_long["measurement_available"], "endpoint_id"])
+    measured_species = set(species_long.loc[species_long["measurement_available"], "endpoint_id"])
     inferential = set(contract.loc[contract["analysis_tier"].isin(["primary", "candidate"]), "endpoint_id"])
     inferential_without_measurements = sorted(inferential - measured_observation)
+    fallback_endpoints = sorted(
+        observation_long.loc[
+            observation_long["availability_source"].eq("finite_value_fallback_no_legacy_status_column")
+            & observation_long["measurement_available"],
+            "endpoint_id",
+        ].unique().tolist()
+    )
     report = {
-        "status": "ready" if not missing and not inferential_without_measurements else "partial",
+        "status": "ready" if not inferential_without_measurements else "partial",
         "n_contract_endpoints": int(len(contract)),
         "n_available_endpoints": int(len(available)),
         "n_missing_unexecuted_endpoints": int(len(missing)),
@@ -150,11 +172,8 @@ def build_universe(
         "n_endpoints_with_species_measurements": int(len(measured_species)),
         "n_inferential_endpoints_without_measurements": int(len(inferential_without_measurements)),
         "inferential_endpoints_without_measurements": inferential_without_measurements,
+        "finite_value_fallback_endpoints": fallback_endpoints,
         "n_observations": int(primary_observation["obs_id"].astype(str).nunique()),
-        # Observation and species-summary grains can legitimately contain
-        # different taxon counts when the upstream species table enforces a
-        # minimum number of observations. Keep the historical ``n_taxa`` field
-        # for compatibility but expose both grains explicitly.
         "n_taxa": int(primary_species["taxon_name"].astype(str).nunique()),
         "n_observation_taxa": int(primary_observation["taxon_name"].astype(str).nunique()),
         "n_species_summary_taxa": int(primary_species["taxon_name"].astype(str).nunique()),
@@ -162,8 +181,9 @@ def build_universe(
         "n_observation_measurements_analysis_eligible": int(observation_long["analysis_eligible"].sum()),
         "category_columns_in_output": sorted(FORBIDDEN_CATEGORY_COLUMNS.intersection(observation_long.columns)),
         "semantic_status": (
-            "One row per grain and continuous endpoint. Missingness records failed or unexecuted measurement; "
-            "it is never converted to a category or biological zero."
+            "One row per grain and continuous endpoint. Missingness records failed or unexecuted measurement and is never "
+            "converted to a category or biological zero. Finite-value fallback is restricted to already-QC'd frozen source "
+            "continuous values when legacy usable-head counters are absent."
         ),
     }
     return observation_long, species_long, report
