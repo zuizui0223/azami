@@ -212,11 +212,12 @@ def main() -> None:
     coefficients.to_csv(out / "candidate_quality_adjusted_coefficients_v2.csv", index=False)
     pd.DataFrame(statuses).to_csv(out / "candidate_quality_model_status_v2.csv", index=False)
     audit.to_csv(out / "candidate_quality_sensitivity_v2.csv", index=False)
+    full_after_fdr = coefficients.loc[full.index]
     report = {
         "n_registered_candidates": int(len(candidate)),
         "n_candidates_measurable_in_extended_head_table": int(len(endpoint_meta)),
-        "n_quality_adjusted_climate_rows": int(len(full)),
-        "n_quality_adjusted_fdr_signals": int(full["q_fdr_bh_candidate_quality"].lt(0.05).sum()) if not full.empty else 0,
+        "n_quality_adjusted_climate_rows": int(len(full_after_fdr)),
+        "n_quality_adjusted_fdr_signals": int(full_after_fdr["q_fdr_bh_candidate_quality"].lt(0.05).sum()) if not full_after_fdr.empty else 0,
         "interpretation": (
             "GEB v2 sensitivity layer: quality adjustment and resolution strata grade confidence; "
             "failure of this layer alone does not erase a global continuous image-phenotype pattern."
