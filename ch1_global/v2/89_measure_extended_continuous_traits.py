@@ -238,6 +238,12 @@ def measure_once(image: np.ndarray, args: argparse.Namespace) -> dict[str, Any]:
     floral_rows, floral_columns = np.nonzero(floral)
     floral_fraction = float(floral.sum() / max(foreground.sum(), 1))
     base["visible_floret_fraction_extended"] = floral_fraction
+    if not 0.02 <= floral_fraction <= 0.65:
+        return {
+            **base,
+            "architecture_status": "floral_region_implausible",
+            "surface_status": "floral_region_implausible",
+        }
     if len(columns) < 100 or len(floral_columns) < max(12, int(0.02 * len(columns))):
         return {**base, "architecture_status": "floral_end_not_recovered", "surface_status": "floral_end_not_recovered"}
 
