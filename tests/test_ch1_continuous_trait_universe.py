@@ -96,6 +96,8 @@ class ContinuousTraitContractTests(unittest.TestCase):
             )
         self.assertEqual(report["status"], "ready")
         self.assertEqual(report["n_available_endpoints"], len(contract))
+        self.assertEqual(report["n_observation_taxa"], 1)
+        self.assertEqual(report["n_species_summary_taxa"], 1)
         self.assertEqual(len(observation), len(contract))
         self.assertEqual(len(species), len(contract))
         self.assertNotIn("trait_state", observation.columns)

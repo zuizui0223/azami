@@ -151,7 +151,13 @@ def build_universe(
         "n_inferential_endpoints_without_measurements": int(len(inferential_without_measurements)),
         "inferential_endpoints_without_measurements": inferential_without_measurements,
         "n_observations": int(primary_observation["obs_id"].astype(str).nunique()),
+        # Observation and species-summary grains can legitimately contain
+        # different taxon counts when the upstream species table enforces a
+        # minimum number of observations. Keep the historical ``n_taxa`` field
+        # for compatibility but expose both grains explicitly.
         "n_taxa": int(primary_species["taxon_name"].astype(str).nunique()),
+        "n_observation_taxa": int(primary_observation["taxon_name"].astype(str).nunique()),
+        "n_species_summary_taxa": int(primary_species["taxon_name"].astype(str).nunique()),
         "n_observation_measurements_available": int(observation_long["measurement_available"].sum()),
         "n_observation_measurements_analysis_eligible": int(observation_long["analysis_eligible"].sum()),
         "category_columns_in_output": sorted(FORBIDDEN_CATEGORY_COLUMNS.intersection(observation_long.columns)),
