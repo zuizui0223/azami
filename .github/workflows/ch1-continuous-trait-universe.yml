@@ -1,6 +1,18 @@
 name: Ch1 category-free continuous trait universe
 
 on:
+  push:
+    branches:
+      - codex/pr69-continuous-reanalysis
+    paths:
+      - '.github/workflows/ch1-continuous-trait-universe.yml'
+      - 'ch1_global/v2/87_validate_continuous_trait_contract.py'
+      - 'ch1_global/v2/88_build_continuous_trait_universe.py'
+      - 'ch1_global/v2/89_measure_extended_continuous_traits.py'
+      - 'ch1_global/v2/90_run_continuous_trait_universe_climate.py'
+      - 'ch1_global/v2/91_prepare_exhaustive_extended_cohort.py'
+      - 'ch1_global/v2/92_sample_chelsa_for_continuous_universe.py'
+      - 'ch1_global/v2/ontology/ch1_continuous_trait_contract.csv'
   workflow_dispatch:
     inputs:
       source_artifact_id:
@@ -43,7 +55,7 @@ on:
         type: string
 
 concurrency:
-  group: ch1-continuous-trait-universe-${{ inputs.output_label }}
+  group: ch1-continuous-trait-universe-${{ inputs.output_label || github.ref_name }}
   cancel-in-progress: false
 
 permissions:
@@ -55,13 +67,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
-      SOURCE_ARTIFACT_ID: ${{ inputs.source_artifact_id }}
-      RUN_MODE: ${{ inputs.run_mode }}
-      OUTPUT_LABEL: ${{ inputs.output_label }}
-      MAX_PHOTOS: ${{ inputs.max_photos }}
-      MINIMUM_OBSERVATIONS: ${{ inputs.minimum_observations }}
-      MINIMUM_TAXA: ${{ inputs.minimum_taxa }}
-      PERMUTATIONS: ${{ inputs.permutations }}
+      SOURCE_ARTIFACT_ID: ${{ inputs.source_artifact_id || '8269246732' }}
+      RUN_MODE: ${{ inputs.run_mode || 'full' }}
+      OUTPUT_LABEL: ${{ inputs.output_label || 'continuous_trait_universe_branch_full_v1' }}
+      MAX_PHOTOS: ${{ inputs.max_photos || '0' }}
+      MINIMUM_OBSERVATIONS: ${{ inputs.minimum_observations || '100' }}
+      MINIMUM_TAXA: ${{ inputs.minimum_taxa || '10' }}
+      PERMUTATIONS: ${{ inputs.permutations || '999' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -133,16 +145,16 @@ jobs:
             --report continuous_trait_run/extended_cohort_audit.json \
             --min-bbox-dimension 150
       - name: Install full measurement dependencies
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r ch1_global/v2/requirements-submission.txt 'rasterio>=1.3,<2' 'pyproj>=3.6,<4'
           python -m pip check
       - name: Run contract and synthetic regression tests
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: python -m unittest -v tests/test_ch1_continuous_trait_universe.py
       - name: Rebuild selected high-resolution crops
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: |
           python ch1_global/v2/54_rebuild_global_continuous_trait_packet.py \
             --yolo-metadata continuous_trait_run/selected_extended_heads.csv \
@@ -150,7 +162,7 @@ jobs:
             --max-photos "$MAX_PHOTOS" \
             --allow-failures
       - name: Measure extended continuous endpoints
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: |
           python ch1_global/v2/89_measure_extended_continuous_traits.py \
             --manifest continuous_trait_run/rebuilt/continuous_trait_manifest.csv \
@@ -158,7 +170,7 @@ jobs:
             --image-root continuous_trait_run/rebuilt \
             --out-dir continuous_trait_run/extended_measurements
       - name: Build the full category-free trait universe
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: |
           python ch1_global/v2/88_build_continuous_trait_universe.py \
             --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
@@ -168,14 +180,14 @@ jobs:
             --extended-species continuous_trait_run/extended_measurements/extended_continuous_species_level.csv \
             --out-dir continuous_trait_run/universe
       - name: Attach CHELSA predictors to the frozen cohort
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: |
           python ch1_global/v2/92_sample_chelsa_for_continuous_universe.py \
             --observation "$STRICT_OBSERVATIONS" \
             --out-csv continuous_trait_run/environment/strict_spatial_chelsa.csv \
             --report continuous_trait_run/environment/chelsa_extraction_report.json
       - name: Run registry-driven within-taxon models
-        if: ${{ inputs.run_mode == 'full' }}
+        if: env.RUN_MODE == 'full'
         run: |
           python ch1_global/v2/90_run_continuous_trait_universe_climate.py \
             --traits-long continuous_trait_run/universe/continuous_trait_universe_observation_long.csv \
@@ -196,7 +208,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ch1-continuous-trait-universe-${{ inputs.output_label }}-${{ github.run_id }}
+          name: ch1-continuous-trait-universe-${{ env.OUTPUT_LABEL }}-${{ github.run_id }}
           path: continuous_trait_run
           if-no-files-found: error
           retention-days: 90
