@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import cv2
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -87,6 +88,15 @@ def bgr(path: Path) -> np.ndarray:
 
 def rgb(path: Path) -> np.ndarray:
     return cv2.cvtColor(bgr(path), cv2.COLOR_BGR2RGB)
+
+
+def save_svg(fig: Any, path: Path) -> None:
+    with mpl.rc_context({"svg.hashsalt": "azami-figure1-v1"}):
+        fig.savefig(path, bbox_inches="tight", metadata={"Date": None})
+    path.write_text(
+        "\n".join(line.rstrip() for line in path.read_text(encoding="utf-8").splitlines()) + "\n",
+        encoding="utf-8",
+    )
 
 
 def panel_label(ax: plt.Axes, label: str, title: str) -> None:
@@ -248,11 +258,7 @@ def main() -> None:
     fig.suptitle("Actual photographs, capitulum detection and continuous trait extraction", fontsize=17, fontweight="bold", y=0.985)
     fig.savefig(out / "figure1_real_photo_yolo_pipeline.png", dpi=300, bbox_inches="tight")
     svg_path = out / "figure1_real_photo_yolo_pipeline.svg"
-    fig.savefig(svg_path, bbox_inches="tight")
-    svg_path.write_text(
-        "\n".join(line.rstrip() for line in svg_path.read_text(encoding="utf-8").splitlines()) + "\n",
-        encoding="utf-8",
-    )
+    save_svg(fig, svg_path)
     plt.close(fig)
 
     provenance_cols = [
