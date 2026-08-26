@@ -1,9 +1,9 @@
 {
-  "schema_version": 7,
-  "status": "submission-only continuous within-taxon public-image phenomics pipeline; computational robustness complete; independent detector and continuous-measurement validation pending",
+  "schema_version": 9,
+  "status": "submission HOLD; seasonal, dominant-taxon, native-range and involucre image-quality audits complete; two primary climate rows retained; image remeasurement and independent validation pending",
   "submission_story": {
     "primary_methodological_claim": "public photographs are converted into repeated continuous head-level phenotype measurements rather than categorical trait labels",
-    "primary_biological_claim": "substantial visible variation occurs below taxon means and environmental structure is trait- and scale-specific, strongest for orientation and visible colour",
+    "primary_biological_claim": "substantial visible image variation occurs below taxon means; orientation-BIO1 and aspect-ratio-BIO4 survive raw-calendar, hemisphere-aware cyclic-season, dominant-taxon and native-range controls but remain observational and developmentally unlabelled",
     "legacy_lability_status": "withdrawn from biological headline; retained only as statistical provenance/QA"
   },
   "policy": {
@@ -64,6 +64,50 @@
       "n_component_tests": 36,
       "n_bh_supported_component_rows": 8
     },
+    "seasonal_and_dominant_taxon_bias_control": {
+      "status": "complete under locked contract; developmental stage remains open",
+      "script": "analysis/run_bias_control_reanalysis.py",
+      "contract": "analysis/ch1/bias_control_contract.json",
+      "n_non_circular_rows_tested": 4,
+      "n_non_circular_rows_strictly_retained": 4,
+      "n_outcome_blind_single_taxon_omissions": 10,
+      "joint_omission": "two largest taxa by observation count"
+    },
+    "hemisphere_season_sensitivity": {
+      "status": "complete under separately locked contract; developmental stage remains open",
+      "script": "analysis/run_hemisphere_season_sensitivity.py",
+      "contract": "analysis/ch1/hemisphere_season_sensitivity_contract.json",
+      "n_southern_observations": 2356,
+      "n_taxa_sampled_both_hemispheres": 3,
+      "n_non_circular_rows_strictly_retained": 4,
+      "model_definitions": ["hemisphere_phase_aligned_cyclic_doy", "taxon_cyclic_doy_by_hemisphere"]
+    },
+    "native_range_sensitivity": {
+      "status": "complete under separately locked contract; 2 of 4 non-circular rows retained",
+      "script": "analysis/run_native_range_sensitivity.py",
+      "contract": "analysis/ch1/native_range_sensitivity_contract.json",
+      "table": "manuscript/supplement/tables/S16_native_range_sensitivity.csv",
+      "wcvp_dataset_doi": "10.15468/6h8ucr",
+      "tdwg_commit": "52da7828aba9d461dd133c27b3bd7a4407161f54",
+      "n_resolved_taxa": 245,
+      "n_native_observations": 27066,
+      "n_non_circular_rows_strictly_retained": 2,
+      "retained_rows": ["orientation_angle-BIO1", "shape_aspect_ratio-BIO4"],
+      "withdrawn_rows": ["corolla_chroma-BIO12", "shape_aspect_ratio-BIO12"]
+    },
+    "colour_negative_control": {
+      "status": "implementation tested; context-image remeasurement pending",
+      "script": "analysis/run_colour_negative_control.py",
+      "decision_rule": "paired flower-versus-background region-by-BIO12 interaction; nonsignificant background slope alone is insufficient"
+    },
+    "repeat_photo_variance": {
+      "status": "outcome-blind cohort frozen; image measurement pending",
+      "script": "analysis/build_repeat_photo_bias_control_cohort.py",
+      "n_repeat_observations": 20073,
+      "n_repeat_taxa": 236,
+      "n_photo_rows": 58748,
+      "n_additional_photos": 38675
+    },
     "grouped_spde": {
       "status": "frozen spatial-model coefficient family",
       "script": "ch1_global/v2/83_run_lightweight_spde_inla.R",
@@ -72,9 +116,11 @@
       "interpretation": "orientation and visible colour retain the clearest supported spatial-model structure; gross-outline effects are weaker/model-dependent"
     },
     "auxiliary_involucre": {
-      "status": "completed auxiliary high-resolution layer",
+      "status": "withdrawn from headline after resolution and sharpness audit",
       "measurement_script": "ch1_global/v2/59_measure_involucre_auxiliary_continuous.py",
       "join_script": "ch1_global/v2/62_join_primary_auxiliary_continuous.py",
+      "audit_script": "analysis/run_involucre_resolution_audit.py",
+      "n_rows_strictly_retained": 0,
       "final_inferential_endpoints": ["involucre_projection_roughness", "involucre_spread_fraction", "spine_relative_length_max_proxy"],
       "boundary": "2D image-geometry proxies, not direct botanical phyllary/spine states"
     },
@@ -141,15 +187,26 @@
       "precision confounding audit",
       "environmental niche permutation null",
       "residual Moran and broad-region omission",
-      "WCVP taxonomic robustness and synonym-collapse sensitivity"
+      "WCVP taxonomic robustness and synonym-collapse sensitivity",
+      "cyclic day-of-year and dominant-taxon sensitivity",
+      "hemisphere-aware cyclic day-of-year sensitivity",
+      "versioned WCVP/TDWG native-range sensitivity",
+      "involucre resolution and sharpness audit"
+    ],
+    "pending_image_remeasurement": [
+      "developmental-stage classification or anthesis restriction",
+      "paired flower/background colour negative control",
+      "repeat-photo trait measurement and variance decomposition"
     ],
     "pending_external_scientific": [
       "adjudicated human boxes for independent detector audit",
       "independent orientation/colour/outline reference measurements"
     ],
+    "pending_computational": [],
     "pending_human_finalization": [
       "24 high-priority nomenclatural notes",
       "authorship and administrative metadata",
+      "licence selection",
       "durable release and DOI"
     ]
   }

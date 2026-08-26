@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_canonical_manifest_paths_exist() -> None:
     pipeline = ROOT / "analysis" / "ch1" / "pipeline.json"
     payload = json.loads(pipeline.read_text(encoding="utf-8"))
-    assert payload["schema_version"] == 1
+    assert payload["schema_version"] >= 8
     assert payload["policy"]["move_numbered_scripts"] is False
     for stage in payload["stages"].values():
         script = stage.get("script")

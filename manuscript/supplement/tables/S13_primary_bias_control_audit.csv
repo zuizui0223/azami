@@ -1,0 +1,5 @@
+endpoint,predictor,frozen_beta,season_adjusted_beta,season_adjusted_ci95_low,season_adjusted_ci95_high,season_adjusted_q,omission_beta_min,omission_beta_max,strict_retention,current_gate
+orientation_angle,BIO1,0.017059,0.015832,0.008442,0.023221,0.000107,0.010115,0.018224,true,retained_after_native_range_stage_pending
+corolla_chroma,BIO12,0.039324,0.047521,0.012182,0.082859,0.020157,0.015876,0.053365,true,withdrawn_after_native_range_BH_failure_colour_control_pending
+shape_aspect_ratio,BIO4,0.013723,0.020643,0.014047,0.027239,0.0000000154,0.018361,0.023120,true,retained_after_native_range_stage_pending
+shape_aspect_ratio,BIO12,-0.010796,-0.013296,-0.020363,-0.006230,0.000814,-0.016618,-0.011850,true,withdrawn_after_native_range_BH_failure

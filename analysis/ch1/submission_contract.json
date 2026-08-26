@@ -1,11 +1,15 @@
 {
-  "schema_version": 10,
-  "status": "2026-08 continuous-phenomics submission control contract",
+  "schema_version": 13,
+  "status": "2026-08 continuous-phenomics submission HOLD control contract",
   "authoritative_files": [
     "manuscript/final_claims.json",
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "analysis/ch1/pipeline.json",
+    "analysis/ch1/bias_control_contract.json",
+    "analysis/ch1/hemisphere_season_sensitivity_contract.json",
+    "analysis/ch1/native_range_sensitivity_contract.json",
     "manuscript/SUBMISSION_MANUSCRIPT.md",
+    "manuscript/BIAS_CONTROL_REANALYSIS_PROTOCOL.md",
     "manuscript/06_references.md"
   ],
   "required_submission_paths": [
@@ -18,6 +22,7 @@
     "manuscript/04_discussion.md",
     "manuscript/05_conclusion_and_declarations.md",
     "manuscript/06_references.md",
+    "manuscript/07_data_code_availability.md",
     "manuscript/final_claims.json",
     "manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md",
     "manuscript/EXTERNAL_COMPLETION_GATES.md",
@@ -33,13 +38,17 @@
     "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv",
     "manuscript/supplement/tables/S04_nested_visible_variance.csv",
     "manuscript/supplement/tables/S05_grouped_SPDE_stable_supported_patterns.csv",
-    "manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv",
+    "manuscript/supplement/tables/S06_auxiliary_involucre_resolution_audit.csv",
     "manuscript/supplement/tables/S07_niche_permutation_summary.csv",
     "manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv",
     "manuscript/supplement/tables/S09_spatial_robustness.csv",
     "manuscript/supplement/tables/S10_wcvp_synonym_candidates.csv",
     "manuscript/supplement/tables/S11_precision_confounding_audit_summary.csv",
     "manuscript/supplement/tables/S12_submission_gates.csv",
+    "manuscript/supplement/tables/S13_primary_bias_control_audit.csv",
+    "manuscript/supplement/tables/S14_repeat_photo_cohort_preflight.csv",
+    "manuscript/supplement/tables/S15_hemisphere_season_sensitivity.csv",
+    "manuscript/supplement/tables/S16_native_range_sensitivity.csv",
     "manuscript/supplement/FIGURE_MANIFEST.md",
     "manuscript/supplement/figure_data/FigureS1_nested_variance.csv",
     "manuscript/supplement/figure_data/FigureS2_primary_coefficients.csv",
@@ -53,6 +62,12 @@
     "analysis/build_ch1_interpretive_figures_v2.py",
     "analysis/build_ch1_interpretive_figures_v3.py",
     "analysis/augment_figure1_with_analysis_scales.py",
+    "analysis/run_bias_control_reanalysis.py",
+    "analysis/run_hemisphere_season_sensitivity.py",
+    "analysis/run_native_range_sensitivity.py",
+    "analysis/run_involucre_resolution_audit.py",
+    "analysis/build_repeat_photo_bias_control_cohort.py",
+    "analysis/run_colour_negative_control.py",
     ".github/workflows/ch1-interpretive-figures-ci.yml",
     "analysis/ch1/pipeline.json"
   ],
@@ -94,11 +109,18 @@
   },
   "submission_blockers": [
     "independent detector human boxes",
-    "independent orientation/colour/outline reference measurements"
+    "independent orientation/colour/outline reference measurements",
+    "developmental stage or anthesis-restricted sensitivity",
+    "paired flower/background colour negative control",
+    "repeat-photo trait remeasurement and variance decomposition",
+    "licence selection and durable DOI release"
   ],
   "withdrawn_from_headline": [
     "raw absolute-slope lability relation",
     "median-split lability quadrants",
+    "three unadjusted involucre-BIO4 headline rows",
+    "corolla_chroma-BIO12 after native-range BH failure",
+    "shape_aspect_ratio-BIO12 after native-range BH failure",
     "categorical CLIP/AI trait proposals and their categorical environment atlas"
   ],
   "do_not_move": [

@@ -1,0 +1,9 @@
+trait,term,direction,groups
+orientation_angle_degrees_median,chelsa_bio01,positive,4
+corolla_lab_lightness_median,chelsa_bio01,positive,4
+corolla_lab_lightness_median,soil_phh2o_0_30cm,negative,2
+corolla_lab_chroma_median,chelsa_bio01,negative,4
+corolla_lab_chroma_median,chelsa_bio12,positive,4
+corolla_hue_sin_median,chelsa_bio04,positive,4
+corolla_hue_cos_median,chelsa_bio01,negative,4
+corolla_hue_cos_median,soil_phh2o_0_30cm,positive,2

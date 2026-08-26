@@ -1,0 +1,27 @@
+{
+  "pca_complete_taxa": 148,
+  "pca_variance_pc1_pc3": [
+    0.3293352231690921,
+    0.23159017532242285,
+    0.13242860941975268
+  ],
+  "primary_supported": 8,
+  "spde_stable_pairs": 8,
+  "bias_control_rows": 4,
+  "historical_figure_status": "Supporting Information only",
+  "rendered_products": [
+    "Figure_4_taxon_trait_architecture.pdf",
+    "Figure_4_taxon_trait_architecture.png",
+    "Figure_4_taxon_trait_architecture.svg",
+    "Figure_5_environmental_effect_sizes.pdf",
+    "Figure_5_environmental_effect_sizes.png",
+    "Figure_5_environmental_effect_sizes.svg",
+    "Figure_S1_9_historical_placement_sensitivity.pdf",
+    "Figure_S1_9_historical_placement_sensitivity.png",
+    "Figure_S1_9_historical_placement_sensitivity.svg",
+    "Figure_S8_environmental_sorting.pdf",
+    "Figure_S8_environmental_sorting.png",
+    "Figure_S8_environmental_sorting.svg"
+  ],
+  "scope": "presentation of frozen or predeclared audit results; no post-outcome model selection"
+}

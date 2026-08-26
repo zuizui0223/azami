@@ -75,7 +75,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--environment", required=True)
     p.add_argument("--spde-fixed", required=True)
     p.add_argument("--primary-supported", required=True)
-    p.add_argument("--aux-supported", required=True)
+    p.add_argument("--bias-control", required=True)
     p.add_argument("--niche-summary", required=True)
     p.add_argument("--pgls-supported", required=True)
     p.add_argument("--out-dir", required=True)
@@ -134,7 +134,7 @@ def plot_figure4(scores: pd.DataFrame, load: pd.DataFrame, variance: np.ndarray,
         ax.text(x * 1.05, y * 1.05, short[row["trait"]], fontsize=7.5, ha="center", va="center")
     ax.set_xlabel(f"PC1 ({variance[0]*100:.1f}%)")
     ax.set_ylabel(f"PC2 ({variance[1]*100:.1f}%)")
-    ax.set_title("A  Taxon scores and trait directions\n148 taxa complete for all nine endpoints", fontsize=10)
+    ax.set_title("a  Taxon scores and trait directions\n148 taxa complete for all nine endpoints", fontsize=10)
 
     ax = axes[1]
     work = load.copy()
@@ -145,7 +145,7 @@ def plot_figure4(scores: pd.DataFrame, load: pd.DataFrame, variance: np.ndarray,
     ax.axvline(0, linewidth=0.7)
     ax.set_yticks(y, work["label"])
     ax.set_xlabel(f"PC3 loading ({variance[2]*100:.1f}% variance)")
-    ax.set_title("B  Third independent trait dimension", fontsize=10)
+    ax.set_title("b  Third independent trait dimension", fontsize=10)
     ax.text(0.02, 0.02, f"PC1–PC3 cumulative variance = {variance[:3].sum()*100:.1f}%", transform=ax.transAxes, fontsize=8)
     fig.suptitle("Taxon-level capitulum trait architecture is multidimensional", fontsize=13)
     fig.tight_layout()
@@ -165,15 +165,31 @@ def forest(ax, df: pd.DataFrame, value: str, low: str, high: str, labels: list[s
     ax.tick_params(axis="both", labelsize=7)
 
 
-def plot_figure5(primary: pd.DataFrame, aux: pd.DataFrame, fx: pd.DataFrame, out: Path) -> pd.DataFrame:
-    if len(primary) != 8 or len(aux) != 3:
-        raise ValueError(f"Supported row counts changed: primary={len(primary)}, aux={len(aux)}")
-    fig, axes = plt.subplots(1, 3, figsize=(14.7, 6.5), gridspec_kw={"width_ratios": [1.05, 1.35, 0.92]})
+def plot_figure5(primary: pd.DataFrame, bias: pd.DataFrame, fx: pd.DataFrame, out: Path) -> pd.DataFrame:
+    if len(primary) != 8 or len(bias) != 4:
+        raise ValueError(f"Expected primary=8 and bias-control=4 rows; got {len(primary)} and {len(bias)}")
+    required_native = {
+        "frozen_beta", "native_only_beta", "native_only_ci_low", "native_only_ci_high",
+        "native_only_q", "native_range_robust",
+    }
+    missing_native = required_native.difference(bias.columns)
+    if missing_native:
+        raise ValueError(f"Native-range audit columns missing: {sorted(missing_native)}")
+    retained = bias["native_range_robust"].astype(str).str.lower().eq("true")
+    if int(retained.sum()) != 2:
+        raise ValueError(f"Expected 2/4 native-range-retained rows; got {int(retained.sum())}")
+    if not (
+        pd.to_numeric(bias["frozen_beta"], errors="raise")
+        * pd.to_numeric(bias["native_only_beta"], errors="raise")
+        > 0
+    ).all():
+        raise ValueError("A native-only coefficient changed sign relative to the frozen primary row")
+    fig, axes = plt.subplots(1, 3, figsize=(14.7, 6.5), gridspec_kw={"width_ratios": [1.05, 1.35, 1.05]})
 
     p = primary.copy()
     labels = [f"{FRIENDLY.get(r.endpoint, r.endpoint)} · {r.predictor}" for r in p.itertuples()]
     forest(axes[0], p, "standardized_beta", "ci95_low", "ci95_high", labels,
-           "A  Exhaustive within-taxon primary\n8/36 BH-supported components", "Standardized β (95% CI)")
+           "a  Exhaustive within-taxon primary\n8/36 BH-supported components", "Standardized β (95% CI)")
     axes[0].text(0.01, -0.11, "Hue sine/cosine are circular components and require joint interpretation.", transform=axes[0].transAxes, fontsize=7)
 
     stable_rows = []
@@ -206,15 +222,39 @@ def plot_figure5(primary: pd.DataFrame, aux: pd.DataFrame, fx: pd.DataFrame, out
     spde_labels = [f"{FRIENDLY[t]} · {PRED_LABEL[term]}" for t, term, _ in STABLE_SPDE]
     axes[1].set_yticks(y_base, spde_labels)
     axes[1].set_xlabel("SPDE posterior coefficient (95% credible interval)", fontsize=8)
-    axes[1].set_title("B  Grouped SPDE-INLA stable patterns\nfilled marker = global BH q < 0.05 in that model group", fontsize=9)
+    axes[1].set_title("b  Grouped SPDE-INLA stable patterns\nfilled marker = global BH q < 0.05 in that model group", fontsize=9)
     axes[1].tick_params(axis="both", labelsize=7)
     axes[1].legend(fontsize=6.5, loc="lower right")
 
-    a = aux.copy()
-    alabels = [f"{FRIENDLY.get(r.endpoint, r.endpoint)} · {r.predictor}" for r in a.itertuples()]
-    forest(axes[2], a, "standardized_beta", "ci95_low", "ci95_high", alabels,
-           "C  High-resolution involucre\n3/12 BH-supported rows", "Standardized β (95% CI)")
-    axes[2].text(0.01, -0.11, "2D contour proxies; not direct measurements of defence or bract morphology.", transform=axes[2].transAxes, fontsize=7)
+    b = bias.copy()
+    blabels = [
+        f"{FRIENDLY.get(r.endpoint, r.endpoint)} · {PRED_LABEL.get(r.predictor, r.predictor)}"
+        for r in b.itertuples()
+    ]
+    y_positions = np.arange(len(b))[::-1]
+    vals = pd.to_numeric(b["native_only_beta"], errors="raise").to_numpy(float)
+    lo = pd.to_numeric(b["native_only_ci_low"], errors="raise").to_numpy(float)
+    hi = pd.to_numeric(b["native_only_ci_high"], errors="raise").to_numpy(float)
+    kept = b["native_range_robust"].astype(str).str.lower().eq("true").to_numpy()
+    for value, lower, upper, y, is_kept in zip(vals, lo, hi, y_positions, kept):
+        axes[2].errorbar(
+            value, y, xerr=[[value - lower], [upper - value]], fmt="o",
+            fillstyle="full" if is_kept else "none", markersize=5.5,
+            capsize=2.5, linewidth=1.0,
+        )
+    axes[2].axvline(0, linewidth=0.8, linestyle="--")
+    axes[2].set_yticks(y_positions, blabels)
+    axes[2].set_xlabel("Native-only standardized β (95% CI)", fontsize=8)
+    axes[2].set_title(
+        "c  Native-range restriction after timing/taxon audits\n2/4 non-circular rows meet the locked rule",
+        fontsize=9,
+    )
+    axes[2].tick_params(axis="both", labelsize=7)
+    axes[2].text(
+        0.01, -0.15,
+        "Filled: same sign and native-only BH q < 0.05. Open: same sign but BH failed. Stage and colour gates remain open.",
+        transform=axes[2].transAxes, fontsize=6.8,
+    )
 
     fig.suptitle("Effect sizes make the trait-specific environmental structure explicit", fontsize=13)
     fig.tight_layout()
@@ -241,7 +281,7 @@ def plot_figure6(primary: pd.DataFrame, pgls: pd.DataFrame, out: Path) -> None:
     ax.set_yticks(range(len(endpoint_order)), endpoint_order)
     ax.invert_yaxis()
     ax.grid(True, linewidth=0.4)
-    ax.set_title("A  Supported climate axes differ across ecological scales", fontsize=9)
+    ax.set_title("a  Supported climate axes differ across ecological scales", fontsize=9)
     ax.text(0.01, -0.12, "W = within-taxon primary; H = among-taxon historical sensitivity. Signs are coefficient directions.", transform=ax.transAxes, fontsize=7.5)
 
     endpoint_map = {"orientation_angle": "Orientation", "corolla_chroma": "Chroma", "hue_sin": "Hue sine", "hue_cos": "Hue cosine", "shape_aspect_ratio": "Aspect ratio"}
@@ -253,12 +293,12 @@ def plot_figure6(primary: pd.DataFrame, pgls: pd.DataFrame, out: Path) -> None:
         sign = "+" if float(r.standardized_beta) > 0 else "−"
         ax.text(x-0.15, y, f"W{sign}", ha="center", va="center", fontsize=8, fontweight="bold")
 
-    for r in pgls.itertuples():
-        ep = str(r.Endpoint).replace("Orientation angle", "Orientation")
-        pred = str(r.Predictor).split()[0]
+    for _, r in pgls.iterrows():
+        ep = str(r["Endpoint"]).replace("Orientation angle", "Orientation")
+        pred = str(r["Predictor"]).split()[0]
         if ep not in endpoint_order or pred not in predictors:
             continue
-        beta = float(str(getattr(r, "_2", r[2])).replace("−", "-").replace("+", "")) if False else float(str(r._asdict().get("Median β", r[2])).replace("−", "-").replace("+", ""))
+        beta = float(str(r["Median β"]).replace("−", "-").replace("+", ""))
         x = predictors.index(pred); y = endpoint_order.index(ep)
         sign = "+" if beta > 0 else "−"
         ax.text(x+0.15, y, f"H{sign}", ha="center", va="center", fontsize=8)
@@ -274,12 +314,12 @@ def plot_figure6(primary: pd.DataFrame, pgls: pd.DataFrame, out: Path) -> None:
     ax.axvline(0, linewidth=0.8, linestyle="--")
     ax.set_yticks(y, labels)
     ax.set_xlabel("Median standardized coefficient across 50 randomized trees", fontsize=8)
-    ax.set_title("B  Associations retained in all 50 alternative PGLS trees", fontsize=9)
+    ax.set_title("b  Associations retained in all 50 alternative PGLS trees", fontsize=9)
     ax.tick_params(axis="both", labelsize=7)
     ax.text(0.01, -0.12, "Historical sensitivity only: 54/216 atlas taxa are direct dated-backbone tips.", transform=ax.transAxes, fontsize=7.5)
     fig.suptitle("Within-taxon and among-taxon environmental structure are not interchangeable", fontsize=13)
     fig.tight_layout()
-    save(fig, out, "Figure_6_scale_specificity_and_historical_sensitivity")
+    save(fig, out, "Figure_S1_9_historical_placement_sensitivity")
 
 
 def safe_cov(x: np.ndarray) -> np.ndarray:
@@ -348,18 +388,18 @@ def main() -> None:
     env=pd.read_csv(a.environment,low_memory=False)
     fx=pd.read_csv(a.spde_fixed,low_memory=False)
     primary=pd.read_csv(a.primary_supported)
-    aux=pd.read_csv(a.aux_supported)
+    bias=pd.read_csv(a.bias_control)
     niche=pd.read_csv(a.niche_summary)
     pgls=pd.read_csv(a.pgls_supported)
     scores,load,var=pca_products(env,out)
     plot_figure4(scores,load,var,out)
-    stable=plot_figure5(primary,aux,fx,out)
+    stable=plot_figure5(primary,bias,fx,out)
     plot_figure6(primary,pgls,out)
     plot_s8(env,niche,out)
     products=sorted(p.name for p in out.iterdir() if p.suffix in {".png",".svg",".pdf"})
     if len(products)!=12:
         raise ValueError(f"Expected 12 rendered files, got {len(products)}")
-    report={"pca_complete_taxa":len(scores),"pca_variance_pc1_pc3":[float(v) for v in var[:3]],"primary_supported":len(primary),"spde_stable_pairs":len(stable),"aux_supported":len(aux),"rendered_products":products,"scope":"presentation only; no model refit or new inferential family"}
+    report={"pca_complete_taxa":len(scores),"pca_variance_pc1_pc3":[float(v) for v in var[:3]],"primary_supported":len(primary),"spde_stable_pairs":len(stable),"bias_control_rows":len(bias),"historical_figure_status":"Supporting Information only","rendered_products":products,"scope":"presentation of frozen or predeclared audit results; no post-outcome model selection"}
     (out/"interpretive_figure_report.json").write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(report,indent=2))
 

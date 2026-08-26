@@ -42,7 +42,7 @@ def main():
 
     ax = fig.add_subplot(gs[1])
     ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-    ax.text(0.01, 0.92, "J   From measured capitula to multiscale ecological questions", fontsize=12.0, fontweight="bold", va="top")
+    ax.text(0.01, 0.92, "j   From measured capitula to multiscale ecological questions", fontsize=12.0, fontweight="bold", va="top")
     boxes = [
         (0.10, 0.49, "Repeated numerical\nhead phenotypes", "orientation · colour · outline"),
         (0.36, 0.49, "Nested visible variance", "taxon → photograph → head"),

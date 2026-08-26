@@ -37,6 +37,8 @@ Submission-facing wording is:
 
 > In the exhaustive spatially thinned primary cohort, eight endpoint-component rows passed BH correction. Four were non-circular linear associations; four were hue components requiring joint circular interpretation.
 
+All four non-circular rows subsequently passed a locked raw-calendar taxon-specific cyclic day-of-year adjustment and retained sign after each of the ten most represented taxa was omitted separately and the two most represented taxa were omitted jointly, although coefficient magnitudes varied. A separately locked sensitivity then either shifted Southern Hemisphere dates by one half-cycle or fitted separate taxon-specific cyclic curves by hemisphere. The cohort contained 2,356 Southern Hemisphere observations, and three taxa occurred in both hemispheres; all four rows retained sign, BH support and omission-sign stability under both definitions. These controls do not classify developmental stage. The subsequent native-range audit retained orientation–BIO1 and aspect ratio–BIO4 only; chroma–BIO12 and aspect ratio–BIO12 are provenance rows rather than current headline results.
+
 ## Grouped SPDE-INLA complete-case cohorts
 
 The grouped spatial models use endpoint-specific complete-case cohorts of 31,666–34,472 observations and 139–141 taxa. For each endpoint, four predeclared predictor groups use the same complete-case cohort:
@@ -52,15 +54,23 @@ These models provide spatially explicit robustness and broader predictor-domain 
 
 The high-resolution layer selected 1,819 heads from 1,595 photographs and 214 taxa by detected-head resolution. After sharpness, segmentation and flip-repeatability QC, 1,443 heads from 1,292 observations and 210 taxa were usable.
 
-The final manuscript inferential auxiliary endpoints are:
+The audited auxiliary endpoints are:
 
 - involucre projection roughness;
 - involucre spread fraction;
 - maximum spine-like projection relative to head radius.
 
-The ≤10 km auxiliary environmental family contains 904 observations from 165 taxa and 12 tests (three endpoints × four CHELSA predictors). All three final endpoints are positively associated with BIO4 temperature seasonality after auxiliary-family BH correction.
+The ≤10 km auxiliary environmental family contains 904 complete observations from 165 taxa and 12 tests (three endpoints × four CHELSA predictors). The original positive BIO4 rows did not survive the predeclared minimum-dimension and sharpness adjustment: adjusted q = 0.0696–0.0730, and two rows reversed sign in the 150–199-pixel stratum. Outward spread fraction remained positive in all three strata but still failed the frozen BH rule; it is a follow-up design clue, not a retained result. No auxiliary row remains in the biological headline.
 
 `spine_peak_count_proxy` remains in integrated derived tables for provenance/downstream exploration but is not one of the three final manuscript auxiliary inferential endpoints.
+
+## Repeat-photo preflight cohort
+
+An outcome-blind join of the primary 46,276 observation IDs to full public photo metadata identified 20,073 observations from 236 taxa with at least two distinct photo IDs having a usable URL. The cohort contains 58,748 photo rows, including 38,675 photographs beyond the first; the maximum is 27 photographs per observation. Trait remeasurement is pending. Between-photo variance will include camera, illumination, viewpoint and possibly subject differences unless same-individual status is adjudicated.
+
+## Native-range sensitivity cohort
+
+The separately locked WCVP/TDWG join resolved 245 of 259 source taxa and assigned 27,066 observations as native, 10,554 as introduced, 5,491 as unresolved taxon matches, 2,100 as geographically unmapped and 1,065 as unlisted in the mapped level-3 unit. Endpoint-specific native-only cohorts contained 21,725–23,672 observations and 126–128 taxa. All 36 primary models were rerun as a separate BH family. Orientation–BIO1 and aspect ratio–BIO4 met the frozen same-sign plus BH rule; chroma–BIO12 and aspect ratio–BIO12 retained sign but failed native-only BH correction. Table S1.14 records all four decisions.
 
 ## Among-taxon environmental sorting
 

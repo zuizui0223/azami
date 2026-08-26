@@ -34,7 +34,7 @@ jobs:
           cat > expected-inputs.sha256 <<'EOF'
           e4308b91bfea087b37d4e8f2559124af10881ceede7afa8f0b158c4e37da242a  manuscript/supplement/figure_data/FigureS1_nested_variance.csv
           b604205842e4551f131b48dcbf844c3331d22a9498354529fefca5e76375d2e9  manuscript/supplement/figure_data/FigureS2_primary_coefficients.csv
-          914b76c4685e072ca9a3927e7bf63b3ebadf07ae18e4a8094bd7d5e8824b9a0c  manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv
+          5b57c434ade258b2ad6e3d85f763509f53825c1e2e9e95db5716fdeb4598c948  manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv
           2a1da1ec1eb61680df5ca60c8084e2bb7bed03b9c9ad93b33402a0b5415e1be4  manuscript/supplement/figure_data/FigureS3_spde_model_group_summary.csv
           f38797f7d3bae5661b3a3bd54fb5ecefd25184be07f37629d82d6aa0caf739a7  manuscript/supplement/figure_data/FigureS45_spatial_robustness.csv
           EOF

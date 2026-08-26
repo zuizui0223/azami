@@ -42,7 +42,7 @@ def fixed_plot_figure4(scores, load, variance, out):
 
     ax.set_xlabel(f"PC1 ({variance[0]*100:.1f}%)")
     ax.set_ylabel(f"PC2 ({variance[1]*100:.1f}%)")
-    ax.set_title("A  Taxon scores and trait directions\ncentral view; 148 taxa complete for all nine endpoints", fontsize=10)
+    ax.set_title("a  Taxon scores and trait directions\ncentral view; 148 taxa complete for all nine endpoints", fontsize=10)
 
     # Preserve the full score range without allowing one extreme taxon to compress the main panel.
     inset = ax.inset_axes([0.03, 0.05, 0.27, 0.24])
@@ -63,7 +63,7 @@ def fixed_plot_figure4(scores, load, variance, out):
     ax.axvline(0, linewidth=0.7)
     ax.set_yticks(y, work["label"])
     ax.set_xlabel(f"PC3 loading ({variance[2]*100:.1f}% variance)")
-    ax.set_title("B  Third independent trait dimension", fontsize=10)
+    ax.set_title("b  Third independent trait dimension", fontsize=10)
     ax.text(0.02, 0.02, f"PC1–PC3 cumulative variance = {variance[:3].sum()*100:.1f}%", transform=ax.transAxes, fontsize=8)
     fig.suptitle("Taxon-level capitulum trait architecture is multidimensional", fontsize=13)
     fig.tight_layout()

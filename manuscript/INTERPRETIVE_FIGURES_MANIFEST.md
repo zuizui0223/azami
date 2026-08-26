@@ -27,19 +27,19 @@ Frozen source: `strict_spatial_thinned_with_climate_topography_soil.csv` from wo
 
 - Panel A replaces a symbol-only support matrix with the eight frozen BH-supported primary within-taxon coefficients and 95% confidence intervals.
 - Panel B shows the eight frozen stable grouped-SPDE trait × predictor patterns across all model groups in which the predictor occurs. Filled markers identify model-group coefficients with global posterior-tail BH q < 0.05; open markers retain the full model-group stability context.
-- Panel C shows the three frozen BH-supported high-resolution involucre coefficients and 95% confidence intervals.
+- Panel C shows the four non-circular primary rows after native-range restriction. Filled markers identify orientation–BIO1 and aspect ratio–BIO4, which met the frozen same-sign plus native-only BH rule; open markers preserve chroma–BIO12 and aspect ratio–BIO12 as same-sign native-only failures. Raw-calendar, hemisphere-aware and dominant-taxon results remain in Tables S1.11 and S1.13. The panel does not claim developmental-stage control, adaptation or introduction history.
 
 Sources:
 
 - `manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv`;
 - grouped SPDE run `29339137476`, artifact `8313574392`, digest `sha256:b877713456360144106d7531fddf95ac8c3c82fa1597d0cd3cbc4c9149a53cf5`;
-- `manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv`.
+- `manuscript/supplement/tables/S16_native_range_sensitivity.csv`, generated from the frozen environment table under `analysis/ch1/native_range_sensitivity_contract.json`; raw-calendar and hemisphere-aware results remain preserved under `analysis/ch1/bias_control_contract.json` and `analysis/ch1/hemisphere_season_sensitivity_contract.json`.
 
 The panels retain their own coefficient definitions; their numerical scales are not pooled into one effect-size estimator.
 
-## Main Figure 6 — scale specificity and historical sensitivity
+## Supporting Figure S1.9 — scale specificity and historical sensitivity
 
-`Figure_6_scale_specificity_and_historical_sensitivity.*`
+`Figure_S1_9_historical_placement_sensitivity.*`
 
 - Panel A places supported primary within-taxon (`W`) and randomized-tree historical (`H`) climate associations in the same endpoint × CHELSA matrix. It is designed to make agreement, scale-specific support and sign reversal across ecological scales visible.
 - Panel B retains the six frozen standardized PGLS coefficients supported in all 50 randomized scenario-2 trees with their 2.5–97.5% ranges.
@@ -49,7 +49,7 @@ Sources:
 - `manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv`;
 - `manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv`.
 
-The historical layer remains a placement sensitivity because only 54 of 216 atlas taxa are direct dated-backbone tips.
+The historical layer remains a placement sensitivity because only 54 of 216 atlas taxa are direct dated-backbone tips, retained Pagel-λ estimates are zero and direct-backbone non-circular signal is unsupported. It is not a main figure.
 
 ## Supplement Figure S8 — environmental sorting
 
@@ -67,7 +67,7 @@ This figure visualizes among-taxon environmental sorting only. It does not imply
 - Figure 1 augmenter: `analysis/augment_figure1_with_analysis_scales.py`;
 - workflow: `.github/workflows/ch1-interpretive-figures-ci.yml`.
 
-The CI downloads frozen source artifacts, validates the 148-taxon PCA cohort and exact PC1–PC3 explained variance, validates primary/auxiliary supported-row counts and the signs of all eight stable SPDE pairs, regenerates every SVG/PNG/PDF, records source/release SHA-256 hashes, and uploads a release artifact. Large observation-level data are not duplicated in Git.
+The CI downloads frozen source artifacts, reruns the locked seasonal/dominant-taxon and hemisphere-aware audits, validates the committed native-range decision table, the 148-taxon PCA cohort and exact PC1–PC3 explained variance, validates primary supported-row counts and the signs of all eight stable SPDE pairs, regenerates every SVG/PNG/PDF, records source/release SHA-256 hashes, and uploads a release artifact. Large observation-level data are not duplicated in Git.
 
 ## Verified release
 
@@ -79,8 +79,8 @@ The final presentation code was independently executed in GitHub Actions on head
 - artifact digest: `sha256:f9365eddba862d4703e86d4fd38f03d308fd0ff035f3f7d2cf6640ce52c4ea1c`;
 - 15 rendered products: five figures × SVG/PNG/PDF.
 
-Subsequent manuscript-map/caption/contract edits do not alter the figure generator or frozen input data.
+This release is superseded because the former Figure 5 panel C failed its subsequent image-quality audit and former main Figure 6 was demoted. A replacement release must be generated before submission.
 
 ## Visual QA record
 
-The final presentation pass was explicitly checked for the failure modes that were difficult to see in tables: duplicated Figure 1 headings, PC1 compression by the *C. kawakamii* extreme, overlapping biplot labels, misleading unused colour categories in Figure S8, and unreadable coefficient/support matrices. Figure 5 and Figure 6 required no further data/layout changes after the quantitative release was inspected.
+The previous visual QA remains valid for Figures 1, 4 and S1.8. Revised Figure 5 and demoted Figure S1.9 require a new rendered-page QA pass before submission.

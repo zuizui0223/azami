@@ -24,7 +24,7 @@ def fixed_plot_figure6(primary, pgls, out):
     ax.set_yticks(range(len(endpoint_order)), endpoint_order)
     ax.invert_yaxis()
     ax.grid(True, linewidth=0.4)
-    ax.set_title("A  Supported climate axes differ across ecological scales", fontsize=9)
+    ax.set_title("a  Supported climate axes differ across ecological scales", fontsize=9)
     ax.text(0.01, -0.12, "W = within-taxon primary; H = among-taxon historical sensitivity. Signs are coefficient directions.", transform=ax.transAxes, fontsize=7.5)
 
     endpoint_map = {"orientation_angle": "Orientation", "corolla_chroma": "Chroma", "hue_sin": "Hue sine", "hue_cos": "Hue cosine", "shape_aspect_ratio": "Aspect ratio"}
@@ -58,12 +58,12 @@ def fixed_plot_figure6(primary, pgls, out):
     ax.axvline(0, linewidth=0.8, linestyle="--")
     ax.set_yticks(y, labels)
     ax.set_xlabel("Median standardized coefficient across 50 randomized trees", fontsize=8)
-    ax.set_title("B  Associations retained in all 50 alternative PGLS trees", fontsize=9)
+    ax.set_title("b  Associations retained in all 50 alternative PGLS trees", fontsize=9)
     ax.tick_params(axis="both", labelsize=7)
     ax.text(0.01, -0.12, "Historical sensitivity only: 54/216 atlas taxa are direct dated-backbone tips.", transform=ax.transAxes, fontsize=7.5)
     fig.suptitle("Within-taxon and among-taxon environmental structure are not interchangeable", fontsize=13)
     fig.tight_layout()
-    core.save(fig, out, "Figure_6_scale_specificity_and_historical_sensitivity")
+    core.save(fig, out, "Figure_S1_9_historical_placement_sensitivity")
 
 
 core.plot_figure6 = fixed_plot_figure6

@@ -1,18 +1,33 @@
 # azami — global continuous thistle image phenomics
 
+> **Submission status: HOLD (2026-08-26).** Seasonal, dominant-taxon,
+> hemisphere-aware and native-range controls are complete. The native-only
+> audit retained two of four non-circular primary rows. The former involucre
+> headline failed its locked image-quality rule and was withdrawn. Image
+> remeasurement and independent validation remain open.
+
 This repository is organized around the Chapter 1 submission manuscript:
 
 **Global citizen-science images reveal continuous within-taxon variation and environmental structure in thistle capitulum traits**
 
-The canonical submission-facing manuscript entry point is [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md). The current paper no longer uses the former lability-axis story as a biological headline.
+The canonical manuscript entry point is
+[`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md).
+Machine-readable claim status is frozen in
+[`manuscript/final_claims.json`](manuscript/final_claims.json).
 
 ## Current paper in one sentence
 
-Public biodiversity photographs are converted from heterogeneous species records into repeated **continuous head-level phenotype observations**, revealing that thistle capitulum orientation, visible colour, gross outline and fine involucral architecture show different environmental signatures within and among source-assigned taxa rather than forming one common climate-associated morphology.
+Public biodiversity photographs provide repeated continuous head-level image
+phenotypes, but after predeclared bias controls the present biological headline
+is limited to two small observational climate rows—orientation–BIO1 and aspect
+ratio–BIO4—both still awaiting developmental-stage control and independent
+measurement validation.
 
 ## Scientific scope
 
-YOLO11n is used only to localize visible capitula. Deterministic image-processing functions then return continuous numerical measurements for each assessable detected head.
+YOLO11n is used only to localize visible capitula. Deterministic image-processing
+functions then return continuous numerical measurements for each assessable
+detected head.
 
 Primary modules:
 
@@ -20,94 +35,81 @@ Primary modules:
 - **Visible corolla colour** — CIELAB lightness, chroma and circular hue components;
 - **Capitulum outline** — aspect ratio, circularity, solidity and width-profile CV.
 
-A high-resolution layer additionally measures three exploratory two-dimensional involucral contour proxies:
+A high-resolution layer also measures three exploratory two-dimensional
+involucral contour proxies. Those proxies are retained as withdrawn sensitivity
+provenance, not as current supported biological results.
 
-- projection roughness;
-- outward spread fraction;
-- maximum spine-like projection relative to head radius.
+The declared route is:
 
-The study therefore follows the explicit route:
+`public photographs -> detected capitula -> continuous head-level measurements -> repeated within-taxon distributions -> multiscale environmental analysis`
 
-`public photographs -> detected capitula -> continuous head-level measurements -> repeated within-taxon trait distributions -> multiscale environmental analysis`
+## Current results and reviewer controls
 
-## Current headline results
+### 1. Visible variation below taxon means
 
-### 1. Species/taxon means conceal substantial visible variation
-
-Across the nine primary endpoints, **0.589–0.931** of visible image variance occurs below source-assigned taxon means.
+Across the nine primary endpoints, **0.589–0.931** of visible image variance
+occurs below source-assigned taxon means.
 
 - among photographs within taxa: **0.440–0.691**;
 - among heads within photographs: **0.143–0.379**;
 - one-head-per-photo sensitivity: **0.582–0.899** below taxon means;
 - equal-10-photo-per-taxon sensitivity: median **0.528–0.879**.
 
-These are **visible image-phenotype variance components**, not genetic variance estimates.
+These are visible image-phenotype variance components. They do not separate
+biological variation from imaging conditions or measurement error. An
+outcome-blind preflight identified 20,073 observations with multiple public
+photographs; trait remeasurement is still pending.
 
-### 2. Within-taxon environmental structure is trait specific
+### 2. Primary within-taxon climate rows were narrowed
 
-In the 46,276-observation spatially thinned primary cohort, eight of 36 endpoint-component × CHELSA rows pass BH correction.
+The frozen 46,276-observation analysis contained eight BH-supported rows among
+36 endpoint-component × CHELSA tests. Four were non-circular primary rows.
 
-Key non-circular results include:
+All four non-circular rows retained their signs and BH support after both
+raw-calendar and hemisphere-aware cyclic-season definitions. They also retained
+their signs across the predeclared dominant-taxon omissions, although coefficient
+magnitudes varied. *Cirsium vulgare* and *C. arvense* together account for 54.0%
+of the strict cohort.
 
-- orientation angle increases with annual mean temperature (BIO1);
-- corolla chroma increases with annual precipitation (BIO12);
-- outline aspect ratio increases with temperature seasonality (BIO4) and decreases with annual precipitation (BIO12).
+Under the separately locked WCVP/TDWG native-only rule, only two rows retained
+the frozen sign and BH support:
 
-Circular hue components also vary with temperature seasonality and precipitation structure and are interpreted jointly rather than as independent named colours.
+- orientation–BIO1: native-only beta **0.02265**, BH q **0.0311**;
+- aspect ratio–BIO4: native-only beta **0.02842**, BH q **1.25 × 10⁻17**.
 
-### 3. Spatial modelling concentrates the strongest support in orientation and colour
+The following rows were withdrawn from the current biological headline:
 
-Grouped SPDE-INLA models retain the clearest stable environmental structure for:
+- chroma–BIO12: native-only BH q **0.0754**;
+- aspect ratio–BIO12: native-only BH q **0.133**.
 
-- orientation angle;
-- corolla lightness and chroma;
-- circular hue components.
+The two retained effects remain small, observational and developmentally
+unlabelled. Native-only restriction does not establish adaptation, niche response
+or introduction history.
 
-Temperature and soil pH contribute to visible-colour structure, whereas most gross-outline traits receive little global BH support after spatial modelling.
+### 3. The involucre headline was withdrawn
 
-### 4. Fine involucral architecture tracks temperature seasonality
+Resolution and sharpness were added as covariates and the BIO4 rows were checked
+within fixed head-resolution strata. All three adjusted rows failed the locked
+BH rule (**q = 0.0696–0.0730**), and two reversed sign in the 150–199 px stratum.
+The former headline is therefore withdrawn. `involucre_spread_fraction` remained
+positive in every resolution stratum and is preserved only as a lead for a
+resolution-designed follow-up.
 
-In the <=10 km high-resolution cohort (904 observations, 165 taxa), all three final auxiliary contour proxies increase with BIO4 temperature seasonality and pass BH correction across the 12-test auxiliary family.
+### 4. Spatial and historical layers are sensitivities
 
-These variables describe **outward contour architecture** only. They are not direct measurements of botanical spine length, bract recurvature, stiffness or defence.
+Residual Moran diagnostics, broad-region omission, grouped SPDE-INLA models,
+taxonomic synonym collapse and trait-label permutation tests remain supporting
+analyses. The phylogenetic layer is confined to Supporting Information because
+only 54 of 216 atlas taxa are direct dated-backbone tips and retained Pagel
+lambda estimates are zero. It is historical-placement sensitivity, not a
+resolved species-tree correction.
 
-### 5. Among-taxon environmental sorting is concentrated mainly in orientation and visible colour
+### 5. The lability result remains withdrawn
 
-Among 148 taxa complete for all primary traits and environmental variables, 10,000 trait-label permutations show non-random environmental sorting mainly for:
-
-- orientation;
-- chroma;
-- circular hue components.
-
-Most gross-outline traits are weaker. Direct-backbone sensitivity narrows the supported set further.
-
-### 6. Historical analyses remain sensitivity tests, not a resolved species-tree result
-
-Six taxon-level climate associations are BH-supported in all 50 randomized Pagel-lambda PGLS trees. However, only **54 of 216** atlas taxa are direct dated-backbone tips; the remainder require within-genus grafting.
-
-Accordingly, the tree layer is reported as **historical-placement sensitivity**, not definitive removal of phylogenetic non-independence.
-
-### 7. Repository-computable robustness checks do not overturn the main results
-
-Completed audits include:
-
-- residual Moran's I after diagnostic SPDE refits: approximately **-0.0096 to 0.0030**, with no permutation P < 0.05;
-- leave-one-broad-region-out trait-rank stability: minimum endpoint-specific Spearman rho **0.856–0.972**;
-- simultaneous collapse of eight WCVP synonym conflicts: no sign changes and no loss of the eight primary BH-supported component rows;
-- 10,000-permutation null tests for among-taxon environmental sorting.
-
-## Biological interpretation
-
-The current manuscript does **not** support one universal warm-, dry- or pollinator-associated thistle syndrome.
-
-Instead, the capitulum behaves as a **composite reproductive phenotype**:
-
-- orientation is most clearly associated with reproductive microclimate/exposure axes;
-- visible colour is structured across temperature, precipitation and soil dimensions and may integrate abiotic and biotic processes;
-- gross outline is comparatively weak after spatial control;
-- fine involucral contour architecture shows a coherent temperature-seasonality association.
-
-These patterns generate mechanistic hypotheses for field or experimental work; they do not demonstrate the mechanisms themselves.
+The former raw absolute-slope lability relation (`rho = -0.333`) and median-split
+quadrants were withdrawn after a precision-confounding audit. Precision-aware
+reanalysis found no common cross-module coupling. The former result remains
+statistical provenance/QA only.
 
 ## Claim boundary
 
@@ -115,95 +117,80 @@ Azami Chapter 1 does **not** claim demonstrated:
 
 - phenotypic plasticity;
 - local adaptation or selection;
-- pollinator causation;
-- antagonist-mediated defence;
-- rain-protection adaptation;
-- evolutionary rate differences;
-- adaptive radiation;
+- pollinator or antagonist causation;
+- rain-protection or defensive adaptation;
+- evolutionary rate differences or adaptive radiation;
 - a resolved *Cirsium* species tree;
-- direct botanical spine/phyllary measurements from the auxiliary image proxies.
+- direct botanical spine/phyllary measurements from image proxies.
 
-Image vertical is also a reproducible image reference rather than a direct inclinometer measurement of gravity.
+Image vertical is a reproducible image reference rather than a direct
+inclinometer measurement of gravity.
 
 ## Azami -> EAzami boundary
 
-Azami is the **global observational discovery layer**. It ends after freezing:
+Azami is the global observational discovery layer. It ends after freezing:
 
 `continuous visible capitulum variation -> within/among-taxon environmental structure`
 
-Azami does **not** own inference about:
-
-- pollinator- or antagonist-mediated selection;
-- defensive function of spine/phyllary or sticky traits;
-- East Asian/Japanese phylogenetic or biogeographic history;
-- repeated loss/regain of floral colour;
-- repeated/parallel erect <-> nodding transitions;
-- trait-specific evolutionary rates or modular evolvability;
-- rapid/adaptive radiation.
-
-Those questions belong to [`zuizui0223/EAzami`](https://github.com/zuizui0223/EAzami), the downstream **mechanism + evolutionary-history zoom**. The observation-to-mechanism handoff is fixed in [`manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md`](manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md).
+Mechanism experiments, East Asian/Japanese evolutionary history, repeated-state
+analyses and adaptive-radiation inference belong to
+[`zuizui0223/EAzami`](https://github.com/zuizui0223/EAzami). The handoff is fixed
+in
+[`manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md`](manuscript/EAzAMI_MECHANISM_REDUCTION_BOUNDARY_2026-08-20.md).
 
 ## Start here
 
-1. [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md) — canonical manuscript-facing story, section order and current headline.
-2. [`manuscript/00_title_abstract.md`](manuscript/00_title_abstract.md) through [`manuscript/06_references.md`](manuscript/06_references.md) — current submission text and submission-wide bibliography.
-3. [`manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`](manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md) — frozen cohort names, counts and permitted analyses.
+1. [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md) — manuscript order, current headline and blockers.
+2. [`manuscript/00_title_abstract.md`](manuscript/00_title_abstract.md) through [`manuscript/07_data_code_availability.md`](manuscript/07_data_code_availability.md) — submission text and bibliography.
+3. [`manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md`](manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md) — frozen cohorts and permitted analyses.
 4. [`manuscript/final_claims.json`](manuscript/final_claims.json) — machine-readable numerical claim registry.
-5. [`manuscript/FIGURE_TABLE_MAP.md`](manuscript/FIGURE_TABLE_MAP.md) — authoritative main/Supplement figure and table crosswalk.
-6. [`manuscript/MAIN_FIGURE_CAPTIONS.md`](manuscript/MAIN_FIGURE_CAPTIONS.md) — captions for the six main figures.
-7. [`analysis/ch1/pipeline.json`](analysis/ch1/pipeline.json) — active executable submission-analysis map.
-8. [`analysis/ch1/run_submission.py`](analysis/ch1/run_submission.py) — structural/claim checks and status summary.
-9. [`manuscript/supplement/`](manuscript/supplement/) — Supporting Information tables, figure inputs and provenance manifests.
-10. [`manuscript/EXTERNAL_COMPLETION_GATES.md`](manuscript/EXTERNAL_COMPLETION_GATES.md) — completed versus genuinely external validation gates.
+5. [`manuscript/BIAS_CONTROL_REANALYSIS_PROTOCOL.md`](manuscript/BIAS_CONTROL_REANALYSIS_PROTOCOL.md) — locked reviewer-control sequence and decision rules.
+6. [`manuscript/FIGURE_TABLE_MAP.md`](manuscript/FIGURE_TABLE_MAP.md) — authoritative main/Supplement crosswalk.
+7. [`analysis/ch1/pipeline.json`](analysis/ch1/pipeline.json) and [`analysis/ch1/run_submission.py`](analysis/ch1/run_submission.py) — active executable submission interface.
+8. [`analysis_outputs/README.md`](analysis_outputs/README.md) — auditable result snapshot included with this review branch.
+9. [`manuscript/EXTERNAL_COMPLETION_GATES.md`](manuscript/EXTERNAL_COMPLETION_GATES.md) — completed and open validation gates.
 
-## Main figure logic
+## Current main figures
 
-The current submission is organized around six main figures:
+1. image -> phenotype -> ecological scale;
+2. geographic sampling and analytical domain;
+3. nested visible variance;
+4. taxon-level trait architecture;
+5. environmental effect sizes and bias-control decisions.
 
-1. **image -> phenotype -> ecological scale** — actual photographs, YOLO localization and continuous measurement route;
-2. **geographic sampling and analytical domain** — global sampling, filtering streams and BIO1 × BIO12 coverage;
-3. **nested visible variance** — taxon -> photograph -> head decomposition;
-4. **taxon-level trait architecture** — 148-taxon PCA using all nine primary endpoints;
-5. **environmental effect sizes** — primary within-taxon, grouped-SPDE and high-resolution coefficient families;
-6. **scale specificity + historical sensitivity** — within-taxon versus randomized-tree among-taxon climate structure.
-
-The complete figure/table contract is in [`manuscript/FIGURE_TABLE_MAP.md`](manuscript/FIGURE_TABLE_MAP.md).
+The phylogenetic/historical-placement layer is Supporting Information only.
 
 ## Frozen implementation and provenance
 
-Exact numbered files under `ch1_global/v2/` remain in place because executed workflows and artifact provenance cite those paths. Do not rename or rewrite them simply to simplify the repository tree.
+Exact numbered files under `ch1_global/v2/` remain in place because executed
+workflows and artifact provenance cite those paths. The active reviewer interface
+is `analysis/ch1/`; manuscript-facing controls live under `manuscript/`.
 
-The active author/reviewer interface is `analysis/ch1/`, while manuscript-facing controls live under `manuscript/`.
-
-Large analysis products are often stored as hash-verified GitHub Actions artifacts rather than duplicated in Git. Figure manifests record frozen workflow runs, artifact IDs and SHA-256 digests.
+This review branch includes a bounded audit snapshot under `analysis_outputs/`,
+including locked model summaries, public-record audit matrices and PNG/PDF review
+figures. GitHub Actions artifacts are not treated as a durable archive. The full
+data/code release still requires an immutable DOI-backed repository.
 
 ## Current cohorts
 
-- **balanced image-comparison atlas:** 3,725 observations/photos; 6,626 heads; 216 source-assigned taxa;
-- **exhaustive detector-positive layer:** 406,582 observations; 286 taxa;
-- **coordinate-usable layer:** 392,989 observations; 271 taxa;
-- **<=10 km positional-accuracy layer:** 297,293 observations; 259 taxa;
-- **exhaustive spatially thinned primary:** 46,276 observations; 259 taxa;
-- **grouped SPDE-INLA complete cases:** 31,666–34,472 observations and 139–141 taxa per endpoint;
-- **high-resolution involucre layer:** 1,443 usable heads; 1,292 observations; 210 taxa;
-- **high-resolution <=10 km inferential family:** 904 observations; 165 taxa;
-- **independent detector audit:** 1,000 source images; 323 species; 250 double-labelled images.
+- balanced image-comparison atlas: 3,725 observations/photos, 6,626 heads, 216 taxa;
+- exhaustive detector-positive layer: 406,582 observations, 286 taxa;
+- exhaustive spatially thinned primary: 46,276 observations, 259 taxa;
+- grouped SPDE-INLA complete cases: 31,666–34,472 observations, 139–141 taxa per endpoint;
+- high-resolution layer: 1,443 heads, 1,292 observations, 210 taxa;
+- high-resolution <=10 km family: 904 observations, 165 taxa;
+- independent detector audit: 1,000 source images, 323 taxa, 250 double-labelled images.
 
-## Reference source
+## Remaining submission gates
 
-[`manuscript/06_references.md`](manuscript/06_references.md) is the **submission-wide bibliography**. Older Introduction-only reference notes and BibTeX files are drafting provenance and must not replace the canonical manuscript reference list.
+The package is not submission-ready. Open scientific gates are:
 
-## Remaining scientific submission gates
+1. developmental-stage labels or an anthesis-restricted sensitivity;
+2. paired flower/background visible-colour negative controls;
+3. repeat-photo trait remeasurement and variance decomposition;
+4. adjudicated human boxes for the independent detector audit;
+5. independent reference measurements for orientation, colour and outline.
 
-Only two scientific blockers remain genuinely external to repository computation:
-
-1. adjudicated human bounding boxes for the independent detector precision/recall audit;
-2. genuinely independent reference measurements for orientation, colour and outline.
-
-Until those are complete, production overlays, detector-development metrics and horizontal-mirror repeatability are technical checks rather than biological accuracy validation.
-
-Administrative finalization still includes final author/CRediT metadata, funding, acknowledgements, nomenclatural notes and the immutable DOI-backed release.
-
-## Withdrawn result
-
-The former raw absolute-slope lability relation (`rho = -0.333`) and median-split quadrants were withdrawn after a precision-confounding audit. Precision-aware reanalysis found no common cross-module coupling. The former result remains provenance/QA only and must not re-enter the biological headline.
+Human/administrative finalization also includes 24 nomenclatural notes,
+authorship/CRediT metadata, funding and acknowledgements, selection of a
+repository `LICENSE`, and a durable DOI-backed release.

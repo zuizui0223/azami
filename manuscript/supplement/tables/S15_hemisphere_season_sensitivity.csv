@@ -1,0 +1,5 @@
+endpoint,predictor,frozen_beta,phase_aligned_beta,phase_aligned_ci95_low,phase_aligned_ci95_high,phase_aligned_q,phase_aligned_omission_beta_min,phase_aligned_omission_beta_max,hemisphere_curve_beta,hemisphere_curve_ci95_low,hemisphere_curve_ci95_high,hemisphere_curve_q,hemisphere_curve_omission_beta_min,hemisphere_curve_omission_beta_max,strict_retention,current_gate
+orientation_angle,BIO1,0.017059,0.013539,0.006092,0.020986,0.001465,0.010557,0.015567,0.016961,0.009633,0.024288,0.0000343,0.010712,0.019264,true,retained_after_native_range_stage_pending
+corolla_chroma,BIO12,0.039324,0.042099,0.013601,0.070598,0.008522,0.013799,0.048417,0.041693,0.014516,0.068871,0.006337,0.013961,0.047767,true,withdrawn_after_native_range_BH_failure_colour_control_pending
+shape_aspect_ratio,BIO4,0.013723,0.017757,0.009091,0.026424,0.000355,0.014885,0.022184,0.017715,0.009339,0.026090,0.000174,0.015298,0.021580,true,retained_after_native_range_stage_pending
+shape_aspect_ratio,BIO12,-0.010796,-0.012102,-0.019903,-0.004302,0.006535,-0.016468,-0.010615,-0.011315,-0.018640,-0.003990,0.006337,-0.014889,-0.009772,true,withdrawn_after_native_range_BH_failure
