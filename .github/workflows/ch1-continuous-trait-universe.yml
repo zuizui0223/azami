@@ -6,6 +6,7 @@ on:
       - codex/pr69-continuous-reanalysis
     paths:
       - '.github/workflows/ch1-continuous-trait-universe.yml'
+      - 'analysis/build_primary_species_from_observations.py'
       - 'ch1_global/v2/87_validate_continuous_trait_contract.py'
       - 'ch1_global/v2/88_build_continuous_trait_universe.py'
       - 'ch1_global/v2/89_measure_extended_continuous_traits.py'
@@ -69,7 +70,7 @@ jobs:
     env:
       SOURCE_ARTIFACT_ID: ${{ inputs.source_artifact_id || '8269246732' }}
       RUN_MODE: ${{ inputs.run_mode || 'full' }}
-      OUTPUT_LABEL: ${{ inputs.output_label || 'continuous_trait_universe_branch_full_v1' }}
+      OUTPUT_LABEL: ${{ inputs.output_label || 'continuous_trait_universe_branch_full_v2' }}
       MAX_PHOTOS: ${{ inputs.max_photos || '0' }}
       MINIMUM_OBSERVATIONS: ${{ inputs.minimum_observations || '100' }}
       MINIMUM_TAXA: ${{ inputs.minimum_taxa || '10' }}
@@ -108,7 +109,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p source/extracted
+          mkdir -p source/extracted continuous_trait_run
           curl --fail --location --retry 4 --retry-all-errors --retry-delay 3 \
             --header "Authorization: Bearer ${GH_TOKEN}" \
             --header "Accept: application/vnd.github+json" \
@@ -124,12 +125,23 @@ jobs:
             local pattern="$1"
             local variable="$2"
             mapfile -t matches < <(find source/extracted -type f -name "$pattern" | sort)
-            test "${#matches[@]}" -eq 1
+            if [ "${#matches[@]}" -ne 1 ]; then
+              echo "Expected one match for ${pattern}; found ${#matches[@]}" >&2
+              printf '%s\n' "${matches[@]}" >&2
+              exit 1
+            fi
             echo "${variable}=${matches[0]}" >> "$GITHUB_ENV"
           }
           resolve_one exhaustive_yolo_crop_metadata.csv YOLO_METADATA
           resolve_one strict_spatial_thinned_observations.csv STRICT_OBSERVATIONS
-          resolve_one exhaustive_continuous_species_level.csv PRIMARY_SPECIES
+      - name: Derive primary species summary from strict observations
+        run: |
+          python analysis/build_primary_species_from_observations.py \
+            --observation "$STRICT_OBSERVATIONS" \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-csv continuous_trait_run/primary_species_from_strict.csv \
+            --report continuous_trait_run/primary_species_from_strict_report.json
+          echo "PRIMARY_SPECIES=continuous_trait_run/primary_species_from_strict.csv" >> "$GITHUB_ENV"
       - name: Validate continuous measurement contract
         run: |
           mkdir -p continuous_trait_run/contract
@@ -200,7 +212,8 @@ jobs:
       - name: Record provenance and remove image crops
         if: always()
         run: |
-          cp source/source_artifact_sha256.txt continuous_trait_run/source_artifact_sha256.txt
+          mkdir -p continuous_trait_run
+          cp source/source_artifact_sha256.txt continuous_trait_run/source_artifact_sha256.txt || true
           printf '%s\n' "$GITHUB_SHA" > continuous_trait_run/git_sha.txt
           python -m pip freeze > continuous_trait_run/python_environment.txt
           rm -rf continuous_trait_run/rebuilt/head_crops continuous_trait_run/rebuilt/context_crops
