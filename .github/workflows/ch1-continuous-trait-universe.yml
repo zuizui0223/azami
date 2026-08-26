@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/ch1-continuous-trait-universe.yml'
       - 'analysis/build_primary_species_from_observations.py'
+      - 'analysis/build_geb_v2_trait_geography.py'
       - 'analysis/run_candidate_quality_sensitivity_v2.py'
       - 'analysis/build_geb_v2_evidence_atlas.py'
       - 'analysis/ch1/evidence_tiering_policy.json'
@@ -168,7 +169,9 @@ jobs:
           python -m pip check
       - name: Run contract and synthetic regression tests
         if: env.RUN_MODE == 'full'
-        run: python -m unittest -v tests/test_ch1_continuous_trait_universe.py
+        run: |
+          python -m py_compile analysis/build_geb_v2_trait_geography.py analysis/run_candidate_quality_sensitivity_v2.py analysis/build_geb_v2_evidence_atlas.py
+          python -m unittest -v tests/test_ch1_continuous_trait_universe.py
       - name: Rebuild selected high-resolution crops
         if: env.RUN_MODE == 'full'
         run: |
@@ -195,6 +198,14 @@ jobs:
             --extended-observation continuous_trait_run/extended_measurements/extended_continuous_observation_level.csv \
             --extended-species continuous_trait_run/extended_measurements/extended_continuous_species_level.csv \
             --out-dir continuous_trait_run/universe
+      - name: Summarize GEB v2 global trait geography and morphospace
+        if: env.RUN_MODE == 'full'
+        run: |
+          python analysis/build_geb_v2_trait_geography.py \
+            --observation-long continuous_trait_run/universe/continuous_trait_universe_observation_long.csv \
+            --species-long continuous_trait_run/universe/continuous_trait_universe_species_long.csv \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-dir continuous_trait_run/trait_geography
       - name: Attach CHELSA predictors to the frozen cohort
         if: env.RUN_MODE == 'full'
         run: |
