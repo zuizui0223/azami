@@ -162,12 +162,12 @@ class ExtendedMeasurementTests(unittest.TestCase):
     @staticmethod
     def synthetic_head() -> np.ndarray:
         image = np.full((360, 360, 3), (45, 120, 45), dtype=np.uint8)
-        cv2.ellipse(image, (180, 210), (78, 108), 0, 0, 360, (70, 105, 135), -1)
+        cv2.ellipse(image, (180, 210), (78, 108), 0, 0, 360, (75, 75, 75), -1)
         cv2.ellipse(image, (180, 108), (65, 46), 0, 0, 360, (175, 45, 180), -1)
         for x in range(125, 236, 18):
-            cv2.line(image, (x, 165), (x - 10, 255), (205, 205, 205), 2)
+            cv2.line(image, (x, 165), (x - 10, 255), (110, 110, 110), 2)
         for y in range(180, 280, 20):
-            cv2.line(image, (130, y), (230, y), (65, 75, 95), 1)
+            cv2.line(image, (130, y), (230, y), (50, 50, 50), 1)
         return image
 
     def test_extended_metrics_are_continuous_and_mirror_repeatable(self):
@@ -193,6 +193,7 @@ class ExtendedMeasurementTests(unittest.TestCase):
         original = {
             "architecture_status": "usable",
             "surface_status": "usable",
+            "visible_floret_fraction_extended": 0.25,
             **{metric: 0.25 for metric in MEASURE.ARCHITECTURE_METRICS},
             **{metric: 0.25 for metric in MEASURE.SURFACE_METRICS},
         }
