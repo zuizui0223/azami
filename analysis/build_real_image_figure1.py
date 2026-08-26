@@ -247,7 +247,12 @@ def main() -> None:
 
     fig.suptitle("Actual photographs, capitulum detection and continuous trait extraction", fontsize=17, fontweight="bold", y=0.985)
     fig.savefig(out / "figure1_real_photo_yolo_pipeline.png", dpi=300, bbox_inches="tight")
-    fig.savefig(out / "figure1_real_photo_yolo_pipeline.svg", bbox_inches="tight")
+    svg_path = out / "figure1_real_photo_yolo_pipeline.svg"
+    fig.savefig(svg_path, bbox_inches="tight")
+    svg_path.write_text(
+        "\n".join(line.rstrip() for line in svg_path.read_text(encoding="utf-8").splitlines()) + "\n",
+        encoding="utf-8",
+    )
     plt.close(fig)
 
     provenance_cols = [
