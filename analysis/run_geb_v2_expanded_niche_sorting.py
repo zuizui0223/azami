@@ -64,15 +64,62 @@ def environmental_pca(taxon_env: pd.DataFrame, predictors: list[str], names: lis
     return pd.DataFrame(scores, index=table.index, columns=[f"PC{i+1}" for i in range(n_pc)])
 
 
-def linear_metrics(values: np.ndarray, env_scores: np.ndarray) -> tuple[float, float, int, int]:
+def linear_metrics(values: np.ndarray, env_scores: np.ndarray) -> tuple[float, float, int, int, np.ndarray]:
     q1, q3 = np.quantile(values, [0.25, 0.75])
-    low = env_scores[values <= q1]
-    high = env_scores[values >= q3]
+    low_mask = values <= q1
+    high_mask = values >= q3
+    low = env_scores[low_mask]
+    high = env_scores[high_mask]
     if min(len(low), len(high)) < 5:
         raise ValueError("Too few taxa in a trait quartile")
     centroid = float(np.linalg.norm(low.mean(0) - high.mean(0)))
     overlap = bhattacharyya_gaussian(low, high)
-    return centroid, overlap, int(len(low)), int(len(high))
+    labels = np.zeros(len(values), dtype=np.int8)
+    labels[low_mask] = -1
+    labels[high_mask] = 1
+    return centroid, overlap, int(len(low)), int(len(high)), labels
+
+
+def batched_null_metrics(
+    env_scores: np.ndarray,
+    labels: np.ndarray,
+    permutations: int,
+    rng: np.random.Generator,
+) -> tuple[np.ndarray, np.ndarray]:
+    permuted = np.stack([rng.permutation(labels) for _ in range(permutations)], axis=0)
+    low = (permuted == -1).astype(float)
+    high = (permuted == 1).astype(float)
+    n_low = low.sum(axis=1)[:, None]
+    n_high = high.sum(axis=1)[:, None]
+    low_mean = (low @ env_scores) / n_low
+    high_mean = (high @ env_scores) / n_high
+    centroid = np.linalg.norm(low_mean - high_mean, axis=1)
+
+    outer = np.einsum("ni,nj->nij", env_scores, env_scores).reshape(len(env_scores), -1)
+    d = env_scores.shape[1]
+    low_sum_outer = (low @ outer).reshape(permutations, d, d)
+    high_sum_outer = (high @ outer).reshape(permutations, d, d)
+    low_cov = (
+        low_sum_outer
+        - n_low[:, :, None] * np.einsum("ni,nj->nij", low_mean, low_mean)
+    ) / (n_low[:, :, None] - 1.0)
+    high_cov = (
+        high_sum_outer
+        - n_high[:, :, None] * np.einsum("ni,nj->nij", high_mean, high_mean)
+    ) / (n_high[:, :, None] - 1.0)
+    eye = np.eye(d)[None, :, :] * 1e-8
+    low_cov = low_cov + eye
+    high_cov = high_cov + eye
+    cov = (low_cov + high_cov) / 2.0
+    diff = (low_mean - high_mean)[:, :, None]
+    inv = np.linalg.inv(cov)
+    quadratic = np.matmul(np.swapaxes(diff, 1, 2), np.matmul(inv, diff)).reshape(-1) / 8.0
+    _, ld = np.linalg.slogdet(cov)
+    _, ld1 = np.linalg.slogdet(low_cov)
+    _, ld2 = np.linalg.slogdet(high_cov)
+    distance = quadratic + 0.5 * (ld - 0.5 * (ld1 + ld2))
+    overlap = np.exp(-np.maximum(distance, 0.0))
+    return centroid, overlap
 
 
 def multivariate_r2(y: np.ndarray, x: np.ndarray) -> float:
@@ -131,15 +178,9 @@ def run_scope(
         table = tables[unit["endpoint_id"]].set_index("taxon_name").loc[common]
         if unit["inferential_unit"] == "linear_endpoint":
             values = table["trait_value"].to_numpy(float)
-            observed_centroid, observed_overlap, n_low, n_high = linear_metrics(values, env_values)
-            null_centroid = np.empty(permutations, dtype=float)
-            null_overlap = np.empty(permutations, dtype=float)
+            observed_centroid, observed_overlap, n_low, n_high, labels = linear_metrics(values, env_values)
             rng = ALIGN.stable_rng(seed, scope, unit["endpoint_id"], "niche")
-            for replicate in range(permutations):
-                shuffled = rng.permutation(values)
-                cdist, overlap, _, _ = linear_metrics(shuffled, env_values)
-                null_centroid[replicate] = cdist
-                null_overlap[replicate] = overlap
+            null_centroid, null_overlap = batched_null_metrics(env_values, labels, permutations, rng)
             p_centroid = float((1 + np.sum(null_centroid >= observed_centroid)) / (permutations + 1))
             p_overlap = float((1 + np.sum(null_overlap <= observed_overlap)) / (permutations + 1))
             linear_rows.append({
