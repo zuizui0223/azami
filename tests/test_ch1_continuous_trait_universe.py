@@ -182,7 +182,7 @@ class ExtendedMeasurementTests(unittest.TestCase):
             MEASURE.measure_once(image, args),
             MEASURE.measure_once(cv2.flip(image, 1), args),
         )
-        self.assertEqual(combined["architecture_status"], "usable")
+        self.assertEqual(combined["architecture_status"], "usable", combined)
         for metric in MEASURE.ARCHITECTURE_METRICS:
             self.assertTrue(np.isfinite(combined[metric]), metric)
         self.assertGreater(combined["involucre_length_width_ratio"], 0)
@@ -190,14 +190,13 @@ class ExtendedMeasurementTests(unittest.TestCase):
         self.assertLessEqual(combined["involucre_spread_fraction"], 1)
 
     def test_flip_failure_excludes_only_the_affected_endpoint(self):
-        args = argparse.Namespace(
-            min_architecture_dimension=150,
-            min_surface_dimension=300,
-            min_architecture_sharpness=20.0,
-            min_surface_sharpness=20.0,
-        )
-        original = MEASURE.measure_once(self.synthetic_head(), args)
-        mirrored = MEASURE.measure_once(cv2.flip(self.synthetic_head(), 1), args)
+        original = {
+            "architecture_status": "usable",
+            "surface_status": "usable",
+            **{metric: 0.25 for metric in MEASURE.ARCHITECTURE_METRICS},
+            **{metric: 0.25 for metric in MEASURE.SURFACE_METRICS},
+        }
+        mirrored = dict(original)
         mirrored["involucre_projection_max"] = (
             original["involucre_projection_max"]
             + MEASURE.FLIP_TOLERANCE["involucre_projection_max"]
