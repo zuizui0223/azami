@@ -7,6 +7,10 @@ on:
     paths:
       - '.github/workflows/ch1-continuous-trait-universe.yml'
       - 'analysis/build_primary_species_from_observations.py'
+      - 'analysis/run_candidate_quality_sensitivity_v2.py'
+      - 'analysis/build_geb_v2_evidence_atlas.py'
+      - 'analysis/ch1/evidence_tiering_policy.json'
+      - 'manuscript/GEB_V2_POSITIONING.md'
       - 'ch1_global/v2/87_validate_continuous_trait_contract.py'
       - 'ch1_global/v2/88_build_continuous_trait_universe.py'
       - 'ch1_global/v2/89_measure_extended_continuous_traits.py'
@@ -32,7 +36,7 @@ on:
       output_label:
         description: Safe output label
         required: true
-        default: continuous_trait_universe_v1
+        default: geb_v2_continuous_trait_universe
         type: string
       max_photos:
         description: Zero for full cohort; positive values are smoke tests only
@@ -56,7 +60,7 @@ on:
         type: string
 
 concurrency:
-  group: ch1-continuous-trait-universe-${{ inputs.output_label || github.ref_name }}
+  group: ch1-continuous-trait-universe-${{ inputs.output_label || github.sha }}
   cancel-in-progress: false
 
 permissions:
@@ -70,7 +74,7 @@ jobs:
     env:
       SOURCE_ARTIFACT_ID: ${{ inputs.source_artifact_id || '8269246732' }}
       RUN_MODE: ${{ inputs.run_mode || 'full' }}
-      OUTPUT_LABEL: ${{ inputs.output_label || 'continuous_trait_universe_branch_full_v2' }}
+      OUTPUT_LABEL: ${{ inputs.output_label || 'geb_v2_continuous_trait_universe' }}
       MAX_PHOTOS: ${{ inputs.max_photos || '0' }}
       MINIMUM_OBSERVATIONS: ${{ inputs.minimum_observations || '100' }}
       MINIMUM_TAXA: ${{ inputs.minimum_taxa || '10' }}
@@ -209,15 +213,42 @@ jobs:
             --minimum-observations "$MINIMUM_OBSERVATIONS" \
             --minimum-taxa "$MINIMUM_TAXA" \
             --permutations "$PERMUTATIONS"
+      - name: Grade PR70 candidate image-quality sensitivity for GEB v2
+        if: env.RUN_MODE == 'full'
+        run: |
+          python analysis/run_candidate_quality_sensitivity_v2.py \
+            --head continuous_trait_run/extended_measurements/extended_continuous_head_level.csv \
+            --environment continuous_trait_run/environment/strict_spatial_chelsa.csv \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-dir continuous_trait_run/v2_quality \
+            --min-observations "$MINIMUM_OBSERVATIONS" \
+            --min-taxa "$MINIMUM_TAXA"
+      - name: Build GEB v2 multiscale evidence atlas
+        if: env.RUN_MODE == 'full'
+        run: |
+          python analysis/build_geb_v2_evidence_atlas.py \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --continuous-coefficients continuous_trait_run/climate_models/continuous_trait_universe_climate_coefficients.csv \
+            --candidate-quality continuous_trait_run/v2_quality/candidate_quality_sensitivity_v2.csv \
+            --primary-supported manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
+            --season manuscript/supplement/tables/S13_primary_bias_control_audit.csv \
+            --hemisphere manuscript/supplement/tables/S15_hemisphere_season_sensitivity.csv \
+            --native manuscript/supplement/tables/S16_native_range_sensitivity.csv \
+            --spde manuscript/supplement/tables/S05_grouped_SPDE_stable_supported_patterns.csv \
+            --niche manuscript/supplement/tables/S07_niche_permutation_summary.csv \
+            --pgls manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
+            --out-dir continuous_trait_run/geb_v2
       - name: Record provenance and remove image crops
         if: always()
         run: |
           mkdir -p continuous_trait_run
           cp source/source_artifact_sha256.txt continuous_trait_run/source_artifact_sha256.txt || true
           printf '%s\n' "$GITHUB_SHA" > continuous_trait_run/git_sha.txt
+          cp manuscript/GEB_V2_POSITIONING.md continuous_trait_run/GEB_V2_POSITIONING.md || true
+          cp analysis/ch1/evidence_tiering_policy.json continuous_trait_run/evidence_tiering_policy.json || true
           python -m pip freeze > continuous_trait_run/python_environment.txt
           rm -rf continuous_trait_run/rebuilt/head_crops continuous_trait_run/rebuilt/context_crops
-      - name: Upload audit, measurements, coverage, and models
+      - name: Upload audit, measurements, coverage, models, and GEB v2 evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
