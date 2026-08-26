@@ -4,8 +4,11 @@ on:
   pull_request:
     paths:
       - 'analysis/run_geb_v2_within_among_alignment.py'
+      - 'analysis/run_geb_v2_expanded_niche_sorting.py'
       - 'analysis/ch1/within_among_alignment_contract.json'
+      - 'analysis/ch1/expanded_niche_sorting_contract.json'
       - 'tests/test_geb_v2_within_among_alignment.py'
+      - 'tests/test_geb_v2_expanded_niche_sorting.py'
       - '.github/workflows/ch1-geb-v2-within-among-alignment.yml'
   workflow_dispatch:
     inputs:
@@ -15,7 +18,7 @@ on:
         default: '9612943217'
         type: string
       permutations:
-        description: Taxon-label permutations per endpoint-predictor model
+        description: Permutations per among-taxon test
         required: true
         default: '10000'
         type: string
@@ -50,8 +53,11 @@ jobs:
         run: python -m pip install 'pandas>=2.2,<4' 'numpy>=1.26,<3'
       - name: Compile and run synthetic tests
         run: |
-          python -m py_compile analysis/run_geb_v2_within_among_alignment.py
+          python -m py_compile \
+            analysis/run_geb_v2_within_among_alignment.py \
+            analysis/run_geb_v2_expanded_niche_sorting.py
           python -m unittest -v tests/test_geb_v2_within_among_alignment.py
+          python -m unittest -v tests/test_geb_v2_expanded_niche_sorting.py
       - name: Download completed GEB v2 artifact
         env:
           GH_TOKEN: ${{ github.token }}
@@ -96,10 +102,23 @@ jobs:
             --minimum-taxa 20 \
             --permutations "$PERMUTATIONS" \
             --seed 20260827
-      - name: Record frozen contract and provenance
+      - name: Run expanded among-taxon environmental sorting
+        run: |
+          python analysis/run_geb_v2_expanded_niche_sorting.py \
+            --traits-long "$TRAITS_LONG" \
+            --environment "$ENVIRONMENT" \
+            --out-dir output/niche_sorting \
+            --predictors chelsa_bio01 chelsa_bio04 chelsa_bio12 chelsa_bio15 \
+            --primary-min-trait-observations 5 \
+            --sensitivity-min-trait-observations 2 \
+            --minimum-common-taxa 20 \
+            --permutations "$PERMUTATIONS" \
+            --seed 20260827
+      - name: Record frozen contracts and provenance
         if: always()
         run: |
           cp analysis/ch1/within_among_alignment_contract.json output/within_among_alignment_contract.json
+          cp analysis/ch1/expanded_niche_sorting_contract.json output/expanded_niche_sorting_contract.json
           printf '%s\n' "$GITHUB_SHA" > output/git_sha.txt
           printf '%s\n' "$SOURCE_ARTIFACT_ID" > output/source_artifact_id.txt
           python -m pip freeze > output/python_environment.txt
