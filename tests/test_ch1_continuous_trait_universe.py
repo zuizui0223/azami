@@ -42,6 +42,10 @@ BRIDGE = load(
     "bridge_pr69_involucre",
     ROOT / "analysis" / "bridge_pr69_involucre_to_continuous_contract.py",
 )
+COMPARE_GATES = load(
+    "compare_continuous_screen_to_pr69_gates",
+    ROOT / "analysis" / "compare_continuous_screen_to_pr69_gates.py",
+)
 
 
 class ContinuousTraitContractTests(unittest.TestCase):
@@ -141,6 +145,40 @@ class ReviewerBridgeTests(unittest.TestCase):
         )
         self.assertEqual(len(environment), 1)
         self.assertEqual(len(environment_le10km), 1)
+
+    def test_generic_candidate_signal_cannot_bypass_pr69_gate(self):
+        screen = pd.DataFrame([{
+            "endpoint_id": "bract_spread_fraction",
+            "analysis_tier": "candidate",
+            "predictor": "env_chelsa_bio04_native",
+            "beta_std_within": 0.10,
+            "p_value": 0.002,
+            "q_fdr_bh_within_tier": 0.02,
+            "fdr_significant_0_05": True,
+            "n_observations": 904,
+            "n_taxa": 165,
+        }])
+        adjusted = pd.DataFrame([{
+            "endpoint": "bract_spread_fraction",
+            "cohort": "all_resolution_adjusted",
+            "predictor": "env_chelsa_bio04_native",
+            "beta_standardized": 0.09,
+            "p_value": 0.006,
+            "q_fdr_bh_climate_12": 0.07,
+            "n_observations": 904,
+            "n_taxa": 165,
+        }])
+        headline = pd.DataFrame([{
+            "endpoint": "bract_spread_fraction",
+            "adjusted_bio4_q": 0.07,
+            "positive_in_all_successful_strata": True,
+            "strict_resolution_control_retained": False,
+        }])
+        comparison, report = COMPARE_GATES.compare(screen, adjusted, headline)
+        self.assertEqual(report["n_candidate_screen_signals"], 1)
+        self.assertEqual(report["n_submission_eligible"], 0)
+        self.assertFalse(comparison["submission_claim_eligible"].any())
+        self.assertIn("fails_locked_quality_adjusted_bh", comparison.iloc[0]["failure_reasons"])
 
 
 class ExhaustiveCohortTests(unittest.TestCase):

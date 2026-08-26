@@ -151,6 +151,7 @@ traits = pd.read_csv(LOCAL / "universe_17" / "continuous_trait_universe_observat
 coverage = pd.read_csv(LOCAL / "diagnostic_climate_screen_17_le10km" / "continuous_trait_universe_coverage.csv")
 coefficients = pd.read_csv(LOCAL / "diagnostic_climate_screen_17_le10km" / "continuous_trait_universe_climate_coefficients.csv")
 gate = pd.read_csv(LOCAL / "involucre_bridge" / "canonical_involucre_headline_audit.csv")
+gate_comparison = pd.read_csv(LOCAL / "reviewer_gate_comparison" / "candidate_screen_vs_pr69_gates.csv")
 contract = pd.read_csv(ROOT / "ch1_global" / "v2" / "ontology" / "ch1_continuous_trait_contract.csv", keep_default_na=False)
 """
         ),
@@ -240,6 +241,16 @@ display_columns = [
 ]
 top_models = coefficients.sort_values("q_fdr_bh_within_tier").head(12)
 top_models[[column for column in display_columns if column in top_models.columns]]
+"""
+        ),
+        code(
+            """
+gate_comparison[[
+    "endpoint_id", "predictor", "screen_beta", "screen_q",
+    "quality_adjusted_beta", "quality_adjusted_q",
+    "positive_in_all_successful_strata", "failure_reasons",
+    "submission_claim_eligible",
+]]
 """
         ),
         code(

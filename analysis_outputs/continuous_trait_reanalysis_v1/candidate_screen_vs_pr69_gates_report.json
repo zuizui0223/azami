@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "n_candidate_screen_signals": 4,
+  "n_with_matching_pr69_quality_model": 4,
+  "n_passing_quality_adjusted_bh": 0,
+  "n_passing_full_pr69_retention_rule": 0,
+  "n_submission_eligible": 0,
+  "interpretation": "Generic candidate-screen q values are discovery diagnostics. PR69 endpoint-specific quality, resolution-stratum and independent botanical-validation gates control promotion."
+}

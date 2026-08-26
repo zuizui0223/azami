@@ -1,0 +1,43 @@
+{
+  "status": "complete_frozen_output_bridge",
+  "scope": "Reuses executed PR69 observation-level measurements; does not remeasure source images and does not fill unexecuted endpoints.",
+  "input_sha256": {
+    "contract": "cde8b8bb990d65fd2c9b2c247633eb47630e532cc69bec132c74f3b6bcfc29f1",
+    "involucre_observations": "8ca615aef892790cbc872f6d6009b2dd762be55750cc3f94bf1f40f89503fa3c",
+    "primary_observation": "e09276a23742a54d729cb46cec2030af4b6945434e95bea0ba35fe5e53d9eb29",
+    "expected_models": "69925f3e5502a54fac9ed159dfb5990c47448019d2aae281e80c2aebb084de4f"
+  },
+  "n_primary_observations": 3725,
+  "n_involucre_observations": 1292,
+  "n_involucre_taxa": 210,
+  "n_involucre_outside_primary": 0,
+  "n_taxon_name_mismatches": 0,
+  "endpoint_nonmissing_counts": {
+    "bract_projection_roughness": 1292,
+    "bract_spread_fraction": 1292,
+    "bract_projection_maximum": 1292
+  },
+  "n_bridged_canonical_endpoints": 3,
+  "n_environment_observations_all_precision": 1292,
+  "n_environment_observations_le10km": 935,
+  "endpoint_aliases": {
+    "involucre_projection_roughness": "bract_projection_roughness",
+    "involucre_spread_fraction": "bract_spread_fraction",
+    "spine_relative_length_max_proxy": "bract_projection_maximum"
+  },
+  "model_reproduction": {
+    "status": "exact_within_tolerance",
+    "comparison_tolerance": 1e-09,
+    "n_compared_rows": 72,
+    "max_abs_difference_by_column": {
+      "beta_standardized": 2.0816681711721685e-15,
+      "se_cluster_taxon": 5.412337245047638e-16,
+      "ci_low": 1.9984014443252818e-15,
+      "ci_high": 2.831068712794149e-15,
+      "p_value": 2.19824158875781e-14,
+      "q_fdr_bh_climate_12": 2.7755575615628914e-15
+    }
+  },
+  "n_endpoints_passing_pr69_resolution_gate": 0,
+  "submission_interpretation": "No bridged candidate endpoint is promoted to a manuscript claim without both the frozen PR69 bias-control rule and independent continuous botanical reference validation."
+}
