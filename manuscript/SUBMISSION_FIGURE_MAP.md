@@ -1,37 +1,27 @@
 # Submission figure map
 
-The final figure set is rebuilt around the reviewer-revised claims. Legacy median-split quadrants, two-level variance bars and raw absolute-slope RMS summaries are not submission figures.
+This concise map mirrors the authoritative `FIGURE_TABLE_MAP.md`. The current
+main manuscript contains five figures. Historical-placement sensitivity is in
+Appendix S1, and the failed involucral rows are not plotted as supported effects.
 
-| Proposed figure | Content | Frozen or revised source |
+| Item | Content | Current source/status |
 |---|---|---|
-| Figure 1 | Actual open-licensed photographs, stored YOLO boxes, reconstructed crops and deterministic orientation/colour/outline overlays | artifacts `8099953404`, `8225059018`, `8066010557`; workflow run `29725188014` |
-| Figure 2 | Nested variance across assigned species, photographs and heads, with one-head/equal-replication sensitivity in the caption or supplement | `nested_visible_variance_summary.csv` from nested-variance workflow |
-| Figure 3 | Complete nine-endpoint species PCA loadings and explained variance | `species_trait_pca_loadings.csv`; `species_trait_pca_variance.csv`; submission builder must assert nine endpoints including width-profile CV |
-| Figure 4 | Legacy absolute-slope RMS versus median sample size and median slope SE | `legacy_precision_diagnostic_species.csv` from precision-reanalysis workflow |
-| Figure 5 | Equal-module visible variation versus sampling-noise-adjusted association energy, without quadrants | `revised_species_axes.csv` from precision-reanalysis workflow |
-| Figure 6 | Named-cohort within-species coefficient summary: exhaustive primary versus balanced-atlas sensitivities | exhaustive climate report plus balanced prephylogenetic coefficient table |
-| Figure 7 | Among-species environmental niche contrasts and historical/data-coverage limitations | niche contrast, direct-backbone and NCBI coverage outputs |
+| Figure 1 | Open-licensed photographs, detector boxes and deterministic continuous measurements | frozen provenance; not an independent accuracy test |
+| Figure 2 | Geographic sampling, cohort flow and BIO1 × BIO12 domain | frozen cohort tables; Mollweide equal-area maps |
+| Figure 3 | Nested taxon → photograph → head visible-variance decomposition | frozen atlas plus one-head and balanced-replication sensitivities |
+| Figure 4 | Taxon-level PC1–PC3 trait architecture | 148 complete taxa; frozen PCA |
+| Figure 5 | Frozen primary coefficients, grouped-SPDE context and native-only decisions after seasonal/dominant-taxon audits | local regeneration and visual recheck required; immutable release pending |
+| Figure S1.8 | Among-taxon environmental separation geometry | frozen permutation design; presentation only |
+| Figure S1.9 | Randomized-tree PGLS placement sensitivity | demoted from main; not resolved phylogenetic correction |
 
-## Nested variance provenance
+## Excluded or withdrawn displays
 
-- Input artifact: `8225059018`, final v2 head-level table.
-- Script: `analysis/decompose_nested_visible_variance.py`.
-- Workflow: `.github/workflows/ch1-nested-visible-variance.yml`.
-- Atlas hierarchy: one photograph per public observation; one or more detected heads per photograph.
-- Sensitivities: one deterministic head per photograph and 10 photographs per eligible species across 500 repeats.
+- Raw absolute-slope RMS lability plots and median-split quadrants remain withdrawn.
+- The three unadjusted involucral BIO4 rows failed the locked resolution/sharpness
+  audit and are preserved in Table S1.6 rather than shown as supported effects.
+- The former main Figure 6 is now Figure S1.9 because direct-backbone coverage is
+  54/216, retained Pagel-λ estimates are zero and direct-backbone non-circular
+  phylogenetic signal is unsupported.
 
-## Revised precision provenance
-
-- Input artifact: `8330350031`, digest `sha256:f7757b412d8390858e409696f9665bb51f8f1fd765028e290d2bd2f8f74b8a2c`.
-- Script: `analysis/reanalyze_lability_precision.py`.
-- Workflow: `.github/workflows/ch1-reviewer-precision-reanalysis.yml`.
-- Primary revised cohort: 101 taxa, seven linear endpoints, four predictors per endpoint, n ≥ 10 for every slope.
-
-## Excluded legacy figures
-
-- Two-level within/among-species bars based on the earlier observation-level decomposition are superseded by the nested head–photograph–species figure.
-- `figure_species_lability_quadrants.*` and derivatives are legacy provenance only.
-- Module panels based on median raw absolute-slope RMS are excluded.
-- Minimum-n rank stability of the legacy responsiveness index is excluded because stability does not remove its precision bias.
-
-Figure 1 demonstrates production provenance and face validity. It does not replace independent detector or continuous-measurement validation.
+Figure 5 must be regenerated through
+`.github/workflows/ch1-interpretive-figures-ci.yml` after the current changes.

@@ -1,0 +1,3 @@
+# Data and code availability
+
+The package is not yet ready for deposit. At submission, derived tables, model outputs, figure sources, model weights and reproducibility manifests will be supplied to editors and reviewers through an anonymized read-only repository. Source photographs will not be redistributed beyond their individual licence terms. GitHub Actions artifacts are temporary execution records and are not the durable archive. After the open scientific gates and repository licence selection are complete, the exact supporting version will be deposited in a durable repository with a persistent digital object identifier, and this statement will be replaced with the final repository name, DOI and access terms.

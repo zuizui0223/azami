@@ -1,0 +1,79 @@
+{
+  "generated_at_utc": "2026-08-26T05:03:23.222366+00:00",
+  "status": "complete_bias_control_reanalysis_not_stage_control",
+  "n_observations": 46276,
+  "n_taxa": 259,
+  "observed_on_complete": true,
+  "top_taxa": [
+    {
+      "taxon_name": "Cirsium vulgare",
+      "n_observations": 13207,
+      "rank": 1,
+      "fraction": 0.28539631774569973
+    },
+    {
+      "taxon_name": "Cirsium arvense",
+      "n_observations": 11795,
+      "rank": 2,
+      "fraction": 0.25488374103206846
+    },
+    {
+      "taxon_name": "Cirsium palustre",
+      "n_observations": 3583,
+      "rank": 3,
+      "fraction": 0.07742674388451898
+    },
+    {
+      "taxon_name": "Cirsium oleraceum",
+      "n_observations": 2014,
+      "rank": 4,
+      "fraction": 0.04352147981675166
+    },
+    {
+      "taxon_name": "Cirsium heterophyllum",
+      "n_observations": 1696,
+      "rank": 5,
+      "fraction": 0.03664966721410667
+    },
+    {
+      "taxon_name": "Cirsium horridulum",
+      "n_observations": 1437,
+      "rank": 6,
+      "fraction": 0.031052813553461837
+    },
+    {
+      "taxon_name": "Cirsium discolor",
+      "n_observations": 1225,
+      "rank": 7,
+      "fraction": 0.026471605151698503
+    },
+    {
+      "taxon_name": "Cirsium undulatum",
+      "n_observations": 773,
+      "rank": 8,
+      "fraction": 0.016704123087561588
+    },
+    {
+      "taxon_name": "Cirsium acaulon",
+      "n_observations": 633,
+      "rank": 9,
+      "fraction": 0.01367879678451033
+    },
+    {
+      "taxon_name": "Cirsium altissimum",
+      "n_observations": 627,
+      "rank": 10,
+      "fraction": 0.01354913994295099
+    }
+  ],
+  "model_definitions": {
+    "baseline": "taxon-mean residualization of outcome and one climate predictor",
+    "seasonal": "taxon-specific intercept plus sine/cosine day-of-year residualization of outcome and predictor",
+    "uncertainty": "taxon-clustered robust standard errors",
+    "multiplicity": "BH across 36 rows within each model-definition x omission scenario"
+  },
+  "strict_retention_rule": "baseline reproduces the frozen beta within tolerance; season-adjusted full-data beta has the same sign and BH q<0.05; all predeclared top-taxon omission seasonal betas keep the frozen sign",
+  "n_headline_rows_retained": 4,
+  "n_headline_rows": 4,
+  "stage_control_status": "not_closed_day_of_year_is_not_an_image_stage_label"
+}

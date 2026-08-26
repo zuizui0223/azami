@@ -11,7 +11,14 @@ on:
       - ".github/workflows/ch1-interpretive-figures-ci.yml"
       - "manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png"
       - "manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv"
-      - "manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv"
+      - "analysis/run_bias_control_reanalysis.py"
+      - "analysis/ch1/bias_control_contract.json"
+      - "analysis/run_hemisphere_season_sensitivity.py"
+      - "analysis/ch1/hemisphere_season_sensitivity_contract.json"
+      - "analysis/run_native_range_sensitivity.py"
+      - "analysis/ch1/native_range_sensitivity_contract.json"
+      - "manuscript/supplement/tables/S16_native_range_sensitivity.csv"
+      - "manuscript/final_claims.json"
       - "manuscript/supplement/tables/S07_niche_permutation_summary.csv"
       - "manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv"
   workflow_dispatch:
@@ -34,7 +41,7 @@ jobs:
       - name: Install pinned plotting dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install numpy==2.3.5 pandas==2.2.3 matplotlib==3.10.8 scikit-learn==1.7.2 pillow==12.3.0
+          python -m pip install numpy==2.3.5 pandas==2.2.3 matplotlib==3.10.8 scikit-learn==1.7.2 pillow==12.3.0 statsmodels==0.14.5
 
       - name: Download frozen enriched primary environment
         uses: actions/download-artifact@v4
@@ -54,6 +61,21 @@ jobs:
           name: ch1-lightweight-per-trait-spde-inla
           path: source/spde
 
+      - name: Run predeclared seasonal and dominant-taxon audit
+        run: |
+          python analysis/run_bias_control_reanalysis.py \
+            --observation source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --claims manuscript/final_claims.json \
+            --out-dir source/bias_control
+
+      - name: Run locked hemisphere-aware seasonal sensitivity
+        run: |
+          python analysis/run_hemisphere_season_sensitivity.py \
+            --observation source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
+            --claims manuscript/final_claims.json \
+            --contract analysis/ch1/hemisphere_season_sensitivity_contract.json \
+            --out-dir source/hemisphere_season
+
       - name: Record source hashes
         run: |
           set -euo pipefail
@@ -62,7 +84,9 @@ jobs:
             source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
             manuscript/figures/supervisor_review/figure1_real_photo_yolo_pipeline.png \
             manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
-            manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv \
+            source/bias_control/headline_bias_control_audit.csv \
+            source/hemisphere_season/hemisphere_season_headline_audit.csv \
+            manuscript/supplement/tables/S16_native_range_sensitivity.csv \
             manuscript/supplement/tables/S07_niche_permutation_summary.csv \
             manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
             > interpretive_source_sha256.txt
@@ -74,7 +98,7 @@ jobs:
             --environment source/environment/strict_spatial_thinned_with_climate_topography_soil.csv \
             --spde-fixed source/spde/lightweight_spde_results/spde_fixed_effects_by_group.csv \
             --primary-supported manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
-            --aux-supported manuscript/supplement/tables/S06_auxiliary_involucre_BH_supported_rows.csv \
+            --bias-control manuscript/supplement/tables/S16_native_range_sensitivity.csv \
             --niche-summary manuscript/supplement/tables/S07_niche_permutation_summary.csv \
             --pgls-supported manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
             --out-dir interpretive_release
@@ -92,7 +116,7 @@ jobs:
           test -s interpretive_release/Figure_1_image_to_multiscale_analysis.png
           test -s interpretive_release/Figure_4_taxon_trait_architecture.png
           test -s interpretive_release/Figure_5_environmental_effect_sizes.png
-          test -s interpretive_release/Figure_6_scale_specificity_and_historical_sensitivity.png
+          test -s interpretive_release/Figure_S1_9_historical_placement_sensitivity.png
           test -s interpretive_release/Figure_S8_environmental_sorting.png
           test "$(find interpretive_release -maxdepth 1 -type f \( -name '*.png' -o -name '*.svg' -o -name '*.pdf' \) | wc -l)" -eq 15
           cp interpretive_source_sha256.txt interpretive_release/source_sha256.txt

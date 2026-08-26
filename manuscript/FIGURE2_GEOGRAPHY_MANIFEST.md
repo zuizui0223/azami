@@ -6,7 +6,7 @@ This manifest defines the submission-facing geographic visualization layer for C
 
 - **Main Figure 2** `Figure_2_geographic_sampling_and_analysis_domain.*`
   - A: 1° density of detector-positive observations before spatial filtering. The frozen detector-positive cohort contains 406,582 observations; 406,178 have finite longitude/latitude values that can be rendered geographically, while the full 406,582 count remains the cohort total.
-  - B: coordinates of the 46,276-observation spatially thinned primary cohort.
+  - B: 1° display-cell density of the 46,276-observation spatially thinned primary cohort.
   - C: the two executed analysis streams and their derived cohorts. The balanced image atlas leads to nested variance/PCA/historical analyses and the high-resolution involucre subset; the exhaustive detector-positive stream passes through coordinate and positional-accuracy filtering and taxon × 0.25° thinning before the primary and grouped SPDE analyses.
   - D: CHELSA BIO1 × BIO12 environmental domain of the primary cohort.
 - **Figure S6** `Figure_S6_sampling_geography_across_filters.*`
@@ -54,7 +54,7 @@ CHELSA BIO1 is converted from the frozen raster storage transform (`scale = 0.1`
 
 ## Map geometry
 
-Natural Earth admin-0 50 m country polygons are downloaded during the workflow only as geographic context. They are not used for any biological inference.
+All map panels use the spherical Mollweide equal-area projection (Earth radius 6,371,007.181 m). A 5,000-km scale bar is drawn at the equator, where projected horizontal distance equals spherical great-circle distance. Graticules provide latitude/longitude reference. Natural Earth admin-0 50 m country polygons are downloaded during the workflow only as geographic context; they are not used for any biological inference.
 
 ## Reproduction
 
@@ -72,7 +72,7 @@ The final visually reviewed geographic release was generated on head `506daeee5f
 - artifact name: `ch1-main-figure2-geography-32447087820`;
 - artifact digest: `sha256:53ac8e074e47c47f2107dd469b52e33fb51b9a292cdc08372861042ab1234e10`.
 
-Subsequent manuscript-map/caption/contract edits do not alter the geographic generator or frozen input data.
+The observation-level inputs and aggregate plotting data from that release remain the scientific source. On 2026-08-26, the three map products were regenerated from those aggregate plotting tables solely to meet GEB's equal-area map requirement. The revision changes the display projection to Mollweide, adds an equatorial scale bar and relabels panel B as 1° display-cell density; it does not change cohort membership, counts, environmental values or any inferential result. The current release hashes are recorded in the submission audit inventory, and `figure2_geography_summary.json` records the projection parameters.
 
 ## Interpretation boundary
 

@@ -1,0 +1,45 @@
+{
+  "policy_version": "2026-08-26-balanced-continuous-evidence-v1",
+  "purpose": "Preserve valid ecological signal without using every reviewer sensitivity as a fail-closed veto. Robustness analyses grade evidence strength; they do not automatically erase the estimand tested by the frozen global primary analysis.",
+  "primary_estimand": "Within-source-assigned-taxon spatial environment-trait association in the frozen global spatially thinned cohort.",
+  "headline_framework": "continuous within-taxon phenomics plus trait- and scale-specific environmental structure",
+  "tiers": {
+    "A_robust": {
+      "definition": "Global primary support plus same-direction support across relevant timing/taxon-composition sensitivities and no material contradiction in range or measurement-quality sensitivity.",
+      "manuscript_use": "May be emphasized as the strongest concrete environmental association."
+    },
+    "B_supported_but_sensitive": {
+      "definition": "Supported in the frozen global primary or spatial analysis, but one restricted-domain sensitivity loses multiplicity support while retaining direction, or effect magnitude changes materially without sign reversal.",
+      "manuscript_use": "Retain as an environmental association with an explicit sensitivity qualifier; do not call it withdrawn solely because a restricted-domain BH threshold is missed."
+    },
+    "C_exploratory_continuous_signal": {
+      "definition": "Tier-wise FDR-supported candidate continuous image phenotype, or a coherent repeated signal across related metrics, but endpoint-specific image-quality or botanical validation remains incomplete.",
+      "manuscript_use": "Report as exploratory/provisional image-derived signal and use to motivate validation; not a confirmatory botanical-function claim."
+    },
+    "D_unresolved_or_artifact_prone": {
+      "definition": "Association shows important sign reversal across quality/resolution strata, fails basic measurement integrity, or is not reproducible under the relevant model definition.",
+      "manuscript_use": "Do not use as a positive biological result; retain only as provenance or a measurement-design warning."
+    },
+    "validation_only": {
+      "definition": "Surface/exudate/indumentum image signals that lack botanical reference calibration.",
+      "manuscript_use": "Coverage and calibration only; no ecological trait claim."
+    }
+  },
+  "sensitivity_rules": {
+    "season_and_dominant_taxa": "Same-sign persistence increases robustness. Magnitude changes are reported rather than treated as automatic failure.",
+    "hemisphere_timing": "Same-sign persistence increases robustness. This does not substitute for developmental-stage annotation.",
+    "native_range": "A native-only restriction is a restricted-domain sensitivity, not the primary estimand. Loss of BH support with preserved sign is classified as range-sensitive rather than automatically withdrawn. Sign reversal or a large incompatible effect requires stronger downgrading.",
+    "image_resolution_and_sharpness": "Quality adjustment and fixed resolution strata directly probe measurement bias. Loss of BH support alone lowers confidence; sign reversal across plausible strata is stronger evidence of artifact-proneness.",
+    "independent_reference_validation": "Required before image proxies are renamed as botanical quantities, but absence of calibration does not erase a clearly labelled image-derived ecological association.",
+    "repeat_photos": "Used to quantify image-condition contribution to visible variance. It does not redefine the global environmental estimand unless it reveals a systematic environment-linked measurement artifact.",
+    "colour_negative_control": "Required before a corolla-specific optical mechanism is claimed. A failed control constrains colour specificity; it does not automatically erase all image-colour environmental structure."
+  },
+  "claim_boundaries": [
+    "No phenotypic plasticity claim from cross-sectional spatial associations.",
+    "No local adaptation or selection claim without fitness/genetic evidence.",
+    "No pollinator or antagonist causation from macroecological associations.",
+    "No botanical spine, phyllary-angle, indumentum or mucilage identity from unvalidated image proxies.",
+    "No resolved phylogenetic correction from grafted trees with sparse direct-backbone coverage."
+  ],
+  "decision_principle": "Use robustness controls to rank confidence and delimit interpretation, not to reduce the biological narrative to only coefficients that pass every possible sensitivity threshold."
+}

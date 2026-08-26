@@ -1,0 +1,18 @@
+{
+  "n_trait_rows": 63325,
+  "n_environment_rows": 935,
+  "n_linear_endpoints_modelled": 11,
+  "n_circular_traits_modelled": 1,
+  "n_successful_endpoint_predictor_models": 48,
+  "n_primary_fdr_signals": 0,
+  "n_candidate_fdr_signals": 4,
+  "multiplicity": "BH within primary and candidate tiers separately; circular hue contributes one joint test per predictor",
+  "claim_status": "screening_only_not_submission_claims",
+  "submission_claims_created": 0,
+  "required_gates": [
+    "PR69 timing, dominant-taxon and native-range controls for primary rows",
+    "endpoint-specific resolution and image-quality controls for candidate rows",
+    "independent continuous botanical reference validation before proxy promotion"
+  ],
+  "interpretation_boundary": "Cross-sectional within-taxon image-phenotype association; not demonstrated plasticity or adaptation."
+}

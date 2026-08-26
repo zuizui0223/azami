@@ -2,8 +2,16 @@ gate,status,note
 Taxonomic robustness,complete,WCVP candidate audit + simultaneous 8-synonym collapse sensitivity
 Residual spatial / broad-region robustness,complete,Moran I + leave-one-region-out diagnostics
 Environmental niche null,complete,"10,000 trait-label permutations"
+Raw-calendar seasonal / dominant-taxon bias control,complete,"4/4 non-circular rows retained; coefficient magnitudes vary; developmental stage not closed"
+Hemisphere-aware seasonal bias control,complete,"2,356 Southern Hemisphere observations; 4/4 rows retained under both locked definitions"
+Involucre resolution / sharpness control,complete_failed_claim,"0/3 rows retained; headline withdrawn"
 Independent detector human boxes,pending_external,"1,000-image leakage-free packet; human adjudication pending"
 Independent orientation/colour/outline reference measurements,pending_external,must be genuinely independent of production overlays / mirror repeatability
+Developmental stage,pending_image_labelling,day-of-year adjustment is not a stage label
+Flower/background colour negative control,pending_image_remeasurement,paired region-by-BIO12 interaction required
+Repeat-photo variance,pending_image_remeasurement,"20,073-observation cohort frozen"
+Native-range sensitivity,complete_claim_narrowed,"245/259 taxa resolved; 27,066 native observations; orientation-BIO1 and aspect ratio-BIO4 retained; chroma-BIO12 and aspect ratio-BIO12 withdrawn after native-only BH failure"
 24 high-priority nomenclatural notes,pending_human,final nomenclatural review
 Authorship / funding / CRediT,pending_human,administrative metadata
-Durable archive DOI,final_step,after measurement gates close
+Licence selection,pending_human_legal,required before public release
+Durable archive DOI,final_step,after scientific and licence gates close

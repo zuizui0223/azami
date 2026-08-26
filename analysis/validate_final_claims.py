@@ -20,6 +20,8 @@ def main() -> None:
     legacy = claims["legacy_precision_audit"]
     revised = claims["revised_primary_results"]
     inference = claims["within_species_inference_levels"]
+    bias_control = claims["bias_control_reanalysis"]
+    involucre = claims["auxiliary_involucre"]
     history = claims["historical_sensitivity"]
     molecular = claims["molecular_database_coverage"]
 
@@ -78,6 +80,58 @@ def main() -> None:
     assert balanced["n_bh_fdr_main_rows"] == 0
     assert "different datasets" in inference["interpretation_rule"].lower()
 
+    primary_control = bias_control["primary_season_and_dominant_taxon"]
+    assert primary_control["n_observations"] == 46276
+    assert primary_control["n_non_circular_rows_strictly_retained"] == 4
+    assert primary_control["n_non_circular_rows_tested"] == 4
+    assert len(primary_control["rows"]) == 4
+    assert all(
+        row["omission_beta_range"][0] <= row["season_adjusted_beta"] <= row["omission_beta_range"][1]
+        for row in primary_control["rows"]
+    )
+    hemisphere_control = bias_control["hemisphere_season_sensitivity"]
+    assert hemisphere_control["n_southern_observations"] == 2356
+    assert hemisphere_control["n_taxa_sampled_both_hemispheres"] == 3
+    assert hemisphere_control["n_non_circular_rows_strictly_retained"] == 4
+    assert len(hemisphere_control["rows"]) == 4
+    assert all(
+        row["phase_aligned_omission_beta_range"][0]
+        <= row["phase_aligned_beta"]
+        <= row["phase_aligned_omission_beta_range"][1]
+        and row["hemisphere_curve_omission_beta_range"][0]
+        <= row["hemisphere_curve_beta"]
+        <= row["hemisphere_curve_omission_beta_range"][1]
+        for row in hemisphere_control["rows"]
+    )
+    native_control = bias_control["native_range_sensitivity"]
+    assert native_control["n_observations"] == 46276
+    assert native_control["n_taxa"] == 259
+    assert native_control["n_resolved_taxa"] == 245
+    assert sum(native_control["native_status_counts"].values()) == 46276
+    assert native_control["native_status_counts"]["native"] == 27066
+    assert native_control["n_non_circular_rows_tested"] == 4
+    assert native_control["n_non_circular_rows_strictly_retained"] == 2
+    assert len(native_control["rows"]) == 4
+    retained_native_pairs = {
+        (row["endpoint"], row["predictor"])
+        for row in native_control["rows"]
+        if row["native_range_robust"]
+    }
+    assert retained_native_pairs == {
+        ("orientation_angle", "BIO1"),
+        ("shape_aspect_ratio", "BIO4"),
+    }
+    assert claims["current_native_range_withdrawals"] == [
+        "corolla_chroma-BIO12",
+        "shape_aspect_ratio-BIO12",
+    ]
+    assert bias_control["repeat_photo_cohort"]["n_repeat_observations"] == 20073
+    assert bias_control["repeat_photo_cohort"]["n_additional_photos"] == 38675
+
+    assert involucre["n_strictly_retained_rows"] == 0
+    assert "withdrawn" in involucre["current_status"]
+    assert len(involucre["withdrawn_original_unadjusted_rows"]) == 3
+
     assert history["n_input_taxa"] == 216
     assert history["n_direct_backbone_taxa"] == 54
     assert history["n_random_trees"] == 50
@@ -98,6 +152,10 @@ def main() -> None:
                 "corrected_axis_rho": axis["spearman_rho"],
                 "meta_regression_p": meta["likelihood_ratio_p_value"],
                 "exhaustive_linear_fdr_rows": exhaustive["n_bh_fdr_non_circular_linear_rows"],
+                "bias_control_linear_rows_retained": primary_control["n_non_circular_rows_strictly_retained"],
+                "hemisphere_control_linear_rows_retained": hemisphere_control["n_non_circular_rows_strictly_retained"],
+                "native_range_linear_rows_retained": native_control["n_non_circular_rows_strictly_retained"],
+                "involucre_rows_retained": involucre["n_strictly_retained_rows"],
                 "phylogenetic_fits": history["n_signal_fits"],
             },
             indent=2,

@@ -5,3 +5,4 @@ opencv-python-headless>=4.9,<5
 matplotlib>=3.8,<4
 Pillow>=10,<13
 requests>=2.31,<3
+shapely>=2.1,<3

@@ -7,10 +7,17 @@ Use this directory for submission assembly. Do not copy numbers from legacy note
 1. `SUBMISSION_MANUSCRIPT.md` — current manuscript order and scientific status;
 2. `COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — immutable cohort names, counts and analysis permissions;
 3. `final_claims.json` — reviewer-revised machine-readable claims;
-4. `results/reviewer_precision_summary.json` — legacy precision audit and replacement results;
-5. `SUBMISSION_FIGURE_MAP.md` — active and excluded figure definitions;
-6. `DETECTOR_INDEPENDENT_AUDIT_PROTOCOL.md` — leakage-free detector validation design and stop rule;
-7. `EXTERNAL_COMPLETION_GATES.md` — ordered measurement, taxonomy, spatial, niche and archive gates.
+4. `BIAS_CONTROL_REANALYSIS_PROTOCOL.md` — locked raw-calendar and hemisphere-aware seasonal, dominant-taxon, native-range, image-quality and image-remeasurement rules;
+5. `results/reviewer_precision_summary.json` — legacy precision audit and replacement results;
+6. `SUBMISSION_FIGURE_MAP.md` — active and excluded figure definitions;
+7. `DETECTOR_INDEPENDENT_AUDIT_PROTOCOL.md` — leakage-free detector validation design and stop rule;
+8. `EXTERNAL_COMPLETION_GATES.md` — ordered measurement, taxonomy, spatial, niche and archive gates.
+
+**Current status: submission hold.** All four non-circular primary rows passed the
+raw-calendar, hemisphere-aware cyclic-season and dominant-taxon controls, but only
+orientation–BIO1 and aspect ratio–BIO4 passed the separately frozen native-only rule.
+The involucral headline failed its resolution/sharpness control and was withdrawn.
+Image remeasurement and independent validation gates remain open.
 
 ## Current statistical correction
 
@@ -35,6 +42,9 @@ Detector precision, recall and F1 remain unreported until the human boxes are co
 - Do not restore legacy quadrants or raw absolute-slope RMS rankings.
 - Do not report detector accuracy from pseudo-label training metrics or production detections.
 - Mark biological mechanisms as hypotheses.
+- Do not restore the withdrawn involucral BIO4 headline.
+- Do not restore chroma–BIO12 to the biological headline: it failed native-only BH correction; the paired colour negative control remains required for broader colour-specific interpretation.
+- Do not call day-of-year adjustment developmental-stage control.
 
 ## Reproducibility
 

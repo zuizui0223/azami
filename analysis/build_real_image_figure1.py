@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import cv2
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -87,6 +88,15 @@ def bgr(path: Path) -> np.ndarray:
 
 def rgb(path: Path) -> np.ndarray:
     return cv2.cvtColor(bgr(path), cv2.COLOR_BGR2RGB)
+
+
+def save_svg(fig: Any, path: Path) -> None:
+    with mpl.rc_context({"svg.hashsalt": "azami-figure1-v1"}):
+        fig.savefig(path, bbox_inches="tight", metadata={"Date": None})
+    path.write_text(
+        "\n".join(line.rstrip() for line in path.read_text(encoding="utf-8").splitlines()) + "\n",
+        encoding="utf-8",
+    )
 
 
 def panel_label(ax: plt.Axes, label: str, title: str) -> None:
@@ -194,7 +204,7 @@ def main() -> None:
         ax = fig.add_subplot(gs[0, col])
         ax.imshow(rgb(panel_dirs[unit] / "01_source_bbox.png"))
         descriptor = ["purple / upright", "pale / inclined", "pink / inclined"][col]
-        panel_label(ax, chr(ord('A') + col), f"{row.taxon_name}\n{descriptor}; YOLO p={row.yolo_conf:.2f}")
+        panel_label(ax, chr(ord('a') + col), f"{row.taxon_name}\n{descriptor}; YOLO p={row.yolo_conf:.2f}")
     ax = fig.add_subplot(gs[0, 3])
     ax.axis("off")
     ax.text(0.04, 0.92, "Actual production records", fontsize=14, fontweight="bold", va="top")
@@ -209,11 +219,11 @@ def main() -> None:
             fontsize=11, va="top", fontweight="bold")
 
     bottom_specs = [
-        (gs[1, 0], "D", "Tight head crop", "02_tight_crop.png"),
-        (gs[1, 1], "E", "Context crop", "03_context_crop.png"),
-        (gs[1, 2], "F", "Corolla colour mask", "05_colour_overlay.png"),
-        (gs[1, 3], "G", "Outline + convex hull", "06_shape_overlay.png"),
-        (gs[2, 0:2], "H", "Orientation relative to image vertical", "04_orientation_overlay.png"),
+        (gs[1, 0], "d", "Tight head crop", "02_tight_crop.png"),
+        (gs[1, 1], "e", "Context crop", "03_context_crop.png"),
+        (gs[1, 2], "f", "Corolla colour mask", "05_colour_overlay.png"),
+        (gs[1, 3], "g", "Outline + convex hull", "06_shape_overlay.png"),
+        (gs[2, 0:2], "h", "Orientation relative to image vertical", "04_orientation_overlay.png"),
     ]
     for spec, label, title, filename in bottom_specs:
         ax = fig.add_subplot(spec)
@@ -231,7 +241,7 @@ def main() -> None:
         ("Circularity", f"{main_row.shape_circularity:.2f}", main_row.shape_status),
         ("Solidity", f"{main_row.shape_solidity:.2f}", main_row.shape_status),
     ]
-    ax.text(0.02, 0.96, "I   Continuous outputs for the detailed example", fontsize=13, fontweight="bold", va="top")
+    ax.text(0.02, 0.96, "i   Continuous outputs for the detailed example", fontsize=13, fontweight="bold", va="top")
     y = 0.82
     for name, value, status in values:
         ax.text(0.05, y, name, fontsize=11, fontweight="bold")
@@ -245,9 +255,10 @@ def main() -> None:
     )
     fig.text(0.5, 0.012, source_note, ha="center", va="bottom", fontsize=8.5)
 
-    fig.suptitle("Figure 1. Actual photographs, YOLO capitulum detection and continuous trait extraction", fontsize=17, fontweight="bold", y=0.985)
+    fig.suptitle("Actual photographs, capitulum detection and continuous trait extraction", fontsize=17, fontweight="bold", y=0.985)
     fig.savefig(out / "figure1_real_photo_yolo_pipeline.png", dpi=300, bbox_inches="tight")
-    fig.savefig(out / "figure1_real_photo_yolo_pipeline.svg", bbox_inches="tight")
+    svg_path = out / "figure1_real_photo_yolo_pipeline.svg"
+    save_svg(fig, svg_path)
     plt.close(fig)
 
     provenance_cols = [

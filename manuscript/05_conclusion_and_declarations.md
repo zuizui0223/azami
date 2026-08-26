@@ -1,48 +1,9 @@
 # Conclusion
 
-Global citizen-science images can be converted into continuous capitulum-trait observations at a scale large enough to analyse within-taxon phenotype globally. Rather than assigning each taxon or photograph to a small number of morphological categories, automated object detection and deterministic image measurement returned head-level numerical values for orientation, visible colour and outline, with additional high-resolution proxies for involucral architecture.
+Global public photographs can be used to quantify repeated continuous capitulum phenotypes at a scale large enough to describe thistle morphological diversity across geography. Across all nine established primary endpoints, at least 58.9% of visible image variance occurred below taxon means, while taxon summaries retained multidimensional differences. The expanded GEB v2 analysis strengthens that conclusion rather than replacing it: 18 inferential continuous endpoints were measured, and the 127-taxon complete morphospace required several axes, with PC1 explaining only 18.5% and the first three PCs 42.3%. Species-level summaries and coarse morphological categories therefore capture only part of a genuinely multidimensional visible phenotype landscape.
 
-Retaining those repeated values showed that across all nine primary endpoints at least about half of visible image variance occurred below source-assigned taxon means, while taxon means still retained multidimensional differences. Environmental associations were trait specific: temperature was most consistently linked to orientation and colour, precipitation to chroma, hue and aspect ratio, soil pH to colour, and temperature seasonality to aspect ratio and outward involucral projections. Among-taxon permutation tests confirmed that environmental sorting was strongest for orientation and visible colour. Six climate associations persisted across 50 alternative Pagel-λ PGLS trees, although incomplete direct-backbone coverage makes these historical sensitivities rather than definitive phylogenetically independent effects.
+Environmental structure was trait- and scale-specific rather than reducible to one climate-associated thistle morphology. Orientation–annual mean temperature and outline aspect ratio–temperature seasonality remain the strongest established primary associations across the relevant sensitivity analyses. Chroma–annual precipitation and aspect ratio–annual precipitation retain their global directions but are more sensitive to native-range restriction, while grouped spatial and among-taxon analyses concentrate support in orientation and visible colour. The expanded candidate layer adds two quality-robust exploratory patterns: image-derived involucre length/width ratio increases with precipitation seasonality, and apical taper decreases with annual precipitation. A bract-projection association with precipitation seasonality remains image-sensitive. These candidate results extend the phenotypic map but are not promoted to direct botanical or functional claims before independent calibration.
 
-Taken together, the ecological result is not one climate-associated “thistle morphology.” The same capitulum behaves as a composite reproductive phenotype: orientation, visible colour, gross outline and fine involucral architecture show different environmental signatures, and within-taxon versus among-taxon associations emphasize partly different gradients. These patterns identify reproductive microclimate/exposure, colour-mediated abiotic and biotic interactions, and antagonist/protection functions of the involucre as explicit hypotheses for independent field tests rather than mechanisms already demonstrated by the image data.
+The main biological contribution is therefore a quantitative description of spatial phenotype diversity and its environmental structure, not the identification of one causal mechanism. Public-image phenomics can complement conventional trait databases by replacing single taxon means and coarse state assignments with repeated numerical phenotype distributions, and by showing which components of the same reproductive structure vary within taxa, among taxa and along environmental gradients. The expanded continuous contract makes that comparison explicit across established and finer capitulum modules while preserving an evidence hierarchy rather than treating every detected association as equivalent.
 
-Residual Moran diagnostics, broad-region omission and simultaneous WCVP synonym collapse did not overturn the headline patterns. The main contribution is therefore both biological and methodological: public-image phenomics can recover continuous, repeated within-taxon trait distributions across a global domain and reveal that environmental structure is modular across components of a reproductive phenotype, provided that detector and image-measurement validity remain independently tested and observational associations are not converted into claims of plasticity, adaptation, pollinator causation or evolutionary rate.
-
-The former raw absolute-slope lability relationship and median-split quadrants are withdrawn from the biological narrative and retained only as statistical provenance.
-
-# Declarations
-
-## Data and code availability
-
-An anonymized, read-only repository for peer review will contain analysis code, frozen YOLO weights and training provenance, source-observation identifiers, licence metadata, derived tables, model outputs, taxonomic-authority and synonym-collapse audits, niche-permutation null tests, spatial-residual diagnostics, figure sources and reproducibility manifests. Detector development diagnostics will remain explicitly separated from the adjudicated independent audit. Source photographs will not be redistributed beyond their individual licence terms.
-
-After the independent detector and continuous-measurement validation gates are complete, the final checksummed release will be frozen under an immutable tag and deposited in a durable public repository with a persistent DOI.
-
-## Author contributions
-
-To be completed after the final author list and CRediT roles are confirmed by the research team.
-
-## Acknowledgements
-
-To be completed with the confirmed collaborator and institutional list.
-
-## Funding
-
-To be completed with confirmed funding sources and grant numbers.
-
-## Competing interests
-
-The authors declare no competing interests. This statement must be confirmed by all authors before submission.
-
-## Ethics and permits
-
-The study used publicly available biodiversity observations and did not involve experimental manipulation or collection of organisms.
-
-## Remaining submission gates
-
-The computational taxonomic-robustness, residual-spatial, broad-region and environmental-niche-null gates are complete for the frozen analysis. The two remaining scientific blockers require genuinely external information:
-
-1. adjudicated human boxes for the independent detector audit;
-2. independent reference measurements for orientation, colour and outline.
-
-Nomenclatural notes, final authorship metadata and the durable DOI release remain human/finalization tasks.
+The remaining limitations define the interpretation of these patterns. Visible image variance still combines biological and photographic variation; developmental stage, paired colour controls and repeat-photo variance remain incompletely resolved; and detector and continuous-trait measurements require independent validation. `visible_floret_fraction` was not executed in the final GEB v2 run, so no inference is made from that endpoint. Native-only restriction is treated as a restricted-domain sensitivity rather than a universal replacement for the global estimand. None of the reported associations by itself demonstrates phenotypic plasticity, local adaptation, selection, pollinator causation, defence or evolutionary rate. Instead, the evidence-graded global phenotype map identifies where mechanistic field, botanical-validation and evolutionary tests should be targeted next.

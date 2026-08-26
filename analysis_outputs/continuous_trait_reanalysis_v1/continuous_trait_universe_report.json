@@ -1,0 +1,37 @@
+{
+  "status": "partial",
+  "n_contract_endpoints": 27,
+  "n_available_endpoints": 17,
+  "n_missing_unexecuted_endpoints": 10,
+  "missing_unexecuted_endpoints": [
+    "bract_projection_asymmetry",
+    "bract_projection_p95",
+    "bract_projection_peak_density",
+    "involucre_apical_taper_ratio",
+    "involucre_basal_taper_ratio",
+    "involucre_length_width_ratio",
+    "involucre_surface_edge_density",
+    "involucre_surface_high_frequency_energy",
+    "involucre_surface_lbp_entropy",
+    "involucre_surface_specular_fraction"
+  ],
+  "n_endpoints_with_observation_measurements": 17,
+  "n_endpoints_with_species_measurements": 17,
+  "n_inferential_endpoints_without_measurements": 6,
+  "inferential_endpoints_without_measurements": [
+    "bract_projection_asymmetry",
+    "bract_projection_p95",
+    "bract_projection_peak_density",
+    "involucre_apical_taper_ratio",
+    "involucre_basal_taper_ratio",
+    "involucre_length_width_ratio"
+  ],
+  "n_observations": 3725,
+  "n_taxa": 214,
+  "n_observation_taxa": 216,
+  "n_species_summary_taxa": 214,
+  "n_observation_measurements_available": 49242,
+  "n_observation_measurements_analysis_eligible": 35934,
+  "category_columns_in_output": [],
+  "semantic_status": "One row per grain and continuous endpoint. Missingness records failed or unexecuted measurement; it is never converted to a category or biological zero."
+}

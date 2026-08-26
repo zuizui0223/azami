@@ -1,89 +1,49 @@
 # Results
 
-## Global image phenomics recovered repeated continuous capitulum phenotypes
+## Global image phenomics recovered repeated capitulum phenotypes
 
-The balanced atlas contained 6,626 detected heads from 3,725 photographs and 216 source-assigned taxa, whereas the exhaustive post-detection stream contained 406,582 detector-positive observations from 286 taxa. After positional-accuracy restriction and taxon × 0.25° spatial thinning, 46,276 observations from 259 taxa formed the primary within-taxon cohort. Trait-specific QC retained 87.2% of atlas heads for colour, 80.4% for outline and 69.2% for orientation. The high-resolution involucral layer retained 1,443 heads from 1,292 observations and 210 taxa.
+The balanced atlas contained 6,626 heads from 3,725 photographs and 216 taxa. The exhaustive stream contained 406,582 detector-positive observations from 286 taxa, of which 46,276 observations from 259 taxa formed the primary spatially thinned cohort. Trait-specific quality control retained 87.2% of atlas heads for colour, 80.4% for outline and 69.2% for orientation; the high-resolution layer retained 1,443 heads from 1,292 observations and 210 taxa (Tables 1–2; Table S1.1). The audit packet contained 1,000 independent source images, but human adjudication is incomplete; no detector precision or recall is therefore reported.
 
-The leakage-free detector-audit packet contained 1,000 source images spanning 323 species and 85 ten-degree spatial blocks, with 250 images assigned for blinded double annotation and zero photo or observation overlap with detector-development data. Human adjudication is incomplete; therefore no independent detector precision or recall is reported, and detector development metrics are not used as evidence for biological accuracy.
+The GEB v2 continuous-trait contract contained 27 endpoints across eight modules. The final artifact-backed run measured 22 endpoints. Eighteen of 19 inferential endpoints had observation-level measurements: all nine established primary endpoints and nine expanded candidate endpoints. The only unexecuted inferential endpoint was `visible_floret_fraction`; four descriptive colour-composition pixel fractions were also unexecuted. The resulting continuous-trait universe retained 46,276 observations from 259 taxa and 374,255 analysis-eligible observation × endpoint measurements. Missing or unexecuted values remained missing rather than being converted to categories or biological zeros.
 
-The production workflow therefore generated repeated **numerical phenotype observations** rather than one categorical trait label per taxon. Every assessable head contributed values such as an orientation angle, colour coordinates or contour statistics, and those values were retained as distributions across observations within taxa.
+## Most visible variation occurred below taxon means
 
-## Most visible primary-trait variation occurred below taxon means
+Across the nine primary endpoints, the combined fraction of visible image sums of squares below taxon means ranged from 0.589 for hue sine to 0.931 for width-profile variation (Figure 3). Variation among photographs within taxa contributed 0.440–0.691 and variation among heads within photographs contributed 0.143–0.379. One-head-per-photograph sensitivities retained fractions of 0.582–0.899, and medians across equal-replication sensitivities were 0.528–0.879 (Table S1.4; Figure S1.1). Thus, below-taxon variation was not explained solely by multiple heads in one image or unequal taxon replication.
 
-Across the nine primary endpoints, the combined fraction of visible image sums of squares below assigned taxon means ranged from 0.589 for hue sine to 0.931 for width-profile variation. The among-photograph component within taxa was 0.440–0.691, while variation among heads within the same photograph contributed 0.143–0.379.
+Taxon medians for the nine established primary endpoints retained multivariate structure: principal component (PC) 1 explained 32.9% of variance, PCs 1–2 explained 56.1%, and PCs 1–3 explained 69.3%, with all endpoints contributing (Figure 4). Visible variation was therefore substantial at both within- and among-taxon scales.
 
-Selecting one deterministic head per photograph retained below-taxon fractions of 0.582–0.899. In equal-replication sensitivities using 10 photographs per eligible taxon, median fractions remained 0.528–0.879. Thus, the large below-taxon component was not explained solely by multiple detections from one photograph or by unequal taxon replication.
+Expanding the morphospace changed its dimensionality rather than collapsing the phenotype onto a finer single syndrome. Among 127 taxa complete for all 18 measured inferential endpoints, PC1 explained 18.49%, PC2 12.01% and PC3 11.78% (42.28% cumulative). Within the seven-endpoint involucre-architecture module, PC1 explained 37.13%, PC2 15.59% and PC3 14.24%. The expanded trait universe therefore resolved several partly independent dimensions of capitulum phenotype.
 
-Taxon-level means nevertheless retained substantial multivariate structure. PC1 explained 32.9% of variance, PCs 1–2 explained 56.1% and PCs 1–3 explained 69.3%, with all nine primary endpoints contributing to the PCA. Variation was therefore substantial at both within- and among-taxon scales rather than reducible to one taxon-level trait axis.
+## Within-taxon associations were trait specific
 
-## Within-taxon environmental associations were trait specific
+Eight of 36 primary endpoint-component models passed BH correction (Table S1.3; Figures 5a and S1.2). Orientation angle increased with annual mean temperature (standardized β = 0.0171, 95% confidence interval [CI] 0.0046–0.0295, q = 0.0363), indicating a shift toward more horizontal or downward heads relative to image vertical. Corolla chroma increased with annual precipitation (β = 0.0393, CI 0.0102–0.0684, q = 0.0363). Aspect ratio increased with temperature seasonality (β = 0.0137, CI 0.0048–0.0226, q = 0.0207) and decreased with annual precipitation (β = −0.0108, CI −0.0187 to −0.0028, q = 0.0363). Four hue-component associations involved temperature seasonality, annual precipitation or precipitation seasonality, but single sine or cosine coefficients do not define a biological colour direction.
 
-In the exhaustive spatially thinned primary cohort, eight of 36 endpoint-component rows passed BH correction.
+All four non-circular rows passed the predeclared cyclic-season and dominant-taxon controls (Table S1.11). After raw-calendar taxon-specific sine/cosine day-of-year adjustment, standardized β was 0.0158 for orientation–BIO1 (q = 0.000107), 0.0475 for chroma–BIO12 (q = 0.0202), 0.0206 for aspect ratio–BIO4 (q = 1.54 × 10⁻⁸) and −0.0133 for aspect ratio–BIO12 (q = 0.000814). The chroma and aspect-ratio–BIO4 coefficients were 21% and 50% larger than their frozen primary estimates, respectively. This strengthening is compatible with negative confounding or variance removal by collection timing; it is not evidence that the biological effects are larger. The standardized effects remained small despite the low q values.
 
-| Endpoint | Predictor | Standardized β | 95% CI | BH q |
-|---|---|---:|---|---:|
-| Orientation angle | BIO1 annual mean temperature | +0.0171 | 0.0046 to 0.0295 | 0.0363 |
-| Corolla chroma | BIO12 annual precipitation | +0.0393 | 0.0102 to 0.0684 | 0.0363 |
-| Hue sine | BIO4 temperature seasonality | +0.0534 | 0.0424 to 0.0643 | <0.0001 |
-| Hue sine | BIO12 annual precipitation | -0.0440 | -0.0608 to -0.0272 | <0.0001 |
-| Hue cosine | BIO4 temperature seasonality | -0.0283 | -0.0453 to -0.0113 | 0.0132 |
-| Hue cosine | BIO15 precipitation seasonality | +0.0201 | 0.0069 to 0.0334 | 0.0207 |
-| Outline aspect ratio | BIO4 temperature seasonality | +0.0137 | 0.0048 to 0.0226 | 0.0207 |
-| Outline aspect ratio | BIO12 annual precipitation | -0.0108 | -0.0187 to -0.0028 | 0.0363 |
+Coefficient signs persisted after each of the ten most represented taxa was omitted and after *Cirsium vulgare* and *C. arvense*, together representing 54.0% of observations, were omitted jointly, but magnitudes varied: omission β ranges were 0.0101–0.0182 for orientation–BIO1, 0.0159–0.0534 for chroma–BIO12, 0.0184–0.0231 for aspect ratio–BIO4 and −0.0166 to −0.0119 for aspect ratio–BIO12. Thus the chroma magnitude was especially sensitive to taxon composition even though its sign was stable.
 
-Higher annual mean temperature was associated with a larger image-referenced orientation angle, corresponding to a shift from upward toward more horizontal or downward heads relative to image vertical. Corolla chroma increased with annual precipitation. Outline aspect ratio increased with temperature seasonality and decreased with annual precipitation. Circular hue components were associated with temperature seasonality, annual precipitation and precipitation seasonality, but the biological colour direction cannot be assigned from one sine or cosine coefficient alone.
+Hemisphere-aware sensitivities included 2,356 Southern Hemisphere observations; only *C. vulgare*, *C. arvense* and *C. palustre* occurred in both hemispheres. After shifting Southern Hemisphere dates by one half-cycle, β was 0.0135 for orientation–BIO1 (q = 0.00146), 0.0421 for chroma–BIO12 (q = 0.00852), 0.0178 for aspect ratio–BIO4 (q = 0.000355) and −0.0121 for aspect ratio–BIO12 (q = 0.00654). Separate taxon-specific cyclic curves by hemisphere gave the same four signs and BH decisions, and all predeclared omission estimates retained sign under both definitions (Table S1.13). These analyses address cyclic collection timing and taxon concentration, not photographed developmental stage.
 
-## Grouped SPDE-INLA concentrated robust support in orientation and visible colour
+The frozen WCVP/TDWG native-range join resolved 245 of 259 source taxa. Of 46,276 observations, 27,066 were classified native, 10,554 introduced, 5,491 unresolved at the taxon join, 2,100 outside a mapped level-3 polygon and 1,065 in a mapped unit not listed for the accepted taxon. Native-only refits retained two of the four non-circular rows under the predeclared same-sign plus BH rule: orientation–BIO1 (β = 0.0226, 95% CI 0.0060–0.0393, q = 0.0311; 21,725 observations, 128 taxa) and aspect ratio–BIO4 (β = 0.0284, CI 0.0222–0.0346, q = 1.25 × 10⁻¹⁷; 22,528 observations, 126 taxa). Chroma–BIO12 (β = 0.0278, q = 0.0754) and aspect ratio–BIO12 (β = −0.0157, q = 0.133) retained their primary directions but failed native-only BH correction. We therefore classify these two global associations as range-sensitive rather than as native-range-robust, while retaining the global primary estimates as part of the spatial pattern (Table S1.14; Figure 5c). This restriction tests geographic status, not niche response or introduction history.
 
-All 36 grouped SPDE-INLA fits completed with no CPO failures. The most stable spatial-model effects were:
+Grouped spatial models concentrated stable support in orientation and colour (Table S1.5; Figures 5b and S1.3). Orientation retained a positive annual-mean-temperature association. Lightness increased with annual mean temperature and decreased with soil pH; chroma decreased with annual mean temperature and increased with annual precipitation; hue sine increased with temperature seasonality; and hue cosine decreased with annual mean temperature and increased with soil pH. No topographic effect and no spatial-model effect for aspect ratio, circularity, solidity or width-profile variation passed global BH correction. The aspect-ratio associations were therefore specific to the primary within-taxon analysis, whereas soil-pH associations emerged only in the broader spatial predictor sets.
 
-- orientation angle: positive BIO1 association;
-- corolla lightness: positive BIO1 association and negative soil-pH association;
-- corolla chroma: negative BIO1 association and positive BIO12 association;
-- hue sine: positive BIO4 association;
-- hue cosine: negative BIO1 association and positive soil-pH association.
+## Expanded involucral architecture separated quality-robust and image-sensitive signals
 
-The BIO1 effect on hue sine was q-supported only in the climate model and changed sign across model groups, so it is retained as model-dependent rather than a stable direction. No topographic predictor and no SPDE effect for aspect ratio, circularity, solidity or width-profile CV passed global BH correction. Thus, the aspect-ratio climate associations are specific to the exhaustive standardized within-taxon analysis, whereas soil-pH colour associations emerge only when wider spatial predictor sets are considered.
+The earlier high-resolution contour screen had identified three positive BIO4 associations for projection roughness, outward spread fraction and maximum spine-like projection. After adjustment for minimum head dimension and image sharpness, none passed the predeclared confirmatory BH rule (q = 0.0696–0.0730), and roughness and maximum projection reversed sign in the 150–199-pixel stratum. Those legacy contour rows therefore remain exploratory image-quality-sensitive results and are not used as evidence that botanical spine length or phyllary spreading responds to temperature seasonality.
 
-## High-resolution involucral architecture tracked temperature seasonality
+GEB v2 replaced reliance on those three contour summaries with an explicitly registered expanded continuous candidate layer. Across the candidate tier, the registry-wide climate screen identified three FDR-supported rows. Involucre length/width ratio increased with precipitation seasonality (BIO15; β = 0.054923, q = 0.000282), involucre apical taper decreased with annual precipitation (BIO12; β = −0.049721, q = 0.000821), and upper-tail bract projection (`bract_projection_p95`) decreased with precipitation seasonality (BIO15; β = −0.033673, q = 0.014377).
 
-In the ≤10 km auxiliary cohort of 904 observations from 165 taxa, all three final auxiliary contour proxies increased with temperature seasonality and survived BH correction across the 12-test auxiliary family:
+Endpoint-specific quality models adjusted for resolution and sharpness and were repeated within fixed resolution strata. The length/width–BIO15 and apical-taper–BIO12 signals retained their directions after quality adjustment and in all successful fixed resolution strata, so both were graded `C_exploratory_quality_robust`. The `bract_projection_p95`–BIO15 association showed sign instability among resolution strata and was graded `C_exploratory_image_sensitive`. The quality-adjusted candidate layer contained 36 climate rows and six FDR-supported adjusted rows, but only the three registry-wide candidate signals above enter the final evidence atlas; the count of six is not treated as six headline discoveries. All three remain image-derived associations pending independent botanical calibration.
 
-- involucre projection roughness: β = +0.0975, 95% CI 0.0227–0.1723, q = 0.0424;
-- outward spread fraction: β = +0.0937, 95% CI 0.0271–0.1603, q = 0.0424;
-- maximum spine-like projection: β = +0.0911, 95% CI 0.0222–0.1599, q = 0.0424.
+## Among-taxon sorting was concentrated in orientation and colour
 
-The corresponding all-coordinate slopes had the same positive direction but did not survive FDR correction. These associations concern outward contour architecture and do not identify whether the underlying structure is a longer bract tip, greater spreading or recurvature.
+Among 148 taxa complete for all primary traits and environmental variables, orientation, chroma and both hue components showed BH-supported centroid separation and lower-than-null environmental overlap across 10,000 permutations; width-profile variation retained centroid-distance support only (Table S1.7; Figure S1.8). Lightness, aspect ratio, circularity and solidity were unsupported by both metrics. In the 49-taxon direct-backbone sensitivity, hue cosine retained both metrics, whereas lightness and hue sine retained overlap support only.
 
-## Among-taxon environmental sorting was concentrated in orientation and colour
+Six taxon-level climate associations were BH-supported in all 50 randomized-tree PGLS fits (Table S1.8; Figure S1.9): orientation–annual precipitation (median β = 0.304), hue sine–annual mean temperature (−0.410), hue sine–temperature seasonality (−0.274), hue sine–annual precipitation (−0.211), solidity–temperature seasonality (−0.357), and width-profile variation–annual mean temperature (0.248). Across-tree 2.5–97.5% coefficient ranges excluded zero. However, only 54 of 216 atlas taxa were direct dated-backbone tips, Pagel-λ was estimated as zero in these fits, and no non-circular primary trait showed FDR-supported phylogenetic signal in the direct-backbone subset. These coefficients are therefore Supporting Information sensitivities to tested placements rather than definitive phylogenetically independent effects.
 
-Among 148 taxa complete for all primary traits and environmental variables, 10,000 trait-label permutations showed non-random environmental sorting mainly for orientation and visible colour. Orientation, chroma and both hue components retained BH-supported centroid separation and lower-than-null niche overlap. Width-profile CV retained centroid-distance support only. Lightness, aspect ratio, circularity and solidity were unsupported in both all-taxa metrics.
+## Robustness graded rather than erased the main patterns
 
-In the 49-taxon complete direct-backbone sensitivity, support narrowed. Hue cosine retained both centroid and overlap support; lightness and hue sine retained overlap support only. Thus, the strongest all-taxon environmental sorting was not a generic artifact of quartile splitting, but its historical robustness varied among traits.
+Residual Moran's I ranged from −0.0096 to 0.0030, with no permutation P < 0.05 (Table S1.9; Figure S1.4). Omitting one broad geographic region at a time retained taxon rankings strongly (minimum endpoint-specific Spearman ρ = 0.856–0.972; Figure S1.5). Simultaneously collapsing eight WCVP synonym conflicts reduced the atlas from 216 to 211 units and the primary cohort from 259 to 251, but all eight primary BH-supported rows remained supported, no coefficient changed sign and the largest absolute β change was 0.000385 (Table S1.10). The source metadata also yielded a frozen repeat-photo cohort of 20,073 observations from 236 taxa, comprising 58,748 public photographs and 38,675 photographs beyond the first per observation (Table S1.12). Trait remeasurement is pending, so no repeat-photo variance estimate is reported.
 
-## Some among-taxon climate associations persisted across alternative phylogenetic placements
-
-Taxon-level PGLS identified six associations that were BH-supported in 100% of the 50 randomized scenario-2 trees:
-
-| Endpoint | Predictor | Median standardized β | 2.5–97.5% across trees | FDR-supported trees |
-|---|---|---:|---|---:|
-| Orientation angle | BIO12 annual precipitation | +0.304 | +0.304 to +0.313 | 50/50 |
-| Hue sine | BIO1 annual mean temperature | -0.410 | -0.410 to -0.410 | 50/50 |
-| Hue sine | BIO4 temperature seasonality | -0.274 | -0.274 to -0.274 | 50/50 |
-| Hue sine | BIO12 annual precipitation | -0.211 | -0.211 to -0.211 | 50/50 |
-| Solidity | BIO4 temperature seasonality | -0.357 | -0.357 to -0.347 | 50/50 |
-| Width-profile CV | BIO1 annual mean temperature | +0.248 | +0.234 to +0.269 | 50/50 |
-
-Pagel-λ was estimated at zero in the randomized-tree fits for these rows, so coefficient estimates were little altered by the tested covariance structures. However, only 54 of 216 image-analysis taxa were direct dated-backbone tips and 162 required within-genus grafting. Independent phylogenetic-signal analyses found no FDR-supported non-circular primary trait in the direct-backbone subset, and no auxiliary involucre/spine coefficient survived deterministic PGLS FDR correction. The six randomized-tree associations are therefore historical sensitivities rather than definitive evidence of resolved phylogenetically independent effects.
-
-## Spatial and taxonomic robustness did not overturn the headline results
-
-Diagnostic refits of the lowest-WAIC SPDE specification closely reproduced the frozen model support, with diagnostic-refit minus frozen WAIC ranging from -2.56 to +2.50. Residual Moran's I ranged from -0.0096 to 0.0030 across the nine primary endpoints, with no permutation P < 0.05. Removing one broad geographic region at a time retained taxon trait rankings strongly, with minimum endpoint-specific Spearman rho = 0.856–0.972. The weakest sensitivities followed removal of Europe.
-
-WCVP review identified eight synonym candidates whose accepted-name targets were already separate active source units. Collapsing all eight simultaneously reduced the balanced atlas from 216 to 211 operational units and the exhaustive primary cohort from 259 to 251, but all eight BH-supported primary component rows remained supported, no coefficient changed sign and the maximum absolute standardized-beta change was 0.000385. The minimum below-unit visible-variance fraction increased from 0.589 to 0.597.
-
-The computational spatial, niche-null and taxonomic-robustness diagnostics therefore did not overturn the central conclusions. Independent detector accuracy and continuous-trait biological validity remain the unresolved external scientific gates.
-
-## Legacy lability analysis is provenance only
-
-The former RMS of unpooled absolute taxon-specific slopes was strongly confounded with slope sample size and standard error. The previously reported negative variation–association relation and median-split quadrants were withdrawn. Precision-aware reanalysis detected no common cross-module coupling. This correction remains part of the audit trail but is not a submission-facing biological headline.
+The final evidence atlas assigned two established rows to `A_robust`, retained range-sensitive and colour-calibration-dependent primary patterns as B-grade evidence, and separated the expanded candidate layer into two quality-robust C-grade signals and one image-sensitive C-grade signal. These analyses distinguish evidence strength without redefining the frozen global primary estimand. They delimit confidence and interpretation while preserving the full trait- and scale-specific environmental structure observed in the public-image dataset.

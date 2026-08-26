@@ -1,0 +1,269 @@
+name: Ch1 category-free continuous trait universe
+
+on:
+  push:
+    branches:
+      - codex/pr69-continuous-reanalysis
+    paths:
+      - '.github/workflows/ch1-continuous-trait-universe.yml'
+      - 'analysis/build_primary_species_from_observations.py'
+      - 'analysis/build_geb_v2_trait_geography.py'
+      - 'analysis/run_candidate_quality_sensitivity_v2.py'
+      - 'analysis/build_geb_v2_evidence_atlas.py'
+      - 'analysis/ch1/evidence_tiering_policy.json'
+      - 'manuscript/GEB_V2_POSITIONING.md'
+      - 'ch1_global/v2/87_validate_continuous_trait_contract.py'
+      - 'ch1_global/v2/88_build_continuous_trait_universe.py'
+      - 'ch1_global/v2/89_measure_extended_continuous_traits.py'
+      - 'ch1_global/v2/90_run_continuous_trait_universe_climate.py'
+      - 'ch1_global/v2/91_prepare_exhaustive_extended_cohort.py'
+      - 'ch1_global/v2/92_sample_chelsa_for_continuous_universe.py'
+      - 'ch1_global/v2/ontology/ch1_continuous_trait_contract.csv'
+  workflow_dispatch:
+    inputs:
+      source_artifact_id:
+        description: Frozen exhaustive merged artifact ID
+        required: true
+        default: '8269246732'
+        type: string
+      run_mode:
+        description: Audit selection only or execute image measurement and models
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - audit_only
+      output_label:
+        description: Safe output label
+        required: true
+        default: geb_v2_continuous_trait_universe
+        type: string
+      max_photos:
+        description: Zero for full cohort; positive values are smoke tests only
+        required: true
+        default: '0'
+        type: string
+      minimum_observations:
+        description: Minimum complete observations per endpoint-predictor model
+        required: true
+        default: '100'
+        type: string
+      minimum_taxa:
+        description: Minimum taxa per endpoint-predictor model
+        required: true
+        default: '10'
+        type: string
+      permutations:
+        description: Within-taxon permutations for each circular hue test
+        required: true
+        default: '999'
+        type: string
+
+concurrency:
+  group: ch1-continuous-trait-universe-${{ inputs.output_label || github.sha }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      SOURCE_ARTIFACT_ID: ${{ inputs.source_artifact_id || '8269246732' }}
+      RUN_MODE: ${{ inputs.run_mode || 'full' }}
+      OUTPUT_LABEL: ${{ inputs.output_label || 'geb_v2_continuous_trait_universe' }}
+      MAX_PHOTOS: ${{ inputs.max_photos || '0' }}
+      MINIMUM_OBSERVATIONS: ${{ inputs.minimum_observations || '100' }}
+      MINIMUM_TAXA: ${{ inputs.minimum_taxa || '10' }}
+      PERMUTATIONS: ${{ inputs.permutations || '999' }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: ch1_global/v2/requirements-submission.txt
+      - name: Validate request
+        run: |
+          python - <<'PY'
+          import os, re
+          for key, minimum in (
+              ('SOURCE_ARTIFACT_ID', 1),
+              ('MAX_PHOTOS', 0),
+              ('MINIMUM_OBSERVATIONS', 1),
+              ('MINIMUM_TAXA', 2),
+              ('PERMUTATIONS', 99),
+          ):
+              value = os.environ[key].strip().replace(',', '').replace('_', '')
+              if not re.fullmatch(r'[0-9]+', value) or int(value) < minimum:
+                  raise SystemExit(f'{key} must be an integer >= {minimum}')
+          if os.environ['RUN_MODE'] not in {'full', 'audit_only'}:
+              raise SystemExit('RUN_MODE is invalid')
+          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,79}', os.environ['OUTPUT_LABEL']):
+              raise SystemExit('OUTPUT_LABEL is invalid')
+          PY
+      - name: Install audit dependencies
+        run: python -m pip install 'pandas>=2.2,<4' 'numpy>=1.26,<3'
+      - name: Download frozen exhaustive artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p source/extracted continuous_trait_run
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 3 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip" \
+            --output source/frozen.zip
+          unzip -tq source/frozen.zip
+          unzip -q source/frozen.zip -d source/extracted
+          sha256sum source/frozen.zip > source/source_artifact_sha256.txt
+      - name: Resolve frozen tables
+        run: |
+          set -euo pipefail
+          resolve_one() {
+            local pattern="$1"
+            local variable="$2"
+            mapfile -t matches < <(find source/extracted -type f -name "$pattern" | sort)
+            if [ "${#matches[@]}" -ne 1 ]; then
+              echo "Expected one match for ${pattern}; found ${#matches[@]}" >&2
+              printf '%s\n' "${matches[@]}" >&2
+              exit 1
+            fi
+            echo "${variable}=${matches[0]}" >> "$GITHUB_ENV"
+          }
+          resolve_one exhaustive_yolo_crop_metadata.csv YOLO_METADATA
+          resolve_one strict_spatial_thinned_observations.csv STRICT_OBSERVATIONS
+      - name: Derive primary species summary from strict observations
+        run: |
+          python analysis/build_primary_species_from_observations.py \
+            --observation "$STRICT_OBSERVATIONS" \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-csv continuous_trait_run/primary_species_from_strict.csv \
+            --report continuous_trait_run/primary_species_from_strict_report.json
+          echo "PRIMARY_SPECIES=continuous_trait_run/primary_species_from_strict.csv" >> "$GITHUB_ENV"
+      - name: Validate continuous measurement contract
+        run: |
+          mkdir -p continuous_trait_run/contract
+          python ch1_global/v2/87_validate_continuous_trait_contract.py \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out continuous_trait_run/contract/continuous_trait_contract_validation.json
+      - name: Build trait-blind high-resolution cohort
+        run: |
+          python ch1_global/v2/91_prepare_exhaustive_extended_cohort.py \
+            --yolo-metadata "$YOLO_METADATA" \
+            --strict-observations "$STRICT_OBSERVATIONS" \
+            --out-csv continuous_trait_run/selected_extended_heads.csv \
+            --report continuous_trait_run/extended_cohort_audit.json \
+            --min-bbox-dimension 150
+      - name: Install full measurement dependencies
+        if: env.RUN_MODE == 'full'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ch1_global/v2/requirements-submission.txt 'rasterio>=1.3,<2' 'pyproj>=3.6,<4'
+          python -m pip check
+      - name: Run contract and synthetic regression tests
+        if: env.RUN_MODE == 'full'
+        run: |
+          python -m py_compile analysis/build_geb_v2_trait_geography.py analysis/run_candidate_quality_sensitivity_v2.py analysis/build_geb_v2_evidence_atlas.py
+          python -m unittest -v tests/test_ch1_continuous_trait_universe.py
+      - name: Rebuild selected high-resolution crops
+        if: env.RUN_MODE == 'full'
+        run: |
+          python ch1_global/v2/54_rebuild_global_continuous_trait_packet.py \
+            --yolo-metadata continuous_trait_run/selected_extended_heads.csv \
+            --out-dir continuous_trait_run/rebuilt \
+            --max-photos "$MAX_PHOTOS" \
+            --allow-failures
+      - name: Measure extended continuous endpoints
+        if: env.RUN_MODE == 'full'
+        run: |
+          python ch1_global/v2/89_measure_extended_continuous_traits.py \
+            --manifest continuous_trait_run/rebuilt/continuous_trait_manifest.csv \
+            --metadata continuous_trait_run/selected_extended_heads.csv \
+            --image-root continuous_trait_run/rebuilt \
+            --out-dir continuous_trait_run/extended_measurements
+      - name: Build the full category-free trait universe
+        if: env.RUN_MODE == 'full'
+        run: |
+          python ch1_global/v2/88_build_continuous_trait_universe.py \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --primary-observation "$STRICT_OBSERVATIONS" \
+            --primary-species "$PRIMARY_SPECIES" \
+            --extended-observation continuous_trait_run/extended_measurements/extended_continuous_observation_level.csv \
+            --extended-species continuous_trait_run/extended_measurements/extended_continuous_species_level.csv \
+            --out-dir continuous_trait_run/universe
+      - name: Summarize GEB v2 global trait geography and morphospace
+        if: env.RUN_MODE == 'full'
+        run: |
+          python analysis/build_geb_v2_trait_geography.py \
+            --observation-long continuous_trait_run/universe/continuous_trait_universe_observation_long.csv \
+            --species-long continuous_trait_run/universe/continuous_trait_universe_species_long.csv \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-dir continuous_trait_run/trait_geography
+      - name: Attach CHELSA predictors to the frozen cohort
+        if: env.RUN_MODE == 'full'
+        run: |
+          python ch1_global/v2/92_sample_chelsa_for_continuous_universe.py \
+            --observation "$STRICT_OBSERVATIONS" \
+            --out-csv continuous_trait_run/environment/strict_spatial_chelsa.csv \
+            --report continuous_trait_run/environment/chelsa_extraction_report.json
+      - name: Run registry-driven within-taxon models
+        if: env.RUN_MODE == 'full'
+        run: |
+          python ch1_global/v2/90_run_continuous_trait_universe_climate.py \
+            --traits-long continuous_trait_run/universe/continuous_trait_universe_observation_long.csv \
+            --environment continuous_trait_run/environment/strict_spatial_chelsa.csv \
+            --out-dir continuous_trait_run/climate_models \
+            --predictors chelsa_bio01 chelsa_bio04 chelsa_bio12 chelsa_bio15 \
+            --minimum-observations "$MINIMUM_OBSERVATIONS" \
+            --minimum-taxa "$MINIMUM_TAXA" \
+            --permutations "$PERMUTATIONS"
+      - name: Grade PR70 candidate image-quality sensitivity for GEB v2
+        if: env.RUN_MODE == 'full'
+        run: |
+          python analysis/run_candidate_quality_sensitivity_v2.py \
+            --head continuous_trait_run/extended_measurements/extended_continuous_head_level.csv \
+            --environment continuous_trait_run/environment/strict_spatial_chelsa.csv \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-dir continuous_trait_run/v2_quality \
+            --min-observations "$MINIMUM_OBSERVATIONS" \
+            --min-taxa "$MINIMUM_TAXA"
+      - name: Build GEB v2 multiscale evidence atlas
+        if: env.RUN_MODE == 'full'
+        run: |
+          python analysis/build_geb_v2_evidence_atlas.py \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --continuous-coefficients continuous_trait_run/climate_models/continuous_trait_universe_climate_coefficients.csv \
+            --candidate-quality continuous_trait_run/v2_quality/candidate_quality_sensitivity_v2.csv \
+            --primary-supported manuscript/supplement/tables/S03_primary_within_taxon_BH_supported_rows.csv \
+            --season manuscript/supplement/tables/S13_primary_bias_control_audit.csv \
+            --hemisphere manuscript/supplement/tables/S15_hemisphere_season_sensitivity.csv \
+            --native manuscript/supplement/tables/S16_native_range_sensitivity.csv \
+            --spde manuscript/supplement/tables/S05_grouped_SPDE_stable_supported_patterns.csv \
+            --niche manuscript/supplement/tables/S07_niche_permutation_summary.csv \
+            --pgls manuscript/supplement/tables/S08_randomized_PGLS_retained_rows.csv \
+            --out-dir continuous_trait_run/geb_v2
+      - name: Record provenance and remove image crops
+        if: always()
+        run: |
+          mkdir -p continuous_trait_run
+          cp source/source_artifact_sha256.txt continuous_trait_run/source_artifact_sha256.txt || true
+          printf '%s\n' "$GITHUB_SHA" > continuous_trait_run/git_sha.txt
+          cp manuscript/GEB_V2_POSITIONING.md continuous_trait_run/GEB_V2_POSITIONING.md || true
+          cp analysis/ch1/evidence_tiering_policy.json continuous_trait_run/evidence_tiering_policy.json || true
+          python -m pip freeze > continuous_trait_run/python_environment.txt
+          rm -rf continuous_trait_run/rebuilt/head_crops continuous_trait_run/rebuilt/context_crops
+      - name: Upload audit, measurements, coverage, models, and GEB v2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-continuous-trait-universe-${{ env.OUTPUT_LABEL }}-${{ github.run_id }}
+          path: continuous_trait_run
+          if-no-files-found: error
+          retention-days: 90

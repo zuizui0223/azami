@@ -1,6 +1,6 @@
 # External completion gates for Chapter 1
 
-The remaining work is split into **completed reproducible diagnostics** and **genuinely external/human validation**. Completed diagnostics are not rerun merely to change manuscript framing; they are rerun only if a frozen input, operational taxonomic unit, measurement definition or accepted model changes.
+The remaining work is split into **completed reproducible diagnostics**, **image remeasurement**, and **genuinely external/human validation**. Chapter 1 is on submission hold. Completed diagnostics are not rerun merely to change manuscript framing; they are rerun only if a frozen input, operational taxonomic unit, measurement definition or accepted model changes.
 
 The current submission-facing story is global **continuous within-taxon image phenomics**: public photographs are converted into repeated numerical capitulum-trait measurements rather than categorical trait labels. The remaining gates therefore focus on whether those numerical measurements are independently valid.
 
@@ -74,7 +74,7 @@ For all 148 complete taxa, significant environmental sorting was concentrated in
 
 **Decision:** the niche-null gate is closed for the current operational taxonomic units.
 
-## 6. High-resolution involucre/spine-like layer — ANALYSIS COMPLETE, BOTANICAL VALIDATION DOWNSTREAM
+## 6. High-resolution involucre/spine-like layer — HEADLINE WITHDRAWN
 
 The final manuscript uses three inferential auxiliary contour proxies:
 
@@ -82,23 +82,42 @@ The final manuscript uses three inferential auxiliary contour proxies:
 - involucre spread fraction;
 - maximum spine-like projection relative to head radius.
 
-All three are positively associated with BIO4 temperature seasonality in the ≤10 km auxiliary family after BH correction. `spine_peak_count_proxy` remains in integrated derived tables for provenance/downstream exploration but is not one of the three final manuscript auxiliary inferential endpoints.
+All three were positively associated with BIO4 temperature seasonality in the original ≤10-km auxiliary family. After the predeclared minimum-dimension and sharpness adjustment, none passed BH correction (q = 0.0696–0.0730), and projection roughness and maximum spine-like projection reversed sign in the 150–199-pixel stratum. The three rows are withdrawn from the biological headline and retained only as provenance.
 
-These are image-geometry proxies, not direct botanical measurements of phyllary angle, actual spine length, orientation or stiffness. Their ecological interpretation is therefore bounded in Chapter 1. Botanical proxy→character validation and resolved phylogenetic mapping are handed to EAzami/focal studies rather than treated as additional Chapter 1 submission blockers.
+These are image-geometry proxies, not direct botanical measurements of phyllary angle, actual spine length, orientation or stiffness. A later direct botanical study may revisit them, but Chapter 1 does not claim an involucral seasonality result.
 
-## 7. Authorship and administrative metadata — TEAM CONFIRMATION REMAINS
+## 7. Developmental stage — IMAGE LABELLING REMAINS
+
+All 46,276 strict-cohort rows have parseable observation dates. Raw-calendar taxon-specific sine/cosine adjustment retained all four non-circular primary rows, but three dominant taxa were sampled in both hemispheres. A second contract was therefore frozen before outcome inspection. It added a half-cycle to Southern Hemisphere dates or fitted separate taxon-specific cyclic curves by hemisphere. All four rows retained their frozen sign, BH support and omission-sign stability under both definitions. These checks resolve the hemispheric calendar issue but do not distinguish bud, anthesis and post-anthesis heads. A stage-labelled or anthesis-restricted sensitivity remains submission-blocking for the retained orientation and outline claims.
+
+## 8. Visible-colour negative control — IMAGE REMEASUREMENT REMAINS
+
+The paired flower-versus-background `region × BIO12` implementation is tested and fixed. It measures outer-context and nonfloral-green CIELAB controls and does not infer specificity from a nonsignificant background slope. A self-contained 1,413-head context-crop artifact remains available, but the full production workflow removed temporary context crops before uploading its numerical outputs. The main 46,276-observation sensitivity therefore requires inserting the fixed control measurement into the existing image-reconstruction workflow. Chroma–BIO12 was independently withdrawn from the current headline after failing native-only BH correction; this pass remains necessary for broader corolla-specific colour interpretation.
+
+## 9. Repeat photographs — COHORT FROZEN, MEASUREMENTS REMAIN
+
+An outcome-blind metadata preflight identified 20,073 strict-cohort observations from 236 taxa with at least two public photographs: 58,748 photo rows and 38,675 photographs beyond the first. Trait remeasurement is pending. Even after remeasurement, between-photo variance includes camera, illumination, viewpoint and possibly subject differences unless manual review verifies the same individual.
+
+## 10. Native-range sensitivity — COMPLETE, TWO OF FOUR ROWS RETAINED
+
+The locked analysis pinned WCVP checklist DOI 10.15468/6h8ucr and the exact TDWG level-3 geometry commit and content hash. It resolved 245 of 259 source taxa and classified 27,066 of 46,276 observations as native; ambiguous accepted-name joins, unlisted units and unmapped coordinates were excluded fail-closed. Native-only refits retained orientation–BIO1 and aspect ratio–BIO4. Chroma–BIO12 and aspect ratio–BIO12 retained their primary signs but failed native-only BH correction and were withdrawn from the current headline. The analysis does not infer introduction history or adaptation.
+
+## 11. Authorship and administrative metadata — TEAM CONFIRMATION REMAINS
 
 The final author order, affiliations, CRediT roles, acknowledgements, funding numbers and corresponding-author details require confirmation from the research team. These fields are intentionally not inferred from repository metadata.
 
-## 8. Durable release — FINAL STEP AFTER HUMAN MEASUREMENT GATES
+## 12. Durable release — FINAL STEP AFTER SCIENTIFIC GATES
 
-After detector and continuous-measurement validation are final, regenerate any sensitivity required by a material audit failure, freeze the manuscript, create an immutable release tag, produce SHA-256 manifests and deposit the licence-safe submission bundle in a durable repository with a persistent DOI.
+After the scientific gates are final, regenerate any sensitivity required by a material audit failure, freeze the manuscript, select and record an appropriate code/data licence, create an immutable release tag, produce SHA-256 manifests and deposit the licence-safe submission bundle in a durable repository with a persistent DOI. GitHub Actions artifacts are time-limited and are not the durable archive.
 
 ## Current submission-blocking scientific items
 
-Only two scientific items still require information that cannot be created honestly from repository evidence alone:
+The current scientific blockers are:
 
 1. human boxes for the independent detector audit;
-2. genuinely independent reference measurements for orientation, colour and outline.
+2. genuinely independent reference measurements for orientation, colour and outline;
+3. developmental-stage labels or an anthesis-restricted sensitivity;
+4. paired visible-colour negative controls;
+5. repeat-photo trait remeasurement and bounded variance decomposition.
 
-Nomenclatural annotations for the 24 high-priority WCVP rows and authorship/administrative fields still require human confirmation, but the computational spatial, niche-null and taxonomic-robustness gates are completed for the frozen operational-unit analysis.
+Nomenclatural annotations for the 24 high-priority WCVP rows, licence selection and authorship/administrative fields still require human confirmation. The computational spatial, niche-null, taxonomic, raw-calendar and hemisphere-aware seasonal, dominant-taxon, native-range and involucre image-quality audits are complete for the frozen operational-unit analysis.

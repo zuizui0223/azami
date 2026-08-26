@@ -36,7 +36,7 @@ def check(_):
             "script", "selection_script", "annotation_app", "finalizer",
             "evaluation_script", "measurement_script", "join_script",
             "residual_export_script", "region_script", "input_builder",
-            "audit_script", "summary_exporter", "japan38_observation_exporter",
+            "audit_script", "contract", "summary_exporter", "japan38_observation_exporter",
         ):
             value = stage.get(key)
             if value and not (ROOT / value).is_file():
@@ -71,8 +71,8 @@ def check(_):
         raise SystemExit("EAzami handoff must not be an active submission stage")
     if any(name.startswith("legacy_lability") for name in active_stage_names):
         raise SystemExit("Withdrawn lability workflow must not be an active submission stage")
-    if int(pipeline.get("schema_version", 0)) < 7:
-        raise SystemExit("Active submission pipeline schema must be >= 7")
+    if int(pipeline.get("schema_version", 0)) < 8:
+        raise SystemExit("Active submission pipeline schema must be >= 8")
 
     print(json.dumps({
         "status": "ok",
