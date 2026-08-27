@@ -1,0 +1,80 @@
+name: EAzami Japan14 existing strict-spatial colour audit v1
+
+on:
+  pull_request:
+    paths:
+      - "analysis/eazami_japan14_exact_concepts_v1.csv"
+      - "analysis/audit_eazami_japan14_strict_spatial_colour_v1.py"
+      - ".github/workflows/eazami-japan14-existing-cohort-audit-v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: eazami-japan14-existing-cohort-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOURCE_RUN_ID: "29306454759"
+  SOURCE_ARTIFACT: "ch1-strict-spatial-cohort-only-20260713"
+  SOURCE_CSV_SHA256: "63a0352cbb9a728811335ab6da8155776205e914775244b61d1db1f9cee03427"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile audit
+        run: python -m py_compile analysis/audit_eazami_japan14_strict_spatial_colour_v1.py
+      - name: Download frozen strict-spatial cohort
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SOURCE_ARTIFACT }}
+          path: source
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+      - name: Verify source cohort contract
+        run: |
+          set -euo pipefail
+          test -s source/strict_spatial_thinned_observations.csv
+          actual="$(sha256sum source/strict_spatial_thinned_observations.csv | awk '{print $1}')"
+          test "$actual" = "$SOURCE_CSV_SHA256"
+          test "$(($(wc -l < source/strict_spatial_thinned_observations.csv)-1))" -eq 46276
+      - name: Audit all 14 exact Japan38 concepts
+        run: |
+          mkdir -p result
+          python analysis/audit_eazami_japan14_strict_spatial_colour_v1.py \
+            --cohort source/strict_spatial_thinned_observations.csv \
+            --concepts analysis/eazami_japan14_exact_concepts_v1.csv \
+            --summary-output result/eazami_japan14_strict_spatial_colour_audit_v1.json \
+            --observations-output result/eazami_japan14_japan_colour_observations_v1.csv
+      - name: Assert frozen admission rule and expected accounting
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('result/eazami_japan14_strict_spatial_colour_audit_v1.json').read_text())
+          assert x['source']['source_file_sha256']=='63a0352cbb9a728811335ab6da8155776205e914775244b61d1db1f9cee03427'
+          assert x['source']['source_rows']==46276
+          assert len(x['concepts'])==14
+          assert x['admission_threshold_frozen_before_audit'] is True
+          for c in x['concepts']:
+              expected=c['japan_colour_usable_rows']>=2 and c['japan_distinct_analysis_cells']>=2
+              assert c['admission_rule_pass']==expected
+          assert x['admitted_concept_count']==len(x['admitted_concepts'])
+          print(json.dumps(x,indent=2,ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eazami-japan14-existing-cohort-audit-${{ github.run_id }}
+          path: |
+            result/eazami_japan14_strict_spatial_colour_audit_v1.json
+            result/eazami_japan14_japan_colour_observations_v1.csv
+          if-no-files-found: error
+          retention-days: 90
