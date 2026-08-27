@@ -16,7 +16,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install validation dependencies
-        run: python -m pip install -e ".[test,spatial]" python-docx
+        run: python -m pip install -e ".[test,spatial,submission]"
       - name: Validate machine-readable claims and submission tree
         run: |
           python analysis/validate_final_claims.py

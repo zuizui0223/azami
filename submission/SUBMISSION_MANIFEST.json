@@ -37,6 +37,11 @@
       "sha256": "03fd93814da60ac60ada29d7f7231bc5ce7e1875f2ebcb10155c0814e61c35cf"
     },
     {
+      "path": "code/pyproject.toml",
+      "bytes": 719,
+      "sha256": "d012601189e4f3f8a0bbdc73265d22970816629548972511c74cb985cb84fa5a"
+    },
+    {
       "path": "code/run_geb_v2_full27_environment_atlas.py",
       "bytes": 38622,
       "sha256": "6d9df06f1c62a80681aa0cc6799fb6ffc54afb0728a7853ef12e294d9a73572f"
@@ -78,8 +83,8 @@
     },
     {
       "path": "code/validate_v2_submission_artifacts.py",
-      "bytes": 4741,
-      "sha256": "be33c16e5c1eee3ce9fddb9c0d722c538e509e5e07d2493de9058e6fb4e2e67c"
+      "bytes": 4834,
+      "sha256": "b62859ee6b700bce6e95bd494872642b59aba3649ae6f4d6c053ecf32408ff1c"
     },
     {
       "path": "data/historical/v2_full27_historical_placement_models.csv",

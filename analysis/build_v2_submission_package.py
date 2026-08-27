@@ -274,7 +274,7 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt"}
+TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".toml", ".txt"}
 
 
 def package_bytes(path: Path, name: str) -> bytes:
@@ -324,6 +324,7 @@ def bundle_sources(output: Path) -> list[tuple[Path, str]]:
         ROOT / "analysis/build_v2_submission_figures.py",
     ):
         files.append((path, f"code/{path.relative_to(ROOT / 'analysis').as_posix()}"))
+    files.append((ROOT / "pyproject.toml", "code/pyproject.toml"))
     return files
 
 

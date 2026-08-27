@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SUBMISSION = ROOT / "submission"
 RESULTS = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27"
 FIGURES = ROOT / "manuscript" / "figures" / "v2_submission"
-TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt"}
+TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".toml", ".txt"}
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -35,6 +35,8 @@ def source_path(bundle_name: str) -> Path:
         return RESULTS / bundle_name.removeprefix("data/")
     if bundle_name.startswith("source/"):
         return ROOT / bundle_name.removeprefix("source/")
+    if bundle_name == "code/pyproject.toml":
+        return ROOT / "pyproject.toml"
     if bundle_name.startswith("code/"):
         return ROOT / "analysis" / bundle_name.removeprefix("code/")
     return SUBMISSION / bundle_name
