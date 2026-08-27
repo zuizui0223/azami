@@ -7,6 +7,7 @@ on:
       - 'analysis/run_geb_v2_expanded_niche_sorting.py'
       - 'analysis/run_capitulum_functional_space.py'
       - 'analysis/run_capitulum_environment_blocks.py'
+      - 'analysis/build_capitulum_environment_cohort.py'
       - 'analysis/sample_chelsa_process_environment.py'
       - 'analysis/ch1/within_among_alignment_contract.json'
       - 'analysis/ch1/expanded_niche_sorting_contract.json'
@@ -75,6 +76,7 @@ jobs:
             analysis/run_geb_v2_expanded_niche_sorting.py \
             analysis/run_capitulum_functional_space.py \
             analysis/run_capitulum_environment_blocks.py \
+            analysis/build_capitulum_environment_cohort.py \
             analysis/sample_chelsa_process_environment.py
           python -m unittest -v tests/test_geb_v2_within_among_alignment.py
           python -m unittest -v tests/test_geb_v2_expanded_niche_sorting.py
@@ -109,13 +111,20 @@ jobs:
           resolve_one continuous_trait_universe_observation_long.csv TRAITS_LONG
           resolve_one strict_spatial_chelsa.csv ENVIRONMENT
           resolve_one continuous_trait_universe_climate_coefficients.csv WITHIN_COEFFICIENTS
+      - name: Materialize frozen complete-18 environment cohort
+        run: |
+          python analysis/build_capitulum_environment_cohort.py \
+            --traits-long "$TRAITS_LONG" \
+            --environment "$ENVIRONMENT" \
+            --out-csv output/process_environment/complete18_environment_cohort.csv \
+            --report output/process_environment/complete18_environment_cohort_report.json
+          echo "COMPLETE18_ENV=output/process_environment/complete18_environment_cohort.csv" >> "$GITHUB_ENV"
       - name: Preflight frozen CHELSA process sources
         run: |
-          mkdir -p output/process_environment
           python - <<'PY'
           import os
           import pandas as pd
-          source = pd.read_csv(os.environ['ENVIRONMENT'], low_memory=False)
+          source = pd.read_csv(os.environ['COMPLETE18_ENV'], low_memory=False)
           source.head(32).to_csv('/tmp/chelsa_process_preflight.csv', index=False)
           PY
           python analysis/sample_chelsa_process_environment.py \
@@ -158,14 +167,14 @@ jobs:
             --matrix-permutations "$PERMUTATIONS" \
             --bootstrap "$BOOTSTRAP" \
             --seed 20260827
-      - name: Attach frozen CHELSA process variables
+      - name: Attach frozen CHELSA process variables to complete-18 cohort
         run: |
           python analysis/sample_chelsa_process_environment.py \
-            --environment "$ENVIRONMENT" \
+            --environment "$COMPLETE18_ENV" \
             --source-contract analysis/ch1/chelsa_process_environment_sources.json \
-            --out-csv output/process_environment/strict_spatial_chelsa_process.csv \
+            --out-csv output/process_environment/complete18_chelsa_process.csv \
             --report output/process_environment/chelsa_process_extraction_report.json
-          echo "PROCESS_ENVIRONMENT=output/process_environment/strict_spatial_chelsa_process.csv" >> "$GITHUB_ENV"
+          echo "PROCESS_ENVIRONMENT=output/process_environment/complete18_chelsa_process.csv" >> "$GITHUB_ENV"
       - name: Test predeclared environmental blocks against the 18D capitulum
         run: |
           python analysis/run_capitulum_environment_blocks.py \
