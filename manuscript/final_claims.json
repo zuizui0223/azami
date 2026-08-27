@@ -1,31 +1,46 @@
 {
-  "analysis_release": "2026-08-continuous-phenomics-submission-candidate",
+  "schema_version": 2,
+  "analysis_release": "2026-08-27-full27-submission-candidate",
   "release_label": "Azami Chapter 1 v2",
   "freeze_tag": "azami-ch1-v2-2026-08-27",
+  "status": "submission_hold_pending_independent_validation",
   "defense_document": "manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md",
-  "headline": "Geographically extensive but uneven public photographs recover continuous, coordinate-bearing capitulum trait distributions that taxon means compress; the full-27/full-environment atlas is trait- and scale-specific, and two among-taxon pairs pass the current sequential spatial and historical-placement gates while retaining direction under declared sampling perturbations.",
-  "methodological_headline": "YOLO localizes visible capitula; inferential traits are deterministic continuous head-level measurements rather than categorical classifier outputs. Repeated numerical values are retained as within-taxon distributions.",
-  "current_submission_story": {
-    "primary": "continuous public-image phenomics across within- and among-taxon spatial scales at global extent",
-    "biological": "substantial taxon-mean information loss, scale-specific endpoint-environment organization, explicit sampling-composition fragility and two adaptive-pattern candidates under current sequential controls",
-    "legacy_lability_status": "withdrawn from headline; retained as statistical provenance/QA only",
-    "causal_scope": "observational associations only"
+  "headline": "Continuous coordinate-bearing public photographs recover visible capitulum variation compressed by taxon means; environmental alignment is endpoint- and scale-specific, with two among-taxon adaptive-pattern candidates under current sequential controls.",
+  "methodological_headline": "A frozen 27-endpoint contract preserves repeated numerical phenotypes, coordinates, trait-specific missingness and within- versus among-taxon estimands instead of reducing each taxon to a category or mean.",
+  "cohort": {
+    "n_detector_positive_observations": 406582,
+    "n_spatial_observations": 46276,
+    "n_source_assigned_taxa": 259,
+    "spatial_thinning_cell_degrees": 0.25,
+    "maximum_positional_accuracy_m": 10000,
+    "top_two_taxa_fraction": 0.5403,
+    "europe_plus_north_america_fraction": 0.9226
   },
-  "canonical_full27_full_environment": {
-    "analysis_id": "geb_v2_full27_environment_atlas_v1",
-    "status": "retrospective_exploratory_after_related_v2_outcomes_were_seen",
-    "old_v1_nine_endpoint_subset_used": false,
-    "abc_layers_used_for_selection_or_multiplicity": false,
+  "trait_contract": {
     "n_registered_endpoints": 27,
     "n_measured_endpoints": 22,
     "n_unexecuted_endpoints": 5,
     "n_joint_inferential_units": 26,
-    "n_spatial_observations": 46276,
-    "n_source_assigned_taxa": 259,
-    "n_environment_predictors": 9,
-    "n_environment_blocks": 6,
+    "n_analysis_eligible_observation_endpoint_values": 374255,
     "raw_fraction_below_taxon_mean_range": [0.8137321906969928, 0.9862520151073496],
     "equal_two_per_taxon_median_fraction_range": [0.286921, 0.584552],
+    "interpretation": "visible image-phenotype variation, not genetic variance, heritability or plasticity"
+  },
+  "environment": {
+    "n_predictors": 9,
+    "n_blocks": 6,
+    "blocks": {
+      "thermal": ["chelsa_bio01", "chelsa_bio04"],
+      "hydric": ["chelsa_bio12", "chelsa_bio15"],
+      "radiative_atmospheric": ["chelsa_rsds_mean", "chelsa_vpd_mean"],
+      "mechanical": ["chelsa_sfcwind_mean"],
+      "growing_season_water_input": ["chelsa_gsp"],
+      "resource_productivity": ["chelsa_npp"]
+    },
+    "minimum_coverage_gate": 0.98,
+    "coverage_gate_passed": true
+  },
+  "scale_results": {
     "within_global_q_supported_rows": 26,
     "among_min5_global_q_supported_rows": 10,
     "among_min2_global_q_supported_rows": 7,
@@ -35,422 +50,99 @@
       "among_only": 3,
       "neither": 152,
       "not_comparable": 54
-    },
-    "within_broad_space_passes": [
+    }
+  },
+  "sampling_composition": {
+    "status": "retrospective_selected_row_directional_sensitivity",
+    "n_entry_pairs": 36,
+    "n_scenario_rows": 674,
+    "n_within_pairs_stable_all_declared_scenarios": 16,
+    "n_within_pairs_direction_unstable": 10,
+    "n_among_pairs_stable_all_declared_scenarios": 10,
+    "claim_ceiling": "directional stability only; not a probability-sample correction, new discovery family or causal test"
+  },
+  "broad_space": {
+    "within_passes": [
       "orientation_image_vertical_angle~chelsa_bio01",
       "corolla_lab_chroma~chelsa_vpd_mean",
       "involucre_length_width_ratio~chelsa_bio15",
       "bract_projection_roughness~chelsa_rsds_mean",
       "involucre_surface_high_frequency_energy~chelsa_bio01"
     ],
-    "among_broad_space_passes": [
+    "within_passes_sampling_direction_stable": 4,
+    "among_passes": [
       "corolla_lab_chroma~chelsa_rsds_mean",
       "orientation_image_vertical_angle~chelsa_bio12"
-    ],
-    "adaptive_pattern_candidates_under_current_controls": [
-      {
-        "endpoint": "corolla_lab_chroma",
-        "predictor": "chelsa_rsds_mean",
-        "direction": "negative",
-        "observed_statement": "taxa from higher-shortwave-radiation environments had lower camera-recorded visible CIELAB corolla chroma",
-        "candidate_mechanism": "radiation-responsive floral pigment regulation, including an anthocyanin-synthesis hypothesis",
-        "mechanism_boundary": "CIELAB chroma is not anthocyanin concentration or UV reflectance; the observed negative chroma coefficient does not demonstrate increased anthocyanin synthesis",
-        "decisive_next_test": "calibrated visible and UV reflectance plus petal anthocyanin chemistry or pathway expression under common-garden radiation manipulation",
-        "n_historical_placement_trees_passed": 52
-      },
-      {
-        "endpoint": "orientation_image_vertical_angle",
-        "predictor": "chelsa_bio12",
-        "direction": "positive",
-        "observed_statement": "taxa from higher-annual-precipitation environments had a larger angle on the 0-up, 90-horizontal, 180-down EXIF-oriented image scale",
-        "candidate_mechanism": "more downward-facing capitulum presentation may shield reproductive tissues from rain",
-        "mechanism_boundary": "image vertical is not gravity and Azami did not measure anthesis rain exposure, pollen wetting, pollen viability or fitness",
-        "decisive_next_test": "gravity-referenced 3D orientation with flowering-period rain, pollen retention and viability, seed output and experimental angle manipulation",
-        "n_historical_placement_trees_passed": 52
-      }
-    ],
-    "sampling_composition_sensitivity": {
-      "analysis_id": "geb_v2_full27_sampling_composition_sensitivity_v1",
-      "status": "retrospective_selected_row_sensitivity",
-      "n_entry_pairs": 36,
-      "n_scenario_rows": 674,
-      "n_within_pairs_stable_all_declared_scenarios": 16,
-      "n_within_pairs_direction_unstable": 10,
-      "n_among_pairs_stable_all_declared_scenarios": 10,
-      "n_broad_space_passes_stable_all_declared_scenarios": 6,
-      "n_broad_space_passes_direction_unstable": 1,
-      "direction_unstable_broad_space_passes": [
-        "bract_projection_roughness~chelsa_rsds_mean"
-      ],
-      "both_adaptive_pattern_candidates_direction_stable_all_declared_scenarios": true,
-      "candidate_minimum_effect_magnitude_ratio": {
-        "corolla_lab_chroma~chelsa_rsds_mean": 0.614876,
-        "orientation_image_vertical_angle~chelsa_bio12": 0.780783
-      },
-      "claim_ceiling": "Directional stability in a retrospective selected-row sensitivity; not global representativeness, not a new discovery family and not evidence of causation."
-    },
-    "input_sha256": {
-      "traits_long": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
-      "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
-    },
-    "validation": {
-      "atlas_checks_passed": 24,
-      "atlas_checks_total": 24,
-      "sensitivity_checks_passed": 11,
-      "sensitivity_checks_total": 11,
-      "sampling_composition_checks_passed": 7,
-      "sampling_composition_checks_total": 7,
-      "historical_models_ok": 104
-    },
-    "claim_ceiling": "Five within-taxon rows pass the broad-space screen but only four retain direction across all sampling-composition perturbations. Two endpoint-gradient rows are adaptive-pattern candidates under sequential broad-space and historical-placement sensitivities and both retain direction across the retrospective sampling audit; neither is proof of adaptation, selection, mechanism, independent origin or convergence."
+    ]
   },
-  "datasets": {
-    "balanced_image_comparison_atlas": {
-      "n_taxa": 216,
-      "n_observations": 3725,
-      "n_photos": 3725,
-      "n_heads": 6626,
-      "one_photo_per_observation": true,
-      "purpose": "nested visible variance, taxon-level PCA, among-taxon summaries and historical sensitivity"
+  "adaptive_pattern_candidates_under_current_controls": [
+    {
+      "endpoint": "corolla_lab_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "direction": "negative",
+      "among_beta": -0.3453720170895292,
+      "among_q": 0.006,
+      "broad_space_beta": -0.7124111817658654,
+      "broad_space_p": 0.001,
+      "residual_moran_p": 0.217,
+      "n_historical_placement_trees_passed": 52,
+      "sampling_minimum_effect_magnitude_ratio": 0.614876,
+      "candidate_mechanism": "radiation-responsive floral pigment regulation, including an anthocyanin-synthesis hypothesis",
+      "mechanism_boundary": "CIELAB chroma is not anthocyanin concentration or UV reflectance; the negative coefficient does not identify pigment amount or pathway mediation",
+      "decisive_next_test": "calibrated visible and UV reflectance plus petal anthocyanin chemistry or pathway expression under common-garden radiation manipulation"
     },
-    "exhaustive_detected_layer": {
-      "n_observations": 406582,
-      "n_input_taxa": 286,
-      "purpose": "post-detection source layer before coordinate and spatial filtering"
-    },
-    "exhaustive_spatially_thinned_primary": {
-      "n_spatially_thinned_observations": 46276,
-      "n_input_taxa": 259,
-      "positional_accuracy_m": 10000,
-      "cell_degrees": 0.25,
-      "purpose": "primary within-taxon climate coefficients"
-    },
-    "grouped_spde_complete_cases": {
-      "n_observations_per_endpoint_range": [31666, 34472],
-      "n_taxa_range": [139, 141],
-      "purpose": "spatially explicit within-taxon models with climate, topography and soil predictor groups"
-    },
-    "high_resolution_involucre": {
-      "n_usable_heads": 1443,
-      "n_observations": 1292,
-      "n_taxa": 210,
-      "n_le_10km_observations": 904,
-      "n_le_10km_taxa": 165,
-      "purpose": "auxiliary high-resolution involucre/spine-like contour proxies"
-    },
-    "revised_precision_aware_cohort": {
-      "n_taxa": 101,
-      "minimum_observations_per_slope": 10,
-      "n_linear_traits": 7,
-      "n_predictors_per_trait": 4,
-      "module_weighting": "equal orientation, colour and shape weights",
-      "status": "statistical provenance and QA; not current biological headline"
-    },
-    "legacy_lability_cohort": {
-      "n_taxa": 102,
-      "status": "withdrawn as primary evidence after precision audit"
-    },
-    "independent_detector_audit": {
-      "n_source_images": 1000,
-      "n_taxa": 323,
-      "n_spatial_blocks_10deg": 85,
-      "n_double_labelled": 250,
-      "human_adjudication_complete": false
+    {
+      "endpoint": "orientation_image_vertical_angle",
+      "predictor": "chelsa_bio12",
+      "direction": "positive",
+      "among_beta": 0.3043592858977514,
+      "among_q": 0.021,
+      "broad_space_beta": 0.2860860884731872,
+      "broad_space_p": 0.017,
+      "residual_moran_p": 0.082,
+      "n_historical_placement_trees_passed": 52,
+      "sampling_minimum_effect_magnitude_ratio": 0.780783,
+      "candidate_mechanism": "more downward-facing capitulum presentation may shield reproductive tissues from rain",
+      "mechanism_boundary": "the 0-up, 90-horizontal, 180-down scale is relative to EXIF image vertical, not gravity; rain interception, pollen viability and fitness were not measured",
+      "decisive_next_test": "gravity-referenced 3D orientation with flowering-period rain, pollen retention and viability, seed output and experimental angle manipulation"
     }
+  ],
+  "secondary_whole_capitulum": {
+    "n_taxa": 127,
+    "n_endpoints": 18,
+    "pc1_to_pc3_cumulative_variance": 0.423,
+    "within_among_association_spearman": 0.36629931778064023,
+    "role": "secondary synthesis; does not select endpoint rows or replace decomposed geography"
   },
-  "trait_scope": {
-    "primary_endpoints": [
-      "orientation_angle_degrees",
-      "corolla_lab_lightness",
-      "corolla_lab_chroma",
-      "corolla_hue_sin",
-      "corolla_hue_cos",
-      "shape_aspect_ratio",
-      "shape_circularity",
-      "shape_solidity",
-      "shape_width_cv"
-    ],
-    "final_auxiliary_inferential_endpoints": [
-      "involucre_projection_roughness",
-      "involucre_spread_fraction",
-      "spine_relative_length_max_proxy"
-    ],
-    "auxiliary_provenance_only_endpoint": "spine_peak_count_proxy",
-    "orientation_reference": "0 degrees upward, 90 degrees horizontal and 180 degrees downward relative to EXIF-oriented image vertical; not a gravity measurement",
-    "colour_scope": "uncalibrated camera-recorded visible colour",
-    "auxiliary_scope": "2D image-geometry proxies, not direct botanical phyllary/spine states"
+  "validation": {
+    "atlas_checks": "24/24 passed",
+    "spatial_historical_checks": "11/11 passed",
+    "sampling_composition_checks": "7/7 passed",
+    "historical_models": "104/104 completed",
+    "tests_at_scientific_freeze": "112 passed"
   },
-  "nested_visible_variance": {
-    "levels": [
-      "among assigned taxon means",
-      "among photographs within assigned taxa",
-      "among heads within photograph"
-    ],
-    "n_endpoints": 9,
-    "within_assigned_species_fraction_range": [0.5886205437803064, 0.9307403690956841],
-    "among_photographs_within_species_fraction_range": [0.43995747730321333, 0.6907205647398028],
-    "among_heads_within_photo_fraction_range": [0.1432458422196825, 0.3785966109149292],
-    "one_head_per_photo_within_fraction_range": [0.5815708655068837, 0.8985099254849123],
-    "balanced_10_photo_median_within_fraction_range": [0.5284185457672588, 0.8791369865510499],
-    "balanced_10_photo_taxa_range": [116, 124],
-    "species_cluster_bootstrap_repeats": 2000,
-    "balanced_subsample_repeats": 500,
-    "allowed_claim": "Across all nine endpoints, at least about half of visible image variance occurred below the assigned-taxon mean after one-head-per-photo and equal-10-photo sensitivities. The components are image-level, not genetic variance."
-  },
-  "within_species_inference_levels": {
-    "exhaustive_spatially_thinned_primary_36_component_models": {
-      "n_bh_fdr_component_rows": 8,
-      "n_bh_fdr_non_circular_linear_rows": 4,
-      "n_bh_fdr_hue_component_rows": 4,
-      "supported_non_circular_rows": [
-        {"endpoint": "orientation_angle", "predictor": "BIO1", "beta": 0.017059, "q": 0.0363, "current_status": "retained_after_raw_calendar_hemisphere_dominant_taxon_and_native_range_controls; developmental_stage_not_closed"},
-        {"endpoint": "corolla_chroma", "predictor": "BIO12", "beta": 0.039324, "q": 0.0363, "current_status": "withdrawn_from_current_headline_after_native_range_BH_failure; colour_negative_control_also_pending"},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO4", "beta": 0.013723, "q": 0.0207, "current_status": "retained_after_raw_calendar_hemisphere_dominant_taxon_and_native_range_controls; developmental_stage_not_closed"},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO12", "beta": -0.010796, "q": 0.0363, "current_status": "withdrawn_from_current_headline_after_native_range_BH_failure"}
-      ],
-      "allowed_claim": "Eight component rows passed the frozen primary BH correction. All four non-circular rows passed the predeclared raw-calendar, hemisphere-aware cyclic day-of-year and dominant-taxon controls, but only orientation-BIO1 and aspect-ratio-BIO4 passed the separately frozen native-only sign-plus-BH rule. Day-of-year is not a developmental-stage label. Chroma-BIO12 and aspect-ratio-BIO12 remain provenance/sensitivity results and are not current biological headline rows."
-    },
-    "balanced_atlas_le_10km_sensitivity": {
-      "n_bh_fdr_main_rows": 0,
-      "allowed_claim": "No main endpoint-predictor row passed BH correction in the smaller balanced-atlas <=10 km sensitivity."
-    },
-    "balanced_atlas_all_coordinate_sensitivity": {
-      "n_bh_fdr_main_rows": 2
-    },
-    "interpretation_rule": "The exhaustive 46,276-observation primary cohort and the earlier balanced-atlas sensitivities are different datasets and must never share an FDR label."
-  },
-  "grouped_spde": {
-    "n_fits": 36,
-    "cpo_failures": 0,
-    "stable_supported_patterns": [
-      "orientation BIO1 positive",
-      "lightness BIO1 positive",
-      "lightness soil pH negative",
-      "chroma BIO1 negative",
-      "chroma BIO12 positive",
-      "hue sine BIO4 positive",
-      "hue cosine BIO1 negative",
-      "hue cosine soil pH positive"
-    ],
-    "gross_outline_global_bh_support": 0,
-    "interpretation": "orientation and visible colour retain the clearest spatial-model environmental structure; shape effects are weaker/model-dependent"
-  },
-  "auxiliary_involucre": {
-    "family_n_tests": 12,
-    "withdrawn_original_unadjusted_rows": [
-      {"endpoint": "involucre_projection_roughness", "predictor": "BIO4", "beta": 0.0975, "q": 0.0424},
-      {"endpoint": "involucre_spread_fraction", "predictor": "BIO4", "beta": 0.0937, "q": 0.0424},
-      {"endpoint": "spine_relative_length_max_proxy", "predictor": "BIO4", "beta": 0.0911, "q": 0.0424}
-    ],
-    "resolution_and_sharpness_adjusted_bio4": [
-      {"endpoint": "involucre_projection_roughness", "beta": 0.086646, "ci95": [0.016078, 0.157215], "q": 0.073008, "all_resolution_strata_positive": false},
-      {"endpoint": "involucre_spread_fraction", "beta": 0.094176, "ci95": [0.027274, 0.161078], "q": 0.06958, "all_resolution_strata_positive": true},
-      {"endpoint": "spine_relative_length_max_proxy", "beta": 0.078308, "ci95": [0.013287, 0.143329], "q": 0.073008, "all_resolution_strata_positive": false}
-    ],
-    "current_status": "withdrawn_from_headline_after_predeclared_resolution_and_sharpness_control",
-    "n_strictly_retained_rows": 0,
-    "allowed_claim": "The original unadjusted BIO4 rows are retained as provenance only. None passed the predeclared image-resolution control, so no seasonality-linked involucral result is used as a current biological conclusion."
-  },
-  "bias_control_reanalysis": {
-    "contract": "analysis/ch1/bias_control_contract.json",
-    "primary_season_and_dominant_taxon": {
-      "n_observations": 46276,
-      "n_taxa": 259,
-      "n_non_circular_rows_strictly_retained": 4,
-      "n_non_circular_rows_tested": 4,
-      "top_two_taxa_fraction": 0.5402800587777682,
-      "rows": [
-        {"endpoint": "orientation_angle", "predictor": "BIO1", "season_adjusted_beta": 0.015832, "season_adjusted_q": 0.00010725, "omission_beta_range": [0.010115, 0.018224]},
-        {"endpoint": "corolla_chroma", "predictor": "BIO12", "season_adjusted_beta": 0.047521, "season_adjusted_q": 0.020157, "omission_beta_range": [0.015876, 0.053365]},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO4", "season_adjusted_beta": 0.020643, "season_adjusted_q": 1.54358e-08, "omission_beta_range": [0.018361, 0.023120]},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO12", "season_adjusted_beta": -0.013296, "season_adjusted_q": 0.00081448, "omission_beta_range": [-0.016618, -0.011850]}
-      ],
-      "claim_ceiling": "All four associations were robust to cyclic collection timing and predeclared dominant-taxon omissions, but this audit predates the separately frozen native-range decision and does not establish anthesis-stage control or causality."
-    },
-    "hemisphere_season_sensitivity": {
-      "contract": "analysis/ch1/hemisphere_season_sensitivity_contract.json",
-      "n_observations": 46276,
-      "n_southern_observations": 2356,
-      "n_taxa": 259,
-      "n_taxa_sampled_both_hemispheres": 3,
-      "both_hemisphere_taxa": ["Cirsium vulgare", "Cirsium arvense", "Cirsium palustre"],
-      "n_non_circular_rows_strictly_retained": 4,
-      "rows": [
-        {"endpoint": "orientation_angle", "predictor": "BIO1", "phase_aligned_beta": 0.013539, "phase_aligned_q": 0.001465, "phase_aligned_omission_beta_range": [0.010557, 0.015567], "hemisphere_curve_beta": 0.016961, "hemisphere_curve_q": 0.0000343, "hemisphere_curve_omission_beta_range": [0.010712, 0.019264]},
-        {"endpoint": "corolla_chroma", "predictor": "BIO12", "phase_aligned_beta": 0.042099, "phase_aligned_q": 0.008522, "phase_aligned_omission_beta_range": [0.013799, 0.048417], "hemisphere_curve_beta": 0.041693, "hemisphere_curve_q": 0.006337, "hemisphere_curve_omission_beta_range": [0.013961, 0.047767]},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO4", "phase_aligned_beta": 0.017757, "phase_aligned_q": 0.000355, "phase_aligned_omission_beta_range": [0.014885, 0.022184], "hemisphere_curve_beta": 0.017715, "hemisphere_curve_q": 0.000174, "hemisphere_curve_omission_beta_range": [0.015298, 0.021580]},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO12", "phase_aligned_beta": -0.012102, "phase_aligned_q": 0.006535, "phase_aligned_omission_beta_range": [-0.016468, -0.010615], "hemisphere_curve_beta": -0.011315, "hemisphere_curve_q": 0.006337, "hemisphere_curve_omission_beta_range": [-0.014889, -0.009772]}
-      ],
-      "claim_ceiling": "The raw-calendar result is not an artefact of using the same day-of-year phase in both hemispheres. This remains a timing sensitivity, not developmental-stage control."
-    },
-    "native_range_sensitivity": {
-      "contract": "analysis/ch1/native_range_sensitivity_contract.json",
-      "source_manifest": "analysis_outputs/native_range_sensitivity_v1/native_range_source_manifest.json",
-      "wcvp_dataset_key": "f382f0ce-323a-4091-bb9f-add557f3a9a2",
-      "wcvp_dataset_doi": "10.15468/6h8ucr",
-      "wcvp_dataset_modified": "2026-06-10T05:03:50.116+00:00",
-      "wcvp_license": "CC BY 4.0",
-      "tdwg_commit": "52da7828aba9d461dd133c27b3bd7a4407161f54",
-      "tdwg_geojson_sha256": "c172bcf6aba20e19477adc60aebf0023068f0175dca8480f0760b090dcf64840",
-      "n_observations": 46276,
-      "n_taxa": 259,
-      "n_resolved_taxa": 245,
-      "native_status_counts": {
-        "native": 27066,
-        "introduced": 10554,
-        "unresolved_taxon": 5491,
-        "unmapped_tdwg": 2100,
-        "unlisted": 1065
-      },
-      "n_non_circular_rows_tested": 4,
-      "n_non_circular_rows_strictly_retained": 2,
-      "rows": [
-        {"endpoint": "orientation_angle", "predictor": "BIO1", "native_only_beta": 0.022648, "native_only_ci95": [0.005974, 0.039323], "native_only_q": 0.031059, "n_observations": 21725, "n_taxa": 128, "native_range_robust": true},
-        {"endpoint": "corolla_chroma", "predictor": "BIO12", "native_only_beta": 0.027812, "native_only_ci95": [0.003471, 0.052154], "native_only_q": 0.075387, "n_observations": 23672, "n_taxa": 128, "native_range_robust": false},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO4", "native_only_beta": 0.028420, "native_only_ci95": [0.022198, 0.034642], "native_only_q": 1.247176e-17, "n_observations": 22528, "n_taxa": 126, "native_range_robust": true},
-        {"endpoint": "shape_aspect_ratio", "predictor": "BIO12", "native_only_beta": -0.015666, "native_only_ci95": [-0.031201, -0.000131], "native_only_q": 0.133181, "n_observations": 22528, "n_taxa": 126, "native_range_robust": false}
-      ],
-      "claim_ceiling": "Only orientation-BIO1 and aspect-ratio-BIO4 meet the frozen native-only same-sign and BH rule. The other two rows retain their sign but fail native-only BH correction and are withdrawn from the current headline. Native-only restriction does not establish niche response, adaptation or introduction history."
-    },
-    "repeat_photo_cohort": {
-      "status": "cohort_frozen_measurements_pending",
-      "n_repeat_observations": 20073,
-      "n_taxa": 236,
-      "n_photo_rows": 58748,
-      "n_additional_photos": 38675,
-      "max_photos_per_observation": 27,
-      "interpretation_ceiling": "Repeat-photo variance is not pure measurement error without same-individual adjudication."
-    },
-    "colour_negative_control": "implementation tested; image remeasurement pending",
-    "developmental_stage": "not closed by day-of-year adjustment",
-    "native_range": "complete under frozen WCVP/TDWG contract; 2 of 4 non-circular rows retained"
-  },
-  "niche_permutation": {
-    "n_permutations": 10000,
-    "all_taxa_complete_n": 148,
-    "direct_backbone_complete_n": 49,
-    "all_taxa_supported_both_metrics": ["orientation", "chroma", "hue_sin", "hue_cos"],
-    "all_taxa_centroid_only": ["shape_width_cv"],
-    "direct_backbone_supported_both_metrics": ["hue_cos"],
-    "direct_backbone_overlap_only": ["lightness", "hue_sin"],
-    "allowed_claim": "Among-taxon environmental sorting exceeded permutation-null expectation mainly for orientation and visible colour; direct-backbone support narrowed."
-  },
-  "historical_sensitivity": {
-    "n_input_taxa": 216,
-    "n_direct_backbone_taxa": 54,
-    "n_random_trees": 50,
-    "n_signal_fits": 636,
-    "n_failed_signal_fits": 0,
-    "direct_backbone_supported_non_circular_endpoints": 0,
-    "grafting_sensitive_endpoints": ["shape_circularity", "shape_solidity"],
-    "joint_circular_test_required": ["hue_sin", "hue_cos"],
-    "randomized_tree_rows_supported_50_of_50": [
-      "orientation_angle~BIO12",
-      "hue_sin~BIO1",
-      "hue_sin~BIO4",
-      "hue_sin~BIO12",
-      "shape_solidity~BIO4",
-      "shape_width_cv~BIO1"
-    ],
-    "allowed_claim": "Several among-taxon coefficients were insensitive to tested grafting placements, but the historical layer is not a resolved phylogenetic correction."
-  },
-  "spatial_robustness": {
-    "residual_moran_i_range": [-0.009627, 0.003016],
-    "n_endpoints_with_permutation_p_lt_0_05": 0,
-    "leave_one_broad_region_out_min_spearman_range": [0.856241, 0.971742],
-    "decision": "closed for frozen analysis"
-  },
-  "taxonomic_robustness": {
-    "wcvp_union_names": 259,
-    "wcvp_synonym_conflicts_collapsed": 8,
-    "balanced_units_before_after": [216, 211],
-    "exhaustive_units_before_after": [259, 251],
-    "fdr_decisions_changed": 0,
-    "coefficient_signs_changed": 0,
-    "max_abs_standardized_beta_change": 0.000385,
-    "decision": "closed for source-assigned operational-unit analysis"
-  },
-  "legacy_precision_audit": {
-    "variation_vs_legacy_absolute_slope_rms_rho": -0.33309961493008233,
-    "legacy_score_vs_median_slope_n_rho": -0.9194595732980716,
-    "legacy_score_vs_median_slope_se_rho": 0.9143233569502011,
-    "partial_rho_controlling_median_slope_n": 0.05580956321027713,
-    "partial_p_value": 0.577434002586757,
-    "decision": "withdraw the negative-correlation and median-split quadrant claims; retain as provenance only"
-  },
-  "revised_primary_results": {
-    "status": "precision-aware QA/provenance, not current submission headline",
-    "noise_adjusted_axis": {
-      "spearman_rho": -0.05686662783925451,
-      "p_value": 0.5721783308982907,
-      "species_bootstrap_ci95": [-0.2652427899441521, 0.15483770145148418],
-      "association_energy_vs_median_slope_n_rho": -0.038399799545104106,
-      "association_energy_vs_median_slope_se_rho": 0.020384391380314497
-    },
-    "hierarchical_variance_meta_regression": {
-      "n_slope_estimates": 2828,
-      "n_trait_predictor_groups": 28,
-      "log_variance_change_per_sd_visible_variation": -0.04160792485278784,
-      "profile_ci95": [-0.27434304176516855, 0.20042869071450004],
-      "likelihood_ratio_p_value": 0.7320248138283185
-    },
-    "module_medians": {
-      "orientation": {"visible_variation": 0.6301664881457204, "noise_adjusted_association_energy": -0.0012003324842962946},
-      "colour": {"visible_variation": 0.5558054071414766, "noise_adjusted_association_energy": 0.004039121310251003},
-      "shape": {"visible_variation": 0.6665994574883936, "noise_adjusted_association_energy": 0.00002110805364365926}
-    }
-  },
-  "molecular_database_coverage": {
-    "nucleotide": 138,
-    "its": 133,
-    "plastid": 129,
-    "complete_plastome": 11,
-    "sra": 120
-  },
-  "submission_gates": {
-    "taxonomic_robustness": "complete",
-    "residual_spatial_and_region_omission": "complete",
-    "full27_sampling_composition_sensitivity": "complete_16_of_26_within_and_10_of_10_among_direction_stable_all_declared_scenarios",
-    "environmental_niche_null": "complete",
-    "cyclic_season_and_dominant_taxon": "complete",
-    "involucre_resolution_and_sharpness": "complete_failed_claim_withdrawn",
-    "developmental_stage": "pending_image_labelling",
-    "colour_negative_control": "pending_image_remeasurement",
-    "repeat_photo_variance": "cohort_frozen_measurement_pending",
-    "native_range_sensitivity": "complete_2_of_4_rows_retained",
-    "independent_detector_human_boxes": "pending_external",
-    "independent_orientation_colour_outline_reference": "pending_external",
-    "licence_selection": "pending_human_legal_choice",
-    "durable_release_doi": "final_step_after_scientific_and_licence_gates"
-  },
-  "workflow_provenance": {
-    "precision_reanalysis_run_id": 29894216905,
-    "precision_reanalysis_artifact_id": 8519352787,
-    "precision_reanalysis_digest": "sha256:5e9979faa290432997563ab884a9da9e74b7c69709fafe7ec3a10f7897e9c972",
-    "nested_variance_source_artifact_id": 8225059018,
-    "nested_variance_run_id": 29895799287,
-    "nested_variance_artifact_id": 8519926578,
-    "nested_variance_digest": "sha256:120f8f87365cc2ec0ea84e906e9d394991df4a3a5613b10c5cc2a44055fa2434",
-    "spatial_residual_run_id": 31152400475,
-    "spatial_residual_artifact_id": 8983877726,
-    "niche_permutation_run_id": 31152400487,
-    "wcvp_taxonomic_audit_run_id": 31152400481,
-    "wcvp_synonym_collapse_run_id": 31153385658,
-    "wcvp_synonym_collapse_artifact_id": 8984168407
-  },
+  "submission_blockers": [
+    "independent detector human boxes",
+    "independent orientation, colour and outline reference measurements",
+    "independent botanical calibration of candidate involucral and surface-image metrics",
+    "developmental-stage or anthesis-restricted sensitivity",
+    "paired flower/background colour calibration and negative control",
+    "repeat-photo trait remeasurement and variance decomposition",
+    "licence selection and durable DOI release"
+  ],
+  "withdrawn_from_active_submission_tree": [
+    "legacy lability-responsiveness and median-split quadrant result",
+    "PR69-era nine-endpoint result hierarchy as a trait-selection rule",
+    "unadjusted legacy involucral BIO4 claims",
+    "categorical CLIP or AI trait-environment atlas"
+  ],
   "forbidden_causal_claims": [
     "phenotypic plasticity",
     "local adaptation",
     "pollinator causation",
-    "evolutionary rate",
-    "adaptive radiation demonstrated by Chapter 1",
-    "resolved Cirsium species tree",
     "rain-protection adaptation",
-    "temporal climate tracking",
-    "genetic variance decomposition"
-  ],
-  "current_native_range_withdrawals": [
-    "corolla_chroma-BIO12",
-    "shape_aspect_ratio-BIO12"
+    "anthocyanin mediation demonstrated",
+    "resolved Cirsium species tree",
+    "independent origins or convergence demonstrated"
   ]
 }

@@ -8,8 +8,6 @@ Bolnick, D. I., Amarasekare, P., Araújo, M. S., Bürger, R., Levine, J. M., Nov
 
 Borghi, M., Perez de Souza, L., Yoshida, T. & Fernie, A. R. (2019). Flowers and climate change: a metabolic perspective. *New Phytologist*, 224, 1425–1441. https://doi.org/10.1111/nph.16031
 
-Brummitt, R. K. (2001). *World Geographical Scheme for Recording Plant Distributions* (2nd ed.). Hunt Institute for Botanical Documentation, Carnegie Mellon University.
-
 Bureš, P., Del Guacchio, E., Šmerda, J., Özcan, M., Blizňáková, P., Vavrinec, M., … Zedek, F. (2024). Intergeneric hybrid origin of the invasive tetraploid *Cirsium vulgare*. *Plant Biology*, 26, 749–763. https://doi.org/10.1111/plb.13653
 
 Chang, C.-Y., Liao, P.-C., Tzeng, H.-Y., Kusumi, J., Su, Z.-H. & Tseng, Y.-H. (2026). Phylotranscriptomics and genome-size evidence clarify the Taiwanese *Cirsium japonicum* complex and delimit *C. brevicaule* and allied East Asian thistles. *BMC Plant Biology*, 26, 545. https://doi.org/10.1186/s12870-026-08097-6
@@ -22,9 +20,7 @@ Dalrymple, R. L., Kemp, D. J., Flores-Moreno, H., Laffan, S. W., White, T. E., H
 
 Di Cecco, G. J., Barve, V., Belitz, M. W., Stucky, B. J., Guralnick, R. P. & Hurlbert, A. H. (2021). Observing the observers: How participants contribute data to iNaturalist and implications for biodiversity science. *BioScience*, 71, 1179–1188. https://doi.org/10.1093/biosci/biab093
 
-Gijsman, F., Havens, K. & Vitt, P. (2020). Effect of capitulum position and weevil infestation on seed production of threatened monocarpic perennial, *Cirsium pitcheri*. *Global Ecology and Conservation*, 22, e00945. https://doi.org/10.1016/j.gecco.2020.e00945
-
-Govaerts, R. (Ed.). (2026). *The World Checklist of Vascular Plants (WCVP)* [Checklist dataset]. Royal Botanic Gardens, Kew. https://doi.org/10.15468/6h8ucr
+Diggle, P. K. (2014). Modularity and intra-floral integration in metameric organisms: plants are more than the sum of their parts. *Philosophical Transactions of the Royal Society B: Biological Sciences*, 369, 20130253. https://doi.org/10.1098/rstb.2013.0253
 
 Grossenbacher, D. L., Lo, M. S., Waddington, M. E., O'Dell, R. & Kay, K. M. (2026). Soil and climate contribute to maintenance of a flower color polymorphism. *American Journal of Botany*, 113, e70018. https://doi.org/10.1002/ajb2.70018
 
@@ -41,8 +37,6 @@ Kattge, J., Bönisch, G., Díaz, S., Lavorel, S., Prentice, I. C., Leadley, P., 
 Kelch, D. G. & Baldwin, B. G. (2003). Phylogeny and ecological radiation of New World thistles (*Cirsium*, Cardueae–Compositae) based on ITS and ETS rDNA sequence data. *Molecular Ecology*, 12, 141–151. https://doi.org/10.1046/j.1365-294X.2003.01710.x
 
 Kitamura, S. (1932). 日本産新菊科植物: 摘要 [New Compositae from Japan: abstract; in Japanese]. *Acta Phytotaxonomica et Geobotanica*, 1, 56–60. https://doi.org/10.18942/bunruichiri.KJ00001078744
-
-Lamp, W. O. & McCarty, M. K. (1982). Predispersal seed predation of a native thistle, *Cirsium canescens*. *Environmental Entomology*, 11, 847–851. https://doi.org/10.1093/ee/11.4.847
 
 Maitner, B. S., Boyle, B., Casler, N., Condit, R., Donoghue, J., Durán, S. M., … Enquist, B. J. (2018). The BIEN R package: a tool to access the Botanical Information and Ecology Network (BIEN) database. *Methods in Ecology and Evolution*, 9, 373–379. https://doi.org/10.1111/2041-210X.12861
 
@@ -67,8 +61,6 @@ Ohashi, K. & Yahara, T. (2000). Effects of flower production and predispersal se
 Ohashi, K. & Yahara, T. (2002). Visit larger displays but probe proportionally fewer flowers: counterintuitive behaviour of nectar-collecting bumble bees achieves an ideal free distribution. *Functional Ecology*, 16, 492–503. https://doi.org/10.1046/j.1365-2435.2002.00644.x
 
 Peach, K., Liu, J. W. & Mazer, S. J. (2020). Climate predicts UV floral pattern size, anthocyanin concentration, and pollen performance in *Clarkia unguiculata*. *Frontiers in Plant Science*, 11, 847. https://doi.org/10.3389/fpls.2020.00847
-
-Rose, K. E., Louda, S. M. & Rees, M. (2005). Demographic and evolutionary impacts of native and invasive insect herbivores on *Cirsium canescens*. *Ecology*, 86, 453–465. https://doi.org/10.1890/03-0697
 
 Rzanny, M., Mäder, P., Deggelmann, A., Chen, M. & Wäldchen, J. (2019). Flowers, leaves or both? How to obtain suitable images for automated plant identification. *Plant Methods*, 15, 77. https://doi.org/10.1186/s13007-019-0462-4
 

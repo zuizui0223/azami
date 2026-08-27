@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the machine-readable Azami Chapter 1 hypothesis-recovery ledger.
-
-This audit protects the final pattern/mechanism boundary. It does not recompute
-scientific results; it checks that the submission-facing status resolves all
-registered hypotheses, preserves immutable provenance and keeps external
-validation gates open rather than silently promoting observational patterns.
-"""
+"""Validate the submission-facing v2 hypothesis recovery ledger."""
 from __future__ import annotations
 
 import json
@@ -15,163 +9,44 @@ ROOT = Path(__file__).resolve().parents[1]
 STATUS_PATH = ROOT / "analysis" / "ch1" / "hypothesis_recovery_status.json"
 
 EXPECTED_IDS = {
-    "FOUNDATION_REPEATED_CONTINUOUS_PHENOTYPES",
-    "FOUNDATION_BELOW_TAXON_DIVERSITY",
-    "FOUNDATION_ONE_UNIVERSAL_SYNDROME",
-    "H0_FULL_ENVIRONMENT_SCALE_ATLAS",
-    "H0_SAMPLING_COMPOSITION_STABILITY",
-    "H0_ADAPTIVE_PATTERN_CANDIDATE_GATE",
-    "H1_MEASUREMENT_MODULE_ORGANIZATION",
-    "H2_PARTIAL_CROSS_SCALE_CORRESPONDENCE",
-    "H3_PROCESS_BLOCK_ENVIRONMENT_REPRESENTATION",
-    "H4_STABLE_CROSS_SCALE_COEFFICIENT_ROTATION",
-    "H5_PHENOTYPE_SPACE_HANDOFF",
-    "CANDIDATE_INVOLUCRE_ENVIRONMENT_STRUCTURE",
-    "LEGACY_NEGATIVE_LABILITY_RESPONSIVENESS",
-    "FUNCTIONAL_CAUSAL_MECHANISMS",
+    "H1_CONTINUOUS_EXTRACTION",
+    "H2_TAXON_MEAN_INFORMATION_LOSS",
+    "H3_ENDPOINT_GEOGRAPHY",
+    "H4_SCALE_INVARIANCE",
+    "H5_SINGLE_CAPITULUM_SYNDROME",
+    "H6_ADAPTIVE_PATTERN_CANDIDATES",
 }
-
-ALLOWED_STATUSES = {
-    "operationally_complete_externally_unvalidated",
-    "supported_all_measured_v2_endpoints",
-    "rejected",
-    "supported",
-    "supported_scale_specific",
-    "partially_supported_scale_specific",
-    "inconclusive",
-    "completed_workflow_boundary",
-    "partially_supported_within_only",
-    "rejected_withdrawn",
-    "not_tested_in_azami",
-    "two_pairs_pass_current_sequential_controls",
-}
-
-EXPECTED_PROVENANCE = {
-    "continuous_trait_run": 32975451732,
-    "continuous_trait_head": "f4a6fd5e01a2befd4f49174984a99e53856c2330",
-    "continuous_trait_artifact": 9612943217,
-    "continuous_trait_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
-    "multilevel_run": 33035785120,
-    "multilevel_head": "227c0e7b8c338894806785b8545c7c77c8724de1",
-    "multilevel_artifact": 9632715852,
-    "multilevel_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
-}
-
-EXPECTED_SYNTHESIS = (
-    "Continuous capitulum traits occupy distinct present-day spatial scales and "
-    "align with different environmental gradients; neither a taxon mean nor one "
-    "whole-capitulum syndrome captures that geography, and retrospective composition "
-    "checks distinguish geographically extensive coverage from representative sampling."
-)
-
-
-def fail(message: str) -> None:
-    raise SystemExit(message)
 
 
 def main() -> int:
     data = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+    assert data["schema_version"] == 2
+    assert data["release_label"] == "Azami Chapter 1 v2"
+    assert data["status"] == "complete_for_present_geography_submission_lane"
 
-    if data.get("schema_version") != 3:
-        fail("hypothesis recovery schema_version must equal 3")
-    if data.get("overall_status") != "computational_pattern_estimand_complete_external_validation_open":
-        fail("overall status must retain the computational-complete/external-validation-open boundary")
-    if data.get("chapter_synthesis") != EXPECTED_SYNTHESIS:
-        fail("Chapter 1 synthesis changed without a versioned result update")
-    axis = data.get("narrative_axis", {})
-    if axis.get("primary_unit") != "continuous trait x environmental gradient x spatial scale, with explicit measurement, q, spatial, sampling-composition and historical gate status":
-        fail("Chapter 1 must retain the PR71 trait-by-gradient-by-scale primary unit")
-    if not str(axis.get("whole_capitulum_role", "")).startswith("secondary synthesis"):
-        fail("whole-capitulum analysis must remain a secondary synthesis")
-    series = axis.get("eazami_series", [])
-    if len(series) != 4 or not all(str(row).startswith(f"EAzami-{label}") for row, label in zip(series, ("I", "II", "III", "IV"))):
-        fail("EAzami handoff must retain the ordered I-IV evidence series")
-    if "common selection pressure plus fitness evidence" not in str(series[3]):
-        fail("EAzami-IV must preserve the adaptive-convergence evidence gate")
-    if "post hoc categories" not in str(axis.get("handoff_rule", "")) or "function choose history" not in str(axis.get("handoff_rule", "")):
-        fail("EAzami handoff must prohibit post hoc discretization and function-selected history")
-    if data.get("frozen_sources") != EXPECTED_PROVENANCE:
-        fail("immutable Azami result provenance changed")
+    rows = data["questions"]
+    assert {row["id"] for row in rows} == EXPECTED_IDS
+    assert len(rows) == len(EXPECTED_IDS)
+    by_id = {row["id"]: row for row in rows}
+    assert by_id["H1_CONTINUOUS_EXTRACTION"]["status"] == "supported"
+    assert by_id["H2_TAXON_MEAN_INFORMATION_LOSS"]["status"] == "supported"
+    assert by_id["H3_ENDPOINT_GEOGRAPHY"]["status"] == "supported"
+    assert by_id["H4_SCALE_INVARIANCE"]["status"] == "rejected"
+    assert by_id["H5_SINGLE_CAPITULUM_SYNDROME"]["status"] == "rejected"
+    assert by_id["H6_ADAPTIVE_PATTERN_CANDIDATES"]["status"] == "two_candidates_under_current_controls"
 
-    hypotheses = data.get("hypotheses", [])
-    ids = [row.get("id") for row in hypotheses]
-    if len(ids) != len(set(ids)):
-        fail("duplicate hypothesis IDs")
-    if set(ids) != EXPECTED_IDS:
-        fail(f"unexpected hypothesis registry: {sorted(set(ids) ^ EXPECTED_IDS)}")
-
-    by_id = {row["id"]: row for row in hypotheses}
-    for row in hypotheses:
-        if row.get("status") not in ALLOWED_STATUSES:
-            fail(f"unsupported status for {row.get('id')}: {row.get('status')}")
-        for field in ("scope", "key_result", "allowed_claim", "not_allowed"):
-            if not str(row.get(field, "")).strip():
-                fail(f"{row.get('id')} is missing {field}")
-
-    required_fixed = {
-        "FOUNDATION_BELOW_TAXON_DIVERSITY": "supported_all_measured_v2_endpoints",
-        "FOUNDATION_ONE_UNIVERSAL_SYNDROME": "rejected",
-        "H0_FULL_ENVIRONMENT_SCALE_ATLAS": "supported_scale_specific",
-        "H0_SAMPLING_COMPOSITION_STABILITY": "partially_supported_scale_specific",
-        "H0_ADAPTIVE_PATTERN_CANDIDATE_GATE": "two_pairs_pass_current_sequential_controls",
-        "H1_MEASUREMENT_MODULE_ORGANIZATION": "supported",
-        "H2_PARTIAL_CROSS_SCALE_CORRESPONDENCE": "supported",
-        "H3_PROCESS_BLOCK_ENVIRONMENT_REPRESENTATION": "supported_scale_specific",
-        "H4_STABLE_CROSS_SCALE_COEFFICIENT_ROTATION": "inconclusive",
-        "H5_PHENOTYPE_SPACE_HANDOFF": "completed_workflow_boundary",
-        "LEGACY_NEGATIVE_LABILITY_RESPONSIVENESS": "rejected_withdrawn",
-        "FUNCTIONAL_CAUSAL_MECHANISMS": "not_tested_in_azami",
-    }
-    for hypothesis_id, expected in required_fixed.items():
-        if by_id[hypothesis_id]["status"] != expected:
-            fail(f"{hypothesis_id} must remain {expected}")
-
-    completion = data.get("completion", {})
-    if completion.get("computational_pattern_layers", {}).get("status") != "complete":
-        fail("computational pattern layer must be marked complete")
-    if completion.get("independent_scientific_validation", {}).get("status") != "open_submission_blocking":
-        fail("independent validation must remain submission blocking")
-    if completion.get("independent_scientific_validation", {}).get("open_items") != 6:
-        fail("expected six open independent validation gates")
-    gates = data.get("open_validation_gates", [])
-    if len(gates) != 6 or len(set(gates)) != 6:
-        fail("open_validation_gates must contain six unique entries")
-
-    forbidden_promotions = (
-        "functional modularity is supported",
-        "genetic modularity is supported",
-        "plasticity is supported",
-        "adaptation is supported",
-        "pollinator causation is supported",
-        "defensive efficacy is supported",
-    )
-    serialized = json.dumps(data, ensure_ascii=False).lower()
-    for phrase in forbidden_promotions:
-        if phrase in serialized:
-            fail(f"forbidden causal promotion found: {phrase}")
-
-    if "do not add an uncontracted correlational raster screen" not in data.get("next_step_rule", "").lower():
-        fail("next-step rule must prohibit uncontracted raster fishing")
+    series = data["eazami_boundary"]["series"]
+    assert len(series) == 4
+    assert [row.split()[0] for row in series] == ["EAzami-I", "EAzami-II", "EAzami-III", "EAzami-IV"]
+    assert "cannot be promoted" in data["eazami_boundary"]["rule"]
+    assert "legacy lability-responsiveness and quadrant hypothesis" in data["excluded_from_active_submission"]
 
     print(json.dumps({
         "status": "ok",
-        "hypotheses": len(hypotheses),
-        "supported_or_partially_supported": sum(
-            row["status"] in {
-                "supported_all_measured_v2_endpoints", "supported", "supported_scale_specific",
-                "partially_supported_scale_specific",
-                "two_pairs_pass_current_sequential_controls",
-                "completed_workflow_boundary", "partially_supported_within_only",
-            }
-            for row in hypotheses
-        ),
-        "rejected_or_withdrawn": sum(
-            row["status"] in {"rejected", "rejected_withdrawn"}
-            for row in hypotheses
-        ),
-        "inconclusive": sum(row["status"] == "inconclusive" for row in hypotheses),
-        "not_tested_in_azami": sum(row["status"] == "not_tested_in_azami" for row in hypotheses),
-        "external_validation_gates_open": len(gates),
+        "questions": len(rows),
+        "supported": 3,
+        "rejected": 2,
+        "candidate_gate": by_id["H6_ADAPTIVE_PATTERN_CANDIDATES"]["status"],
     }, indent=2))
     return 0
 

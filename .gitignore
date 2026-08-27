@@ -32,6 +32,9 @@ Thumbs.db
 # Local test and CI diagnostics
 /ci_artifacts/
 continuous_trait_test_output.txt
+/.tmp/
+/submission/render_*/
+/submission/a11y_*.json
 
 # Reproducible figure-review SVGs contain generator-specific whitespace.
 # PNG/PDF review copies and the generating workflows remain tracked.

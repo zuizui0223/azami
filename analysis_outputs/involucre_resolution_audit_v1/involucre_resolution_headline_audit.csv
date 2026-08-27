@@ -1,4 +1,0 @@
-endpoint,adjusted_bio4_beta,adjusted_bio4_ci_low,adjusted_bio4_ci_high,adjusted_bio4_q,successful_resolution_strata,resolution_stratum_beta_min,resolution_stratum_beta_max,positive_in_all_successful_strata,strict_resolution_control_retained
-involucre_projection_roughness,0.08664636964483864,0.01607771781747125,0.15721502147220603,0.07300776846040101,3,-0.09608954920420948,0.12234182011739339,False,False
-involucre_spread_fraction,0.09417611705932312,0.027273756739536748,0.1610784773791095,0.06958001635817303,3,0.052651736131439426,0.15825584418063465,True,False
-spine_relative_length_max_proxy,0.07830770642109994,0.013286554132768955,0.1433288587094309,0.07300776846040101,3,-0.19375572714117079,0.15550969612014892,False,False

@@ -1,0 +1,18 @@
+{
+  "status": "ok",
+  "source_lane": "full27_full_environment_only",
+  "input_sha256": {
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_variance_decomposition.csv": "da5b66f739dcbbf3f743a23098bc56c32cd0ed1032b8ec8366686f95ff5bc2f7",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_cross_scale.csv": "74bacb42a4cf52610a007a39d8a1d26f798be6f85a200fd6879831478c2bc708",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/spatial/v2_full27_spatial_among.csv": "e190d622f1044f1ec733beaba271eedabcd24c20e81d4095ba20916e005bd7c4",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/historical/v2_full27_historical_placement_summary.csv": "1145a1b0422fae0d7306ff115f06e80b0f36f168365bbc5f1979b570fe634d54",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_summary.csv": "91568d2db36092a4f646dbedb730d046d7ecb86d4c1cbcd3bb3761a2a52f65d2"
+  },
+  "figures": [
+    "Figure_1_v2_method_flow.png",
+    "Figure_2_v2_taxon_mean_information_loss.png",
+    "Figure_3_v2_within_among_scale_atlas.png",
+    "Figure_4_v2_candidate_robustness.png"
+  ],
+  "claim_boundary": "submission visualization of frozen exploratory v2 results; not a new analysis"
+}

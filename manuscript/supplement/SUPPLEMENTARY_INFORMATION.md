@@ -1,69 +1,58 @@
 # Supporting Information
 
-## Appendix S1. Supplementary methods, tables and figures
+## Appendix S1. Full-27 continuous-trait and full-environment analysis
 
-### S1.1 Cohorts and operational taxonomic units
+### S1.1 Frozen cohort and endpoint status
 
-The balanced atlas, exhaustive post-detection stream, coordinate and positional-accuracy subsets, primary taxon × 0.25° cohort, and high-resolution subset were retained as distinct analytical cohorts (Table S1.1). Source-assigned names were treated as operational taxonomic units because public observations do not constitute a resolved genus-wide taxonomy. The primary analyses preserve those identifiers; simultaneous collapse of World Checklist of Vascular Plants (WCVP) synonym conflicts provides a sensitivity analysis (Section S1.8; Table S1.10).
+The phenotype-blind spatial cohort retained one observation per source-assigned taxon by 0.25-degree cell after a positional-accuracy threshold of 10 km. It contained 46,276 observations from 259 taxa. The registered universe contained 27 endpoints: 22 were measured and five remained explicit unexecuted rows. Hue sine and cosine formed one joint circular inferential unit. Endpoint status, measurement counts and validation boundaries are given in `v2_full27_endpoint_inventory.csv`.
 
-Geographic density and filtering are shown in Figure S1.6. Trait assessability varies among regions because public images differ in viewpoint, resolution, lighting and occlusion (Figure S1.7). An unassessable image is measurement missingness, not biological absence.
+### S1.2 Geographic support and taxon-mean information loss
 
-### S1.2 Detection and trait measurement
+For each measured endpoint, `v2_full27_trait_geography.csv` records geographic limits and occupied 5-degree cells. `v2_full27_variance_decomposition.csv` reports the fraction of observation-level sums of squares below taxon means and 500 equal-replication resamples with two observations per eligible taxon. Missing measurements were not treated as zeros. The partitions describe visible image phenotypes rather than genetic variance or plasticity.
 
-A single-class You Only Look Once version 11 nano (YOLO11n) detector localized visible capitula at a confidence threshold of 0.25. Detection supplied regions of interest only. Deterministic image functions then measured orientation relative to Exchangeable Image File Format (EXIF)-oriented image vertical, Commission Internationale de l'Éclairage L*a*b* (CIELAB) corolla lightness and chroma, sine and cosine components of circular hue, and four two-dimensional outline statistics. The definitions, assessability rules and interpretation limits for all endpoints are listed in Table S1.2.
+### S1.3 Environmental predictors
 
-Detector evaluation was separated from detector development by excluding every development photograph and observation before sampling 1,000 audit images; 250 were assigned for double annotation. Human adjudication is incomplete, so precision and recall are not reported. Horizontal mirroring assesses technical repeatability but does not establish biological accuracy. Independent reference measurements are likewise needed for orientation, colour and outline.
+Nine predictors were frozen in six blocks: thermal (BIO1, BIO4), hydric (BIO12, BIO15), radiative/atmospheric (shortwave radiation, VPD), mechanical (wind), growing-season water input (GSP) and resource/productivity (potential NPP). Eight had complete coverage and wind had 99.989% coverage, exceeding the 98% gate. GSP was a climatic layer rather than species-specific flowering-season rain; NPP was modelled potential productivity rather than measured resources.
 
-### S1.3 Nested visible-variance decomposition
+### S1.4 Within- and among-taxon models
 
-Visible image sums of squares were partitioned among source-assigned taxa, among photographs within taxa and among heads within photographs. The exact components are given in Table S1.4. Two sensitivities retained one deterministic head per photograph or repeatedly sampled 10 photographs per eligible taxon. Both preserved substantial below-taxon variation (Figure S1.1). These components describe visible image phenotypes and are not estimates of genetic variance.
+Within-taxon models used taxon-demeaned standardized traits and predictors with taxon-clustered uncertainty. Among-taxon models used standardized taxon trait and environment medians with 9,999 taxon-label permutations. The primary among-taxon scope required five observations per taxon; minimum two formed a separately corrected sensitivity. Benjamini-Hochberg correction was applied once across all successful unit by predictor rows within each scope. Complete output, including unsupported and unexecuted rows, is in `v2_full27_environment_within.csv`, `v2_full27_environment_among.csv` and `v2_full27_environment_cross_scale.csv`.
 
-### S1.4 Within-taxon environmental models
+### S1.5 Sampling-composition sensitivity
 
-Primary ordinary least-squares models used within-taxon centred and standardized traits and CHELSA annual mean temperature, temperature seasonality, annual precipitation and precipitation seasonality. Taxon-clustered standard errors were used, with Benjamini–Hochberg (BH) correction across 36 endpoint-component tests. Supported rows are listed in Table S1.3 and the complete coefficient pattern is shown in Figure S1.2.
+All 26 within-taxon and ten among-taxon globally supported rows entered a retrospective direction-only audit. The declared perturbations were equal total weight per taxon for within-taxon rows, omission of each top-ten taxon and the top two jointly, omission of each of six broad regions, and a native-only restriction. All 674 scenarios were evaluable. Sixteen within-taxon and all ten among-taxon pairs retained direction in every applicable scenario. The audit did not calculate post-selection P values and does not correct the public-image data into a probability sample.
 
-Grouped stochastic partial differential equation models fitted by integrated nested Laplace approximation (SPDE-INLA) compared climate, climate plus topography, climate plus soil and full-environment predictor sets. Each endpoint used the same complete cases across groups, a taxon random intercept and a Matérn spatial field. Stable supported patterns are reported in Table S1.5, and within-endpoint differences in the widely applicable information criterion (WAIC) are shown in Figure S1.3.
+### S1.6 Broad-space sensitivity
 
-The high-resolution layer used three two-dimensional involucral contour proxies: projection roughness, outward-positive radial-projection fraction and maximum spine-like projection relative to head radius. The original ≤10-km BIO4 rows were refitted with log minimum head dimension and log1p sharpness and stratified at 150–199, 200–299 and ≥300 pixels. None met the predeclared retention rule (Table S1.6). These proxies do not distinguish longer bract tips from spreading or recurvature and are not direct measurements of defence.
+Globally supported rows were refitted with a second-order spherical-coordinate basis. Passing required spatial P below 0.05, sign preservation for a linear endpoint and residual Moran P of at least 0.05. Five within-taxon and two among-taxon rows passed. Joint hue rows failed because residual spatial autocorrelation remained detectable. Full results are in `spatial/v2_full27_spatial_within.csv` and `spatial/v2_full27_spatial_among.csv`.
 
-All 36 primary models were also refitted after taxon-specific sine/cosine day-of-year residualization. The ten most represented taxa were omitted separately and the two most represented taxa jointly, with omission membership fixed from observation counts alone. All four non-circular frozen rows retained BH support in the full raw-calendar cyclic-season model and retained sign across omissions, although omission magnitudes varied, especially for chroma–BIO12 (Table S1.11).
+### S1.7 Historical-placement sensitivity
 
-A separately locked hemisphere-aware sensitivity then shifted Southern Hemisphere dates by one half-cycle or fitted separate taxon-specific cyclic curves by hemisphere. The cohort contained 2,356 Southern Hemisphere observations, and only *Cirsium vulgare*, *C. arvense* and *C. palustre* were sampled in both hemispheres. All four non-circular rows retained their frozen sign, BH support and omission-sign stability under both definitions (Table S1.13). Day-of-year does not classify developmental stage. A metadata-only preflight identified 20,073 strict-cohort observations with at least two public photographs (Table S1.12), but repeat-photo traits have not been remeasured.
+The two spatially retained among-taxon rows were tested on 52 audited dated-backbone placement trees. Both retained direction and P below 0.05 on every tree. Only 54 historical-atlas taxa were direct backbone tips; most were within-genus placements. These results quantify stability to the tested placement uncertainty and do not constitute a resolved species-tree or network correction. Full model and summary tables are in `historical/v2_full27_historical_placement_models.csv` and `historical/v2_full27_historical_placement_summary.csv`.
 
-The native-range sensitivity used a separately frozen contract, the WCVP checklist dataset release identified by DOI 10.15468/6h8ucr and a pinned TDWG level-3 geometry commit. Taxon matches with more than one accepted WCVP key and coordinates without an unambiguous level-3 mapping were excluded. Of 46,276 observations, 27,066 were classified native, 10,554 introduced, 5,491 unresolved at the taxon join, 2,100 geographically unmapped and 1,065 unlisted for the accepted taxon. Native-only models retained orientation–BIO1 and aspect ratio–BIO4 under the frozen same-sign plus BH rule. Chroma–BIO12 and aspect ratio–BIO12 retained their primary signs but failed native-only BH correction and were withdrawn from the current headline (Table S1.14).
+### S1.8 Interpretation limits
 
-### S1.5 Among-taxon environmental and phylogenetic analyses
+The analysis is retrospective exploratory. Directional stability is not causal evidence. Visible CIELAB chroma is not anthocyanin concentration or UV reflectance; EXIF image vertical is not gravity; and image-derived involucral or surface variables are not botanical spine, hair, gland or secretion measurements. The results do not establish phenotypic plasticity, local adaptation, selection, fitness benefit, independent origin or convergence.
 
-For taxa represented by at least five observations, lower and upper trait quartiles were compared in three-axis environmental principal-component space using centroid distance and Gaussian Bhattacharyya overlap. Each trait was permuted 10,000 times while environmental coordinates, availability and trait distributions were held fixed. Results for all complete taxa and the direct-dated-backbone subset are listed in Table S1.7; Figure S1.8 shows the observed separation geometry.
+## Supplementary data-file index
 
-Taxon-level climate associations were fitted across 50 randomized within-genus placements using Pagel-λ phylogenetic generalized least squares. Table S1.8 and Figure S1.9 report the rows supported in every randomized tree. Only 54 of 216 atlas taxa were direct dated-backbone tips, retained Pagel-λ estimates were zero and direct-backbone non-circular signal was unsupported; these results therefore quantify sensitivity to tested placements rather than resolve thistle phylogeny.
+All files below are under `analysis_outputs/v2_full27_environment_atlas_2026-08-27/` in the repository and in the submission bundle.
 
-### S1.6 Spatial robustness
+- `v2_full27_endpoint_inventory.csv`: all 27 registered endpoint statuses.
+- `v2_full27_trait_geography.csv`: endpoint-specific geographic coverage.
+- `v2_full27_variance_decomposition.csv`: raw and equal-replication information-loss partitions.
+- `v2_full27_environment_within.csv`: complete within-taxon atlas.
+- `v2_full27_environment_among.csv`: complete among-taxon minimum-five and minimum-two atlases.
+- `v2_full27_environment_cross_scale.csv`: primary matched scale classification.
+- `sampling/v2_full27_sampling_composition_scenarios.csv`: all 674 perturbation rows.
+- `sampling/v2_full27_sampling_composition_summary.csv`: endpoint-level sampling stability.
+- `spatial/v2_full27_spatial_within.csv` and `spatial/v2_full27_spatial_among.csv`: broad-space sensitivities.
+- `historical/v2_full27_historical_placement_models.csv` and `historical/v2_full27_historical_placement_summary.csv`: 52-tree sensitivity.
 
-For each primary endpoint, the selected SPDE specification was refitted with the same centring, predictor set, mesh and priors to obtain residuals. Global Moran's I used eight nearest neighbours on unit-sphere coordinates and 999 permutations. Residual autocorrelation results are listed in Table S1.9 and shown in Figure S1.4. Taxon trait ranks were also recomputed after omitting each broad geographic region; minimum rank correlations are shown in Figure S1.5.
+## Supporting figure captions
 
-### S1.7 Multiplicity and interpretation
+**Figure S1. Taxon-mean information loss across all measured endpoints.** Raw observation-level and equal-replication fractions below source-assigned taxon means. Values describe visible image phenotypes.
 
-False-discovery-rate families remained separate by cohort and analysis tier. Circular hue components were interpreted jointly rather than as independent colour states. Cross-sectional trait–environment associations were not interpreted as plasticity, local adaptation, temporal response, pollinator-mediated selection, evolutionary rate or adaptive radiation.
+**Figure S2. Endpoint by environmental-gradient support at within- and among-taxon scales.** Every registered inferential unit is retained; unsupported and unexecuted combinations remain visible.
 
-### S1.8 Taxonomic sensitivity
-
-Eight WCVP synonym candidates would merge an active source unit with another active source unit. All eight were collapsed simultaneously before recomputing nested variance and 36 primary climate models. Candidate mappings and outcomes are listed in Table S1.10. This sensitivity tests taxonomic uncertainty while leaving source observation identities transparent.
-
-**Figure S1.1. Nested visible-variance sensitivities in the global thistle atlas.** For nine primary endpoints, below-taxon visible variance in the full decomposition is compared with one-head-per-photograph and equal-replication sensitivities. Substantial below-taxon variation remains under both alternatives.
-
-**Figure S1.2. Primary within-taxon climate coefficients for global thistle photographs.** Standardized coefficients are shown for nine endpoint components × four CHELSA predictors. Asterisks identify the eight rows with BH q < 0.05. Hue sine and cosine are components of one circular colour response.
-
-**Figure S1.3. Grouped spatial-model comparison for global thistle photographs.** Differences in WAIC within each endpoint compare climate, climate plus topography, climate plus soil and full-environment SPDE-INLA models; zero denotes the best-fitting group. The figure compares model fit, not coefficient significance.
-
-**Figure S1.4. Residual spatial autocorrelation after spatial modelling of global thistle photographs.** Moran's I is shown for residuals from the selected SPDE specification for each endpoint, using eight nearest neighbours and 999 permutations. No endpoint had permutation P < 0.05.
-
-**Figure S1.5. Taxon-rank stability under broad-region omission in the global thistle data.** Each value is the minimum Spearman correlation between full-data taxon rankings and rankings recomputed after omitting one geographic region. All endpoint minima remain high.
-
-**Figure S1.6. Sampling geography across filtering stages for global *Cirsium* and allied Cardueae photographs.** One-degree densities are shown on a common log-count scale for (a) detector-positive observations, (b) coordinate-usable observations, (c) observations with positional accuracy ≤10 km and (d) the primary taxon × 0.25° cohort. Maps use a Mollweide equal-area projection and include a 5,000-km equatorial scale bar. They diagnose sampling, not global representativeness.
-
-**Figure S1.7. Geographic variation in trait assessability across global thistle photographs.** Two-degree cells with at least 20 coordinate-usable observations show the usable fraction for (a) orientation, (b) complete visible-colour components, (c) complete gross-outline components and (d) the mean across all nine primary endpoints. Maps use a Mollweide equal-area projection and include a 5,000-km equatorial scale bar. Unassessable images are treated as missing.
-
-**Figure S1.8. Environmental sorting of low- and high-trait thistle taxa.** Observed environmental centroid distance is plotted against Gaussian Bhattacharyya overlap in three-axis environmental principal-component space. Higher distance and lower overlap indicate stronger separation. Point size marks endpoints with at least one all-taxa metric passing BH-corrected permutation tests; rings mark support in the direct-backbone sensitivity. The figure does not imply within-taxon response or causal adaptation.
-
-**Figure S1.9. Historical-placement sensitivity of global thistle trait–climate associations.** (a) Frozen primary within-taxon and randomized-tree among-taxon climate associations are juxtaposed without combining inferential families. (b) Six standardized PGLS coefficients passed BH correction across all 50 randomized trees. This is a placement sensitivity, not a resolved phylogenetic correction: only 54 of 216 atlas taxa are direct dated-backbone tips, retained Pagel-λ estimates are zero and no non-circular direct-backbone trait has FDR-supported phylogenetic signal.
+**Figure S3. Sequential robustness of the two final candidates.** Global among-taxon, broad-space, sampling-composition and 52-tree placement evidence for chroma-radiation and orientation-annual-precipitation. The display summarizes robustness, not causal adaptation.

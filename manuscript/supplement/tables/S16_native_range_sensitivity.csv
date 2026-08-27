@@ -1,5 +1,0 @@
-endpoint,predictor,frozen_beta,native_only_beta,native_only_ci_low,native_only_ci_high,native_only_q,native_only_n_observations,native_only_n_taxa,native_range_robust,current_status
-orientation_angle,BIO1,0.017059,0.022648,0.005974,0.039323,0.031059,21725,128,true,retained_after_native_range_sensitivity_developmental_stage_pending
-corolla_chroma,BIO12,0.039324,0.027812,0.003471,0.052154,0.075387,23672,128,false,withdrawn_from_current_headline_after_native_range_BH_failure
-shape_aspect_ratio,BIO4,0.013723,0.028420,0.022198,0.034642,1.247176e-17,22528,126,true,retained_after_native_range_sensitivity_developmental_stage_pending
-shape_aspect_ratio,BIO12,-0.010796,-0.015666,-0.031201,-0.000131,0.133181,22528,126,false,withdrawn_from_current_headline_after_native_range_BH_failure

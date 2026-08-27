@@ -1,0 +1,33 @@
+name: Azami Chapter 1 v2 submission
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate-v2-submission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install validation dependencies
+        run: python -m pip install -e ".[test,spatial]" python-docx
+      - name: Validate machine-readable claims and submission tree
+        run: |
+          python analysis/validate_final_claims.py
+          python analysis/validate_ch1_hypothesis_recovery.py
+          python analysis/validate_manuscript_citations.py
+          python analysis/ch1/run_submission.py check
+      - name: Validate frozen full-27 outputs
+        run: python analysis/validate_v2_submission_artifacts.py
+      - name: Rebuild submission figures
+        run: |
+          python analysis/build_v2_submission_figures.py
+          git diff --exit-code -- manuscript/figures/v2_submission
+      - name: Test submission-facing v2 code
+        run: python -m pytest -q --basetemp=.tmp/pytest-v2-submission

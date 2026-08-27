@@ -1,7 +1,19 @@
-# Analysis
+# Submission-facing v2 analysis
 
-This directory is the submission-facing analysis layer for Chapter 1. The scientific source of truth is `analysis/ch1/pipeline.json`; numerical manuscript claims are frozen in `manuscript/final_claims.json`.
+`analysis/ch1/pipeline.json` is the executable map. The active scientific lane begins with the 27-endpoint contract and ends with the full-environment sampling, broad-space and historical-placement gates.
 
-The current submission story is continuous within-taxon public-image phenomics. The former raw lability/quadrant analysis is withdrawn from the biological headline and is retained only as statistical provenance/QA.
+Primary entry points:
 
-Authors should start with `analysis/ch1/README.md` and must not choose numbered scripts by inspection. Exact numbered `ch1_global/v2` paths remain unchanged because they are recorded in workflow and artifact provenance.
+- `run_geb_v2_full27_environment_atlas.py`
+- `validate_geb_v2_full27_environment_atlas.py`
+- `run_geb_v2_full27_sampling_composition_sensitivity.py`
+- `validate_geb_v2_full27_sampling_composition.py`
+- `run_geb_v2_full27_spatial_sensitivity.py`
+- `run_geb_v2_full27_historical_sensitivity.py`
+- `validate_geb_v2_full27_sensitivities.py`
+- `validate_v2_submission_artifacts.py` verifies the tracked frozen validation reports, submission manifest, hashes and reviewer ZIP without requiring protected observation-level inputs.
+- `validate_manuscript_citations.py` requires a one-to-one match between active author–year citations and the reference list.
+- `build_v2_submission_figures.py`
+- `build_v2_submission_package.py`
+
+Numbered measurement scripts remain under `ch1_global/v2/` because their paths are part of frozen execution provenance. The old result-selection and submission-bundle scripts were removed from the active tree.

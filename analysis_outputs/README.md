@@ -1,31 +1,13 @@
-# Reviewer bias-control outputs
+# Frozen Azami Chapter 1 v2 outputs
 
-These outputs were generated on 2026-08-26 under the locked rules in
-`analysis/ch1/bias_control_contract.json`. They supplement rather than overwrite
-the frozen primary analysis.
+The active output directory is `v2_full27_environment_atlas_2026-08-27/`. It contains:
 
-- `reviewer_bias_control_v1/`: cyclic day-of-year adjustment and outcome-blind
-  dominant-taxon omission models for all 36 primary endpoint components.
-- `hemisphere_season_sensitivity_v1/`: Southern-Hemisphere phase alignment and
-  taxon-by-hemisphere cyclic-season sensitivities under a separately locked
-  contract.
-- `involucre_resolution_audit_v1/`: multivariable image-resolution and
-  sharpness adjustment plus fixed resolution strata.
-- `repeat_photo_bias_control_v1/`: outcome-blind repeat-photo cohort and public
-  image manifest; image measurement is pending.
-- `native_range_sensitivity_v1/`: versioned WCVP name/distribution resolution,
-  pinned TDWG level-3 geometry provenance and native-only model outputs.
-- `interpretive_figure_preview_v2/` and `supplement_figure_preview_v2/`:
-  reproducible review copies of the figures used for manuscript/DOCX QA. The
-  corresponding workflows remain the release mechanism.
+- the 27-endpoint inventory and 22-endpoint geography/variance tables;
+- complete within- and among-taxon nine-predictor atlases;
+- the matched scale classification;
+- 674 sampling-composition scenarios and their summary;
+- broad-space sensitivity results;
+- 52-tree historical-placement models and summary;
+- fail-closed validation reports.
 
-The strict observation input had SHA-256
-`fb6a2bd73937d1b703f355193361abeef4cbe5192c5168b94ba53857607c9469`.
-The photo metadata input had SHA-256
-`506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4`.
-
-The native-range gate is complete and retained two of four non-circular
-primary rows. No output in this directory closes developmental-stage,
-colour-calibration, repeat-photo measurement or independent
-measurement-validation gates. These files are an auditable PR snapshot, not a
-substitute for the planned DOI-backed durable data/code release.
+Superseded v1 output directories and old figure previews are absent from the submission-facing tree. Their historical recovery point is Git history and the immutable scientific tag `azami-ch1-v2-2026-08-27`.

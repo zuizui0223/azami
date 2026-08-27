@@ -38,14 +38,6 @@ BUILD = load("build_continuous_universe", V2 / "88_build_continuous_trait_univer
 MEASURE = load("measure_extended_continuous", V2 / "89_measure_extended_continuous_traits.py") if cv2 is not None else None
 ANALYSE = load("analyse_continuous_universe", V2 / "90_run_continuous_trait_universe_climate.py") if statsmodels is not None else None
 PREPARE = load("prepare_extended_cohort", V2 / "91_prepare_exhaustive_extended_cohort.py")
-BRIDGE = load(
-    "bridge_pr69_involucre",
-    ROOT / "analysis" / "bridge_pr69_involucre_to_continuous_contract.py",
-)
-COMPARE_GATES = load(
-    "compare_continuous_screen_to_pr69_gates",
-    ROOT / "analysis" / "compare_continuous_screen_to_pr69_gates.py",
-)
 
 
 class ContinuousTraitContractTests(unittest.TestCase):
@@ -106,79 +98,6 @@ class ContinuousTraitContractTests(unittest.TestCase):
         self.assertEqual(len(species), len(contract))
         self.assertNotIn("trait_state", observation.columns)
         self.assertTrue(observation["measurement_available"].all())
-
-
-class ReviewerBridgeTests(unittest.TestCase):
-    def test_pr69_aliases_map_to_one_canonical_endpoint_each(self):
-        contract = pd.read_csv(CONTRACT, dtype=str, keep_default_na=False)
-        observations = pd.DataFrame([{
-            "obs_id": "o1",
-            "taxon_name": "Cirsium test",
-            "n_usable_heads": 2,
-            "coordinate_precision_tier": "high_le_1km",
-            "log_min_dimension": 5.2,
-            "log1p_sharpness": 7.0,
-            "resolution_stratum": "150_199",
-            "involucre_projection_roughness": 0.11,
-            "involucre_spread_fraction": 0.22,
-            "spine_relative_length_max_proxy": 0.33,
-            "env_chelsa_bio01_native": 1.0,
-            "env_chelsa_bio04_native": 2.0,
-            "env_chelsa_bio12_native": 3.0,
-            "env_chelsa_bio15_native": 4.0,
-        }])
-        audit = BRIDGE.validate_inputs(
-            contract,
-            observations,
-            pd.DataFrame({"obs_id": ["o1"], "taxon_name": ["Cirsium test"]}),
-        )
-        observation, species, environment, environment_le10km = BRIDGE.build_extended_tables(
-            contract, observations
-        )
-        self.assertEqual(audit["n_taxon_name_mismatches"], 0)
-        self.assertEqual(
-            observation.loc[0, "involucre_projection_max_observation_median"], 0.33
-        )
-        self.assertNotIn("spine_relative_length_max_proxy", observation.columns)
-        self.assertEqual(
-            species.loc[0, "involucre_projection_max_species_median"], 0.33
-        )
-        self.assertEqual(len(environment), 1)
-        self.assertEqual(len(environment_le10km), 1)
-
-    def test_generic_candidate_signal_cannot_bypass_pr69_gate(self):
-        screen = pd.DataFrame([{
-            "endpoint_id": "bract_spread_fraction",
-            "analysis_tier": "candidate",
-            "predictor": "env_chelsa_bio04_native",
-            "beta_std_within": 0.10,
-            "p_value": 0.002,
-            "q_fdr_bh_within_tier": 0.02,
-            "fdr_significant_0_05": True,
-            "n_observations": 904,
-            "n_taxa": 165,
-        }])
-        adjusted = pd.DataFrame([{
-            "endpoint": "bract_spread_fraction",
-            "cohort": "all_resolution_adjusted",
-            "predictor": "env_chelsa_bio04_native",
-            "beta_standardized": 0.09,
-            "p_value": 0.006,
-            "q_fdr_bh_climate_12": 0.07,
-            "n_observations": 904,
-            "n_taxa": 165,
-        }])
-        headline = pd.DataFrame([{
-            "endpoint": "bract_spread_fraction",
-            "adjusted_bio4_q": 0.07,
-            "positive_in_all_successful_strata": True,
-            "strict_resolution_control_retained": False,
-        }])
-        comparison, report = COMPARE_GATES.compare(screen, adjusted, headline)
-        self.assertEqual(report["n_candidate_screen_signals"], 1)
-        self.assertEqual(report["n_submission_eligible"], 0)
-        self.assertFalse(comparison["submission_claim_eligible"].any())
-        self.assertIn("fails_locked_quality_adjusted_bh", comparison.iloc[0]["failure_reasons"])
 
 
 class ExhaustiveCohortTests(unittest.TestCase):

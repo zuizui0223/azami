@@ -1,176 +1,55 @@
 {
-  "schema_version": 3,
-  "status_date": "2026-08-27",
-  "chapter_role": "Azami resolves the present spatial scale of continuous capitulum traits; EAzami advances from functional validation to repeated history, historical-class discrimination, and convergence or adaptive-convergence tests.",
-  "overall_status": "computational_pattern_estimand_complete_external_validation_open",
-  "frozen_sources": {
-    "continuous_trait_run": 32975451732,
-    "continuous_trait_head": "f4a6fd5e01a2befd4f49174984a99e53856c2330",
-    "continuous_trait_artifact": 9612943217,
-    "continuous_trait_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
-    "multilevel_run": 33035785120,
-    "multilevel_head": "227c0e7b8c338894806785b8545c7c77c8724de1",
-    "multilevel_artifact": 9632715852,
-    "multilevel_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6"
-  },
-  "chapter_synthesis": "Continuous capitulum traits occupy distinct present-day spatial scales and align with different environmental gradients; neither a taxon mean nor one whole-capitulum syndrome captures that geography, and retrospective composition checks distinguish geographically extensive coverage from representative sampling.",
-  "narrative_axis": {
-    "primary_unit": "continuous trait x environmental gradient x spatial scale, with explicit measurement, q, spatial, sampling-composition and historical gate status",
-    "azami": "present distribution across head, photograph, within-taxon, among-taxon and sampled global scales",
-    "whole_capitulum_role": "secondary synthesis that rejects one universal syndrome and tests partial measurement-module organization",
-    "eazami": "four evidence-gated series from candidate function to adaptive-convergence testing",
-    "eazami_series": [
-      "EAzami-I: annotate and validate candidate functions for each component",
-      "EAzami-II: reconstruct origin timing and repeated history of each admitted functional trait on the nuclear ancestry set",
-      "EAzami-III: discriminate phylogenetic retention, independent origin, ancestral polymorphism and introgression",
-      "EAzami-IV: test functional convergence and, only with common selection pressure plus fitness evidence, adaptive convergence"
-    ],
-    "handoff_rule": "Transfer trait definitions, uncertainty, distributions, geography, environmental associations, scale classes and measurement, q, spatial, sampling-composition and historical gate status; do not invent post hoc categories, let function choose history, or promote spatial association to cause."
-  },
-  "hypotheses": [
+  "schema_version": 2,
+  "release_label": "Azami Chapter 1 v2",
+  "status": "complete_for_present_geography_submission_lane",
+  "questions": [
     {
-      "id": "FOUNDATION_REPEATED_CONTINUOUS_PHENOTYPES",
-      "status": "operationally_complete_externally_unvalidated",
-      "scope": "46,276 observations; 259 source-assigned taxa; 18 measured inferential endpoints",
-      "key_result": "374,255 analysis-eligible observation-by-endpoint measurements",
-      "allowed_claim": "The frozen workflow reproducibly produces repeated numerical image phenotypes.",
-      "not_allowed": "Independent measurement accuracy has been established."
+      "id": "H1_CONTINUOUS_EXTRACTION",
+      "status": "supported",
+      "claim": "Public photographs can be converted from coarse categories into a registered continuous-trait contract with explicit measurement failure states.",
+      "evidence": "27 endpoints registered; 22 measured; five explicit unexecuted rows."
     },
     {
-      "id": "FOUNDATION_BELOW_TAXON_DIVERSITY",
-      "status": "supported_all_measured_v2_endpoints",
-      "scope": "22 measured endpoints from the full 27-endpoint registry",
-      "key_result": "raw below-taxon fraction 0.814-0.986; equal-two-per-taxon median range 0.287-0.585",
-      "allowed_claim": "Taxon means discard substantial repeated visible phenotype information.",
-      "not_allowed": "The variance is genetic, heritable or plastic."
+      "id": "H2_TAXON_MEAN_INFORMATION_LOSS",
+      "status": "supported",
+      "claim": "Taxon means compress substantial repeated visible phenotype variation.",
+      "evidence": "Raw below-taxon fraction 0.8137-0.9863; equal-replication median 0.2869-0.5846."
     },
     {
-      "id": "FOUNDATION_ONE_UNIVERSAL_SYNDROME",
+      "id": "H3_ENDPOINT_GEOGRAPHY",
+      "status": "supported",
+      "claim": "Coordinate-bearing photographs recover endpoint-specific present geography across 190-431 occupied five-degree cells."
+    },
+    {
+      "id": "H4_SCALE_INVARIANCE",
       "status": "rejected",
-      "scope": "127 taxa complete across 18 measured inferential endpoints",
-      "key_result": "PC1=0.1849; PC1-PC3=0.4228",
-      "allowed_claim": "The expanded taxon morphospace remains multidimensional.",
-      "not_allowed": "One principal component is a universal biological syndrome."
+      "claim": "Environmental alignment is not invariant between within- and among-taxon scales.",
+      "evidence": "7 both-scale, 18 within-only, 3 among-only, 152 neither and 54 not-comparable rows."
     },
     {
-      "id": "H0_FULL_ENVIRONMENT_SCALE_ATLAS",
-      "status": "supported_scale_specific",
-      "scope": "26 inferential units x nine predictors; primary among-taxon min5 comparison",
-      "key_result": "7 both scales; 18 within only; 3 among only; 152 neither; 54 not comparable",
-      "allowed_claim": "Endpoint-environment organization differs between within- and among-taxon scales across all six frozen blocks.",
-      "not_allowed": "The same process or mechanism generated both scales."
+      "id": "H5_SINGLE_CAPITULUM_SYNDROME",
+      "status": "rejected",
+      "claim": "The measured endpoints do not collapse to one environmental capitulum syndrome; whole-capitulum structure is a secondary partial synthesis."
     },
     {
-      "id": "H0_SAMPLING_COMPOSITION_STABILITY",
-      "status": "partially_supported_scale_specific",
-      "scope": "36 q-supported endpoint-environment pairs across 674 declared retrospective composition scenarios",
-      "key_result": "16 of 26 within-taxon rows and all 10 among-taxon rows retain direction under every applicable scenario; four of five within-taxon broad-space passes and both final among-taxon candidates are composition-stable",
-      "allowed_claim": "The observed associations differ in sensitivity to taxon and regional composition, and the two final candidate directions survive the declared composition checks.",
-      "not_allowed": "The photograph sample is geographically representative, or retrospective stability supplies a new significance test."
-    },
-    {
-      "id": "H0_ADAPTIVE_PATTERN_CANDIDATE_GATE",
-      "status": "two_pairs_pass_current_sequential_controls",
-      "scope": "global-q-supported rows followed by retrospective sampling-composition, v2-native broad-space and 52-tree historical-placement sensitivities",
-      "key_result": "chroma-rsds negative and orientation-BIO12 positive retain direction in all 18 applicable composition scenarios, pass the among-taxon broad-space gate and retain direction and support on all 52 placement trees",
-      "allowed_claim": "These two rows are adaptive-pattern candidates under current controls.",
-      "not_allowed": "Adaptation, selection, causal mechanism, independent origin or convergence has been demonstrated."
-    },
-    {
-      "id": "H1_MEASUREMENT_MODULE_ORGANIZATION",
-      "status": "supported",
-      "scope": "complete18_min5 with complete18_min2 sensitivity",
-      "key_result": "within contrast 0.164502; among contrast 0.088475; both positive with bootstrap intervals excluding zero",
-      "allowed_claim": "Registered measurement modules show partial phenotypic organization at both scales.",
-      "not_allowed": "The modules are validated functional, developmental or genetic modules."
-    },
-    {
-      "id": "H2_PARTIAL_CROSS_SCALE_CORRESPONDENCE",
-      "status": "supported",
-      "scope": "17 joint inferential units",
-      "key_result": "within-among association-matrix Spearman 0.366299; bootstrap CI 0.118457-0.399817",
-      "allowed_claim": "Within- and among-taxon phenotype geometry is positively but incompletely aligned.",
-      "not_allowed": "Within-taxon covariance is a miniature version of among-taxon covariance."
-    },
-    {
-      "id": "H3_PROCESS_BLOCK_ENVIRONMENT_REPRESENTATION",
-      "status": "supported_scale_specific",
-      "scope": "18D response; frozen core four plus five process variables",
-      "key_result": "within process partial R2 0.013535, P=0.24468; among partial R2 0.214978, P=0.000700; growing-season precipitation stable at both thresholds among taxa",
-      "allowed_claim": "The core four are adequate within taxa but do not exhaust among-taxon environmental structure.",
-      "not_allowed": "Growing-season precipitation directly caused the phenotype."
-    },
-    {
-      "id": "H4_STABLE_CROSS_SCALE_COEFFICIENT_ROTATION",
-      "status": "inconclusive",
-      "scope": "environment-block coefficient-matrix cosines",
-      "key_result": "bootstrap intervals include zero",
-      "allowed_claim": "Coefficient geometry is descriptive and uncertain.",
-      "not_allowed": "Opposing selection or stable directional rotation has been demonstrated."
-    },
-    {
-      "id": "H5_PHENOTYPE_SPACE_HANDOFF",
-      "status": "completed_workflow_boundary",
-      "scope": "Azami to EAzami",
-      "key_result": "complete 234-row endpoint-gradient status grid plus spatial, sampling-composition and historical gate statuses exported",
-      "allowed_claim": "EAzami receives a frozen present-day target bundle for the gated I-function, II-history, III-origin-class and IV-convergence series.",
-      "not_allowed": "EAzami reproduction upgrades Azami observations to causal effects."
-    },
-    {
-      "id": "CANDIDATE_INVOLUCRE_ENVIRONMENT_STRUCTURE",
-      "status": "partially_supported_within_only",
-      "scope": "expanded candidate endpoints",
-      "key_result": "length-width by BIO15 and apical taper by BIO12 are quality-robust C-grade; bract projection p95 by BIO15 is image-sensitive; no candidate among-taxon FDR rows",
-      "allowed_claim": "Finer image geometry identifies exploratory within-taxon environmental structure with graded image-quality robustness.",
-      "not_allowed": "Direct botanical or defensive effects are established."
-    },
-    {
-      "id": "LEGACY_NEGATIVE_LABILITY_RESPONSIVENESS",
-      "status": "rejected_withdrawn",
-      "scope": "former responsiveness index and quadrant story",
-      "key_result": "the relation was precision and sample-size sensitive",
-      "allowed_claim": "The old lability story is statistical provenance only.",
-      "not_allowed": "High-variation taxa are generally less environmentally responsive."
-    },
-    {
-      "id": "FUNCTIONAL_CAUSAL_MECHANISMS",
-      "status": "not_tested_in_azami",
-      "scope": "rain, radiation, thermal, aerodynamic, pollinator, antagonist and defensive mechanisms",
-      "key_result": "literature annotations generate downstream hypotheses only",
-      "allowed_claim": "Azami identifies spatial patterns that motivate mechanistic tests.",
-      "not_allowed": "Any named mechanism is demonstrated by Chapter 1."
+      "id": "H6_ADAPTIVE_PATTERN_CANDIDATES",
+      "status": "two_candidates_under_current_controls",
+      "claim": "Chroma-radiation and orientation-annual-precipitation pass the current sequential among-taxon spatial and historical-placement gates and remain directionally stable under declared sampling perturbations.",
+      "boundary": "candidate patterns, not proof of adaptation, mechanism, independent origin or convergence"
     }
   ],
-  "completion": {
-    "computational_pattern_layers": {
-      "status": "complete",
-      "completed_items": 21,
-      "open_items": 0
-    },
-    "submission_narrative": {
-      "status": "synchronized_locally_for_full27_lane_not_yet_committed",
-      "completed_items": 7,
-      "open_items": 0
-    },
-    "final_figure_and_supplement_rendering": {
-      "status": "specified_not_frozen",
-      "completed_existing_main_figures": 3,
-      "new_or_rebuilt_main_figures_pending": 3,
-      "expanded_supplement_figures_pending": 8
-    },
-    "independent_scientific_validation": {
-      "status": "open_submission_blocking",
-      "completed_items": 0,
-      "open_items": 6
-    }
-  },
-  "open_validation_gates": [
-    "adjudicated independent detector boxes",
-    "independent orientation-colour-outline reference measurements",
-    "botanical calibration of candidate involucre-armature image phenotypes",
-    "developmental-stage labels or anthesis-restricted sensitivity",
-    "paired flower-versus-background colour negative control",
-    "repeat-photo trait remeasurement and bounded variance decomposition"
+  "excluded_from_active_submission": [
+    "legacy lability-responsiveness and quadrant hypothesis",
+    "nine-endpoint or A/B/C layer as the v2 trait-selection rule",
+    "categorical trait-environment atlas"
   ],
-  "next_step_rule": "Do not add an uncontracted correlational raster screen. Prioritize independent validation, repeat-image and developmental controls, botanical calibration, and final figure/supplement rendering."
+  "eazami_boundary": {
+    "series": [
+      "EAzami-I function validation",
+      "EAzami-II repeated history on nuclear ancestry",
+      "EAzami-III origin-class discrimination",
+      "EAzami-IV convergence and adaptive-convergence tests"
+    ],
+    "rule": "Azami spatial associations cannot be promoted to mechanism or history without the corresponding downstream evidence."
+  }
 }

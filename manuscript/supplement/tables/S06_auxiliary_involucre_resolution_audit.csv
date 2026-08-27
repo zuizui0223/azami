@@ -1,4 +1,0 @@
-endpoint,predictor,original_beta,original_q,resolution_adjusted_beta,resolution_adjusted_ci95_low,resolution_adjusted_ci95_high,resolution_adjusted_q,all_resolution_strata_positive,current_status
-involucre_projection_roughness,BIO4,0.0975,0.0424,0.086646,0.016078,0.157215,0.073008,false,C_exploratory_resolution_sensitive_sign_reversal_lowest_stratum
-involucre_spread_fraction,BIO4,0.0937,0.0424,0.094176,0.027274,0.161078,0.069580,true,C_exploratory_quality_sensitive_direction_consistent
-spine_relative_length_max_proxy,BIO4,0.0911,0.0424,0.078308,0.013287,0.143329,0.073008,false,C_exploratory_resolution_sensitive_sign_reversal_lowest_stratum

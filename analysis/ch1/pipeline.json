@@ -1,276 +1,72 @@
 {
-  "schema_version": 12,
+  "schema_version": 18,
   "release_label": "Azami Chapter 1 v2",
   "freeze_tag": "azami-ch1-v2-2026-08-27",
-  "status": "Azami Chapter 1 v2 frozen for present-geography inference; submission HOLD remains for independent validation",
-  "submission_story": {
-    "chapter_role": "resolve the present spatial scale of each continuous capitulum trait and its predeclared environmental alignment",
-    "primary_methodological_claim": "public photographs can be converted into repeated continuous head-level phenotype measurements under an explicit assessability and evidence hierarchy",
-    "primary_biological_claim": "continuous capitulum traits occupy distinct present-day spatial scales and align with different environmental gradients rather than one universal syndrome",
-    "environmental_claim": "All nine frozen predictors were evaluated for every measured endpoint; trait-environment alignment is scale specific, and only chroma-radiation plus orientation-annual-precipitation pass the current sequential among-taxon spatial and historical gates while retaining direction in all declared sampling-composition scenarios",
-    "candidate_function_boundary": "Radiation-responsive anthocyanin production and rain shielding are testable hypotheses consistent with external experiments, not mechanisms measured or demonstrated by Azami v2",
-    "legacy_lability_status": "withdrawn from biological headline; retained only as statistical provenance/QA",
-    "whole_capitulum_role": "secondary synthesis that rejects one universal syndrome and tests partial measurement-module organization",
-    "downstream_boundary": "Azami freezes trait definitions, present distributions, environmental associations, scale classes and gate status; EAzami-I validates candidate functions, II reconstructs repeated history on nuclear ancestry, III distinguishes independent origins from retention, ancestral polymorphism and introgression, and IV tests convergence or adaptive convergence without causal promotion"
-  },
+  "status": "v2 submission tree frozen; scientific HOLD retained for independent validation",
+  "submission_story": "photograph -> 27 continuous endpoints -> taxon-mean information loss -> present geography -> six environmental blocks -> within/among scale -> sampling and broad-space sensitivity -> historical placement -> two candidates",
   "policy": {
-    "move_numbered_scripts": false,
-    "reason": "Exact ch1_global/v2 paths are embedded in executed workflow and artifact provenance.",
-    "no_uncontracted_raster_screen": true,
-    "new_analysis_version_required_for": [
-      "trait definition changes",
-      "measurement threshold changes",
-      "taxon acceptance changes that merge, remove or reassign active units",
-      "environmental data changes",
-      "tree scenario changes",
-      "material detector or measurement validation failure"
-    ]
+    "active_results": "full27_full_environment_only",
+    "missingness": "fail_closed_not_biological_zero",
+    "sampling_sensitivity": "retrospective_directional_annotation_only",
+    "candidate_ceiling": "adaptive-pattern candidate under current controls",
+    "legacy_recovery": "Git history and immutable freeze tag only"
   },
   "stages": {
     "continuous_trait_extraction": {
       "status": "complete and artifact frozen",
       "script": "ch1_global/v2/88_build_continuous_trait_universe.py",
       "measurement_script": "ch1_global/v2/89_measure_extended_continuous_traits.py",
-      "contract": "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv",
-      "workflow": ".github/workflows/ch1-continuous-trait-universe.yml",
-      "result_ledger": "manuscript/results/GEB_V2_FINAL_RESULTS_2026-08-26.md",
-      "registered_endpoints": 27,
-      "measured_endpoints": 22,
-      "measured_inferential_endpoints": 18
+      "contract": "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv"
     },
-    "full27_full_environment_atlas": {
-      "status": "complete locally; 24 of 24 fail-closed validation checks passed",
+    "full27_environment_atlas": {
+      "status": "complete; 24/24 validation checks passed",
       "script": "analysis/run_geb_v2_full27_environment_atlas.py",
       "validator": "analysis/validate_geb_v2_full27_environment_atlas.py",
       "contract": "analysis/ch1/v2_full27_environment_atlas_contract.json",
-      "result_ledger": "manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md",
-      "registered_endpoints": 27,
-      "measured_endpoints": 22,
-      "environment_predictors": 9,
-      "within_q_supported_rows": 26,
-      "among_min5_q_supported_rows": 10,
-      "classification": {"both_scales": 7, "within_only": 18, "among_only": 3, "neither": 152, "not_comparable": 54},
-      "old_v1_nine_endpoint_subset_used": false,
-      "abc_layers_used_for_selection_or_multiplicity": false
+      "result_ledger": "manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md"
     },
-    "full27_sampling_composition_sensitivity": {
-      "status": "complete locally; 7 of 7 fail-closed validation checks passed",
+    "sampling_composition": {
+      "status": "complete; 7/7 validation checks passed",
       "script": "analysis/run_geb_v2_full27_sampling_composition_sensitivity.py",
       "validator": "analysis/validate_geb_v2_full27_sampling_composition.py",
-      "contract": "analysis/ch1/v2_full27_sampling_composition_sensitivity_contract.json",
-      "output": "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling",
-      "entry_pairs": 36,
-      "scenario_rows": 674,
-      "within_stable_all_declared_scenarios": 16,
-      "within_direction_unstable": 10,
-      "among_stable_all_declared_scenarios": 10,
-      "broad_space_passes_stable_all_declared_scenarios": 6,
-      "broad_space_passes_direction_unstable": [
-        "bract_projection_roughness~chelsa_rsds_mean"
-      ],
-      "adaptive_pattern_candidates_direction_stable_all_declared_scenarios": true,
-      "boundary": "retrospective selected-row directional sensitivity; no post-selection p values, no probability-sample correction and no causal promotion"
+      "contract": "analysis/ch1/v2_full27_sampling_composition_sensitivity_contract.json"
     },
-    "full27_spatial_historical_gates": {
-      "status": "complete locally; 11 of 11 fail-closed validation checks passed",
+    "spatial_historical": {
+      "status": "complete; 11/11 validation checks passed",
       "spatial_script": "analysis/run_geb_v2_full27_spatial_sensitivity.py",
       "historical_script": "analysis/run_geb_v2_full27_historical_sensitivity.py",
-      "validator": "analysis/validate_geb_v2_full27_sensitivities.py",
-      "within_broad_space_passes": 5,
-      "among_broad_space_passes": 2,
-      "historical_placement_trees": 52,
-      "historical_models_ok": 104,
-      "adaptive_pattern_candidates_under_current_controls": [
-        "corolla_lab_chroma~chelsa_rsds_mean",
-        "orientation_image_vertical_angle~chelsa_bio12"
-      ],
-      "boundary": "sequential broad-space and historical-placement sensitivities, not proof of adaptation or a joint causal spatial-phylogenetic model"
+      "validator": "analysis/validate_geb_v2_full27_sensitivities.py"
     },
-    "independent_detector_audit": {
-      "status": "packet and evaluator complete; human annotation pending",
-      "selection_script": "analysis/build_independent_detector_audit_packet.py",
-      "annotation_app": "analysis/detector_audit_annotation_app.py",
-      "finalizer": "analysis/finalize_detector_audit_annotations.py",
-      "evaluation_script": "analysis/evaluate_independent_detector_audit.py",
-      "workflow": ".github/workflows/ch1-independent-detector-audit-packet.yml"
-    },
-    "independent_measurement_validity": {
-      "status": "human/reference measurements pending",
-      "required_modules": ["orientation", "colour", "outline", "candidate involucral/armature geometry"],
-      "boundary": "production overlays and technical repeatability are not independent accuracy validation"
-    },
-    "nested_visible_variance": {
-      "status": "complete for nine established primary endpoints",
-      "script": "analysis/decompose_nested_visible_variance.py",
-      "workflow": ".github/workflows/ch1-nested-visible-variance.yml",
-      "levels": ["assigned taxon", "photograph within taxon", "detected head within photograph"],
-      "below_taxon_fraction_range": [0.5886205437803064, 0.9307403690956841]
-    },
-    "within_taxon_core_climate": {
-      "status": "complete frozen primary and candidate families",
-      "script": "ch1_global/v2/90_run_continuous_trait_universe_climate.py",
-      "n_primary_component_tests": 36,
-      "n_primary_bh_supported_rows": 8
-    },
-    "seasonal_and_dominant_taxon_bias_control": {
-      "status": "complete; developmental stage remains open",
-      "script": "analysis/run_bias_control_reanalysis.py",
-      "contract": "analysis/ch1/bias_control_contract.json"
-    },
-    "hemisphere_season_sensitivity": {
-      "status": "complete; developmental stage remains open",
-      "script": "analysis/run_hemisphere_season_sensitivity.py",
-      "contract": "analysis/ch1/hemisphere_season_sensitivity_contract.json"
-    },
-    "native_range_sensitivity": {
-      "status": "complete; two of four non-circular primary rows retain the frozen sign-plus-BH rule",
-      "script": "analysis/run_native_range_sensitivity.py",
-      "contract": "analysis/ch1/native_range_sensitivity_contract.json"
-    },
-    "colour_negative_control": {
-      "status": "implementation tested; production remeasurement pending",
-      "script": "analysis/run_colour_negative_control.py"
-    },
-    "repeat_photo_variance": {
-      "status": "outcome-blind cohort frozen; trait remeasurement pending",
-      "script": "analysis/build_repeat_photo_bias_control_cohort.py",
-      "n_repeat_observations": 20073,
-      "n_repeat_taxa": 236
-    },
-    "grouped_spde": {
-      "status": "complete frozen spatial context family",
-      "script": "ch1_global/v2/83_run_lightweight_spde_inla.R",
-      "workflow": ".github/workflows/ch1-lightweight-spde-inla.yml"
-    },
-    "candidate_image_quality": {
-      "status": "complete; two quality-robust C rows and one image-sensitive C row",
-      "script": "analysis/run_candidate_quality_sensitivity_v2.py",
-      "boundary": "image geometry is not direct botanical measurement"
-    },
-    "spatial_robustness": {
-      "status": "complete",
-      "residual_export_script": "analysis/export_spde_best_model_residuals.R",
-      "region_script": "analysis/build_naturalearth_broad_region_lookup.py",
-      "input_builder": "analysis/prepare_spatial_diagnostic_input.py",
-      "audit_script": "analysis/audit_spatial_robustness.py",
-      "workflow": ".github/workflows/ch1-spde-residual-export.yml"
-    },
-    "environmental_niche_permutation": {
-      "status": "complete",
-      "script": "analysis/permutation_test_trait_niche_contrasts.py",
-      "workflow": ".github/workflows/ch1-niche-permutation-null.yml",
-      "n_permutations": 10000
-    },
-    "taxonomic_synonym_collapse": {
-      "status": "complete",
-      "script": "analysis/audit_wcvp_synonym_collapse_sensitivity.py",
-      "workflow": ".github/workflows/ch1-wcvp-synonym-collapse-sensitivity.yml"
-    },
-    "matched_within_among": {
-      "status": "complete and artifact frozen",
-      "script": "analysis/run_geb_v2_within_among_alignment.py",
-      "contract": "analysis/ch1/within_among_alignment_contract.json",
-      "workflow": ".github/workflows/ch1-geb-v2-within-among-alignment.yml",
-      "matched_rows": 68,
-      "classification": {"both_scales": 3, "within_only": 8, "among_only": 1, "neither": 56}
-    },
-    "expanded_among_taxon_sorting": {
-      "status": "complete",
-      "script": "analysis/run_geb_v2_expanded_niche_sorting.py",
-      "contract": "analysis/ch1/expanded_niche_sorting_contract.json"
-    },
-    "whole_capitulum_organization": {
-      "status": "complete and artifact frozen",
+    "whole_capitulum_secondary": {
+      "status": "complete secondary synthesis",
       "script": "analysis/run_capitulum_functional_space.py",
-      "result_ledger": "manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md",
-      "main_within_module_contrast": 0.1645023304673242,
-      "main_among_module_contrast": 0.08847536372583811,
-      "main_cross_scale_spearman": 0.36629931778064023
+      "result_ledger": "manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md"
     },
-    "process_environment_extraction": {
-      "status": "complete with 100 percent coverage in the complete-18 cohort",
-      "script": "analysis/sample_chelsa_process_environment.py",
-      "contract": "analysis/ch1/chelsa_process_environment_sources.json"
+    "submission_figures": {
+      "status": "generated from frozen v2 tables",
+      "script": "analysis/build_v2_submission_figures.py"
     },
-    "environment_blocks": {
-      "status": "complete; stand-alone six-block BH family unsupported",
-      "script": "analysis/run_capitulum_environment_blocks.py",
-      "contract": "analysis/ch1/capitulum_environment_blocks_contract.json"
-    },
-    "core_four_sufficiency": {
-      "status": "complete; adequate within taxa and insufficient among taxa",
-      "script": "analysis/run_capitulum_environment_incremental.py",
-      "result_ledger": "manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md",
-      "within_partial_r2": 0.013535098842026137,
-      "among_partial_r2": 0.2149779830807262
-    },
-    "historical_sensitivity": {
-      "status": "randomized-placement sensitivity only; not resolved phylogenetic correction",
-      "n_direct_backbone_taxa": 54,
-      "n_randomized_trees": 50
+    "submission_package": {
+      "status": "submission candidate; HOLD retained",
+      "script": "analysis/build_v2_submission_package.py",
+      "workflow": ".github/workflows/ch1-v2-submission.yml"
     },
     "hypothesis_recovery": {
-      "status": "complete machine-readable audit",
+      "status": "complete",
       "script": "analysis/validate_ch1_hypothesis_recovery.py",
-      "hypothesis_status": "analysis/ch1/hypothesis_recovery_status.json",
-      "result_ledger": "manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md"
+      "hypothesis_status": "analysis/ch1/hypothesis_recovery_status.json"
     },
     "claims": {
-      "status": "established endpoint claim registry retained; multilevel claims validated separately",
-      "script": "analysis/validate_final_claims.py",
-      "inputs": ["manuscript/final_claims.json", "analysis/ch1/hypothesis_recovery_status.json"]
+      "status": "valid",
+      "script": "analysis/validate_final_claims.py"
     }
   },
-  "provenance_only": {
-    "withdrawn_lability_script": "ch1_global/v2/77_build_lability_axes_and_supplement.py",
-    "legacy_july_submission_contract": ["ch1_global/v2/submission_config.json", "ch1_global/v2/69_validate_submission_outputs.py"],
-    "rule": "Preserve executed historical files but do not expose them as active biological results."
-  },
   "current_submission_gates": {
-    "completed_computational": [
-      "category-free continuous-trait measurement",
-      "full-27 endpoint inventory and taxon-mean information-loss audit",
-      "full-cohort extraction of all nine environmental predictors",
-      "full-27 by full-environment within-among atlas",
-      "full-27 sampling-composition sensitivity across dominant taxa, equal taxon weight, broad regions and native-only scope",
-      "v2-native broad-space and historical-placement candidate gates",
-      "primary nested image hierarchy",
-      "expanded taxon morphospace",
-      "within-taxon core-climate models",
-      "matched within-among endpoint models",
-      "expanded among-taxon sorting",
-      "whole-capitulum organization",
-      "process-environment extraction",
-      "core-four sufficiency",
-      "seasonal, hemisphere and dominant-taxon controls",
-      "native-range sensitivity",
-      "residual spatial and broad-region diagnostics",
-      "taxonomic robustness",
-      "candidate image-quality audit",
-      "evidence atlas and EAzami handoff",
-      "hypothesis recovery and submission narrative synchronization"
-    ],
-    "pending_image_remeasurement": [
-      "developmental-stage classification or anthesis restriction",
-      "paired flower/background colour negative control",
-      "repeat-photo trait measurement and variance decomposition"
-    ],
-    "pending_external_scientific": [
-      "adjudicated human boxes for independent detector audit",
-      "independent orientation/colour/outline reference measurements",
-      "independent botanical calibration of candidate involucral/armature metrics"
-    ],
-    "pending_presentation": [
-      "render and visually audit final Figures 4-6",
-      "export and render expanded Supplement Tables S1.15-S1.22 and Figures S1.10-S1.17",
-      "regenerate figure manifests and output hashes"
-    ],
-    "pending_computational_pattern_analysis": [],
-    "pending_human_finalization": [
-      "24 high-priority nomenclatural notes",
-      "authorship and administrative metadata",
-      "licence selection",
-      "durable release and DOI"
-    ]
+    "computational_v2": "complete",
+    "sampling_composition": "complete_with_explicit_instability",
+    "spatial_historical": "complete_as_sequential_sensitivity",
+    "independent_measurement_validation": "pending",
+    "developmental_stage_colour_repeat_photo_controls": "pending",
+    "licence_and_durable_doi": "pending"
   }
 }

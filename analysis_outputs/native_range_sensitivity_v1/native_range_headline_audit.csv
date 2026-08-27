@@ -1,5 +1,0 @@
-endpoint,trait,predictor,expected_beta,native_only_beta,native_only_ci_low,native_only_ci_high,native_only_q,native_only_n_observations,native_only_n_taxa,native_range_robust
-orientation_angle,orientation_angle_degrees_median,chelsa_bio01,0.017059,0.022648106592971257,0.0059736873709701245,0.03932252581497239,0.0310591445215015,21725,128,True
-corolla_chroma,corolla_lab_chroma_median,chelsa_bio12,0.039324,0.02781239199495854,0.0034706515284058936,0.05215413246151119,0.07538655524358481,23672,128,False
-shape_aspect_ratio,shape_aspect_ratio_median,chelsa_bio04,0.013723,0.028419904664741882,0.022198196040949587,0.03464161328853418,1.2471761679344018e-17,22528,126,True
-shape_aspect_ratio,shape_aspect_ratio_median,chelsa_bio12,-0.010796,-0.01566601981138186,-0.031200628894261576,-0.00013141072850214597,0.13318123819625813,22528,126,False
