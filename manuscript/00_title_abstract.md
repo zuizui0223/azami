@@ -4,11 +4,13 @@
 
 **Global citizen-science images reveal multidimensional and scale-dependent environmental organization of thistle capitula**
 
+**Running title:** Scale-dependent capitulum geography
+
 ## Abstract
 
 ### Aim
 
-Broad-scale plant trait datasets often summarize taxa by species means or coarse categorical states. We asked whether public photographs can instead recover repeated continuous capitulum phenotypes, reveal spatial diversity hidden by taxon-level summaries, determine whether one reproductive structure occupies an internally organized multidimensional phenotype space, and resolve how its environmental organization differs within versus among taxa.
+We tested whether public photographs recover repeated continuous capitulum phenotypes, reveal diversity below taxon means, and resolve phenotype organization and environmental alignment within and among taxa.
 
 ### Location
 
@@ -16,20 +18,22 @@ Global.
 
 ### Time period
 
-Observations dated 1985–2026; climate normals for 1981–2010.
+Observations from 1985–2026; climate normals from 1981–2010.
 
 ### Major taxa studied
 
-Source-assigned taxa of *Cirsium* and allied Cardueae.
+Source-assigned *Cirsium* and allied Cardueae.
 
 ### Methods
 
-An object detector localized capitula and deterministic image functions measured a frozen 27-endpoint continuous-trait contract spanning orientation, visible colour, outline and finer involucral and armature geometry. The final trait universe contained 46,276 spatially thinned observations from 259 taxa; 22 endpoints were measured, including 18 of 19 inferential endpoints. We quantified below-taxon visible variation and taxon morphospace, fitted within-taxon associations with four CHELSA predictors and tested matched taxon-median associations and environmental sorting among taxa. For observations complete across all 18 measured inferential endpoints, we compared within- and among-taxon association matrices, tested whether registered measurement modules were more internally organized than expected under label permutation, and evaluated six predeclared environmental blocks. A nested Freedman–Lane analysis then tested whether radiation, vapour-pressure deficit, wind, growing-season precipitation and potential productivity added multivariate information beyond BIO1, BIO4, BIO12 and BIO15.
+An object detector localized capitula; deterministic functions implemented a frozen 27-endpoint contract spanning orientation, visible colour, outline, involucre architecture and armature. The final universe contained 46,276 observations from 259 taxa and 18 inferential endpoints. We quantified below-taxon visible variance and taxon morphospace; fitted matched within- and among-taxon climate associations; compared 17-unit association matrices; tested module organization; and used nested permutation tests to ask whether five process variables added information beyond BIO1, BIO4, BIO12 and BIO15.
 
 ### Results
 
-Across the nine established primary endpoints, 0.589–0.931 of visible image variance occurred below taxon means. The expanded taxon morphospace contained 127 complete taxa × 18 endpoints, but its first three principal components explained only 42.3% cumulatively. Among 1,734 complete-18 observations from 42 taxa in the main multilevel scope, registered-module association was stronger than between-module association within taxa (contrast = 0.1645) and among taxa (0.0885); the two 17-unit association geometries were positively but incompletely aligned (Spearman = 0.3663). Endpoint-level results remained scale specific: orientation aligned with annual mean temperature within taxa but annual precipitation among taxa, while three fine involucral candidate signals were within-taxon only. Across 68 matched endpoint–climate rows, three were supported at both scales, eight within taxa only and one among taxa only. The five process variables added no supported whole-capitulum information beyond the four-variable core within taxa, but added substantial information among taxa (main partial R2 = 0.2150, permutation P = 0.000700; sensitivity partial R2 = 0.0938, P = 0.0302). Growing-season precipitation was the only block-specific increment supported at both replication thresholds.
+For nine established endpoints, 0.589–0.931 of visible variance occurred below taxon means. Among 127 taxa complete for 18 endpoints, the first three principal components explained 42.3%, rejecting one dominant syndrome. In 1,734 observations from 42 taxa, within-module association exceeded between-module association within taxa (contrast 0.1645) and among taxa (0.0885); the two geometries were partly aligned (Spearman 0.3663). Of 68 matched endpoint–climate rows, three were supported at both scales, eight within taxa only and one among taxa only. Process variables added no supported information within taxa, but did among taxa (partial R2 0.2150, P = 0.000700); growing-season precipitation was the only increment supported at both replication thresholds.
 
 ### Main conclusions
 
-Global public photographs can move broad-scale trait ecology beyond species means and coarse categories by preserving repeated quantitative phenotype distributions and reconstructing a partially organized multidimensional phenotype space for one reproductive structure. Environmental organization is both trait- and scale-dependent: the four conventional CHELSA predictors adequately summarize the current within-taxon whole-capitulum estimand but do not exhaust among-taxon structure, for which growing-season water input contributes additional spatial information. The result is an evidence-graded map of capitulum phenotypic geography, not one universal climatic syndrome. It does not establish functional or genetic modularity, plasticity, adaptation or causal mechanisms, and independent detector, colour and botanical trait validation remain necessary.
+Public photographs preserve quantitative phenotype distributions that species means discard. Thistle capitula form a multidimensional, partially organized phenotype whose environmental alignment changes across biological scales. These results map phenotypic geography rather than demonstrate functional or genetic modularity, adaptation or causation; independent validation remains necessary.
+
+**Keywords:** capitulum; citizen science; continuous traits; environmental filtering; image phenotyping; intraspecific variation; macroecology; scale dependence
