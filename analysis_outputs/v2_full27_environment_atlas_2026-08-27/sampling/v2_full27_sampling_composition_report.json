@@ -1,0 +1,68 @@
+{
+  "analysis_id": "geb_v2_full27_sampling_composition_sensitivity_v1",
+  "status": "retrospective_selected_row_sensitivity",
+  "entry_rule": "rows with q_fdr_bh_global_family < 0.05 in the matching scale-specific atlas; every atlas row remains reported regardless of entry",
+  "n_selected_within_pairs": 26,
+  "n_selected_among_pairs": 10,
+  "n_scenario_rows": 674,
+  "n_broad_regions_omitted_separately": 6,
+  "broad_regions": [
+    "Africa",
+    "Asia",
+    "Europe",
+    "North America",
+    "Oceania",
+    "South America"
+  ],
+  "top_taxa": [
+    "Cirsium vulgare",
+    "Cirsium arvense",
+    "Cirsium palustre",
+    "Cirsium oleraceum",
+    "Cirsium heterophyllum",
+    "Cirsium horridulum",
+    "Cirsium discolor",
+    "Cirsium undulatum",
+    "Cirsium acaulon",
+    "Cirsium altissimum"
+  ],
+  "stability_class_counts": {
+    "stable_all_declared_scenarios": 26,
+    "direction_unstable": 10
+  },
+  "n_direction_unstable_pairs": 10,
+  "method": {
+    "analysis_id": "geb_v2_full27_sampling_composition_sensitivity_v1",
+    "version": "2026-08-27",
+    "status": "retrospective_selected_row_sensitivity",
+    "parent_analysis_id": "geb_v2_full27_environment_atlas_v1",
+    "parent_contract": "analysis/ch1/v2_full27_environment_atlas_contract.json",
+    "entry_rule": "rows with q_fdr_bh_global_family < 0.05 in the matching scale-specific atlas; every atlas row remains reported regardless of entry",
+    "dominant_taxa_top_n": 10,
+    "dominant_taxa_rule": "rank taxa only by full environment-cohort observation count with alphabetical tie-breaking; omit each top-10 taxon separately and the top two jointly",
+    "equal_taxon_weight_rule": "within-taxon rows only; assign each observation weight 1/n for its taxon so every retained taxon has equal total weight",
+    "region_rule": "omit each mapped Natural Earth broad region separately; recompute trait and environment summaries after omission",
+    "native_rule": "retain only observations explicitly classified native by the frozen WCVP/TDWG lookup; unresolved, introduced, unlisted and unmapped rows are excluded fail-closed",
+    "linear_stability_rule": "preserve the sign of the atlas coefficient",
+    "circular_stability_rule": "positive cosine alignment with the atlas sine-cosine coefficient vector, equivalent to an angular difference below 90 degrees",
+    "inference_rule": "descriptive directional and effect-magnitude stability only; do not produce post-selection p-values or a new multiplicity family",
+    "role": "sampling-composition sensitivity, not a correction to a probability sample and not a candidate-promotion gate",
+    "claim_boundary": [
+      "This sensitivity was specified after the full-27 atlas results were inspected.",
+      "Directional stability does not make the public-image sample globally representative.",
+      "A stable selected row is not a new confirmatory discovery and is not evidence of causation, plasticity or adaptation.",
+      "An unevaluable scenario remains unevaluable and is never treated as a stable pass."
+    ]
+  },
+  "claim_boundary": "Retrospective directional stability under declared sampling-composition perturbations; not a correction to a probability sample, not a new discovery family and not evidence of causal environmental response.",
+  "input_sha256": {
+    "analysis_contract": "e984705edd2411c5b0da1d32c27c31ae26c391ee72eae181a0ba6f0623e879e3",
+    "sensitivity_contract": "bca83ad5344f57951bd092aa3393867afdfdfa58abfa790368940aa9fceb0123",
+    "traits_long": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7",
+    "atlas_within": "80041b38673a23656a8a54c40b508367eb60e4d28ae3907ef1a12a6ca752c258",
+    "atlas_among": "f2fd932999e05d79a0d38b53c32e9e3f33ba1f3744f26b0e48f79c5cde91bc0f",
+    "regions": "085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff",
+    "native_status": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+  }
+}

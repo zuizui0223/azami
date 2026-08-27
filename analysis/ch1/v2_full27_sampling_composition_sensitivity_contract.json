@@ -1,0 +1,23 @@
+{
+  "analysis_id": "geb_v2_full27_sampling_composition_sensitivity_v1",
+  "version": "2026-08-27",
+  "status": "retrospective_selected_row_sensitivity",
+  "parent_analysis_id": "geb_v2_full27_environment_atlas_v1",
+  "parent_contract": "analysis/ch1/v2_full27_environment_atlas_contract.json",
+  "entry_rule": "rows with q_fdr_bh_global_family < 0.05 in the matching scale-specific atlas; every atlas row remains reported regardless of entry",
+  "dominant_taxa_top_n": 10,
+  "dominant_taxa_rule": "rank taxa only by full environment-cohort observation count with alphabetical tie-breaking; omit each top-10 taxon separately and the top two jointly",
+  "equal_taxon_weight_rule": "within-taxon rows only; assign each observation weight 1/n for its taxon so every retained taxon has equal total weight",
+  "region_rule": "omit each mapped Natural Earth broad region separately; recompute trait and environment summaries after omission",
+  "native_rule": "retain only observations explicitly classified native by the frozen WCVP/TDWG lookup; unresolved, introduced, unlisted and unmapped rows are excluded fail-closed",
+  "linear_stability_rule": "preserve the sign of the atlas coefficient",
+  "circular_stability_rule": "positive cosine alignment with the atlas sine-cosine coefficient vector, equivalent to an angular difference below 90 degrees",
+  "inference_rule": "descriptive directional and effect-magnitude stability only; do not produce post-selection p-values or a new multiplicity family",
+  "role": "sampling-composition sensitivity, not a correction to a probability sample and not a candidate-promotion gate",
+  "claim_boundary": [
+    "This sensitivity was specified after the full-27 atlas results were inspected.",
+    "Directional stability does not make the public-image sample globally representative.",
+    "A stable selected row is not a new confirmatory discovery and is not evidence of causation, plasticity or adaptation.",
+    "An unevaluable scenario remains unevaluable and is never treated as a stable pass."
+  ]
+}

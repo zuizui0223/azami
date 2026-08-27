@@ -1,0 +1,245 @@
+{
+  "status": "PASS",
+  "n_checks": 24,
+  "n_passed": 24,
+  "checks": [
+    {
+      "check": "contract_has_27_endpoints",
+      "passed": true,
+      "detail": 27
+    },
+    {
+      "check": "inventory_retains_exact_27",
+      "passed": true,
+      "detail": {
+        "rows": 27,
+        "unique_endpoints": 27
+      }
+    },
+    {
+      "check": "variance_retains_exact_27",
+      "passed": true,
+      "detail": {
+        "rows": 27,
+        "unique_endpoints": 27
+      }
+    },
+    {
+      "check": "geography_retains_exact_27",
+      "passed": true,
+      "detail": {
+        "rows": 27,
+        "unique_endpoints": 27
+      }
+    },
+    {
+      "check": "measured_and_unexecuted_counts",
+      "passed": true,
+      "detail": {
+        "measured": 22,
+        "unexecuted_no_measurement": 5
+      }
+    },
+    {
+      "check": "within_complete_status_grid",
+      "passed": true,
+      "detail": 234
+    },
+    {
+      "check": "among_complete_status_grids",
+      "passed": true,
+      "detail": {
+        "among_taxon_min2": 234,
+        "among_taxon_min5": 234
+      }
+    },
+    {
+      "check": "cross_scale_complete_grid",
+      "passed": true,
+      "detail": 234
+    },
+    {
+      "check": "within_uses_exact_nine_predictors",
+      "passed": true,
+      "detail": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_gsp",
+        "chelsa_npp",
+        "chelsa_rsds_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_vpd_mean"
+      ]
+    },
+    {
+      "check": "within_has_no_abc_or_tier_family",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "within_retains_all_rows_regardless_of_q",
+      "passed": true,
+      "detail": 234
+    },
+    {
+      "check": "among_uses_exact_nine_predictors",
+      "passed": true,
+      "detail": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_gsp",
+        "chelsa_npp",
+        "chelsa_rsds_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_vpd_mean"
+      ]
+    },
+    {
+      "check": "among_has_no_abc_or_tier_family",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "check": "among_retains_all_rows_regardless_of_q",
+      "passed": true,
+      "detail": 468
+    },
+    {
+      "check": "within_global_fdr_recomputed",
+      "passed": true,
+      "detail": {
+        "n_tests": 189,
+        "max_abs_difference": 7.840950111415168e-16
+      }
+    },
+    {
+      "check": "among_taxon_min2_global_fdr_recomputed",
+      "passed": true,
+      "detail": {
+        "n_tests": 189,
+        "max_abs_difference": 1.1102230246251565e-16
+      }
+    },
+    {
+      "check": "among_taxon_min5_global_fdr_recomputed",
+      "passed": true,
+      "detail": {
+        "n_tests": 180,
+        "max_abs_difference": 1.1102230246251565e-16
+      }
+    },
+    {
+      "check": "environment_full_cohort_unique",
+      "passed": true,
+      "detail": {
+        "rows": 46276,
+        "taxa": 259
+      }
+    },
+    {
+      "check": "environment_coverage_at_least_0_98",
+      "passed": true,
+      "detail": {
+        "chelsa_bio01": 1.0,
+        "chelsa_bio04": 1.0,
+        "chelsa_bio12": 1.0,
+        "chelsa_bio15": 1.0,
+        "chelsa_rsds_mean": 1.0,
+        "chelsa_vpd_mean": 1.0,
+        "chelsa_sfcwind_mean": 0.9998919526320339,
+        "chelsa_gsp": 1.0,
+        "chelsa_npp": 1.0
+      }
+    },
+    {
+      "check": "reference_environment_rows_all_recovered",
+      "passed": true,
+      "detail": {
+        "both": 1874,
+        "left_only": 0,
+        "right_only": 0
+      }
+    },
+    {
+      "check": "reference_environment_values_exactly_reproduced",
+      "passed": true,
+      "detail": {
+        "reference_rows": 1874,
+        "taxon_name_mismatches": 0,
+        "variables": {
+          "chelsa_bio01": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_bio04": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_bio12": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_bio15": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_rsds_mean": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_vpd_mean": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_sfcwind_mean": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_gsp": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          },
+          "chelsa_npp": {
+            "finite_overlap": 1874,
+            "maximum_absolute_difference": 0.0,
+            "missingness_mismatch": 0
+          }
+        }
+      }
+    },
+    {
+      "check": "within_linear_betas_independently_recomputed",
+      "passed": true,
+      "detail": {
+        "n_spot_checks": 8,
+        "max_abs_difference": 9.367506770274758e-17
+      }
+    },
+    {
+      "check": "among_linear_betas_independently_recomputed",
+      "passed": true,
+      "detail": {
+        "n_spot_checks": 8,
+        "max_abs_difference": 6.071532165918825e-17
+      }
+    },
+    {
+      "check": "report_confirms_no_v1_subset",
+      "passed": true,
+      "detail": false
+    }
+  ],
+  "claim_ceiling": "exploratory trait-environment atlas; spatial and historical sensitivities are separate required gates"
+}

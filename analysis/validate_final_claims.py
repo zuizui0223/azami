@@ -15,6 +15,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     claims = json.loads(Path(parse_args().claims).read_text(encoding="utf-8"))
+    assert claims["release_label"] == "Azami Chapter 1 v2"
+    assert claims["freeze_tag"] == "azami-ch1-v2-2026-08-27"
+    assert Path(claims["defense_document"]).is_file()
     datasets = claims["datasets"]
     nested = claims["nested_visible_variance"]
     legacy = claims["legacy_precision_audit"]
@@ -24,6 +27,8 @@ def main() -> None:
     involucre = claims["auxiliary_involucre"]
     history = claims["historical_sensitivity"]
     molecular = claims["molecular_database_coverage"]
+    full27 = claims["canonical_full27_full_environment"]
+    sampling = full27["sampling_composition_sensitivity"]
 
     atlas = datasets["balanced_image_comparison_atlas"]
     assert atlas["n_taxa"] == 216
@@ -36,6 +41,38 @@ def main() -> None:
     assert datasets["exhaustive_spatially_thinned_primary"]["n_input_taxa"] == 259
     assert datasets["revised_precision_aware_cohort"]["n_taxa"] == 101
     assert datasets["legacy_lability_cohort"]["n_taxa"] == 102
+
+    assert full27["n_registered_endpoints"] == 27
+    assert full27["n_measured_endpoints"] == 22
+    assert full27["n_spatial_observations"] == 46276
+    assert full27["n_source_assigned_taxa"] == 259
+    assert full27["within_global_q_supported_rows"] == 26
+    assert full27["among_min5_global_q_supported_rows"] == 10
+    candidates = full27["adaptive_pattern_candidates_under_current_controls"]
+    assert [row["endpoint"] for row in candidates] == [
+        "corolla_lab_chroma",
+        "orientation_image_vertical_angle",
+    ]
+    assert all(row["n_historical_placement_trees_passed"] == 52 for row in candidates)
+    assert "not anthocyanin concentration" in candidates[0]["mechanism_boundary"]
+    assert "not gravity" in candidates[1]["mechanism_boundary"]
+    assert all(row["decisive_next_test"] for row in candidates)
+    assert sampling["status"] == "retrospective_selected_row_sensitivity"
+    assert sampling["n_entry_pairs"] == 36
+    assert sampling["n_scenario_rows"] == 674
+    assert sampling["n_within_pairs_stable_all_declared_scenarios"] == 16
+    assert sampling["n_within_pairs_direction_unstable"] == 10
+    assert sampling["n_among_pairs_stable_all_declared_scenarios"] == 10
+    assert sampling["n_broad_space_passes_stable_all_declared_scenarios"] == 6
+    assert sampling["n_broad_space_passes_direction_unstable"] == 1
+    assert sampling["direction_unstable_broad_space_passes"] == [
+        "bract_projection_roughness~chelsa_rsds_mean"
+    ]
+    assert sampling[
+        "both_adaptive_pattern_candidates_direction_stable_all_declared_scenarios"
+    ] is True
+    assert full27["validation"]["sampling_composition_checks_passed"] == 7
+    assert full27["validation"]["sampling_composition_checks_total"] == 7
 
     assert nested["n_endpoints"] == 9
     for key in (

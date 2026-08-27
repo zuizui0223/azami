@@ -18,6 +18,9 @@ EXPECTED_IDS = {
     "FOUNDATION_REPEATED_CONTINUOUS_PHENOTYPES",
     "FOUNDATION_BELOW_TAXON_DIVERSITY",
     "FOUNDATION_ONE_UNIVERSAL_SYNDROME",
+    "H0_FULL_ENVIRONMENT_SCALE_ATLAS",
+    "H0_SAMPLING_COMPOSITION_STABILITY",
+    "H0_ADAPTIVE_PATTERN_CANDIDATE_GATE",
     "H1_MEASUREMENT_MODULE_ORGANIZATION",
     "H2_PARTIAL_CROSS_SCALE_CORRESPONDENCE",
     "H3_PROCESS_BLOCK_ENVIRONMENT_REPRESENTATION",
@@ -30,15 +33,17 @@ EXPECTED_IDS = {
 
 ALLOWED_STATUSES = {
     "operationally_complete_externally_unvalidated",
-    "supported_primary_endpoints",
+    "supported_all_measured_v2_endpoints",
     "rejected",
     "supported",
     "supported_scale_specific",
+    "partially_supported_scale_specific",
     "inconclusive",
     "completed_workflow_boundary",
     "partially_supported_within_only",
     "rejected_withdrawn",
     "not_tested_in_azami",
+    "two_pairs_pass_current_sequential_controls",
 }
 
 EXPECTED_PROVENANCE = {
@@ -53,8 +58,10 @@ EXPECTED_PROVENANCE = {
 }
 
 EXPECTED_SYNTHESIS = (
-    "The thistle capitulum is a multidimensional, partially organized phenotype "
-    "whose environmental alignment changes across biological scales."
+    "Continuous capitulum traits occupy distinct present-day spatial scales and "
+    "align with different environmental gradients; neither a taxon mean nor one "
+    "whole-capitulum syndrome captures that geography, and retrospective composition "
+    "checks distinguish geographically extensive coverage from representative sampling."
 )
 
 
@@ -65,12 +72,24 @@ def fail(message: str) -> None:
 def main() -> int:
     data = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
 
-    if data.get("schema_version") != 1:
-        fail("hypothesis recovery schema_version must equal 1")
+    if data.get("schema_version") != 3:
+        fail("hypothesis recovery schema_version must equal 3")
     if data.get("overall_status") != "computational_pattern_estimand_complete_external_validation_open":
         fail("overall status must retain the computational-complete/external-validation-open boundary")
     if data.get("chapter_synthesis") != EXPECTED_SYNTHESIS:
         fail("Chapter 1 synthesis changed without a versioned result update")
+    axis = data.get("narrative_axis", {})
+    if axis.get("primary_unit") != "continuous trait x environmental gradient x spatial scale, with explicit measurement, q, spatial, sampling-composition and historical gate status":
+        fail("Chapter 1 must retain the PR71 trait-by-gradient-by-scale primary unit")
+    if not str(axis.get("whole_capitulum_role", "")).startswith("secondary synthesis"):
+        fail("whole-capitulum analysis must remain a secondary synthesis")
+    series = axis.get("eazami_series", [])
+    if len(series) != 4 or not all(str(row).startswith(f"EAzami-{label}") for row, label in zip(series, ("I", "II", "III", "IV"))):
+        fail("EAzami handoff must retain the ordered I-IV evidence series")
+    if "common selection pressure plus fitness evidence" not in str(series[3]):
+        fail("EAzami-IV must preserve the adaptive-convergence evidence gate")
+    if "post hoc categories" not in str(axis.get("handoff_rule", "")) or "function choose history" not in str(axis.get("handoff_rule", "")):
+        fail("EAzami handoff must prohibit post hoc discretization and function-selected history")
     if data.get("frozen_sources") != EXPECTED_PROVENANCE:
         fail("immutable Azami result provenance changed")
 
@@ -90,7 +109,11 @@ def main() -> int:
                 fail(f"{row.get('id')} is missing {field}")
 
     required_fixed = {
+        "FOUNDATION_BELOW_TAXON_DIVERSITY": "supported_all_measured_v2_endpoints",
         "FOUNDATION_ONE_UNIVERSAL_SYNDROME": "rejected",
+        "H0_FULL_ENVIRONMENT_SCALE_ATLAS": "supported_scale_specific",
+        "H0_SAMPLING_COMPOSITION_STABILITY": "partially_supported_scale_specific",
+        "H0_ADAPTIVE_PATTERN_CANDIDATE_GATE": "two_pairs_pass_current_sequential_controls",
         "H1_MEASUREMENT_MODULE_ORGANIZATION": "supported",
         "H2_PARTIAL_CROSS_SCALE_CORRESPONDENCE": "supported",
         "H3_PROCESS_BLOCK_ENVIRONMENT_REPRESENTATION": "supported_scale_specific",
@@ -135,7 +158,9 @@ def main() -> int:
         "hypotheses": len(hypotheses),
         "supported_or_partially_supported": sum(
             row["status"] in {
-                "supported_primary_endpoints", "supported", "supported_scale_specific",
+                "supported_all_measured_v2_endpoints", "supported", "supported_scale_specific",
+                "partially_supported_scale_specific",
+                "two_pairs_pass_current_sequential_controls",
                 "completed_workflow_boundary", "partially_supported_within_only",
             }
             for row in hypotheses

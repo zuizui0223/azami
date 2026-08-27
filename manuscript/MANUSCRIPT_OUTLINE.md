@@ -1,161 +1,67 @@
 # Chapter 1 manuscript writing outline
 
-Working title:
+This outline implements [`AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md`](AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md). It changes narrative order, not frozen numerical results.
 
-> **Species means conceal scale-dependent and modular variation in thistle capitulum traits**
+## One-sentence line
 
-Alternative title:
-
-> **Public photographs reveal decoupled variation and climate tracking in thistle capitulum traits**
-
-## Abstract
-
-1. Comparative trait studies usually reduce each species to a mean.
-2. Public photographs permit replicated, observation-level trait measurement but introduce non-random assessability and viewpoint effects.
-3. We extracted continuous orientation, colour and outline measurements from public *Cirsium* photographs and separated visible within-species variation, within-species climate tracking and among-species environmental sorting.
-4. Approximately 82–99% of visible variance occurred within species; variation and responsiveness were negatively associated across 102 complete taxa; colour and orientation retained stronger environmental structure than most outline traits.
-5. Strict within-species effects were weak and cohort dependent, and historical conclusions were sensitive to grafted tree placement.
-6. Trait databases should retain distributions, environmental slopes and measurement quality rather than species means alone.
+Continuous capitulum traits occupy distinct present-day spatial scales and align with different environmental gradients; neither a taxon mean nor one whole-capitulum syndrome captures that geography.
 
 ## Introduction
 
-### Paragraph 1 — the species-mean problem
-
-Explain why comparative ecology commonly represents a species with one trait value and what is lost when within-species distributions are discarded.
-
-### Paragraph 2 — three structures commonly conflated
-
-Separate:
-
-- visible within-species dispersion;
-- within-species environmental tracking;
-- among-species environmental sorting.
-
-Introduce the prediction that these structures need not covary.
-
-### Paragraph 3 — opportunity and risk of public-image phenomics
-
-Describe global replication and multi-trait extraction, followed immediately by detectability, viewpoint, colour calibration and spatial sampling limitations. State that assessability is analysed rather than treated as absence.
-
-### Paragraph 4 — why *Cirsium*
-
-Present capitulum orientation, corolla colour and outline as modules within one reproductive structure. Introduce the genus as morphologically diverse and complicated by regional differentiation, hybridization, polyploidy and uncertain species-level history, without claiming demonstrated adaptive radiation.
-
-### Paragraph 5 — questions
-
-1. Where does visible trait variance lie, within or among species?
-2. Does high within-species variation predict strong environmental responsiveness?
-3. Do orientation, colour and shape show different scale-dependent environmental structures?
-4. Are conclusions robust to sampling, spatial and historical-placement uncertainty?
+1. **The taxon-mean problem:** broad trait syntheses compress repeated geographic phenotype distributions.
+2. **The categorical-state problem:** orientation, colour, outline and involucral geometry are continuous axes.
+3. **The trait-by-gradient problem:** adding traits also adds falsifiable environmental hypotheses; unsupported pairs are informative.
+4. **The scale problem:** head, photograph, within-taxon geography, among-taxon turnover and historical constraint are not interchangeable.
+5. **The integration problem:** whole-capitulum organization is tested after endpoint geography, not assumed before it.
+6. **Questions:** what exists now, where, along which gradient and at which scale?
 
 ## Methods
 
-### Data acquisition and sampling frame
-
-- public biodiversity observations and accepted taxon list;
-- one primary photograph per observation where applicable;
-- licence-safe identifiers and provenance;
-- distinction between the 216-taxon image atlas and the 259-taxon strict spatial layer.
-
-### Capitulum detection and observation units
-
-- define a visible capitulum;
-- describe detector, tight crop and context crop;
-- explain why detection, anthesis and trait assessability are separate tasks;
-- report detector audit once completed.
-
-### Continuous trait extraction
-
-- orientation relative to EXIF-oriented image vertical;
-- Lab lightness and chroma;
-- circular hue as sine/cosine and presentation angle;
-- outline aspect ratio, circularity, solidity and width-profile variation.
-
-### Trait-specific assessability and technical checks
-
-- unassessable is not biological absence;
-- masking and failure categories;
-- mirrored technical replicates;
-- retained versus failed measurements.
-
-### Environment and spatial data
-
-- four predeclared CHELSA variables;
-- coordinate-quality tiers and spatial thinning;
-- grouped SPDE-INLA predictor sets where reported.
-
-### Statistical hierarchy
-
-1. partition visible variance within and among species;
-2. estimate strict and expanded pooled within-species effects;
-3. estimate species-specific standardized slopes;
-4. calculate species within-variation and environmental-responsiveness indices;
-5. compare trait modules and environmental niches of trait extremes;
-6. test minimum-sample, spatial/cohort and historical-placement sensitivities.
-
-### Multiple testing and interpretation
-
-Name the cohort for every FDR count. Treat hue jointly. Define associations as observational and non-causal.
+1. Sampling domain and cohort flow.
+2. Detection, assessability and the 27-endpoint continuous contract.
+3. Nested head/photo/taxon visible-variance decomposition.
+4. Trait-specific within-taxon core-gradient models.
+5. Spatial, regional, seasonal, range, taxonomic and image-quality sensitivities.
+6. Matched among-taxon associations and environmental sorting.
+7. Predeclared process-environment extension.
+8. Secondary morphospace and measurement-module organization.
+9. Incomplete historical-placement sensitivity and claim boundary.
 
 ## Results
 
-### 1. Sampling and assessability
-
-Report 6,626 detected capitula, 3,725 observations and 216 accepted image-analysis taxa. Report trait-specific retention and failure patterns without interpreting missing measurements as trait absence.
-
-### 2. Species means conceal visible heterogeneity
-
-Lead with the approximately 82–99% within-species visible-variance fractions. Pair this immediately with the viewpoint and measurement limitation.
-
-### 3. Variation is not responsiveness
-
-Report the 102 complete taxa, Spearman rho = -0.333 and quadrant counts 22/29/29/22. Report minimum-n sensitivity.
-
-### 4. Modules and concrete environmental structure
-
-- colour: lowest median total variation, highest median responsiveness;
-- shape: highest visible variation without highest responsiveness;
-- orientation and hue/chroma: strongest among-species environmental-niche contrasts;
-- grouped spatial effects concentrated in colour and orientation; shape effects weak.
-
-### 5. Scale-dependent inference
-
-Report zero BH-supported primary effects for the strict <=10 km cohort and four small effects for the expanded pooled table as distinct analyses. Summarize WAIC/model-group findings without turning model selection into causal evidence.
-
-### 6. Historical sensitivity
-
-Report 54/216 direct backbone tips, complete alternative-tree fits and the absence of direct-tip-supported non-circular signal. State that current molecular records do not form a uniform nuclear species-tree dataset.
+1. The global image workflow recovered repeated continuous traits.
+2. Taxon means discarded substantial visible variation.
+3. Environmental associations were selective across orientation, colour, outline and candidate involucral geometry.
+4. Matched within/among results assigned trait-gradient pairs to different scale classes.
+5. Spatial and range sensitivities graded rather than erased evidence.
+6. Four core gradients were adequate within taxa but incomplete among taxa.
+7. The 18-endpoint morphospace rejected one universal syndrome; partial module organization remained a secondary synthesis.
+8. Historical placement bounded interpretation but did not resolve phylogenetic constraint.
 
 ## Discussion
 
-### 1. Species means are inadequate summaries
+1. Public-image phenomics recovers present continuous-trait geography beyond taxon means.
+2. Different capitulum components carry different environmental information.
+3. Within-taxon spatial association and among-taxon turnover are distinct results.
+4. Orientation, colour, outline and involucral image geometry retain separate measurement/q/sampling-composition/spatial/historical gate statuses and mechanism hypotheses.
+5. The whole capitulum is multidimensional and partially organized, not one causal syndrome.
+6. Measurement validation and historical resolution, not another uncontracted raster screen, define the next gates.
+7. Azami freezes the present state for EAzami-I function validation, II repeated nuclear history, III origin-class discrimination and IV convergence/adaptive-convergence tests.
 
-Explain why observation distributions matter for comparative trait ecology while distinguishing visible heterogeneity from pure biological variance.
+## Figure order
 
-### 2. Total variation and climate tracking are distinct
+1. Image to continuous trait universe.
+2. Present global sampling domain.
+3. Nested visible variation.
+4. Trait-specific present-state atlas and multidimensionality summary.
+5. Trait x environmental gradient x within/among scale.
+6. Sampling-composition/spatial/historical boundary and EAzami I–IV handoff.
 
-Use the negative correlation, occupied quadrants and shape module as the clearest evidence against a single conserved–labile axis.
+## Writing controls
 
-### 3. Orientation and colour retain biological specificity
-
-Discuss plausible links with rain exposure, radiation, thermal environment, pigment physiology, nutrient conditions and pollinator display. Keep these as hypotheses, not demonstrated mechanisms.
-
-### 4. Scale-dependent climate structure
-
-Explain why among-species sorting may be clearer than strict within-species response: species turnover, longer-term differentiation, limited environmental coverage, measurement attenuation and different time scales.
-
-### 5. Reticulation, polyploidy and historical uncertainty
-
-Use the *Cirsium* literature to explain why one grafted bifurcating tree cannot be treated as a resolved species history. Do not infer that hybridization or polyploidy caused the observed trait patterns.
-
-### 6. Public-image phenomics complements conventional trait databases
-
-Emphasize repeated observations, continuous multi-trait extraction, explicit assessability, failure retention, geographic coverage and reproducible provenance.
-
-### 7. Limitations and next tests
-
-Detector audit, standardized photography, common gardens, pollinator observations, pigment chemistry, nuclear target capture, flow cytometry and explicit hybrid-network analyses.
-
-## Writing rule
-
-Every numerical claim must match `manuscript/final_claims.json` or a frozen output listed in `manuscript/FIGURE_TABLE_MAP.md`. Mechanistic statements must be labelled as hypotheses unless directly tested.
+- Say spatial association, not plasticity, adaptation or climate tracking.
+- Say armature-like or projection image geometry until botanical calibration.
+- Treat hue jointly and retain colour-calibration limits.
+- Keep unsupported trait-gradient pairs visible.
+- Do not infer that environment dominates phylogeny from incomplete historical placement.
+- Do not discretize continuous states for EAzami without a declared threshold and transition contract.

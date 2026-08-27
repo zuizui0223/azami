@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "n_checks": 7,
+  "n_passed": 7,
+  "checks": [
+    {
+      "check": "entry_pair_set_matches_scale_specific_global_q_gate",
+      "passed": true,
+      "detail": {
+        "expected": 36,
+        "scenario_pairs": 36,
+        "summary_pairs": 36
+      }
+    },
+    {
+      "check": "complete_declared_scenario_grid",
+      "passed": true,
+      "detail": {
+        "expected_per_scale": {
+          "within_taxon": 19,
+          "among_taxon": 18
+        },
+        "observed_min": 18,
+        "observed_max": 19,
+        "rows": 674
+      }
+    },
+    {
+      "check": "no_post_selection_p_or_q_values",
+      "passed": true,
+      "detail": [
+        "baseline_beta_cosine",
+        "baseline_beta_sine",
+        "baseline_beta_std",
+        "baseline_effect_direction_degrees",
+        "baseline_effect_magnitude",
+        "beta_cosine_sensitivity",
+        "beta_sine_sensitivity",
+        "beta_std_sensitivity",
+        "circular_vector_alignment_cosine",
+        "direction_stable",
+        "effect_direction_degrees_sensitivity",
+        "effect_magnitude_ratio_to_baseline",
+        "effect_magnitude_sensitivity",
+        "environment_block",
+        "equal_taxon_weight",
+        "excluded_region",
+        "excluded_taxa",
+        "inferential_unit",
+        "member_endpoint_ids",
+        "module",
+        "n_observations",
+        "n_taxa",
+        "native_only",
+        "predictor",
+        "scale",
+        "scenario",
+        "sensitivity_family",
+        "status",
+        "unit_id"
+      ]
+    },
+    {
+      "check": "direction_rule_recomputed",
+      "passed": true,
+      "detail": {
+        "rows": 674,
+        "unstable": 13,
+        "mismatches": 0
+      }
+    },
+    {
+      "check": "pair_summary_classes_recomputed",
+      "passed": true,
+      "detail": {
+        "rows": 36,
+        "mismatches": 0
+      }
+    },
+    {
+      "check": "all_scenarios_executed_or_explicitly_unevaluable",
+      "passed": true,
+      "detail": {
+        "ok": 674
+      }
+    },
+    {
+      "check": "every_broad_space_pass_has_sampling_composition_result",
+      "passed": true,
+      "detail": {
+        "broad_space_passes": 7,
+        "stable_all": 6,
+        "direction_unstable": 1
+      }
+    }
+  ],
+  "scientific_summary": {
+    "pair_stability_classes": {
+      "stable_all_declared_scenarios": 26,
+      "direction_unstable": 10
+    },
+    "broad_space_pass_sampling_classes": {
+      "stable_all_declared_scenarios": 6,
+      "direction_unstable": 1
+    }
+  },
+  "claim_ceiling": "directional stability in a retrospective selected-row sensitivity; not correction to global representativeness and not a new discovery family"
+}

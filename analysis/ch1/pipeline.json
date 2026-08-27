@@ -1,13 +1,17 @@
 {
-  "schema_version": 10,
-  "status": "submission HOLD for independent validation; accepted computational pattern estimand complete through expanded traits, matched within-among geometry and process-environment sufficiency",
+  "schema_version": 12,
+  "release_label": "Azami Chapter 1 v2",
+  "freeze_tag": "azami-ch1-v2-2026-08-27",
+  "status": "Azami Chapter 1 v2 frozen for present-geography inference; submission HOLD remains for independent validation",
   "submission_story": {
-    "chapter_role": "reconstruct the present phenotypic field of thistle capitula across space and biological hierarchy",
+    "chapter_role": "resolve the present spatial scale of each continuous capitulum trait and its predeclared environmental alignment",
     "primary_methodological_claim": "public photographs can be converted into repeated continuous head-level phenotype measurements under an explicit assessability and evidence hierarchy",
-    "primary_biological_claim": "the capitulum is a multidimensional, partially organized phenotype whose environmental alignment changes across within- and among-taxon scales",
-    "environmental_claim": "BIO1/BIO4/BIO12/BIO15 are adequate for the current within-taxon 18D estimand but do not exhaust among-taxon structure; growing-season precipitation is the most stable added representation",
+    "primary_biological_claim": "continuous capitulum traits occupy distinct present-day spatial scales and align with different environmental gradients rather than one universal syndrome",
+    "environmental_claim": "All nine frozen predictors were evaluated for every measured endpoint; trait-environment alignment is scale specific, and only chroma-radiation plus orientation-annual-precipitation pass the current sequential among-taxon spatial and historical gates while retaining direction in all declared sampling-composition scenarios",
+    "candidate_function_boundary": "Radiation-responsive anthocyanin production and rain shielding are testable hypotheses consistent with external experiments, not mechanisms measured or demonstrated by Azami v2",
     "legacy_lability_status": "withdrawn from biological headline; retained only as statistical provenance/QA",
-    "downstream_boundary": "Azami freezes the present phenotypic field; EAzami discriminates compatible generative histories without causal promotion"
+    "whole_capitulum_role": "secondary synthesis that rejects one universal syndrome and tests partial measurement-module organization",
+    "downstream_boundary": "Azami freezes trait definitions, present distributions, environmental associations, scale classes and gate status; EAzami-I validates candidate functions, II reconstructs repeated history on nuclear ancestry, III distinguishes independent origins from retention, ancestral polymorphism and introgression, and IV tests convergence or adaptive convergence without causal promotion"
   },
   "policy": {
     "move_numbered_scripts": false,
@@ -33,6 +37,54 @@
       "registered_endpoints": 27,
       "measured_endpoints": 22,
       "measured_inferential_endpoints": 18
+    },
+    "full27_full_environment_atlas": {
+      "status": "complete locally; 24 of 24 fail-closed validation checks passed",
+      "script": "analysis/run_geb_v2_full27_environment_atlas.py",
+      "validator": "analysis/validate_geb_v2_full27_environment_atlas.py",
+      "contract": "analysis/ch1/v2_full27_environment_atlas_contract.json",
+      "result_ledger": "manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md",
+      "registered_endpoints": 27,
+      "measured_endpoints": 22,
+      "environment_predictors": 9,
+      "within_q_supported_rows": 26,
+      "among_min5_q_supported_rows": 10,
+      "classification": {"both_scales": 7, "within_only": 18, "among_only": 3, "neither": 152, "not_comparable": 54},
+      "old_v1_nine_endpoint_subset_used": false,
+      "abc_layers_used_for_selection_or_multiplicity": false
+    },
+    "full27_sampling_composition_sensitivity": {
+      "status": "complete locally; 7 of 7 fail-closed validation checks passed",
+      "script": "analysis/run_geb_v2_full27_sampling_composition_sensitivity.py",
+      "validator": "analysis/validate_geb_v2_full27_sampling_composition.py",
+      "contract": "analysis/ch1/v2_full27_sampling_composition_sensitivity_contract.json",
+      "output": "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling",
+      "entry_pairs": 36,
+      "scenario_rows": 674,
+      "within_stable_all_declared_scenarios": 16,
+      "within_direction_unstable": 10,
+      "among_stable_all_declared_scenarios": 10,
+      "broad_space_passes_stable_all_declared_scenarios": 6,
+      "broad_space_passes_direction_unstable": [
+        "bract_projection_roughness~chelsa_rsds_mean"
+      ],
+      "adaptive_pattern_candidates_direction_stable_all_declared_scenarios": true,
+      "boundary": "retrospective selected-row directional sensitivity; no post-selection p values, no probability-sample correction and no causal promotion"
+    },
+    "full27_spatial_historical_gates": {
+      "status": "complete locally; 11 of 11 fail-closed validation checks passed",
+      "spatial_script": "analysis/run_geb_v2_full27_spatial_sensitivity.py",
+      "historical_script": "analysis/run_geb_v2_full27_historical_sensitivity.py",
+      "validator": "analysis/validate_geb_v2_full27_sensitivities.py",
+      "within_broad_space_passes": 5,
+      "among_broad_space_passes": 2,
+      "historical_placement_trees": 52,
+      "historical_models_ok": 104,
+      "adaptive_pattern_candidates_under_current_controls": [
+        "corolla_lab_chroma~chelsa_rsds_mean",
+        "orientation_image_vertical_angle~chelsa_bio12"
+      ],
+      "boundary": "sequential broad-space and historical-placement sensitivities, not proof of adaptation or a joint causal spatial-phylogenetic model"
     },
     "independent_detector_audit": {
       "status": "packet and evaluator complete; human annotation pending",
@@ -177,6 +229,11 @@
   "current_submission_gates": {
     "completed_computational": [
       "category-free continuous-trait measurement",
+      "full-27 endpoint inventory and taxon-mean information-loss audit",
+      "full-cohort extraction of all nine environmental predictors",
+      "full-27 by full-environment within-among atlas",
+      "full-27 sampling-composition sensitivity across dominant taxa, equal taxon weight, broad regions and native-only scope",
+      "v2-native broad-space and historical-placement candidate gates",
       "primary nested image hierarchy",
       "expanded taxon morphospace",
       "within-taxon core-climate models",

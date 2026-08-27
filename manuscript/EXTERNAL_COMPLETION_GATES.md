@@ -2,7 +2,7 @@
 
 Chapter 1 is on **submission hold for independent validation and final presentation**, not for additional uncontracted correlational analysis. The accepted computational estimand is complete through continuous-trait measurement, below-taxon diversity, expanded morphospace, matched within/among geometry and process-environment sufficiency. Completed diagnostics are rerun only if a frozen input, operational taxonomic unit, measurement definition or accepted model changes materially.
 
-The current submission-facing story is a global reconstruction of the **present phenotypic field of thistle capitula**: public photographs become repeated continuous measurements, the same reproductive structure is represented as a multidimensional phenotype, and its organization is compared within and among taxa. The remaining scientific gates ask whether the image-derived measurements and below-taxon components are independently valid.
+The current submission-facing story is a global reconstruction of **present continuous-trait geography in thistle capitula**: public photographs become repeated continuous measurements, each trait is paired with predeclared environmental gradients, and its support is classified across nested within- and among-taxon scales. Whole-capitulum organization is a secondary synthesis. The remaining scientific gates ask whether the image-derived measurements and below-taxon components are independently valid.
 
 ## 1. Independent detector audit — MANUAL ANNOTATION REMAINS
 

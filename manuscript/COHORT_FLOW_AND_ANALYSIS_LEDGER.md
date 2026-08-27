@@ -39,6 +39,14 @@ The observation-long trait universe retains:
 
 Endpoint-specific missingness is preserved. The universe is a common registry, not one complete-case cohort; analyses define their own endpoint and replication requirements.
 
+## Canonical full-27 / full-environment cohort
+
+The canonical endpoint atlas starts from the full 46,276-observation spatially thinned cohort before endpoint missingness filtering and joins all nine frozen predictors. Eight predictors have complete coverage; wind has 46,271 finite rows (99.989%). All 27 endpoints remain in the status grid, 22 enter models where finite and five remain explicit unexecuted rows. Hue sine and cosine form one joint circular inferential unit, giving 26 units and 234 unit × predictor rows.
+
+Within-taxon models retain endpoint-specific observations with at least two measurements per taxon. Among-taxon models use endpoint-specific taxon medians at minimum five observations, with minimum two as a sensitivity. The main min5 scale classification is seven `both_scales`, 18 `within_only`, three `among_only`, 152 `neither` and 54 `not_comparable`. This lane does not use the older nine-endpoint selection, the complete-18 cohort or A/B/C grades as entry rules.
+
+Only global-q-supported rows enter the retrospective sampling-composition audit and v2-native broad-space screen: 26 within and ten among. The sampling audit contains 674 fully evaluated scenarios. Sixteen within and all ten among pairs retain direction throughout; ten within pairs reverse at least once. Five within and two among pass the separate broad-space screen, but projection roughness-radiation is one of the sampling-sensitive within rows. The two among passes then enter all 52 historical-placement trees, yielding 104 successful models and two adaptive-pattern candidates under current controls; both also retain direction in every sampling-composition scenario. These are parallel or sequential sensitivities, not a probability-sample correction or resolved joint spatial-phylogenetic causal analysis.
+
 ## Primary exhaustive within-taxon coefficients
 
 The spatially thinned primary cohort produced 36 component models: nine established endpoints × four CHELSA predictors. Eight component rows passed BH correction. Four were non-circular rows—orientation–BIO1, chroma–BIO12, aspect ratio–BIO4 and aspect ratio–BIO12—and four were hue sine/cosine components requiring joint interpretation.
@@ -153,6 +161,7 @@ The leakage-free packet contains 1,000 images across 323 taxa and 85 ten-degree 
 - **Exhaustive detected layer** = 406,582 observations, 286 taxa.
 - **Spatially thinned primary cohort** = 46,276 observations, 259 taxa.
 - **GEB v2 trait universe** = 46,276 observations, 259 taxa, 18 measured inferential endpoints.
+- **Canonical full-27 / full-environment atlas** = 27 registered endpoints, 22 measured endpoints, 26 joint units, nine predictors and 234 rows per scale/scope.
 - **Expanded candidate climate cohort** = 2,277 observations, 78 taxa.
 - **Expanded 18-endpoint taxon morphospace** = 127 complete taxa.
 - **complete18_min5** = 1,734 observations, 42 taxa.

@@ -2,6 +2,30 @@
 
 This ledger records the frozen repository source for every numerical or inferential statement in `03_results.md`. It is deliberately separate from the prose so that manuscript editing cannot silently mix cohorts or artifact versions.
 
+## Canonical full-27 / full-environment lane
+
+This section supersedes older nine-endpoint and lability entries wherever they conflict with the current Chapter 1 mainline. Historical sections below remain provenance only.
+
+| Result | Frozen/local source |
+|---|---|
+| 27 registered, 22 measured, five unexecuted | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_endpoint_inventory.csv` |
+| Raw below-taxon fraction 0.8137-0.9863; equal-two-per-taxon medians 0.2869-0.5846 | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_variance_decomposition.csv` |
+| Endpoint observation/taxon/cell support and coordinate bounds | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_trait_geography.csv` |
+| 26 within-taxon q-supported rows | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_within.csv` |
+| ten among-min5 and seven among-min2 q-supported rows | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_among.csv` |
+| 7 both, 18 within only, 3 among only, 152 neither, 54 not comparable | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_cross_scale.csv` |
+| 674 sampling-composition scenarios; 16/26 within and 10/10 among pairs directionally stable throughout | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_summary.csv` |
+| projection roughness-rsds is the one broad-space pass with sampling-composition direction instability | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_scenarios.csv` |
+| five within and two among broad-space passes | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/spatial/` |
+| two pairs pass all 52 placement trees | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/historical/` |
+| 24/24 atlas checks | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_validation.json` |
+| 11/11 spatial/historical checks | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_sensitivities_validation.json` |
+| 7/7 sampling-composition checks | `analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_validation.json` |
+| Narrative, provenance and claim ceiling | `manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md` |
+| v2 method/ecology defence and candidate-function boundaries | `manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md`; numerical claims remain sourced from the rows above |
+
+Input SHA-256 values are `d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344` for the trait-long table and `e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7` for the full nine-variable environment. The result directory is locally validated but is not yet a new immutable remote artifact.
+
 ## Dataset scopes
 
 | Result | Frozen source |

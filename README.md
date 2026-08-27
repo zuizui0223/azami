@@ -1,31 +1,31 @@
-# azami — the present phenotypic field of thistle capitula
+# azami — the present spatial geography of continuous thistle capitulum traits
 
 > **Submission status: HOLD FOR INDEPENDENT VALIDATION (2026-08-27).** The accepted computational Chapter 1 pattern analysis is complete, including the expanded continuous-trait universe, matched within/among comparison, whole-capitulum organization and process-environment sufficiency tests. The remaining scientific blockers are independent detector/trait validation, developmental-stage and repeat-photo controls, paired colour controls and botanical calibration.
 
 This repository is organized around the Chapter 1 manuscript:
 
-**Global citizen-science images reveal multidimensional and scale-dependent environmental organization of thistle capitula**
+**Global continuous phenomics reveals trait- and scale-specific environmental geography of thistle capitula**
 
-The canonical submission entry is [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md). The explicit hypothesis-recovery and completeness audit is [`manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md`](manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md).
+The canonical submission entry is [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md). The PR #71 spatial-scale mainline is [`manuscript/AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md`](manuscript/AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md), the full-27 result ledger is [`manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md`](manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md), and the earlier hypothesis-recovery audit is [`manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md`](manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md).
 
 ## Chapter 1 in one sentence
 
-> **The thistle capitulum is a multidimensional, partially organized phenotype whose environmental alignment changes across biological scales.**
+> **Continuous capitulum traits occupy distinct present-day spatial scales and align with different environmental gradients; neither a taxon mean nor one whole-capitulum syndrome captures that geography.**
 
 ## Scientific position
 
-Azami reconstructs the **present phenotypic field** of thistle capitula from public photographs. It asks:
+Azami reconstructs the **present spatial state** of continuous thistle capitulum traits from public photographs. It asks:
 
 1. what phenotype diversity is lost when taxa are represented by coarse states or one mean;
-2. how a single reproductive structure occupies a continuous multidimensional trait space;
-3. how that space is organized within and among taxa;
-4. which environmental representations align with the phenotype at each biological scale.
+2. which predeclared environmental gradient aligns with each trait;
+3. whether the pattern occurs within taxa, among taxa or only in the sampled global domain;
+4. whether a final whole-capitulum synthesis adds partial organization without erasing trait-specific geography.
 
 The chapter is pattern first. It does not infer plasticity, adaptation, pollinator or antagonist causation, defensive efficacy or a unique evolutionary history from cross-sectional image associations.
 
 ## Analysis route
 
-`public photographs → detected capitula → explicitly defined continuous traits → repeated phenotype distributions → below-taxon diversity → taxon morphospace → within/among phenotype geometry → scale-specific environmental organization`
+`public photographs → detected capitula → continuous trait decomposition → repeated distributions → trait-specific geography → predeclared environmental gradients → within/among scale class → sampling-composition annotation + spatial/historical boundary → EAzami I–IV`
 
 YOLO11n localizes visible capitula. Deterministic image functions then return numerical measurements for each assessable head. Unassessable traits remain missing rather than being converted to categorical absence.
 
@@ -36,9 +36,8 @@ The category-free contract defines 27 endpoints across orientation, visible colo
 Final execution:
 
 - 27 registered endpoints;
-- 22 measured endpoints;
 - 19 inferential endpoints, of which 18 were measured;
-- 9 established primary + 9 expanded candidate endpoints;
+- 22 measured endpoints across primary, candidate and validation-only image-proxy layers;
 - `visible_floret_fraction` is the only unexecuted inferential endpoint;
 - 46,276 spatially thinned observations from 259 source-assigned taxa;
 - 374,255 analysis-eligible observation × endpoint measurements.
@@ -49,7 +48,9 @@ Surface metrics remain validation-only and cannot be called hair density, gland 
 
 ### Taxon means conceal most visible variation
 
-Across the nine established primary endpoints, **0.589–0.931** of visible image variance occurs below source-assigned taxon means.
+Across all 22 measured v2 endpoints, **0.814–0.986** of raw observation-level variation occurs below source-assigned taxon means. After equalizing replication to two observations per eligible taxon, the endpoint medians remain **0.287–0.585**.
+
+The older nine-endpoint head / photograph decomposition remains a complementary grain-specific result:
 
 - among photographs within taxa: **0.440–0.691**;
 - among heads within photographs: **0.143–0.379**;
@@ -58,44 +59,33 @@ Across the nine established primary endpoints, **0.589–0.931** of visible imag
 
 These are visible image-phenotype components, not genetic variance components.
 
-### The capitulum is multidimensional rather than one syndrome
-
-The expanded taxon morphospace contains 127 taxa complete for all 18 measured inferential endpoints.
-
-- PC1: **18.49%**;
-- PC2: **12.01%**;
-- PC3: **11.78%**;
-- PC1–PC3 cumulative: **42.28%**.
-
-Finer measurement therefore reveals several partly independent phenotype dimensions rather than one hidden master axis.
-
-### The whole phenotype is partially organized
-
-Among 1,734 complete-18 observations from 42 taxa in the main replication scope:
-
-- within-taxon registered-module contrast: **0.164502**;
-- among-taxon registered-module contrast: **0.088475**;
-- within/among 17-unit matrix Spearman: **0.366299**.
-
-Registered modules are more internally organized than expected under label permutation, but their covariance geometry is only partly shared between scales. This is partial phenotypic / measurement-module organization, not validated functional or genetic modularity.
-
 ### Environmental structure is trait specific and scale specific
 
-Across the same 17 inferential units and four frozen CHELSA predictors, the 68 matched rows classify as:
+Across all 26 inferential units and nine frozen predictors, the canonical 234-row min5 grid classifies as:
 
-- 3 supported at both scales;
-- 8 within taxa only;
-- 1 among taxa only;
-- 56 at neither scale.
+- 7 supported at both scales;
+- 18 within taxa only;
+- 3 among taxa only;
+- 152 at neither scale;
+- 54 not comparable because measurement was unexecuted or had no finite variation.
 
-Orientation aligns with annual mean temperature within taxa but annual precipitation among taxa. All three final expanded candidate rows are within-taxon only.
+Orientation aligns with annual mean temperature within taxa but annual precipitation among taxa. Most supported involucral and surface-proxy rows are within-taxon only.
 
-The strongest endpoint-level evidence remains:
+Sampling is geographically and taxonomically uneven: Europe plus North America contribute 92.26% of observations and the two most observed taxa 54.03%. Across 674 retrospective perturbations, 16/26 selected within-taxon and 10/10 selected among-taxon pairs retain direction throughout; ten within-taxon pairs are explicitly sampling-composition sensitive.
 
-- **A-grade:** orientation–BIO1 and outline aspect ratio–BIO4;
-- **B-grade/range-sensitive:** chroma–BIO12 and aspect ratio–BIO12;
-- **C-grade quality-robust:** involucre length/width–BIO15 and apical taper–BIO12;
-- **C-grade image-sensitive:** `bract_projection_p95`–BIO15.
+Five within-taxon rows pass the new broad-space gate:
+
+- orientation-BIO1;
+- chroma-VPD;
+- involucre length/width-BIO15;
+- projection roughness-shortwave radiation;
+- surface high-frequency energy-BIO1.
+
+Four retain direction throughout the sampling-composition audit. Projection roughness-shortwave radiation reverses under equal taxon weighting and joint omission of *Cirsium vulgare* plus *C. arvense*, so it remains a broad-space pass with a sampling-sensitive annotation.
+
+Only two among-taxon rows also pass the broad-space gate and all 52 historical-placement trees: lower chroma with higher shortwave radiation, and a larger signed head-axis angle relative to EXIF-image vertical with higher annual precipitation. Both retain direction throughout the sampling audit. They are **adaptive-pattern candidates under current controls**, not demonstrated adaptations or globally representative effects.
+
+The frozen method, ecological interpretation and defence boundary for these two candidates are recorded in `manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md`. Radiation-responsive anthocyanin production and rain shielding are explicit functional hypotheses for downstream testing; neither mediator is measured or demonstrated by Chapter 1 v2.
 
 ### Four climate variables are sufficient only at the within-taxon scale
 
@@ -107,12 +97,18 @@ The frozen environmental core is BIO1, BIO4, BIO12 and BIO15. Adding shortwave r
 
 The core four are therefore an adequate low-dimensional representation for the current within-taxon 18D estimand, but they do not exhaust among-taxon environmental structure. This is an observational redundancy result, not proof of direct precipitation causation.
 
+### Whole-capitulum analysis is a secondary synthesis
+
+The expanded taxon morphospace contains 127 taxa complete for all 18 measured inferential endpoints. PC1 explains **18.49%** and PC1–PC3 together explain **42.28%**, rejecting one hidden master axis. Among 1,734 complete-18 observations from 42 taxa, registered-module contrasts are **0.164502** within taxa and **0.088475** among taxa, while the two 17-unit matrices have Spearman **0.366299**.
+
+This shows multidimensionality and partial phenotypic / measurement-module organization. It does not reassemble the continuous traits into one causal syndrome and does not establish functional or genetic modularity.
+
 ## Hypothesis recovery
 
 The central hypotheses are resolved as follows:
 
 - repeated continuous image phenotypes: computationally established, independently unvalidated;
-- large below-taxon visible variation: supported for the primary endpoints;
+- large below-taxon visible variation: supported across all 22 measured endpoints and under equal replication;
 - one universal capitulum syndrome: rejected;
 - partial measurement-module organization: supported within and among taxa;
 - identical within/among geometry: rejected; correspondence is partial;
@@ -123,9 +119,9 @@ The central hypotheses are resolved as follows:
 
 Full definitions, numbers and claim boundaries are in the [hypothesis-recovery audit](manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md).
 
-## Evidence tiers
+## Historical evidence tiers
 
-Sensitivity analyses grade evidence strength rather than acting as one universal veto. The policy is fixed in [`analysis/ch1/evidence_tiering_policy.json`](analysis/ch1/evidence_tiering_policy.json).
+Earlier frozen result families retain their evidence grades as provenance. The canonical full-27 / full-environment lane does not use A/B/C grades to select traits, split multiplicity or hide rows; its candidate label is produced only by the declared global-q, broad-space and historical-placement gates. The older policy remains in [`analysis/ch1/evidence_tiering_policy.json`](analysis/ch1/evidence_tiering_policy.json).
 
 - **A — robust:** global support plus consistency across relevant sensitivities;
 - **B — supported but sensitive:** global support weakened in a restricted domain while retaining direction, or calibration-limited;
@@ -137,17 +133,21 @@ Sensitivity analyses grade evidence strength rather than acting as one universal
 
 Azami and EAzami are not parallel trait projects.
 
-`Azami = present phenotypic field`
+`Azami = present continuous-trait geography`
 
-`continuous phenotype → repeated distribution → spatial hierarchy → frozen present-day geometry`
+`trait definition → distribution → geography → environmental association → within/among scale class → measurement/q/sampling-composition/spatial/historical gate status`
 
 `↓`
 
-`EAzami = generative-history discrimination`
+`EAzami-I = candidate-function annotation and validation`
 
-`candidate function → interaction and fitness structure → historical models → admissible/rejected generators → next experiment`
+`EAzami-II = repeated functional-trait history on nuclear ancestry`
 
-Azami defines what currently exists and how it is organized. [`EAzami`](https://github.com/zuizui0223/EAzami) asks which declared histories and mechanism families can generate that frozen present. EAzami reproduction cannot promote Azami observations to causal results.
+`EAzami-III = retention / independent origin / ancestral polymorphism / introgression`
+
+`EAzami-IV = functional convergence → adaptive convergence only with common selection pressure and fitness evidence`
+
+Azami defines what currently exists, where it occurs and which environmental gradient it aligns with. [`EAzami`](https://github.com/zuizui0223/EAzami) first validates candidate functions, then reconstructs repeated histories, discriminates independent origins from retained or reticulate histories, and only then tests convergence. EAzami thresholds and models must be declared; repeated similarity is not automatically independent origin, and adaptive convergence additionally requires comparable selection pressure and reproductive-fitness evidence.
 
 ## Computational completion
 
@@ -160,7 +160,7 @@ Complete for the frozen Chapter 1 estimand:
 - matched among-taxon models and environmental sorting;
 - whole-capitulum within/among organization;
 - process-environment extraction and core-sufficiency tests;
-- seasonal, hemisphere, dominant-taxon, native-range, spatial, taxonomic and image-quality audits;
+- seasonal, hemisphere, dominant-taxon, native-range, full-27 sampling-composition, spatial, taxonomic and image-quality audits;
 - evidence atlas and machine-readable EAzami handoff.
 
 No additional uncontracted correlational raster screen is required to complete the current Chapter 1 question.
@@ -181,13 +181,14 @@ Actual final multilevel figures and expanded Supplement exports must also be fro
 ## Start here
 
 1. [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md) — canonical paper story and claim boundary.
-2. [`manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md`](manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md) — hypothesis recovery and completion audit.
-3. [`manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md`](manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md) — final multilevel result ledger.
-4. [`manuscript/results/GEB_V2_FINAL_RESULTS_2026-08-26.md`](manuscript/results/GEB_V2_FINAL_RESULTS_2026-08-26.md) — final continuous-trait measurement/evidence-atlas ledger.
-5. [`ch1_global/v2/ontology/ch1_continuous_trait_contract.csv`](ch1_global/v2/ontology/ch1_continuous_trait_contract.csv) — endpoint definitions.
-6. [`analysis/ch1/evidence_tiering_policy.json`](analysis/ch1/evidence_tiering_policy.json) — evidence interpretation.
-7. [`manuscript/EXTERNAL_COMPLETION_GATES.md`](manuscript/EXTERNAL_COMPLETION_GATES.md) — completed versus open validation gates.
-8. [`analysis/ch1/pipeline.json`](analysis/ch1/pipeline.json) — executable submission map.
+2. [`manuscript/AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md`](manuscript/AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md) — PR #71 recovery and Azami-to-EAzami axis.
+3. [`manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md`](manuscript/AZAMI_CH1_HYPOTHESIS_RECOVERY_AND_COMPLETENESS_2026-08-27.md) — hypothesis recovery and completion audit.
+4. [`manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md`](manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md) — final multilevel result ledger.
+5. [`manuscript/results/GEB_V2_FINAL_RESULTS_2026-08-26.md`](manuscript/results/GEB_V2_FINAL_RESULTS_2026-08-26.md) — final continuous-trait measurement/evidence-atlas ledger.
+6. [`ch1_global/v2/ontology/ch1_continuous_trait_contract.csv`](ch1_global/v2/ontology/ch1_continuous_trait_contract.csv) — endpoint definitions.
+7. [`analysis/ch1/evidence_tiering_policy.json`](analysis/ch1/evidence_tiering_policy.json) — evidence interpretation.
+8. [`manuscript/EXTERNAL_COMPLETION_GATES.md`](manuscript/EXTERNAL_COMPLETION_GATES.md) — completed versus open validation gates.
+9. [`analysis/ch1/pipeline.json`](analysis/ch1/pipeline.json) — executable submission map.
 
 ## Claim boundary
 

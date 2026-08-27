@@ -1,0 +1,112 @@
+{
+  "analysis_id": "geb_v2_full27_environment_atlas_v1",
+  "version": "2026-08-27",
+  "status": "retrospective_exploratory_after_related_v2_outcomes_were_seen",
+  "purpose": "Restart the Chapter 1 trait-environment atlas from all 27 endpoints registered by the frozen GEB v2 continuous-trait contract and all nine frozen environmental predictors, without using the old nine-endpoint v1 result set as a selection rule.",
+  "trait_universe": {
+    "source": "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv",
+    "expected_registered_endpoints": 27,
+    "selection_rule": "Every registered endpoint is retained in the endpoint inventory. Every endpoint with a finite measurement_available value is modelled regardless of analysis_tier. Unexecuted endpoints remain explicit no-measurement rows.",
+    "analysis_tier_use": "metadata_only_not_selection_not_multiplicity",
+    "circular_groups_are_joint_inferential_units": true,
+    "old_v1_nine_endpoint_subset_used": false,
+    "whole_head_composite_used_as_replacement": false
+  },
+  "environment": {
+    "source_contract": "analysis/ch1/chelsa_process_environment_sources.json",
+    "cohort": "all 46276 phenotype-blind strict-spatial GEB v2 observations before endpoint missingness filtering",
+    "expected_observations": 46276,
+    "predictors": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean",
+      "chelsa_vpd_mean",
+      "chelsa_sfcwind_mean",
+      "chelsa_gsp",
+      "chelsa_npp"
+    ],
+    "blocks": [
+      {
+        "block_id": "thermal",
+        "predictors": ["chelsa_bio01", "chelsa_bio04"]
+      },
+      {
+        "block_id": "hydric",
+        "predictors": ["chelsa_bio12", "chelsa_bio15"]
+      },
+      {
+        "block_id": "radiative_atmospheric",
+        "predictors": ["chelsa_rsds_mean", "chelsa_vpd_mean"]
+      },
+      {
+        "block_id": "mechanical",
+        "predictors": ["chelsa_sfcwind_mean"]
+      },
+      {
+        "block_id": "growing_season_water_input",
+        "predictors": ["chelsa_gsp"]
+      },
+      {
+        "block_id": "resource_productivity",
+        "predictors": ["chelsa_npp"]
+      }
+    ],
+    "gsp_definition": "CHELSA climatic growing-season precipitation, not taxon-specific flowering-season precipitation",
+    "npp_definition": "CHELSA modelled potential net primary productivity, not measured local resource supply"
+  },
+  "within_taxon": {
+    "linear_statistic": "taxon-demeaned standardized univariate slope with taxon-clustered standard error",
+    "circular_statistic": "joint sine-cosine standardized slope magnitude with predictor permutation within taxon",
+    "minimum_observations": 100,
+    "minimum_taxa": 10,
+    "minimum_observations_per_taxon": 2,
+    "permutations": 9999
+  },
+  "among_taxon": {
+    "taxon_trait_summary": "median among available endpoint observations",
+    "taxon_environment_summary": "median across all strict-spatial observations for the taxon",
+    "primary_minimum_trait_observations_per_taxon": 5,
+    "sensitivity_minimum_trait_observations_per_taxon": 2,
+    "minimum_taxa": 20,
+    "linear_statistic": "standardized univariate taxon-level slope",
+    "circular_statistic": "joint sine-cosine standardized slope magnitude",
+    "permutation_rule": "shuffle the predictor across the same taxa",
+    "permutations": 9999
+  },
+  "multiplicity": {
+    "method": "Benjamini-Hochberg",
+    "families": "one family across all successful trait units and all nine predictors, separately for within taxon, among min5 and among min2",
+    "tier_specific_families": false,
+    "rows_removed_by_q_value": false,
+    "abc_evidence_layers": false
+  },
+  "reporting": {
+    "retain_every_registered_endpoint": true,
+    "retain_every_endpoint_predictor_status": true,
+    "retain_raw_p_and_global_family_q": true,
+    "cross_scale_classes": ["both_scales", "within_only", "among_only", "neither", "not_comparable"]
+  },
+  "spatial_sensitivity": {
+    "entry_rule": "rows with q_fdr_bh_global_family < 0.05 in the matching scale-specific atlas",
+    "method": "refit with second-order spherical-coordinate basis; taxon-centred with taxon-clustered uncertainty within taxa and Freedman-Lane residual permutation among taxa",
+    "residual_diagnostic": "eight-nearest-neighbour Moran I on at most 5000 deterministic observations",
+    "role": "broad-space sensitivity for the new v2 full-environment lane, not equivalence to the older nine-endpoint SPDE analysis"
+  },
+  "historical_sensitivity": {
+    "entry_rule": "among-taxon rows surviving the new broad-space sensitivity",
+    "tree_resource": "audited GBOTB.extended.LCVP scenario 1, scenario 3 and 50 randomized scenario-2 placement trees",
+    "method": "univariate Pagel-lambda PGLS separately for the selected endpoint-gradient pair on every available placement tree",
+    "role": "historical-placement sensitivity only because most taxa are grafted and the tree does not resolve reticulate history"
+  },
+  "claim_boundary": [
+    "This is a retrospective exploratory atlas because related GEB v2 outcomes were inspected before this full 27 by 9 analysis was declared.",
+    "A within-taxon cross-sectional association is not demonstrated plasticity, selection or adaptation.",
+    "An among-taxon permutation does not remove spatial or phylogenetic non-independence.",
+    "The nine environmental predictors are correlated observational gradients; a univariate slope does not identify an independent causal mechanism.",
+    "Validation-only surface endpoints remain image proxies until botanical reference measurements are available.",
+    "Unexecuted endpoints are missing evidence, not biological zero or trait absence."
+  ],
+  "seed": 20260827
+}

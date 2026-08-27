@@ -1,18 +1,18 @@
 # Submission figure map
 
-This concise map mirrors the authoritative `FIGURE_TABLE_MAP.md`. The current
-main manuscript contains five figures. Historical-placement sensitivity is in
-Appendix S1, and the failed involucral rows are not plotted as supported effects.
+This concise map mirrors the authoritative `FIGURE_TABLE_MAP.md`. The revised
+main manuscript specifies six figures under the trait x gradient x spatial-scale
+mainline. Figures 4–6 require final rendering and visual QA.
 
 | Item | Content | Current source/status |
 |---|---|---|
 | Figure 1 | Open-licensed photographs, detector boxes and deterministic continuous measurements | frozen provenance; not an independent accuracy test |
 | Figure 2 | Geographic sampling, cohort flow and BIO1 × BIO12 domain | frozen cohort tables; Mollweide equal-area maps |
 | Figure 3 | Nested taxon → photograph → head visible-variance decomposition | frozen atlas plus one-head and balanced-replication sensitivities |
-| Figure 4 | Taxon-level PC1–PC3 trait architecture | 148 complete taxa; frozen PCA |
-| Figure 5 | Frozen primary coefficients, grouped-SPDE context and native-only decisions after seasonal/dominant-taxon audits | local regeneration and visual recheck required; immutable release pending |
-| Figure S1.8 | Among-taxon environmental separation geometry | frozen permutation design; presentation only |
-| Figure S1.9 | Randomized-tree PGLS placement sensitivity | demoted from main; not resolved phylogenetic correction |
+| Figure 4 | Trait-specific coverage and present geography plus the 127-taxon × 18-endpoint multidimensionality summary | frozen sources; revised composite not yet rendered |
+| Figure 5 | Complete 234-row full-27/full-environment status atlas and within/among scale classes | locally validated sources; revised composite not yet rendered |
+| Figure 6 | Sampling-composition stability, broad-space passes, two 52-tree candidate rows, environmental sufficiency and EAzami I-IV state-bundle handoff | locally validated empirical sources plus conceptual handoff; not yet rendered |
+| Figure S1.14 | Whole-capitulum within/among association matrices and module contrasts | frozen result; secondary synthesis |
 
 ## Excluded or withdrawn displays
 
@@ -23,5 +23,5 @@ Appendix S1, and the failed involucral rows are not plotted as supported effects
   54/216, retained Pagel-λ estimates are zero and direct-backbone non-circular
   phylogenetic signal is unsupported.
 
-Figure 5 must be regenerated through
-`.github/workflows/ch1-interpretive-figures-ci.yml` after the current changes.
+Figures 4–6 must be regenerated through the contracted figure workflows after
+the spatial-scale and sampling-composition specifications and external-validation dispositions are fixed.

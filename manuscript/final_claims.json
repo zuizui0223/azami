@@ -1,12 +1,108 @@
 {
   "analysis_release": "2026-08-continuous-phenomics-submission-candidate",
-  "headline": "Global public photographs recover continuous within-taxon capitulum trait distributions that are largely hidden by taxon means; after predeclared timing, taxon-composition and native-range controls, current primary climate support is limited to orientation-BIO1 and aspect-ratio-BIO4.",
+  "release_label": "Azami Chapter 1 v2",
+  "freeze_tag": "azami-ch1-v2-2026-08-27",
+  "defense_document": "manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md",
+  "headline": "Geographically extensive but uneven public photographs recover continuous, coordinate-bearing capitulum trait distributions that taxon means compress; the full-27/full-environment atlas is trait- and scale-specific, and two among-taxon pairs pass the current sequential spatial and historical-placement gates while retaining direction under declared sampling perturbations.",
   "methodological_headline": "YOLO localizes visible capitula; inferential traits are deterministic continuous head-level measurements rather than categorical classifier outputs. Repeated numerical values are retained as within-taxon distributions.",
   "current_submission_story": {
-    "primary": "continuous within-taxon public-image phenomics at global extent",
-    "biological": "substantial below-taxon visible variation plus two small observational primary climate rows retained after timing, taxon-composition and native-range controls",
+    "primary": "continuous public-image phenomics across within- and among-taxon spatial scales at global extent",
+    "biological": "substantial taxon-mean information loss, scale-specific endpoint-environment organization, explicit sampling-composition fragility and two adaptive-pattern candidates under current sequential controls",
     "legacy_lability_status": "withdrawn from headline; retained as statistical provenance/QA only",
     "causal_scope": "observational associations only"
+  },
+  "canonical_full27_full_environment": {
+    "analysis_id": "geb_v2_full27_environment_atlas_v1",
+    "status": "retrospective_exploratory_after_related_v2_outcomes_were_seen",
+    "old_v1_nine_endpoint_subset_used": false,
+    "abc_layers_used_for_selection_or_multiplicity": false,
+    "n_registered_endpoints": 27,
+    "n_measured_endpoints": 22,
+    "n_unexecuted_endpoints": 5,
+    "n_joint_inferential_units": 26,
+    "n_spatial_observations": 46276,
+    "n_source_assigned_taxa": 259,
+    "n_environment_predictors": 9,
+    "n_environment_blocks": 6,
+    "raw_fraction_below_taxon_mean_range": [0.8137321906969928, 0.9862520151073496],
+    "equal_two_per_taxon_median_fraction_range": [0.286921, 0.584552],
+    "within_global_q_supported_rows": 26,
+    "among_min5_global_q_supported_rows": 10,
+    "among_min2_global_q_supported_rows": 7,
+    "primary_cross_scale_classes": {
+      "both_scales": 7,
+      "within_only": 18,
+      "among_only": 3,
+      "neither": 152,
+      "not_comparable": 54
+    },
+    "within_broad_space_passes": [
+      "orientation_image_vertical_angle~chelsa_bio01",
+      "corolla_lab_chroma~chelsa_vpd_mean",
+      "involucre_length_width_ratio~chelsa_bio15",
+      "bract_projection_roughness~chelsa_rsds_mean",
+      "involucre_surface_high_frequency_energy~chelsa_bio01"
+    ],
+    "among_broad_space_passes": [
+      "corolla_lab_chroma~chelsa_rsds_mean",
+      "orientation_image_vertical_angle~chelsa_bio12"
+    ],
+    "adaptive_pattern_candidates_under_current_controls": [
+      {
+        "endpoint": "corolla_lab_chroma",
+        "predictor": "chelsa_rsds_mean",
+        "direction": "negative",
+        "observed_statement": "taxa from higher-shortwave-radiation environments had lower camera-recorded visible CIELAB corolla chroma",
+        "candidate_mechanism": "radiation-responsive floral pigment regulation, including an anthocyanin-synthesis hypothesis",
+        "mechanism_boundary": "CIELAB chroma is not anthocyanin concentration or UV reflectance; the observed negative chroma coefficient does not demonstrate increased anthocyanin synthesis",
+        "decisive_next_test": "calibrated visible and UV reflectance plus petal anthocyanin chemistry or pathway expression under common-garden radiation manipulation",
+        "n_historical_placement_trees_passed": 52
+      },
+      {
+        "endpoint": "orientation_image_vertical_angle",
+        "predictor": "chelsa_bio12",
+        "direction": "positive",
+        "observed_statement": "taxa from higher-annual-precipitation environments had a larger angle on the 0-up, 90-horizontal, 180-down EXIF-oriented image scale",
+        "candidate_mechanism": "more downward-facing capitulum presentation may shield reproductive tissues from rain",
+        "mechanism_boundary": "image vertical is not gravity and Azami did not measure anthesis rain exposure, pollen wetting, pollen viability or fitness",
+        "decisive_next_test": "gravity-referenced 3D orientation with flowering-period rain, pollen retention and viability, seed output and experimental angle manipulation",
+        "n_historical_placement_trees_passed": 52
+      }
+    ],
+    "sampling_composition_sensitivity": {
+      "analysis_id": "geb_v2_full27_sampling_composition_sensitivity_v1",
+      "status": "retrospective_selected_row_sensitivity",
+      "n_entry_pairs": 36,
+      "n_scenario_rows": 674,
+      "n_within_pairs_stable_all_declared_scenarios": 16,
+      "n_within_pairs_direction_unstable": 10,
+      "n_among_pairs_stable_all_declared_scenarios": 10,
+      "n_broad_space_passes_stable_all_declared_scenarios": 6,
+      "n_broad_space_passes_direction_unstable": 1,
+      "direction_unstable_broad_space_passes": [
+        "bract_projection_roughness~chelsa_rsds_mean"
+      ],
+      "both_adaptive_pattern_candidates_direction_stable_all_declared_scenarios": true,
+      "candidate_minimum_effect_magnitude_ratio": {
+        "corolla_lab_chroma~chelsa_rsds_mean": 0.614876,
+        "orientation_image_vertical_angle~chelsa_bio12": 0.780783
+      },
+      "claim_ceiling": "Directional stability in a retrospective selected-row sensitivity; not global representativeness, not a new discovery family and not evidence of causation."
+    },
+    "input_sha256": {
+      "traits_long": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+      "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+    },
+    "validation": {
+      "atlas_checks_passed": 24,
+      "atlas_checks_total": 24,
+      "sensitivity_checks_passed": 11,
+      "sensitivity_checks_total": 11,
+      "sampling_composition_checks_passed": 7,
+      "sampling_composition_checks_total": 7,
+      "historical_models_ok": 104
+    },
+    "claim_ceiling": "Five within-taxon rows pass the broad-space screen but only four retain direction across all sampling-composition perturbations. Two endpoint-gradient rows are adaptive-pattern candidates under sequential broad-space and historical-placement sensitivities and both retain direction across the retrospective sampling audit; neither is proof of adaptation, selection, mechanism, independent origin or convergence."
   },
   "datasets": {
     "balanced_image_comparison_atlas": {
@@ -80,7 +176,7 @@
       "spine_relative_length_max_proxy"
     ],
     "auxiliary_provenance_only_endpoint": "spine_peak_count_proxy",
-    "orientation_reference": "EXIF-oriented image vertical, not gravity",
+    "orientation_reference": "0 degrees upward, 90 degrees horizontal and 180 degrees downward relative to EXIF-oriented image vertical; not a gravity measurement",
     "colour_scope": "uncalibrated camera-recorded visible colour",
     "auxiliary_scope": "2D image-geometry proxies, not direct botanical phyllary/spine states"
   },
@@ -314,6 +410,7 @@
   "submission_gates": {
     "taxonomic_robustness": "complete",
     "residual_spatial_and_region_omission": "complete",
+    "full27_sampling_composition_sensitivity": "complete_16_of_26_within_and_10_of_10_among_direction_stable_all_declared_scenarios",
     "environmental_niche_null": "complete",
     "cyclic_season_and_dominant_taxon": "complete",
     "involucre_resolution_and_sharpness": "complete_failed_claim_withdrawn",

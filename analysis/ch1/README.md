@@ -7,6 +7,11 @@ Use this directory to navigate the frozen continuous within-taxon image-phenomic
 - `manuscript/final_claims.json` — frozen numerical claims.
 - `manuscript/COHORT_FLOW_AND_ANALYSIS_LEDGER.md` — cohort names/counts and permitted analyses.
 - `manuscript/SUBMISSION_MANUSCRIPT.md` — current narrative and figure priorities.
+- `manuscript/AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md` — PR #71 trait-by-gradient-by-scale mainline and EAzami temporal handoff.
+- `v2_full27_environment_atlas_contract.json` — canonical 27-endpoint × nine-predictor analysis and gate contract.
+- `v2_full27_sampling_composition_sensitivity_contract.json` — independent retrospective contract for equal-taxon-weight, dominant-taxon, broad-region and native-only direction checks.
+- `../../manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md` — frozen v2 method/ecology defence and candidate-mechanism claim boundaries.
+- `manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md` — validated full-27 result and provenance ledger.
 - `manuscript/EXTERNAL_COMPLETION_GATES.md` — genuinely external pending validation.
 - `bias_control_contract.json` — locked raw-calendar seasonal, taxon-omission, image-quality and image-remeasurement rules.
 - `hemisphere_season_sensitivity_contract.json` — separately locked half-cycle and hemisphere-specific seasonal sensitivity; it preserves rather than replaces the raw-calendar family.

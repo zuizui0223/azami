@@ -1,0 +1,95 @@
+{
+  "analysis_id": "geb_v2_full27_environment_atlas_v1",
+  "status": "retrospective_exploratory_after_related_v2_outcomes_were_seen",
+  "n_registered_endpoints_start": 27,
+  "n_measured_endpoints_model_entry": 22,
+  "n_unexecuted_endpoints_retained": 5,
+  "unexecuted_endpoints": [
+    "visible_floret_fraction",
+    "corolla_white_pixel_fraction",
+    "corolla_redmagenta_pixel_fraction",
+    "corolla_purple_pixel_fraction",
+    "corolla_yellow_pixel_fraction"
+  ],
+  "n_inferential_units": 26,
+  "n_measured_variance_decompositions": 22,
+  "fraction_below_taxon_means_range": [
+    0.8137321906969928,
+    0.9862520151073496
+  ],
+  "n_environment_predictors": 9,
+  "environment_predictors": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean",
+    "chelsa_vpd_mean",
+    "chelsa_sfcwind_mean",
+    "chelsa_gsp",
+    "chelsa_npp"
+  ],
+  "n_environment_observations": 46276,
+  "n_environment_taxa": 259,
+  "environment_coverage": {
+    "chelsa_bio01": 1.0,
+    "chelsa_bio04": 1.0,
+    "chelsa_bio12": 1.0,
+    "chelsa_bio15": 1.0,
+    "chelsa_rsds_mean": 1.0,
+    "chelsa_vpd_mean": 1.0,
+    "chelsa_sfcwind_mean": 0.9998919526320339,
+    "chelsa_gsp": 1.0,
+    "chelsa_npp": 1.0
+  },
+  "within_status_counts": {
+    "ok": 189,
+    "unexecuted_no_measurement": 45
+  },
+  "among_status_counts_by_scope": {
+    "among_taxon_min2": {
+      "ok": 189,
+      "unexecuted_no_measurement": 45
+    },
+    "among_taxon_min5": {
+      "ok": 180,
+      "unexecuted_no_measurement": 45,
+      "failed:ValueError:No finite variation": 9
+    }
+  },
+  "within_fdr_signals": 26,
+  "among_fdr_signals_by_scope": {
+    "among_taxon_min2": 7,
+    "among_taxon_min5": 10
+  },
+  "cross_scale_class_counts": {
+    "neither": 152,
+    "not_comparable": 54,
+    "within_only": 18,
+    "both_scales": 7,
+    "among_only": 3
+  },
+  "multiplicity": {
+    "method": "Benjamini-Hochberg",
+    "families": "one family across all successful trait units and all nine predictors, separately for within taxon, among min5 and among min2",
+    "tier_specific_families": false,
+    "rows_removed_by_q_value": false,
+    "abc_evidence_layers": false
+  },
+  "trait_selection": "all 27 registered; model entry by finite measurement_available only; analysis_tier is metadata only",
+  "old_v1_nine_endpoint_subset_used": false,
+  "claim_boundary": [
+    "This is a retrospective exploratory atlas because related GEB v2 outcomes were inspected before this full 27 by 9 analysis was declared.",
+    "A within-taxon cross-sectional association is not demonstrated plasticity, selection or adaptation.",
+    "An among-taxon permutation does not remove spatial or phylogenetic non-independence.",
+    "The nine environmental predictors are correlated observational gradients; a univariate slope does not identify an independent causal mechanism.",
+    "Validation-only surface endpoints remain image proxies until botanical reference measurements are available.",
+    "Unexecuted endpoints are missing evidence, not biological zero or trait absence."
+  ],
+  "input_sha256": {
+    "endpoint_contract": "d60403fd9a22cc6f712abc743e2c22a47450a2eee63272aa57f80978833ca4b2",
+    "analysis_contract": "e984705edd2411c5b0da1d32c27c31ae26c391ee72eae181a0ba6f0623e879e3",
+    "traits_long": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+  }
+}

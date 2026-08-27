@@ -1,14 +1,16 @@
 # Chapter 1 submission manuscript
 
-This is the canonical submission-facing entry point for Chapter 1. The paper is framed as a **global quantitative phenotypic geography of thistle capitula**: public photographs are converted into repeated continuous trait observations, allowing visible diversity below taxon means, among-taxon morphospace and environmental organization at multiple biological scales to be examined without reducing morphology to species means or coarse categories.
+This is the canonical submission-facing entry point for Chapter 1. The paper is framed as a **global quantitative geography of continuous thistle capitulum traits**: public photographs are converted into repeated continuous observations so that each trait can be paired with predeclared environmental gradients and located at head, photograph, within-taxon, among-taxon and sampled-global scales. The expanded whole-capitulum analysis is a secondary synthesis, not a return to one composite morphology.
+
+The narrative decision and Azami-to-EAzami handoff are fixed in [`AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md`](AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md).
 
 The former lability-axis story is not a headline result. Mechanistic explanations are downstream hypotheses rather than the primary inferential target.
 
-**Current status: SUBMISSION HOLD FOR EXTERNAL VALIDATION, NOT FOR COMPUTATIONAL REANALYSIS.** The final artifact-backed GEB v2 continuous-trait workflow and the multilevel within/among/process-environment extension are complete. Raw-calendar and hemisphere-aware seasonal, dominant-taxon, native-range, spatial, taxonomic, niche-permutation, candidate image-quality and core-four environmental-sufficiency analyses are complete. Independent detector/trait validation and the other genuinely external gates listed below remain open.
+**Current status: SUBMISSION HOLD FOR EXTERNAL VALIDATION, NOT FOR COMPUTATIONAL REANALYSIS.** The final artifact-backed GEB v2 continuous-trait workflow, the all-27 / all-nine endpoint atlas, the matched within/among comparison, the retrospective sampling-composition audit and the sequential spatial/historical candidate gates are complete. Whole-capitulum and core-four environmental-sufficiency analyses remain secondary synthesis. Independent detector/trait validation and the other genuinely external gates listed below remain open.
 
 ## Preferred title
 
-**Global citizen-science images reveal multidimensional and scale-dependent environmental organization of thistle capitula**
+**Global continuous phenomics reveals trait- and scale-specific environmental geography of thistle capitula**
 
 ## Manuscript order
 
@@ -45,6 +47,8 @@ The final multilevel capitulum-space and process-environment extension is record
 
 The numerical results remain tied to these immutable artifacts and analysis SHAs. Later manuscript-only commits do not redefine the frozen estimands.
 
+The canonical all-27 / all-nine reanalysis is recorded in [`results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md`](results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md). It retained all 27 registered endpoints, joined the full 46,276-observation cohort to nine predictors, and passed 24/24 atlas checks, 7/7 sampling-composition checks and 11/11 spatial/historical checks. These local outputs are not yet a new remote immutable artifact.
+
 ## Current headline
 
 The study moves from:
@@ -57,38 +61,42 @@ through:
 
 to:
 
-> repeated phenotype distributions → a multidimensional and partially organized capitulum space → trait- and scale-specific environmental alignment.
+> repeated phenotype distributions → trait-specific present-day geography → predeclared environmental gradients → within/among scale comparison → sampling-composition and spatial robustness → bounded historical handoff.
 
-Across the nine established primary continuous endpoints, 0.589–0.931 of visible image variance occurs below source-assigned taxon means, although biological and imaging variance are not yet fully separable. The expanded taxon morphospace contains 127 complete taxa × 18 measured endpoints; PC1, PC2 and PC3 explain 18.5%, 12.0% and 11.8%, respectively. The first three axes therefore capture only 42.3%, arguing against one universal capitulum syndrome.
+Across all 22 measured v2 endpoints, 0.814–0.986 of raw observation-level variation occurs below source-assigned taxon means. Equalizing replication to two observations per eligible taxon retains endpoint medians of 0.287–0.585. The expanded taxon morphospace contains 127 complete taxa × 18 measured inferential endpoints; PC1, PC2 and PC3 explain 18.5%, 12.0% and 11.8%, respectively. The first three axes therefore capture only 42.3%, arguing against one universal capitulum syndrome.
 
-The whole-organ analysis adds structure to that multidimensionality. In the main complete-18 scope, registered-module association is stronger than between-module association within taxa (contrast 0.1645) and among taxa (0.0885). The within- and among-taxon 17-unit association matrices are positively but incompletely aligned (Spearman 0.3663). The allowed interpretation is **partial phenotypic / measurement-module organization**, not validated functional or genetic modularity.
+The canonical full-environment comparison shows that phenotype–environment structure changes with biological scale. Across 234 endpoint × predictor rows, seven are supported at both scales, 18 within taxa only, three among taxa only, 152 at neither scale and 54 are not comparable. Orientation aligns with annual mean temperature within taxa but annual precipitation among taxa, and most supported involucral or surface-proxy rows are within-taxon only.
 
-In the established endpoint-level analysis, orientation–BIO1 and aspect ratio–BIO4 are the two A-grade primary associations. Chroma–BIO12 and aspect ratio–BIO12 retain their global directions but are range-sensitive under native-only restriction; circular colour rows remain calibration-dependent. The expanded candidate layer adds involucre length/width–BIO15 and apical taper–BIO12 as quality-robust C-grade signals, while `bract_projection_p95`–BIO15 remains image-sensitive. All three candidate rows are within-taxon only in the matched cross-scale analysis.
+The sample is geographically extensive but uneven: Europe plus North America contribute 92.26% of observations, the Northern Hemisphere 94.91%, and *Cirsium vulgare* plus *C. arvense* 54.03%. Across 674 retrospective sampling-composition scenarios, 16 of 26 selected within-taxon pairs and all ten selected among-taxon pairs retain direction throughout. Ten within-taxon pairs reverse at least once and remain explicitly annotated as sampling sensitive.
 
-The matched 17-unit comparison shows that phenotype–environment structure changes with biological scale. Across 68 endpoint × four-predictor rows, three are supported at both scales, eight within taxa only, one among taxa only and 56 at neither scale. Orientation aligns with annual mean temperature within taxa but annual precipitation among taxa.
+Five within-taxon rows pass the new broad-space gate, but projection roughness-radiation reverses under equal taxon weighting and joint omission of the two most observed taxa; the other four retain direction in every sampling-composition scenario. Only two among-taxon rows—lower chroma with higher shortwave radiation and a larger signed head-axis angle relative to EXIF-image vertical with higher annual precipitation—also pass the broad-space gate and all 52 historical-placement trees. Both retain direction throughout the sampling audit. They are adaptive-pattern candidates under current controls, not demonstrated adaptations, mechanisms or globally representative effects. Earlier A/B/C endpoint grades remain provenance and were not used to select or hide rows in this lane.
+
+The candidate-function defence is explicitly bounded. Radiation-induced petal anthocyanin production in other species makes pigment regulation a plausible hypothesis for chroma-radiation, but photographed CIELAB chroma is not an anthocyanin assay and its negative coefficient does not identify the mediator. The orientation scale runs from 0 degrees upward through 90 degrees horizontal to 180 degrees downward in EXIF-oriented image coordinates. Its positive precipitation coefficient is therefore consistent with more downward presentation, and experimental work in a nodding Asteraceae supports rain shielding as a plausible function; image vertical is not gravity and Azami measured neither rain interception nor fitness. These hypotheses enter EAzami-I as tests, not Chapter 1 conclusions.
 
 The environmental-sufficiency test gives an equally scale-dependent result. Adding shortwave radiation, VPD, wind, growing-season precipitation and potential NPP beyond BIO1/BIO4/BIO12/BIO15 provides no supported incremental whole-capitulum information within taxa. Among taxa, the same extension is supported at both replication thresholds; growing-season precipitation is the only block-specific increment supported in both scopes. The four variables are therefore an adequate within-taxon baseline but do not exhaust among-taxon environmental structure.
 
-The central biological contribution is **a quantitative map of a multidimensional, partially organized reproductive phenotype whose environmental alignment rotates across biological scales**. The central methodological contribution is a scalable route from heterogeneous public photographs to repeated continuous trait distributions, multilevel phenotype geometry and evidence-graded environmental tests.
+The whole-organ analysis provides a secondary check on whether the decomposed endpoints can be collapsed again. They cannot: the first three PCs explain only 42.3%, registered-module association exceeds between-module association at both scales, and the two 17-unit matrices are only partly aligned. This rejects one universal syndrome while retaining partial measurement-module organization; it does not replace the endpoint-level geography.
+
+The central biological contribution is **a quantitative map showing that continuous capitulum traits occupy different present-day spatial scales and align with different environmental gradients**. The central methodological contribution is a scalable route from heterogeneous public photographs to repeated, coordinate-bearing continuous trait distributions and complete trait × gradient × scale status grids.
 
 ## Current main-result structure
 
 1. **Continuous capitulum phenotypes can be recovered from global public imagery.**
-2. **Taxon means conceal substantial repeated visible variation.**
-3. **The below-taxon pattern survives one-head-per-photo and equal-replication controls.**
-4. **The expanded 18-endpoint morphospace remains strongly multidimensional.**
-5. **Registered measurement modules show detectable internal organization within and among taxa.**
-6. **Within- and among-taxon phenotype geometry is only partly shared.**
-7. **Within-taxon environmental associations are trait specific.**
-8. **Expanded involucral geometry separates two quality-robust exploratory signals from one resolution-sensitive signal.**
-9. **Matched endpoint–environment support differs between within- and among-taxon scales.**
-10. **The four-variable CHELSA core is adequate for the current within-taxon whole-capitulum estimand.**
-11. **A broader process representation is required among taxa, with growing-season precipitation the most stable increment.**
-12. **Historical/PGLS results remain Supporting Information placement sensitivities rather than resolved phylogenetic correction.**
+2. **Taxon means compress substantial variation across all 22 measured endpoints, including under equal replication.**
+3. **Coordinates turn repeated phenotype values into endpoint-specific geographic support.**
+4. **All nine predictors in six hypothesis blocks produce a complete, trait-specific status atlas.**
+5. **Matched endpoint–environment support differs between within- and among-taxon scales.**
+6. **Sampling perturbations retain 16/26 selected within-taxon and 10/10 selected among-taxon directions; ten within rows are explicitly sensitive.**
+7. **Five within-taxon rows pass the v2-native broad-space gate, but only four also retain direction across all sampling perturbations.**
+8. **Two among-taxon rows pass both broad-space and all historical-placement gates and retain direction across all sampling perturbations.**
+9. **The four-variable CHELSA core is an adequate multivariate baseline within taxa but does not exhaust among-taxon structure.**
+10. **The expanded 18-endpoint morphospace rejects one universal capitulum syndrome.**
+11. **Registered measurement modules are partially organized, but within- and among-taxon geometry is only partly shared.**
+12. **Azami freezes present trait states and scale classes for EAzami-I function, II repeated history, III origin-class and IV convergence gates.**
 
-## Evidence tiers
+## Historical evidence tiers
 
-The submission uses the pre-result interpretation policy in [`../analysis/ch1/evidence_tiering_policy.json`](../analysis/ch1/evidence_tiering_policy.json):
+Earlier frozen analyses use the pre-result interpretation policy in [`../analysis/ch1/evidence_tiering_policy.json`](../analysis/ch1/evidence_tiering_policy.json). The canonical full-27 lane retains those labels only as provenance; it does not use them for entry, multiplicity or row suppression.
 
 - **A — robust:** supported globally and consistent across the relevant sensitivity analyses;
 - **B — supported but sensitive:** supported in the global primary/spatial analysis but weakened in a restricted-domain sensitivity while retaining direction, or limited by calibration appropriate to the endpoint;
@@ -100,16 +108,16 @@ The new whole-capitulum and process-environment results form a separate multivar
 
 ## Figure priorities
 
-The main figures should make phenotype organization and scale structure visible before presenting detailed sensitivity analyses:
+The main figures should make trait geography, environmental hypotheses and scale structure visible before the whole-capitulum synthesis:
 
 1. **image → quantitative phenotype → ecological scale:** actual photographs, detection and continuous measurement route, including examples from the expanded contract;
 2. **geographic sampling and analytical domain:** global sampling, filtering streams and occupied environmental space;
 3. **nested visible variation:** taxon → photograph → head decomposition across established continuous endpoints;
-4. **expanded multivariate capitulum space:** 18 inferential endpoints, with the 9-endpoint primary PCA retained as the frozen comparison;
-5. **multilevel phenotype organization:** within- and among-taxon 17-unit association matrices, registered-module contrast and cross-scale similarity;
-6. **environmental evidence and sufficiency:** endpoint-level A/B/C atlas plus the nested core-four versus process-extension result, emphasizing the within/among contrast rather than a list of unadjusted block P values.
+4. **trait-specific present-state atlas:** endpoint coverage, continuous morphospace and geographic distributions, with PCA used as a summary rather than one response axis;
+5. **trait × gradient × scale:** complete endpoint status beside matched within- and among-taxon support classes;
+6. **boundary and EAzami handoff:** broad-space passes, historical-placement candidates, core-four sufficiency and the state bundle passed to the EAzami I–IV evidence ladder.
 
-Historical-placement sensitivity and detailed sampling/image-quality diagnostics remain Supporting Information where needed.
+The full whole-capitulum association matrices, historical-placement detail and sampling/image-quality diagnostics remain Supporting Information unless a compact synthesis panel can be retained without displacing the trait-gradient result.
 
 ## Scientific control files
 
@@ -119,6 +127,7 @@ Historical-placement sensitivity and detailed sampling/image-quality diagnostics
 - [`GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md`](GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md) records the final multilevel phenotype-space and environmental-sufficiency results.
 - [`CAPITULUM_FUNCTIONAL_SPACE_HYPOTHESES_2026-08-27.md`](CAPITULUM_FUNCTIONAL_SPACE_HYPOTHESES_2026-08-27.md) freezes the whole-capitulum organization hypotheses and claim boundaries.
 - [`CAPITULUM_ENVIRONMENT_CORE_SUFFICIENCY_HYPOTHESIS_2026-08-27.md`](CAPITULUM_ENVIRONMENT_CORE_SUFFICIENCY_HYPOTHESIS_2026-08-27.md) freezes the nested core-four test and appends its immutable artifact-backed outcome.
+- [`AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md`](AZAMI_CH1_SPATIAL_SCALE_CANONICAL_2026-08-27.md) fixes the PR #71 spatial-scale mainline and the timing/repetition/convergence EAzami handoff.
 - [`../analysis/ch1/evidence_tiering_policy.json`](../analysis/ch1/evidence_tiering_policy.json) fixes how global results and sensitivity analyses are interpreted.
 - [`FIGURE_TABLE_MAP.md`](FIGURE_TABLE_MAP.md) fixes the main/Supplement figure–table crosswalk.
 - [`MAIN_FIGURE_CAPTIONS.md`](MAIN_FIGURE_CAPTIONS.md) contains authoritative main-figure captions.
@@ -147,7 +156,7 @@ Submission remains on hold for scientific validation that cannot be supplied by 
 
 `visible_floret_fraction` remains unexecuted and is not used for a floral-display conclusion. The four unexecuted colour-composition endpoints are descriptive and do not reduce the 18-endpoint inferential analysis to a failed run.
 
-Taxonomic robustness, residual spatial autocorrelation, broad-region omission, raw-calendar and hemisphere-aware cyclic collection timing, dominant-taxon omission, native-range restriction, environmental-niche permutation, candidate image-quality analysis, matched within/among comparison, complete-18 module organization and process-environment sufficiency are complete for the frozen operational-unit framework. Administrative metadata, licence selection, nomenclatural notes and final durable DOI release remain human/finalization tasks.
+Taxonomic robustness, residual spatial autocorrelation, broad-region omission, raw-calendar and hemisphere-aware cyclic collection timing, dominant-taxon omission, native-range restriction, the full-27 sampling-composition audit, environmental-niche permutation, candidate image-quality analysis, matched within/among comparison, complete-18 module organization and process-environment sufficiency are complete for the frozen operational-unit framework. Administrative metadata, licence selection, nomenclatural notes and final durable DOI release remain human/finalization tasks.
 
 ## Claim boundary
 

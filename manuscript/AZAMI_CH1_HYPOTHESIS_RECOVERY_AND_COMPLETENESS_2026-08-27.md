@@ -29,6 +29,10 @@ The audit does not redefine any estimand or reopen a completed multiplicity fami
 - 10,000 permutations per inferential test;
 - 1,000 taxon bootstraps for multivariate geometry.
 
+### Canonical full-27 / full-environment addendum
+
+The separately contracted `geb_v2_full27_environment_atlas_v1` lane supersedes older nine-endpoint/core-four counts wherever they conflict with the current Chapter 1 mainline. It retains 27 registered endpoints, 22 measured endpoints, nine environmental predictors and 234 rows per scale/scope. The atlas passed 24/24 validation checks, the independent retrospective sampling-composition audit passed 7/7 checks, and the sequential spatial/historical gates passed 11/11 checks. Exact results and claim ceilings are in `results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md`. The older analyses below remain frozen provenance and secondary synthesis.
+
 ## Status vocabulary
 
 - **SUPPORTED** — the predeclared analysis directly supports the hypothesis within its stated observational scope.
@@ -43,11 +47,12 @@ The audit does not redefine any estimand or reopen a completed multiplicity fami
 | Hypothesis | Recovery status | Evidence and interpretation |
 |---|---|---|
 | Public images can be converted into repeated continuous capitulum phenotypes at global scale | **OPERATIONALLY COMPLETE, EXTERNALLY UNVALIDATED** | The frozen trait universe contains 46,276 observations from 259 source-assigned taxa and 374,255 analysis-eligible observation × endpoint measurements. The pipeline is reproducible, but independent detector boxes and independent trait reference measurements remain open. |
-| Taxon means conceal substantial visible phenotype diversity | **SUPPORTED for the nine established primary endpoints** | The fraction of visible image variance below taxon means is 0.589–0.931; one-head-per-photo and equal-replication sensitivities retain the result. This is visible image variance, not genetic variance or plasticity. |
+| Taxon means conceal substantial visible phenotype diversity | **SUPPORTED across all 22 measured endpoints** | Raw observation-level fractions below taxon means are 0.814–0.986; equal-two-per-taxon endpoint medians are 0.287–0.585. The older head/photo decomposition remains complementary. This is visible image variance, not genetic variance or plasticity. |
 | The same nested taxon → photograph → head decomposition is established for all expanded candidate endpoints | **PARTIALLY SUPPORTED / INCOMPLETE** | Observation-level below-taxon fractions exist for the expanded trait universe, but the full photograph/head nested decomposition remains completed only for the nine primary endpoints. |
 | Finer continuous measurement reveals a multidimensional phenotype rather than one hidden master syndrome | **SUPPORTED** | In the 127-taxon × 18-endpoint morphospace, PC1 explains 18.49% and PC1–PC3 explain 42.28%. No single capitulum syndrome captures most taxon-level variation. |
 | Environmental organization is trait specific rather than one warm-, wet- or dry-climate morphology | **SUPPORTED** | Established support is distributed across orientation, visible colour and selected outline traits; candidate involucral rows differ in quality grade. Most endpoint × environment rows are unsupported, which is part of the result rather than missing reporting. |
-| Environmental organization is scale specific | **SUPPORTED** | Across 68 matched endpoint × core-climate rows: 3 are supported at both scales, 8 within only, 1 among only and 56 neither. Orientation aligns with BIO1 within taxa but BIO12 among taxa. |
+| Environmental organization is scale specific | **SUPPORTED** | Across the canonical 234-row full-environment grid: 7 are supported at both scales, 18 within only, 3 among only, 152 neither and 54 not comparable. Orientation aligns with BIO1 within taxa but BIO12 among taxa. |
+| Any spatially supported association is automatically adaptive | **REJECTED** | Five within and two among rows pass the full broad-space gate, but one within pass reverses under sampling-composition perturbation. The two among rows retain direction throughout the sampling audit and all 52 placement trees and are adaptive-pattern candidates under current controls, not demonstrated adaptations. |
 | Fine involucral geometry contains environmental information missed by coarse categories | **PARTIALLY SUPPORTED** | Involucre length/width–BIO15 and apical taper–BIO12 are quality-robust C-grade within-taxon signals; `bract_projection_p95`–BIO15 is image-sensitive. No candidate endpoint passes matched among-taxon FDR. |
 | A universal negative relationship exists between within-taxon variation and environmental responsiveness | **REJECTED / WITHDRAWN** | The former lability/responsiveness index was sample-size and uncertainty sensitive. The rho/quadrant story is provenance only and must not re-enter the manuscript conclusion. |
 
@@ -130,10 +135,15 @@ The following accepted computational components are complete for the frozen oper
 - 27-endpoint category-free contract;
 - final measurement run with 22 measured endpoints;
 - 18/19 inferential endpoints measured;
+- all-27 endpoint inventory and taxon-mean information-loss audit;
+- all-nine-variable extraction for the full 46,276-observation cohort;
+- full-27/full-environment within/among atlas and 234-row scale classification;
+- full-27 sampling-composition sensitivity with 674 evaluated scenarios;
+- v2-native broad-space gate and 52-tree historical-placement candidate gate;
 - primary nested visible-variance decomposition and sampling sensitivities;
 - 18-endpoint taxon morphospace and module-specific PCA;
 - registry-driven within-taxon core-climate models;
-- matched among-taxon models and 68-row cross-scale classification;
+- older matched core-climate models plus the canonical 234-row cross-scale classification;
 - expanded common-taxon environmental sorting;
 - whole-capitulum within/among association geometry;
 - CHELSA process-variable extraction;
@@ -144,7 +154,7 @@ The following accepted computational components are complete for the frozen oper
 - candidate resolution/sharpness and fixed-resolution-stratum audit;
 - evidence atlas and EAzami machine-readable handoff.
 
-No additional correlational raster screen is required to complete the current Chapter 1 estimand.
+The separately contracted full-environment screen is complete. No additional uncontracted correlational raster screen is required to complete the current Chapter 1 estimand.
 
 ## B. Computational components that are intentionally incomplete or partial
 
@@ -153,7 +163,7 @@ No additional correlational raster screen is required to complete the current Ch
 - The full photograph/head nested variance decomposition has not been extended from the primary nine endpoints to every candidate endpoint.
 - Repeat-photo records are identified, but traits have not been remeasured across the frozen repeat-photo cohort.
 - The phylogenetic analysis remains a randomized-placement sensitivity, not resolved phylogenetic correction.
-- Soil/topographic predictors exist in the broader spatial layer, but a new all-environment whole-capitulum screen is not required for the frozen Chapter 1 claim and would be exploratory unless separately contracted.
+- Soil/topographic predictors exist in the older broader spatial layer. They are not added post hoc to the completed nine-variable endpoint atlas.
 
 ## C. Manuscript and figure integration — PARTIAL AT THE START OF THIS AUDIT
 
@@ -163,7 +173,7 @@ The completion target of the present branch is to:
 
 1. integrate the final module-organization, matched-scale and core-sufficiency results into Results;
 2. interpret the whole-capitulum and scale-specific environment result in Discussion;
-3. state the Azami → EAzami line as **present phenotypic field → generative-history discrimination**;
+3. state the Azami → EAzami line as **present trait geography and spatial scale → I function validation → II repeated nuclear history → III historical-class discrimination → IV convergence testing**;
 4. update repository status from “expanded run in progress” to “computational analysis complete; external validation open”;
 5. make the hypothesis recovery ledger a canonical control file.
 
@@ -188,11 +198,11 @@ A material failure in independent validation requires a versioned remeasurement 
 
 The **Azami scientific pattern estimand is computationally complete**:
 
-> repeated continuous image phenotypes → below-taxon diversity → multidimensional taxon morphospace → partial whole-capitulum organization → matched within/among environmental structure → scale-specific environmental sufficiency.
+> repeated continuous image phenotypes → trait-specific present geography → predeclared environmental gradients → matched within/among scale classes → retrospective sampling-composition annotation + spatial/historical boundary → secondary whole-capitulum synthesis.
 
 The final Chapter 1 synthesis is supported:
 
-> **The thistle capitulum is a multidimensional, partially organized phenotype whose environmental alignment changes across biological scales.**
+> **Continuous capitulum traits occupy distinct present-day spatial scales and align with different environmental gradients; neither a taxon mean nor one whole-capitulum syndrome captures that geography.**
 
 ## What is not complete
 
@@ -211,17 +221,17 @@ These are not missing correlational analyses. They require independent measureme
 
 Azami and EAzami should be read as one directed programme rather than two parallel trait projects:
 
-`Azami: present phenotypic field`
+`Azami: present continuous-trait geography`
 
-`continuous traits → repeated distributions → spatial hierarchy → frozen phenotype/environment geometry`
+`trait definition → distribution → geography → environmental association → within/among scale class → measurement/q/sampling-composition/spatial/historical gate status`
 
 `↓`
 
-`EAzami: generative-history discrimination`
+`EAzami: four evidence-gated series for the same declared states or axes`
 
-`candidate function → interaction/fitness structure → historical models → rejected/admissible generators → next experiment`
+`I candidate-function annotation/validation → II repeated history on nuclear ancestry → III retention versus independent origin versus ancestral polymorphism versus introgression → IV functional convergence and adaptive convergence`
 
-Azami answers **what currently exists and how it is organized across space and hierarchy**. EAzami asks **which declared histories and mechanism families can generate that frozen present**. EAzami outcomes do not alter the Azami observation layer; they constrain the set of compatible generative histories.
+Azami answers **what currently exists, where it occurs and which environmental gradient it aligns with**. EAzami first validates candidate function, then asks when admitted functional traits arose and recurred, whether similarity reflects retention, independent origin, ancestral polymorphism or introgression, and only after those gates whether it qualifies as functional or adaptive convergence. Repeated similarity is not itself independent origin. Adaptive convergence additionally requires comparable selection pressure and a replicated trait -> function -> reproductive-fitness path. EAzami outcomes do not alter the Azami observation layer or retroactively establish cause.
 
 # 7. Priority order from here
 

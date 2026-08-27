@@ -30,6 +30,8 @@ Grossenbacher, D. L., Lo, M. S., Waddington, M. E., O'Dell, R. & Kay, K. M. (202
 
 Hanley, M. E., Lamont, B. B., Fairbanks, M. M. & Rafferty, C. M. (2007). Plant structural traits and their role in anti-herbivore defence. *Perspectives in Plant Ecology, Evolution and Systematics*, 8, 157–178. https://doi.org/10.1016/j.ppees.2007.01.001
 
+Hennayake, C. K., Kanechi, M., Yasuda, N., Uno, Y. & Inagaki, N. (2006). Irradiation of UV-B induces biosynthesis of anthocyanins in flower petals of rose, *Rosa hybrida* cv. 'Charleston' and 'Ehigasa'. *Environment Control in Biology*, 44, 103–110. https://doi.org/10.2525/ecb.44.103
+
 Herrera, C. M. (2025). Flowers that cool themselves: Thermal ecology of summer-blooming thistles in hot Mediterranean environments. *Ecological Monographs*, 95, e70007. https://doi.org/10.1002/ecm.70007
 
 Kattge, J., Díaz, S., Lavorel, S., Prentice, I. C., Leadley, P., Bönisch, G., … Wirth, C. (2011). TRY—a global database of plant traits. *Global Change Biology*, 17, 2905–2935. https://doi.org/10.1111/j.1365-2486.2011.02451.x
@@ -63,6 +65,8 @@ Ohashi, K. & Yahara, T. (1998). Effects of variation in flower number on pollina
 Ohashi, K. & Yahara, T. (2000). Effects of flower production and predispersal seed predation on reproduction in *Cirsium purpuratum*. *Canadian Journal of Botany*, 78, 230–236. https://doi.org/10.1139/B99-182
 
 Ohashi, K. & Yahara, T. (2002). Visit larger displays but probe proportionally fewer flowers: counterintuitive behaviour of nectar-collecting bumble bees achieves an ideal free distribution. *Functional Ecology*, 16, 492–503. https://doi.org/10.1046/j.1365-2435.2002.00644.x
+
+Peach, K., Liu, J. W. & Mazer, S. J. (2020). Climate predicts UV floral pattern size, anthocyanin concentration, and pollen performance in *Clarkia unguiculata*. *Frontiers in Plant Science*, 11, 847. https://doi.org/10.3389/fpls.2020.00847
 
 Rose, K. E., Louda, S. M. & Rees, M. (2005). Demographic and evolutionary impacts of native and invasive insect herbivores on *Cirsium canescens*. *Ecology*, 86, 453–465. https://doi.org/10.1890/03-0697
 

@@ -28,11 +28,29 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out-csv", required=True, type=Path)
     p.add_argument("--report", required=True, type=Path)
     p.add_argument("--sample-batch-size", type=int, default=1024)
+    p.add_argument(
+        "--raster-cache-dir",
+        type=Path,
+        help="Optional directory containing exact URL-basename TIFF copies; scientific source URLs remain frozen.",
+    )
     return p.parse_args()
 
 
-def sample_raster(url: str, lon: np.ndarray, lat: np.ndarray, batch_size: int) -> tuple[np.ndarray, dict[str, Any]]:
-    print(f"Sampling CHELSA source: {url}", flush=True)
+def sample_raster(
+    url: str,
+    lon: np.ndarray,
+    lat: np.ndarray,
+    batch_size: int,
+    raster_cache_dir: Path | None = None,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    local_path = raster_cache_dir / Path(url).name if raster_cache_dir is not None else None
+    if local_path is not None and local_path.is_file():
+        raster_source = str(local_path)
+        access_mode = "exact_url_basename_local_cache"
+    else:
+        raster_source = f"/vsicurl/{url}"
+        access_mode = "remote_cog"
+    print(f"Sampling CHELSA source: {url} ({access_mode})", flush=True)
     with rasterio.Env(
         GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
         CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif,.tiff",
@@ -43,7 +61,7 @@ def sample_raster(url: str, lon: np.ndarray, lat: np.ndarray, batch_size: int) -
         VSI_CACHE="TRUE",
         VSI_CACHE_SIZE="100000000",
     ):
-        with rasterio.open(f"/vsicurl/{url}") as src:
+        with rasterio.open(raster_source) as src:
             transformer = Transformer.from_crs("EPSG:4326", src.crs, always_xy=True)
             xs, ys = transformer.transform(lon.tolist(), lat.tolist())
             coords = list(zip(xs, ys))
@@ -64,6 +82,8 @@ def sample_raster(url: str, lon: np.ndarray, lat: np.ndarray, batch_size: int) -
                 "nodata": None if src.nodata is None else float(src.nodata),
                 "scales": [float(x) for x in src.scales],
                 "offsets": [float(x) for x in src.offsets],
+                "access_mode": access_mode,
+                "local_cache_path": str(local_path) if access_mode == "exact_url_basename_local_cache" else None,
             }
     return vals, meta
 
@@ -74,11 +94,12 @@ def sample_source(
     lat: np.ndarray,
     batch_size: int,
     minimum_coverage: float,
+    raster_cache_dir: Path | None = None,
 ) -> tuple[np.ndarray, dict[str, Any]]:
     if "url" in source and "urls" in source:
         raise ValueError(f"Source {source['column']} cannot define both url and urls")
     if "url" in source:
-        values, meta = sample_raster(source["url"], lon, lat, batch_size)
+        values, meta = sample_raster(source["url"], lon, lat, batch_size, raster_cache_dir)
         cov = float(np.isfinite(values).mean())
         if cov < minimum_coverage:
             raise RuntimeError(
@@ -96,7 +117,7 @@ def sample_source(
     component_meta: list[dict[str, Any]] = []
     component_coverage: list[float] = []
     for url in urls:
-        values, meta = sample_raster(str(url), lon, lat, batch_size)
+        values, meta = sample_raster(str(url), lon, lat, batch_size, raster_cache_dir)
         cov = float(np.isfinite(values).mean())
         if cov < minimum_coverage:
             raise RuntimeError(
@@ -135,7 +156,9 @@ def main() -> int:
     out = env.copy()
     for source in contract["sources"]:
         column = source["column"]
-        values, meta = sample_source(source, lon, lat, args.sample_batch_size, min_cov)
+        values, meta = sample_source(
+            source, lon, lat, args.sample_batch_size, min_cov, args.raster_cache_dir
+        )
         out[column] = values
         coverage[column] = float(np.isfinite(values).mean())
         metadata[column] = meta
