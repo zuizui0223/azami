@@ -1,0 +1,43 @@
+{
+  "version": "2026-08-27",
+  "status": "frozen_before_process_extension_outcomes",
+  "dataset": "CHELSA v2.1 climatologies / BIOCLIM+ 1981-2010",
+  "minimum_coverage": 0.98,
+  "sources": [
+    {
+      "column": "chelsa_rsds_mean",
+      "variable": "rsds mean",
+      "construct": "surface downwelling shortwave radiation",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/1981-2010/bio/CHELSA_rsds_1981-2010_mean_V.2.1.tif"
+    },
+    {
+      "column": "chelsa_vpd_mean",
+      "variable": "vpd mean",
+      "construct": "atmospheric drying power",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/1981-2010/bio/CHELSA_vpd_mean_1981-2010_V.2.1.tif"
+    },
+    {
+      "column": "chelsa_sfcwind_mean",
+      "variable": "sfcWind mean",
+      "construct": "near-surface wind exposure",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/1981-2010/bio/CHELSA_sfcWind_mean_1981-2010_V.2.1.tif"
+    },
+    {
+      "column": "chelsa_gsp",
+      "variable": "gsp",
+      "construct": "growing-season precipitation",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"
+    },
+    {
+      "column": "chelsa_npp",
+      "variable": "npp",
+      "construct": "potential net primary productivity",
+      "url": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/1981-2010/bio/CHELSA_npp_1981-2010_V.2.1.tif"
+    }
+  ],
+  "source_documentation": [
+    "https://www.chelsa-climate.org/datasets/chelsa_climatologies",
+    "https://www.chelsa-climate.org/models/chelsa"
+  ],
+  "no_substitution_rule": "If a frozen URL/source is unavailable or coverage fails, report failure; do not replace the variable after trait outcomes are known."
+}
