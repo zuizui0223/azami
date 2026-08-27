@@ -92,7 +92,7 @@
     },
     "candidate_image_quality": {
       "status": "complete; two quality-robust C rows and one image-sensitive C row",
-      "script": "analysis/run_continuous_candidate_quality_sensitivity.py",
+      "script": "analysis/run_candidate_quality_sensitivity_v2.py",
       "boundary": "image geometry is not direct botanical measurement"
     },
     "spatial_robustness": {
