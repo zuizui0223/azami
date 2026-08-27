@@ -2,6 +2,12 @@
   "version": "2026-08-27",
   "status": "frozen_before_process_extension_outcomes",
   "minimum_environment_coverage": 0.98,
+  "core_predictors": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15"
+  ],
   "blocks": [
     {
       "block_id": "core_thermal",
@@ -40,6 +46,45 @@
       "construct": "modelled potential net primary productivity"
     }
   ],
+  "incremental_tests": {
+    "purpose": "test whether the predeclared process variables explain 18D capitulum structure not already represented by the frozen four BIO predictors",
+    "method": "nested multivariate R2 with Freedman-Lane permutation of reduced-model response residual rows; within-taxon residual rows are permuted only within taxon, among-taxon residual rows across taxa",
+    "reported_effects": ["delta_r2", "partial_r2"],
+    "omnibus": {
+      "test_id": "all_process_extension_beyond_core4",
+      "extension_predictors": [
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "multiplicity": "single predeclared omnibus test per scope and biological scale; not included in block-specific BH family"
+    },
+    "block_specific": [
+      {
+        "test_id": "radiative_atmospheric_drying_beyond_core4",
+        "block_id": "radiative_atmospheric_drying",
+        "extension_predictors": ["chelsa_rsds_mean", "chelsa_vpd_mean"]
+      },
+      {
+        "test_id": "mechanical_exposure_beyond_core4",
+        "block_id": "mechanical_exposure",
+        "extension_predictors": ["chelsa_sfcwind_mean"]
+      },
+      {
+        "test_id": "growing_season_water_input_beyond_core4",
+        "block_id": "growing_season_water_input",
+        "extension_predictors": ["chelsa_gsp"]
+      },
+      {
+        "test_id": "climatic_productivity_beyond_core4",
+        "block_id": "climatic_productivity",
+        "extension_predictors": ["chelsa_npp"]
+      }
+    ],
+    "block_specific_multiplicity": "BH across the four block-specific extension tests separately within each replication scope and biological scale"
+  },
   "selection_rule": "No substitution with alternative variables after trait outcomes are inspected; unavailable blocks remain unavailable.",
-  "claim_boundary": "Blocks are process contexts, not measured causal mechanisms at the capitulum."
+  "claim_boundary": "Blocks are process contexts, not measured causal mechanisms at the capitulum. A supported incremental test means the extension contains spatial information beyond the frozen four predictors for this observational 18D estimand; it does not identify a causal process."
 }
