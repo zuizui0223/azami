@@ -1,0 +1,14 @@
+source_id,source_type,paper_japan_member_id,taxon_name,locality_id,observation_date,record_id,photo_id,source_page_url,license,source_role
+JPN30_COMMONS_AIZU_20080927_1,commons,JPN_30,Cirsium yezoense,AIZU_20080927,2008-09-27,,,https://commons.wikimedia.org/wiki/File:Cirsium_yezoense_080927.JPG,CC BY-SA 4.0,direct_colour_harmonization
+JPN30_COMMONS_AIZU_20080927_2,commons,JPN_30,Cirsium yezoense,AIZU_20080927,2008-09-27,,,https://commons.wikimedia.org/wiki/File:Cirsium_yezoense_080927_2.JPG,CC BY-SA 4.0,direct_colour_harmonization
+JPN30_COMMONS_YANAIZU_20070929,commons,JPN_30,Cirsium yezoense,YANAIZU_20070929,2007-09-29,,,https://commons.wikimedia.org/wiki/File:%E3%82%B5%E3%83%AF%E3%82%A2%E3%82%B6%E3%83%9F0929_Cirsium_yezoense.JPG,CC BY-SA 4.0,direct_colour_harmonization
+JPN30_INAT_SENDAI_334294953,inaturalist,JPN_30,Cirsium yezoense,SENDAI_20221005,2022-10-05,190665296,334294953,https://www.inaturalist.org/observations/190665296,CC BY,direct_colour_harmonization
+JPN30_INAT_SENDAI_334294963,inaturalist,JPN_30,Cirsium yezoense,SENDAI_20221005,2022-10-05,190665296,334294963,https://www.inaturalist.org/observations/190665296,CC BY,direct_colour_harmonization
+JPN30_INAT_SENDAI_334294970,inaturalist,JPN_30,Cirsium yezoense,SENDAI_20221005,2022-10-05,190665296,334294970,https://www.inaturalist.org/observations/190665296,CC BY,direct_colour_harmonization
+JPN30_INAT_SENDAI_334294975,inaturalist,JPN_30,Cirsium yezoense,SENDAI_20221005,2022-10-05,190665296,334294975,https://www.inaturalist.org/observations/190665296,CC BY,direct_colour_harmonization
+JPN30_INAT_TOWADA_584678305,inaturalist,JPN_30,Cirsium yezoense,TOWADA_20251018,2025-10-18,323137995,584678305,https://www.inaturalist.org/observations/323137995,CC BY,direct_colour_harmonization
+JPN05_INAT_HAKODATE_432457670,inaturalist,JPN_05,Cirsium aomorense,HAKODATE_20240918,2024-09-18,242578598,432457670,https://www.inaturalist.org/observations/242578598,CC BY,direct_colour_harmonization
+JPN05_INAT_TSUGARU_583115875,inaturalist,JPN_05,Cirsium aomorense,TSUGARU_20250820,2025-08-20,322349973,583115875,https://www.inaturalist.org/observations/322349973,CC BY,direct_colour_harmonization
+JPN05_INAT_TSUGARU_583115911,inaturalist,JPN_05,Cirsium aomorense,TSUGARU_20250820,2025-08-20,322349973,583115911,https://www.inaturalist.org/observations/322349973,CC BY,direct_colour_harmonization
+JPN05_INAT_TSUGARU_583115925,inaturalist,JPN_05,Cirsium aomorense,TSUGARU_20250820,2025-08-20,322349973,583115925,https://www.inaturalist.org/observations/322349973,CC BY,direct_colour_harmonization
+JPN05_INAT_TSUGARU_583115972,inaturalist,JPN_05,Cirsium aomorense,TSUGARU_20250820,2025-08-20,322349973,583115972,https://www.inaturalist.org/observations/322349973,CC BY,direct_colour_harmonization
