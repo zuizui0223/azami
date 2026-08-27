@@ -1,0 +1,211 @@
+name: EAzami direct colour crop harmonization v1
+
+on:
+  pull_request:
+    paths:
+      - "analysis/eazami_direct_colour_crop_sources_v1.csv"
+      - "analysis/run_eazami_direct_colour_crop_harmonization_v1.py"
+      - ".github/workflows/eazami-direct-colour-crop-harmonization-v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: eazami-direct-colour-crop-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PINNED_AZAMI_COMMIT: "4e6f66675004207d331fd620d6bcd894287f316a"
+  DETECTOR_ARTIFACT_ID: "8076736948"
+  DETECTOR_SHA256: "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed"
+
+jobs:
+  harmonize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout compute branch
+        uses: actions/checkout@v4
+      - name: Checkout pinned Azami measurement/detector code
+        uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/azami
+          ref: ${{ env.PINNED_AZAMI_COMMIT }}
+          path: _pinned
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pinned runtime dependencies
+        run: python -m pip install --disable-pip-version-check pandas Pillow numpy opencv-python-headless ultralytics
+      - name: Validate frozen source registry
+        run: |
+          python - <<'PY'
+          import csv
+          rows=list(csv.DictReader(open('analysis/eazami_direct_colour_crop_sources_v1.csv',encoding='utf-8-sig')))
+          assert len(rows)==13
+          assert {r['paper_japan_member_id'] for r in rows}=={'JPN_05','JPN_30'}
+          assert len({r['source_id'] for r in rows})==13
+          assert {r['locality_id'] for r in rows if r['paper_japan_member_id']=='JPN_05'}=={'HAKODATE_20240918','TSUGARU_20250820'}
+          assert {r['locality_id'] for r in rows if r['paper_japan_member_id']=='JPN_30'}=={'AIZU_20080927','YANAIZU_20070929','SENDAI_20221005','TOWADA_20251018'}
+          PY
+      - name: Download and fingerprint frozen production detector
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p detector_model/extracted
+          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${DETECTOR_ARTIFACT_ID}/zip" \
+            --output detector_model/model.zip
+          unzip -tq detector_model/model.zip
+          unzip -q detector_model/model.zip -d detector_model/extracted
+          WEIGHTS="$(find detector_model/extracted -type f -name best.pt -print -quit)"
+          test -n "$WEIGHTS"
+          echo "WEIGHTS=$WEIGHTS" >> "$GITHUB_ENV"
+          actual="$(sha256sum "$WEIGHTS" | awk '{print $1}')"
+          test "$actual" = "$DETECTOR_SHA256"
+          printf '%s  %s\n' "$actual" "$WEIGHTS" > detector_model/production_detector_sha256.txt
+      - name: Verify licenses and download frozen direct images
+        run: |
+          set -euo pipefail
+          mkdir -p downloads/images result
+          python - <<'PY'
+          import csv, html, json, pathlib, re, time, urllib.parse, urllib.request
+          rows=list(csv.DictReader(open('analysis/eazami_direct_colour_crop_sources_v1.csv',encoding='utf-8-sig')))
+          ua='Azami-EAzami-harmonization/1.0 (https://github.com/zuizui0223/azami)'
+          verified=[]
+          queue=[]
+          download_rows=[]
+
+          def clean(value):
+              return ' '.join(html.unescape(re.sub(r'<[^>]+>',' ',value or '')).split())
+
+          for row in rows:
+              sid=row['source_id']
+              target=pathlib.Path('downloads/images')/f'{sid}.jpg'
+              if row['source_type']=='inaturalist':
+                  obs_id=row['record_id']; pid=row['photo_id']
+                  req=urllib.request.Request(f'https://api.inaturalist.org/v1/observations/{obs_id}',headers={'User-Agent':ua,'Accept':'application/json'})
+                  with urllib.request.urlopen(req,timeout=45) as response:
+                      data=json.load(response)
+                  if len(data.get('results',[]))!=1: raise SystemExit(f'iNat observation unresolved: {obs_id}')
+                  obs=data['results'][0]
+                  if (obs.get('taxon') or {}).get('name') != row['taxon_name']:
+                      raise SystemExit(f'iNat taxon changed for {sid}')
+                  if bool(obs.get('captive')): raise SystemExit(f'iNat source became captive for {sid}')
+                  photos={str(p.get('id')):p for p in (obs.get('photos') or [])}
+                  if pid not in photos: raise SystemExit(f'iNat photo missing for {sid}')
+                  photo=photos[pid]
+                  lic=(photo.get('license_code') or '').lower()
+                  if lic not in {'cc0','cc-by','cc-by-sa'}: raise SystemExit(f'iNat license no longer open for {sid}: {lic}')
+                  url=(photo.get('url') or '').replace('/square.','/original.')
+                  attribution=photo.get('attribution') or ''
+                  place=obs.get('place_guess') or ''
+              elif row['source_type']=='commons':
+                  page=row['source_page_url']
+                  filename=urllib.parse.unquote(page.split('/wiki/File:',1)[1]).replace('_',' ')
+                  params=urllib.parse.urlencode({'action':'query','format':'json','formatversion':'2','prop':'imageinfo','iiprop':'url|extmetadata','titles':'File:'+filename})
+                  req=urllib.request.Request('https://commons.wikimedia.org/w/api.php?'+params,headers={'User-Agent':ua})
+                  with urllib.request.urlopen(req,timeout=45) as response:
+                      data=json.load(response)
+                  pages=data.get('query',{}).get('pages',[])
+                  if len(pages)!=1 or pages[0].get('missing'): raise SystemExit(f'Commons file unresolved for {sid}')
+                  info=pages[0]['imageinfo'][0]; meta=info.get('extmetadata',{})
+                  lic=clean(meta.get('LicenseShortName',{}).get('value','')).lower()
+                  if 'cc by-sa' not in lic and 'gfdl' not in lic: raise SystemExit(f'Commons license no longer open for {sid}: {lic}')
+                  url=info['url']; attribution=clean(meta.get('Artist',{}).get('value','')); place=row['locality_id']
+              else:
+                  raise SystemExit(f'unknown source type {row["source_type"]}')
+
+              req=urllib.request.Request(url,headers={'User-Agent':ua})
+              with urllib.request.urlopen(req,timeout=90) as response, target.open('wb') as handle:
+                  while True:
+                      chunk=response.read(1024*1024)
+                      if not chunk: break
+                      handle.write(chunk)
+              if target.stat().st_size < 10000: raise SystemExit(f'download too small for {sid}')
+              queue.append({
+                  'queue_id':sid,'photo_id':row['photo_id'] or sid,'source_file_stem':sid,
+                  'paper_japan_member_id':row['paper_japan_member_id'],'taxon_name':row['taxon_name'],
+                  'locality_id':row['locality_id'],'observation_date':row['observation_date'],
+              })
+              download_rows.append({'queue_id':sid,'download_status':'success','image_local_path':str(target.resolve())})
+              verified.append({
+                  'source_id':sid,'source_type':row['source_type'],'paper_japan_member_id':row['paper_japan_member_id'],
+                  'taxon_name':row['taxon_name'],'locality_id':row['locality_id'],'license_verified':lic,
+                  'attribution':attribution,'place_or_locality':place,'download_url':url,
+              })
+              time.sleep(0.4)
+
+          with open('queue.csv','w',encoding='utf-8',newline='') as h:
+              w=csv.DictWriter(h,fieldnames=list(queue[0])); w.writeheader(); w.writerows(queue)
+          with open('downloads/download_results.csv','w',encoding='utf-8',newline='') as h:
+              w=csv.DictWriter(h,fieldnames=list(download_rows[0])); w.writeheader(); w.writerows(download_rows)
+          pathlib.Path('result/verified_source_metadata.json').write_text(json.dumps(verified,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+          assert len(verified)==13
+          PY
+      - name: Run frozen production detector and build 12-percent-pad head crops
+        run: |
+          python _pinned/ch1_global/v2/07_screen_downloaded_images_with_yolo.py \
+            --queue queue.csv \
+            --downloads downloads/download_results.csv \
+            --images-dir downloads/images \
+            --weights "$WEIGHTS" \
+            --out-dir detector \
+            --conf 0.25 \
+            --pad-ratio 0.12 \
+            --batch-size 13 \
+            --device cpu
+          test -s detector/screening_results.csv
+          test -s detector/yolo_crop_metadata.csv
+      - name: Measure colour on detector crops and aggregate by image/locality/concept
+        run: |
+          python analysis/run_eazami_direct_colour_crop_harmonization_v1.py \
+            --sources analysis/eazami_direct_colour_crop_sources_v1.csv \
+            --screening detector/screening_results.csv \
+            --crops detector/yolo_crop_metadata.csv \
+            --head-crops-dir detector/head_crops \
+            --measurement-script _pinned/ch1_global/v2/52_measure_primary_traits_continuous.py \
+            --per-head-output result/eazami_direct_colour_crop_per_head_v1.csv \
+            --per-image-output result/eazami_direct_colour_crop_per_image_v1.csv \
+            --summary-output result/eazami_direct_colour_crop_harmonization_v1.json
+      - name: Assert predeclared aggregation and no threshold changes
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('result/eazami_direct_colour_crop_harmonization_v1.json').read_text())
+          assert x['registered_direct_images']==13
+          assert x['detector_contract']['artifact_id']==8076736948
+          assert x['detector_contract']['best_weight_sha256']=='4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed'
+          assert x['detector_contract']['production_confidence_threshold']==0.25
+          assert x['detector_contract']['crop_pad_ratio']==0.12
+          assert x['measurement_contract']['colour_confidence_floor']==0.55
+          assert x['measurement_contract']['thresholds_changed_after_result'] is False
+          for mid in ['JPN_05','JPN_30']:
+              c=x['concept_results'][mid]
+              assert c['promotion_pass']==(c['passing_locality_count']>=2)
+              if c['promotion_pass']:
+                  assert c['concept_lightness_median_across_locality_medians'] is not None
+          print(json.dumps(x,indent=2,ensure_ascii=False))
+          PY
+      - name: Remove raw licensed images and detector crops before artifact upload
+        run: rm -rf downloads/images detector/head_crops
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eazami-direct-colour-crop-harmonization-${{ github.run_id }}
+          path: |
+            result/eazami_direct_colour_crop_harmonization_v1.json
+            result/eazami_direct_colour_crop_per_head_v1.csv
+            result/eazami_direct_colour_crop_per_image_v1.csv
+            result/verified_source_metadata.json
+            detector/screening_results.csv
+            detector/yolo_crop_metadata.csv
+            detector_model/production_detector_sha256.txt
+          if-no-files-found: error
+          retention-days: 90
