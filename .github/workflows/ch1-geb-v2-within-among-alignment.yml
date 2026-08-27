@@ -109,6 +109,20 @@ jobs:
           resolve_one continuous_trait_universe_observation_long.csv TRAITS_LONG
           resolve_one strict_spatial_chelsa.csv ENVIRONMENT
           resolve_one continuous_trait_universe_climate_coefficients.csv WITHIN_COEFFICIENTS
+      - name: Preflight frozen CHELSA process sources
+        run: |
+          mkdir -p output/process_environment
+          python - <<'PY'
+          import os
+          import pandas as pd
+          source = pd.read_csv(os.environ['ENVIRONMENT'], low_memory=False)
+          source.head(32).to_csv('/tmp/chelsa_process_preflight.csv', index=False)
+          PY
+          python analysis/sample_chelsa_process_environment.py \
+            --environment /tmp/chelsa_process_preflight.csv \
+            --source-contract analysis/ch1/chelsa_process_environment_sources.json \
+            --out-csv /tmp/chelsa_process_preflight_output.csv \
+            --report output/process_environment/chelsa_process_preflight_report.json
       - name: Run symmetric within-among CHELSA analysis
         run: |
           python analysis/run_geb_v2_within_among_alignment.py \
