@@ -7,6 +7,7 @@ on:
       - 'analysis/run_geb_v2_expanded_niche_sorting.py'
       - 'analysis/run_capitulum_functional_space.py'
       - 'analysis/run_capitulum_environment_blocks.py'
+      - 'analysis/run_capitulum_environment_incremental.py'
       - 'analysis/build_capitulum_environment_cohort.py'
       - 'analysis/sample_chelsa_process_environment.py'
       - 'analysis/ch1/within_among_alignment_contract.json'
@@ -76,6 +77,7 @@ jobs:
             analysis/run_geb_v2_expanded_niche_sorting.py \
             analysis/run_capitulum_functional_space.py \
             analysis/run_capitulum_environment_blocks.py \
+            analysis/run_capitulum_environment_incremental.py \
             analysis/build_capitulum_environment_cohort.py \
             analysis/sample_chelsa_process_environment.py
           python -m unittest -v tests/test_geb_v2_within_among_alignment.py
@@ -185,6 +187,16 @@ jobs:
             --thresholds 5 2 \
             --permutations "$PERMUTATIONS" \
             --bootstrap "$BOOTSTRAP" \
+            --seed 20260827
+      - name: Test process extensions beyond frozen core four
+        run: |
+          python analysis/run_capitulum_environment_incremental.py \
+            --traits-long "$TRAITS_LONG" \
+            --environment "$PROCESS_ENVIRONMENT" \
+            --block-contract analysis/ch1/capitulum_environment_blocks_contract.json \
+            --out-dir output/capitulum_environment_incremental \
+            --thresholds 5 2 \
+            --permutations "$PERMUTATIONS" \
             --seed 20260827
       - name: Record frozen contracts and provenance
         if: always()
