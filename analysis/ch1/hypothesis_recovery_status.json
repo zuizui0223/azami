@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "status_date": "2026-08-27",
+  "chapter_role": "Azami reconstructs the present phenotypic field; EAzami discriminates compatible generative histories.",
+  "overall_status": "computational_pattern_estimand_complete_external_validation_open",
+  "frozen_sources": {
+    "continuous_trait_run": 32975451732,
+    "continuous_trait_head": "f4a6fd5e01a2befd4f49174984a99e53856c2330",
+    "continuous_trait_artifact": 9612943217,
+    "continuous_trait_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+    "multilevel_run": 33035785120,
+    "multilevel_head": "227c0e7b8c338894806785b8545c7c77c8724de1",
+    "multilevel_artifact": 9632715852,
+    "multilevel_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6"
+  },
+  "chapter_synthesis": "The thistle capitulum is a multidimensional, partially organized phenotype whose environmental alignment changes across biological scales.",
+  "hypotheses": [
+    {
+      "id": "FOUNDATION_REPEATED_CONTINUOUS_PHENOTYPES",
+      "status": "operationally_complete_externally_unvalidated",
+      "scope": "46,276 observations; 259 source-assigned taxa; 18 measured inferential endpoints",
+      "key_result": "374,255 analysis-eligible observation-by-endpoint measurements",
+      "allowed_claim": "The frozen workflow reproducibly produces repeated numerical image phenotypes.",
+      "not_allowed": "Independent measurement accuracy has been established."
+    },
+    {
+      "id": "FOUNDATION_BELOW_TAXON_DIVERSITY",
+      "status": "supported_primary_endpoints",
+      "scope": "nine established primary endpoints",
+      "key_result": "below-taxon visible-variance fraction 0.589-0.931",
+      "allowed_claim": "Taxon means discard substantial repeated visible phenotype information.",
+      "not_allowed": "The variance is genetic, heritable or plastic."
+    },
+    {
+      "id": "FOUNDATION_ONE_UNIVERSAL_SYNDROME",
+      "status": "rejected",
+      "scope": "127 taxa complete across 18 measured inferential endpoints",
+      "key_result": "PC1=0.1849; PC1-PC3=0.4228",
+      "allowed_claim": "The expanded taxon morphospace remains multidimensional.",
+      "not_allowed": "One principal component is a universal biological syndrome."
+    },
+    {
+      "id": "H1_MEASUREMENT_MODULE_ORGANIZATION",
+      "status": "supported",
+      "scope": "complete18_min5 with complete18_min2 sensitivity",
+      "key_result": "within contrast 0.164502; among contrast 0.088475; both positive with bootstrap intervals excluding zero",
+      "allowed_claim": "Registered measurement modules show partial phenotypic organization at both scales.",
+      "not_allowed": "The modules are validated functional, developmental or genetic modules."
+    },
+    {
+      "id": "H2_PARTIAL_CROSS_SCALE_CORRESPONDENCE",
+      "status": "supported",
+      "scope": "17 joint inferential units",
+      "key_result": "within-among association-matrix Spearman 0.366299; bootstrap CI 0.118457-0.399817",
+      "allowed_claim": "Within- and among-taxon phenotype geometry is positively but incompletely aligned.",
+      "not_allowed": "Within-taxon covariance is a miniature version of among-taxon covariance."
+    },
+    {
+      "id": "H3_PROCESS_BLOCK_ENVIRONMENT_REPRESENTATION",
+      "status": "supported_scale_specific",
+      "scope": "18D response; frozen core four plus five process variables",
+      "key_result": "within process partial R2 0.013535, P=0.24468; among partial R2 0.214978, P=0.000700; growing-season precipitation stable at both thresholds among taxa",
+      "allowed_claim": "The core four are adequate within taxa but do not exhaust among-taxon environmental structure.",
+      "not_allowed": "Growing-season precipitation directly caused the phenotype."
+    },
+    {
+      "id": "H4_STABLE_CROSS_SCALE_COEFFICIENT_ROTATION",
+      "status": "inconclusive",
+      "scope": "environment-block coefficient-matrix cosines",
+      "key_result": "bootstrap intervals include zero",
+      "allowed_claim": "Coefficient geometry is descriptive and uncertain.",
+      "not_allowed": "Opposing selection or stable directional rotation has been demonstrated."
+    },
+    {
+      "id": "H5_PHENOTYPE_SPACE_HANDOFF",
+      "status": "completed_workflow_boundary",
+      "scope": "Azami to EAzami",
+      "key_result": "62 provenance-gated observational targets exported",
+      "allowed_claim": "EAzami receives a frozen present-day target bundle for structural-sufficiency tests.",
+      "not_allowed": "EAzami reproduction upgrades Azami observations to causal effects."
+    },
+    {
+      "id": "CANDIDATE_INVOLUCRE_ENVIRONMENT_STRUCTURE",
+      "status": "partially_supported_within_only",
+      "scope": "expanded candidate endpoints",
+      "key_result": "length-width by BIO15 and apical taper by BIO12 are quality-robust C-grade; bract projection p95 by BIO15 is image-sensitive; no candidate among-taxon FDR rows",
+      "allowed_claim": "Finer image geometry identifies exploratory within-taxon environmental structure with graded image-quality robustness.",
+      "not_allowed": "Direct botanical or defensive effects are established."
+    },
+    {
+      "id": "LEGACY_NEGATIVE_LABILITY_RESPONSIVENESS",
+      "status": "rejected_withdrawn",
+      "scope": "former responsiveness index and quadrant story",
+      "key_result": "the relation was precision and sample-size sensitive",
+      "allowed_claim": "The old lability story is statistical provenance only.",
+      "not_allowed": "High-variation taxa are generally less environmentally responsive."
+    },
+    {
+      "id": "FUNCTIONAL_CAUSAL_MECHANISMS",
+      "status": "not_tested_in_azami",
+      "scope": "rain, radiation, thermal, aerodynamic, pollinator, antagonist and defensive mechanisms",
+      "key_result": "literature annotations generate downstream hypotheses only",
+      "allowed_claim": "Azami identifies spatial patterns that motivate mechanistic tests.",
+      "not_allowed": "Any named mechanism is demonstrated by Chapter 1."
+    }
+  ],
+  "completion": {
+    "computational_pattern_layers": {
+      "status": "complete",
+      "completed_items": 16,
+      "open_items": 0
+    },
+    "submission_narrative": {
+      "status": "synchronized_on_pr75_pending_ci_merge",
+      "completed_items": 6,
+      "open_items": 0
+    },
+    "final_figure_and_supplement_rendering": {
+      "status": "specified_not_frozen",
+      "completed_existing_main_figures": 3,
+      "new_or_rebuilt_main_figures_pending": 3,
+      "expanded_supplement_figures_pending": 8
+    },
+    "independent_scientific_validation": {
+      "status": "open_submission_blocking",
+      "completed_items": 0,
+      "open_items": 6
+    }
+  },
+  "open_validation_gates": [
+    "adjudicated independent detector boxes",
+    "independent orientation-colour-outline reference measurements",
+    "botanical calibration of candidate involucre-armature image phenotypes",
+    "developmental-stage labels or anthesis-restricted sensitivity",
+    "paired flower-versus-background colour negative control",
+    "repeat-photo trait remeasurement and bounded variance decomposition"
+  ],
+  "next_step_rule": "Do not add an uncontracted correlational raster screen. Prioritize independent validation, repeat-image and developmental controls, botanical calibration, and final figure/supplement rendering."
+}

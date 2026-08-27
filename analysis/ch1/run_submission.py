@@ -37,6 +37,7 @@ def check(_):
             "evaluation_script", "measurement_script", "join_script",
             "residual_export_script", "region_script", "input_builder",
             "audit_script", "contract", "summary_exporter", "japan38_observation_exporter",
+            "hypothesis_status", "result_ledger",
         ):
             value = stage.get(key)
             if value and not (ROOT / value).is_file():
@@ -71,8 +72,8 @@ def check(_):
         raise SystemExit("EAzami handoff must not be an active submission stage")
     if any(name.startswith("legacy_lability") for name in active_stage_names):
         raise SystemExit("Withdrawn lability workflow must not be an active submission stage")
-    if int(pipeline.get("schema_version", 0)) < 8:
-        raise SystemExit("Active submission pipeline schema must be >= 8")
+    if int(pipeline.get("schema_version", 0)) < 10:
+        raise SystemExit("Active submission pipeline schema must be >= 10")
 
     print(json.dumps({
         "status": "ok",
@@ -83,17 +84,24 @@ def check(_):
 
 
 def claims(_):
-    script = ROOT / load_pipeline()["stages"]["claims"]["script"]
-    subprocess.run([sys.executable, str(script)], cwd=ROOT, check=True)
+    pipeline = load_pipeline()
+    scripts = [
+        ROOT / pipeline["stages"]["claims"]["script"],
+        ROOT / pipeline["stages"]["hypothesis_recovery"]["script"],
+    ]
+    for script in scripts:
+        subprocess.run([sys.executable, str(script)], cwd=ROOT, check=True)
 
 
 def summary(_):
     pipeline = load_pipeline()
     contract = load_contract()
+    hypothesis_status = load_json(ROOT / pipeline["stages"]["hypothesis_recovery"]["hypothesis_status"])
     out = {
         "status": pipeline.get("status"),
         "submission_story": pipeline.get("submission_story"),
         "current_submission_gates": pipeline.get("current_submission_gates"),
+        "completion": hypothesis_status.get("completion"),
         "policy": pipeline.get("policy"),
         "withdrawn_from_headline": contract.get("withdrawn_from_headline"),
     }
