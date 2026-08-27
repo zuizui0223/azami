@@ -8,31 +8,59 @@
       "column": "chelsa_rsds_mean",
       "variable": "rsds mean",
       "construct": "surface downwelling shortwave radiation",
-      "url": "https://os.zhdk.cloud.switch.ch/envicloud/chelsa/chelsa_V2/GLOBAL/climatologies/1981-2010/bio/CHELSA_rsds_1981-2010_mean_V.2.1.tif"
+      "url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_rsds_1981-2010_mean_V.2.1.tif"
     },
     {
       "column": "chelsa_vpd_mean",
       "variable": "vpd mean",
       "construct": "atmospheric drying power",
-      "url": "https://os.zhdk.cloud.switch.ch/envicloud/chelsa/chelsa_V2/GLOBAL/climatologies/1981-2010/bio/CHELSA_vpd_mean_1981-2010_V.2.1.tif"
+      "aggregation": "mean",
+      "urls": [
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_01_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_02_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_03_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_04_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_05_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_06_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_07_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_08_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_09_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_10_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_11_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/vpd/1981-2010/CHELSA_vpd_12_1981-2010_V.2.1.tif"
+      ]
     },
     {
       "column": "chelsa_sfcwind_mean",
       "variable": "sfcWind mean",
       "construct": "near-surface wind exposure",
-      "url": "https://os.zhdk.cloud.switch.ch/envicloud/chelsa/chelsa_V2/GLOBAL/climatologies/1981-2010/bio/CHELSA_sfcWind_mean_1981-2010_V.2.1.tif"
+      "aggregation": "mean",
+      "urls": [
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_01_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_02_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_03_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_04_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_05_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_06_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_07_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_08_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_09_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_10_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_11_1981-2010_V.2.1.tif",
+        "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/sfcWind/1981-2010/CHELSA_sfcWind_12_1981-2010_V.2.1.tif"
+      ]
     },
     {
       "column": "chelsa_gsp",
       "variable": "gsp",
       "construct": "growing-season precipitation",
-      "url": "https://os.zhdk.cloud.switch.ch/envicloud/chelsa/chelsa_V2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"
+      "url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"
     },
     {
       "column": "chelsa_npp",
       "variable": "npp",
       "construct": "potential net primary productivity",
-      "url": "https://os.zhdk.cloud.switch.ch/envicloud/chelsa/chelsa_V2/GLOBAL/climatologies/1981-2010/bio/CHELSA_npp_1981-2010_V.2.1.tif"
+      "url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_npp_1981-2010_V.2.1.tif"
     }
   ],
   "source_documentation": [
@@ -40,6 +68,6 @@
     "https://www.chelsa-climate.org/models/chelsa",
     "https://essd.copernicus.org/articles/14/5573/2022/"
   ],
-  "distribution_note": "The scientific variables were frozen before outcomes. This revision corrects only the public CHELSA BIOCLIM+ distribution path after the initial os.unil URL returned HTTP 404; no variable identity was changed.",
+  "distribution_note": "Scientific variable identities and environment blocks were frozen before outcomes. Distribution debugging changed only how the same variables are obtained: rsds uses the published annual-mean BIOCLIM+ COG; vpd and sfcWind are arithmetic means of the twelve published 1981-2010 monthly climatology COGs; gsp and npp use their BIOCLIM+ COGs. No trait outcome was inspected to choose these routes.",
   "no_substitution_rule": "If a frozen variable remains unavailable or coverage fails, report failure; do not replace the variable after trait outcomes are known."
 }
