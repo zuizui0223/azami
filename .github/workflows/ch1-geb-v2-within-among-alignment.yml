@@ -50,6 +50,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Prepare output directory
+        run: mkdir -p output
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -164,6 +166,7 @@ jobs:
       - name: Record frozen contracts and provenance
         if: always()
         run: |
+          mkdir -p output
           cp analysis/ch1/within_among_alignment_contract.json output/within_among_alignment_contract.json
           cp analysis/ch1/expanded_niche_sorting_contract.json output/expanded_niche_sorting_contract.json
           cp analysis/ch1/capitulum_environment_blocks_contract.json output/capitulum_environment_blocks_contract.json
