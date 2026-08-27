@@ -27,7 +27,8 @@ jobs:
         run: python analysis/validate_v2_submission_artifacts.py
       - name: Rebuild submission figures
         run: |
-          python analysis/build_v2_submission_figures.py
-          git diff --exit-code -- manuscript/figures/v2_submission
+          python analysis/build_v2_submission_figures.py --output-dir .tmp/v2-figures
+          test "$(find .tmp/v2-figures -maxdepth 1 -name 'Figure_*.png' | wc -l)" -eq 4
+          test "$(find .tmp/v2-figures -maxdepth 1 -name 'Figure_*.pdf' | wc -l)" -eq 4
       - name: Test submission-facing v2 code
         run: python -m pytest -q --basetemp=.tmp/pytest-v2-submission

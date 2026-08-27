@@ -270,6 +270,21 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt"}
+
+
+def package_bytes(path: Path, name: str) -> bytes:
+    """Return cross-platform package bytes for tracked text and exact binary bytes."""
+    if Path(name).suffix.lower() in TEXT_SUFFIXES:
+        text = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+        return text.encode("utf-8")
+    return path.read_bytes()
+
+
 def bundle_sources(output: Path) -> list[tuple[Path, str]]:
     files: list[tuple[Path, str]] = []
     files.append((output / "README.md", "README.md"))
@@ -318,7 +333,7 @@ def write_deterministic_zip(destination: Path, files: list[tuple[Path, str]]) ->
             info = ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
             info.compress_type = ZIP_DEFLATED
             info.external_attr = 0o644 << 16
-            archive.writestr(info, source.read_bytes())
+            archive.writestr(info, package_bytes(source, name))
 
 
 def finalize(output: Path) -> None:
@@ -340,7 +355,11 @@ def finalize(output: Path) -> None:
         "source_lane": "full27_full_environment_only",
         "claim_ceiling": "adaptive-pattern candidates under current sequential controls; not demonstrated adaptation or mechanism",
         "files": [
-            {"path": name, "bytes": source.stat().st_size, "sha256": sha256(source)}
+            {
+                "path": name,
+                "bytes": len(package_bytes(source, name)),
+                "sha256": sha256_bytes(package_bytes(source, name)),
+            }
             for source, name in sorted(files, key=lambda item: item[1])
         ],
     }

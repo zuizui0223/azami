@@ -12,10 +12,18 @@ ROOT = Path(__file__).resolve().parents[1]
 SUBMISSION = ROOT / "submission"
 RESULTS = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27"
 FIGURES = ROOT / "manuscript" / "figures" / "v2_submission"
+TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".txt"}
 
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def package_bytes(path: Path, name: str) -> bytes:
+    if Path(name).suffix.lower() in TEXT_SUFFIXES:
+        text = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+        return text.encode("utf-8")
+    return path.read_bytes()
 
 
 def source_path(bundle_name: str) -> Path:
@@ -52,7 +60,7 @@ def main() -> None:
         name = str(row["path"])
         path = source_path(name)
         check(path.is_file(), f"missing manifest source: {name}")
-        data = path.read_bytes()
+        data = package_bytes(path, name)
         check(len(data) == int(row["bytes"]), f"byte count drift: {name}")
         digest = sha256_bytes(data)
         check(digest == row["sha256"], f"SHA-256 drift: {name}")
@@ -65,7 +73,8 @@ def main() -> None:
         for name, digest in expected_hashes.items():
             check(sha256_bytes(archive.read(name)) == digest, f"ZIP payload drift: {name}")
         check(
-            archive.read("SUBMISSION_MANIFEST.json") == manifest_path.read_bytes(),
+            archive.read("SUBMISSION_MANIFEST.json")
+            == package_bytes(manifest_path, "SUBMISSION_MANIFEST.json"),
             "ZIP manifest differs from external manifest",
         )
 
