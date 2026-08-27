@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Attach frozen CHELSA process-extension variables to an existing cohort.
 
-Source URLs and output names are read from a frozen JSON contract. Every source
-must meet the frozen coverage threshold; otherwise extraction fails rather than
-silently substituting a post-hoc predictor.
+Source identities and aggregation rules are read from a frozen JSON contract.
+Every source must meet the frozen coverage threshold; otherwise extraction fails
+rather than silently substituting a post-hoc predictor. A source may be a single
+COG or a predeclared list of monthly climatology COGs aggregated by arithmetic
+mean at each frozen observation coordinate.
 """
 from __future__ import annotations
 
@@ -30,6 +32,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def sample_raster(url: str, lon: np.ndarray, lat: np.ndarray, batch_size: int) -> tuple[np.ndarray, dict[str, Any]]:
+    print(f"Sampling CHELSA source: {url}", flush=True)
     with rasterio.Env(
         GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
         CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif,.tiff",
@@ -65,6 +68,54 @@ def sample_raster(url: str, lon: np.ndarray, lat: np.ndarray, batch_size: int) -
     return vals, meta
 
 
+def sample_source(
+    source: dict[str, Any],
+    lon: np.ndarray,
+    lat: np.ndarray,
+    batch_size: int,
+    minimum_coverage: float,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    if "url" in source and "urls" in source:
+        raise ValueError(f"Source {source['column']} cannot define both url and urls")
+    if "url" in source:
+        values, meta = sample_raster(source["url"], lon, lat, batch_size)
+        cov = float(np.isfinite(values).mean())
+        if cov < minimum_coverage:
+            raise RuntimeError(
+                f"{source['column']} source coverage {cov:.4f} below frozen minimum {minimum_coverage:.4f}"
+            )
+        return values, {"aggregation": "single_cog", "component_coverage": [cov], "components": [meta]}
+
+    urls = source.get("urls")
+    if not isinstance(urls, list) or not urls:
+        raise ValueError(f"Source {source['column']} must define url or non-empty urls")
+    aggregation = source.get("aggregation")
+    if aggregation != "mean":
+        raise ValueError(f"Source {source['column']} multi-COG aggregation must be frozen as mean")
+    matrices: list[np.ndarray] = []
+    component_meta: list[dict[str, Any]] = []
+    component_coverage: list[float] = []
+    for url in urls:
+        values, meta = sample_raster(str(url), lon, lat, batch_size)
+        cov = float(np.isfinite(values).mean())
+        if cov < minimum_coverage:
+            raise RuntimeError(
+                f"{source['column']} component coverage {cov:.4f} below frozen minimum {minimum_coverage:.4f}: {url}"
+            )
+        matrices.append(values)
+        component_meta.append(meta)
+        component_coverage.append(cov)
+    matrix = np.vstack(matrices)
+    with np.errstate(invalid="ignore"):
+        aggregated = np.nanmean(matrix, axis=0)
+    return aggregated, {
+        "aggregation": "arithmetic_mean_across_predeclared_monthly_climatologies",
+        "n_components": len(urls),
+        "component_coverage": component_coverage,
+        "components": component_meta,
+    }
+
+
 def main() -> int:
     args = parse_args()
     env = pd.read_csv(args.environment, low_memory=False)
@@ -84,7 +135,7 @@ def main() -> int:
     out = env.copy()
     for source in contract["sources"]:
         column = source["column"]
-        values, meta = sample_raster(source["url"], lon, lat, args.sample_batch_size)
+        values, meta = sample_source(source, lon, lat, args.sample_batch_size, min_cov)
         out[column] = values
         coverage[column] = float(np.isfinite(values).mean())
         metadata[column] = meta
@@ -99,6 +150,7 @@ def main() -> int:
         "coverage": coverage,
         "raster_metadata": metadata,
         "selection_rule": "phenotype-blind extraction on the frozen GEB-v2 strict spatial cohort",
+        "aggregation_rule": "only aggregation declared before outcome inspection in the source contract is permitted",
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, indent=2) + "\n")
