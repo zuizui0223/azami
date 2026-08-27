@@ -354,12 +354,13 @@ def build_alignment(among: pd.DataFrame, within_path: Path, primary_scope: str) 
         ["both_scales", "within_only", "among_only"],
         default="neither",
     )
-    merged["linear_sign_concordant"] = np.nan
+    merged["linear_sign_concordant"] = pd.Series(pd.NA, index=merged.index, dtype="boolean")
     linear = merged["inferential_unit"].eq("linear_endpoint")
     bw = pd.to_numeric(merged["beta_std_within"], errors="coerce")
     ba = pd.to_numeric(merged["beta_std_among"], errors="coerce")
     comparable = linear & bw.notna() & ba.notna() & (bw != 0) & (ba != 0)
-    merged.loc[comparable, "linear_sign_concordant"] = np.sign(bw[comparable]).eq(np.sign(ba[comparable])).astype(bool)
+    concordant = np.sign(bw[comparable]).eq(np.sign(ba[comparable]))
+    merged.loc[comparable, "linear_sign_concordant"] = concordant.to_numpy(dtype=bool)
     return merged
 
 
