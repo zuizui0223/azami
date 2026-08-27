@@ -18,6 +18,7 @@ on:
       - 'manuscript/CAPITULUM_FUNCTIONAL_SPACE_HYPOTHESES_2026-08-27.md'
       - 'tests/test_geb_v2_within_among_alignment.py'
       - 'tests/test_geb_v2_expanded_niche_sorting.py'
+      - 'tests/test_capitulum_environment_incremental.py'
       - '.github/workflows/ch1-geb-v2-within-among-alignment.yml'
   workflow_dispatch:
     inputs:
@@ -82,6 +83,7 @@ jobs:
             analysis/sample_chelsa_process_environment.py
           python -m unittest -v tests/test_geb_v2_within_among_alignment.py
           python -m unittest -v tests/test_geb_v2_expanded_niche_sorting.py
+          python -m unittest -v tests/test_capitulum_environment_incremental.py
       - name: Download completed GEB v2 artifact
         env:
           GH_TOKEN: ${{ github.token }}
