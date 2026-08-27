@@ -1,115 +1,166 @@
 # Chapter 1 cohort flow and analysis ledger
 
-This ledger replaces ambiguous uses of *strict*, *expanded*, *balanced* and *primary*. Each label below refers to one frozen table and one analysis purpose. Throughout the submission-facing analysis, source-platform taxon assignments are treated as operational taxonomic units; WCVP lumping is evaluated as sensitivity rather than silently rewriting observation identities.
+This ledger replaces ambiguous uses of *strict*, *expanded*, *balanced* and *primary*. Each label refers to one frozen table and one analysis purpose. Source-platform taxon assignments are operational units; WCVP lumping is a sensitivity rather than a silent rewrite of observation identity.
 
 ## Exhaustive all-photo inference stream
 
-The exhaustive stream began with all eligible public photographs before trait-based thinning. Cohorts were then derived using coordinate quality, positional accuracy, spatial cells and stable hashes only.
-
-| Canonical cohort name | Frozen file | Observations | Taxa | Selection | Analyses permitted |
+| Canonical cohort | Frozen file or artifact table | Observations | Taxa | Selection | Permitted role |
 |---|---|---:|---:|---|---|
-| Exhaustive detected | `all_detected_observations.csv` | 406,582 | 286 | At least one detector-positive capitulum | Detection and availability accounting only |
-| Exhaustive coordinate-usable | `coordinate_usable_observations.csv` | 392,989 | 271 | Public usable coordinates | Geographic coverage summaries |
-| Exhaustive ≤10 km | `strict_10km_observations.csv` | 297,293 | 259 | Positional accuracy ≤10 km | Pre-thinning sensitivity only |
-| **Exhaustive spatially thinned primary** | `strict_spatial_thinned_observations.csv` | **46,276** | **259** | One observation per taxon × 0.25° cell after ≤10 km restriction | Primary within-taxon climate coefficients; source for spatial robustness and focal observation-level handoffs |
-| Exhaustive between-taxon balance | `between_species_balanced_40_observations.csv` | 3,723 | 259 | Stable-hash maximum 40 observations per taxon | Exhaustive-stream between-taxon sensitivity only |
+| Exhaustive detected | `all_detected_observations.csv` | 406,582 | 286 | At least one detector-positive capitulum | Detection and availability accounting |
+| Exhaustive coordinate-usable | `coordinate_usable_observations.csv` | 392,989 | 271 | Public usable coordinates | Geographic coverage |
+| Exhaustive ≤10 km | `strict_10km_observations.csv` | 297,293 | 259 | Positional accuracy ≤10 km | Pre-thinning sensitivity |
+| **Exhaustive spatially thinned primary** | `strict_spatial_thinned_observations.csv` | **46,276** | **259** | One observation per taxon × 0.25° cell after ≤10 km restriction | Primary within-taxon coefficients and source for expanded trait universe |
+| Exhaustive between-taxon balance | `between_species_balanced_40_observations.csv` | 3,723 | 259 | Stable-hash maximum 40 observations per taxon | Exhaustive-stream between-taxon sensitivity |
 
-The exhaustive merge contained 777,766 photographs from 460,036 source observations, 637,745 detector-positive photographs, 406,582 observations with detected heads and 1,255,791 detected heads. These counts describe the execution stream, not the smaller image-comparison atlas.
+The exhaustive merge contained 777,766 photographs from 460,036 source observations, 637,745 detector-positive photographs, 406,582 observations with detected heads and 1,255,791 detected heads. These execution counts are not the smaller balanced atlas.
 
 ## Balanced image-comparison atlas
 
-A separately executed balanced image layer contained 6,626 detected capitula from 3,725 observations and 216 source-assigned operational taxa. It supports nested visible-variance partitioning, taxon-level trait PCA, among-taxon summaries and historical-placement sensitivity.
+The balanced layer contains 6,626 detected heads from 3,725 observations and 216 operational taxa. It supports the established taxon → photograph → head visible-variance decomposition, frozen nine-primary-trait PCA, established among-taxon sorting and randomized historical-placement sensitivity.
 
-Its earlier observation-level climate screens are retained as sensitivity analyses:
+Earlier observation-level climate screens remain separate sensitivities:
 
-| Sensitivity analysis | Endpoint rows | Typical usable rows per endpoint | BH-supported main endpoint–predictor rows |
+| Sensitivity | Endpoint rows | Typical usable observations per endpoint | BH-supported main rows |
 |---|---:|---:|---:|
-| Balanced atlas, all coordinate-eligible observations | 36 | 2,834–3,327 | 2 |
-| Balanced atlas, positional accuracy ≤10 km | 36 | 2,029–2,388 | 0 |
+| Balanced atlas, all coordinate-eligible | 36 | 2,834–3,327 | 2 |
+| Balanced atlas, ≤10 km | 36 | 2,029–2,388 | 0 |
 
-These balanced-atlas screens must not be called the 46,276-observation primary cohort.
+These rows must not share the FDR label of the 46,276-observation primary cohort.
+
+## Frozen GEB v2 continuous-trait universe
+
+The category-free contract registers 27 endpoints. The final artifact-backed run measured 22 endpoints, including 18 of 19 inferential endpoints: nine primary and nine candidate. `visible_floret_fraction` is the only unexecuted inferential endpoint; four descriptive colour-composition endpoints are also unexecuted.
+
+The observation-long trait universe retains:
+
+- 46,276 observations;
+- 259 source-assigned taxa;
+- 374,255 analysis-eligible observation × endpoint measurements.
+
+Endpoint-specific missingness is preserved. The universe is a common registry, not one complete-case cohort; analyses define their own endpoint and replication requirements.
 
 ## Primary exhaustive within-taxon coefficients
 
-The 46,276-observation spatially thinned cohort produced 36 component-wise models: nine endpoints × four CHELSA predictors. Eight component rows passed BH correction. Four were ordinary linear endpoints—orientation versus BIO1, chroma versus BIO12, and aspect ratio versus BIO4 and BIO12. Four additional rows were hue sine/cosine components. Because hue components are mathematical parts of one circular response, they are not counted as four independent colour conclusions.
+The spatially thinned primary cohort produced 36 component models: nine established endpoints × four CHELSA predictors. Eight component rows passed BH correction. Four were non-circular rows—orientation–BIO1, chroma–BIO12, aspect ratio–BIO4 and aspect ratio–BIO12—and four were hue sine/cosine components requiring joint interpretation.
 
-Submission-facing wording is:
+All four non-circular rows passed raw-calendar, hemisphere-aware and dominant-taxon controls. Native-only refits retained orientation–BIO1 and aspect ratio–BIO4 under the frozen same-sign plus BH rule. Chroma–BIO12 and aspect ratio–BIO12 retained direction but failed native-only BH and remain B-grade range-sensitive global patterns rather than A-grade or native-range-robust conclusions.
 
-> In the exhaustive spatially thinned primary cohort, eight endpoint-component rows passed BH correction. Four were non-circular linear associations; four were hue components requiring joint circular interpretation.
+## Expanded candidate measurement cohort
 
-All four non-circular rows subsequently passed a locked raw-calendar taxon-specific cyclic day-of-year adjustment and retained sign after each of the ten most represented taxa was omitted separately and the two most represented taxa were omitted jointly, although coefficient magnitudes varied. A separately locked sensitivity then either shifted Southern Hemisphere dates by one half-cycle or fitted separate taxon-specific cyclic curves by hemisphere. The cohort contained 2,356 Southern Hemisphere observations, and three taxa occurred in both hemispheres; all four rows retained sign, BH support and omission-sign stability under both definitions. These controls do not classify developmental stage. The subsequent native-range audit retained orientation–BIO1 and aspect ratio–BIO4 only; chroma–BIO12 and aspect ratio–BIO12 are provenance rows rather than current headline results.
+From 1,255,791 detected heads, 322,517 met the ≥150-pixel minimum-dimension rule. Intersecting the frozen 46,276 observations and retaining one largest eligible head per observation yielded 22,186 selected observations from 235 taxa; measurement completed for 22,177 heads.
 
-## Grouped SPDE-INLA complete-case cohorts
+- contour-derived candidate architecture usable: 2,326 heads;
+- validation-only surface metrics usable: 909 heads;
+- climate-complete within-taxon candidate models: 2,277 observations from 78 taxa.
 
-The grouped spatial models use endpoint-specific complete-case cohorts of 31,666–34,472 observations and 139–141 taxa. For each endpoint, four predeclared predictor groups use the same complete-case cohort:
+The candidate tier contains 36 endpoint × core-climate rows. The final registry-wide evidence atlas retains two quality-robust C-grade rows and one image-sensitive C-grade row. This cohort is not the legacy 1,443-head contour cohort.
 
-- climate;
-- climate + topography;
-- climate + soil;
-- full environment.
+## Legacy high-resolution contour cohort — provenance
 
-These models provide spatially explicit robustness and broader predictor-domain sensitivity. Their coefficients are not numerically pooled with the 36-model exhaustive primary family. The strongest stable SPDE support is concentrated in orientation and visible colour; no gross-outline endpoint passes the global SPDE BH screen.
+The earlier high-resolution layer retained 1,443 heads from 1,292 observations and 210 taxa after sharpness, segmentation and mirror checks. Its ≤10-km environmental family contained 904 observations from 165 taxa and 12 tests.
 
-## High-resolution involucre cohort
+The original positive BIO4 rows for projection roughness, spread fraction and maximum projection did not survive the predeclared resolution/sharpness confirmation; two reversed sign in the 150–199-pixel stratum. No legacy auxiliary row remains in the biological headline.
 
-The high-resolution layer selected 1,819 heads from 1,595 photographs and 214 taxa by detected-head resolution. After sharpness, segmentation and flip-repeatability QC, 1,443 heads from 1,292 observations and 210 taxa were usable.
+## Primary nested visible-variance cohorts
 
-The audited auxiliary endpoints are:
+For the nine primary endpoints, the balanced atlas provides the full taxon → photograph → head decomposition. The one-head-per-photograph and equal-10-photo-per-taxon sensitivities use the same source hierarchy with deterministic or repeated sampling.
 
-- involucre projection roughness;
-- involucre spread fraction;
-- maximum spine-like projection relative to head radius.
+This is the only layer supporting the full nested claim. Expanded candidate endpoints have observation-level below-taxon summaries, but the full photograph/head decomposition has not been propagated to every candidate endpoint.
 
-The ≤10 km auxiliary environmental family contains 904 complete observations from 165 taxa and 12 tests (three endpoints × four CHELSA predictors). The original positive BIO4 rows did not survive the predeclared minimum-dimension and sharpness adjustment: adjusted q = 0.0696–0.0730, and two rows reversed sign in the 150–199-pixel stratum. Outward spread fraction remained positive in all three strata but still failed the frozen BH rule; it is a follow-up design clue, not a retained result. No auxiliary row remains in the biological headline.
+## Expanded taxon morphospace
 
-`spine_peak_count_proxy` remains in integrated derived tables for provenance/downstream exploration but is not one of the three final manuscript auxiliary inferential endpoints.
+Taxon medians complete for all 18 measured inferential endpoints produced a **127-taxon × 18-endpoint** PCA. This is the main expanded morphospace used to show high dimensionality. It is distinct from:
+
+- the frozen 148-taxon nine-primary-trait complete set used in established sorting;
+- the complete-observation cohort used for whole-capitulum covariance;
+- the 44-taxon all-endpoint ≥5 common set used in expanded environmental sorting.
+
+## Complete-18 whole-capitulum cohorts
+
+All 18 measured inferential endpoints were finite in 1,874 observations from 124 taxa.
+
+| Scope | Minimum complete observations per taxon | Observations | Taxa | Role |
+|---|---:|---:|---:|---|
+| **complete18_min5** | 5 | **1,734** | **42** | Main within/among association matrices, module contrasts and matrix similarity |
+| complete18_min2 | 2 | 1,825 | 75 | Replication sensitivity |
+
+Circular hue is one joint inferential unit, giving 17 units. Within matrices use taxon-centred observations with inverse taxon sample-size weights. Among matrices use taxon medians. These are phenotype/measurement association matrices, not genetic covariance matrices.
+
+## Matched endpoint-level within/among cohorts
+
+The matched analysis uses the same 17 inferential units and BIO1/BIO4/BIO12/BIO15 at both scales. Among-taxon models require at least five usable endpoint measurements per taxon and at least 20 taxa in the main scope; a threshold of two is the sensitivity.
+
+The main comparison contains 68 endpoint × predictor rows:
+
+- `both_scales`: 3;
+- `within_only`: 8;
+- `among_only`: 1;
+- `neither`: 56.
+
+Each row can use a different taxon set according to endpoint availability. Therefore this layer is not the 44-taxon common-endpoint sorting cohort.
+
+## Expanded common-taxon environmental sorting
+
+| Scope | Requirement | Common taxa | Role |
+|---|---|---:|---|
+| Main | ≥5 measurements for every measured inferential endpoint | 44 | 16 linear endpoint quartile sorting + joint hue test |
+| Sensitivity | ≥2 measurements for every endpoint | 78 | Replication sensitivity |
+
+No candidate linear endpoint passes expanded sorting at either threshold. The common-taxon requirement supports direct endpoint comparison but reduces taxon coverage.
+
+## Process-environment complete-18 cohorts
+
+CHELSA process extraction was restricted to the 1,874-observation complete-18 cohort selected by endpoint completeness, not trait magnitude. Coverage was 100% for mean shortwave radiation, mean VPD, mean wind, growing-season precipitation and potential NPP.
+
+| Scope | Observations | Taxa | Role |
+|---|---:|---:|---|
+| **complete18_env_min5** | **1,734** | **42** | Main six-block tests and nested core-four sufficiency |
+| complete18_env_min2 | 1,825 | 75 | Replication sensitivity |
+
+The same observations support whole-capitulum geometry and process-environment analysis. Stand-alone block tests, coefficient geometry and nested incremental tests remain separate statistical families.
+
+## Grouped SPDE complete-case cohorts
+
+Grouped spatial models use endpoint-specific complete cases of 31,666–34,472 observations and 139–141 taxa. Four predefined predictor groups use the same complete cases within endpoint: climate, climate + topography, climate + soil and full environment. These models provide spatial context and are not numerically pooled with the 36-model primary family.
 
 ## Repeat-photo preflight cohort
 
-An outcome-blind join of the primary 46,276 observation IDs to full public photo metadata identified 20,073 observations from 236 taxa with at least two distinct photo IDs having a usable URL. The cohort contains 58,748 photo rows, including 38,675 photographs beyond the first; the maximum is 27 photographs per observation. Trait remeasurement is pending. Between-photo variance will include camera, illumination, viewpoint and possibly subject differences unless same-individual status is adjudicated.
+An outcome-blind join identified 20,073 primary-cohort observations from 236 taxa with at least two usable photo IDs. The cohort contains 58,748 photo rows and 38,675 photographs beyond the first, with up to 27 photographs per observation. Trait remeasurement remains pending. Between-photo variance will include camera, illumination, viewpoint and possible subject differences unless same-individual status is adjudicated.
 
 ## Native-range sensitivity cohort
 
-The separately locked WCVP/TDWG join resolved 245 of 259 source taxa and assigned 27,066 observations as native, 10,554 as introduced, 5,491 as unresolved taxon matches, 2,100 as geographically unmapped and 1,065 as unlisted in the mapped level-3 unit. Endpoint-specific native-only cohorts contained 21,725–23,672 observations and 126–128 taxa. All 36 primary models were rerun as a separate BH family. Orientation–BIO1 and aspect ratio–BIO4 met the frozen same-sign plus BH rule; chroma–BIO12 and aspect ratio–BIO12 retained sign but failed native-only BH correction. Table S1.14 records all four decisions.
+The locked WCVP/TDWG join resolved 245 of 259 taxa and classified 27,066 observations as native, 10,554 introduced, 5,491 unresolved taxon matches, 2,100 geographically unmapped and 1,065 unlisted in the mapped unit. Endpoint-specific native-only cohorts contain 21,725–23,672 observations and 126–128 taxa.
 
-## Among-taxon environmental sorting
+## Established among-taxon environmental sorting
 
-The primary niche-permutation analysis uses 148 taxa complete for all nine primary traits and environmental variables. The direct-backbone sensitivity uses 49 complete taxa. Trait labels are permuted among the same taxa 10,000 times while environmental PCA coordinates and availability are fixed. BH correction is applied separately across nine traits for centroid-distance and overlap metrics within each scope.
-
-This analysis is an among-taxon environmental-sorting test and is not a within-taxon response analysis.
+The frozen nine-primary-trait niche-permutation analysis uses 148 taxa complete for all primary traits and core environmental variables. The direct-backbone sensitivity uses 49 complete taxa. Trait labels are permuted among the same taxa 10,000 times, with BH correction separate for centroid distance and overlap.
 
 ## Historical sensitivity cohort
 
-Historical sensitivity uses the balanced-atlas taxon summaries. Only 54 of 216 atlas taxa are direct dated-backbone tips; remaining taxa require within-genus grafting. Deterministic scenarios and 50 randomized scenario-2 grafting trees are used to evaluate placement sensitivity.
-
-This layer is **historical sensitivity only**. It is not a resolved phylogenetic correction and must not be used for definitive ancestral-state or adaptation claims.
+Historical sensitivity uses balanced-atlas taxon summaries. Only 54 of 216 atlas taxa are direct dated-backbone tips; remaining taxa require within-genus placement under deterministic and 50 randomized scenario-2 trees. This is placement sensitivity only, not resolved phylogenetic correction.
 
 ## Precision/lability audit cohort — provenance only
 
-The original 102-taxon raw absolute-slope lability analysis was withdrawn after the score was shown to depend strongly on slope sample size and standard error.
-
-A 101-taxon complete precision-aware cohort was then used to verify that no common cross-module coupling remained after uncertainty was incorporated. It requires:
-
-- all seven linear endpoints;
-- all four predeclared CHELSA predictors for every endpoint;
-- at least 10 observations for every taxon × endpoint × predictor slope;
-- equal weighting of orientation, colour and shape modules;
-- explicit use of every archived slope standard error.
-
-This is now **statistical QA/provenance**, not the submission-facing biological headline. Circular hue remains in colour and PCA analyses but is excluded from this precision audit because archived joint hue vectors do not contain component standard errors.
+The original 102-taxon raw absolute-slope lability analysis was withdrawn after strong dependence on slope sample size and standard error. A 101-taxon complete precision-aware cohort confirmed that the revised coupling result was unsupported. This layer remains statistical QA, not a biological headline.
 
 ## Independent detector audit cohort
 
-The leakage-free detector audit contains 1,000 source images across 323 species and 85 ten-degree spatial blocks, with 250 images assigned to a second annotator. Photo and observation overlap with detector-development data is zero. Human adjudication remains incomplete, so no independent precision/recall/F1 is currently claimed.
+The leakage-free packet contains 1,000 images across 323 taxa and 85 ten-degree spatial blocks, with 250 assigned to a second annotator. Overlap with detector-development photos and observations is zero. Human adjudication remains incomplete, so no independent precision/recall/F1 is claimed.
 
-## Naming rules
+## Canonical naming rules
 
-- **Image-comparison atlas** = 6,626 heads, 3,725 observations, 216 source-assigned taxa.
+- **Balanced image atlas** = 6,626 heads, 3,725 observations, 216 taxa.
 - **Exhaustive detected layer** = 406,582 observations, 286 taxa.
-- **Exhaustive spatially thinned primary cohort** = 46,276 observations, 259 taxa.
-- **Grouped SPDE complete-case cohort** = endpoint-specific 31,666–34,472 observations, 139–141 taxa.
-- **High-resolution involucre cohort** = 1,443 usable heads, 1,292 observations, 210 taxa; ≤10 km environmental family = 904 observations, 165 taxa.
-- **Precision-aware lability cohort** = 101 fully complete taxa, provenance/QA only.
-- Do not use *expanded pooled cohort* without a filename and count.
-- Do not report an FDR count without the cohort, endpoint family and number of tests.
-- Do not call source-assigned operational units a resolved genus-wide species taxonomy.
+- **Spatially thinned primary cohort** = 46,276 observations, 259 taxa.
+- **GEB v2 trait universe** = 46,276 observations, 259 taxa, 18 measured inferential endpoints.
+- **Expanded candidate climate cohort** = 2,277 observations, 78 taxa.
+- **Expanded 18-endpoint taxon morphospace** = 127 complete taxa.
+- **complete18_min5** = 1,734 observations, 42 taxa.
+- **complete18_min2** = 1,825 observations, 75 taxa.
+- **Expanded common-taxon sorting main** = 44 taxa; sensitivity = 78 taxa.
+- **Grouped SPDE complete cases** = endpoint-specific 31,666–34,472 observations, 139–141 taxa.
+- **Legacy high-resolution contour cohort** = 1,443 heads, 1,292 observations, 210 taxa; environmental subset 904 observations, 165 taxa.
+- **Precision-aware lability cohort** = 101 taxa, provenance only.
+- Do not use *expanded cohort* without a filename, endpoint scope and count.
+- Do not report an FDR count without the cohort, tier, scale, family and number of tests.
+- Do not call operational source-assigned units a resolved genus-wide species taxonomy.
