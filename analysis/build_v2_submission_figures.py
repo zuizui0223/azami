@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build submission figures only from the frozen full-27 v2 result tables."""
+"""Build main and supporting figures only from the frozen full-27 v2 result tables."""
 from __future__ import annotations
 
 import argparse
@@ -211,6 +211,108 @@ def figure_candidates(input_dir: Path, output: Path) -> None:
     save(fig, output, "Figure_4_v2_candidate_robustness")
 
 
+def figure_s1_endpoint_support(input_dir: Path, output: Path) -> None:
+    frame = pd.read_csv(input_dir / "v2_full27_endpoint_inventory.csv")
+    frame = frame.loc[frame["measurement_status"].eq("measured")].copy()
+    frame = frame.sort_values("n_observations_measured")
+    labels = [ENDPOINT_LABELS.get(value, value) for value in frame["endpoint_id"]]
+    y = np.arange(len(frame))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 8.6), gridspec_kw={"width_ratios": [1.35, 1]})
+    ax1.barh(y, frame["n_observations_measured"], height=0.62, color="#7ea6c4")
+    ax1.set_yticks(y, labels, fontsize=8.2)
+    ax1.set_xscale("log")
+    ax1.set_xlabel("Measured observations (log scale)")
+    ax1.set_title("A  Observation support", loc="left", weight="bold")
+    ax1.grid(axis="x", color="#d1d5db", linewidth=0.6)
+    ax1.set_axisbelow(True)
+
+    ax2.barh(y, frame["n_taxa_measured"], height=0.62, color="#b18a6a")
+    ax2.set_yticks(y, [""] * len(y))
+    ax2.set_xlabel("Source-assigned taxa measured")
+    ax2.set_title("B  Taxonomic support", loc="left", weight="bold")
+    ax2.grid(axis="x", color="#d1d5db", linewidth=0.6)
+    ax2.set_axisbelow(True)
+    fig.suptitle("Figure S1. Measurement support across the continuous-trait universe", x=0.06, y=0.98, ha="left", fontsize=14, weight="bold")
+    fig.subplots_adjust(left=0.29, right=0.98, bottom=0.09, top=0.89, wspace=0.08)
+    save(fig, output, "Figure_S1_v2_endpoint_measurement_support")
+
+
+def figure_s2_sampling_audit(input_dir: Path, output: Path) -> None:
+    frame = pd.read_csv(input_dir / "sampling" / "v2_full27_sampling_composition_summary.csv")
+    ratio_cols = [
+        "dominant_taxon_omission_minimum_effect_magnitude_ratio",
+        "leave_one_broad_region_out_minimum_effect_magnitude_ratio",
+        "native_only_minimum_effect_magnitude_ratio",
+        "equal_taxon_weight_minimum_effect_magnitude_ratio",
+    ]
+    for col in ratio_cols:
+        frame[col] = pd.to_numeric(frame[col], errors="coerce")
+    frame["minimum_ratio"] = frame[ratio_cols].min(axis=1, skipna=True)
+    frame["stable"] = frame["all_directions_stable_where_evaluable"].astype(str).str.lower().eq("true")
+    frame["label"] = frame.apply(
+        lambda row: f"{'A' if row['scale']=='among_taxon' else 'W'}: {ENDPOINT_LABELS.get(row['unit_id'], row['unit_id'])} ~ {PREDICTOR_LABELS.get(row['predictor'], row['predictor'])}",
+        axis=1,
+    )
+    frame = frame.sort_values(["stable", "minimum_ratio"], ascending=[True, True]).reset_index(drop=True)
+    y = np.arange(len(frame))
+    colors = np.where(frame["stable"], "#668f78", "#b86d6d")
+    fig, ax = plt.subplots(figsize=(11.5, 11.5))
+    ax.barh(y, frame["minimum_ratio"], color=colors, height=0.64)
+    ax.axvline(1.0, color="#6b7280", linewidth=0.8, linestyle="--")
+    ax.set_yticks(y, frame["label"], fontsize=7.6)
+    ax.set_xlabel("Minimum retained effect-magnitude ratio across declared sampling perturbations")
+    ax.set_title("Figure S2. Full selected-row sampling-composition audit", loc="left", weight="bold")
+    ax.grid(axis="x", color="#d1d5db", linewidth=0.6)
+    ax.set_axisbelow(True)
+    ax.legend(
+        handles=[Patch(facecolor="#668f78", label="direction stable"), Patch(facecolor="#b86d6d", label="direction unstable")],
+        frameon=False,
+        loc="lower right",
+    )
+    for spine in ("top", "right", "left"):
+        ax.spines[spine].set_visible(False)
+    save(fig, output, "Figure_S2_v2_sampling_composition_audit")
+
+
+def figure_s3_spatial_diagnostics(input_dir: Path, output: Path) -> None:
+    within = pd.read_csv(input_dir / "spatial" / "v2_full27_spatial_within.csv")
+    among = pd.read_csv(input_dir / "spatial" / "v2_full27_spatial_among.csv")
+    frame = pd.concat([within, among], ignore_index=True)
+    frame = frame.loc[frame["status"].eq("ok")].copy()
+    frame["spatial_permutation_p_value"] = pd.to_numeric(frame["spatial_permutation_p_value"], errors="coerce")
+    frame["residual_morans_p_value"] = pd.to_numeric(frame["residual_morans_p_value"], errors="coerce")
+    frame = frame.dropna(subset=["spatial_permutation_p_value", "residual_morans_p_value"])
+    frame["neglog10_spatial_p"] = -np.log10(frame["spatial_permutation_p_value"].clip(lower=1e-6))
+    frame["pass"] = frame["broad_spatial_sensitivity_pass"].astype(str).str.lower().eq("true")
+    frame["is_among"] = frame["scale"].eq("among_taxon")
+
+    fig, ax = plt.subplots(figsize=(9.8, 7.2))
+    groups = [
+        (False, False, "within: fail", "o", "#9aa7b2"),
+        (False, True, "within: pass", "o", "#507fa3"),
+        (True, False, "among: fail", "s", "#c59b7a"),
+        (True, True, "among: pass", "s", "#925c6a"),
+    ]
+    for is_among, passed, label, marker, color in groups:
+        subset = frame.loc[(frame["is_among"] == is_among) & (frame["pass"] == passed)]
+        ax.scatter(
+            subset["neglog10_spatial_p"], subset["residual_morans_p_value"],
+            s=48 if passed else 30, marker=marker, color=color, alpha=0.9, label=label,
+        )
+    ax.axvline(-np.log10(0.05), color="#6b7280", linestyle="--", linewidth=0.9)
+    ax.axhline(0.05, color="#6b7280", linestyle="--", linewidth=0.9)
+    ax.set_xlabel("Spatial association support, -log10(permutation P)")
+    ax.set_ylabel("Residual Moran P")
+    ax.set_title("Figure S3. Broad-space and residual-spatial diagnostic surface", loc="left", weight="bold")
+    ax.grid(color="#e5e7eb", linewidth=0.5)
+    ax.set_axisbelow(True)
+    ax.legend(frameon=False, loc="upper left")
+    for _, row in frame.loc[frame["pass"]].iterrows():
+        label = f"{ENDPOINT_LABELS.get(row['unit_id'], row['unit_id'])}~{PREDICTOR_LABELS.get(row['predictor'], row['predictor'])}"
+        ax.annotate(label, (row["neglog10_spatial_p"], row["residual_morans_p_value"]), xytext=(4, 4), textcoords="offset points", fontsize=7)
+    save(fig, output, "Figure_S3_v2_spatial_diagnostic_surface")
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     digest.update(path.read_bytes())
@@ -224,9 +326,14 @@ def main() -> None:
     figure_information_loss(args.input_dir, args.output_dir)
     figure_scale_atlas(args.input_dir, args.output_dir)
     figure_candidates(args.input_dir, args.output_dir)
+    figure_s1_endpoint_support(args.input_dir, args.output_dir)
+    figure_s2_sampling_audit(args.input_dir, args.output_dir)
+    figure_s3_spatial_diagnostics(args.input_dir, args.output_dir)
     inputs = [
+        args.input_dir / "v2_full27_endpoint_inventory.csv",
         args.input_dir / "v2_full27_variance_decomposition.csv",
         args.input_dir / "v2_full27_environment_cross_scale.csv",
+        args.input_dir / "spatial" / "v2_full27_spatial_within.csv",
         args.input_dir / "spatial" / "v2_full27_spatial_among.csv",
         args.input_dir / "historical" / "v2_full27_historical_placement_summary.csv",
         args.input_dir / "sampling" / "v2_full27_sampling_composition_summary.csv",
@@ -234,6 +341,17 @@ def main() -> None:
     report = {
         "status": "ok",
         "source_lane": "full27_full_environment_only",
+        "main_figure_stems": [
+            "Figure_1_v2_method_flow",
+            "Figure_2_v2_taxon_mean_information_loss",
+            "Figure_3_v2_within_among_scale_atlas",
+            "Figure_4_v2_candidate_robustness",
+        ],
+        "supporting_figure_stems": [
+            "Figure_S1_v2_endpoint_measurement_support",
+            "Figure_S2_v2_sampling_composition_audit",
+            "Figure_S3_v2_spatial_diagnostic_surface",
+        ],
         "input_sha256": {path.relative_to(ROOT).as_posix(): sha256(path) for path in inputs},
         "figures": sorted(path.name for path in args.output_dir.glob("Figure_*.png")),
         "claim_boundary": "submission visualization of frozen exploratory v2 results; not a new analysis",
