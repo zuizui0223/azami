@@ -2,13 +2,17 @@
 
 ## Preferred title
 
-**Global continuous phenomics reveals trait- and scale-specific environmental geography of thistle capitula**
+**Global image phenomics reveals hidden variation and scale-specific environmental geography in thistle capitula**
+
+## Running title
+
+Image phenomics of thistle traits
 
 ## Abstract
 
 ### Aim
 
-To test whether public photographs can recover repeated continuous capitulum phenotypes that taxon means compress, identify trait- and scale-specific environmental associations, and determine whether robust candidates align with independent functional ecology.
+To test whether public photographs preserve continuous capitulum variation that taxon means hide, and whether the resulting traits show robust, functionally coherent environmental patterns.
 
 ### Location
 
@@ -24,7 +28,7 @@ Source-assigned *Cirsium* and allied Cardueae, used as a replicated-radiation mo
 
 ### Methods
 
-An object detector and deterministic image functions measured a frozen 27-endpoint contract spanning orientation, visible colour, outline and finer geometry in 46,276 spatially thinned observations from 259 taxa; 22 endpoints were measured and five remained explicitly unexecuted. Within- and among-taxon models tested nine predictors in six predeclared blocks. Global multiplicity, sampling-composition, broad-space, residual-spatial and 52-tree historical-placement gates evaluated robustness. Complete-18 analyses assessed morphospace and trait organization.
+An object detector located visible capitula in 46,276 spatially thinned observations from 259 taxa. Deterministic image functions then measured orientation, visible colour, outline and finer geometry under a frozen 27-endpoint contract. Twenty-two endpoints were measured, and five remained explicitly unexecuted. Within- and among-taxon models tested nine predictors in six predeclared blocks. Robustness checks covered global multiplicity, sampling composition, broad spatial structure, residual spatial autocorrelation and 52 historical-placement trees. A complete-18 analysis assessed morphospace and trait organization.
 
 ### Results
 
@@ -32,4 +36,8 @@ Taxon means compressed 81.4–98.6% of raw visible variation and 28.7–58.5% af
 
 ### Main conclusions
 
-Methodologically, public photographs preserve repeated, coordinate-bearing phenotype distributions that categories and taxon means lose. Ecologically, environmental organization is trait- and scale-dependent, and the two retained patterns agree with independent evidence for radiation-responsive floral pigmentation and protective downward floral presentation. Their robustness makes them priority adaptive-pattern candidates, not demonstrations of pigment mediation, gravity-referenced orientation, mechanism, selection or adaptation.
+The methodological result is that public photographs preserve repeated, coordinate-bearing phenotype distributions that categories and taxon means lose. The ecological result is that environmental organization depends on trait and scale. The two retained patterns agree with independent evidence for radiation-responsive floral pigmentation and protective downward floral presentation. They are priority candidates for direct tests, not demonstrations of pigment mediation, gravity-referenced orientation, mechanism, selection or adaptation.
+
+### Keywords
+
+*Cirsium*, citizen science, continuous traits, environmental gradients, image phenomics, intraspecific variation, spatial ecology, thistles

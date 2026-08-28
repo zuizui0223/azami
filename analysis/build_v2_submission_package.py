@@ -36,7 +36,7 @@ MAIN_SOURCES = [
 ]
 
 SUPPLEMENT_SOURCE = ROOT / "manuscript" / "supplement" / "SUPPLEMENTARY_INFORMATION.md"
-TITLE = "Global continuous phenomics reveals trait- and scale-specific environmental geography of thistle capitula"
+TITLE = "Global image phenomics reveals hidden variation and scale-specific environmental geography in thistle capitula"
 
 INLINE = re.compile(r"(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^\)]+\))")
 
@@ -238,7 +238,7 @@ def add_markdown(
         line = raw.rstrip()
         if skip_title_scaffold and line in {"# Title and abstract", "## Preferred title"}:
             continue
-        if skip_title_scaffold and not skipped_preferred_title and line.startswith("**Global continuous phenomics"):
+        if skip_title_scaffold and not skipped_preferred_title and line.startswith("**Global image phenomics"):
             skipped_preferred_title = True
             continue
         if not line.strip():
@@ -423,7 +423,7 @@ def build_main(output: Path) -> Path:
     document.add_heading("Figures", level=1)
     figures = [
         ("Figure_1_v2_measurement_pipeline.png", "Figure 1. From public photographs to deterministic continuous measurements in the global Carduus-Cirsium thistle-capitulum study. Three open-licensed photographs and their detector/crop examples are presentation/source provenance only; all numerical result statements are current v2.", "Real thistle photographs, detector bounding boxes, tight and context crops, colour mask, outline geometry, orientation and representative continuous outputs, followed by the current 27 registered, 22 measured and five unexecuted contract."),
-        ("Figure_2_v2_geographic_sampling_domain.png", "Figure 2. Realized global sampling domain of the frozen public-image cohort of thistle capitula. (a) Disclosure-safe observation density, (b) locked filtering flow to 46,276 observations and 259 source-assigned taxa, and (c) the realized annual-temperature (BIO1) and annual-precipitation (BIO12) domain. The panels do not establish representativeness.", "World map of disclosure-safe observation density, locked filtering flow to 46,276 observations and 259 taxa, and the realized BIO1-BIO12 domain."),
+        ("Figure_2_v2_geographic_sampling_domain.png", "Figure 2. Realized global sampling domain of the frozen public-image cohort of thistle capitula. (a) Disclosure-safe observation density in a Mollweide equal-area projection with a 2,000-km equatorial scale, (b) locked filtering flow to 46,276 observations and 259 source-assigned taxa, and (c) the realized annual-temperature (BIO1) and annual-precipitation (BIO12) domain. The panels do not establish representativeness.", "Mollweide equal-area world map of disclosure-safe observation density with an equatorial scale, locked filtering flow to 46,276 observations and 259 taxa, and the realized BIO1-BIO12 domain."),
         ("Figure_3_v2_taxon_mean_information_loss.png", "Figure 3. Visible image-phenotype variation compressed by source-assigned taxon means across the global public-image cohort of thistle capitula. Horizontal bars compare the raw observed sample with deterministic equal-replication resamples across 22 measured endpoints; the partition is not genetic variance.", "Horizontal bars compare raw and equal-replication variation below taxon means across 22 measured endpoints; the partition is not genetic variance."),
         ("Figure_4_v2_within_among_scale_atlas.png", "Figure 4. Endpoint-specific environmental alignment within and among source-assigned thistle taxa across the global public-image cohort. The complete 234-row heat map distinguishes both-scale, within-only, among-only, neither and not-comparable rows; joint hue is one circular inferential unit.", "Complete heat map of 234 both-scale, within-only, among-only, neither and not-comparable rows; hue is a joint circular unit and unexecuted rows remain not comparable."),
         ("Figure_5_v2_candidate_robustness.png", "Figure 5. Sequential attrition and robustness of the two final candidate patterns in the global thistle-capitulum cohort. (a) The 234-row grid is reduced through among-taxon multiplicity, sampling annotation, broad-space and 52-tree placement gates; (b-c) retain the coefficient and gate evidence for chroma-radiation and image-referenced orientation-precipitation. Stability is not evidence of adaptation, convergence or mechanism.", "Flow from 234 canonical rows through among-taxon multiplicity, sampling annotation, broad-space and 52-tree placement gates, plus the evidence retained for chroma-radiation and orientation-precipitation."),
@@ -499,8 +499,8 @@ def build_supplement(output: Path) -> Path:
     add_figure(
         document,
         FIGURES / "Figure_S2_v2_sampling_composition_audit.png",
-        "Figure S2. Sampling-composition sensitivity of all globally supported rows entering the audit in the global public-image cohort of thistle capitula. Bars show the minimum retained effect-magnitude ratio across declared perturbations for each selected within- and among-taxon association; colour distinguishes direction-stable from direction-unstable rows. This is the full selected-row audit rather than only the two final candidates, and it contains no post-selection significance tests.",
-        "Minimum retained effect-magnitude ratio for every selected within- and among-taxon row, with direction-instability flagged.",
+        "Figure S2. Sampling-composition sensitivity of all globally supported rows entering the audit in the global public-image cohort of thistle capitula. Separate panels show within- and among-taxon associations. Bars give the minimum retained effect-magnitude ratio across declared perturbations; colour distinguishes direction-stable from direction-unstable rows. This is the full selected-row audit rather than only the two final candidates, and it contains no post-selection significance tests.",
+        "Separate within- and among-taxon panels show the minimum retained effect-magnitude ratio for every selected row, with direction-instability flagged.",
     )
     add_figure(
         document,

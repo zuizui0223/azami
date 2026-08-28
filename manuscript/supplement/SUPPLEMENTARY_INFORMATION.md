@@ -101,7 +101,7 @@ All files below are under `analysis_outputs/v2_full27_environment_atlas_2026-08-
 
 **Figure S1. Measurement support across the registered continuous-trait universe.** Observation and taxon coverage for every measured endpoint, with explicit unexecuted endpoints retained in the inventory. This figure diagnoses data support and does not repeat the main taxon-mean information-loss result.
 
-**Figure S2. Sampling-composition sensitivity of all globally supported rows entering the audit.** Minimum retained effect-magnitude ratio across declared sampling perturbations for each selected within- and among-taxon association, with direction-instability flagged. This figure shows the full selected-row audit rather than only the two final candidates.
+**Figure S2. Sampling-composition sensitivity of all globally supported rows entering the audit.** Separate panels show the minimum retained effect-magnitude ratio for each selected within- and among-taxon association, with direction-instability flagged. This figure shows the full selected-row audit rather than only the two final candidates.
 
 **Figure S3. Broad-space and residual-spatial diagnostic surface for all globally supported rows entering spatial sensitivity.** Spatial permutation support and residual Moran diagnostics are shown for within- and among-taxon associations, with full-gate passage distinguished from failure. This figure exposes why many initially supported rows do not enter the final candidate set.
 

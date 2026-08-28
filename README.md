@@ -4,7 +4,7 @@
 
 This `main` branch is the clean submission-facing tree for:
 
-**Global continuous phenomics reveals trait- and scale-specific environmental geography of thistle capitula**
+**Global image phenomics reveals hidden variation and scale-specific environmental geography in thistle capitula**
 
 ## Result in one line
 
