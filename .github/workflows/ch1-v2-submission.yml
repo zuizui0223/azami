@@ -35,18 +35,66 @@ jobs:
           test -f manuscript/figures/v2_submission/Figure_S3_v2_spatial_diagnostic_surface.png
       - name: Rebuild Main and Supporting Information separately
         run: |
-          python analysis/build_v2_submission_package.py --output-dir .tmp/submission-docx
-          test -s .tmp/submission-docx/Azami_Chapter1_v2_Main.docx
-          test -s .tmp/submission-docx/Azami_Chapter1_v2_Supplement.docx
-      - name: Upload presentation preview
+          mkdir -p .tmp/submission-release
+          cp submission/README.md .tmp/submission-release/README.md
+          python analysis/build_v2_submission_package.py --output-dir .tmp/submission-release
+          test -s .tmp/submission-release/Azami_Chapter1_v2_Main.docx
+          test -s .tmp/submission-release/Azami_Chapter1_v2_Supplement.docx
+      - name: Install LibreOffice for PDF rendering
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libreoffice-writer >/dev/null
+      - name: Render Main and Supporting Information PDFs
+        run: |
+          mkdir -p .tmp/lo-home .tmp/lo-profile
+          HOME="$PWD/.tmp/lo-home" libreoffice \
+            -env:UserInstallation="file://$PWD/.tmp/lo-profile" \
+            --headless --convert-to pdf --outdir .tmp/submission-release \
+            .tmp/submission-release/Azami_Chapter1_v2_Main.docx \
+            .tmp/submission-release/Azami_Chapter1_v2_Supplement.docx
+          test -s .tmp/submission-release/Azami_Chapter1_v2_Main.pdf
+          test -s .tmp/submission-release/Azami_Chapter1_v2_Supplement.pdf
+      - name: Finalize deterministic submission candidate
+        run: |
+          python analysis/build_v2_submission_package.py \
+            --output-dir .tmp/submission-release --finalize
+          test -s .tmp/submission-release/Azami_Chapter1_v2_submission_candidate.zip
+          test -s .tmp/submission-release/SUBMISSION_MANIFEST.json
+          test -s .tmp/submission-release/SHA256SUMS.txt
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from zipfile import ZipFile
+          root=Path('.tmp/submission-release')
+          manifest=json.loads((root/'SUBMISSION_MANIFEST.json').read_text())
+          assert manifest['status']=='scientific_hold_pending_independent_validation'
+          assert manifest['source_lane']=='full27_full_environment_only'
+          with ZipFile(root/'Azami_Chapter1_v2_submission_candidate.zip') as z:
+              names=set(z.namelist())
+          assert 'Azami_Chapter1_v2_Main.docx' in names
+          assert 'Azami_Chapter1_v2_Main.pdf' in names
+          assert 'Azami_Chapter1_v2_Supplement.docx' in names
+          assert 'Azami_Chapter1_v2_Supplement.pdf' in names
+          assert 'figures/Figure_S1_v2_endpoint_measurement_support.png' in names
+          assert 'figures/Figure_S2_v2_sampling_composition_audit.png' in names
+          assert 'figures/Figure_S3_v2_spatial_diagnostic_surface.png' in names
+          print(json.dumps({'manifest_files': len(manifest['files']), 'zip_sha256': hashlib.sha256((root/'Azami_Chapter1_v2_submission_candidate.zip').read_bytes()).hexdigest()}, indent=2))
+          PY
+      - name: Upload complete submission release
         uses: actions/upload-artifact@v4
         with:
-          name: geb-main-supp-preview-${{ github.run_id }}
+          name: geb-main-supp-release-${{ github.run_id }}
           path: |
-            .tmp/submission-docx/Azami_Chapter1_v2_Main.docx
-            .tmp/submission-docx/Azami_Chapter1_v2_Supplement.docx
+            .tmp/submission-release/Azami_Chapter1_v2_Main.docx
+            .tmp/submission-release/Azami_Chapter1_v2_Main.pdf
+            .tmp/submission-release/Azami_Chapter1_v2_Supplement.docx
+            .tmp/submission-release/Azami_Chapter1_v2_Supplement.pdf
+            .tmp/submission-release/Azami_Chapter1_v2_submission_candidate.zip
+            .tmp/submission-release/SUBMISSION_MANIFEST.json
+            .tmp/submission-release/SHA256SUMS.txt
             manuscript/figures/v2_submission/Figure_*.png
             manuscript/figures/v2_submission/Figure_*.pdf
+            manuscript/figures/v2_submission/figure_build_report.json
           if-no-files-found: error
           retention-days: 14
       - name: Validate committed submission bundle hashes on main only
