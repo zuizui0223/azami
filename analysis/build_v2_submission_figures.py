@@ -101,10 +101,11 @@ def sha256(path: Path) -> str:
 
 def box(ax: plt.Axes, xy: tuple[float, float], width: float, height: float,
         title: str, subtitle: str, color: str, fontsize: float = 9.0,
-        text_color: str = "#111111") -> None:
+        text_color: str = "#111111", pad: float = 0.025,
+        rounding_size: float = 0.025) -> None:
     x, y = xy
     ax.add_patch(FancyBboxPatch(
-        (x, y), width, height, boxstyle="round,pad=0.025,rounding_size=0.025",
+        (x, y), width, height, boxstyle=f"round,pad={pad},rounding_size={rounding_size}",
         linewidth=1.0, edgecolor="#314b5f", facecolor=color,
     ))
     ax.text(x + width / 2, y + height * 0.63, title, ha="center", va="center", weight="bold", fontsize=fontsize, color=text_color)
@@ -281,12 +282,18 @@ def figure_candidates(input_dir: Path, output: Path) -> None:
         ("Sampling audit", "10/10 direction-stable"), ("Broad-space gate", "2 pass"),
         ("Historical gate", "2 × 52/52 trees"), ("Candidate ceiling", "2 patterns")]
     colors = ["#e8f1f8", "#e8f1f8", "#dcefe6", "#f2ecd9", "#e9e4f3", "#dbe8d4"]
-    for i, ((title, subtitle), color) in enumerate(zip(steps, colors)):
-        x = 0.005 + i * 0.166
-        box(flow, (x, 0.25), 0.145, 0.52, title, subtitle, color, 8.2)
-        if i < len(steps) - 1:
-            flow.annotate("", xy=(x + 0.163, 0.51), xytext=(x + 0.147, 0.51),
-                arrowprops={"arrowstyle": "->", "lw": 1.1, "color": "#314b5f"})
+    left_margin = 0.01
+    right_margin = 0.01
+    box_width = 0.13
+    box_gap = (1 - left_margin - right_margin - len(steps) * box_width) / (len(steps) - 1)
+    box_x = [left_margin + i * (box_width + box_gap) for i in range(len(steps))]
+    for x, ((title, subtitle), color) in zip(box_x, zip(steps, colors)):
+        box(flow, (x, 0.27), box_width, 0.48, title, subtitle, color, 8.0,
+            pad=0.006, rounding_size=0.015)
+    for x, next_x in zip(box_x[:-1], box_x[1:]):
+        flow.annotate("", xy=(next_x - 0.010, 0.51), xytext=(x + box_width + 0.010, 0.51),
+            arrowprops={"arrowstyle": "-|>", "lw": 1.35, "color": "#314b5f",
+                        "mutation_scale": 11}, zorder=6)
     flow.text(0.005, 0.92, "(a) Sequential attrition: why only two among-taxon rows remain", fontsize=12, weight="bold")
     flow.text(0.005, 0.06, "Sampling stability annotates selected rows; promotion requires broad-space control followed by historical-placement sensitivity.", fontsize=8.5, color="#4b5563")
 

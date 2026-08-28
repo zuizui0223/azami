@@ -8,23 +8,23 @@
   "files": [
     {
       "path": "Azami_Chapter1_v2_Main.docx",
-      "bytes": 3182729,
-      "sha256": "a8fda640d5c13d921e8cb34937141205b1690d12146b7e04c1c9d7419b16a010"
+      "bytes": 3185751,
+      "sha256": "977fb8ff10f7ca7939aac9de35ece341fdecc4b5686a6a02cb0e062bbd137de4"
     },
     {
       "path": "Azami_Chapter1_v2_Main.pdf",
-      "bytes": 1129954,
-      "sha256": "3f152a80b0ad13ea6b582cecdfdd6867e3432dbba8ba05540405f3eff5d329cb"
+      "bytes": 1130531,
+      "sha256": "37cb3a7488f504a7af6d2a979fdfe7fd3ea1e857a0efd8be4e7a4358439731ca"
     },
     {
       "path": "Azami_Chapter1_v2_Supplement.docx",
       "bytes": 760433,
-      "sha256": "d6a9dbfd944e29cbd1d2fed4fad81c31a63844c4353fc2981d8c48b4755101ba"
+      "sha256": "b2578ade560ba71841d5c261b50af8a6838551f3531be1c605dae1ec31b7b157"
     },
     {
       "path": "Azami_Chapter1_v2_Supplement.pdf",
       "bytes": 639864,
-      "sha256": "9ea6ab20172a0205955010a32e07580f86561666ac521a69795af73ead7083a5"
+      "sha256": "084dd2e6f6abe6b5d1dfe3257eb74794bcdc9ca4e5c1f65d67b4f01cdf872ab8"
     },
     {
       "path": "Azami_Chapter1_v2_Supplementary_Tables.xlsx",
@@ -43,8 +43,8 @@
     },
     {
       "path": "code/build_v2_submission_figures.py",
-      "bytes": 29386,
-      "sha256": "77a8260373060c29f8d86a41afb1c69121653cf5ead12a2b8574f3f4ac08df31"
+      "bytes": 29799,
+      "sha256": "27faeb21d8161c5d8c0b503a94cab1f68252b80cf8ae297612144f5b99d9a20a"
     },
     {
       "path": "code/build_v2_submission_tables.py",
@@ -268,13 +268,13 @@
     },
     {
       "path": "figures/Figure_5_v2_candidate_robustness.pdf",
-      "bytes": 32305,
-      "sha256": "1b3eda1ddbabae4b8496ccae7cd0e1f37ba3e2c477bfd65403a53ada094cb0ad"
+      "bytes": 32302,
+      "sha256": "619f0cb9b830854e32849e9f397ae7f05184711a740c82e6a91d320dedad07a0"
     },
     {
       "path": "figures/Figure_5_v2_candidate_robustness.png",
-      "bytes": 372393,
-      "sha256": "9c7788ef3cb6a984376bfc88fb6bbf618f59950fa9656c404fdbb090f817449b"
+      "bytes": 374980,
+      "sha256": "f1ac90c722e677ea19f3e52d3009653244233031cdaeed8429ba832d95d2201d"
     },
     {
       "path": "figures/Figure_S1_v2_endpoint_measurement_support.pdf",
