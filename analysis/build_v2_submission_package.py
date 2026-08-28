@@ -170,7 +170,6 @@ def add_markdown(document: Document, text: str, *, skip_title_scaffold: bool = F
             set_run_font(run)
             continue
         if line.startswith("|"):
-            # No active submission source relies on Markdown tables; fail closed if one leaks in.
             raise ValueError("Markdown table detected; convert it explicitly before DOCX build")
         paragraph_buffer.append(line)
     flush()
@@ -240,21 +239,21 @@ def build_supplement(output: Path) -> Path:
     document.add_heading("Supporting figures", level=1)
     add_figure(
         document,
-        FIGURES / "Figure_2_v2_taxon_mean_information_loss.png",
-        "Figure S1. Taxon-mean information loss across all 22 measured endpoints.",
-        "Raw and equal-replication fractions of visible variation below taxon means for all measured endpoints.",
+        FIGURES / "Figure_S1_v2_endpoint_measurement_support.png",
+        "Figure S1. Measurement support across the registered continuous-trait universe.",
+        "Observation and taxon coverage for all measured endpoints; unexecuted rows remain explicit in the endpoint inventory.",
     )
     add_figure(
         document,
-        FIGURES / "Figure_3_v2_within_among_scale_atlas.png",
-        "Figure S2. Complete within- and among-taxon endpoint-gradient classification.",
-        "Complete heat map retaining supported, unsupported and not-comparable endpoint-gradient rows.",
+        FIGURES / "Figure_S2_v2_sampling_composition_audit.png",
+        "Figure S2. Sampling-composition sensitivity of all globally supported rows entering the audit.",
+        "Minimum retained effect-magnitude ratio for every selected within- and among-taxon row, with direction-instability flagged.",
     )
     add_figure(
         document,
-        FIGURES / "Figure_4_v2_candidate_robustness.png",
-        "Figure S3. Sampling, broad-space and historical-placement robustness of the two candidates.",
-        "Robustness summary for chroma-radiation and orientation-annual-precipitation, both passing 52 placement trees.",
+        FIGURES / "Figure_S3_v2_spatial_diagnostic_surface.png",
+        "Figure S3. Broad-space and residual-spatial diagnostic surface for all globally supported rows entering spatial sensitivity.",
+        "Spatial permutation support versus residual Moran diagnostic for all rows entering the broad-space gate, with full-gate passage distinguished.",
     )
     add_page_number(document.sections[0].footer.paragraphs[0])
     destination = output / "Azami_Chapter1_v2_Supplement.docx"
@@ -397,8 +396,6 @@ def main() -> None:
         if re.search(r"\b(TODO|TBD|PLACEHOLDER)\b", text, flags=re.IGNORECASE):
             raise SystemExit(f"Placeholder token in {path}")
     if args.finalize:
-        # Preserve the already privacy-scrubbed, rendered and visually
-        # inspected DOCX files. Rebuilding here would invalidate that review.
         finalize(args.output_dir)
     else:
         build_main(args.output_dir)

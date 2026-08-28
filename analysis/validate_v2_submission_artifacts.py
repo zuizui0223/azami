@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Validate the frozen v2 submission package without requiring protected inputs."""
+"""Validate frozen v2 science and, when requested, the committed submission bundle."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -13,6 +14,16 @@ SUBMISSION = ROOT / "submission"
 RESULTS = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27"
 FIGURES = ROOT / "manuscript" / "figures" / "v2_submission"
 TEXT_SUFFIXES = {".csv", ".json", ".md", ".py", ".toml", ".txt"}
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--science-only",
+        action="store_true",
+        help="validate frozen scientific reports without requiring the committed presentation bundle hashes to match edited manuscript sources",
+    )
+    return parser.parse_args()
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -47,7 +58,22 @@ def check(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def main() -> None:
+def validate_frozen_science() -> int:
+    validation_reports = [
+        RESULTS / "v2_full27_environment_validation.json",
+        RESULTS / "sampling" / "v2_full27_sampling_composition_validation.json",
+        RESULTS / "v2_full27_sensitivities_validation.json",
+    ]
+    checks = 0
+    for path in validation_reports:
+        report = json.loads(path.read_text(encoding="utf-8"))
+        check(report["status"] == "PASS", f"frozen validation is not PASS: {path.name}")
+        check(report["n_checks"] == report["n_passed"], f"failed frozen check: {path.name}")
+        checks += int(report["n_checks"])
+    return checks
+
+
+def validate_committed_bundle() -> tuple[int, str]:
     manifest_path = SUBMISSION / "SUBMISSION_MANIFEST.json"
     sums_path = SUBMISSION / "SHA256SUMS.txt"
     zip_path = SUBMISSION / "Azami_Chapter1_v2_submission_candidate.zip"
@@ -88,18 +114,6 @@ def main() -> None:
     check(all(sums.get(name) == digest for name, digest in expected_hashes.items()), "SHA256SUMS payload mismatch")
     check(sums.get(zip_path.name) == sha256_bytes(zip_path.read_bytes()), "ZIP SHA-256 mismatch")
 
-    validation_reports = [
-        RESULTS / "v2_full27_environment_validation.json",
-        RESULTS / "sampling" / "v2_full27_sampling_composition_validation.json",
-        RESULTS / "v2_full27_sensitivities_validation.json",
-    ]
-    checks = 0
-    for path in validation_reports:
-        report = json.loads(path.read_text(encoding="utf-8"))
-        check(report["status"] == "PASS", f"frozen validation is not PASS: {path.name}")
-        check(report["n_checks"] == report["n_passed"], f"failed frozen check: {path.name}")
-        checks += int(report["n_checks"])
-
     forbidden = (
         "continuous_trait_reanalysis_v1",
         "reviewer_bias_control_v1",
@@ -111,11 +125,29 @@ def main() -> None:
         not any(any(token in name.lower() for token in forbidden) for name in expected_hashes),
         "legacy path leaked into bundle",
     )
+    return len(rows), sha256_bytes(zip_path.read_bytes())
+
+
+def main() -> None:
+    args = parse_args()
+    checks = validate_frozen_science()
+    if args.science_only:
+        print(json.dumps({
+            "status": "PASS",
+            "mode": "science_only",
+            "frozen_validation_checks": checks,
+            "scientific_status": "frozen_v2_reports_pass",
+        }, indent=2))
+        return
+
+    manifest_files, zip_digest = validate_committed_bundle()
+    manifest = json.loads((SUBMISSION / "SUBMISSION_MANIFEST.json").read_text(encoding="utf-8"))
     print(json.dumps({
         "status": "PASS",
-        "manifest_files": len(rows),
+        "mode": "full_bundle",
+        "manifest_files": manifest_files,
         "frozen_validation_checks": checks,
-        "zip_sha256": sha256_bytes(zip_path.read_bytes()),
+        "zip_sha256": zip_digest,
         "scientific_status": manifest["status"],
     }, indent=2))
 

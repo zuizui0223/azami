@@ -10,6 +10,10 @@ This `main` branch is the clean submission-facing tree for:
 
 Public photographs recover repeated continuous phenotypes that taxon means compress; environmental alignment differs by endpoint and biological scale, and only chroma-radiation and orientation-annual-precipitation pass the current sequential among-taxon spatial and historical-placement gates while retaining direction under declared sampling perturbations.
 
+## Why thistles
+
+Thistles are the comparative model system, not the genus-specific endpoint of the paper. The Carduus–Cirsium group places multiple visible phenotype dimensions on one repeatedly photographed capitulum and contains geographically replicated rapid regional radiations, including separate Pleistocene radiations in Japan and North America. That combination allows the paper to ask whether repeated phenotypic diversification across distinct regional lineages is lost when morphology is reduced to categories or taxon means. The current chapter does **not** assume that every regional radiation is a demonstrated adaptive radiation and does not infer repeated origins or convergence from present spatial associations.
+
 ## Frozen v2 lane
 
 - 27 continuous endpoints registered;
@@ -25,6 +29,10 @@ Public photographs recover repeated continuous phenotypes that taxon means compr
 
 The public-image sample is extensive but uneven: Europe plus North America contributed 92.26% and the two most observed taxa 54.03%. The sampling audit annotates that dependence; it does not convert the data into a probability sample.
 
+## Main versus Supporting Information
+
+Main contains the general inferential story: continuous-trait recovery, taxon-mean information loss, within/among scale structure and the two final candidate patterns. Supporting Information is the audit layer: complete endpoint coverage, full supported/unsupported model grids, all sampling perturbations, spatial diagnostics and historical-placement tables. Main Figures 2–4 are not reused as Supporting Figures; S1–S3 are distinct coverage, sampling and spatial-diagnostic displays.
+
 ## Candidate boundaries
 
 Higher-radiation taxa had lower camera-recorded CIELAB corolla chroma. Radiation-responsive pigment regulation, including anthocyanin synthesis, is a candidate hypothesis, but chroma is not pigment concentration or UV reflectance.
@@ -35,7 +43,7 @@ Both are **adaptive-pattern candidates under current controls**, not demonstrate
 
 ## Start here
 
-1. [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md) — active paper order and claim boundary.
+1. [`manuscript/SUBMISSION_MANUSCRIPT.md`](manuscript/SUBMISSION_MANUSCRIPT.md) — active paper order, model-system rationale and Main/SI boundary.
 2. [`manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md`](manuscript/results/GEB_V2_FULL27_FULL_ENVIRONMENT_RESULTS_2026-08-27.md) — numerical result ledger.
 3. [`manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md`](manuscript/AZAMI_CH1_V2_DEFENSE_2026-08-27.md) — method and ecological defence.
 4. [`manuscript/final_claims.json`](manuscript/final_claims.json) — machine-readable active claims.
@@ -58,4 +66,4 @@ The old lability/quadrant result, PR69-era nine-endpoint hierarchy and supersede
 
 ## Claim ceiling
 
-This repository does not demonstrate plasticity, heritability, selection, causal environmental mechanisms, botanical identity of validation-only image proxies, a resolved *Cirsium* species tree, independent origins or convergence.
+This repository does not demonstrate plasticity, heritability, selection, causal environmental mechanisms, botanical identity of validation-only image proxies, a resolved *Cirsium* species tree, independent origins, adaptive radiation or convergence.
