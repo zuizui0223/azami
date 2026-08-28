@@ -23,8 +23,11 @@ jobs:
           python analysis/validate_ch1_hypothesis_recovery.py
           python analysis/validate_manuscript_citations.py
           python analysis/ch1/run_submission.py check
-      - name: Validate frozen full-27 outputs
-        run: python analysis/validate_v2_submission_artifacts.py
+      - name: Validate frozen scientific outputs directly
+        run: |
+          python analysis/validate_geb_v2_full27_environment_atlas.py
+          python analysis/validate_geb_v2_full27_sampling_composition.py
+          python analysis/validate_geb_v2_full27_sensitivities.py
       - name: Rebuild distinct main and supporting figures
         run: |
           python analysis/build_v2_submission_figures.py
@@ -38,5 +41,19 @@ jobs:
           python analysis/build_v2_submission_package.py --output-dir .tmp/submission-docx
           test -s .tmp/submission-docx/Azami_Chapter1_v2_Main.docx
           test -s .tmp/submission-docx/Azami_Chapter1_v2_Supplement.docx
+      - name: Upload presentation preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: geb-main-supp-preview-${{ github.run_id }}
+          path: |
+            .tmp/submission-docx/Azami_Chapter1_v2_Main.docx
+            .tmp/submission-docx/Azami_Chapter1_v2_Supplement.docx
+            manuscript/figures/v2_submission/Figure_*.png
+            manuscript/figures/v2_submission/Figure_*.pdf
+          if-no-files-found: error
+          retention-days: 14
+      - name: Validate committed submission bundle hashes on main only
+        if: github.event_name == 'push'
+        run: python analysis/validate_v2_submission_artifacts.py
       - name: Test submission-facing v2 code
         run: python -m pytest -q --basetemp=.tmp/pytest-v2-submission
