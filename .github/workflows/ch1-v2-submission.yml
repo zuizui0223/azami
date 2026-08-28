@@ -25,10 +25,18 @@ jobs:
           python analysis/ch1/run_submission.py check
       - name: Validate frozen full-27 outputs
         run: python analysis/validate_v2_submission_artifacts.py
-      - name: Rebuild submission figures
+      - name: Rebuild distinct main and supporting figures
         run: |
-          python analysis/build_v2_submission_figures.py --output-dir .tmp/v2-figures
-          test "$(find .tmp/v2-figures -maxdepth 1 -name 'Figure_*.png' | wc -l)" -eq 4
-          test "$(find .tmp/v2-figures -maxdepth 1 -name 'Figure_*.pdf' | wc -l)" -eq 4
+          python analysis/build_v2_submission_figures.py
+          test "$(find manuscript/figures/v2_submission -maxdepth 1 -name 'Figure_*.png' | wc -l)" -eq 7
+          test "$(find manuscript/figures/v2_submission -maxdepth 1 -name 'Figure_*.pdf' | wc -l)" -eq 7
+          test -f manuscript/figures/v2_submission/Figure_S1_v2_endpoint_measurement_support.png
+          test -f manuscript/figures/v2_submission/Figure_S2_v2_sampling_composition_audit.png
+          test -f manuscript/figures/v2_submission/Figure_S3_v2_spatial_diagnostic_surface.png
+      - name: Rebuild Main and Supporting Information separately
+        run: |
+          python analysis/build_v2_submission_package.py --output-dir .tmp/submission-docx
+          test -s .tmp/submission-docx/Azami_Chapter1_v2_Main.docx
+          test -s .tmp/submission-docx/Azami_Chapter1_v2_Supplement.docx
       - name: Test submission-facing v2 code
         run: python -m pytest -q --basetemp=.tmp/pytest-v2-submission
