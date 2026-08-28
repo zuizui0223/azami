@@ -6,6 +6,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   validate-v2-submission:
     runs-on: ubuntu-latest
@@ -97,6 +100,26 @@ jobs:
             manuscript/figures/v2_submission/figure_build_report.json
           if-no-files-found: error
           retention-days: 14
+      - name: Persist generated release on PR branch
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          cp .tmp/submission-release/Azami_Chapter1_v2_Main.docx submission/
+          cp .tmp/submission-release/Azami_Chapter1_v2_Main.pdf submission/
+          cp .tmp/submission-release/Azami_Chapter1_v2_Supplement.docx submission/
+          cp .tmp/submission-release/Azami_Chapter1_v2_Supplement.pdf submission/
+          cp .tmp/submission-release/Azami_Chapter1_v2_submission_candidate.zip submission/
+          cp .tmp/submission-release/SUBMISSION_MANIFEST.json submission/
+          cp .tmp/submission-release/SHA256SUMS.txt submission/
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add submission manuscript/figures/v2_submission
+          if git diff --cached --quiet; then
+            echo 'Generated release already matches tracked files.'
+          else
+            git commit -m 'Refresh GEB Main and Supporting release'
+            git push origin HEAD:${{ github.head_ref }}
+          fi
       - name: Validate committed submission bundle hashes on main only
         if: github.event_name == 'push'
         run: python analysis/validate_v2_submission_artifacts.py
