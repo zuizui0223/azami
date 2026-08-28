@@ -2,6 +2,8 @@
 
 Ackerfield, J., Susanna, A., Funk, V. A., Kelch, D. G., Park, D. S., Thornhill, A. H., … Dirmenci, T. (2020). A prickly puzzle: Generic delimitations in the Carduus–Cirsium group (Compositae: Cardueae: Carduinae). *Taxon*, 69, 715–738. https://doi.org/10.1002/tax.12288
 
+Aizen, M. A. (2003). Down-facing flowers, hummingbirds and rain. *Taxon*, 52, 675–680. https://doi.org/10.2307/3647342
+
 Albert, C. H., Grassein, F., Schurr, F. M., Vieilledent, G. & Violle, C. (2011). When and how should intraspecific variability be considered in trait-based plant ecology? *Perspectives in Plant Ecology, Evolution and Systematics*, 13, 217–225. https://doi.org/10.1016/j.ppees.2011.04.003
 
 Bolnick, D. I., Amarasekare, P., Araújo, M. S., Bürger, R., Levine, J. M., Novak, M., … Vasseur, D. A. (2011). Why intraspecific trait variation matters in community ecology. *Trends in Ecology & Evolution*, 26, 183–192. https://doi.org/10.1016/j.tree.2011.01.009
@@ -17,6 +19,10 @@ Chen, J. G., Yang, Y., Zhang, Z. Q., Niu, Y. & Sun, H. (2013). A nodding capitul
 Creux, N. M., Brown, R. I., Garner, A. G., Saeed, S., Scher, C. L., Holalu, S. V., … Harmer, S. L. (2021). Flower orientation influences floral temperature, pollinator visits and plant fitness. *New Phytologist*, 232, 868–879. https://doi.org/10.1111/nph.17627
 
 Dalrymple, R. L., Kemp, D. J., Flores-Moreno, H., Laffan, S. W., White, T. E., Hemmings, F. A. & Moles, A. T. (2020). Macroecological patterns in flower colour are shaped by both biotic and abiotic factors. *New Phytologist*, 228, 1972–1985. https://doi.org/10.1111/nph.16737
+
+Deguchi, A., Tatsuzawa, F., Hosokawa, M., Doi, M. & Ohno, S. (2016). Quantitative evaluation of the contribution of four major anthocyanins to black flower coloring of dahlia petals. *The Horticulture Journal*, 85, 340–350. https://doi.org/10.2503/hortj.MI-121
+
+del Valle, J. C., Gallardo-López, A., Buide, M. L., Whittall, J. B. & Narbona, E. (2018). Digital photography provides a fast, reliable, and noninvasive method to estimate anthocyanin pigment concentration in reproductive and vegetative plant tissues. *Ecology and Evolution*, 8, 3064–3076. https://doi.org/10.1002/ece3.3804
 
 Di Cecco, G. J., Barve, V., Belitz, M. W., Stucky, B. J., Guralnick, R. P. & Hurlbert, A. H. (2021). Observing the observers: How participants contribute data to iNaturalist and implications for biodiversity science. *BioScience*, 71, 1179–1188. https://doi.org/10.1093/biosci/biab093
 

@@ -15,6 +15,8 @@ The submission mainline is:
 
 > public photograph -> 27 registered continuous endpoints -> 22 measured endpoints plus five explicit unexecuted rows -> variation hidden by taxon means -> endpoint-specific geography -> six environmental blocks -> within/among scale class -> sampling-composition and broad-space sensitivity -> historical-placement sensitivity -> two adaptive-pattern candidates under current controls
 
+The manuscript presents two linked outcomes throughout: a methodological contribution—recovering repeated, coordinate-bearing continuous phenotype distributions that categories and taxon means compress—and an ecological contribution—showing trait- and scale-specific environmental organization, with two robust candidate directions that align with independent functional evidence for radiation-responsive floral pigmentation and protective downward floral presentation. This functional alignment prioritizes direct validation; it does not convert camera chroma to pigment amount or image orientation to an established adaptive mechanism.
+
 ## Why thistles
 
 Thistles are the comparative model system, not the genus-specific endpoint of the paper. The Carduus–Cirsium group combines a repeatedly photographed complex capitulum with large visible disparity across orientation, colour, outline and involucral architecture. It also contains geographically replicated rapid regional radiations, including separate Pleistocene radiations in Japan and North America. That combination makes the group a useful stress test for whether repeated phenotypic diversification across distinct regional lineages is compressed by categorical states or one taxon mean.

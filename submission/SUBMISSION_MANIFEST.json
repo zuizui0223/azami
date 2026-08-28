@@ -8,23 +8,23 @@
   "files": [
     {
       "path": "Azami_Chapter1_v2_Main.docx",
-      "bytes": 3182093,
-      "sha256": "b8244936f7d74af2a991be5419a6de8ef3816dc76055ca97ccad8739ce78f23d"
+      "bytes": 3182729,
+      "sha256": "a8fda640d5c13d921e8cb34937141205b1690d12146b7e04c1c9d7419b16a010"
     },
     {
       "path": "Azami_Chapter1_v2_Main.pdf",
-      "bytes": 1126599,
-      "sha256": "715f6d9020c4064ee09c460ae6dcb30d349836a41c821c0f4b8c418a51fc1381"
+      "bytes": 1129954,
+      "sha256": "3f152a80b0ad13ea6b582cecdfdd6867e3432dbba8ba05540405f3eff5d329cb"
     },
     {
       "path": "Azami_Chapter1_v2_Supplement.docx",
       "bytes": 760433,
-      "sha256": "d9815393d7a08755487bbf81bc6b0deb160060be03512adbf1e4e6de0cf6304e"
+      "sha256": "d6a9dbfd944e29cbd1d2fed4fad81c31a63844c4353fc2981d8c48b4755101ba"
     },
     {
       "path": "Azami_Chapter1_v2_Supplement.pdf",
       "bytes": 639864,
-      "sha256": "8195537b67395aac2998023a067f864a0ebdcdb57b0230e2b0883f23cfbced33"
+      "sha256": "9ea6ab20172a0205955010a32e07580f86561666ac521a69795af73ead7083a5"
     },
     {
       "path": "Azami_Chapter1_v2_Supplementary_Tables.xlsx",
@@ -343,13 +343,13 @@
     },
     {
       "path": "source/manuscript/00_title_abstract.md",
-      "bytes": 4442,
-      "sha256": "598d6ad5bda53a1a25412ef1367a621676c28e2f79788f70b7d2c3923e5d5ed4"
+      "bytes": 2461,
+      "sha256": "d4fede4c968b3c724671fc28ce6a6c17f3441047630f987ee7565905797ecce2"
     },
     {
       "path": "source/manuscript/01_introduction.md",
-      "bytes": 11749,
-      "sha256": "c490cc179ddb27c3a1ee022192be9d6ff9811956b630fce4dd83c246dcd7d9db"
+      "bytes": 12049,
+      "sha256": "70639edd2b122e78f0bdc5d02d0574023d04a775ac7a5af3917814999b3ac65e"
     },
     {
       "path": "source/manuscript/02_methods.md",
@@ -363,18 +363,18 @@
     },
     {
       "path": "source/manuscript/04_discussion.md",
-      "bytes": 7001,
-      "sha256": "05f12017bf8960e629b81458c2b1cf50e63b04b69330ebc7c1d94dabddbb752f"
+      "bytes": 8699,
+      "sha256": "a27be9cde98da38486059b5211d65d30b9409568bc142640ad70f16d4ce7c5df"
     },
     {
       "path": "source/manuscript/05_conclusion_and_declarations.md",
-      "bytes": 1718,
-      "sha256": "a573aa5357691c24b8b1d13880d3f10ff1e3cf6ff60fd02b271d769291ae42be"
+      "bytes": 2147,
+      "sha256": "314c1af24a324090edd9afcdc486a50c5cdc4175aee44ac063561886e927ef84"
     },
     {
       "path": "source/manuscript/06_references.md",
-      "bytes": 10951,
-      "sha256": "51a1768f481096964e161d54d0825fe6f048ddef08d6346407b5418f484be7b5"
+      "bytes": 11666,
+      "sha256": "537a0916651a4fbb41783b30b305b5865ec4b0e7d00a4cef7de67b22bca5d44a"
     },
     {
       "path": "source/manuscript/07_data_code_availability.md",
