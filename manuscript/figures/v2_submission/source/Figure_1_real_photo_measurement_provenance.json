@@ -1,0 +1,13 @@
+{
+  "global_artifact_id": 8099953404,
+  "continuous_artifact_id": 8225059018,
+  "metadata_artifact_id": 8066010557,
+  "selected_units": [
+    "ch1atlas_0002870_head_01",
+    "ch1atlas_0002331_head_01",
+    "ch1atlas_0003663_head_02"
+  ],
+  "detector_role": "YOLO visible-capitulum detection only",
+  "measurement_role": "production v2 deterministic continuous colour, outline, and orientation measurements",
+  "detector_accuracy_note": "This figure demonstrates production outputs; independent precision/recall remains a separate manual audit gate."
+}

@@ -42,7 +42,7 @@ Full results are in `spatial/v2_full27_spatial_within.csv` and `spatial/v2_full2
 
 The two spatially retained among-taxon rows were tested on 52 audited dated-backbone placement trees: two deterministic scenarios and 50 randomized within-genus placement trees. Both retained direction and P below 0.05 on every tree. Only 54 historical-atlas taxa were direct backbone tips; most were within-genus placements. The analysis is therefore a sensitivity to the tested placement uncertainty, not a resolved species-tree or network correction.
 
-All tree-level coefficients, P values and Pagel-lambda estimates are retained in `historical/v2_full27_historical_placement_models.csv`; endpoint-level ranges are in `historical/v2_full27_historical_placement_summary.csv`. These tables, rather than a duplicate main figure, provide the audit trail for the 52-tree statement.
+All tree-level coefficients, P values and Pagel-lambda estimates are retained in `historical/v2_full27_historical_placement_models.csv`; endpoint-level ranges are in `historical/v2_full27_historical_placement_summary.csv`. Figure S4 displays all 104 frozen tree-level rows and separates the two deterministic placements from 50 randomized within-genus placements per candidate. It is a diagnostic display of placement sensitivity, not additional inference.
 
 ### S1.7 Whole-capitulum secondary synthesis
 
@@ -53,6 +53,32 @@ The complete-18 secondary analysis was performed only after endpoint-level infer
 The analysis is retrospective exploratory. Directional stability is not causal evidence. Visible CIELAB chroma is not anthocyanin concentration or UV reflectance; EXIF image vertical is not gravity; and image-derived involucral or surface variables are not botanical spine, hair, gland or secretion measurements. The results do not establish phenotypic plasticity, local adaptation, selection, fitness benefit, independent origin, adaptive radiation or convergence.
 
 The submission remains on scientific HOLD for independent detector-box validation, independent primary-trait reference measurements, botanical calibration of candidate fine geometry, developmental-stage control, paired colour controls and repeat-photo remeasurement. These gates are external validation tasks, not invitations to add further post hoc environmental screens.
+
+## Supplementary tables
+
+The formatted workbook `Azami_Chapter1_v2_Supplementary_Tables.xlsx` contains Main Tables 1–2 and Tables S1–S10. The CSV files used to build it are retained under `manuscript/tables/v2_submission/`; the workbook does not recalculate any statistic.
+
+## Supplementary table captions
+
+**Table S1. Complete 27-endpoint contract.** Registered measurement, validation and interpretation status for every endpoint, including five explicit unexecuted rows.
+
+**Table S2. Cohort and geographic filtering.** Observation and source-assigned taxon counts from detector-positive records through the frozen environmental cohort.
+
+**Table S3. Complete variance decomposition.** Raw and equal-replication fractions below source-assigned taxon means for all registered endpoints, with status and uncertainty columns.
+
+**Table S4. Complete within-taxon environment atlas.** Every endpoint or joint-unit by predictor row, including unsupported, unexecuted and insufficient rows with explicit status.
+
+**Table S5. Complete among-taxon environment atlas.** Every primary and sensitivity-scope row, including unsupported, unexecuted and insufficient rows with explicit status.
+
+**Table S6. Complete cross-scale classification.** All 234 primary endpoint or joint-unit by predictor rows classified as both, within-only, among-only, neither or not comparable.
+
+**Table S7. Sampling-composition robustness.** Selected rows by scenario family, evaluability, direction stability and minimum retained effect-magnitude ratio; no post-selection significance tests are reported.
+
+**Table S8. Spatial and historical sequential gate.** Base, sampling, broad-space, residual-Moran and historical-placement evidence for every globally supported row entering the sequential audit.
+
+**Table S9. Secondary whole-capitulum synthesis.** Frozen headline metrics for the expanded 127-taxon by 18-endpoint secondary synthesis. This summary does not select endpoint rows or replace decomposed geography.
+
+**Table S10. Full analytical roadmap.** Eight-column audit version of Main Table 1, retaining the scientific question, input cohort, endpoint or predictor scope, statistical operation, decision gate and linked displays for each frozen stage.
 
 ## Supplementary data-file index
 
@@ -78,3 +104,5 @@ All files below are under `analysis_outputs/v2_full27_environment_atlas_2026-08-
 **Figure S2. Sampling-composition sensitivity of all globally supported rows entering the audit.** Minimum retained effect-magnitude ratio across declared sampling perturbations for each selected within- and among-taxon association, with direction-instability flagged. This figure shows the full selected-row audit rather than only the two final candidates.
 
 **Figure S3. Broad-space and residual-spatial diagnostic surface for all globally supported rows entering spatial sensitivity.** Spatial permutation support and residual Moran diagnostics are shown for within- and among-taxon associations, with full-gate passage distinguished from failure. This figure exposes why many initially supported rows do not enter the final candidate set.
+
+**Figure S4. Historical-placement stability of the two candidate patterns.** Standardized Pagel-lambda phylogenetic generalized least-squares coefficients, P values and lambda estimates are shown for two deterministic and 50 randomized within-genus placement trees per candidate. The figure displays the frozen 52-tree sensitivity and does not represent a resolved species tree or additional hypothesis screen.

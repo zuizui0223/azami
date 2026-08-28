@@ -1,0 +1,3 @@
+candidate_pattern,global_among_taxon,sampling_composition,broad_space_gate,historical_placement
+Lower camera-recorded corolla chroma with higher shortwave radiation,n = 143; beta = -0.345; global BH q = 0.006,all declared directions stable; minimum effect-magnitude ratio = 0.615,beta = -0.712; permutation P = 0.001; residual Moran P = 0.217,P < 0.05 on 52/52 trees; P range 2.39e-05-2.39e-05; lambda range 0.000-0.000
+Larger image-referenced orientation angle with higher annual precipitation,n = 142; beta = +0.304; global BH q = 0.021,all declared directions stable; minimum effect-magnitude ratio = 0.781,beta = +0.286; permutation P = 0.017; residual Moran P = 0.082,P < 0.05 on 52/52 trees; P range 2.01e-04-2.31e-04; lambda range 0.000-0.054

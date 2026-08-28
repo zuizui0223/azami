@@ -1,0 +1,6 @@
+filtering_stage,n_observations,n_source_assigned_taxa,rule,current_v2_source
+detector_positive,406582,286,at least one YOLO-localized visible capitulum,manuscript/02_methods.md; manuscript/final_claims.json
+coordinate_usable,392989,271,coordinate usable for environmental attachment,manuscript/02_methods.md; ch1_global/v2/CONTINUOUS_TRAIT_REDESIGN.md
+positional_accuracy_le_10km,297293,259,reported positional uncertainty at most 10 km,manuscript/02_methods.md; ch1_global/v2/CONTINUOUS_TRAIT_REDESIGN.md
+taxon_by_0.25_degree_cell_thinning,46276,259,one observation per source-assigned taxon by 0.25-degree cell,manuscript/final_claims.json; v2_full27_environment_report.json
+final_environment_cohort,46276,259,nine frozen predictors attached; minimum coverage gate passed,v2_full27_environment_report.json; manuscript/final_claims.json

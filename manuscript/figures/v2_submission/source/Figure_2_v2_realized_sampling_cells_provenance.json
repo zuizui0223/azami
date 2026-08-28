@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "source_lane": "full27_full_environment_only",
+  "source_run_id": 32975451732,
+  "source_artifact_id": 9612943217,
+  "source_artifact_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+  "source_member": "environment/strict_spatial_chelsa.csv",
+  "source_member_sha256": "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0",
+  "aggregation": "2-degree latitude-longitude cells",
+  "n_observations": 46276,
+  "n_taxa": 259,
+  "n_cells": 1550,
+  "direct_identifiers_in_output": false,
+  "point_coordinates_in_output": false,
+  "role": "current-v2 realized sampling-domain presentation only"
+}

@@ -4,8 +4,9 @@ This directory is the rendered, blinded reviewer package for the full-27/full-en
 
 ## Submission files
 
-- `Azami_Chapter1_v2_Main.docx` and `.pdf`: 20-page blinded main manuscript with four figures.
-- `Azami_Chapter1_v2_Supplement.docx` and `.pdf`: five-page Supporting Information with three figures and a data-file index.
+- `Azami_Chapter1_v2_Main.docx` and `.pdf`: blinded, all-portrait main manuscript with Tables 1–2 and five figures.
+- `Azami_Chapter1_v2_Supplement.docx` and `.pdf`: Supporting Information with four diagnostic figures and the supplementary-table index.
+- `Azami_Chapter1_v2_Supplementary_Tables.xlsx`: formatted Main Tables 1–2 and Tables S1–S10, with complete unsupported, unexecuted and non-comparable rows retained.
 - `Azami_Chapter1_v2_submission_candidate.zip`: deterministic reviewer bundle containing the manuscripts, figures, frozen derived outputs, active source text and contracts.
 - `SUBMISSION_MANIFEST.json` and `SHA256SUMS.txt`: file inventory and integrity hashes.
 

@@ -1,0 +1,3 @@
+synthesis,n_taxa,n_endpoints,role,metric,estimate,interpretation_boundary
+expanded_complete18_whole_capitulum,127,18,secondary synthesis; does not select endpoint rows or replace decomposed geography,PC1_to_PC3_cumulative_variance,0.423,multidimensional phenotypic summary; not endpoint selection
+expanded_complete18_whole_capitulum,127,18,secondary synthesis; does not select endpoint rows or replace decomposed geography,within_among_association_spearman,0.36629931778064023,partial geometry alignment; not shared causal mechanism

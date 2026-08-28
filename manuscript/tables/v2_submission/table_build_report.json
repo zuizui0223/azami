@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "source_lane": "full27_full_environment_only",
+  "operation": "reshape_and_join_frozen_outputs_only",
+  "new_statistics_fitted": false,
+  "table_rows": {
+    "Table_1_v2_analytical_roadmap.csv": 8,
+    "Table_2_v2_candidate_evidence_chain.csv": 2,
+    "Table_S1_v2_complete_27_endpoint_contract.csv": 27,
+    "Table_S2_v2_cohort_geographic_filtering.csv": 5,
+    "Table_S3_v2_complete_variance_decomposition.csv": 27,
+    "Table_S4_v2_complete_within_taxon_environment_atlas.csv": 234,
+    "Table_S5_v2_complete_among_taxon_environment_atlas.csv": 468,
+    "Table_S6_v2_complete_cross_scale_classification.csv": 234,
+    "Table_S7_v2_sampling_composition_robustness.csv": 134,
+    "Table_S8_v2_spatial_historical_sequential_gate.csv": 36,
+    "Table_S9_v2_secondary_whole_capitulum_summary.csv": 2,
+    "Table_S10_v2_full_analytical_roadmap.csv": 8
+  },
+  "input_sha256": {
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_endpoint_inventory.csv": "28d92e35b5d5b14ed20521f75baac2b9329b2344627da9daa899fe9a6d20a27f",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_variance_decomposition.csv": "da5b66f739dcbbf3f743a23098bc56c32cd0ed1032b8ec8366686f95ff5bc2f7",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_within.csv": "80041b38673a23656a8a54c40b508367eb60e4d28ae3907ef1a12a6ca752c258",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_among.csv": "f2fd932999e05d79a0d38b53c32e9e3f33ba1f3744f26b0e48f79c5cde91bc0f",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_cross_scale.csv": "74bacb42a4cf52610a007a39d8a1d26f798be6f85a200fd6879831478c2bc708",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_summary.csv": "91568d2db36092a4f646dbedb730d046d7ecb86d4c1cbcd3bb3761a2a52f65d2",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_scenarios.csv": "6f09b384580a80437bc886e58c3c437f42e86d070ab353e2d57b17f367f5f807",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/spatial/v2_full27_spatial_within.csv": "3d1c54e553ff1fd90f5b6391e693118b289a573901064fc4944dcd0b6d3a178f",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/spatial/v2_full27_spatial_among.csv": "e190d622f1044f1ec733beaba271eedabcd24c20e81d4095ba20916e005bd7c4",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/historical/v2_full27_historical_placement_summary.csv": "1145a1b0422fae0d7306ff115f06e80b0f36f168365bbc5f1979b570fe634d54",
+    "manuscript/final_claims.json": "fbe0c3337b9e636ace08ea394c84a0b6b713df8eee69948ad923f83bfcaf0976"
+  },
+  "output_sha256": {
+    "Table_1_v2_analytical_roadmap.csv": "01df94758d929fb26c62d15d0733ec566cea44a120d1a47f7521d325b578f130",
+    "Table_2_v2_candidate_evidence_chain.csv": "313c5e029e3d3d1a1444dfcc587e63bff554c2cb16abd7adc8afaf6a5e4e4fc8",
+    "Table_S1_v2_complete_27_endpoint_contract.csv": "4f352fbfd5668dee27e2b2852faa70b834502fde986cd5ee639e8537eca9b790",
+    "Table_S2_v2_cohort_geographic_filtering.csv": "61fa496f99b1127f33d21faa130496f99266954d6c40bcc776290ec6b187f5b1",
+    "Table_S3_v2_complete_variance_decomposition.csv": "5763462019d1be5236313f57e95df01472fd007a53ecb51cc00266386a68ec88",
+    "Table_S4_v2_complete_within_taxon_environment_atlas.csv": "68bb7fe36ecdabf7cb482cdfcfb60fe2cb8c8cdf8cea840d72c201f752e8e93d",
+    "Table_S5_v2_complete_among_taxon_environment_atlas.csv": "e686394f7ab2e57c5f8961a920657f6c330310d1e13a3a8e699f107403e58502",
+    "Table_S6_v2_complete_cross_scale_classification.csv": "9afc60a8d72bb2438725c0b22cc48514827766de3f18e9f9e3d6765e4fd0969e",
+    "Table_S7_v2_sampling_composition_robustness.csv": "93e0083d29e58192fbd0a5adc550d0057e1ddb6e15c734dd7ace2f4593b17ee1",
+    "Table_S8_v2_spatial_historical_sequential_gate.csv": "e78a9579468d325c623c443318f674ffc6f8ae5d91b60c11ae9eccf2536404b1",
+    "Table_S9_v2_secondary_whole_capitulum_summary.csv": "5b9693925349461094f924de65815d01ca318ff692ef15df5df05b26a28c7e99",
+    "Table_S10_v2_full_analytical_roadmap.csv": "2613f19f9f73babc5789b593f453c1c09d20daac0a7ed01509b6e30ae6580ff8"
+  },
+  "claim_boundary": "submission tables for traceability; not a new analysis or hypothesis screen"
+}

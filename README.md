@@ -31,7 +31,7 @@ The public-image sample is extensive but uneven: Europe plus North America contr
 
 ## Main versus Supporting Information
 
-Main contains the general inferential story: continuous-trait recovery, taxon-mean information loss, within/among scale structure and the two final candidate patterns. Supporting Information is the audit layer: complete endpoint coverage, full supported/unsupported model grids, all sampling perturbations, spatial diagnostics and historical-placement tables. Main Figures 2–4 are not reused as Supporting Figures; S1–S3 are distinct coverage, sampling and spatial-diagnostic displays.
+Main contains the general inferential story in five figures and two tables: a compact analytical roadmap plus the exact evidence chain for the two candidate patterns. Supporting Information is the audit layer: complete endpoint coverage, full supported/unsupported model grids, all sampling perturbations, spatial diagnostics, all tree-level historical-placement results and the full roadmap. Main Figures 1–5 are not reused as Supporting Figures; S1–S4 are distinct coverage, sampling, spatial-diagnostic and historical-placement displays, and Tables S1–S10 are supplied as a machine-readable workbook.
 
 ## Candidate boundaries
 
@@ -59,7 +59,10 @@ python analysis/validate_ch1_hypothesis_recovery.py
 python analysis/validate_manuscript_citations.py
 python analysis/ch1/run_submission.py check
 python analysis/validate_v2_submission_artifacts.py
+python analysis/build_v2_submission_figure_inputs.py
 python analysis/build_v2_submission_figures.py
+python analysis/build_v2_submission_tables.py
+python analysis/build_v2_submission_package.py
 ```
 
 The old lability/quadrant result, PR69-era nine-endpoint hierarchy and superseded v1 output directories are absent from the active tree. They remain recoverable in Git history and the immutable scientific tag `azami-ch1-v2-2026-08-27`.

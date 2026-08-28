@@ -1,18 +1,46 @@
 {
   "status": "ok",
   "source_lane": "full27_full_environment_only",
+  "main_figure_stems": [
+    "Figure_1_v2_measurement_pipeline",
+    "Figure_2_v2_geographic_sampling_domain",
+    "Figure_3_v2_taxon_mean_information_loss",
+    "Figure_4_v2_within_among_scale_atlas",
+    "Figure_5_v2_candidate_robustness"
+  ],
+  "supporting_figure_stems": [
+    "Figure_S1_v2_endpoint_measurement_support",
+    "Figure_S2_v2_sampling_composition_audit",
+    "Figure_S3_v2_spatial_diagnostic_surface",
+    "Figure_S4_v2_historical_placement_stability"
+  ],
   "input_sha256": {
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_endpoint_inventory.csv": "28d92e35b5d5b14ed20521f75baac2b9329b2344627da9daa899fe9a6d20a27f",
     "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_variance_decomposition.csv": "da5b66f739dcbbf3f743a23098bc56c32cd0ed1032b8ec8366686f95ff5bc2f7",
     "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_cross_scale.csv": "74bacb42a4cf52610a007a39d8a1d26f798be6f85a200fd6879831478c2bc708",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/spatial/v2_full27_spatial_within.csv": "3d1c54e553ff1fd90f5b6391e693118b289a573901064fc4944dcd0b6d3a178f",
     "analysis_outputs/v2_full27_environment_atlas_2026-08-27/spatial/v2_full27_spatial_among.csv": "e190d622f1044f1ec733beaba271eedabcd24c20e81d4095ba20916e005bd7c4",
     "analysis_outputs/v2_full27_environment_atlas_2026-08-27/historical/v2_full27_historical_placement_summary.csv": "1145a1b0422fae0d7306ff115f06e80b0f36f168365bbc5f1979b570fe634d54",
-    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_summary.csv": "91568d2db36092a4f646dbedb730d046d7ecb86d4c1cbcd3bb3761a2a52f65d2"
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/historical/v2_full27_historical_placement_models.csv": "ebe8ac6428036d5defd11408f1b83e1cae5fa7098e0f8c59632a692ed335e6fb",
+    "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_summary.csv": "91568d2db36092a4f646dbedb730d046d7ecb86d4c1cbcd3bb3761a2a52f65d2",
+    "manuscript/figures/v2_submission/source/Figure_1_real_photo_measurement_provenance.csv": "2bd45cbc4eb3de0873808008df12079dd31f3ea3cec0024e840ece65e07952fd",
+    "manuscript/figures/v2_submission/source/Figure_1_real_photo_measurement_provenance.json": "0d95d7f73929440a381b0e6239ffbfe9774f6f275a0900bdd3cf96fb65a611b1",
+    "manuscript/figures/v2_submission/source/Figure_1_real_photo_measurement_provenance.png": "834e10fb4c32e133988fbcbe6cb98c8ce7d5cedc9941593a31a58adc3b318855",
+    "manuscript/figures/v2_submission/source/Figure_2_v2_realized_sampling_cells.csv": "3e4e982bfced15a488608f9cd6b27df6fb36e488aa9095a880b18814844ee77b",
+    "manuscript/figures/v2_submission/source/Figure_2_v2_realized_sampling_cells_provenance.json": "49999390626e02984bb4cc32cb8fe2caf71776cdcbe6787eb4e04dd9e8798502",
+    "manuscript/figures/v2_submission/source/natural_earth_110m_land_outline.json": "c517cff9ef3e3aa6eb89998c6d1e047d741f16be83767a94999574f3b6f3f636"
   },
   "figures": [
-    "Figure_1_v2_method_flow.png",
-    "Figure_2_v2_taxon_mean_information_loss.png",
-    "Figure_3_v2_within_among_scale_atlas.png",
-    "Figure_4_v2_candidate_robustness.png"
+    "Figure_1_v2_measurement_pipeline.png",
+    "Figure_2_v2_geographic_sampling_domain.png",
+    "Figure_3_v2_taxon_mean_information_loss.png",
+    "Figure_4_v2_within_among_scale_atlas.png",
+    "Figure_5_v2_candidate_robustness.png",
+    "Figure_S1_v2_endpoint_measurement_support.png",
+    "Figure_S2_v2_sampling_composition_audit.png",
+    "Figure_S3_v2_spatial_diagnostic_surface.png",
+    "Figure_S4_v2_historical_placement_stability.png"
   ],
+  "presentation_source_provenance_firewall": "Figure 1 photographs and detector/crop examples document the source measurement pipeline only; they do not contribute v1 result counts or effect estimates.",
   "claim_boundary": "submission visualization of frozen exploratory v2 results; not a new analysis"
 }

@@ -1,5 +1,5 @@
 {
-  "schema_version": 18,
+  "schema_version": 19,
   "release_label": "Azami Chapter 1 v2",
   "freeze_tag": "azami-ch1-v2-2026-08-27",
   "status": "v2 submission tree frozen; scientific HOLD retained for independent validation",
@@ -43,8 +43,15 @@
       "result_ledger": "manuscript/GEB_V2_CROSS_SCALE_FINAL_RESULTS_2026-08-27.md"
     },
     "submission_figures": {
-      "status": "generated from frozen v2 tables",
+      "status": "five Main and four Supporting figures generated from frozen v2 tables and frozen presentation inputs; titles remain in same-page legends rather than figure artwork",
+      "input_script": "analysis/build_v2_submission_figure_inputs.py",
       "script": "analysis/build_v2_submission_figures.py"
+    },
+    "submission_tables": {
+      "status": "Main Tables 1-2 and Supporting Tables S1-S10 generated from frozen v2 ledgers without new inferential statistics; Main pages remain portrait",
+      "script": "analysis/build_v2_submission_tables.py",
+      "directory": "manuscript/tables/v2_submission",
+      "workbook": "submission/Azami_Chapter1_v2_Supplementary_Tables.xlsx"
     },
     "submission_package": {
       "status": "submission candidate; HOLD retained",

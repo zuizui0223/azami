@@ -8,7 +8,7 @@ Azami Chapter 1 v2 is a complete **present-geography pattern analysis** and a re
 - The frozen spatial cohort contains 46,276 observations from 259 source-assigned taxa.
 - Below-taxon information loss, current trait geography, all six environmental blocks, within- versus among-taxon associations, sampling-composition sensitivity, broad-space sensitivity and 52-tree historical-placement sensitivity are complete.
 - The secondary complete-18 whole-capitulum synthesis is complete and does not replace endpoint-level inference.
-- Four main figures, three Supporting Information figures, blinded Main and Supplement DOCX/PDF files, accessibility checks, page-by-page visual QA, a manifest, SHA-256 inventory and a deterministic reviewer ZIP are complete.
+- Five main figures, four Supporting Information figures, two main tables, Tables S1–S10, blinded Main and Supplement DOCX/PDF files, accessibility checks, page-by-page visual QA, a manifest, SHA-256 inventory and a deterministic reviewer ZIP are complete.
 
 ## Scientific gates that remain open
 

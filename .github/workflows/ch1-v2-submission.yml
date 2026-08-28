@@ -23,16 +23,23 @@ jobs:
           python analysis/validate_ch1_hypothesis_recovery.py
           python analysis/validate_manuscript_citations.py
           python analysis/ch1/run_submission.py check
-      - name: Validate frozen scientific outputs
-        run: python analysis/validate_v2_submission_artifacts.py --science-only
-      - name: Rebuild distinct main and supporting figures
+      - name: Rebuild submission tables and distinct main and supporting figures
         run: |
+          python analysis/build_v2_submission_tables.py
           python analysis/build_v2_submission_figures.py
-          test "$(find manuscript/figures/v2_submission -maxdepth 1 -name 'Figure_*.png' | wc -l)" -eq 7
-          test "$(find manuscript/figures/v2_submission -maxdepth 1 -name 'Figure_*.pdf' | wc -l)" -eq 7
+          test "$(find manuscript/figures/v2_submission -maxdepth 1 -name 'Figure_*.png' | wc -l)" -eq 9
+          test "$(find manuscript/figures/v2_submission -maxdepth 1 -name 'Figure_*.pdf' | wc -l)" -eq 9
+          test -f manuscript/figures/v2_submission/Figure_1_v2_measurement_pipeline.png
+          test -f manuscript/figures/v2_submission/Figure_2_v2_geographic_sampling_domain.png
           test -f manuscript/figures/v2_submission/Figure_S1_v2_endpoint_measurement_support.png
           test -f manuscript/figures/v2_submission/Figure_S2_v2_sampling_composition_audit.png
           test -f manuscript/figures/v2_submission/Figure_S3_v2_spatial_diagnostic_surface.png
+          test -f manuscript/figures/v2_submission/Figure_S4_v2_historical_placement_stability.png
+          test -f manuscript/tables/v2_submission/Table_2_v2_candidate_evidence_chain.csv
+          test -f manuscript/tables/v2_submission/Table_S9_v2_secondary_whole_capitulum_summary.csv
+          test -f manuscript/tables/v2_submission/Table_S10_v2_full_analytical_roadmap.csv
+      - name: Validate frozen scientific outputs and figure-table contract
+        run: python analysis/validate_v2_submission_artifacts.py --science-only
       - name: Rebuild Main and Supporting Information separately
         run: |
           mkdir -p .tmp/submission-release
@@ -40,6 +47,7 @@ jobs:
           python analysis/build_v2_submission_package.py --output-dir .tmp/submission-release
           test -s .tmp/submission-release/Azami_Chapter1_v2_Main.docx
           test -s .tmp/submission-release/Azami_Chapter1_v2_Supplement.docx
+          test -s .tmp/submission-release/Azami_Chapter1_v2_Supplementary_Tables.xlsx
       - name: Install LibreOffice for PDF rendering
         run: |
           sudo apt-get update -qq
@@ -75,9 +83,11 @@ jobs:
           assert 'Azami_Chapter1_v2_Main.pdf' in names
           assert 'Azami_Chapter1_v2_Supplement.docx' in names
           assert 'Azami_Chapter1_v2_Supplement.pdf' in names
+          assert 'Azami_Chapter1_v2_Supplementary_Tables.xlsx' in names
           assert 'figures/Figure_S1_v2_endpoint_measurement_support.png' in names
           assert 'figures/Figure_S2_v2_sampling_composition_audit.png' in names
           assert 'figures/Figure_S3_v2_spatial_diagnostic_surface.png' in names
+          assert 'figures/Figure_S4_v2_historical_placement_stability.png' in names
           print(json.dumps({'manifest_files': len(manifest['files']), 'zip_sha256': hashlib.sha256((root/'Azami_Chapter1_v2_submission_candidate.zip').read_bytes()).hexdigest()}, indent=2))
           PY
       - name: Upload complete submission release
@@ -89,12 +99,15 @@ jobs:
             .tmp/submission-release/Azami_Chapter1_v2_Main.pdf
             .tmp/submission-release/Azami_Chapter1_v2_Supplement.docx
             .tmp/submission-release/Azami_Chapter1_v2_Supplement.pdf
+            .tmp/submission-release/Azami_Chapter1_v2_Supplementary_Tables.xlsx
             .tmp/submission-release/Azami_Chapter1_v2_submission_candidate.zip
             .tmp/submission-release/SUBMISSION_MANIFEST.json
             .tmp/submission-release/SHA256SUMS.txt
             manuscript/figures/v2_submission/Figure_*.png
             manuscript/figures/v2_submission/Figure_*.pdf
             manuscript/figures/v2_submission/figure_build_report.json
+            manuscript/tables/v2_submission/*.csv
+            manuscript/tables/v2_submission/table_build_report.json
           if-no-files-found: error
           retention-days: 90
       - name: Test submission-facing v2 code
