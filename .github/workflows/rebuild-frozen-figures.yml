@@ -5,6 +5,7 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/rebuild-frozen-figures.yml'
       - 'analysis/figures/**'
       - 'analysis/ch1/image_to_trait_automated_technical_audit_summary.json'
       - 'analysis_outputs/**'
@@ -37,9 +38,9 @@ jobs:
 
       - name: Rebuild frozen v2 figures in scratch space
         run: |
-          python analysis/figures/build_v2_figures.py \
-            --input-dir analysis_outputs/v2_full27_environment_atlas_2026-08-27 \
-            --output-dir /tmp/azami-figures
+          # The canonical wrapper resolves the frozen input path from the repository root.
+          # Only the scratch output directory is overridden here.
+          python analysis/figures/build_v2_figures.py --output-dir /tmp/azami-figures
 
       - name: Verify complete figure set
         shell: bash
