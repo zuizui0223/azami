@@ -22,18 +22,15 @@
     "orientation_bbox_shift_5pct_error_p95_degrees": 54.1
   },
   "claim_boundary": "technical repeatability and perturbation robustness of image-defined traits; biological accuracy against physical traits and human-ground-truth detector precision/recall were not evaluated",
-  "materialized_commit": "09beddc723667275e5d7afb70d0ee0e53fe2e3d7",
-  "supporting_placement": "Figures S1-S2 and Table S2 under first-citation numbering; literature benchmark is Table S4",
-  "validation_order": "science-only validates frozen results and figure/table source contracts before current DOCX generation; generated DOCX layout is reviewed after build",
-  "table1_qa": "Main Table 1 linked displays corrected to Table S2 / Figures S1-S2 for photo localization and Tables S6-S8 for the within-among atlas",
-  "final_docx_qa": "requested after rendered Table 1 reference correction on 2026-09-02",
-  "main_text_edit": "retrospective nine-predictor collinearity/VIF diagnostic removed from Main Methods and the parallel Discussion paragraph at author request; supplementary diagnostic remains available and primary model definitions/results are unchanged",
-  "figure_layout_edit": "Figures S1-S2 simplified to quantitative panels only; explanatory prose moved to captions; panel labels are aligned to a common far-left figure coordinate",
+  "historical_materialized_commit": "09beddc723667275e5d7afb70d0ee0e53fe2e3d7",
+  "figure_numbering_context": "Figures S1-S2 under the frozen first-citation numbering used by the analysis outputs",
+  "main_text_edit_record": "retrospective nine-predictor collinearity/VIF diagnostic was excluded from the Main manuscript at author request; the machine-readable diagnostic remains in analysis_outputs and primary model definitions/results are unchanged",
+  "figure_layout_edit": "Figures S1-S2 use quantitative panels only; panel labels are aligned to a common far-left figure coordinate",
   "repository_files": [
-    "manuscript/figures/v2_submission/Figure_S1_v2_image_to_trait_technical_audit.png",
-    "manuscript/figures/v2_submission/Figure_S1_v2_image_to_trait_technical_audit.pdf",
-    "manuscript/figures/v2_submission/Figure_S2_v2_image_to_trait_perturbation_audit.png",
-    "manuscript/figures/v2_submission/Figure_S2_v2_image_to_trait_perturbation_audit.pdf",
-    "analysis/run_image_to_trait_perturbation_audit.py"
+    "reproducibility/figures/Figure_S1_v2_image_to_trait_technical_audit.png",
+    "reproducibility/figures/Figure_S1_v2_image_to_trait_technical_audit.pdf",
+    "reproducibility/figures/Figure_S2_v2_image_to_trait_perturbation_audit.png",
+    "reproducibility/figures/Figure_S2_v2_image_to_trait_perturbation_audit.pdf",
+    "analysis/figures/run_image_to_trait_perturbation_audit.py"
   ]
 }
