@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Create disclosure-safe Figure 2 inputs from the frozen v2 coordinate cohort.
 
-The observation-level source remains an immutable Actions artifact.  This helper
+The observation-level source remains an immutable Actions artifact. This helper
 exports only two-degree cell summaries, so the repository can reproduce the map
 without publishing observation identifiers or point coordinates.
 """
@@ -16,8 +16,8 @@ import numpy as np
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = ROOT / "manuscript" / "figures" / "v2_submission" / "source"
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_OUTPUT = ROOT / "reproducibility" / "figures" / "source"
 
 
 def parse_args() -> argparse.Namespace:
