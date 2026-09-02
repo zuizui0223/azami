@@ -10,7 +10,7 @@ Canonical rebuild entry points:
 
 ```bash
 python analysis/figures/run_image_to_trait_perturbation_audit.py
-python analysis/figures/rebuild_v2_figures.py
+python analysis/figures/build_v2_figures.py
 ```
 
 The Figure 2 disclosure-safe source table can be rebuilt from the frozen observation-level cohort when that external cohort is available:
