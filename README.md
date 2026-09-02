@@ -15,8 +15,3 @@ Prepublication manuscript prose and journal-submission packages are intentionall
 - `tests/` — regression and invariant tests.
 - `src/azami_ch1/` — reusable utilities.
 
-## Deliberately excluded
-
-Do not commit manuscript drafts, Supporting Information prose, reviewer correspondence, cover letters, journal submission bundles, DOCX files, submission PDFs, XLSX workbooks or submission ZIPs.
-
-Generated scientific results are not treated as disposable build products: the frozen CSV/JSON outputs and result figures are retained for reproducibility.
