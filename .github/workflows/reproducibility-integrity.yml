@@ -1,0 +1,49 @@
+name: Reproducibility integrity
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install reproducibility environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test]'
+
+      - name: Compile Python sources
+        run: python -m compileall -q analysis src ch1_global/v2
+
+      - name: Check reproducibility layout
+        run: |
+          pytest -q \
+            tests/test_ch1_canonical_manifest.py \
+            tests/test_azami_ch1_provenance.py \
+            tests/test_azami_ch1_tabular.py
+
+      - name: Confirm prepublication documents are absent
+        shell: bash
+        run: |
+          test ! -e manuscript
+          test ! -e submission
+          ! git ls-files | grep -E '\.(docx?|pptx?|xlsx?|zip)$'
+
+      - name: Confirm frozen outputs are tracked
+        shell: bash
+        run: |
+          test -d analysis_outputs
+          test -d reproducibility/figures
+          test -f analysis/ch1/v2_full27_environment_atlas_contract.json
+          test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
