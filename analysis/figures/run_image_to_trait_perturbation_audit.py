@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild the automated image-to-trait technical-audit Supporting figures.
+"""Rebuild the automated image-to-trait technical-audit figures.
 
 This script is intentionally limited to the frozen audit summary. It does not
 reconstruct unavailable per-image perturbation records or treat human labels as
@@ -17,18 +17,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_SUMMARY = ROOT / "analysis" / "ch1" / "image_to_trait_automated_technical_audit_summary.json"
+DEFAULT_OUTPUT = ROOT / "reproducibility" / "figures"
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
-    p.add_argument(
-        "--summary",
-        type=Path,
-        default=Path("analysis/ch1/image_to_trait_automated_technical_audit_summary.json"),
-    )
-    p.add_argument(
-        "--output-dir",
-        type=Path,
-        default=Path("manuscript/figures/v2_submission"),
-    )
+    p.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY)
+    p.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
     return p.parse_args()
 
 
@@ -43,7 +40,7 @@ def save(fig: plt.Figure, output_dir: Path, stem: str) -> None:
         metadata={
             "Title": stem,
             "Author": "",
-            "Creator": "Azami Chapter 1 automated technical-audit figure builder",
+            "Creator": "Azami automated technical-audit figure builder",
             "CreationDate": fixed_time,
             "ModDate": fixed_time,
         },
