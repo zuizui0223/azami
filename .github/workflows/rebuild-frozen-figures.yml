@@ -1,0 +1,65 @@
+name: Rebuild frozen figures
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'analysis/figures/**'
+      - 'analysis/ch1/image_to_trait_automated_technical_audit_summary.json'
+      - 'analysis_outputs/**'
+      - 'reproducibility/figures/source/**'
+      - 'pyproject.toml'
+
+permissions:
+  contents: read
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install figure environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Rebuild technical-audit figures in scratch space
+        run: |
+          rm -rf /tmp/azami-figures
+          mkdir -p /tmp/azami-figures
+          python analysis/figures/run_image_to_trait_perturbation_audit.py --output-dir /tmp/azami-figures
+
+      - name: Rebuild frozen v2 figures in scratch space
+        run: |
+          python analysis/figures/build_v2_figures.py \
+            --input-dir analysis_outputs/v2_full27_environment_atlas_2026-08-27 \
+            --output-dir /tmp/azami-figures
+
+      - name: Verify complete figure set
+        shell: bash
+        run: |
+          for stem in \
+            Figure_1_v2_measurement_pipeline \
+            Figure_2_v2_geographic_sampling_domain \
+            Figure_3_v2_taxon_mean_information_loss \
+            Figure_4_v2_within_among_scale_atlas \
+            Figure_5_v2_candidate_robustness \
+            Figure_S1_v2_image_to_trait_technical_audit \
+            Figure_S2_v2_image_to_trait_perturbation_audit \
+            Figure_S3_v2_endpoint_measurement_support \
+            Figure_S4_v2_sampling_composition_audit \
+            Figure_S5_v2_spatial_diagnostic_surface \
+            Figure_S6_v2_historical_placement_stability \
+            Figure_S7_v2_whole_capitulum_secondary_synthesis; do
+              test -s "/tmp/azami-figures/${stem}.png"
+              test -s "/tmp/azami-figures/${stem}.pdf"
+          done
+
+      - name: No ephemeral Actions artifact
+        run: echo 'Verification-only workflow; frozen outputs are versioned in reproducibility/figures instead of uploaded as expiring Actions artifacts.'
