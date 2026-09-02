@@ -1,0 +1,58 @@
+{
+  "catalog_version": 1,
+  "archived_locally_on": "2026-09-02",
+  "purpose": "Catalog GitHub Actions artifacts referenced by the frozen analysis and figure provenance. The repository retains durable derived outputs; these source artifacts were additionally preserved locally because Actions storage is ephemeral.",
+  "artifacts": [
+    {
+      "artifact_id": 8066010557,
+      "role": "Figure 1 metadata source",
+      "referenced_by": "reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
+      "status_on_2026_09_02": "downloadable_and_archived_locally",
+      "local_archive_sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+      "expires_at": null
+    },
+    {
+      "artifact_id": 8099953404,
+      "role": "Figure 1 global measurement/provenance source",
+      "referenced_by": "reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
+      "status_on_2026_09_02": "downloadable_and_archived_locally",
+      "local_archive_sha256": "f5de95f69f84132e04fe4af6accfbef1a3024e4ba97dc559405af4ed90ea76b9",
+      "expires_at": null
+    },
+    {
+      "artifact_id": 8225059018,
+      "role": "Figure 1 continuous-trait source",
+      "referenced_by": "reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
+      "status_on_2026_09_02": "downloadable_and_archived_locally",
+      "local_archive_sha256": "9af18f9a2595f6c43dae4b933833f1721d153dcacef5b7c80df543f16235b580",
+      "expires_at": null
+    },
+    {
+      "artifact_id": 9612943217,
+      "workflow_run_id": 32975451732,
+      "role": "continuous-trait universe and strict-spatial source cohort",
+      "referenced_by": [
+        "analysis/figures/build_v2_figure_inputs.py",
+        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/source_provenance.json"
+      ],
+      "github_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+      "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
+      "local_archive_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+      "expires_at": "2026-11-24T13:39:01Z"
+    },
+    {
+      "artifact_id": 9632715852,
+      "workflow_run_id": 33035785120,
+      "role": "within/among alignment and complete-18 process-environment source",
+      "referenced_by": [
+        "analysis/audit_v2_environment_collinearity.py",
+        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/environment_collinearity/environment_collinearity_report.json"
+      ],
+      "github_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+      "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
+      "local_archive_sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+      "expires_at": "2026-11-25T03:14:53Z"
+    }
+  ],
+  "note": "Null expires_at means the artifact-ID download endpoint did not surface expiry metadata during archiving; the artifact was successfully downloaded on 2026-09-02."
+}
