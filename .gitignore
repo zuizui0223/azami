@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+
+# Prepublication research artifacts: never track
+manuscript/
+submission/
+analysis_outputs/
+data/
+artifacts/
+results/
+outputs/
+figures/
+tables/
+review/
+reviews/
+
+# Documents and generated media
+*.docx
+*.doc
+*.pdf
+*.xlsx
+*.xls
+*.pptx
+*.ppt
+*.zip
+*.tar
+*.gz
+*.7z
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.tif
+*.tiff
+*.svg
+
+# Generated tabular / serialized outputs
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.json
+*.jsonl
+*.pkl
+*.pickle
+*.rds
+
+# Models / checkpoints
+*.pt
+*.pth
+*.onnx
+*.tflite
+*.joblib
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
