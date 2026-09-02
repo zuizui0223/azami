@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "n_checks": 11,
+  "n_passed": 11,
+  "checks": [
+    {
+      "check": "spatial_within_entry_set_matches_atlas_q_gate",
+      "passed": true,
+      "detail": {
+        "expected": 26,
+        "observed": 26
+      }
+    },
+    {
+      "check": "spatial_among_entry_set_matches_primary_atlas_q_gate",
+      "passed": true,
+      "detail": {
+        "expected": 10,
+        "observed": 10
+      }
+    },
+    {
+      "check": "spatial_within_pass_rule_recomputed",
+      "passed": true,
+      "detail": {
+        "rows": 26,
+        "passes": 5,
+        "mismatches": 0
+      }
+    },
+    {
+      "check": "spatial_within_all_rows_executed",
+      "passed": true,
+      "detail": {
+        "ok": 26
+      }
+    },
+    {
+      "check": "spatial_among_pass_rule_recomputed",
+      "passed": true,
+      "detail": {
+        "rows": 10,
+        "passes": 2,
+        "mismatches": 0
+      }
+    },
+    {
+      "check": "spatial_among_all_rows_executed",
+      "passed": true,
+      "detail": {
+        "ok": 10
+      }
+    },
+    {
+      "check": "historical_resource_contains_52_trees",
+      "passed": true,
+      "detail": 52
+    },
+    {
+      "check": "historical_pair_set_matches_spatial_among_passes",
+      "passed": true,
+      "detail": {
+        "spatial_pairs": 2,
+        "summary_pairs": 2,
+        "model_pairs": 2
+      }
+    },
+    {
+      "check": "historical_model_grid_complete_and_successful",
+      "passed": true,
+      "detail": {
+        "rows": 104,
+        "status_counts": {
+          "ok": 104
+        }
+      }
+    },
+    {
+      "check": "historical_summary_recomputed",
+      "passed": true,
+      "detail": {
+        "rows": 2,
+        "mismatches": 0
+      }
+    },
+    {
+      "check": "candidate_labels_only_after_both_gates",
+      "passed": true,
+      "detail": {
+        "adaptive_pattern_candidate_under_current_controls": 2
+      }
+    }
+  ],
+  "claim_ceiling": "adaptive-pattern candidates under broad-space and historical-placement sensitivities; not proof of adaptation, selection, convergence or mechanism"
+}

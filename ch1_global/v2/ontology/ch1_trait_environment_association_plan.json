@@ -1,0 +1,70 @@
+{
+  "plan_version": "ch1_trait_environment_association_atlas_v1",
+  "semantic_status": "Predictive and descriptive association atlas for fully automated model-derived image traits. Coefficients and validation metrics do not establish causal adaptation, trait evolution, or pollinator-mediated selection.",
+  "input_policy": {
+    "required_environment_status": "environment_primary_complete=true",
+    "required_predictors": [
+      "env_chelsa_bio01_native",
+      "env_chelsa_bio04_native",
+      "env_chelsa_bio12_native",
+      "env_chelsa_bio15_native"
+    ],
+    "measurement_modes": [
+      {
+        "id": "all_ensemble_winner",
+        "state_column": "observation_ai_all_state",
+        "meaning": "One model-ensemble winner per observation and trait, retaining measurement-status provenance upstream."
+      },
+      {
+        "id": "conservative_strict_consensus",
+        "state_column": "observation_ai_conservative_state",
+        "meaning": "Strict cross-model/cross-view consensus above the predeclared margin threshold."
+      }
+    ],
+    "exclude_states": ["", "unassessable", "uncertain", "not_auto_estimated_targeted_macro_required"],
+    "exclude_traits": ["external_mucilage_visible"]
+  },
+  "trait_tiers": {
+    "primary": ["corolla_colour_class", "bract_tip_armature", "involucre_indumentum"],
+    "secondary": ["capitulum_shape", "anthesis_visible"],
+    "exploratory": ["capitulum_orientation", "bract_orientation"]
+  },
+  "eligibility": {
+    "minimum_positive_observations": 100,
+    "minimum_negative_observations": 100,
+    "minimum_positive_species": 10,
+    "minimum_positive_spatial_blocks_10deg": 10,
+    "minimum_total_spatial_blocks_10deg": 10,
+    "minimum_species_within_state_variation": 5
+  },
+  "models": {
+    "climate_only": {
+      "description": "L2-regularized binary logistic classifier for each trait state versus all other analyzable states of the same trait. Predictor values are standardized within each fit.",
+      "class_weight": "balanced",
+      "regularization_C": 1.0,
+      "interpretation": "Descriptive climate-associated discrimination, potentially confounded by species composition and spatial structure."
+    },
+    "species_adjusted_within_species": {
+      "description": "L2-regularized binary logistic classifier including taxon dummy variables. Fit only to species with observed within-species variation in the focal state.",
+      "class_weight": "balanced",
+      "regularization_C": 1.0,
+      "interpretation": "Within-observed-species association diagnostic. It is not a phylogenetic comparative model and is not evaluated on unseen species."
+    }
+  },
+  "validation": {
+    "spatial_group_column": "spatial_block_10deg",
+    "species_group_column": "taxon_name",
+    "n_folds_requested": 5,
+    "metrics": ["roc_auc", "balanced_accuracy", "n_test", "positive_prevalence"],
+    "rules": [
+      "Climate-only models are evaluated with grouped spatial-block folds and grouped species folds separately.",
+      "Species-adjusted models are evaluated only with grouped spatial-block folds, scoring test observations only when their species was represented with within-species outcome variation in training data.",
+      "Folds lacking both binary classes are retained in the fold table as unscorable rather than silently discarded."
+    ]
+  },
+  "sensitivity": {
+    "coordinate_precision": "Repeat interpretation only after comparing the full coordinate-eligible cohort to the <=10 km positional-accuracy subset.",
+    "measurement_stability": "Treat agreement between all-ensemble and conservative modes as a required robustness diagnostic.",
+    "spatial_structure": "Do not claim generalization if spatial-block validation is poor even when random-like discrimination is high."
+  }
+}

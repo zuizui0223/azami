@@ -1,0 +1,77 @@
+{
+  "analysis_id": "literature_orientation_external_validation_pilot_v1",
+  "status": "pilot_external_validation_not_gate_closure",
+  "purpose": "Targeted Supplementary check of whether independent botanical orientation descriptions agree with image-derived taxon medians and the frozen orientation-BIO12 candidate direction.",
+  "targeted_candidate": "larger image-referenced orientation angle with higher annual precipitation",
+  "evidence_rows_total": 13,
+  "strict_taxa": 11,
+  "strict_state_counts": {
+    "upright": 7,
+    "nodding": 4
+  },
+  "minimum_image_orientation_observations_per_taxon": 5,
+  "image_orientation_validation": {
+    "n_upright_taxa": 7,
+    "n_nodding_taxa": 4,
+    "upright_median": 72.43572357681859,
+    "nodding_median": 90.20228227458495,
+    "nodding_minus_upright_median": 17.766558697766357,
+    "exact_one_sided_permutation_p_median_difference": 0.10303030303030303,
+    "upright_mean": 70.70975120675762,
+    "nodding_mean": 85.7283585695046,
+    "nodding_minus_upright_mean": 15.018607362746991,
+    "exact_one_sided_permutation_p_mean_difference": 0.1,
+    "exact_permutation_assignments": 330,
+    "spearman_rho_binary_state": 0.4183300132670378,
+    "spearman_two_sided_p": 0.20039419830646973,
+    "mann_whitney_u": 21.0,
+    "mann_whitney_exact_one_sided_p": 0.11515151515151514,
+    "direction_concordant_with_v2_candidate": true
+  },
+  "bio12_directional_replication": {
+    "n_upright_taxa": 7,
+    "n_nodding_taxa": 4,
+    "upright_median": 1046.0,
+    "nodding_median": 1263.0,
+    "nodding_minus_upright_median": 217.0,
+    "exact_one_sided_permutation_p_median_difference": 0.4666666666666667,
+    "upright_mean": 1295.7857142857142,
+    "nodding_mean": 1907.0,
+    "nodding_minus_upright_mean": 611.2142857142858,
+    "exact_one_sided_permutation_p_mean_difference": 0.24848484848484848,
+    "exact_permutation_assignments": 330,
+    "spearman_rho_binary_state": 0.23904572186687875,
+    "spearman_two_sided_p": 0.47899685662438046,
+    "mann_whitney_u": 18.0,
+    "mann_whitney_exact_one_sided_p": 0.2636363636363636,
+    "direction_concordant_with_v2_candidate": true
+  },
+  "interpretation": "Independent literature state is directionally concordant with both the image-derived orientation median and BIO12 in this small pilot, but neither targeted comparison reaches conventional significance. This is therefore feasibility and external-consistency evidence, not confirmation of the v2 candidate.",
+  "excluded_or_non_strict_taxa": [
+    {
+      "taxon_name": "Cirsium parryi",
+      "literature_state": "ambiguous",
+      "strict_include": "false",
+      "notes": "Excluded from strict binary validation because source itself is equivocal."
+    },
+    {
+      "taxon_name": "Cirsium heterophyllum",
+      "literature_state": "stage_dependent",
+      "strict_include": "false",
+      "notes": "Excluded from strict binary validation because orientation changes with developmental stage in the source account."
+    }
+  ],
+  "input_sha256": {
+    "contract": "a1ee63a192542bf193d5d13d044e38c4be84035382566eedb3291fe491bf7c62",
+    "evidence": "9677a76f4f1281e8021f96e9d295e05b2c551cbee5ea58d3d15ee593b2a82241",
+    "traits_long": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "strict_spatial_chelsa": "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
+  },
+  "claim_boundary": [
+    "The pilot does not change the primary full-27 atlas, multiplicity families, broad-space gate or final candidate set.",
+    "Species-level botanical descriptions are not independent individual-level gravity measurements.",
+    "A categorical literature state cannot validate continuous camera geometry or developmental-stage effects.",
+    "The pilot does not close the independent detector, reference-measurement, developmental-stage, colour-control or repeat-photo gates.",
+    "No additional traits or environmental predictors are screened."
+  ]
+}

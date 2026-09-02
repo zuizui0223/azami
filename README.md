@@ -1,20 +1,22 @@
-# azami analysis code
+# azami analysis and reproducibility repository
 
-This repository is intentionally limited to reproducibility code for the image-phenomics analysis pipeline.
+This repository retains the code and frozen machine-readable products needed to reproduce and audit the image-phenomics analyses.
 
-Prepublication manuscripts, Supporting Information, reviewer materials, generated figures/tables, analysis outputs, and research data are intentionally **not tracked here**.
+Prepublication manuscript prose and journal-submission packages are intentionally kept outside GitHub.
 
-## Contents
+## Tracked scientific material
 
-- `ch1_global/v2/` — image collection, screening, trait-extraction, and QC pipeline code.
-- `analysis/` — statistical analysis and sensitivity-analysis scripts.
-- `analysis/figures/` — figure-generation scripts. Generated figures must be written outside the tracked source tree.
-- `src/azami_ch1/` — reusable Python utilities.
+- `ch1_global/v2/` — image collection, screening, measurement, QC and historical-analysis implementation.
+- `analysis/` — statistical analyses, sensitivity analyses and figure-generation code.
+- `analysis/ch1/` — frozen analysis contracts and registries needed to define the estimands.
+- `analysis_outputs/` — frozen machine-readable result tables and validation reports.
+- `reproducibility/figures/` — generated result figures together with the source/provenance material required to rebuild them.
+- `reproducibility/contracts/` — compact trait definitions needed to reproduce measurement/analysis decisions.
+- `tests/` — regression and invariant tests.
+- `src/azami_ch1/` — reusable utilities.
 
-## Reproducibility
+## Deliberately excluded
 
-Inputs and generated outputs are supplied outside this repository. Use explicit input/output paths when running scripts. The repository should remain code-only before publication.
+Do not commit manuscript drafts, Supporting Information prose, reviewer correspondence, cover letters, journal submission bundles, DOCX files, submission PDFs, XLSX workbooks or submission ZIPs.
 
-## Prepublication hygiene
-
-Do not commit manuscripts, submission packages, result tables, figures, raw/derived data, model weights, or review correspondence. The `.gitignore` blocks common prepublication artifacts.
+Generated scientific results are not treated as disposable build products: the frozen CSV/JSON outputs and result figures are retained for reproducibility.

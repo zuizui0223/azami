@@ -6,51 +6,46 @@ __pycache__/
 venv/
 .env
 
-# Prepublication research artifacts: never track
+# Prepublication writing / submission packages
 manuscript/
 submission/
-analysis_outputs/
-data/
-artifacts/
-results/
-outputs/
-figures/
-tables/
 review/
 reviews/
+cover_letter/
 
-# Documents and generated media
+# Raw or local working data
+raw_data/
+data/raw/
+data/downloads/
+local_data/
+cache/
+tmp/
+temp/
+
+# Local generated scratch outputs
+artifacts/
+outputs/
+results/
+
+# Reproducibility outputs intentionally tracked
+!analysis_outputs/
+!analysis_outputs/**
+!reproducibility/
+!reproducibility/**
+
+# Submission/document formats should not be committed
 *.docx
 *.doc
-*.pdf
-*.xlsx
-*.xls
 *.pptx
 *.ppt
+*.xlsx
+*.xls
 *.zip
 *.tar
 *.gz
 *.7z
-*.png
-*.jpg
-*.jpeg
-*.webp
-*.tif
-*.tiff
-*.svg
 
-# Generated tabular / serialized outputs
-*.csv
-*.tsv
-*.parquet
-*.feather
-*.json
-*.jsonl
-*.pkl
-*.pickle
-*.rds
-
-# Models / checkpoints
+# Model weights / checkpoints
 *.pt
 *.pth
 *.onnx

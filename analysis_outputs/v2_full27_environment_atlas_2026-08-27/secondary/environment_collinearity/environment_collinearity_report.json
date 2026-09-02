@@ -1,0 +1,56 @@
+{
+  "analysis_id": "geb_v2_environment_collinearity_diagnostic_v1",
+  "status": "retrospective_interpretation_diagnostic_not_model_selection",
+  "source": {
+    "github_actions_run": 33035785120,
+    "artifact_id": 9632715852,
+    "artifact_sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+    "relative_path": "process_environment/complete18_chelsa_process.csv",
+    "file_sha256": "1ab84254a80493776b4c435152ed3d2a1c1e68dd0e0342da0ea081eeb5cd3d9b",
+    "rows": 1874,
+    "taxa": 124,
+    "relationship_to_primary_input": "Exact all-nine-predictor overlap previously verified against 1,874 rows of the 46,276-observation primary environment table"
+  },
+  "predictors": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean",
+    "chelsa_vpd_mean",
+    "chelsa_sfcwind_mean",
+    "chelsa_gsp",
+    "chelsa_npp"
+  ],
+  "summaries": {
+    "observation_raw": {
+      "n_units": 1874,
+      "maximum_absolute_pearson_r": 0.8724313477285437,
+      "maximum_pearson_pair": "chelsa_bio01__chelsa_vpd_mean",
+      "maximum_pair_pearson_r": 0.8724313477285437,
+      "maximum_vif": 29.382085826594157,
+      "maximum_vif_predictor": "chelsa_bio01"
+    },
+    "within_taxon_demeaned": {
+      "n_units": 1874,
+      "maximum_absolute_pearson_r": 0.8517334921630993,
+      "maximum_pearson_pair": "chelsa_bio01__chelsa_vpd_mean",
+      "maximum_pair_pearson_r": 0.8517334921630993,
+      "maximum_vif": 21.977692507607653,
+      "maximum_vif_predictor": "chelsa_bio01"
+    },
+    "among_taxon_median": {
+      "n_units": 124,
+      "maximum_absolute_pearson_r": 0.8954233298883533,
+      "maximum_pearson_pair": "chelsa_bio01__chelsa_vpd_mean",
+      "maximum_pair_pearson_r": 0.8954233298883533,
+      "maximum_vif": 34.42680230168611,
+      "maximum_vif_predictor": "chelsa_bio01"
+    }
+  },
+  "interpretation": {
+    "primary_models": "separate standardized univariate slopes",
+    "vif_role": "diagnostic for a hypothetical simultaneous nine-predictor model; VIF does not enter or filter the primary univariate fits",
+    "claim_boundary": "Environmental coefficients are marginal associations with correlated observational gradients, not effects independent of the other predictors"
+  }
+}

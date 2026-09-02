@@ -1,0 +1,190 @@
+{
+  "prompt_spec_version": "clip_cirsium_traits_v1",
+  "intended_use": "Zero-shot candidate generation and uncertainty triage for detected Cirsium head images. Outputs are not annotations or validated trait measurements.",
+  "traits": {
+    "anthesis_visible": {
+      "mode": "score",
+      "view": "head",
+      "base_review_priority": "low",
+      "review_weight": 0.8,
+      "state_prompts": {
+        "yes": [
+          "a close-up photograph of a thistle flower head with open visible florets at anthesis",
+          "a Cirsium capitulum with clearly open tubular florets visible"
+        ],
+        "no": [
+          "a close-up photograph of a closed thistle bud with no open florets",
+          "a Cirsium flower head before anthesis with florets not visibly open"
+        ],
+        "uncertain": [
+          "a thistle flower head where the opening stage is unclear",
+          "a partially obscured or senescent thistle head with uncertain anthesis"
+        ]
+      }
+    },
+    "capitulum_orientation": {
+      "mode": "score",
+      "view": "context",
+      "base_review_priority": "medium",
+      "review_weight": 1.1,
+      "state_prompts": {
+        "upright": [
+          "a thistle flower head held upright above its peduncle",
+          "a Cirsium capitulum with a vertical upright head orientation"
+        ],
+        "ascending": [
+          "a thistle flower head angled upward on an ascending peduncle",
+          "a Cirsium capitulum facing upward at an oblique angle"
+        ],
+        "horizontal": [
+          "a thistle flower head held horizontally sideways from its peduncle",
+          "a Cirsium capitulum oriented sideways at about a right angle to the stem"
+        ],
+        "nodding": [
+          "a thistle flower head nodding downward on a curved peduncle",
+          "a Cirsium capitulum bent downward but not hanging vertically"
+        ],
+        "pendant": [
+          "a thistle flower head hanging vertically downward from the peduncle",
+          "a pendant Cirsium capitulum suspended downward"
+        ]
+      }
+    },
+    "corolla_colour_class": {
+      "mode": "score",
+      "view": "head",
+      "base_review_priority": "low",
+      "review_weight": 0.9,
+      "state_prompts": {
+        "white_or_cream": [
+          "a close-up photograph of a thistle flower head with white or cream florets",
+          "a Cirsium capitulum with pale white florets"
+        ],
+        "pale_pink": [
+          "a close-up photograph of a thistle flower head with very pale pink florets",
+          "a Cirsium capitulum with light blush pink flowers"
+        ],
+        "pink": [
+          "a close-up photograph of a thistle flower head with pink florets",
+          "a Cirsium capitulum with clear medium pink flowers"
+        ],
+        "purple_blue": [
+          "a close-up photograph of a thistle flower head with purple or blue florets",
+          "a Cirsium capitulum with violet purple flowers"
+        ],
+        "yellow_or_other": [
+          "a thistle flower head with yellow or another non white non pink non purple floret colour",
+          "a Cirsium capitulum with unusual yellow orange red or other coloured florets"
+        ],
+        "mixed": [
+          "a thistle flower head with visibly mixed floret colours",
+          "a Cirsium capitulum showing more than one clearly visible flower colour"
+        ]
+      }
+    },
+    "capitulum_shape": {
+      "mode": "score",
+      "view": "context",
+      "base_review_priority": "medium",
+      "review_weight": 1.0,
+      "state_prompts": {
+        "globose": [
+          "a side view of a thistle flower head with a round globose spherical involucre outline",
+          "a Cirsium capitulum with a nearly spherical head shape"
+        ],
+        "hemispherical": [
+          "a side view of a thistle flower head with a half-spherical hemispherical outline",
+          "a Cirsium capitulum shaped like a rounded dome"
+        ],
+        "ovoid": [
+          "a side view of a thistle flower head with an egg-shaped ovoid outline",
+          "a Cirsium capitulum broader at one end with an ovoid head shape"
+        ],
+        "cylindrical": [
+          "a side view of a thistle flower head with a long cylindrical involucre outline",
+          "a Cirsium capitulum with a narrow tube-like cylindrical head shape"
+        ],
+        "urceolate": [
+          "a side view of a thistle flower head with an urn-shaped urceolate involucre outline",
+          "a Cirsium capitulum narrowed at the mouth with an urn-like shape"
+        ]
+      }
+    },
+    "involucre_indumentum": {
+      "mode": "score",
+      "view": "head",
+      "base_review_priority": "high",
+      "review_weight": 1.5,
+      "state_prompts": {
+        "glabrous": [
+          "a close-up of a thistle involucre with a smooth hairless glabrous surface",
+          "a Cirsium flower head with no visible hairs on the involucral bracts"
+        ],
+        "webby": [
+          "a close-up of a thistle involucre with sparse cobwebby hairs",
+          "a Cirsium flower head with thin web-like arachnoid hairs on the bracts"
+        ],
+        "tomentose": [
+          "a close-up of a thistle involucre densely covered in woolly tomentose hairs",
+          "a Cirsium flower head with a thick fuzzy felt-like bract surface"
+        ],
+        "glandular": [
+          "a close-up of a thistle involucre with glandular hairs or sticky glands",
+          "a Cirsium flower head with visible gland-tipped hairs on the bracts"
+        ],
+        "mixed": [
+          "a thistle involucre with more than one visible hair type",
+          "a Cirsium flower head with mixed hairiness across the involucral bracts"
+        ]
+      }
+    },
+    "bract_tip_armature": {
+      "mode": "score",
+      "view": "head",
+      "base_review_priority": "high",
+      "review_weight": 1.5,
+      "state_prompts": {
+        "unarmed": [
+          "a close-up of a thistle involucre with bract tips that have no spines",
+          "a Cirsium flower head with unarmed blunt involucral-bract tips"
+        ],
+        "short_spined": [
+          "a close-up of a thistle involucre with short spine-tipped bracts",
+          "a Cirsium flower head with small short spines at the bract tips"
+        ],
+        "long_spined": [
+          "a close-up of a thistle involucre with long prominent sharp bract spines",
+          "a Cirsium flower head with elongated spiny involucral-bract tips"
+        ]
+      }
+    },
+    "bract_orientation": {
+      "mode": "score",
+      "view": "context",
+      "base_review_priority": "high",
+      "review_weight": 1.4,
+      "state_prompts": {
+        "appressed": [
+          "a thistle involucre with bracts pressed closely against the head",
+          "a Cirsium flower head with appressed involucral bracts"
+        ],
+        "spreading": [
+          "a thistle involucre with bracts spreading outward from the head",
+          "a Cirsium flower head with outward-pointing involucral bracts"
+        ],
+        "recurved": [
+          "a thistle involucre with bract tips curved backward or recurved",
+          "a Cirsium flower head with involucral bracts bending back away from the head"
+        ],
+        "mixed": [
+          "a thistle involucre with visibly mixed bract orientations",
+          "a Cirsium flower head where some bracts are appressed and others spread or recurved"
+        ]
+      }
+    },
+    "external_mucilage_visible": {
+      "mode": "not_scored",
+      "reason": "Generic observer photographs are normally inadequate for reliable positive or negative mucilage scoring. This requires targeted macro images and is kept out of automatic trait assignment."
+    }
+  }
+}

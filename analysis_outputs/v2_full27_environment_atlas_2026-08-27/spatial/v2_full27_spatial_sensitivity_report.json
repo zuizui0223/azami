@@ -1,0 +1,15 @@
+{
+  "analysis_id": "geb_v2_full27_broad_spatial_sensitivity_v1",
+  "status": "retrospective_selected-row_sensitivity",
+  "n_within_rows_entered": 26,
+  "n_within_rows_passed": 5,
+  "n_among_rows_entered": 10,
+  "n_among_rows_passed": 2,
+  "method": {
+    "entry_rule": "rows with q_fdr_bh_global_family < 0.05 in the matching scale-specific atlas",
+    "method": "refit with second-order spherical-coordinate basis; taxon-centred with taxon-clustered uncertainty within taxa and Freedman-Lane residual permutation among taxa",
+    "residual_diagnostic": "eight-nearest-neighbour Moran I on at most 5000 deterministic observations",
+    "role": "broad-space sensitivity for the new v2 full-environment lane, not equivalence to the older nine-endpoint SPDE analysis"
+  },
+  "claim_boundary": "Broad spherical-trend sensitivity plus residual Moran diagnostic; not the older SPDE result, not full removal of spatial process, and not evidence of adaptation by itself."
+}

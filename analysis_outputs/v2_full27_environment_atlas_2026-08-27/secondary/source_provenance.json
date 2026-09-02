@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "role": "frozen secondary whole-capitulum source tables used for Table S9 and Figure S5",
+  "taxon_median_morphospace": {
+    "github_actions_artifact_id": 9612943217,
+    "artifact_name": "ch1-continuous-trait-universe-geb_v2_continuous_trait_universe-32975451732",
+    "artifact_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+    "workflow_run": 32975451732,
+    "files": [
+      "pca/geb_v2_taxon_morphospace_scores.csv",
+      "pca/geb_v2_taxon_morphospace_loadings.csv",
+      "pca/geb_v2_trait_geography_report.json"
+    ]
+  },
+  "multilevel_association_geometry": {
+    "github_actions_artifact_id": 9632715852,
+    "artifact_name": "ch1-geb-v2-within-among-33035785120",
+    "artifact_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+    "workflow_run": 33035785120,
+    "files": [
+      "multilevel/capitulum_space_scope_summary.csv",
+      "multilevel/capitulum_space_module_integration.csv",
+      "multilevel/capitulum_space_unit_strength_matrices.csv",
+      "multilevel/capitulum_space_eigenspectra.csv",
+      "multilevel/capitulum_space_report.json"
+    ]
+  },
+  "claim_boundary": "These tables support secondary phenotypic and measurement-module summaries. They do not establish functional or genetic modularity and do not replace endpoint-level inference."
+}

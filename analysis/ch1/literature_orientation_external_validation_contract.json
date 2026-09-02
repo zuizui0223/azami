@@ -1,0 +1,30 @@
+{
+  "analysis_id": "literature_orientation_external_validation_pilot_v1",
+  "version": "2026-09-01",
+  "status": "targeted_supplementary_external_validation",
+  "parent_analysis": "geb_v2_full27_environment_atlas_v1",
+  "targeted_candidate": {
+    "endpoint_id": "orientation_image_vertical_angle",
+    "predictor": "chelsa_bio12",
+    "direction": "larger image-referenced orientation angle with higher annual precipitation"
+  },
+  "literature_trait": "capitulum_orientation",
+  "strict_states": {"upright": 0, "nodding": 1},
+  "minimum_image_orientation_observations_per_taxon": 5,
+  "trait_long_sha256": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+  "strict_spatial_chelsa_sha256": "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0",
+  "tests": [
+    "literature_state_vs_image_orientation_taxon_median",
+    "literature_state_vs_frozen_bio12_taxon_median"
+  ],
+  "direction_rule": "nodding group must have a larger median than the upright group for directional concordance",
+  "inference_rule": "targeted external-consistency pilot; report exact one-sided group permutation, exact Mann-Whitney and descriptive Spearman results; no new multiplicity family and no candidate promotion",
+  "evidence_rule": "include only authoritative botanical accounts with an explicit orientation statement; equivocal or developmental-stage-dependent accounts remain in the audit table but are excluded from the strict binary comparison",
+  "claim_boundary": [
+    "The pilot does not change the primary full-27 atlas, multiplicity families, broad-space gate or final candidate set.",
+    "Species-level botanical descriptions are not independent individual-level gravity measurements.",
+    "A categorical literature state cannot validate continuous camera geometry or developmental-stage effects.",
+    "The pilot does not close the independent detector, reference-measurement, developmental-stage, colour-control or repeat-photo gates.",
+    "No additional traits or environmental predictors are screened."
+  ]
+}

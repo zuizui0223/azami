@@ -1,0 +1,7 @@
+stage	file	status	manuscript_role
+environment_sampling	79_sample_one_environment_layer.py	active	Reproduce individual raster extraction when rebuilding frozen inputs
+environment_merge	80_merge_parallel_environment_layers.py	active	Merge successful layers and construct depth-weighted soil composites
+primary_inference	83_run_lightweight_spde_inla.R	active	Primary grouped hierarchical SPDE-INLA analysis
+primary_workflow	.github/workflows/ch1-lightweight-spde-inla.yml	active	Reproduce frozen-input manuscript analysis
+submission_ci	.github/workflows/ch1-submission-ci.yml	active	Validate submission code
+submission_bundle	.github/workflows/ch1-build-submission-bundle.yml	active	Package submission materials

@@ -1,0 +1,14 @@
+{
+  "analysis_id": "geb_v2_full27_historical_placement_sensitivity_v1",
+  "status": "retrospective_selected-row_sensitivity",
+  "n_spatial_pairs_entered": 2,
+  "n_placement_trees": 52,
+  "n_pairs_passing_all_placement_trees": 2,
+  "method": {
+    "entry_rule": "among-taxon rows surviving the new broad-space sensitivity",
+    "tree_resource": "audited GBOTB.extended.LCVP scenario 1, scenario 3 and 50 randomized scenario-2 placement trees",
+    "method": "univariate Pagel-lambda PGLS separately for the selected endpoint-gradient pair on every available placement tree",
+    "role": "historical-placement sensitivity only because most taxa are grafted and the tree does not resolve reticulate history"
+  },
+  "claim_boundary": "Passing means stability across audited grafting scenarios, not a resolved species-tree correction or proof of adaptation, selection, convergence or mechanism."
+}

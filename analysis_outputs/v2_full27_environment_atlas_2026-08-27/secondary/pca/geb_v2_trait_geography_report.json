@@ -1,0 +1,63 @@
+{
+  "n_registered_inferential_endpoints": 19,
+  "n_endpoints_with_observation_measurements": 18,
+  "n_primary_endpoints_with_measurements": 9,
+  "n_candidate_endpoints_with_measurements": 9,
+  "pca_scopes": [
+    {
+      "scope": "all_inferential_endpoints",
+      "status": "ok",
+      "n_complete_taxa": 127,
+      "n_endpoints": 18,
+      "explained_variance": {
+        "PC1": 0.1848949648505702,
+        "PC2": 0.12012024371156518,
+        "PC3": 0.11779242336189413
+      }
+    },
+    {
+      "scope": "module:armature",
+      "status": "ok",
+      "n_complete_taxa": 127,
+      "n_endpoints": 2,
+      "explained_variance": {
+        "PC1": 0.5211318536543041,
+        "PC2": 0.47886814634569597
+      }
+    },
+    {
+      "scope": "module:colour",
+      "status": "ok",
+      "n_complete_taxa": 253,
+      "n_endpoints": 4,
+      "explained_variance": {
+        "PC1": 0.4743824760679349,
+        "PC2": 0.2754150140545185,
+        "PC3": 0.14508421091945714
+      }
+    },
+    {
+      "scope": "module:involucre_architecture",
+      "status": "ok",
+      "n_complete_taxa": 127,
+      "n_endpoints": 7,
+      "explained_variance": {
+        "PC1": 0.37125075154790144,
+        "PC2": 0.15589945176448056,
+        "PC3": 0.14242217010059546
+      }
+    },
+    {
+      "scope": "module:shape",
+      "status": "ok",
+      "n_complete_taxa": 253,
+      "n_endpoints": 4,
+      "explained_variance": {
+        "PC1": 0.5549283221157135,
+        "PC2": 0.25276301094847664,
+        "PC3": 0.15619752302311377
+      }
+    }
+  ],
+  "interpretation": "Pattern-first GEB v2 phenotype geography. Observation-level within-taxon fractions for candidate traits are descriptive and do not replace the frozen nested head-photo-taxon decomposition for primary traits."
+}
