@@ -2,7 +2,9 @@
 """Canonical entry point for rebuilding the frozen v2 result figures.
 
 Generated figures are written to ``reproducibility/figures``. Prepublication
-manuscript directories are never created by this entry point.
+manuscript directories are never created by this entry point. The GitHub Actions
+verification workflow rebuilds the same figure set in scratch space and does
+not upload another expiring artifact.
 """
 from __future__ import annotations
 
