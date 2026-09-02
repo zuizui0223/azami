@@ -1,0 +1,35 @@
+name: Figure code check
+
+on:
+  pull_request:
+    paths:
+      - "analysis/figures/**"
+      - "pyproject.toml"
+      - ".github/workflows/figure-code-check.yml"
+  push:
+    paths:
+      - "analysis/figures/**"
+      - "pyproject.toml"
+      - ".github/workflows/figure-code-check.yml"
+  workflow_dispatch:
+
+jobs:
+  figure-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install code dependencies
+        run: python -m pip install -e .
+      - name: Compile figure code
+        run: python -m py_compile analysis/figures/*.py
+      - name: Validate canonical registry
+        run: python analysis/figures/azami_figstyle.py
+      - name: Smoke-test command interfaces
+        run: |
+          python analysis/figures/build_v2_figures.py --help
+          python analysis/figures/run_image_to_trait_perturbation_audit.py --help
+          python analysis/figures/validate_v2_figure_style.py --help
