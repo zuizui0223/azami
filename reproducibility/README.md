@@ -39,7 +39,21 @@ python analysis/rebuild_frozen_analysis.py \
 
 `--raster-cache-dir` may point to exact URL-basename copies of the frozen CHELSA rasters. Without it, the process variables are sampled from their frozen remote URLs. The rebuilt 46,276-row nine-predictor environment must match the frozen SHA-256 or the runner stops.
 
-Sampling-composition sensitivity needs the exact frozen region and native-status auxiliary tables (`--with-sampling --regions ... --native-status ...`). Historical-placement sensitivity needs the frozen/reconstructed tree directory (`--with-historical --tree-dir ...`). These auxiliary inputs are kept explicit rather than silently substituted.
+The historical-placement input is also artifact-locked. Artifact `8227254443` contains S1, S3 and the 50 randomized S2 trees. It can be supplied directly as a local archived ZIP:
+
+```bash
+python analysis/rebuild_frozen_analysis.py \
+  --continuous-zip /path/to/artifact-9612943217.zip \
+  --multilevel-zip /path/to/artifact-9632715852.zip \
+  --historical-zip /path/to/artifact-8227254443.zip \
+  --out-dir rebuild_check \
+  --mode rebuild_full27 \
+  --with-historical
+```
+
+The historical ZIP and all three tree resources are checked against frozen SHA-256 values before the 52-tree analysis starts. A pre-extracted exact tree directory may be supplied with `--tree-dir` instead.
+
+Sampling-composition sensitivity still requires the exact frozen region and native-status auxiliary tables (`--with-sampling --regions ... --native-status ...`). Their expected SHA-256 values are retained in the frozen sampling-composition report; the runner does not silently reconstruct or substitute them.
 
 The current stage inventory is `ch1_global/v2/ANALYSIS_MANIFEST.tsv`; CI checks that every repository path marked there actually exists.
 
