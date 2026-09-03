@@ -2,7 +2,7 @@
 """Rebuild frozen Chapter 1 numerical analyses from archived source ZIPs.
 
 The runner deliberately accepts local ZIP files rather than downloading GitHub
-Actions artifacts itself.  This keeps the reconstruction path usable after
+Actions artifacts itself. This keeps the reconstruction path usable after
 Actions retention expires and makes the exact archived bytes part of the input
 contract.
 """
@@ -22,9 +22,13 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
     "continuous_zip": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
     "multilevel_zip": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+    "historical_zip": "499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc",
     "traits": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
     "reference_environment": "1ab84254a80493776b4c435152ed3d2a1c1e68dd0e0342da0ea081eeb5cd3d9b",
     "full_environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7",
+    "historical_s1": "8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92",
+    "historical_s2_random": "82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af",
+    "historical_s3": "8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92",
 }
 
 
@@ -44,7 +48,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--regions", type=Path)
     parser.add_argument("--native-status", type=Path)
     parser.add_argument("--with-historical", action="store_true")
-    parser.add_argument("--tree-dir", type=Path)
+    historical = parser.add_mutually_exclusive_group()
+    historical.add_argument("--historical-zip", type=Path)
+    historical.add_argument("--tree-dir", type=Path)
     return parser.parse_args()
 
 
@@ -114,6 +120,32 @@ def verify_sources(continuous: Path, multilevel: Path) -> dict[str, object]:
         if checks[key] != expected:
             raise SystemExit(f"Unexpected {key}: {checks[key]}; expected {expected}")
     return checks
+
+
+def resolve_tree_dir(args: argparse.Namespace) -> Path | None:
+    if not args.with_historical:
+        return None
+    if args.historical_zip is None and args.tree_dir is None:
+        raise SystemExit("--with-historical requires --historical-zip or --tree-dir")
+    if args.historical_zip is not None:
+        require_hash(args.historical_zip, EXPECTED["historical_zip"], "historical tree source ZIP")
+        extracted = args.out_dir / "source" / "historical"
+        safe_extract(args.historical_zip, extracted)
+        tree_dir = extracted / "historical_trees"
+    else:
+        tree_dir = args.tree_dir
+    assert tree_dir is not None
+    expected_files = {
+        "gbotb_lcvp_scenario1.tre": EXPECTED["historical_s1"],
+        "gbotb_lcvp_scenario2_randomized.trees": EXPECTED["historical_s2_random"],
+        "gbotb_lcvp_scenario3.tre": EXPECTED["historical_s3"],
+    }
+    for name, expected in expected_files.items():
+        path = tree_dir / name
+        if not path.is_file():
+            raise SystemExit(f"Required historical tree resource is missing: {path}")
+        require_hash(path, expected, name)
+    return tree_dir
 
 
 def reconstruct_environment(core_environment: Path, out_dir: Path, raster_cache_dir: Path | None) -> Path:
@@ -212,7 +244,13 @@ def rebuild_secondary(traits: Path, environment: Path, out_dir: Path) -> None:
     )
 
 
-def rebuild_optional_sensitivities(args: argparse.Namespace, traits: Path, environment: Path, atlas_dir: Path) -> None:
+def rebuild_optional_sensitivities(
+    args: argparse.Namespace,
+    traits: Path,
+    environment: Path,
+    atlas_dir: Path,
+    tree_dir: Path | None,
+) -> None:
     spatial_dir = args.out_dir / "spatial"
     if args.with_sampling:
         if args.regions is None or args.native_status is None:
@@ -255,8 +293,7 @@ def rebuild_optional_sensitivities(args: argparse.Namespace, traits: Path, envir
             spatial_dir,
         )
     if args.with_historical:
-        if args.tree_dir is None:
-            raise SystemExit("--with-historical requires --tree-dir")
+        assert tree_dir is not None
         run(
             sys.executable,
             "analysis/run_geb_v2_full27_historical_sensitivity.py",
@@ -269,7 +306,7 @@ def rebuild_optional_sensitivities(args: argparse.Namespace, traits: Path, envir
             "--spatial-dir",
             spatial_dir,
             "--tree-dir",
-            args.tree_dir,
+            tree_dir,
             "--out-dir",
             args.out_dir / "historical",
         )
@@ -285,9 +322,18 @@ def main() -> int:
     safe_extract(args.continuous_zip, continuous)
     safe_extract(args.multilevel_zip, multilevel)
     checks = verify_sources(continuous, multilevel)
+    tree_dir = resolve_tree_dir(args)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     (args.out_dir / "source_validation.json").write_text(
-        json.dumps({"status": "PASS", **checks}, indent=2) + "\n",
+        json.dumps(
+            {
+                "status": "PASS",
+                **checks,
+                "historical_tree_source_verified": bool(tree_dir is not None),
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     reference_environment = multilevel / "process_environment" / "complete18_chelsa_process.csv"
@@ -312,7 +358,7 @@ def main() -> int:
     if args.mode in {"rebuild_secondary", "rebuild_all"}:
         rebuild_secondary(traits, environment, args.out_dir / "secondary")
     if args.with_sampling or args.with_spatial or args.with_historical:
-        rebuild_optional_sensitivities(args, traits, environment, atlas_dir)
+        rebuild_optional_sensitivities(args, traits, environment, atlas_dir, tree_dir)
     print(json.dumps({"status": "PASS", "mode": args.mode, "output": str(args.out_dir)}, indent=2))
     return 0
 
