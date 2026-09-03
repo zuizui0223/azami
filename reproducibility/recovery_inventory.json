@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-09-03",
+  "active_main": {
+    "commit": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc",
+    "status": "complete_for_frozen_chapter1_v2_reanalysis",
+    "canonical_manifest": "ch1_global/v2/ANALYSIS_MANIFEST.tsv",
+    "canonical_rebuild_runner": "analysis/rebuild_frozen_analysis.py",
+    "frozen_outputs": "analysis_outputs/v2_full27_environment_atlas_2026-08-27",
+    "integrity_workflow": ".github/workflows/reproducibility-integrity.yml",
+    "figure_workflow": ".github/workflows/rebuild-frozen-figures.yml",
+    "merge_commit_ci": {
+      "reproducibility_integrity_run": 33720162543,
+      "reproducibility_integrity_conclusion": "success",
+      "frozen_figure_run": 33720162550,
+      "frozen_figure_conclusion": "success"
+    }
+  },
+  "frozen_scientific_scope": {
+    "endpoints_registered": 27,
+    "endpoints_measured": 22,
+    "strict_spatial_observations": 46276,
+    "strict_spatial_taxa": 259,
+    "environment_predictors": 9,
+    "sampling_composition_scenarios": 674,
+    "historical_tree_models": 52,
+    "primary_validation_status": "PASS"
+  },
+  "direct_reanalysis_inputs": {
+    "continuous_source": {
+      "artifact_id": 9612943217,
+      "sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+      "durability": "owner_side_archive_verified"
+    },
+    "multilevel_process_source": {
+      "artifact_id": 9632715852,
+      "sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+      "durability": "owner_side_archive_verified"
+    },
+    "native_status": {
+      "immutable_tag": "azami-ch1-v2-2026-08-27",
+      "git_blob_sha": "b98af47482fd86b1353546573492519659cda848",
+      "sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
+      "rebuild_runner": "analysis/rebuild_frozen_native_status.py",
+      "durability": "git_retained_and_rebuildable"
+    },
+    "broad_region": {
+      "sha256": "085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff",
+      "rebuild_runner": "analysis/rebuild_frozen_broad_region_lookup.py",
+      "natural_earth_zip_sha256": "5fed433373581fa648920435f937d95f2d3c0200e067409c6478dcdf1b853139",
+      "durability": "deterministically_rebuildable_fail_closed"
+    }
+  },
+  "historical_recovery": {
+    "immutable_tag": "azami-ch1-v2-2026-08-27",
+    "tagged_commit": "584e4a9863ab0c133a050f15b4bb862730db7faf",
+    "browseable_archive_branch": "archive/ch1-precleanup-20260827",
+    "status": "complete",
+    "contains": [
+      "superseded_v1_analysis_code",
+      "superseded_v1_outputs",
+      "reviewer_and_bias_control_analyses",
+      "retired_github_actions_workflows",
+      "historical_analysis_contracts",
+      "manuscript_and_submission_history"
+    ]
+  },
+  "intentionally_absent_from_main": {
+    "status": "intentional_code_only_boundary",
+    "categories": [
+      "manuscript_prose",
+      "submission_packages",
+      "reviewer_material",
+      "superseded_v1_outputs",
+      "retired_submission_workflows"
+    ],
+    "recovery_location": "azami-ch1-v2-2026-08-27 and archive/ch1-precleanup-20260827"
+  },
+  "ephemeral_upstream_artifacts": {
+    "tracking_issue": 85,
+    "status": "external_archive_followup_required_for_full_upstream_rollback",
+    "not_required_for_current_frozen_v2_numerical_reanalysis": true,
+    "artifact_ids": [
+      8076736948,
+      8227254443,
+      8269246732,
+      8521924881,
+      8521925441,
+      8521926057,
+      8983877726
+    ]
+  },
+  "completion": {
+    "active_v2_code": "complete",
+    "active_v2_frozen_outputs": "complete",
+    "active_v2_direct_inputs": "complete",
+    "active_v2_figures": "complete",
+    "active_v2_ci": "complete",
+    "precleanup_scientific_history": "complete",
+    "full_upstream_binary_durability": "tracked_external_gate_issue_85"
+  },
+  "claim_boundary": "Recovery infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output."
+}
