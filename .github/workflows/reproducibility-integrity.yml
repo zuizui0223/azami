@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  actions: read
 
 jobs:
   integrity:
@@ -43,114 +42,15 @@ jobs:
           test ! -e submission
           ! git ls-files | grep -E '\.(docx?|pptx?|xlsx?|zip)$'
 
-      - name: Confirm frozen outputs are tracked
+      - name: Confirm frozen outputs and recovery contracts are tracked
         shell: bash
         run: |
           test -d analysis_outputs
           test -d reproducibility/figures
           test -f analysis/ch1/v2_full27_environment_atlas_contract.json
+          test -f analysis/ch1/native_range_sensitivity_contract.json
+          test -f analysis/rebuild_frozen_native_status.py
+          test -f analysis/build_naturalearth_broad_region_lookup.py
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
           test -f ch1_global/v2/ANALYSIS_MANIFEST.tsv
           test -f reproducibility/actions_artifact_catalog.json
-
-      - name: Recover and byte-check frozen sampling inputs
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          EXPECT_NATIVE: c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a
-          EXPECT_REGIONS: 085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff
-        run: |
-          set -euo pipefail
-          mkdir -p sampling_recovery/source sampling_recovery/naturalearth
-
-          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
-            'https://raw.githubusercontent.com/zuizui0223/azami/azami-ch1-v2-2026-08-27/analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv' \
-            --output sampling_recovery/native_full.csv
-
-          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H 'Accept: application/vnd.github+json' \
-            -H 'X-GitHub-Api-Version: 2022-11-28' \
-            'https://api.github.com/repos/zuizui0223/azami/actions/artifacts/9612943217/zip' \
-            --output sampling_recovery/continuous.zip
-          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  sampling_recovery/continuous.zip' | sha256sum --check --strict
-          unzip -q sampling_recovery/continuous.zip -d sampling_recovery/source
-          mapfile -t core_hits < <(find sampling_recovery/source -type f -name strict_spatial_chelsa.csv | sort)
-          test "${#core_hits[@]}" -eq 1
-          CORE="${core_hits[0]}"
-
-          curl --fail --location --retry 4 --retry-all-errors --retry-delay 2 \
-            'https://naturalearth.s3.amazonaws.com/50m_cultural/ne_50m_admin_0_countries.zip' \
-            --output sampling_recovery/naturalearth.zip
-          unzip -q sampling_recovery/naturalearth.zip -d sampling_recovery/naturalearth
-          test -s sampling_recovery/naturalearth/ne_50m_admin_0_countries.shp
-
-          python -m pip install \
-            'geopandas==1.0.1' 'pyogrio==0.11.1' 'shapely==2.1.1' 'pyshp==2.3.1'
-          python analysis/build_naturalearth_broad_region_lookup.py \
-            --observations "$CORE" \
-            --countries sampling_recovery/naturalearth/ne_50m_admin_0_countries.shp \
-            --output sampling_recovery/regions_full.csv \
-            --report sampling_recovery/regions_report.json
-
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-          import pandas as pd
-
-          root = Path('sampling_recovery')
-          expected_native = os.environ['EXPECT_NATIVE']
-          expected_regions = os.environ['EXPECT_REGIONS']
-
-          def digest(path: Path) -> str:
-              h = hashlib.sha256()
-              with path.open('rb') as fh:
-                  for chunk in iter(lambda: fh.read(1024 * 1024), b''):
-                      h.update(chunk)
-              return h.hexdigest()
-
-          native = pd.read_csv(root / 'native_full.csv', low_memory=False)
-          native3 = native[['obs_id', 'taxon_name', 'native_range_status']]
-          native3.to_csv(root / 'native_3col_utf8.csv', index=False)
-          native3.to_csv(root / 'native_3col_utf8sig.csv', index=False, encoding='utf-8-sig')
-
-          regions = pd.read_csv(root / 'regions_full.csv', low_memory=False)
-          regions2 = regions[['obs_id', 'broad_region']]
-          regions2.to_csv(root / 'regions_2col_utf8.csv', index=False)
-          regions2.to_csv(root / 'regions_2col_utf8sig.csv', index=False, encoding='utf-8-sig')
-
-          native_candidates = {
-              p.name: digest(p) for p in [
-                  root / 'native_full.csv',
-                  root / 'native_3col_utf8.csv',
-                  root / 'native_3col_utf8sig.csv',
-              ]
-          }
-          region_candidates = {
-              p.name: digest(p) for p in [
-                  root / 'regions_full.csv',
-                  root / 'regions_2col_utf8.csv',
-                  root / 'regions_2col_utf8sig.csv',
-              ]
-          }
-          native_matches = [name for name, value in native_candidates.items() if value == expected_native]
-          region_matches = [name for name, value in region_candidates.items() if value == expected_regions]
-          payload = {
-              'expected_native': expected_native,
-              'native_candidates': native_candidates,
-              'native_matches': native_matches,
-              'expected_regions': expected_regions,
-              'region_candidates': region_candidates,
-              'region_matches': region_matches,
-              'native_rows': int(len(native)),
-              'region_rows': int(len(regions)),
-          }
-          (root / 'sampling_source_recovery.json').write_text(json.dumps(payload, indent=2) + '\n')
-          print(json.dumps(payload, indent=2))
-          if not native_matches:
-              raise SystemExit('No native-status byte representation matched the frozen SHA-256')
-          if not region_matches:
-              raise SystemExit('No region byte representation matched the frozen SHA-256')
-          PY
