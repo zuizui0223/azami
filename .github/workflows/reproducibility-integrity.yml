@@ -3,6 +3,7 @@ name: Reproducibility integrity
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -26,10 +27,11 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q analysis src ch1_global/v2
 
-      - name: Check reproducibility layout
+      - name: Check reproducibility layout and live entry points
         run: |
           pytest -q \
             tests/test_ch1_canonical_manifest.py \
+            tests/test_reproducibility_manifest.py \
             tests/test_azami_ch1_provenance.py \
             tests/test_azami_ch1_tabular.py
 
@@ -40,10 +42,17 @@ jobs:
           test ! -e submission
           ! git ls-files | grep -E '\.(docx?|pptx?|xlsx?|zip)$'
 
-      - name: Confirm frozen outputs are tracked
+      - name: Confirm frozen outputs and recovery contracts are tracked
         shell: bash
         run: |
           test -d analysis_outputs
           test -d reproducibility/figures
           test -f analysis/ch1/v2_full27_environment_atlas_contract.json
+          test -f analysis/ch1/native_range_sensitivity_contract.json
+          test -f analysis/rebuild_frozen_native_status.py
+          test -f analysis/rebuild_frozen_broad_region_lookup.py
+          test -f analysis/build_naturalearth_broad_region_lookup.py
+          test -f reproducibility/frozen-numerical-rebuild-requirements.txt
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
+          test -f ch1_global/v2/ANALYSIS_MANIFEST.tsv
+          test -f reproducibility/actions_artifact_catalog.json
