@@ -1,8 +1,8 @@
 {
-  "catalog_version": 2,
+  "catalog_version": 3,
   "archived_locally_on": "2026-09-02",
   "last_audited_on": "2026-09-03",
-  "purpose": "Catalog GitHub Actions artifacts referenced by the frozen analysis and figure provenance. Durable derived outputs are versioned in the repository. Ephemeral source artifacts are recorded with exact IDs and digests; where a durable owner-side archive was verified on 2026-09-02, its SHA-256 is recorded explicitly.",
+  "purpose": "Catalog GitHub Actions artifacts and immutable Git checkpoints referenced by the frozen analysis and figure provenance. Durable derived outputs are versioned in the repository. Ephemeral source artifacts are recorded with exact IDs and digests; where a durable owner-side archive was verified on 2026-09-02, its SHA-256 is recorded explicitly.",
   "artifacts": [
     {
       "artifact_id": 8066010557,
@@ -63,17 +63,37 @@
       "expires_at": "2026-10-08T12:08:46Z"
     },
     {
+      "artifact_id": 8983877726,
+      "workflow_run_id": 31152400475,
+      "role": "spatial-robustness diagnostic package containing the exact broad-region lookup reused by the frozen v2 sampling-composition audit",
+      "referenced_by": [
+        "analysis/build_naturalearth_broad_region_lookup.py",
+        "analysis/rebuild_frozen_analysis.py",
+        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_report.json"
+      ],
+      "github_digest": "sha256:151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
+      "status_on_2026_09_03": "downloadable_and_inner_lookup_digest_verified_in_audit; durable owner-side archive not verified in this audit",
+      "inner_files": {
+        "spatial_regions/broad_region_lookup.csv": "sha256:085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff"
+      },
+      "expires_at": "2026-11-05T05:59:25Z"
+    },
+    {
       "artifact_id": 9612943217,
       "workflow_run_id": 32975451732,
       "role": "continuous-trait universe and strict-spatial source cohort",
       "referenced_by": [
         "analysis/figures/build_v2_figure_inputs.py",
         "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/source_provenance.json",
-        "analysis/rebuild_frozen_analysis.py"
+        "analysis/rebuild_frozen_analysis.py",
+        "analysis/rebuild_frozen_native_status.py"
       ],
       "github_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
       "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
       "local_archive_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+      "inner_files": {
+        "environment/strict_spatial_chelsa.csv": "sha256:2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
+      },
       "expires_at": "2026-11-24T13:39:01Z"
     },
     {
@@ -107,6 +127,25 @@
       "expires_at": "2026-10-20T07:31:27Z"
     }
   ],
+  "git_frozen_inputs": {
+    "sampling_native_status": {
+      "immutable_tag": "azami-ch1-v2-2026-08-27",
+      "tagged_commit": "584e4a9863ab0c133a050f15b4bb862730db7faf",
+      "path": "analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv",
+      "git_blob_sha": "b98af47482fd86b1353546573492519659cda848",
+      "sha256_recorded_by_frozen_sampling_report": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
+      "source_cohort_sha256": "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0",
+      "reconstruction_script": "analysis/rebuild_frozen_native_status.py",
+      "contract": "analysis/ch1/native_range_sensitivity_contract.json",
+      "frozen_status_counts": {
+        "native": 27066,
+        "introduced": 10554,
+        "unresolved_taxon": 5491,
+        "unmapped_tdwg": 2100,
+        "unlisted": 1065
+      }
+    }
+  },
   "historical_recovery": {
     "immutable_tag": "azami-ch1-v2-2026-08-27",
     "tagged_commit": "584e4a9863ab0c133a050f15b4bb862730db7faf",
