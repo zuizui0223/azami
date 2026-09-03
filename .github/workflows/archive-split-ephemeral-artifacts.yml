@@ -1,0 +1,85 @@
+name: Archive split ephemeral artifacts
+
+on:
+  push:
+    branches:
+      - archive/chunk-actions-artifacts-20260903
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download and verify source artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p chunks
+          curl --fail --location --retry 5 --retry-all-errors \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip" \
+            -o exhaustive.zip
+          echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  exhaustive.zip' | sha256sum -c -
+
+          curl --fail --location --retry 5 --retry-all-errors \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/8521924881/zip" \
+            -o annotation.zip
+          echo '1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c  annotation.zip' | sha256sum -c -
+
+      - name: Split into Drive-sized byte chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          split -b 90M -d -a 2 exhaustive.zip chunks/exhaustive.part-
+          split -b 90M -d -a 2 annotation.zip chunks/annotation.part-
+          test "$(find chunks -name 'exhaustive.part-*' | wc -l)" -eq 10
+          test "$(find chunks -name 'annotation.part-*' | wc -l)" -eq 2
+          cat chunks/exhaustive.part-* | sha256sum | grep '^5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b '
+          cat chunks/annotation.part-* | sha256sum | grep '^1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c '
+          sha256sum chunks/* > chunks/part-sha256.txt
+          printf '%s\n' \
+            'exhaustive_original_sha256=5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b' \
+            'annotation_original_sha256=1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c' \
+            'chunk_size=90MiB' > chunks/reassembly-manifest.txt
+
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-00, path: chunks/exhaustive.part-00, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-01, path: chunks/exhaustive.part-01, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-02, path: chunks/exhaustive.part-02, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-03, path: chunks/exhaustive.part-03, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-04, path: chunks/exhaustive.part-04, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-05, path: chunks/exhaustive.part-05, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-06, path: chunks/exhaustive.part-06, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-07, path: chunks/exhaustive.part-07, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-08, path: chunks/exhaustive.part-08, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: exhaustive-part-09, path: chunks/exhaustive.part-09, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: annotation-part-00, path: chunks/annotation.part-00, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with: {name: annotation-part-01, path: chunks/annotation.part-01, compression-level: 0}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: archive-reassembly-manifest
+          path: |
+            chunks/part-sha256.txt
+            chunks/reassembly-manifest.txt
+          compression-level: 0
