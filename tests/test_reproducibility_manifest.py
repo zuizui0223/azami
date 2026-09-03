@@ -28,6 +28,9 @@ def test_manifest_contains_current_reproducibility_entrypoints() -> None:
     by_stage = {row["stage"]: row for row in rows}
     required = {
         "canonical_rebuild_runner": "analysis/rebuild_frozen_analysis.py",
+        "broad_region_lookup": "analysis/build_naturalearth_broad_region_lookup.py",
+        "native_status_rebuild": "analysis/rebuild_frozen_native_status.py",
+        "native_status_contract": "analysis/ch1/native_range_sensitivity_contract.json",
         "full27_atlas": "analysis/run_geb_v2_full27_environment_atlas.py",
         "full27_validation": "analysis/validate_geb_v2_full27_environment_atlas.py",
         "figure_rebuild": ".github/workflows/rebuild-frozen-figures.yml",
@@ -57,6 +60,7 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
         8076736948,
         8269246732,
         8227254443,
+        8983877726,
         9612943217,
         9632715852,
         8521924881,
@@ -75,5 +79,22 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
     )
     assert historical["tree_files"]["historical_trees/gbotb_lcvp_scenario2_randomized.trees"] == (
         "sha256:82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af"
+    )
+    spatial = by_id[8983877726]
+    assert spatial["inner_files"]["spatial_regions/broad_region_lookup.csv"] == (
+        "sha256:085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff"
+    )
+    continuous = by_id[9612943217]
+    assert continuous["inner_files"]["environment/strict_spatial_chelsa.csv"] == (
+        "sha256:2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
+    )
+    native = payload["git_frozen_inputs"]["sampling_native_status"]
+    assert native["immutable_tag"] == "azami-ch1-v2-2026-08-27"
+    assert native["git_blob_sha"] == "b98af47482fd86b1353546573492519659cda848"
+    assert native["sha256_recorded_by_frozen_sampling_report"] == (
+        "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+    )
+    assert native["source_cohort_sha256"] == (
+        "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
     )
     assert payload["historical_recovery"]["immutable_tag"] == "azami-ch1-v2-2026-08-27"
