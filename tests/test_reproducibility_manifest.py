@@ -56,6 +56,7 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
     required_ids = {
         8076736948,
         8269246732,
+        8227254443,
         9612943217,
         9632715852,
         8521924881,
@@ -68,4 +69,11 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
     for artifact_id in (9612943217, 9632715852):
         row = by_id[artifact_id]
         assert row["github_digest"].removeprefix("sha256:") == row["local_archive_sha256"]
+    historical = by_id[8227254443]
+    assert historical["github_digest"] == (
+        "sha256:499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc"
+    )
+    assert historical["tree_files"]["historical_trees/gbotb_lcvp_scenario2_randomized.trees"] == (
+        "sha256:82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af"
+    )
     assert payload["historical_recovery"]["immutable_tag"] == "azami-ch1-v2-2026-08-27"
