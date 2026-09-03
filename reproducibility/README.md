@@ -4,10 +4,18 @@ This directory contains generated scientific artifacts that are intentionally ve
 
 ## Numerical analysis rebuild
 
+For byte-identical numerical reconstruction, first recreate the package environment recovered from the frozen 2026-08-26/27 numerical and spatial artifacts:
+
+```bash
+python -m pip install -r reproducibility/frozen-numerical-rebuild-requirements.txt
+python -m pip install -e . --no-deps
+```
+
+`python -m pip install -e '.[full,test]'` remains the looser developer/CI convenience environment. The frozen requirements file is the preferred route when exact archived output hashes are being reproduced.
+
 The canonical durable numerical entry point is:
 
 ```bash
-python -m pip install -e '.[full,test]'
 python analysis/rebuild_frozen_analysis.py \
   --continuous-zip /path/to/artifact-9612943217.zip \
   --multilevel-zip /path/to/artifact-9632715852.zip \
@@ -60,7 +68,19 @@ The sampling audit has two auxiliary inputs and now fails closed on both before 
 - broad-region lookup SHA-256 `085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff`;
 - native-status table SHA-256 `c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a`.
 
-The exact broad-region lookup was recovered during the 2026-09-03 audit from workflow run `31152400475`, artifact `8983877726`, inner path `spatial_regions/broad_region_lookup.csv`. Its artifact ZIP digest and inner-file digest are recorded in `actions_artifact_catalog.json`. The deterministic generator is retained as `analysis/build_naturalearth_broad_region_lookup.py`.
+The exact broad-region lookup was recovered during the 2026-09-03 audit from workflow run `31152400475`, artifact `8983877726`, inner path `spatial_regions/broad_region_lookup.csv`. Its artifact ZIP digest and inner-file digest are recorded in `actions_artifact_catalog.json`.
+
+A fail-closed reconstruction path is also retained. Extract `environment/strict_spatial_chelsa.csv` from artifact `9612943217`, and obtain the Natural Earth 1:50m admin-0 archive from `https://naturalearth.s3.amazonaws.com/50m_cultural/ne_50m_admin_0_countries.zip`. The frozen archive SHA-256 recovered from the spatial artifact is `5fed433373581fa648920435f937d95f2d3c0200e067409c6478dcdf1b853139`. Then run:
+
+```bash
+python analysis/rebuild_frozen_broad_region_lookup.py \
+  --observations /path/to/strict_spatial_chelsa.csv \
+  --naturalearth-zip /path/to/ne_50m_admin_0_countries.zip \
+  --output broad_region_lookup.csv \
+  --report broad_region_rebuild.json
+```
+
+The wrapper verifies the strict-spatial cohort SHA, Natural Earth archive SHA, 46,276 rows, the frozen six-region plus `UNMAPPED` counts, assignment-method counts and final CSV SHA. The lower-level deterministic polygon assignment implementation remains `analysis/build_naturalearth_broad_region_lookup.py`.
 
 The exact native-status source remains in the immutable recovery tag and can be recovered without manuscript files:
 
@@ -70,7 +90,7 @@ sha256sum observation_native_status.csv
 # c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a
 ```
 
-A manuscript-independent reconstruction path is also retained. Extract `environment/strict_spatial_chelsa.csv` from artifact `9612943217`; the canonical runner verifies that file as SHA-256 `2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0`. Then run:
+A manuscript-independent reconstruction path is also retained. Using the same frozen `environment/strict_spatial_chelsa.csv`, run:
 
 ```bash
 python analysis/rebuild_frozen_native_status.py \
