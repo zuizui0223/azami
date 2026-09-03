@@ -8,8 +8,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "ch1_global" / "v2" / "ANALYSIS_MANIFEST.tsv"
 CATALOG = ROOT / "reproducibility" / "actions_artifact_catalog.json"
+RECOVERY_INVENTORY = ROOT / "reproducibility" / "recovery_inventory.json"
 PYPROJECT = ROOT / "pyproject.toml"
 FROZEN_REQUIREMENTS = ROOT / "reproducibility" / "frozen-numerical-rebuild-requirements.txt"
+ATLAS_VALIDATION = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27" / "v2_full27_environment_validation.json"
+SAMPLING_VALIDATION = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27" / "sampling" / "v2_full27_sampling_composition_validation.json"
+SENSITIVITY_VALIDATION = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27" / "v2_full27_sensitivities_validation.json"
+FIGURE_REPORT = ROOT / "reproducibility" / "figures" / "figure_build_report.json"
 
 
 def load_rows() -> list[dict[str, str]]:
@@ -86,8 +91,61 @@ def test_frozen_numerical_environment_matches_recovered_artifact_versions() -> N
     assert required.issubset(lines)
 
 
+def test_frozen_validation_reports_are_still_complete() -> None:
+    expected = {
+        ATLAS_VALIDATION: ("PASS", 24, 24),
+        SAMPLING_VALIDATION: ("PASS", 7, 7),
+        SENSITIVITY_VALIDATION: ("PASS", 11, 11),
+    }
+    for path, (status, n_checks, n_passed) in expected.items():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        assert payload["status"] == status
+        assert payload["n_checks"] == n_checks
+        assert payload["n_passed"] == n_passed
+
+    figure = json.loads(FIGURE_REPORT.read_text(encoding="utf-8"))
+    assert figure["status"] == "ok"
+    assert len(figure["main_figure_stems"]) == 5
+    assert len(figure["supporting_figure_stems"]) == 7
+
+
+def test_recovery_inventory_closes_active_v2_and_preserves_history() -> None:
+    payload = json.loads(RECOVERY_INVENTORY.read_text(encoding="utf-8"))
+    assert payload["active_v2"]["status"] == "complete_for_frozen_chapter1_v2_reanalysis"
+    assert payload["active_v2"]["baseline_ci"]["reproducibility_integrity_conclusion"] == "success"
+    assert payload["active_v2"]["baseline_ci"]["frozen_figure_conclusion"] == "success"
+
+    completion = payload["completion"]
+    for key in (
+        "active_v2_code",
+        "active_v2_frozen_outputs",
+        "active_v2_direct_inputs",
+        "active_v2_figures",
+        "active_v2_ci",
+        "precleanup_scientific_history",
+    ):
+        assert completion[key] == "complete"
+    assert completion["full_upstream_binary_durability"] == "tracked_external_gate_issue_85"
+
+    recovery = payload["historical_recovery"]
+    assert recovery["immutable_tag"] == "azami-ch1-v2-2026-08-27"
+    assert recovery["tagged_commit"] == "584e4a9863ab0c133a050f15b4bb862730db7faf"
+    assert recovery["browseable_archive_branch"] == "archive/ch1-precleanup-20260827"
+    assert recovery["status"] == "complete"
+
+    direct = payload["direct_reanalysis_inputs"]
+    assert direct["continuous_source"]["durability"] == "owner_side_archive_verified"
+    assert direct["multilevel_process_source"]["durability"] == "owner_side_archive_verified"
+    assert direct["native_status"]["durability"] == "git_retained_and_rebuildable"
+    assert direct["broad_region"]["durability"] == "deterministically_rebuildable_fail_closed"
+    assert payload["ephemeral_upstream_artifacts"]["tracking_issue"] == 85
+    assert payload["ephemeral_upstream_artifacts"]["not_required_for_current_frozen_v2_numerical_reanalysis"] is True
+
+
 def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
     payload = json.loads(CATALOG.read_text(encoding="utf-8"))
+    assert payload["catalog_version"] >= 4
+    assert payload["external_archive_tracking_issue"] == 85
     by_id = {int(row["artifact_id"]): row for row in payload["artifacts"]}
     required_ids = {
         8076736948,
@@ -97,6 +155,7 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
         9612943217,
         9632715852,
         8521924881,
+        8521925441,
         8521926057,
     }
     assert required_ids.issubset(by_id)
@@ -121,6 +180,10 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
     assert continuous["inner_files"]["environment/strict_spatial_chelsa.csv"] == (
         "sha256:2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
     )
+    qc_companion = by_id[8521925441]
+    assert qc_companion["github_digest"] == (
+        "sha256:4c39fe51b155d0eb09038e470088ababce4367f740a476dc38127d801d2e0087"
+    )
     native = payload["git_frozen_inputs"]["sampling_native_status"]
     assert native["immutable_tag"] == "azami-ch1-v2-2026-08-27"
     assert native["git_blob_sha"] == "b98af47482fd86b1353546573492519659cda848"
@@ -131,3 +194,4 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
         "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
     )
     assert payload["historical_recovery"]["immutable_tag"] == "azami-ch1-v2-2026-08-27"
+    assert payload["historical_recovery"]["archive_branch"] == "archive/ch1-precleanup-20260827"
