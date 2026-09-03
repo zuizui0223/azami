@@ -15,7 +15,7 @@ python analysis/rebuild_frozen_analysis.py \
   --mode validate_sources
 ```
 
-The runner verifies the archived ZIP digests, the frozen long-trait table, cohort sizes and the complete-18 reference environment before doing any analysis. It accepts local ZIP files deliberately so the reconstruction path remains usable after GitHub Actions retention expires.
+The runner verifies the archived ZIP digests, frozen long-trait table, exact 46,276-row strict-spatial source bytes, cohort sizes and complete-18 reference environment before doing any analysis. It accepts local ZIP files deliberately so the reconstruction path remains usable after GitHub Actions retention expires.
 
 To reconstruct the nine-predictor environment and rerun the complete 27-endpoint atlas with fail-closed validation:
 
@@ -53,7 +53,47 @@ python analysis/rebuild_frozen_analysis.py \
 
 The historical ZIP and all three tree resources are checked against frozen SHA-256 values before the 52-tree analysis starts. A pre-extracted exact tree directory may be supplied with `--tree-dir` instead.
 
-Sampling-composition sensitivity still requires the exact frozen region and native-status auxiliary tables (`--with-sampling --regions ... --native-status ...`). Their expected SHA-256 values are retained in the frozen sampling-composition report; the runner does not silently reconstruct or substitute them.
+## Sampling-composition inputs
+
+The sampling audit has two auxiliary inputs and now fails closed on both before execution:
+
+- broad-region lookup SHA-256 `085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff`;
+- native-status table SHA-256 `c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a`.
+
+The exact broad-region lookup was recovered during the 2026-09-03 audit from workflow run `31152400475`, artifact `8983877726`, inner path `spatial_regions/broad_region_lookup.csv`. Its artifact ZIP digest and inner-file digest are recorded in `actions_artifact_catalog.json`. The deterministic generator is retained as `analysis/build_naturalearth_broad_region_lookup.py`.
+
+The exact native-status source remains in the immutable recovery tag and can be recovered without manuscript files:
+
+```bash
+git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > observation_native_status.csv
+sha256sum observation_native_status.csv
+# c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a
+```
+
+A manuscript-independent reconstruction path is also retained. Extract `environment/strict_spatial_chelsa.csv` from artifact `9612943217`; the canonical runner verifies that file as SHA-256 `2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0`. Then run:
+
+```bash
+python analysis/rebuild_frozen_native_status.py \
+  --observation /path/to/strict_spatial_chelsa.csv \
+  --contract analysis/ch1/native_range_sensitivity_contract.json \
+  --out-csv observation_native_status.csv \
+  --report native_status_rebuild.json
+```
+
+The native-status builder checks the frozen WCVP dataset identity, pinned TDWG commit and GeoJSON digest, 46,276-row/259-taxon cohort identity, the five frozen status counts, and the final output SHA. Any mismatch stops the reconstruction rather than silently substituting a newer classification.
+
+With exact auxiliary tables present, sampling can be rerun through the canonical runner:
+
+```bash
+python analysis/rebuild_frozen_analysis.py \
+  --continuous-zip /path/to/artifact-9612943217.zip \
+  --multilevel-zip /path/to/artifact-9632715852.zip \
+  --out-dir rebuild_check \
+  --mode rebuild_full27 \
+  --with-sampling \
+  --regions /path/to/broad_region_lookup.csv \
+  --native-status /path/to/observation_native_status.csv
+```
 
 The current stage inventory is `ch1_global/v2/ANALYSIS_MANIFEST.tsv`; CI checks that every repository path marked there actually exists.
 
@@ -84,6 +124,6 @@ Compact trait-definition material required to reconstruct image-measurement and 
 
 Frozen CSV/JSON result tables and validation reports remain in `analysis_outputs/`. Analysis contracts and predictor/trait registries are retained under `analysis/ch1/` and `ch1_global/v2/ontology/`.
 
-Source artifact identities, digests, expiry metadata and verified archival state are recorded in `actions_artifact_catalog.json`. The immutable recovery tag `azami-ch1-v2-2026-08-27` retains retired workflow definitions without requiring manuscript or submission material to be restored to `main`.
+Source artifact identities, digests, expiry metadata and verified archival state are recorded in `actions_artifact_catalog.json`. The immutable recovery tag `azami-ch1-v2-2026-08-27` retains retired workflow definitions and the exact frozen native-status table without requiring manuscript or submission material to be restored to `main`.
 
 Manuscript prose, reviewer material and journal submission packages are kept outside this repository.
