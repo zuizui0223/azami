@@ -1,7 +1,8 @@
 {
-  "catalog_version": 1,
+  "catalog_version": 2,
   "archived_locally_on": "2026-09-02",
-  "purpose": "Catalog GitHub Actions artifacts referenced by the frozen analysis and figure provenance. The repository retains durable derived outputs; these source artifacts were additionally preserved locally because Actions storage is ephemeral.",
+  "last_audited_on": "2026-09-03",
+  "purpose": "Catalog GitHub Actions artifacts referenced by the frozen analysis and figure provenance. Durable derived outputs are versioned in the repository. Ephemeral source artifacts are recorded with exact IDs and digests; where a durable owner-side archive was verified on 2026-09-02, its SHA-256 is recorded explicitly.",
   "artifacts": [
     {
       "artifact_id": 8066010557,
@@ -28,12 +29,30 @@
       "expires_at": null
     },
     {
+      "artifact_id": 8076736948,
+      "role": "frozen production visible-capitulum detector package used by downstream image screening",
+      "status_on_2026_09_03": "downloadable_and_verified_in_audit; durable owner-side archive not recorded in this catalog",
+      "verified_download_zip_sha256": "2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05",
+      "model_weight_relative_path": "recovery/model/weights/best.pt",
+      "model_weight_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+      "expires_at": null
+    },
+    {
+      "artifact_id": 8269246732,
+      "workflow_run_id": 29216617585,
+      "role": "exhaustive detector-positive merged source used to construct the continuous-trait universe",
+      "github_digest": "sha256:5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
+      "status_on_2026_09_03": "downloadable; durable owner-side archive not verified in this audit",
+      "expires_at": "2026-10-11T01:03:50Z"
+    },
+    {
       "artifact_id": 9612943217,
       "workflow_run_id": 32975451732,
       "role": "continuous-trait universe and strict-spatial source cohort",
       "referenced_by": [
         "analysis/figures/build_v2_figure_inputs.py",
-        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/source_provenance.json"
+        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/source_provenance.json",
+        ".github/workflows/rebuild-frozen-analysis.yml"
       ],
       "github_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
       "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
@@ -46,13 +65,35 @@
       "role": "within/among alignment and complete-18 process-environment source",
       "referenced_by": [
         "analysis/audit_v2_environment_collinearity.py",
-        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/environment_collinearity/environment_collinearity_report.json"
+        "analysis_outputs/v2_full27_environment_atlas_2026-08-27/secondary/environment_collinearity/environment_collinearity_report.json",
+        ".github/workflows/rebuild-frozen-analysis.yml"
       ],
       "github_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
       "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
       "local_archive_sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
       "expires_at": "2026-11-25T03:14:53Z"
+    },
+    {
+      "artifact_id": 8521924881,
+      "workflow_run_id": 29900511784,
+      "role": "leakage-free independent detector audit annotation packet",
+      "github_digest": "sha256:1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c",
+      "status_on_2026_09_03": "downloadable; human annotation completion remains an external gate",
+      "expires_at": "2026-10-20T07:31:27Z"
+    },
+    {
+      "artifact_id": 8521926057,
+      "workflow_run_id": 29900511784,
+      "role": "hidden frozen-detector predictions for the independent detector audit",
+      "github_digest": "sha256:94e7582a795d88251bb32534b0a60ed8b66459f4eb8bbe133dafb5f3adff7642",
+      "status_on_2026_09_03": "downloadable",
+      "expires_at": "2026-10-20T07:31:27Z"
     }
   ],
-  "note": "Null expires_at means the artifact-ID download endpoint did not surface expiry metadata during archiving; the artifact was successfully downloaded on 2026-09-02."
+  "historical_recovery": {
+    "immutable_tag": "azami-ch1-v2-2026-08-27",
+    "tagged_commit": "584e4a9863ab0c133a050f15b4bb862730db7faf",
+    "role": "Recover retired workflow definitions and pre-cleanup scientific provenance without restoring manuscript/submission material to main."
+  },
+  "note": "Null expires_at means the artifact-ID download endpoint did not surface expiry metadata during the audit. It must not be interpreted as permanent retention."
 }
