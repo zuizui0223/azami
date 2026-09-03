@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "audited_on": "2026-09-03",
-  "active_main": {
-    "commit": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc",
+  "active_v2": {
+    "recovery_baseline_commit": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc",
     "status": "complete_for_frozen_chapter1_v2_reanalysis",
     "canonical_manifest": "ch1_global/v2/ANALYSIS_MANIFEST.tsv",
     "canonical_rebuild_runner": "analysis/rebuild_frozen_analysis.py",
     "frozen_outputs": "analysis_outputs/v2_full27_environment_atlas_2026-08-27",
     "integrity_workflow": ".github/workflows/reproducibility-integrity.yml",
     "figure_workflow": ".github/workflows/rebuild-frozen-figures.yml",
-    "merge_commit_ci": {
+    "baseline_ci": {
       "reproducibility_integrity_run": 33720162543,
       "reproducibility_integrity_conclusion": "success",
       "frozen_figure_run": 33720162550,
@@ -24,7 +24,32 @@
     "environment_predictors": 9,
     "sampling_composition_scenarios": 674,
     "historical_tree_models": 52,
-    "primary_validation_status": "PASS"
+    "validation": {
+      "environment_atlas": {
+        "path": "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_validation.json",
+        "status": "PASS",
+        "n_checks": 24,
+        "n_passed": 24
+      },
+      "sampling_composition": {
+        "path": "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_validation.json",
+        "status": "PASS",
+        "n_checks": 7,
+        "n_passed": 7
+      },
+      "spatial_historical_sensitivities": {
+        "path": "analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_sensitivities_validation.json",
+        "status": "PASS",
+        "n_checks": 11,
+        "n_passed": 11
+      },
+      "figure_build": {
+        "path": "reproducibility/figures/figure_build_report.json",
+        "status": "ok",
+        "main_figures": 5,
+        "supporting_figures": 7
+      }
+    }
   },
   "direct_reanalysis_inputs": {
     "continuous_source": {
