@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import csv
 import json
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "ch1_global" / "v2" / "ANALYSIS_MANIFEST.tsv"
 CATALOG = ROOT / "reproducibility" / "actions_artifact_catalog.json"
+PYPROJECT = ROOT / "pyproject.toml"
 
 
 def load_rows() -> list[dict[str, str]]:
@@ -51,6 +53,13 @@ def test_removed_submission_workflows_are_not_marked_active() -> None:
     )
     for path in stale:
         assert path not in text
+
+
+def test_full_extra_covers_recovered_pipeline_dependencies() -> None:
+    payload = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))
+    full = payload["project"]["optional-dependencies"]["full"]
+    names = {requirement.split("<", 1)[0].split(">", 1)[0].split("=", 1)[0] for requirement in full}
+    assert {"rasterio", "pyproj", "geopandas", "pyogrio", "ultralytics"}.issubset(names)
 
 
 def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
