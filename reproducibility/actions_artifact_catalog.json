@@ -46,6 +46,23 @@
       "expires_at": "2026-10-11T01:03:50Z"
     },
     {
+      "artifact_id": 8227254443,
+      "workflow_run_id": 29091625109,
+      "role": "audited historical-placement resource: deterministic S1/S3 trees plus 50 randomized S2 trees",
+      "referenced_by": [
+        "analysis/run_geb_v2_full27_historical_sensitivity.py",
+        "analysis/rebuild_frozen_analysis.py"
+      ],
+      "github_digest": "sha256:499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc",
+      "status_on_2026_09_03": "downloadable_and_digest_verified_in_audit; durable owner-side archive not verified in this audit",
+      "tree_files": {
+        "historical_trees/gbotb_lcvp_scenario1.tre": "sha256:8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92",
+        "historical_trees/gbotb_lcvp_scenario2_randomized.trees": "sha256:82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af",
+        "historical_trees/gbotb_lcvp_scenario3.tre": "sha256:8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92"
+      },
+      "expires_at": "2026-10-08T12:08:46Z"
+    },
+    {
       "artifact_id": 9612943217,
       "workflow_run_id": 32975451732,
       "role": "continuous-trait universe and strict-spatial source cohort",
