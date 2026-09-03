@@ -1,7 +1,20 @@
-stage	file	status	manuscript_role
-environment_sampling	79_sample_one_environment_layer.py	active	Reproduce individual raster extraction when rebuilding frozen inputs
-environment_merge	80_merge_parallel_environment_layers.py	active	Merge successful layers and construct depth-weighted soil composites
-primary_inference	83_run_lightweight_spde_inla.R	active	Primary grouped hierarchical SPDE-INLA analysis
-primary_workflow	.github/workflows/ch1-lightweight-spde-inla.yml	active	Reproduce frozen-input manuscript analysis
-submission_ci	.github/workflows/ch1-submission-ci.yml	active	Validate submission code
-submission_bundle	.github/workflows/ch1-build-submission-bundle.yml	active	Package submission materials
+stage	file	status	reproducibility_role	required_source
+detector_screening	ch1_global/v2/07_screen_downloaded_images_with_yolo.py	active_external_input	Apply the frozen visible-capitulum detector to source images	production detector package artifact 8076736948; weight SHA256 4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed
+continuous_trait_contract	ch1_global/v2/87_validate_continuous_trait_contract.py	active	Validate the frozen 27-endpoint category-free measurement contract	ch1_global/v2/ontology/ch1_continuous_trait_contract.csv
+continuous_trait_measurement	ch1_global/v2/89_measure_extended_continuous_traits.py	active_external_input	Measure extended continuous image traits on reconstructed head crops	frozen detector/crop metadata or source-image URLs
+continuous_trait_universe	ch1_global/v2/88_build_continuous_trait_universe.py	active_external_input	Assemble primary and extended measurements into the frozen long trait universe	continuous-trait source artifact 9612943217 can be used as the immutable checkpoint
+environment_core	ch1_global/v2/92_sample_chelsa_for_continuous_universe.py	active_external_input	Attach the frozen core CHELSA predictors to the strict-spatial cohort	strict-spatial observation coordinates and frozen CHELSA sources
+environment_process	analysis/sample_chelsa_process_environment.py	active_external_input	Attach the five frozen process-extension predictors	analysis/ch1/chelsa_process_environment_sources.json and network/local raster cache
+full27_atlas	analysis/run_geb_v2_full27_environment_atlas.py	active_external_input	Recompute the 27-endpoint by nine-predictor within/among atlas	artifact 9612943217 traits plus reconstructed nine-predictor environment
+full27_validation	analysis/validate_geb_v2_full27_environment_atlas.py	active	Fail-closed validation of the complete atlas	analysis_outputs/v2_full27_environment_atlas_2026-08-27 and optional artifact 9632715852 reference environment
+sampling_composition	analysis/run_geb_v2_full27_sampling_composition_sensitivity.py	active_external_input	Recompute selected-row sampling-composition perturbations	frozen region and native-status auxiliary tables
+spatial_sensitivity	analysis/run_geb_v2_full27_spatial_sensitivity.py	active_external_input	Recompute broad-space sensitivity and residual Moran diagnostics	full27 atlas, traits and reconstructed environment
+historical_sensitivity	analysis/run_geb_v2_full27_historical_sensitivity.py	active_external_input	Recompute 52-tree historical-placement sensitivity	placement trees reconstructed by ch1_global/v2/65_audit_and_build_historical_trees.R
+whole_capitulum_space	analysis/run_capitulum_functional_space.py	active_external_input	Recompute complete-18 multilevel phenotype organization	artifact 9612943217 trait universe
+whole_capitulum_environment	analysis/run_capitulum_environment_blocks.py	active_external_input	Recompute six predeclared environmental block tests	artifact 9612943217 traits and reconstructed nine-predictor environment
+whole_capitulum_incremental	analysis/run_capitulum_environment_incremental.py	active_external_input	Recompute process-variable increments beyond the core four	artifact 9612943217 traits and reconstructed nine-predictor environment
+environment_collinearity	analysis/audit_v2_environment_collinearity.py	active_external_input	Recompute the retrospective nine-predictor correlation/VIF diagnostic	artifact 9632715852 complete18_chelsa_process.csv
+figure_rebuild	.github/workflows/rebuild-frozen-figures.yml	active	Rebuild all frozen result figures from tracked machine-readable outputs	tracked analysis_outputs and reproducibility/figures/source
+integrity_ci	.github/workflows/reproducibility-integrity.yml	active	Compile code and verify reproducibility contracts, outputs and manifest	tracked repository tree
+source_artifact_catalog	reproducibility/actions_artifact_catalog.json	frozen_artifact	Record immutable/ephemeral source artifact identities, digests and archival state	GitHub Actions artifact metadata plus owner archival copies
+frozen_outputs	analysis_outputs/README.md	frozen_output	Document the canonical frozen numerical result tree and historical recovery tag	analysis_outputs/v2_full27_environment_atlas_2026-08-27
