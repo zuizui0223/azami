@@ -24,8 +24,11 @@ EXPECTED = {
     "multilevel_zip": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
     "historical_zip": "499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc",
     "traits": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "core_environment": "2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0",
     "reference_environment": "1ab84254a80493776b4c435152ed3d2a1c1e68dd0e0342da0ea081eeb5cd3d9b",
     "full_environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7",
+    "regions": "085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff",
+    "native_status": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
     "historical_s1": "8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92",
     "historical_s2_random": "82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af",
     "historical_s3": "8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92",
@@ -93,6 +96,7 @@ def verify_sources(continuous: Path, multilevel: Path) -> dict[str, object]:
         if not path.is_file():
             raise SystemExit(f"Required archived input is missing: {path}")
     require_hash(traits, EXPECTED["traits"], "trait universe")
+    require_hash(core_environment, EXPECTED["core_environment"], "strict-spatial core environment")
     require_hash(reference_environment, EXPECTED["reference_environment"], "complete-18 reference environment")
     trait_frame = pd.read_csv(
         traits,
@@ -255,6 +259,8 @@ def rebuild_optional_sensitivities(
     if args.with_sampling:
         if args.regions is None or args.native_status is None:
             raise SystemExit("--with-sampling requires --regions and --native-status")
+        require_hash(args.regions, EXPECTED["regions"], "frozen broad-region lookup")
+        require_hash(args.native_status, EXPECTED["native_status"], "frozen native-status table")
         run(
             sys.executable,
             "analysis/run_geb_v2_full27_sampling_composition_sensitivity.py",
