@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "ch1_global" / "v2" / "ANALYSIS_MANIFEST.tsv"
 CATALOG = ROOT / "reproducibility" / "actions_artifact_catalog.json"
 PYPROJECT = ROOT / "pyproject.toml"
+FROZEN_REQUIREMENTS = ROOT / "reproducibility" / "frozen-numerical-rebuild-requirements.txt"
 
 
 def load_rows() -> list[dict[str, str]]:
@@ -30,9 +31,11 @@ def test_manifest_contains_current_reproducibility_entrypoints() -> None:
     by_stage = {row["stage"]: row for row in rows}
     required = {
         "canonical_rebuild_runner": "analysis/rebuild_frozen_analysis.py",
-        "broad_region_lookup": "analysis/build_naturalearth_broad_region_lookup.py",
+        "broad_region_lookup": "analysis/rebuild_frozen_broad_region_lookup.py",
+        "broad_region_assignment_builder": "analysis/build_naturalearth_broad_region_lookup.py",
         "native_status_rebuild": "analysis/rebuild_frozen_native_status.py",
         "native_status_contract": "analysis/ch1/native_range_sensitivity_contract.json",
+        "frozen_python_environment": "reproducibility/frozen-numerical-rebuild-requirements.txt",
         "full27_atlas": "analysis/run_geb_v2_full27_environment_atlas.py",
         "full27_validation": "analysis/validate_geb_v2_full27_environment_atlas.py",
         "figure_rebuild": ".github/workflows/rebuild-frozen-figures.yml",
@@ -60,6 +63,27 @@ def test_full_extra_covers_recovered_pipeline_dependencies() -> None:
     full = payload["project"]["optional-dependencies"]["full"]
     names = {requirement.split("<", 1)[0].split(">", 1)[0].split("=", 1)[0] for requirement in full}
     assert {"rasterio", "pyproj", "geopandas", "pyogrio", "ultralytics"}.issubset(names)
+
+
+def test_frozen_numerical_environment_matches_recovered_artifact_versions() -> None:
+    lines = {
+        line.strip()
+        for line in FROZEN_REQUIREMENTS.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    required = {
+        "numpy==2.4.6",
+        "pandas==3.0.5",
+        "scipy==1.17.1",
+        "statsmodels==0.14.6",
+        "requests==2.34.2",
+        "rasterio==1.4.4",
+        "pyproj==3.7.2",
+        "shapely==2.1.2",
+        "geopandas==1.1.4",
+        "pyogrio==0.13.0",
+    }
+    assert required.issubset(lines)
 
 
 def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
