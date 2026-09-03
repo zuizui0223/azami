@@ -1,4 +1,5 @@
 stage	file	status	reproducibility_role	required_source
+canonical_rebuild_runner	analysis/rebuild_frozen_analysis.py	active_external_input	Durable local-ZIP entry point for source validation, environment reconstruction, full27 atlas, whole-capitulum analyses and optional sensitivities	owner-side archived copies of artifacts 9612943217 and 9632715852
 detector_screening	ch1_global/v2/07_screen_downloaded_images_with_yolo.py	active_external_input	Apply the frozen visible-capitulum detector to source images	production detector package artifact 8076736948; weight SHA256 4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed
 continuous_trait_contract	ch1_global/v2/87_validate_continuous_trait_contract.py	active	Validate the frozen 27-endpoint category-free measurement contract	ch1_global/v2/ontology/ch1_continuous_trait_contract.csv
 continuous_trait_measurement	ch1_global/v2/89_measure_extended_continuous_traits.py	active_external_input	Measure extended continuous image traits on reconstructed head crops	frozen detector/crop metadata or source-image URLs
