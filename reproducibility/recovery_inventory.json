@@ -50,7 +50,7 @@
     "public_distribution_endpoint": false
   },
   "third_party_public_release": {
-    "status": "zenodo_v1_published_pending_anonymous_redownload_verification",
+    "status": "zenodo_v1_anonymous_redownload_verified_ready",
     "manifest": "reproducibility/public_release_manifest.json",
     "release_procedure": "reproducibility/PUBLIC_DATA_RELEASE.md",
     "metadata_template": "reproducibility/zenodo_metadata.json",
@@ -66,9 +66,12 @@
     "doi": "10.5281/zenodo.22295791",
     "version": "v1",
     "published": true,
-    "independent_redownload_verified": false,
-    "full_numerical_reproduction_ready": false,
-    "reason": "Zenodo v1 has been published and assigned DOI 10.5281/zenodo.22295791. The remaining gate is an anonymous credential-free re-download of the exact bundle followed by bundle and embedded-input SHA verification."
+    "independent_redownload_verified": true,
+    "independent_redownload_verified_on": "2026-09-04",
+    "verification_run_id": 33871722778,
+    "verification_run": "https://github.com/zuizui0223/azami/actions/runs/33871722778",
+    "full_numerical_reproduction_ready": true,
+    "reason": "Zenodo v1 was anonymously downloaded without author credentials on 2026-09-04. The 56,942,044-byte bundle matched SHA-256 50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677 and all four embedded minimum analysis inputs matched their frozen SHA-256 values."
   },
   "historical_recovery": {
     "immutable_tag": "azami-ch1-v2-2026-08-27",
@@ -91,8 +94,8 @@
     "active_v2_ci": "complete",
     "precleanup_scientific_history": "complete",
     "full_upstream_binary_durability": "complete",
-    "public_third_party_data_release": "published_doi_10.5281/zenodo.22295791_pending_anonymous_redownload_verification",
-    "independent_third_party_full_numerical_reproduction": "blocked_until_anonymous_redownload_and_sha_verification"
+    "public_third_party_data_release": "published_doi_10.5281/zenodo.22295791_anonymous_redownload_verified",
+    "independent_third_party_full_numerical_reproduction": "ready"
   },
-  "claim_boundary": "Owner-side recovery and preservation are complete. Zenodo v1 is published at DOI 10.5281/zenodo.22295791. Independent third-party full numerical reproduction remains a separate claim and stays blocked until the public bundle is anonymously re-downloaded and verified against the frozen SHA ledger. Recovery/publication infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output."
+  "claim_boundary": "Owner-side recovery and preservation are complete. Zenodo v1 is published at DOI 10.5281/zenodo.22295791 and its public bundle has been anonymously re-downloaded and verified against the frozen SHA ledger. The package is ready for independent third-party numerical reproduction. Any actual reproduction still must satisfy the frozen environment, validation and figure criteria; recovery/publication infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output."
 }
