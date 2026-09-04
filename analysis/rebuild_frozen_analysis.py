@@ -92,9 +92,10 @@ def verify_sources(continuous: Path, multilevel: Path) -> dict[str, object]:
     traits = continuous / "universe" / "continuous_trait_universe_observation_long.csv"
     core_environment = continuous / "environment" / "strict_spatial_chelsa.csv"
     reference_environment = multilevel / "process_environment" / "complete18_chelsa_process.csv"
-    for path in (traits, core_environment, reference_environment):
+    contract_path = ROOT / "ch1_global" / "v2" / "ontology" / "ch1_continuous_trait_contract.csv"
+    for path in (traits, core_environment, reference_environment, contract_path):
         if not path.is_file():
-            raise SystemExit(f"Required archived input is missing: {path}")
+            raise SystemExit(f"Required archived/repository input is missing: {path}")
     require_hash(traits, EXPECTED["traits"], "trait universe")
     require_hash(core_environment, EXPECTED["core_environment"], "strict-spatial core environment")
     require_hash(reference_environment, EXPECTED["reference_environment"], "complete-18 reference environment")
@@ -103,11 +104,24 @@ def verify_sources(continuous: Path, multilevel: Path) -> dict[str, object]:
         usecols=["obs_id", "taxon_name", "endpoint_id", "value"],
         low_memory=False,
     )
+    contract = pd.read_csv(contract_path, usecols=["endpoint_id"], low_memory=False)
     core = pd.read_csv(core_environment, low_memory=False)
     reference = pd.read_csv(reference_environment, low_memory=False)
+
+    registered_ids = set(contract["endpoint_id"].dropna().astype(str))
+    measured_ids = set(trait_frame["endpoint_id"].dropna().astype(str))
+    unknown_measured_ids = sorted(measured_ids - registered_ids)
+    if unknown_measured_ids:
+        raise SystemExit(
+            "Archived trait table contains endpoint IDs absent from the frozen contract: "
+            + ", ".join(unknown_measured_ids)
+        )
+
     checks = {
         "trait_rows": int(len(trait_frame)),
-        "registered_endpoint_ids": int(trait_frame["endpoint_id"].nunique()),
+        "registered_endpoint_ids": int(len(registered_ids)),
+        "measured_endpoint_ids": int(len(measured_ids)),
+        "measured_endpoint_ids_subset_of_registered_contract": not unknown_measured_ids,
         "core_environment_rows": int(len(core)),
         "core_environment_taxa": int(core["taxon_name"].nunique()),
         "reference_environment_rows": int(len(reference)),
@@ -115,6 +129,7 @@ def verify_sources(continuous: Path, multilevel: Path) -> dict[str, object]:
     }
     expected_checks = {
         "registered_endpoint_ids": 27,
+        "measured_endpoint_ids": 22,
         "core_environment_rows": 46276,
         "core_environment_taxa": 259,
         "reference_environment_rows": 1874,
