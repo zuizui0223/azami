@@ -1,0 +1,25 @@
+{
+  "title": "Azami Chapter 1 v2 reproducibility input package",
+  "upload_type": "dataset",
+  "description": "SHA-locked binary inputs for independent reproduction of the frozen Azami Chapter 1 v2 image-phenomics analysis. The accompanying public GitHub repository contains the analysis code, contracts, frozen outputs, validation reports, and third-party reproduction runbook.",
+  "creators": [
+    {
+      "name": "ZHANG, Ruiqi"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/zuizui0223/azami/tree/584af97b050d15701f26ce1facea212d5b648d4d",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "keywords": [
+    "Cirsium",
+    "image phenomics",
+    "reproducibility",
+    "trait-environment association",
+    "citizen science"
+  ],
+  "notes": "Publish the prepared reproduction bundle only after verifying its SHA-256. After publication, independently re-download without author credentials and update reproducibility/public_release_manifest.json with the DOI and stable URL."
+}
