@@ -1,20 +1,22 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "audited_on": "2026-09-04",
   "scope": "Frozen Chapter 1 v2 numerical and figure reproducibility",
   "repository_state": {
-    "main_commit_at_audit": "eb49860156f06b9833af9f2fcb66c8b2fda5cda0",
+    "main_commit_at_audit": "ea1eb0710c6485bc7a5601fdc0c6c808b00aa6f8",
     "status": "complete_for_code_contracts_frozen_outputs_and_provenance"
   },
   "third_party_reproducibility": {
     "code_public": true,
     "frozen_outputs_public": true,
     "required_analysis_inputs_preserved": true,
-    "required_analysis_inputs_publicly_downloadable_without_owner_credentials": false,
+    "required_analysis_inputs_publicly_downloadable_without_owner_credentials": null,
     "public_release_manifest": "reproducibility/public_release_manifest.json",
-    "status": "blocked_public_analysis_input_release_not_published",
+    "status": "published_pending_anonymous_redownload_verification",
     "full_numerical_reproduction_ready": false,
-    "blocker": "The analysis-input ZIPs are preserved in owner-controlled storage but have not yet been deposited in a public credential-free data archive with a DOI or stable public URL."
+    "doi": "10.5281/zenodo.22295791",
+    "public_record_url": "https://zenodo.org/records/22295791",
+    "blocker": "The Zenodo v1 DOI has been published, but an anonymous credential-free re-download of the deposited bundle and SHA verification have not yet been independently completed."
   },
   "github_repository_materials": [
     {
@@ -149,6 +151,6 @@
     "historical_tree_inputs_preserved": true,
     "figures_rebuildable_from_tracked_sources": true,
     "raw_process_raster_reconstruction_fully_offline": false,
-    "reason": "Independent full rerun is blocked until the SHA-locked analysis input ZIPs are published in a credential-free public data archive. The five process rasters also require public CHELSA network access unless copied into that release."
+    "reason": "The Zenodo DOI is published, but the public bundle must still be anonymously re-downloaded and SHA-verified before independent full numerical reproducibility is claimed. The five process rasters also require public CHELSA network access unless copied into a release."
   }
 }
