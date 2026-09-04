@@ -83,6 +83,7 @@
   "completion": {
     "active_v2_code": "complete",
     "active_v2_frozen_outputs": "complete",
+    "active_v2_direct_inputs": "complete",
     "active_v2_owner_preservation": "complete",
     "active_v2_figures": "complete",
     "active_v2_ci": "complete",
