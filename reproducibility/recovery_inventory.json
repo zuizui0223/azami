@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "audited_on": "2026-09-03",
+  "schema_version": 2,
+  "audited_on": "2026-09-04",
   "active_v2": {
     "recovery_baseline_commit": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc",
     "status": "complete_for_frozen_chapter1_v2_reanalysis",
@@ -55,12 +55,12 @@
     "continuous_source": {
       "artifact_id": 9612943217,
       "sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
-      "durability": "owner_side_archive_verified"
+      "durability": "owner_side_archive_verified_and_drive_archived"
     },
     "multilevel_process_source": {
       "artifact_id": 9632715852,
       "sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
-      "durability": "owner_side_archive_verified"
+      "durability": "owner_side_archive_verified_and_drive_archived"
     },
     "native_status": {
       "immutable_tag": "azami-ch1-v2-2026-08-27",
@@ -73,8 +73,19 @@
       "sha256": "085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff",
       "rebuild_runner": "analysis/rebuild_frozen_broad_region_lookup.py",
       "natural_earth_zip_sha256": "5fed433373581fa648920435f937d95f2d3c0200e067409c6478dcdf1b853139",
-      "durability": "deterministically_rebuildable_fail_closed"
+      "durability": "deterministically_rebuildable_fail_closed_and_source_archived"
     }
+  },
+  "durable_binary_archive": {
+    "status": "complete",
+    "provider": "Google Drive",
+    "archived_on": "2026-09-04",
+    "manifest": "reproducibility/durable_archive_manifest.json",
+    "folder_id": "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc",
+    "tracking_issue": 85,
+    "exhaustive_artifact_8269246732": "20_drive_chunks_plus_reassembly_manifest",
+    "annotation_artifact_8521924881": "2_drive_raw_chunks",
+    "readback": "complete"
   },
   "historical_recovery": {
     "immutable_tag": "azami-ch1-v2-2026-08-27",
@@ -101,20 +112,6 @@
     ],
     "recovery_location": "azami-ch1-v2-2026-08-27 and archive/ch1-precleanup-20260827"
   },
-  "ephemeral_upstream_artifacts": {
-    "tracking_issue": 85,
-    "status": "external_archive_followup_required_for_full_upstream_rollback",
-    "not_required_for_current_frozen_v2_numerical_reanalysis": true,
-    "artifact_ids": [
-      8076736948,
-      8227254443,
-      8269246732,
-      8521924881,
-      8521925441,
-      8521926057,
-      8983877726
-    ]
-  },
   "completion": {
     "active_v2_code": "complete",
     "active_v2_frozen_outputs": "complete",
@@ -122,7 +119,7 @@
     "active_v2_figures": "complete",
     "active_v2_ci": "complete",
     "precleanup_scientific_history": "complete",
-    "full_upstream_binary_durability": "tracked_external_gate_issue_85"
+    "full_upstream_binary_durability": "complete"
   },
-  "claim_boundary": "Recovery infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output."
+  "claim_boundary": "Recovery and archival infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output."
 }
