@@ -87,7 +87,7 @@ def test_third_party_runbook_has_no_author_local_dependency() -> None:
     assert PUBLIC_RELEASE.is_file()
     text = RUNBOOK.read_text(encoding="utf-8")
     assert "independent reader, reviewer, or researcher" in text
-    assert "public DOI/URL" in text
+    assert "DOI/stable public URL" in text
     assert "verify_local_materials.py" in text
     assert "PASS 24/24" in text
     assert "PASS 7/7" in text
