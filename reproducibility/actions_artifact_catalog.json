@@ -1,65 +1,77 @@
 {
-  "catalog_version": 3,
+  "catalog_version": 5,
   "archived_locally_on": "2026-09-02",
-  "last_audited_on": "2026-09-03",
-  "purpose": "Catalog GitHub Actions artifacts and immutable Git checkpoints referenced by the frozen analysis and figure provenance. Durable derived outputs are versioned in the repository. Ephemeral source artifacts are recorded with exact IDs and digests; where a durable owner-side archive was verified on 2026-09-02, its SHA-256 is recorded explicitly.",
+  "last_audited_on": "2026-09-04",
+  "external_archive_tracking_issue": 85,
+  "durable_archive": {
+    "status": "complete",
+    "archived_on": "2026-09-04",
+    "provider": "Google Drive",
+    "folder_id": "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc",
+    "manifest": "reproducibility/durable_archive_manifest.json",
+    "readback": "verified; expected files present, recorded sizes matched, can_download=true"
+  },
+  "purpose": "Catalog GitHub Actions artifacts and immutable Git checkpoints referenced by the frozen analysis and figure provenance. Durable derived outputs are versioned in the repository. Actions artifacts are identified by exact digests; the durable off-Actions copies and reassembly information are recorded in reproducibility/durable_archive_manifest.json.",
   "artifacts": [
     {
       "artifact_id": 8066010557,
       "role": "Figure 1 metadata source",
       "referenced_by": "reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
-      "status_on_2026_09_02": "downloadable_and_archived_locally",
       "local_archive_sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+      "durable_archive_status": "complete",
       "expires_at": null
     },
     {
       "artifact_id": 8099953404,
       "role": "Figure 1 global measurement/provenance source",
       "referenced_by": "reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
-      "status_on_2026_09_02": "downloadable_and_archived_locally",
       "local_archive_sha256": "f5de95f69f84132e04fe4af6accfbef1a3024e4ba97dc559405af4ed90ea76b9",
+      "durable_archive_status": "complete",
       "expires_at": null
     },
     {
       "artifact_id": 8225059018,
       "role": "Figure 1 continuous-trait source",
       "referenced_by": "reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
-      "status_on_2026_09_02": "downloadable_and_archived_locally",
       "local_archive_sha256": "9af18f9a2595f6c43dae4b933833f1721d153dcacef5b7c80df543f16235b580",
+      "durable_archive_status": "complete",
       "expires_at": null
     },
     {
       "artifact_id": 8076736948,
       "role": "frozen production visible-capitulum detector package used by downstream image screening",
-      "status_on_2026_09_03": "downloadable_and_verified_in_audit; durable owner-side archive not recorded in this catalog",
       "verified_download_zip_sha256": "2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05",
       "model_weight_relative_path": "recovery/model/weights/best.pt",
       "model_weight_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+      "durable_archive_status": "complete",
       "expires_at": null
     },
     {
       "artifact_id": 8269246732,
       "workflow_run_id": 29216617585,
       "role": "exhaustive detector-positive merged source used to construct the continuous-trait universe",
+      "size_in_bytes": 923684917,
       "github_digest": "sha256:5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
-      "status_on_2026_09_03": "downloadable; durable owner-side archive not verified in this audit",
+      "durable_archive_status": "complete_chunked_20_parts",
+      "durable_archive_manifest": "reproducibility/durable_archive_manifest.json",
       "expires_at": "2026-10-11T01:03:50Z"
     },
     {
       "artifact_id": 8227254443,
       "workflow_run_id": 29091625109,
       "role": "audited historical-placement resource: deterministic S1/S3 trees plus 50 randomized S2 trees",
+      "size_in_bytes": 1834664,
       "referenced_by": [
         "analysis/run_geb_v2_full27_historical_sensitivity.py",
         "analysis/rebuild_frozen_analysis.py"
       ],
       "github_digest": "sha256:499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc",
-      "status_on_2026_09_03": "downloadable_and_digest_verified_in_audit; durable owner-side archive not verified in this audit",
       "tree_files": {
         "historical_trees/gbotb_lcvp_scenario1.tre": "sha256:8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92",
         "historical_trees/gbotb_lcvp_scenario2_randomized.trees": "sha256:82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af",
         "historical_trees/gbotb_lcvp_scenario3.tre": "sha256:8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92"
       },
+      "durable_archive_status": "complete",
       "expires_at": "2026-10-08T12:08:46Z"
     },
     {
@@ -72,10 +84,10 @@
         "analysis_outputs/v2_full27_environment_atlas_2026-08-27/sampling/v2_full27_sampling_composition_report.json"
       ],
       "github_digest": "sha256:151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
-      "status_on_2026_09_03": "downloadable_and_inner_lookup_digest_verified_in_audit; durable owner-side archive not verified in this audit",
       "inner_files": {
         "spatial_regions/broad_region_lookup.csv": "sha256:085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff"
       },
+      "durable_archive_status": "complete",
       "expires_at": "2026-11-05T05:59:25Z"
     },
     {
@@ -89,11 +101,11 @@
         "analysis/rebuild_frozen_native_status.py"
       ],
       "github_digest": "sha256:101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
-      "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
       "local_archive_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
       "inner_files": {
         "environment/strict_spatial_chelsa.csv": "sha256:2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0"
       },
+      "durable_archive_status": "complete",
       "expires_at": "2026-11-24T13:39:01Z"
     },
     {
@@ -106,24 +118,36 @@
         "analysis/rebuild_frozen_analysis.py"
       ],
       "github_digest": "sha256:51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
-      "status_on_2026_09_02": "downloadable_and_archived_locally_digest_verified",
       "local_archive_sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+      "durable_archive_status": "complete",
       "expires_at": "2026-11-25T03:14:53Z"
     },
     {
       "artifact_id": 8521924881,
       "workflow_run_id": 29900511784,
       "role": "leakage-free independent detector audit annotation packet",
+      "size_in_bytes": 140562866,
       "github_digest": "sha256:1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c",
-      "status_on_2026_09_03": "downloadable; human annotation completion remains an external gate",
+      "durable_archive_status": "complete_chunked_2_parts",
+      "durable_archive_manifest": "reproducibility/durable_archive_manifest.json",
+      "expires_at": "2026-10-20T07:31:27Z"
+    },
+    {
+      "artifact_id": 8521925441,
+      "workflow_run_id": 29900511784,
+      "role": "independent detector-audit QC companion retained with the annotation packet and hidden predictions",
+      "size_in_bytes": 82326,
+      "github_digest": "sha256:4c39fe51b155d0eb09038e470088ababce4367f740a476dc38127d801d2e0087",
+      "durable_archive_status": "complete",
       "expires_at": "2026-10-20T07:31:27Z"
     },
     {
       "artifact_id": 8521926057,
       "workflow_run_id": 29900511784,
       "role": "hidden frozen-detector predictions for the independent detector audit",
+      "size_in_bytes": 503922,
       "github_digest": "sha256:94e7582a795d88251bb32534b0a60ed8b66459f4eb8bbe133dafb5f3adff7642",
-      "status_on_2026_09_03": "downloadable",
+      "durable_archive_status": "complete",
       "expires_at": "2026-10-20T07:31:27Z"
     }
   ],
@@ -149,7 +173,8 @@
   "historical_recovery": {
     "immutable_tag": "azami-ch1-v2-2026-08-27",
     "tagged_commit": "584e4a9863ab0c133a050f15b4bb862730db7faf",
+    "archive_branch": "archive/ch1-precleanup-20260827",
     "role": "Recover retired workflow definitions and pre-cleanup scientific provenance without restoring manuscript/submission material to main."
   },
-  "note": "Null expires_at means the artifact-ID download endpoint did not surface expiry metadata during the audit. It must not be interpreted as permanent retention."
+  "note": "As of 2026-09-04 all catalogued Actions source artifacts have durable off-Actions copies. GitHub Actions expiry metadata is retained only as provenance; reproducibility no longer depends on those retention windows."
 }
