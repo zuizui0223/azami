@@ -3,6 +3,7 @@
   "audited_on": "2026-09-04",
   "purpose": "Third-party reproduction contract for the frozen Chapter 1 v2 analysis",
   "status": "blocked_public_data_archive_not_published",
+  "tracking_issue": 88,
   "code": {
     "repository": "https://github.com/zuizui0223/azami",
     "public": true,
