@@ -1,14 +1,22 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "audited_on": "2026-09-04",
   "purpose": "Third-party reproduction contract for the frozen Chapter 1 v2 analysis",
-  "status": "blocked_public_data_archive_not_published",
+  "status": "public_bundle_prepared_doi_not_published",
   "tracking_issue": 88,
   "code": {
     "repository": "https://github.com/zuizui0223/azami",
     "public": true,
-    "code_ref": null,
-    "note": "Set code_ref to the immutable public reproduction tag/commit when the data release is published."
+    "code_ref": "584af97b050d15701f26ce1facea212d5b648d4d",
+    "note": "Immutable Git commit containing the independent third-party reproduction runbook and public-release gate."
+  },
+  "staging_bundle": {
+    "filename": "azami_ch1_v2_reproduction_inputs_2026-09-04.zip",
+    "sha256": "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677",
+    "size_bytes": 56942044,
+    "status": "built_and_inner_sha_verified_not_yet_publicly_deposited",
+    "contains_exact_minimum_analysis_inputs": true,
+    "metadata_file": "reproducibility/zenodo_metadata.json"
   },
   "public_data_release": {
     "doi": null,
@@ -66,5 +74,5 @@
     "spatial_historical_sensitivities": "PASS 11/11",
     "figures": "status ok; 5 main and 7 supporting"
   },
-  "publication_gate": "Do not claim independent third-party full numerical reproducibility until public_data_release.url or DOI resolves to the required input files without owner credentials and the recorded SHA-256 values match."
+  "publication_gate": "Do not claim independent third-party full numerical reproducibility until the staging bundle is deposited at a credential-free public DOI/stable URL, independently re-downloaded, bundle SHA-256 verified, extracted input SHA-256 values verified, and the canonical validation states are reproduced."
 }
