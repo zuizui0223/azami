@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  CANONICAL_CODE_REF: d112a8e3b2af9ce92cc6cbdcb14a015231df398d
+  CANONICAL_CODE_REF: 4c96fa94c26ae0f06b56fd7cb0fa426155878232
 
 jobs:
   anonymous-public-download:
@@ -110,7 +110,11 @@ jobs:
           with zipfile.ZipFile(src) as zf:
               out.write_bytes(zf.read('spatial_regions/broad_region_lookup.csv'))
           PY
-          git -C _frozen_src show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > _canonical_rebuild/inputs/observation_native_status.csv
+          (
+            cd _frozen_src
+            python reproducibility/recover_frozen_native_status.py \
+              --out "$GITHUB_WORKSPACE/_canonical_rebuild/inputs/observation_native_status.csv"
+          )
           echo "085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff  _canonical_rebuild/inputs/broad_region_lookup.csv" | sha256sum -c -
           echo "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  _canonical_rebuild/inputs/observation_native_status.csv" | sha256sum -c -
 
