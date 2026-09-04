@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  CANONICAL_CODE_REF: 4c96fa94c26ae0f06b56fd7cb0fa426155878232
+  CANONICAL_CODE_REF: 4a5b493c4295931adbab3f8432ac806ebae11ddf
 
 jobs:
   anonymous-public-download:
