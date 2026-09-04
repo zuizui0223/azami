@@ -1,0 +1,60 @@
+name: Diagnose native-status bytes
+
+on:
+  push:
+    branches:
+      - repro/zenodo-anonymous-verification-20260904
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Diagnose blob and serialization variants
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv, hashlib, io, subprocess
+
+          expected = 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a'
+          spec = 'azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv'
+          raw = subprocess.check_output(['git', 'show', spec])
+          blob = subprocess.check_output(['git', 'cat-file', 'blob', 'b98af47482fd86b1353546573492519659cda848'])
+          assert raw == blob
+
+          def sha(x): return hashlib.sha256(x).hexdigest()
+          variants = {
+              'raw_git_blob': raw,
+              'lf': raw.replace(b'\r\n', b'\n'),
+              'crlf': raw.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'),
+              'raw_without_final_newline': raw.rstrip(b'\r\n'),
+              'lf_without_final_newline': raw.replace(b'\r\n', b'\n').rstrip(b'\n'),
+              'crlf_without_final_newline': raw.replace(b'\r\n', b'\n').rstrip(b'\n').replace(b'\n', b'\r\n'),
+          }
+          print('expected', expected)
+          print('raw_len', len(raw), 'crlf_count', raw.count(b'\r\n'), 'lf_count', raw.count(b'\n'))
+          for name, data in variants.items():
+              digest = sha(data)
+              print(name, len(data), digest, 'MATCH' if digest == expected else '')
+
+          text = raw.decode('utf-8-sig')
+          rows = list(csv.reader(io.StringIO(text, newline='')))
+          print('csv_rows_including_header', len(rows), 'columns', len(rows[0]) if rows else 0)
+          for lineterminator in ('\n', '\r\n'):
+              for quoting in (csv.QUOTE_MINIMAL, csv.QUOTE_NONNUMERIC):
+                  sio = io.StringIO(newline='')
+                  writer = csv.writer(sio, lineterminator=lineterminator, quoting=quoting)
+                  writer.writerows(rows)
+                  data = sio.getvalue().encode('utf-8')
+                  digest = sha(data)
+                  print('csv_writer', repr(lineterminator), quoting, len(data), digest, 'MATCH' if digest == expected else '')
+          PY
