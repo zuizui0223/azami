@@ -2,7 +2,7 @@
   "schema_version": 3,
   "audited_on": "2026-09-04",
   "purpose": "Third-party reproduction contract for the frozen Chapter 1 v2 analysis",
-  "status": "published_pending_anonymous_redownload_verification",
+  "status": "ready_for_independent_third_party_numerical_reproduction",
   "tracking_issue": 88,
   "code": {
     "repository": "https://github.com/zuizui0223/azami",
@@ -14,7 +14,7 @@
     "filename": "azami_ch1_v2_reproduction_inputs_2026-09-04.zip",
     "sha256": "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677",
     "size_bytes": 56942044,
-    "status": "published_on_zenodo_v1_pending_anonymous_redownload_verification",
+    "status": "published_on_zenodo_v1_anonymous_redownload_sha_verified",
     "contains_exact_minimum_analysis_inputs": true,
     "metadata_file": "reproducibility/zenodo_metadata.json"
   },
@@ -23,10 +23,19 @@
     "url": "https://zenodo.org/records/22295791",
     "version": "v1",
     "published": true,
-    "publicly_downloadable_without_owner_credentials": null,
-    "anonymous_redownload_verified": false,
+    "publicly_downloadable_without_owner_credentials": true,
+    "anonymous_redownload_verified": true,
+    "anonymous_redownload_verified_on": "2026-09-04",
     "required_before_claiming_full_third_party_reproducibility": true,
-    "verification_note": "DOI and public record URL were supplied after publication. Anonymous file re-download and SHA verification remain required before changing the release status to ready."
+    "verification_evidence": {
+      "method": "GitHub-hosted Ubuntu runner downloaded the Zenodo file URL with curl without Zenodo author credentials or access token",
+      "workflow_run": "https://github.com/zuizui0223/azami/actions/runs/33871722778",
+      "workflow_run_id": 33871722778,
+      "observed_size_bytes": 56942044,
+      "observed_bundle_sha256": "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677",
+      "embedded_input_sha256_status": "PASS_4_of_4"
+    },
+    "verification_note": "Anonymous credential-free Zenodo re-download succeeded on 2026-09-04. The bundle size and SHA-256 matched the frozen contract, and all four extracted minimum analysis inputs matched their recorded SHA-256 values."
   },
   "minimum_analysis_inputs": [
     {
@@ -78,5 +87,5 @@
     "spatial_historical_sensitivities": "PASS 11/11",
     "figures": "status ok; 5 main and 7 supporting"
   },
-  "publication_gate": "The DOI has been published. Do not claim independent third-party full numerical reproducibility until the Zenodo bundle is anonymously re-downloaded without author credentials, bundle SHA-256 verified, extracted input SHA-256 values verified, and the canonical validation states are reproduced."
+  "publication_gate": "Satisfied on 2026-09-04: Zenodo v1 was anonymously re-downloaded without author credentials, the bundle SHA-256 matched, and all four extracted input SHA-256 values matched. The public package is ready for independent third-party numerical reproduction; an actual reproduction still must meet the canonical validation states recorded here."
 }

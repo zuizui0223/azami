@@ -3,20 +3,22 @@
   "audited_on": "2026-09-04",
   "scope": "Frozen Chapter 1 v2 numerical and figure reproducibility",
   "repository_state": {
-    "main_commit_at_audit": "ea1eb0710c6485bc7a5601fdc0c6c808b00aa6f8",
+    "main_commit_at_audit": "82f0e22bd57ed50819a704d66528b5fa98d26bd1",
     "status": "complete_for_code_contracts_frozen_outputs_and_provenance"
   },
   "third_party_reproducibility": {
     "code_public": true,
     "frozen_outputs_public": true,
     "required_analysis_inputs_preserved": true,
-    "required_analysis_inputs_publicly_downloadable_without_owner_credentials": null,
+    "required_analysis_inputs_publicly_downloadable_without_owner_credentials": true,
     "public_release_manifest": "reproducibility/public_release_manifest.json",
-    "status": "published_pending_anonymous_redownload_verification",
-    "full_numerical_reproduction_ready": false,
+    "status": "ready_for_independent_third_party_numerical_reproduction",
+    "full_numerical_reproduction_ready": true,
     "doi": "10.5281/zenodo.22295791",
     "public_record_url": "https://zenodo.org/records/22295791",
-    "blocker": "The Zenodo v1 DOI has been published, but an anonymous credential-free re-download of the deposited bundle and SHA verification have not yet been independently completed."
+    "anonymous_redownload_verified_on": "2026-09-04",
+    "verification_run": "https://github.com/zuizui0223/azami/actions/runs/33871722778",
+    "blocker": null
   },
   "github_repository_materials": [
     {
@@ -146,11 +148,11 @@
   "material_audit_conclusion": {
     "frozen_results_auditable_from_github": true,
     "owner_can_rerun_frozen_numerical_analysis": true,
-    "third_party_full_numerical_reproduction_ready": false,
+    "third_party_full_numerical_reproduction_ready": true,
     "sampling_auxiliaries_recoverable_or_rebuildable": true,
     "historical_tree_inputs_preserved": true,
     "figures_rebuildable_from_tracked_sources": true,
     "raw_process_raster_reconstruction_fully_offline": false,
-    "reason": "The Zenodo DOI is published, but the public bundle must still be anonymously re-downloaded and SHA-verified before independent full numerical reproducibility is claimed. The five process rasters also require public CHELSA network access unless copied into a release."
+    "reason": "Zenodo v1 is publicly downloadable without author credentials and the anonymous 2026-09-04 re-download matched the frozen bundle SHA-256 and all four embedded input SHA-256 values. The package is ready for independent numerical reproduction. The five process rasters still require public CHELSA network access unless copied into a release, and the rebuilt environment remains fail-closed against its frozen SHA-256."
   }
 }

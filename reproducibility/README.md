@@ -6,7 +6,7 @@ The machine-readable public-release contract is `reproducibility/public_release_
 
 ## Current public status
 
-The code, contracts, frozen results, validation reports and figure sources are public in this GitHub repository. The exact numerical reproduction bundle has now been published as Zenodo v1:
+The code, contracts, frozen results, validation reports and figure sources are public in this GitHub repository. The exact numerical reproduction bundle has been published as Zenodo v1:
 
 ```text
 DOI:      10.5281/zenodo.22295791
@@ -22,7 +22,9 @@ The immutable code ref paired to the release is:
 584af97b050d15701f26ce1facea212d5b648d4d
 ```
 
-**Publication is complete, but the repository does not yet claim full third-party numerical reproducibility.** The remaining gate is an anonymous, credential-free re-download of the Zenodo bundle followed by bundle SHA verification, embedded-input SHA verification, and the canonical rerun checks below. GitHub issue #88 tracks that independent verification.
+**The public release gate is complete and the package is ready for independent third-party numerical reproduction.** On 2026-09-04, a clean GitHub-hosted Ubuntu runner downloaded the Zenodo bundle without Zenodo author credentials or an access token. The downloaded file was exactly 56,942,044 bytes, its SHA-256 was `50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677`, and all four extracted minimum analysis inputs matched their frozen SHA-256 values. Verification evidence is recorded in GitHub Actions run `33871722778` and `reproducibility/public_release_manifest.json`.
+
+This readiness statement concerns public availability and byte identity. A third party claiming an actual numerical reproduction must still execute the canonical procedure below and satisfy every frozen validation criterion.
 
 ## 1. Obtain the code
 
@@ -243,4 +245,4 @@ A third party has independently reproduced the frozen Chapter 1 v2 numerical pac
 5. validations returned 24/24, 7/7 and 11/11 PASS;
 6. figure build returned `status: ok`, 5 main and 7 supporting figures.
 
-The DOI is published. Until the anonymous re-download and SHA verification are completed, `reproducibility/public_release_manifest.json` intentionally remains in `published_pending_anonymous_redownload_verification` state rather than claiming full third-party numerical reproducibility.
+The 2026-09-04 release-gate verification establishes that conditions 1-3 can be satisfied from the public release without author credentials and with the exact frozen bytes. The package is therefore ready for independent third-party numerical reproduction. Conditions 4-6 remain requirements for each actual reproduction run and are not weakened by the release-gate status.
