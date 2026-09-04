@@ -40,18 +40,22 @@ def test_owner_archive_preservation_matches_public_release_hash_contract() -> No
     )
 
 
-def test_public_release_gate_records_prepared_bundle_until_doi_is_public() -> None:
+def test_public_release_gate_records_published_doi_pending_anonymous_verification() -> None:
     availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
     public = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
     third_party = availability["third_party_reproducibility"]
-    assert third_party["status"] == "blocked_public_analysis_input_release_not_published"
+    assert third_party["status"] == "published_pending_anonymous_redownload_verification"
     assert third_party["full_numerical_reproduction_ready"] is False
-    assert third_party["required_analysis_inputs_publicly_downloadable_without_owner_credentials"] is False
+    assert third_party["required_analysis_inputs_publicly_downloadable_without_owner_credentials"] is None
 
-    assert public["status"] == "public_bundle_prepared_doi_not_published"
-    assert public["public_data_release"]["publicly_downloadable_without_owner_credentials"] is False
-    assert public["public_data_release"]["doi"] is None
-    assert public["public_data_release"]["url"] is None
+    assert public["status"] == "published_pending_anonymous_redownload_verification"
+    release = public["public_data_release"]
+    assert release["published"] is True
+    assert release["doi"] == "10.5281/zenodo.22295791"
+    assert release["url"] == "https://zenodo.org/records/22295791"
+    assert release["version"] == "v1"
+    assert release["anonymous_redownload_verified"] is False
+    assert release["publicly_downloadable_without_owner_credentials"] is None
     assert public["code"]["code_ref"] == "584af97b050d15701f26ce1facea212d5b648d4d"
     assert len(public["minimum_analysis_inputs"]) == 4
 
@@ -87,7 +91,7 @@ def test_third_party_runbook_has_no_author_local_dependency() -> None:
     assert PUBLIC_RELEASE.is_file()
     text = RUNBOOK.read_text(encoding="utf-8")
     assert "independent reader, reviewer, or researcher" in text
-    assert "DOI/stable public URL" in text
+    assert "10.5281/zenodo.22295791" in text
     assert "verify_local_materials.py" in text
     assert "PASS 24/24" in text
     assert "PASS 7/7" in text

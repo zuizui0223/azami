@@ -6,21 +6,23 @@ The machine-readable public-release contract is `reproducibility/public_release_
 
 ## Current public status
 
-The code, contracts, frozen results, validation reports and figure sources are public in this GitHub repository. A single public-release staging bundle has also been built and SHA-verified:
+The code, contracts, frozen results, validation reports and figure sources are public in this GitHub repository. The exact numerical reproduction bundle has now been published as Zenodo v1:
 
 ```text
-azami_ch1_v2_reproduction_inputs_2026-09-04.zip
-size:    56,942,044 bytes
-SHA-256: 50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677
+DOI:      10.5281/zenodo.22295791
+record:   https://zenodo.org/records/22295791
+bundle:   azami_ch1_v2_reproduction_inputs_2026-09-04.zip
+size:     56,942,044 bytes
+SHA-256:  50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677
 ```
 
-The bundle contains the exact four minimum binary inputs for the numerical rerun. The immutable code ref paired to it is:
+The immutable code ref paired to the release is:
 
 ```text
 584af97b050d15701f26ce1facea212d5b648d4d
 ```
 
-**The bundle is prepared but is not yet the public reproducibility endpoint.** Until `public_release_manifest.json` contains a credential-free DOI or stable URL that has been independently re-downloaded and verified, full third-party numerical reproducibility remains blocked. GitHub issue #88 tracks that final publication gate.
+**Publication is complete, but the repository does not yet claim full third-party numerical reproducibility.** The remaining gate is an anonymous, credential-free re-download of the Zenodo bundle followed by bundle SHA verification, embedded-input SHA verification, and the canonical rerun checks below. GitHub issue #88 tracks that independent verification.
 
 ## 1. Obtain the code
 
@@ -34,16 +36,18 @@ Do not substitute a later mutable `main` state when reproducing the frozen packa
 
 ## 2. Obtain the public data bundle
 
-After issue #88 is closed, obtain the bundle from the DOI/stable URL recorded in:
+Download Zenodo v1 from:
 
 ```text
-reproducibility/public_release_manifest.json
+https://doi.org/10.5281/zenodo.22295791
 ```
 
 The download must not require author credentials. Verify the **bundle itself** before extraction:
 
 ```text
-SHA-256 50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677
+filename: azami_ch1_v2_reproduction_inputs_2026-09-04.zip
+size:     56,942,044 bytes
+SHA-256:  50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677
 ```
 
 Then extract it into any local directory, for example `reproduction_inputs/`.
@@ -90,8 +94,6 @@ python -m pip install -r reproducibility/frozen-numerical-rebuild-requirements.t
 python -m pip install -e . --no-deps
 ```
 
-The pinned requirements file is the preferred numerical reproduction environment.
-
 ## 5. Validate the source checkpoints before analysis
 
 ```bash
@@ -120,7 +122,7 @@ Five process-extension rasters are frozen in:
 analysis/ch1/chelsa_process_environment_sources.json
 ```
 
-They are CHELSA v2.1 layers for rsds, VPD, surface wind, GSP and NPP. If the public data release includes exact raster copies, place them in a local directory and pass `--raster-cache-dir`. Otherwise the canonical runner retrieves the exact frozen public CHELSA URLs.
+They are CHELSA v2.1 layers for rsds, VPD, surface wind, GSP and NPP. If a public/local raster cache is available, pass `--raster-cache-dir`. Otherwise the canonical runner retrieves the exact frozen public CHELSA URLs.
 
 Run:
 
@@ -130,12 +132,6 @@ python analysis/rebuild_frozen_analysis.py \
   --multilevel-zip reproduction_inputs/artifact-9632715852-multilevel.zip \
   --out-dir rebuild_full27 \
   --mode rebuild_full27
-```
-
-If using a public raster cache, append:
-
-```text
---raster-cache-dir <CHELSA_CACHE_DIR>
 ```
 
 The reconstructed 46,276-row nine-predictor environment must match:
@@ -154,19 +150,10 @@ PASS 24/24
 
 ### Broad-region lookup
 
-Extract the exact frozen table from the public spatial input ZIP:
+Extract `spatial_regions/broad_region_lookup.csv` from:
 
-```python
-import zipfile
-from pathlib import Path
-
-src = Path("reproduction_inputs/artifact-8983877726-spatial.zip")
-out = Path("rebuild_inputs")
-out.mkdir(exist_ok=True)
-with zipfile.ZipFile(src) as z:
-    (out / "broad_region_lookup.csv").write_bytes(
-        z.read("spatial_regions/broad_region_lookup.csv")
-    )
+```text
+reproduction_inputs/artifact-8983877726-spatial.zip
 ```
 
 Expected SHA-256:
@@ -177,20 +164,10 @@ Expected SHA-256:
 
 ### Native-status table
 
-The exact frozen table is public in immutable Git history. Preserve raw bytes:
+The exact frozen table is public in immutable Git history:
 
-```python
-import subprocess
-from pathlib import Path
-
-out = Path("rebuild_inputs")
-out.mkdir(exist_ok=True)
-(out / "observation_native_status.csv").write_bytes(
-    subprocess.check_output([
-        "git", "show",
-        "azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv",
-    ])
-)
+```bash
+git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > rebuild_inputs/observation_native_status.csv
 ```
 
 Expected SHA-256:
@@ -214,8 +191,6 @@ python analysis/rebuild_frozen_analysis.py \
   --with-spatial \
   --with-historical
 ```
-
-Append `--raster-cache-dir <CHELSA_CACHE_DIR>` if using a public/local copy of the five frozen rasters.
 
 Expected validation states:
 
@@ -243,8 +218,6 @@ main figures: 5
 supporting figures: 7
 ```
 
-The required figure-source tables are tracked in GitHub under `reproducibility/figures/source/`.
-
 ## 10. Final repository integrity check
 
 ```bash
@@ -264,10 +237,10 @@ The same invariants are guarded by `.github/workflows/reproducibility-integrity.
 A third party has independently reproduced the frozen Chapter 1 v2 numerical package only when all of the following are true:
 
 1. code was checked out at `584af97b050d15701f26ce1facea212d5b648d4d`;
-2. the public bundle was downloaded without author credentials and matched SHA-256 `50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677`;
+2. Zenodo v1 DOI `10.5281/zenodo.22295791` was downloaded without author credentials and the bundle matched SHA-256 `50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677`;
 3. the four embedded analysis inputs passed their recorded SHA-256 checks;
 4. the reconstructed full environment matched `e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7`;
 5. validations returned 24/24, 7/7 and 11/11 PASS;
 6. figure build returned `status: ok`, 5 main and 7 supporting figures.
 
-Until a DOI/stable public URL is filled in `reproducibility/public_release_manifest.json`, step 2 cannot be completed by an independent researcher, so the repository correctly does **not** claim full third-party numerical reproducibility yet.
+The DOI is published. Until the anonymous re-download and SHA verification are completed, `reproducibility/public_release_manifest.json` intentionally remains in `published_pending_anonymous_redownload_verification` state rather than claiming full third-party numerical reproducibility.

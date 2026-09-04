@@ -1,8 +1,8 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "audited_on": "2026-09-04",
   "purpose": "Third-party reproduction contract for the frozen Chapter 1 v2 analysis",
-  "status": "public_bundle_prepared_doi_not_published",
+  "status": "published_pending_anonymous_redownload_verification",
   "tracking_issue": 88,
   "code": {
     "repository": "https://github.com/zuizui0223/azami",
@@ -14,15 +14,19 @@
     "filename": "azami_ch1_v2_reproduction_inputs_2026-09-04.zip",
     "sha256": "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677",
     "size_bytes": 56942044,
-    "status": "built_and_inner_sha_verified_not_yet_publicly_deposited",
+    "status": "published_on_zenodo_v1_pending_anonymous_redownload_verification",
     "contains_exact_minimum_analysis_inputs": true,
     "metadata_file": "reproducibility/zenodo_metadata.json"
   },
   "public_data_release": {
-    "doi": null,
-    "url": null,
-    "publicly_downloadable_without_owner_credentials": false,
-    "required_before_claiming_full_third_party_reproducibility": true
+    "doi": "10.5281/zenodo.22295791",
+    "url": "https://zenodo.org/records/22295791",
+    "version": "v1",
+    "published": true,
+    "publicly_downloadable_without_owner_credentials": null,
+    "anonymous_redownload_verified": false,
+    "required_before_claiming_full_third_party_reproducibility": true,
+    "verification_note": "DOI and public record URL were supplied after publication. Anonymous file re-download and SHA verification remain required before changing the release status to ready."
   },
   "minimum_analysis_inputs": [
     {
@@ -74,5 +78,5 @@
     "spatial_historical_sensitivities": "PASS 11/11",
     "figures": "status ok; 5 main and 7 supporting"
   },
-  "publication_gate": "Do not claim independent third-party full numerical reproducibility until the staging bundle is deposited at a credential-free public DOI/stable URL, independently re-downloaded, bundle SHA-256 verified, extracted input SHA-256 values verified, and the canonical validation states are reproduced."
+  "publication_gate": "The DOI has been published. Do not claim independent third-party full numerical reproducibility until the Zenodo bundle is anonymously re-downloaded without author credentials, bundle SHA-256 verified, extracted input SHA-256 values verified, and the canonical validation states are reproduced."
 }
