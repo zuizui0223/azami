@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "archived_on": "2026-09-04",
+  "drive_folder": {
+    "id": "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc",
+    "url": "https://drive.google.com/drive/folders/10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc",
+    "visibility": "not_shared"
+  },
+  "status": "complete",
+  "direct_files": [
+    {
+      "artifact_id": 8066010557,
+      "drive_file_id": "1yXZIBu7N0pfYLMIOuZYyuIPcWgbUgB7V",
+      "sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae"
+    },
+    {
+      "artifact_id": 8099953404,
+      "drive_file_id": "1z80g4MwiRWs6iVyTlCANTurOaSSNdLBL",
+      "sha256": "f5de95f69f84132e04fe4af6accfbef1a3024e4ba97dc559405af4ed90ea76b9"
+    },
+    {
+      "artifact_id": 8225059018,
+      "drive_file_id": "18Rr_Z2ZW6sxh0u-DCP6QabpQdskvwUOH",
+      "sha256": "9af18f9a2595f6c43dae4b933833f1721d153dcacef5b7c80df543f16235b580"
+    },
+    {
+      "artifact_id": 8076736948,
+      "drive_file_id": "1h4OirXt8rWR061GPzdwD01TNSDJcRqMJ",
+      "sha256": "2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05"
+    },
+    {
+      "artifact_id": 8227254443,
+      "drive_file_id": "1qsv6M5LBMer9LaUTlBTZsI0itGqNd_W1",
+      "sha256": "499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc"
+    },
+    {
+      "artifact_id": 8983877726,
+      "drive_file_id": "1KPvyBIC4evpuLmtYQt5BaTVPGz5d_BSH",
+      "sha256": "151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca"
+    },
+    {
+      "artifact_id": 9612943217,
+      "drive_file_id": "1fJsBd8gqt1VXGyiSJTgl4pO9OHK4kzez",
+      "sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e"
+    },
+    {
+      "artifact_id": 9632715852,
+      "drive_file_id": "1jh_493kJPLBTP_HPSrIy_iXXQtHJqExZ",
+      "sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6"
+    },
+    {
+      "artifact_id": 8521925441,
+      "drive_file_id": "1ZEvk3OGtbNCH4byXNHm1YCvExv-2TyJM",
+      "sha256": "4c39fe51b155d0eb09038e470088ababce4367f740a476dc38127d801d2e0087"
+    },
+    {
+      "artifact_id": 8521926057,
+      "drive_file_id": "1zc_KwehBREAVTzxGUWOOwblcloS9XD64",
+      "sha256": "94e7582a795d88251bb32534b0a60ed8b66459f4eb8bbe133dafb5f3adff7642"
+    }
+  ],
+  "chunked_files": {
+    "8521924881": {
+      "original_sha256": "1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c",
+      "reassembly": "concatenate raw parts in numeric order",
+      "parts": [
+        {
+          "name": "artifact-8521924881-annotation.part-00",
+          "drive_file_id": "1bTK8AXYhVGoQxKNlsbvBymT7nAAbZf5E",
+          "sha256": "ddde13d98eb96149d920d4e39f5bb56e57c84921a366d1c28d5f32aa5caf5c82",
+          "size_bytes": 94371840
+        },
+        {
+          "name": "artifact-8521924881-annotation.part-01",
+          "drive_file_id": "1UCHaAHgenj3vnHnihbOHssVEBNV5jyHp",
+          "sha256": "141edc17395f0f6c136b85e1dfd4eceb6e9858f1aacd121743cff6f61bc8f9b3",
+          "size_bytes": 46191026
+        }
+      ]
+    },
+    "8269246732": {
+      "original_sha256": "5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
+      "chunk_size": "45MiB",
+      "reassembly": "download each Drive ZIP, extract its single exhaustive45.part-XX raw chunk, concatenate raw chunks in numeric order, verify original SHA-256",
+      "drive_reassembly_manifest_file_id": "1EAKPKOu3MUxEjysiJDldIBHPXpkhz-QN",
+      "parts": [
+        {"part": 0, "drive_file_id": "1eYiUBAkb4xnWIXMbtpDwwYs40fKLtl7o", "raw_sha256": "8637300a2e18bb6ad3b7496d0afa91cc12827824b22e62d15c7276ddddab46cd"},
+        {"part": 1, "drive_file_id": "1QdG5FHOIMuQZyc_5sSu1-OtXIqbTLVaK", "raw_sha256": "76f072d2bbd19b6c0a3e8494f56751742286aa8b7ab2195b545266bc2da1e7df"},
+        {"part": 2, "drive_file_id": "1-gSfzKIOF7O06n35jstlXk0rgCuXFd6X", "raw_sha256": "935345297a3fc50401b4feaafe3ec6531c3bee3cf2a1110f804a53276123cbfb"},
+        {"part": 3, "drive_file_id": "10J-Awmx8Cwtb2cUTSZzMnC_TmPX__jbk", "raw_sha256": "7faf4fc9e5846d3b48b6e7db4f02a38598bd00233159d36057a779e484921b24"},
+        {"part": 4, "drive_file_id": "1womNrR-v-CD9jpiPfQnVcvkj0LXOJpGf", "raw_sha256": "795f02d9f4dc6486899b72bfa510001857220c2719cf1b71f356759cbbdee5e8"},
+        {"part": 5, "drive_file_id": "1vXIriLvTO0o1OKMe2_mQ_S8gx8l1rj80", "raw_sha256": "1eb15eec31500bf7f604adb7a4145b6eb21c72918e153b9153a69300db6b2c71"},
+        {"part": 6, "drive_file_id": "1bLCgmgXf53tZg27chpO3oDywpUyaW_Lz", "raw_sha256": "b409e3b34985dea4f095f0d464d746aed11a756644f636b52578d7fb1e5cefda"},
+        {"part": 7, "drive_file_id": "1b_-gPNToBuOyDptI3Kbw6DmGco4lMif3", "raw_sha256": "839ff47293403bdb6dcc13d463fa81380d862c4d05393aed3adafa3b02056b3a"},
+        {"part": 8, "drive_file_id": "1_Mvp-AXhIxfVu1rYVPSezd7_QzVzOCXl", "raw_sha256": "23c03679433a601c5a1c9986a9dc2e013a9985d394968d31567b25c1882e4e41"},
+        {"part": 9, "drive_file_id": "1FGhhzLZbxtoKZvi3manPu6r9no1Qsv1h", "raw_sha256": "f08f34441f329ca10033000fb45f9c4d650a9ffe937bfe335377584df0cc7da8"},
+        {"part": 10, "drive_file_id": "16fSJ1c0andMzxPG_WeRi1gvvZjycs1_x", "raw_sha256": "44ed4027955932fa467836e52a168cdaeb7e9010c0b5c8533319d8ef7537ad18"},
+        {"part": 11, "drive_file_id": "1WFkJw9nhOtLhGbFQY_UbghMJO-G4BntD", "raw_sha256": "2e74960e54a64d41a3c9ad71238e143c12effff6d18b77d78b00a49ed6b51cae"},
+        {"part": 12, "drive_file_id": "1ccSxWkOmtWh0rd5AxDW4XkNJZlXCT-7v", "raw_sha256": "4c7d94eb9c6ca37fd071820103e422238a3021e6119d3f2d1e4edfdadeba67ff"},
+        {"part": 13, "drive_file_id": "1w6Egtt3IyS1TbjlL8n_wFcxRi76g5zBJ", "raw_sha256": "a8db1d30de3ae02e766fb8ee297ea98db3d4f61b5382ad57ad44c659948239f0"},
+        {"part": 14, "drive_file_id": "1LkQOopKxlcikjqHp-Z5k7lK04itXn2nL", "raw_sha256": "a688a738d62eb77d01e274ca52cd124b79aeb3ba73fdb6c4934adc80c1f4b2e5"},
+        {"part": 15, "drive_file_id": "1tdk7J0x2iZKMXa6GXAivhrzP82Hibw-b", "raw_sha256": "e9b617789c0d30c35d8a09089783d2d1d1ee88c2a205c7ae0d8c53c3720d5052"},
+        {"part": 16, "drive_file_id": "1kHRfPRjXptWB0t3kE1wKoZzfBzpIH91u", "raw_sha256": "b47af7df7951c2659463d8c8f9db96822387019a81c13fdeba3b33f12d1fc754"},
+        {"part": 17, "drive_file_id": "1Y9uZso0BQb707-jSO8LC-o5XuGnRghEC", "raw_sha256": "da1ce5f878188ba2baccffb30857f827f3f7f066cd310ae2802eda3a7086bef1"},
+        {"part": 18, "drive_file_id": "11fBnY7hcUth0EcPtvjVYvUIo1Fc-lV3c", "raw_sha256": "086f272d54ef48845457ae0117a8830b6c16019a52997c8473f7c39505d7c89b"},
+        {"part": 19, "drive_file_id": "1WWZEdEP6A0jyRTKm47QOnW0JHyPk1Tup", "raw_sha256": "1e664e634c4a289a3fc4ce27cdecb3c8f9db02a3b7f352015e81d07ff9e9e5fb"}
+      ]
+    }
+  },
+  "validation": {
+    "drive_readback": "all expected files present, sizes matched, can_download=true",
+    "scientific_outputs_changed": false
+  }
+}
