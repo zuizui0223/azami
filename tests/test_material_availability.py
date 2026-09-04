@@ -40,22 +40,31 @@ def test_owner_archive_preservation_matches_public_release_hash_contract() -> No
     )
 
 
-def test_public_release_gate_records_published_doi_pending_anonymous_verification() -> None:
+def test_public_release_gate_records_verified_anonymous_redownload() -> None:
     availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
     public = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
     third_party = availability["third_party_reproducibility"]
-    assert third_party["status"] == "published_pending_anonymous_redownload_verification"
-    assert third_party["full_numerical_reproduction_ready"] is False
-    assert third_party["required_analysis_inputs_publicly_downloadable_without_owner_credentials"] is None
+    assert third_party["status"] == "ready_for_independent_third_party_numerical_reproduction"
+    assert third_party["full_numerical_reproduction_ready"] is True
+    assert third_party["required_analysis_inputs_publicly_downloadable_without_owner_credentials"] is True
+    assert third_party["blocker"] is None
+    assert third_party["verification_run"].endswith("/33871722778")
 
-    assert public["status"] == "published_pending_anonymous_redownload_verification"
+    assert public["status"] == "ready_for_independent_third_party_numerical_reproduction"
     release = public["public_data_release"]
     assert release["published"] is True
     assert release["doi"] == "10.5281/zenodo.22295791"
     assert release["url"] == "https://zenodo.org/records/22295791"
     assert release["version"] == "v1"
-    assert release["anonymous_redownload_verified"] is False
-    assert release["publicly_downloadable_without_owner_credentials"] is None
+    assert release["anonymous_redownload_verified"] is True
+    assert release["publicly_downloadable_without_owner_credentials"] is True
+    assert release["anonymous_redownload_verified_on"] == "2026-09-04"
+    assert release["verification_evidence"]["workflow_run_id"] == 33871722778
+    assert release["verification_evidence"]["observed_size_bytes"] == 56942044
+    assert release["verification_evidence"]["observed_bundle_sha256"] == (
+        "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677"
+    )
+    assert release["verification_evidence"]["embedded_input_sha256_status"] == "PASS_4_of_4"
     assert public["code"]["code_ref"] == "584af97b050d15701f26ce1facea212d5b648d4d"
     assert len(public["minimum_analysis_inputs"]) == 4
 
@@ -63,6 +72,7 @@ def test_public_release_gate_records_published_doi_pending_anonymous_verificatio
     assert bundle["filename"] == "azami_ch1_v2_reproduction_inputs_2026-09-04.zip"
     assert bundle["sha256"] == "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677"
     assert bundle["size_bytes"] == 56942044
+    assert bundle["status"] == "published_on_zenodo_v1_anonymous_redownload_sha_verified"
     assert bundle["contains_exact_minimum_analysis_inputs"] is True
     assert bundle["metadata_file"] == "reproducibility/zenodo_metadata.json"
     assert ZENODO_METADATA.is_file()
@@ -83,7 +93,7 @@ def test_chelsa_external_boundary_matches_frozen_source_registry() -> None:
     )
     conclusion = availability["material_audit_conclusion"]
     assert conclusion["raw_process_raster_reconstruction_fully_offline"] is False
-    assert conclusion["third_party_full_numerical_reproduction_ready"] is False
+    assert conclusion["third_party_full_numerical_reproduction_ready"] is True
 
 
 def test_third_party_runbook_has_no_author_local_dependency() -> None:
@@ -92,6 +102,8 @@ def test_third_party_runbook_has_no_author_local_dependency() -> None:
     text = RUNBOOK.read_text(encoding="utf-8")
     assert "independent reader, reviewer, or researcher" in text
     assert "10.5281/zenodo.22295791" in text
+    assert "ready for independent third-party numerical reproduction" in text
+    assert "33871722778" in text
     assert "verify_local_materials.py" in text
     assert "PASS 24/24" in text
     assert "PASS 7/7" in text
