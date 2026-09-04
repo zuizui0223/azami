@@ -1,8 +1,11 @@
 # Exact Python environment recovered from the frozen 2026-08-26/27 numerical
-# and spatial source artifacts.  Use this file when byte-identical rebuilds are
-# required; pyproject.toml remains the looser developer/runtime environment.
+# and spatial source artifacts, plus the explicitly pinned Bio.Phylo dependency
+# required by the historical-placement runner and validator. Use this file when
+# byte-locked rebuilds are required; pyproject.toml remains the looser
+# developer/runtime environment.
 affine==3.0.0
 attrs==26.1.0
+biopython==1.88
 certifi==2026.7.22
 charset-normalizer==3.5.1
 click==8.5.0
