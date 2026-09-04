@@ -1,6 +1,7 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "audited_on": "2026-09-04",
+  "scope": "Owner-side recovery and preservation inventory; this file does not claim public third-party data availability.",
   "active_v2": {
     "recovery_baseline_commit": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc",
     "status": "complete_for_frozen_chapter1_v2_reanalysis",
@@ -85,7 +86,8 @@
     "tracking_issue": 85,
     "exhaustive_artifact_8269246732": "20_drive_chunks_plus_reassembly_manifest",
     "annotation_artifact_8521924881": "2_drive_raw_chunks",
-    "readback": "complete"
+    "readback": "complete",
+    "public_distribution_endpoint": false
   },
   "historical_recovery": {
     "immutable_tag": "azami-ch1-v2-2026-08-27",
@@ -112,6 +114,12 @@
     ],
     "recovery_location": "azami-ch1-v2-2026-08-27 and archive/ch1-precleanup-20260827"
   },
+  "third_party_public_release": {
+    "contract": "reproducibility/public_release_manifest.json",
+    "status": "blocked_public_data_archive_not_published",
+    "full_numerical_reproduction_ready": false,
+    "note": "Owner-side preservation is complete, but independent reproduction requires a public credential-free archive containing the SHA-locked analysis inputs."
+  },
   "completion": {
     "active_v2_code": "complete",
     "active_v2_frozen_outputs": "complete",
@@ -121,5 +129,5 @@
     "precleanup_scientific_history": "complete",
     "full_upstream_binary_durability": "complete"
   },
-  "claim_boundary": "Recovery and archival infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output."
+  "claim_boundary": "Recovery and archival infrastructure does not alter any scientific estimand, coefficient, FDR result, cohort, endpoint definition or frozen numerical output. Owner-side recovery completeness is not equivalent to public third-party data availability."
 }

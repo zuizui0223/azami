@@ -60,4 +60,5 @@ jobs:
           test -f reproducibility/actions_artifact_catalog.json
           test -f reproducibility/durable_archive_manifest.json
           test -f reproducibility/material_availability.json
+          test -f reproducibility/public_release_manifest.json
           test -f reproducibility/verify_local_materials.py

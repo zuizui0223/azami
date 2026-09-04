@@ -1,10 +1,20 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "audited_on": "2026-09-04",
   "scope": "Frozen Chapter 1 v2 numerical and figure reproducibility",
   "repository_state": {
-    "main_commit_at_audit": "33ce3b34385c56fbc3f9c7b4964b4d9c51b4160f",
+    "main_commit_at_audit": "eb49860156f06b9833af9f2fcb66c8b2fda5cda0",
     "status": "complete_for_code_contracts_frozen_outputs_and_provenance"
+  },
+  "third_party_reproducibility": {
+    "code_public": true,
+    "frozen_outputs_public": true,
+    "required_analysis_inputs_preserved": true,
+    "required_analysis_inputs_publicly_downloadable_without_owner_credentials": false,
+    "public_release_manifest": "reproducibility/public_release_manifest.json",
+    "status": "blocked_public_analysis_input_release_not_published",
+    "full_numerical_reproduction_ready": false,
+    "blocker": "The analysis-input ZIPs are preserved in owner-controlled storage but have not yet been deposited in a public credential-free data archive with a DOI or stable public URL."
   },
   "github_repository_materials": [
     {
@@ -64,7 +74,12 @@
       "expected": "5 main figures and 7 supporting figures; report status ok"
     },
     {
-      "role": "durable external archive identity and SHA ledger",
+      "role": "public third-party release contract",
+      "path": "reproducibility/public_release_manifest.json",
+      "status": "present"
+    },
+    {
+      "role": "owner preservation and provenance ledgers",
       "paths": [
         "reproducibility/durable_archive_manifest.json",
         "reproducibility/actions_artifact_catalog.json",
@@ -75,9 +90,9 @@
   ],
   "durable_owner_archive_materials": {
     "provider": "Google Drive",
-    "folder_id": "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc",
     "canonical_manifest": "reproducibility/durable_archive_manifest.json",
-    "status": "complete_and_readback_verified",
+    "status": "complete_and_readback_verified_but_not_public_distribution",
+    "third_party_role": "preservation only; not a publication data endpoint",
     "numerical_inputs": [
       {
         "artifact_id": 9612943217,
@@ -103,29 +118,19 @@
         "sha256": "151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
         "required_for": "exact frozen broad-region lookup if not rebuilt"
       }
-    ],
-    "upstream_audit_materials": {
-      "status": "preserved_but_not_required_for_the_frozen_full27_numerical_rerun",
-      "includes": [
-        "frozen detector package",
-        "Figure 1 source archives",
-        "independent detector-audit annotation and prediction packets",
-        "exhaustive detector-positive merged source archived as 20 verified chunks"
-      ]
-    }
+    ]
   },
   "git_history_materials": {
     "immutable_tag": "azami-ch1-v2-2026-08-27",
     "archive_branch": "archive/ch1-precleanup-20260827",
     "native_status_path": "analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv",
     "native_status_sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
-    "status": "present_in_git_history_and_rebuildable"
+    "status": "public_git_history_and_rebuildable"
   },
   "public_external_source_materials": {
     "dataset": "CHELSA v2.1 climatologies / BIOCLIM+ 1981-2010",
     "source_registry": "analysis/ch1/chelsa_process_environment_sources.json",
-    "status": "not_vendored_in_git_or_owner_archive_at_audit_time",
-    "required_only_for": "reconstructing the exact five added process-environment layers from source rasters before the full-27 numerical rerun",
+    "status": "public_urls_frozen_but_raster_bytes_not_archived_in_public_release",
     "layers": [
       "chelsa_rsds_mean",
       "chelsa_vpd_mean",
@@ -134,15 +139,16 @@
       "chelsa_npp"
     ],
     "fail_closed_boundary": "The rebuilt 46,276-row nine-predictor environment must have SHA-256 e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7 or the canonical runner stops.",
-    "offline_option": "Place exact URL-basename raster files in a local directory and pass it as --raster-cache-dir. This avoids network access once those five files have been cached."
+    "offline_option": "A future public data release may include exact URL-basename raster files and pass them through --raster-cache-dir."
   },
   "material_audit_conclusion": {
     "frozen_results_auditable_from_github": true,
-    "frozen_numerical_direct_inputs_durably_preserved": true,
+    "owner_can_rerun_frozen_numerical_analysis": true,
+    "third_party_full_numerical_reproduction_ready": false,
     "sampling_auxiliaries_recoverable_or_rebuildable": true,
-    "historical_tree_inputs_durably_preserved": true,
+    "historical_tree_inputs_preserved": true,
     "figures_rebuildable_from_tracked_sources": true,
     "raw_process_raster_reconstruction_fully_offline": false,
-    "reason": "The five frozen CHELSA process rasters are identified by exact frozen URLs but are not vendored or owner-archived; a local raster cache or network access is required for that one reconstruction stage."
+    "reason": "Independent full rerun is blocked until the SHA-locked analysis input ZIPs are published in a credential-free public data archive. The five process rasters also require public CHELSA network access unless copied into that release."
   }
 }

@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "audited_on": "2026-09-04",
+  "purpose": "Third-party reproduction contract for the frozen Chapter 1 v2 analysis",
+  "status": "blocked_public_data_archive_not_published",
+  "tracking_issue": 88,
+  "code": {
+    "repository": "https://github.com/zuizui0223/azami",
+    "public": true,
+    "code_ref": null,
+    "note": "Set code_ref to the immutable public reproduction tag/commit when the data release is published."
+  },
+  "public_data_release": {
+    "doi": null,
+    "url": null,
+    "publicly_downloadable_without_owner_credentials": false,
+    "required_before_claiming_full_third_party_reproducibility": true
+  },
+  "minimum_analysis_inputs": [
+    {
+      "filename": "artifact-9612943217-continuous.zip",
+      "role": "continuous trait universe and 46,276-row strict-spatial core environment",
+      "sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+      "required": true
+    },
+    {
+      "filename": "artifact-9632715852-multilevel.zip",
+      "role": "complete-18 process-environment reference and multilevel checkpoint",
+      "sha256": "51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6",
+      "required": true
+    },
+    {
+      "filename": "artifact-8227254443-historical.zip",
+      "role": "S1, S3 and 50 randomized S2 historical-placement trees",
+      "sha256": "499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc",
+      "required_for": "historical sensitivity"
+    },
+    {
+      "filename": "artifact-8983877726-spatial.zip",
+      "role": "exact broad-region lookup checkpoint",
+      "sha256": "151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca",
+      "required_for": "sampling-composition analysis unless broad-region lookup is rebuilt"
+    }
+  ],
+  "git_recoverable_input": {
+    "path": "analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv",
+    "immutable_tag": "azami-ch1-v2-2026-08-27",
+    "sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+  },
+  "public_environment_sources": {
+    "registry": "analysis/ch1/chelsa_process_environment_sources.json",
+    "dataset": "CHELSA v2.1 climatologies / BIOCLIM+ 1981-2010",
+    "layers": [
+      "chelsa_rsds_mean",
+      "chelsa_vpd_mean",
+      "chelsa_sfcwind_mean",
+      "chelsa_gsp",
+      "chelsa_npp"
+    ],
+    "network_retrieval_currently_required_if_no_raster_cache_is_published": true,
+    "reconstructed_environment_sha256": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+  },
+  "expected_validation": {
+    "environment_atlas": "PASS 24/24",
+    "sampling_composition": "PASS 7/7",
+    "spatial_historical_sensitivities": "PASS 11/11",
+    "figures": "status ok; 5 main and 7 supporting"
+  },
+  "publication_gate": "Do not claim independent third-party full numerical reproducibility until public_data_release.url or DOI resolves to the required input files without owner credentials and the recorded SHA-256 values match."
+}

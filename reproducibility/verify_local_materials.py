@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""Verify a local/synced copy of the frozen Chapter 1 reproducibility archive.
+"""Verify downloaded Chapter 1 reproducibility materials by SHA-256.
 
-This verifier is intentionally independent of Google Drive APIs. It checks the
-bytes that actually reached a local directory (for example a OneDrive-synced
-folder) against the SHA-256 values committed to the repository.
+`--scope numerical` is the publication-facing mode. It validates only the
+credential-free public numerical release contract in
+`reproducibility/public_release_manifest.json` and has no dependency on private
+cloud credentials.
+
+`--scope all` is an owner-preservation audit for the larger historical archive;
+it additionally uses `reproducibility/durable_archive_manifest.json`.
 """
 from __future__ import annotations
 
@@ -15,6 +19,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PUBLIC_RELEASE = ROOT / "reproducibility" / "public_release_manifest.json"
 DURABLE = ROOT / "reproducibility" / "durable_archive_manifest.json"
 AVAILABILITY = ROOT / "reproducibility" / "material_availability.json"
 
@@ -30,7 +35,6 @@ DIRECT_FILENAMES = {
     8521925441: "artifact-8521925441-qc.zip",
     8521926057: "artifact-8521926057-predictions.zip",
 }
-NUMERICAL_IDS = {9612943217, 9632715852, 8227254443, 8983877726}
 
 
 def sha256_file(path: Path, block: int = 8 * 1024 * 1024) -> str:
@@ -51,12 +55,24 @@ def require_file(path: Path) -> None:
         raise FileNotFoundError(path)
 
 
-def verify_direct(archive: Path, scope: str, durable: dict) -> list[dict]:
+def verify_public_numerical(archive: Path, public_release: dict) -> list[dict]:
+    rows: list[dict] = []
+    for item in public_release["minimum_analysis_inputs"]:
+        filename = item["filename"]
+        path = archive / filename
+        require_file(path)
+        observed = sha256_file(path)
+        expected = item["sha256"]
+        if observed != expected:
+            raise ValueError(f"SHA mismatch for {filename}: {observed} != {expected}")
+        rows.append({"file": filename, "sha256": observed, "status": "ok"})
+    return rows
+
+
+def verify_owner_direct(archive: Path, durable: dict) -> list[dict]:
     rows: list[dict] = []
     for item in durable["direct_files"]:
         artifact_id = int(item["artifact_id"])
-        if scope == "numerical" and artifact_id not in NUMERICAL_IDS:
-            continue
         filename = DIRECT_FILENAMES[artifact_id]
         path = archive / filename
         require_file(path)
@@ -145,30 +161,38 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     archive = args.archive_dir.resolve()
-    durable = json.loads(DURABLE.read_text(encoding="utf-8"))
+    public_release = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
     availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
-    rows = verify_direct(archive, args.scope, durable)
-    if args.scope == "all":
+
+    if args.scope == "numerical":
+        rows = verify_public_numerical(archive, public_release)
+    else:
+        durable = json.loads(DURABLE.read_text(encoding="utf-8"))
+        rows = verify_owner_direct(archive, durable)
         rows.extend(verify_annotation(archive, durable))
         rows.extend(verify_exhaustive(archive, durable))
+
     raster_rows: list[dict] = []
     if args.raster_cache_dir is not None:
         raster_rows = check_raster_cache(args.raster_cache_dir.resolve())
+
     report = {
         "status": "PASS",
         "scope": args.scope,
         "archive_dir": str(archive),
         "files": rows,
         "raster_cache": raster_rows,
+        "public_release_status": public_release["status"],
         "raw_process_raster_reconstruction_fully_offline": availability["material_audit_conclusion"][
             "raw_process_raster_reconstruction_fully_offline"
         ]
         if args.raster_cache_dir is None
         else True,
         "note": (
-            "A numerical archive PASS verifies the durable binary inputs. Full-27 recomputation still "
-            "needs the five frozen CHELSA process rasters via network or --raster-cache-dir; the canonical "
-            "runner subsequently validates the reconstructed nine-predictor table by frozen SHA-256."
+            "A numerical PASS proves that the downloaded analysis-input bytes match the public release "
+            "contract. Full-27 recomputation still needs the five frozen CHELSA process rasters via "
+            "network or --raster-cache-dir; the canonical runner then validates the reconstructed "
+            "nine-predictor table by frozen SHA-256."
         ),
     }
     text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
