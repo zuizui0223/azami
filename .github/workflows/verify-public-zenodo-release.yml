@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  CANONICAL_CODE_REF: d112a8e3b2af9ce92cc6cbdcb14a015231df398d
+
 jobs:
   anonymous-public-download:
     runs-on: ubuntu-latest
@@ -77,10 +80,10 @@ jobs:
             --scope numerical \
             --report _canonical_public_input/local_material_check.json
 
-      - name: Check out immutable frozen code in a clean worktree
+      - name: Check out corrected immutable frozen code in a clean worktree
         run: |
-          git worktree add _frozen_src 584af97b050d15701f26ce1facea212d5b648d4d
-          test "$(git -C _frozen_src rev-parse HEAD)" = "584af97b050d15701f26ce1facea212d5b648d4d"
+          git worktree add _frozen_src "$CANONICAL_CODE_REF"
+          test "$(git -C _frozen_src rev-parse HEAD)" = "$CANONICAL_CODE_REF"
 
       - name: Install frozen numerical environment
         run: |
@@ -88,7 +91,7 @@ jobs:
           python -m pip install -r _frozen_src/reproducibility/frozen-numerical-rebuild-requirements.txt
           python -m pip install -e _frozen_src --no-deps
 
-      - name: Validate archived source checkpoints at immutable code ref
+      - name: Validate archived source checkpoints at corrected immutable code ref
         run: |
           python _frozen_src/analysis/rebuild_frozen_analysis.py \
             --continuous-zip "$GITHUB_WORKSPACE/_canonical_public_input/reproduction_inputs/artifact-9612943217-continuous.zip" \
@@ -144,7 +147,7 @@ jobs:
             --tree-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results/source/historical/historical_trees" \
             --report "$GITHUB_WORKSPACE/_canonical_rebuild/results/v2_full27_sensitivities_validation.json"
 
-      - name: Rebuild frozen figures at immutable code ref
+      - name: Rebuild frozen figures at corrected immutable code ref
         working-directory: _frozen_src
         run: |
           python analysis/figures/run_image_to_trait_perturbation_audit.py
@@ -153,7 +156,7 @@ jobs:
       - name: Assert canonical validation counts and figure report
         run: |
           python - <<'PY'
-          import json
+          import json, os
           from pathlib import Path
           root = Path('_canonical_rebuild/results')
           atlas = json.loads((root / 'full27/v2_full27_environment_validation.json').read_text())
@@ -164,12 +167,14 @@ jobs:
           assert sampling['status'] == 'PASS' and sampling['n_checks'] == 7 and sampling['n_passed'] == 7, sampling
           assert sensitivities['status'] == 'PASS' and sensitivities['n_checks'] == 11 and sensitivities['n_passed'] == 11, sensitivities
           assert figures['status'] == 'ok', figures
-          assert figures['main_figures'] == 5, figures
-          assert figures['supporting_figures'] == 7, figures
+          main_count = figures.get('main_figures', figures.get('n_main_figures'))
+          supporting_count = figures.get('supporting_figures', figures.get('n_supporting_figures'))
+          assert main_count == 5, figures
+          assert supporting_count == 7, figures
           summary = {
               'status': 'PASS',
               'zenodo_doi': '10.5281/zenodo.22295791',
-              'code_ref': '584af97b050d15701f26ce1facea212d5b648d4d',
+              'code_ref': os.environ['CANONICAL_CODE_REF'],
               'environment_atlas': {'status': 'PASS', 'checks': '24/24'},
               'sampling_composition': {'status': 'PASS', 'checks': '7/7'},
               'spatial_historical_sensitivities': {'status': 'PASS', 'checks': '11/11'},
