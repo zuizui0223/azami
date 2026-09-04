@@ -10,6 +10,7 @@ PUBLIC_RELEASE = ROOT / "reproducibility" / "public_release_manifest.json"
 CHELSA = ROOT / "analysis" / "ch1" / "chelsa_process_environment_sources.json"
 RUNBOOK = ROOT / "reproducibility" / "README.md"
 VERIFIER = ROOT / "reproducibility" / "verify_local_materials.py"
+ZENODO_METADATA = ROOT / "reproducibility" / "zenodo_metadata.json"
 
 
 def test_all_github_materials_marked_present_really_exist() -> None:
@@ -39,19 +40,28 @@ def test_owner_archive_preservation_matches_public_release_hash_contract() -> No
     )
 
 
-def test_public_release_gate_is_explicit_until_data_are_public() -> None:
+def test_public_release_gate_records_prepared_bundle_until_doi_is_public() -> None:
     availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
     public = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
     third_party = availability["third_party_reproducibility"]
     assert third_party["status"] == "blocked_public_analysis_input_release_not_published"
     assert third_party["full_numerical_reproduction_ready"] is False
     assert third_party["required_analysis_inputs_publicly_downloadable_without_owner_credentials"] is False
-    assert public["status"] == "blocked_public_data_archive_not_published"
+
+    assert public["status"] == "public_bundle_prepared_doi_not_published"
     assert public["public_data_release"]["publicly_downloadable_without_owner_credentials"] is False
     assert public["public_data_release"]["doi"] is None
     assert public["public_data_release"]["url"] is None
-    assert public["code"]["code_ref"] is None
+    assert public["code"]["code_ref"] == "584af97b050d15701f26ce1facea212d5b648d4d"
     assert len(public["minimum_analysis_inputs"]) == 4
+
+    bundle = public["staging_bundle"]
+    assert bundle["filename"] == "azami_ch1_v2_reproduction_inputs_2026-09-04.zip"
+    assert bundle["sha256"] == "50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677"
+    assert bundle["size_bytes"] == 56942044
+    assert bundle["contains_exact_minimum_analysis_inputs"] is True
+    assert bundle["metadata_file"] == "reproducibility/zenodo_metadata.json"
+    assert ZENODO_METADATA.is_file()
 
 
 def test_chelsa_external_boundary_matches_frozen_source_registry() -> None:
