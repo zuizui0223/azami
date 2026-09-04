@@ -51,3 +51,148 @@ jobs:
             _zenodo_public_verification/local_material_check.json
           if-no-files-found: warn
           retention-days: 90
+
+  canonical-frozen-reproduction:
+    needs: anonymous-public-download
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out repository with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Anonymous re-download for the canonical rebuild job
+        run: |
+          python reproducibility/verify_public_zenodo_release.py \
+            --output-dir _canonical_public_input \
+            --report _canonical_public_input/zenodo_public_verification.json
+          python reproducibility/verify_local_materials.py \
+            --archive-dir _canonical_public_input/reproduction_inputs \
+            --scope numerical \
+            --report _canonical_public_input/local_material_check.json
+
+      - name: Check out immutable frozen code in a clean worktree
+        run: |
+          git worktree add _frozen_src 584af97b050d15701f26ce1facea212d5b648d4d
+          test "$(git -C _frozen_src rev-parse HEAD)" = "584af97b050d15701f26ce1facea212d5b648d4d"
+
+      - name: Install frozen numerical environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r _frozen_src/reproducibility/frozen-numerical-rebuild-requirements.txt
+          python -m pip install -e _frozen_src --no-deps
+
+      - name: Validate archived source checkpoints at immutable code ref
+        run: |
+          python _frozen_src/analysis/rebuild_frozen_analysis.py \
+            --continuous-zip "$GITHUB_WORKSPACE/_canonical_public_input/reproduction_inputs/artifact-9612943217-continuous.zip" \
+            --multilevel-zip "$GITHUB_WORKSPACE/_canonical_public_input/reproduction_inputs/artifact-9632715852-multilevel.zip" \
+            --out-dir "$GITHUB_WORKSPACE/_canonical_rebuild/source_check" \
+            --mode validate_sources
+
+      - name: Recover exact sampling auxiliary inputs
+        run: |
+          mkdir -p _canonical_rebuild/inputs
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          src = Path('_canonical_public_input/reproduction_inputs/artifact-8983877726-spatial.zip')
+          out = Path('_canonical_rebuild/inputs/broad_region_lookup.csv')
+          with zipfile.ZipFile(src) as zf:
+              out.write_bytes(zf.read('spatial_regions/broad_region_lookup.csv'))
+          PY
+          git -C _frozen_src show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > _canonical_rebuild/inputs/observation_native_status.csv
+          echo "085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff  _canonical_rebuild/inputs/broad_region_lookup.csv" | sha256sum -c -
+          echo "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  _canonical_rebuild/inputs/observation_native_status.csv" | sha256sum -c -
+
+      - name: Rebuild full-27, secondary, sampling, spatial and historical analyses
+        run: |
+          python _frozen_src/analysis/rebuild_frozen_analysis.py \
+            --continuous-zip "$GITHUB_WORKSPACE/_canonical_public_input/reproduction_inputs/artifact-9612943217-continuous.zip" \
+            --multilevel-zip "$GITHUB_WORKSPACE/_canonical_public_input/reproduction_inputs/artifact-9632715852-multilevel.zip" \
+            --historical-zip "$GITHUB_WORKSPACE/_canonical_public_input/reproduction_inputs/artifact-8227254443-historical.zip" \
+            --out-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results" \
+            --mode rebuild_all \
+            --with-sampling \
+            --regions "$GITHUB_WORKSPACE/_canonical_rebuild/inputs/broad_region_lookup.csv" \
+            --native-status "$GITHUB_WORKSPACE/_canonical_rebuild/inputs/observation_native_status.csv" \
+            --with-spatial \
+            --with-historical
+
+      - name: Run fail-closed sampling validation
+        run: |
+          python _frozen_src/analysis/validate_geb_v2_full27_sampling_composition.py \
+            --atlas-within "$GITHUB_WORKSPACE/_canonical_rebuild/results/full27/v2_full27_environment_within.csv" \
+            --atlas-among "$GITHUB_WORKSPACE/_canonical_rebuild/results/full27/v2_full27_environment_among.csv" \
+            --sampling-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results/sampling" \
+            --spatial-within "$GITHUB_WORKSPACE/_canonical_rebuild/results/spatial/v2_full27_spatial_within.csv" \
+            --spatial-among "$GITHUB_WORKSPACE/_canonical_rebuild/results/spatial/v2_full27_spatial_among.csv" \
+            --report "$GITHUB_WORKSPACE/_canonical_rebuild/results/sampling/v2_full27_sampling_composition_validation.json"
+
+      - name: Run fail-closed spatial and historical validation
+        run: |
+          python _frozen_src/analysis/validate_geb_v2_full27_sensitivities.py \
+            --atlas-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results/full27" \
+            --spatial-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results/spatial" \
+            --historical-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results/historical" \
+            --tree-dir "$GITHUB_WORKSPACE/_canonical_rebuild/results/source/historical/historical_trees" \
+            --report "$GITHUB_WORKSPACE/_canonical_rebuild/results/v2_full27_sensitivities_validation.json"
+
+      - name: Rebuild frozen figures at immutable code ref
+        working-directory: _frozen_src
+        run: |
+          python analysis/figures/run_image_to_trait_perturbation_audit.py
+          python analysis/figures/build_v2_figures.py
+
+      - name: Assert canonical validation counts and figure report
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('_canonical_rebuild/results')
+          atlas = json.loads((root / 'full27/v2_full27_environment_validation.json').read_text())
+          sampling = json.loads((root / 'sampling/v2_full27_sampling_composition_validation.json').read_text())
+          sensitivities = json.loads((root / 'v2_full27_sensitivities_validation.json').read_text())
+          figures = json.loads(Path('_frozen_src/reproducibility/figures/figure_build_report.json').read_text())
+          assert atlas['status'] == 'PASS' and atlas['n_checks'] == 24 and atlas['n_passed'] == 24, atlas
+          assert sampling['status'] == 'PASS' and sampling['n_checks'] == 7 and sampling['n_passed'] == 7, sampling
+          assert sensitivities['status'] == 'PASS' and sensitivities['n_checks'] == 11 and sensitivities['n_passed'] == 11, sensitivities
+          assert figures['status'] == 'ok', figures
+          assert figures['main_figures'] == 5, figures
+          assert figures['supporting_figures'] == 7, figures
+          summary = {
+              'status': 'PASS',
+              'zenodo_doi': '10.5281/zenodo.22295791',
+              'code_ref': '584af97b050d15701f26ce1facea212d5b648d4d',
+              'environment_atlas': {'status': 'PASS', 'checks': '24/24'},
+              'sampling_composition': {'status': 'PASS', 'checks': '7/7'},
+              'spatial_historical_sensitivities': {'status': 'PASS', 'checks': '11/11'},
+              'figures': {'status': 'ok', 'main': 5, 'supporting': 7},
+          }
+          out = Path('_canonical_rebuild/canonical_public_reproduction_summary.json')
+          out.write_text(json.dumps(summary, indent=2) + '\n')
+          print(json.dumps(summary, indent=2))
+          PY
+
+      - name: Upload canonical reproduction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zenodo-22295791-canonical-reproduction
+          path: |
+            _canonical_public_input/zenodo_public_verification.json
+            _canonical_public_input/local_material_check.json
+            _canonical_rebuild/source_check/source_validation.json
+            _canonical_rebuild/results/full27/v2_full27_environment_validation.json
+            _canonical_rebuild/results/sampling/v2_full27_sampling_composition_validation.json
+            _canonical_rebuild/results/v2_full27_sensitivities_validation.json
+            _frozen_src/reproducibility/figures/figure_build_report.json
+            _canonical_rebuild/canonical_public_reproduction_summary.json
+          if-no-files-found: warn
+          retention-days: 90
