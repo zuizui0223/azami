@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AVAILABILITY = ROOT / "reproducibility" / "material_availability.json"
 DURABLE = ROOT / "reproducibility" / "durable_archive_manifest.json"
+PUBLIC_RELEASE = ROOT / "reproducibility" / "public_release_manifest.json"
 CHELSA = ROOT / "analysis" / "ch1" / "chelsa_process_environment_sources.json"
 RUNBOOK = ROOT / "reproducibility" / "README.md"
 VERIFIER = ROOT / "reproducibility" / "verify_local_materials.py"
@@ -21,36 +22,66 @@ def test_all_github_materials_marked_present_really_exist() -> None:
             assert (ROOT / relative).exists(), relative
 
 
-def test_durable_numerical_input_sha_matches_drive_manifest() -> None:
+def test_owner_archive_preservation_matches_public_release_hash_contract() -> None:
     availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
     durable = json.loads(DURABLE.read_text(encoding="utf-8"))
+    public = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
     by_id = {int(row["artifact_id"]): row for row in durable["direct_files"]}
+    public_by_name = {row["filename"]: row for row in public["minimum_analysis_inputs"]}
     for row in availability["durable_owner_archive_materials"]["numerical_inputs"]:
         artifact_id = int(row["artifact_id"])
         assert artifact_id in by_id
         assert row["sha256"] == by_id[artifact_id]["sha256"]
-    assert availability["durable_owner_archive_materials"]["status"] == "complete_and_readback_verified"
+        assert row["filename"] in public_by_name
+        assert row["sha256"] == public_by_name[row["filename"]]["sha256"]
+    assert availability["durable_owner_archive_materials"]["status"] == (
+        "complete_and_readback_verified_but_not_public_distribution"
+    )
+
+
+def test_public_release_gate_is_explicit_until_data_are_public() -> None:
+    availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
+    public = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
+    third_party = availability["third_party_reproducibility"]
+    assert third_party["status"] == "blocked_public_analysis_input_release_not_published"
+    assert third_party["full_numerical_reproduction_ready"] is False
+    assert third_party["required_analysis_inputs_publicly_downloadable_without_owner_credentials"] is False
+    assert public["status"] == "blocked_public_data_archive_not_published"
+    assert public["public_data_release"]["publicly_downloadable_without_owner_credentials"] is False
+    assert public["public_data_release"]["doi"] is None
+    assert public["public_data_release"]["url"] is None
+    assert public["code"]["code_ref"] is None
+    assert len(public["minimum_analysis_inputs"]) == 4
 
 
 def test_chelsa_external_boundary_matches_frozen_source_registry() -> None:
     availability = json.loads(AVAILABILITY.read_text(encoding="utf-8"))
+    public = json.loads(PUBLIC_RELEASE.read_text(encoding="utf-8"))
     registry = json.loads(CHELSA.read_text(encoding="utf-8"))
     external = availability["public_external_source_materials"]
-    assert external["status"] == "not_vendored_in_git_or_owner_archive_at_audit_time"
+    assert external["status"] == "public_urls_frozen_but_raster_bytes_not_archived_in_public_release"
     assert [row["column"] for row in registry["sources"]] == external["layers"]
+    assert [row["column"] for row in registry["sources"]] == public["public_environment_sources"]["layers"]
     assert len(registry["sources"]) == 5
     assert all(row["url"].startswith("https://") for row in registry["sources"])
+    assert public["public_environment_sources"]["reconstructed_environment_sha256"] == (
+        "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+    )
     conclusion = availability["material_audit_conclusion"]
     assert conclusion["raw_process_raster_reconstruction_fully_offline"] is False
-    assert "five frozen CHELSA process rasters" in conclusion["reason"]
+    assert conclusion["third_party_full_numerical_reproduction_ready"] is False
 
 
-def test_windows_runbook_and_local_verifier_are_tracked() -> None:
+def test_third_party_runbook_has_no_author_local_dependency() -> None:
     assert VERIFIER.is_file()
+    assert PUBLIC_RELEASE.is_file()
     text = RUNBOOK.read_text(encoding="utf-8")
-    assert r"C:\Users\zuizui\OneDrive - Kyoto University\デスクトップ\azami論文材料" in text
+    assert "independent reader, reviewer, or researcher" in text
+    assert "public DOI/URL" in text
     assert "verify_local_materials.py" in text
-    assert "CHELSA process rasters" in text
     assert "PASS 24/24" in text
     assert "PASS 7/7" in text
     assert "PASS 11/11" in text
+    assert "C:\\Users\\zuizui" not in text
+    assert "OneDrive - Kyoto University" not in text
+    assert "owner-controlled Google Drive" not in text
