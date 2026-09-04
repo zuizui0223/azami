@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "ch1_global" / "v2" / "ANALYSIS_MANIFEST.tsv"
 CATALOG = ROOT / "reproducibility" / "actions_artifact_catalog.json"
 RECOVERY_INVENTORY = ROOT / "reproducibility" / "recovery_inventory.json"
+DURABLE_ARCHIVE = ROOT / "reproducibility" / "durable_archive_manifest.json"
 PYPROJECT = ROOT / "pyproject.toml"
 FROZEN_REQUIREMENTS = ROOT / "reproducibility" / "frozen-numerical-rebuild-requirements.txt"
 ATLAS_VALIDATION = ROOT / "analysis_outputs" / "v2_full27_environment_atlas_2026-08-27" / "v2_full27_environment_validation.json"
@@ -109,7 +110,7 @@ def test_frozen_validation_reports_are_still_complete() -> None:
     assert len(figure["supporting_figure_stems"]) == 7
 
 
-def test_recovery_inventory_closes_active_v2_and_preserves_history() -> None:
+def test_recovery_inventory_closes_active_v2_and_full_archive() -> None:
     payload = json.loads(RECOVERY_INVENTORY.read_text(encoding="utf-8"))
     assert payload["active_v2"]["status"] == "complete_for_frozen_chapter1_v2_reanalysis"
     assert payload["active_v2"]["baseline_ci"]["reproducibility_integrity_conclusion"] == "success"
@@ -123,9 +124,18 @@ def test_recovery_inventory_closes_active_v2_and_preserves_history() -> None:
         "active_v2_figures",
         "active_v2_ci",
         "precleanup_scientific_history",
+        "full_upstream_binary_durability",
     ):
         assert completion[key] == "complete"
-    assert completion["full_upstream_binary_durability"] == "tracked_external_gate_issue_85"
+
+    archive = payload["durable_binary_archive"]
+    assert archive["status"] == "complete"
+    assert archive["provider"] == "Google Drive"
+    assert archive["manifest"] == "reproducibility/durable_archive_manifest.json"
+    assert archive["folder_id"] == "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc"
+    assert archive["exhaustive_artifact_8269246732"] == "20_drive_chunks_plus_reassembly_manifest"
+    assert archive["annotation_artifact_8521924881"] == "2_drive_raw_chunks"
+    assert archive["readback"] == "complete"
 
     recovery = payload["historical_recovery"]
     assert recovery["immutable_tag"] == "azami-ch1-v2-2026-08-27"
@@ -134,18 +144,55 @@ def test_recovery_inventory_closes_active_v2_and_preserves_history() -> None:
     assert recovery["status"] == "complete"
 
     direct = payload["direct_reanalysis_inputs"]
-    assert direct["continuous_source"]["durability"] == "owner_side_archive_verified"
-    assert direct["multilevel_process_source"]["durability"] == "owner_side_archive_verified"
+    assert direct["continuous_source"]["durability"] == "owner_side_archive_verified_and_drive_archived"
+    assert direct["multilevel_process_source"]["durability"] == "owner_side_archive_verified_and_drive_archived"
     assert direct["native_status"]["durability"] == "git_retained_and_rebuildable"
-    assert direct["broad_region"]["durability"] == "deterministically_rebuildable_fail_closed"
-    assert payload["ephemeral_upstream_artifacts"]["tracking_issue"] == 85
-    assert payload["ephemeral_upstream_artifacts"]["not_required_for_current_frozen_v2_numerical_reanalysis"] is True
+    assert direct["broad_region"]["durability"] == "deterministically_rebuildable_fail_closed_and_source_archived"
+
+
+def test_durable_archive_manifest_is_complete_and_reassemblable() -> None:
+    payload = json.loads(DURABLE_ARCHIVE.read_text(encoding="utf-8"))
+    assert payload["status"] == "complete"
+    assert payload["drive_folder"]["id"] == "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc"
+    assert payload["drive_folder"]["visibility"] == "not_shared"
+    assert payload["validation"]["scientific_outputs_changed"] is False
+
+    direct_ids = {int(row["artifact_id"]) for row in payload["direct_files"]}
+    assert {
+        8066010557,
+        8099953404,
+        8225059018,
+        8076736948,
+        8227254443,
+        8983877726,
+        9612943217,
+        9632715852,
+        8521925441,
+        8521926057,
+    }.issubset(direct_ids)
+
+    annotation = payload["chunked_files"]["8521924881"]
+    assert annotation["original_sha256"] == "1ebc0dac5316fa6b3c394f014f055facef6fa15c6b52c437932fdf62e60ea35c"
+    assert len(annotation["parts"]) == 2
+    assert len({row["drive_file_id"] for row in annotation["parts"]}) == 2
+
+    exhaustive = payload["chunked_files"]["8269246732"]
+    assert exhaustive["original_sha256"] == "5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b"
+    assert exhaustive["chunk_size"] == "45MiB"
+    assert exhaustive["drive_reassembly_manifest_file_id"] == "1EAKPKOu3MUxEjysiJDldIBHPXpkhz-QN"
+    assert [row["part"] for row in exhaustive["parts"]] == list(range(20))
+    assert len({row["drive_file_id"] for row in exhaustive["parts"]}) == 20
+    assert len({row["raw_sha256"] for row in exhaustive["parts"]}) == 20
 
 
 def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
     payload = json.loads(CATALOG.read_text(encoding="utf-8"))
-    assert payload["catalog_version"] >= 4
+    assert payload["catalog_version"] >= 5
     assert payload["external_archive_tracking_issue"] == 85
+    assert payload["durable_archive"]["status"] == "complete"
+    assert payload["durable_archive"]["manifest"] == "reproducibility/durable_archive_manifest.json"
+    assert payload["durable_archive"]["folder_id"] == "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc"
+
     by_id = {int(row["artifact_id"]): row for row in payload["artifacts"]}
     required_ids = {
         8076736948,
@@ -159,6 +206,9 @@ def test_artifact_catalog_retains_reconstruction_checkpoints() -> None:
         8521926057,
     }
     assert required_ids.issubset(by_id)
+    for artifact_id in required_ids:
+        assert by_id[artifact_id]["durable_archive_status"].startswith("complete")
+
     assert by_id[8076736948]["model_weight_sha256"] == (
         "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed"
     )
