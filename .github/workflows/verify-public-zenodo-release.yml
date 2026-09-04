@@ -1,0 +1,53 @@
+name: Verify public Zenodo release
+
+on:
+  push:
+    branches:
+      - repro/zenodo-anonymous-verification-20260904
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  anonymous-public-download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download published Zenodo v1 anonymously and verify bundle + inner SHA-256
+        run: |
+          python reproducibility/verify_public_zenodo_release.py \
+            --output-dir _zenodo_public_verification \
+            --report _zenodo_public_verification/zenodo_public_verification.json
+
+      - name: Run canonical local-material verifier on anonymously downloaded inputs
+        run: |
+          python reproducibility/verify_local_materials.py \
+            --archive-dir _zenodo_public_verification/reproduction_inputs \
+            --scope numerical \
+            --report _zenodo_public_verification/local_material_check.json
+
+      - name: Show verification reports
+        if: always()
+        run: |
+          test -f _zenodo_public_verification/zenodo_public_verification.json && cat _zenodo_public_verification/zenodo_public_verification.json || true
+          test -f _zenodo_public_verification/local_material_check.json && cat _zenodo_public_verification/local_material_check.json || true
+
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zenodo-22295791-anonymous-verification
+          path: |
+            _zenodo_public_verification/zenodo_public_verification.json
+            _zenodo_public_verification/local_material_check.json
+          if-no-files-found: warn
+          retention-days: 90
