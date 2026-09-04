@@ -33,23 +33,35 @@ def main() -> int:
     spec = f"{TAG}:{PATH}"
     blob_sha = subprocess.check_output(["git", "rev-parse", spec], text=True).strip()
     if blob_sha != EXPECTED_GIT_BLOB_SHA:
-        raise SystemExit(f"Historical native-status Git blob changed: {blob_sha}; expected {EXPECTED_GIT_BLOB_SHA}")
+        raise SystemExit(
+            f"Historical native-status Git blob changed: {blob_sha}; "
+            f"expected {EXPECTED_GIT_BLOB_SHA}"
+        )
 
     raw = subprocess.check_output(["git", "cat-file", "blob", blob_sha])
     raw_sha = sha256(raw)
     if raw_sha != EXPECTED_LF_SHA256:
-        raise SystemExit(f"Historical LF-native-status SHA-256 mismatch: {raw_sha}; expected {EXPECTED_LF_SHA256}")
+        raise SystemExit(
+            f"Historical LF-native-status SHA-256 mismatch: {raw_sha}; "
+            f"expected {EXPECTED_LF_SHA256}"
+        )
     if b"\r\n" in raw:
         raise SystemExit("Historical Git blob unexpectedly already contains CRLF bytes")
-    if raw.count(b"\n") != EXPECTED_ROWS_WITH_HEADER:
+
+    line_count = raw.count(b"\n")
+    if line_count != EXPECTED_ROWS_WITH_HEADER:
         raise SystemExit(
-            f"Historical native-status line-count mismatch: {raw.count(b'\n')}; expected {EXPECTED_ROWS_WITH_HEADER}"
+            f"Historical native-status line-count mismatch: {line_count}; "
+            f"expected {EXPECTED_ROWS_WITH_HEADER}"
         )
 
     exact = raw.replace(b"\n", b"\r\n")
     exact_sha = sha256(exact)
     if exact_sha != EXPECTED_CRLF_SHA256:
-        raise SystemExit(f"Recovered CRLF-native-status SHA-256 mismatch: {exact_sha}; expected {EXPECTED_CRLF_SHA256}")
+        raise SystemExit(
+            f"Recovered CRLF-native-status SHA-256 mismatch: {exact_sha}; "
+            f"expected {EXPECTED_CRLF_SHA256}"
+        )
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_bytes(exact)
