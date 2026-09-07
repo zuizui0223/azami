@@ -15,18 +15,21 @@ from pathlib import Path
 import pandas as pd
 
 
+ALLOWED_SOURCE_RANKS = {"species", "subspecies", "variety"}
 SPECIFICATION = {
-    "version": "v3_environment_design_cohort_v1",
+    "version": "v3_environment_design_cohort_v2",
     "purpose": "phenotype-blind environmental representation diagnostics",
     "eligibility": [
         "native_range_status == native",
         "taxon_resolution_status == resolved_unique_accepted_key",
+        "source_taxon_rank in species/subspecies/variety",
         "captive_state == false",
         "date_status == exact_day",
         "coordinate_status == public_location_present_precision_not_gated",
         "observation_month in 1..12",
         "accepted_key present",
     ],
+    "excluded_taxonomic_ranks": ["genus", "section", "complex", "hybrid"],
     "selection": "SHA256(v3-env-design:20260907:obs_id) ordered within accepted taxon concept",
     "taxon_cap": 60,
     "minimum_taxon_support_for_diagnostics": 5,
@@ -52,7 +55,7 @@ def build_design_cohort(
     minimum_taxon_support: int = SPECIFICATION["minimum_taxon_support_for_diagnostics"],
 ) -> tuple[pd.DataFrame, dict]:
     required = {
-        "obs_id", "accepted_key", "accepted_name", "source_taxon_name",
+        "obs_id", "accepted_key", "accepted_name", "source_taxon_name", "source_taxon_rank",
         "taxon_resolution_status", "native_range_status", "captive_state",
         "date_status", "coordinate_status", "analysis_latitude",
         "analysis_longitude", "observation_month",
@@ -69,10 +72,13 @@ def build_design_cohort(
     x["observation_month"] = pd.to_numeric(x["observation_month"], errors="coerce")
     x["analysis_latitude"] = pd.to_numeric(x["analysis_latitude"], errors="coerce")
     x["analysis_longitude"] = pd.to_numeric(x["analysis_longitude"], errors="coerce")
+    x["source_taxon_rank"] = x["source_taxon_rank"].fillna("").astype(str).str.lower()
     x["accepted_key_normalized"] = normalize_accepted_key(x["accepted_key"])
+    taxonomic_rank_ok = x["source_taxon_rank"].isin(ALLOWED_SOURCE_RANKS)
     eligible = (
         x["native_range_status"].astype(str).eq("native")
         & x["taxon_resolution_status"].astype(str).eq("resolved_unique_accepted_key")
+        & taxonomic_rank_ok
         & x["captive_state"].astype(str).eq("false")
         & x["date_status"].astype(str).eq("exact_day")
         & x["coordinate_status"].astype(str).eq("public_location_present_precision_not_gated")
@@ -81,9 +87,13 @@ def build_design_cohort(
         & x["analysis_longitude"].between(-180, 180)
         & x["observation_month"].between(1, 12)
     )
+    excluded_rank_counts = {
+        str(k): int(v)
+        for k, v in x.loc[~taxonomic_rank_ok, "source_taxon_rank"].value_counts(dropna=False).items()
+    }
     x = x.loc[eligible].copy()
     if x.empty:
-        raise ValueError("No eligible native-range observations for environment design")
+        raise ValueError("No eligible native-range species-level observations for environment design")
     x["accepted_key"] = x.pop("accepted_key_normalized").astype(str)
 
     support = x.groupby("accepted_key")["obs_id"].size().rename("eligible_taxon_n")
@@ -151,6 +161,8 @@ def build_design_cohort(
             "taxon_cap": int(taxon_cap),
             "minimum_taxon_support_for_diagnostics": int(minimum_taxon_support),
         },
+        "rows_excluded_by_non_species_source_rank_before_other_gates": int((~taxonomic_rank_ok).sum()),
+        "non_species_source_rank_counts": excluded_rank_counts,
         "eligible_rows_before_taxon_support": int(eligible.sum()),
         "eligible_taxa_before_support": int(support.size),
         "taxa_meeting_support": int(len(retained_keys)),
@@ -189,7 +201,7 @@ def main() -> int:
     )
     args.out_dir.mkdir(parents=True)
     keep = [
-        "obs_id", "accepted_key", "accepted_name", "source_taxon_name",
+        "obs_id", "accepted_key", "accepted_name", "source_taxon_name", "source_taxon_rank",
         "analysis_latitude", "analysis_longitude", "observation_month",
         "eligible_taxon_n", "selected_taxon_n", "equal_taxon_weight",
         "taxon_design_rank", "selection_hash", "native_range_status",
