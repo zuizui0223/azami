@@ -1,0 +1,102 @@
+name: Chapter 1 v3 environment representation freeze
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/environment_representation_decision_20260907.json
+      - analysis/v3/freeze_environment_representation.py
+      - analysis/v3/environment_exposure_contract.json
+      - .github/workflows/ch1-v3-environment-freeze.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install freeze environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pandas
+
+      - name: Read diagnostic artifact provenance from decision
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path('analysis/v3/environment_representation_decision_20260907.json')
+          if not p.is_file():
+              raise SystemExit('environment representation decision is not frozen yet')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          fields={
+              'DIAGNOSTICS_RUN_ID': str(int(d['diagnostics_workflow_run_id'])),
+              'DIAGNOSTICS_ARTIFACT_ID': str(int(d['diagnostics_artifact_id'])),
+              'DIAGNOSTICS_ARTIFACT_NAME': str(d['diagnostics_artifact_name']),
+              'DIAGNOSTICS_ARTIFACT_SHA256': str(d['diagnostics_artifact_sha256']).lower(),
+          }
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as handle:
+              for key,value in fields.items():
+                  handle.write(f'{key}={value}\n')
+          PY
+
+      - name: Verify and download exact diagnostic artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$DIAGNOSTICS_RUN_ID/artifacts" > artifact-list.json
+          python - <<'PY'
+          import json, os
+          data=json.load(open('artifact-list.json'))
+          target_id=int(os.environ['DIAGNOSTICS_ARTIFACT_ID'])
+          target=next((a for a in data.get('artifacts',[]) if int(a.get('id',-1))==target_id), None)
+          if target is None:
+              raise SystemExit('diagnostic artifact ID not found in requested workflow run')
+          if target.get('name') != os.environ['DIAGNOSTICS_ARTIFACT_NAME']:
+              raise SystemExit('diagnostic artifact name differs from frozen decision')
+          expected='sha256:'+os.environ['DIAGNOSTICS_ARTIFACT_SHA256']
+          if target.get('digest') != expected:
+              raise SystemExit(f"diagnostic artifact digest differs: {target.get('digest')} != {expected}")
+          if target.get('expired'):
+              raise SystemExit('diagnostic artifact has expired')
+          PY
+          mkdir diagnostics
+          gh run download "$DIAGNOSTICS_RUN_ID" -n "$DIAGNOSTICS_ARTIFACT_NAME" -D diagnostics
+          test -f diagnostics/environment_diagnostics.json
+          test -f diagnostics/environment_coverage.csv
+          test -f diagnostics/environment_correlations.csv
+          test -f diagnostics/environment_vif.csv
+
+      - name: Freeze representation without trait inputs
+        run: |
+          mkdir freeze
+          python -m analysis.v3.freeze_environment_representation \
+            --diagnostics-dir diagnostics \
+            --decision analysis/v3/environment_representation_decision_20260907.json \
+            --contract analysis/v3/environment_exposure_contract.json \
+            --out freeze/v3_environment_representation_freeze_20260907.json
+          python - <<'PY'
+          import json
+          r=json.load(open('freeze/v3_environment_representation_freeze_20260907.json'))
+          assert r['status']=='V3_ENVIRONMENT_REPRESENTATION_FROZEN_BEFORE_TRAIT_JOIN'
+          assert r['trait_files_read']==0 and r['image_files_read']==0
+          assert r['ecological_models_executed']==0
+          assert r['candidate_partition_complete'] is True
+          print({'selected':r['selected_variables'],'rejected':r['rejected_variables']})
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-environment-freeze-${{ github.run_id }}
+          path: freeze/v3_environment_representation_freeze_20260907.json
+          if-no-files-found: error
+          retention-days: 30
