@@ -10,43 +10,39 @@ def load_contract():
     return json.loads(CONTRACT.read_text(encoding="utf-8"))
 
 
-def test_primary_ecology_is_native_range_and_abiotic_only():
+def test_ecological_fitting_is_paused_during_hypothesis_redesign():
     c = load_contract()
-    assert c["sampling_and_replication"]["primary_ecological_range_scope"] == "native_only"
+    assert c["status"] == "hypothesis_redesign_in_progress_before_v3_ecological_fitting"
+    assert c["design_hold"]["ecological_fitting_paused"] is True
+    assert c["design_hold"]["next_required_artifact"] == "analysis/v3/capitulum_abiotic_hypotheses_v3.md"
+
+
+def test_preserved_scientific_requirements_survive_redesign():
+    c = load_contract()
+    p = c["preserved_requirements"]
+    assert p["primary_ecological_range_scope"] == "native_only"
+    assert p["taxonomic_join_required"] is True
+    assert p["hierarchy"] == ["head", "photo", "observation", "taxon"]
+    assert p["dominant_taxa_solution"] == "hierarchical_partial_pooling_random_slopes_with_taxon_level_summaries"
+    assert p["measurement_uncertainty_upstream"] is True
+    assert set(p["environment_collinearity_diagnostics_required"]) == {"correlation_matrix", "matrix_rank", "condition_number", "VIF"}
+    assert p["legacy_v2_candidates_need_not_survive"] is True
+
+
+def test_no_climate_core_is_privileged_while_redesign_is_open():
+    c = load_contract()
+    reason = c["design_hold"]["reason"]
+    assert "Do not privilege a climate core" in reason
+    assert "abiotic_environment" not in c
+
+
+def test_abiotic_only_scope_is_retained():
+    c = load_contract()
     assert "outside the current estimand" in c["scope"]["biotic_scope"]
-    assert c["execution_gate"]["legacy_v2_candidates_need_not_survive"] is True
+    assert "adaptation" in c["scope"]["causal_ceiling"]
 
 
-def test_dominant_taxa_are_handled_structurally_not_by_posthoc_deletion():
-    c = load_contract()
-    assert c["biological_scale"]["within_taxon"]["model"] == "hierarchical_partial_pooling_random_slopes"
-    assert "raw pooled observation slope" in c["sampling_and_replication"]["dominant_taxa_rule"]
-    assert c["biological_scale"]["among_taxon"]["taxon_weighting_rule"].startswith("One taxon summary")
-
-
-def test_environmental_blocks_are_integrated_before_endpoint_decomposition():
-    c = load_contract()
-    order = c["abiotic_environment"]["primary_test_order"]
-    assert order[0] == "fit_core_environment_representation"
-    assert order[1] == "test_each_predeclared_additional_block_for_information_beyond_core"
-    assert "correlation_matrix" in c["abiotic_environment"]["collinearity_before_fit"]["diagnostics"]
-    assert c["abiotic_environment"]["warm_season_precipitation_alternative"]["predictor"] == "BIO18"
-
-
-def test_measurement_uncertainty_precedes_ecological_interpretation():
-    c = load_contract()
-    orientation = c["measurement_uncertainty"]["orientation"]
-    assert orientation["stable_subset_required"] is True
-    assert "before joining environmental outcomes" in orientation["stable_subset_thresholds"]
-    assert c["visible_variation"]["hierarchical_decomposition_required"] is True
-
-
-def test_phylogeny_and_claim_language_are_bounded():
-    c = load_contract()
-    assert c["phylogenetic_sensitivity"]["candidate_promotion_gate"] is False
-    assert c["claim_language"]["disallowed_primary_label"] == "adaptive-pattern candidate"
-    assert c["claim_language"]["allowed_candidate_label"] == "candidate_association_for_functional_validation"
-
-
-def test_comment_integration_ledger_exists():
+def test_hypothesis_and_supervisor_ledgers_exist():
+    assert (ROOT / "analysis" / "v3" / "capitulum_abiotic_hypotheses_v3.md").is_file()
     assert (ROOT / "analysis" / "v3" / "supervisor_comment_integration_20260907.md").is_file()
+    assert (ROOT / "analysis" / "v3" / "environment_exposure_contract.json").is_file()
