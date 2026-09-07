@@ -1,0 +1,193 @@
+{
+  "status": "TECHNICAL_PERTURBATION_COMPLETED",
+  "execution_contract": {
+    "contract": {
+      "schema_version": 1,
+      "id": "v3_all_cached_heads_technical_perturbation_v1",
+      "design_status": "specified after v2 results and cached v3 baseline were inspected, before this perturbation pass",
+      "population": "every detection in the pinned cached-image pass, regardless of baseline QC; source universe and unprocessed photos remain in the upstream ledger",
+      "selection": "no taxon, coordinate, environmental association or baseline-phenotype selection",
+      "conditions": [
+        {
+          "id": "baseline",
+          "kind": "identity"
+        },
+        {
+          "id": "bbox_left_5pct",
+          "kind": "bbox_shift",
+          "dx": -0.05,
+          "dy": 0
+        },
+        {
+          "id": "bbox_right_5pct",
+          "kind": "bbox_shift",
+          "dx": 0.05,
+          "dy": 0
+        },
+        {
+          "id": "bbox_up_5pct",
+          "kind": "bbox_shift",
+          "dx": 0,
+          "dy": -0.05
+        },
+        {
+          "id": "bbox_down_5pct",
+          "kind": "bbox_shift",
+          "dx": 0,
+          "dy": 0.05
+        },
+        {
+          "id": "resolution_75pct",
+          "kind": "resolution",
+          "scale": 0.75
+        },
+        {
+          "id": "resolution_50pct",
+          "kind": "resolution",
+          "scale": 0.5
+        },
+        {
+          "id": "gamma_0p8",
+          "kind": "gamma",
+          "exponent": 0.8
+        },
+        {
+          "id": "gamma_1p2",
+          "kind": "gamma",
+          "exponent": 1.2
+        },
+        {
+          "id": "intensity_0p8",
+          "kind": "intensity",
+          "multiplier": 0.8
+        },
+        {
+          "id": "intensity_1p2",
+          "kind": "intensity",
+          "multiplier": 1.2
+        },
+        {
+          "id": "channel_warm",
+          "kind": "channel_gain",
+          "bgr": [
+            0.9,
+            1,
+            1.1
+          ]
+        },
+        {
+          "id": "channel_cool",
+          "kind": "channel_gain",
+          "bgr": [
+            1.1,
+            1,
+            0.9
+          ]
+        },
+        {
+          "id": "blur_sigma1",
+          "kind": "blur",
+          "sigma": 1
+        }
+      ],
+      "pixel_operations": "apply to the entire EXIF-oriented source image before cropping; BGR uint8; intensity/gain/power followed by numpy.rint, clipping to 0..255 and uint8 conversion; gamma operates on encoded sRGB values, not linear-light exposure",
+      "geometry": "bbox shifts use the original unpadded box width/height. Preserve head padding 0.12 and context padding 0.8. Round lower crop bounds down and upper bounds up. Clip at image boundaries and record clipping. Resolution uses OpenCV INTER_AREA with rounded positive image dimensions and actual x/y scale factors for all boxes; never upsample.",
+      "context": "exclude the union of all detected head-padded boxes; only the focal box shifts for bbox perturbations; all boxes scale for resolution changes",
+      "baseline_gate": "exact endpoint-array agreement with the saved baseline is required for each head before interpreting its perturbations; any mismatch stops new scheduling and makes the run incomplete",
+      "retain": "all 27 endpoint slots per scheduled head and condition, original/mirror values, QC transitions, engine/worker errors, transform/crop recipe, transformed pixel identity, mask identities and paired context diagnostics",
+      "mask_storage": "baseline mask files remain saved; transformed masks have exact dimension-aware pixel hashes and are reconstructible from immutable source pixels, transform recipes and pinned measurement code",
+      "dependence": "join the pinned observation/photo/exact-content connected components; summarize repeated heads within image then images within component; report historical development exposure separately",
+      "summary": "report all conditions and endpoints, baseline eligibility and paired eligibility, lost/gained QC, absolute and signed changes, group-weighted distributions and descriptive rank agreement where estimable; hue and colour fractions additionally require joint circular/compositional summaries",
+      "decision": "do not set a favourable rank-correlation threshold after seeing results or turn this pass into a claim of absolute accuracy; retain large changes, unavailable comparisons and quality failures",
+      "limits": [
+        "Synthetic perturbations characterize sensitivity to specified pixel/crop operations, not the full distribution of real photographic errors.",
+        "These settings are stress probes, not calibrated camera uncertainty or physical illumination interventions.",
+        "Stable ranks can coexist with large systematic shifts and selective loss of difficult images.",
+        "Shared-source grouping does not prove independent individuals or find all near-duplicate scenes.",
+        "The existing detector was pseudo-label-trained; technical repeatability does not establish detector precision/recall or calibrated biological accuracy."
+      ]
+    },
+    "contract_sha256_canonical_json": "79df3842aba0035471d1c037e4efb0abaf928cba705be92b2b9c609cb1f91f7e",
+    "input_database_sha256": {
+      "image_workspace": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+      "detection": "d385825e646ff867ba48b60385e92ea28cb572f4747221d323ca0078898dfe91",
+      "measurement": "4f5b1f69e88ec436f330b2c22f44511d22ebf1fd8c546ae7a72422f0caf280f2",
+      "dependence_groups": "75945b8bf69fcd81e79591bb83cc776ba1f640dc2930007d20b4b5b2d17728ab"
+    },
+    "worker_sha256_text_lf": "c732317f48e770e9839fa27ddbd19c40bf044a73258aef8e445056c71d373d91",
+    "feature_specification": {
+      "parameters": {
+        "version": "v3_cached_27_image_features_v1",
+        "primary_min_dimension": 96,
+        "colour_confidence_floor": 0.55,
+        "shape_confidence_floor": 0.5,
+        "orientation_confidence_floor": 0.65,
+        "flip_angle_tolerance": 20,
+        "min_architecture_dimension": 150,
+        "min_surface_dimension": 300,
+        "min_architecture_sharpness": 45,
+        "min_surface_sharpness": 80,
+        "context_green_hue_opencv": [
+          39,
+          104
+        ],
+        "context_green_min_saturation": 35,
+        "context_green_min_value": 40,
+        "context_min_pixels": 100,
+        "context_min_total_area_fraction": 0.01,
+        "composition_tolerance": 0.000001,
+        "context_exclusion": "union of every detector head-padded box, intersected with this context",
+        "paired_colour": "same OpenCV uint8 Lab/hue statistics on union floral pixels, all non-head context and green non-head context; no dominant-colour switching",
+        "legacy_chroma": "unchanged engine 56: redmagenta-only when dominant redmagenta, otherwise union floral pixels",
+        "primary_qc": "legacy mirror quality plus both values finite, registry bounds and minimum pixel dimension; retain all raw values",
+        "extended_qc": "engine 89 endpoint-specific mirror, geometry, resolution and sharpness flags plus registry bounds",
+        "new_diagnostics_are_not_endpoints": true
+      },
+      "source_sha256_text_lf": {
+        "ch1_global/v2/52_measure_primary_traits_continuous.py": "df3c5e3673d2fed9053512843d2eae12a46a3d75a007b7ac386e610f10815610",
+        "ch1_global/v2/55_run_primary_traits_continuous.py": "26a95146c7bf263676e7a15fdc783764f5603fc83b0ef09bd8fd3c7a878d7b5c",
+        "ch1_global/v2/56_run_primary_traits_continuous_v2.py": "b9c9614829da04a8dd203e58efaa3a8f3ecf9e7b65cd855a7a4e915c2431e70e",
+        "ch1_global/v2/89_measure_extended_continuous_traits.py": "382045f172205d1ceb453e35b912318861afc1653db78d39895cdb12304e54c7",
+        "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv": "cde8b8bb990d65fd2c9b2c247633eb47630e532cc69bec132c74f3b6bcfc29f1",
+        "analysis/v3/image_features.py": "e6075d14441083fb2f0769eb0448b27aa71aefc9a6b6851360c41ffd1d8be998"
+      }
+    },
+    "python": "3.12.14",
+    "software": {
+      "numpy": "2.2.6",
+      "pandas": "2.3.3",
+      "pillow": "12.2.0",
+      "cv2": "4.13.0",
+      "opencv-python": "4.13.0.92"
+    },
+    "opencv_threads_per_worker": 1,
+    "worker_processes": 2,
+    "helper_sha256_text_lf": {
+      "detect_cached_images.py": "bb3ba717f0b230046649947d945b8fb3198d85e7994a345a78382ad4ee226b6b",
+      "measure_cached_heads.py": "89d8027d78f9aab502e102cb1bc78a3cfe415dbe93cf05c43bed650d345611a2",
+      "build_image_workspace.py": "6417e585a60056a92431cd590d4f891d9fbccf8f031dfd3ea9ec04add6188c7d"
+    }
+  },
+  "counts": {
+    "scheduled_heads": 2853,
+    "conditions_per_head": 14,
+    "endpoints_per_condition": 27,
+    "completed_this_invocation": 2851,
+    "condition_rows": 39942,
+    "endpoint_rows": 1078434
+  },
+  "job_states": {
+    "completed": 2853
+  },
+  "output_database_sha256": "e01f0a40764ab2312ffd8d333e11a69e28a3b6fc0f3b1104088d027295781dfc",
+  "summary_and_claim_decision_completed": false,
+  "ecological_models_executed": false,
+  "independent_accuracy_estimated": false,
+  "limits": [
+    "Synthetic perturbations characterize sensitivity to specified pixel/crop operations, not the full distribution of real photographic errors.",
+    "These settings are stress probes, not calibrated camera uncertainty or physical illumination interventions.",
+    "Stable ranks can coexist with large systematic shifts and selective loss of difficult images.",
+    "Shared-source grouping does not prove independent individuals or find all near-duplicate scenes.",
+    "The existing detector was pseudo-label-trained; technical repeatability does not establish detector precision/recall or calibrated biological accuracy."
+  ]
+}

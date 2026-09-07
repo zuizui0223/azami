@@ -1,0 +1,37 @@
+{
+  "status": "COMPONENT_WEIGHTED_TECHNICAL_SENSITIVITY_SUMMARIZED",
+  "specification": {
+    "version": "v3_component_weighted_perturbation_summary_v1",
+    "timing": "specified after the perturbation execution began, before inspecting perturbation values; no preregistration claim",
+    "eligibility": "both original-baseline and perturbed endpoint values must be finite and QC-usable for paired change estimates; all four QC transitions retain the full scheduled-head denominator",
+    "weighting": "arithmetic mean of per-head signed/absolute changes within exact image object; arithmetic mean of image summaries within known dependence component; equal component weight for reported distributions",
+    "attrition": "loss is computed among original-baseline-eligible heads within image, then averaged within component and across components; groups with no surviving pairs still contribute to loss",
+    "rank": "descriptive Spearman correlation of within-image then within-component paired means, requiring at least three nonconstant components; no p-value or accuracy interpretation",
+    "joint_hue": "shortest absolute angular difference in degrees from sine/cosine pairs; no arbitrary linear hue rank or signed arithmetic mean",
+    "joint_composition": "total-variation distance, one-half the summed absolute changes of the closed four-part colour composition; no independent-part inference",
+    "strata": [
+      "all_cached",
+      "recorded_development_exposed",
+      "no_recorded_development_exposure"
+    ],
+    "decision": "quantify sensitivity and missingness; no favourable correlation threshold, physical-accuracy promotion or ecological conclusion"
+  },
+  "input_database_sha256": {
+    "perturbation": "e01f0a40764ab2312ffd8d333e11a69e28a3b6fc0f3b1104088d027295781dfc",
+    "measurement": "4f5b1f69e88ec436f330b2c22f44511d22ebf1fd8c546ae7a72422f0caf280f2",
+    "dependence": "75945b8bf69fcd81e79591bb83cc776ba1f640dc2930007d20b4b5b2d17728ab"
+  },
+  "implementation_sha256_text_lf": "8b3d0cd495cc7001c1dd83c3066e97f8c754f8d3d62059055ffaf5db61765cb6",
+  "summary_rows": 1218,
+  "summary_sha256": "2068c4f17d17ef0cade5d7453fb009193ea724983fd84d257b9a972d4c6d716d",
+  "claim_status": "specified_pixel_and_crop_sensitivity_only",
+  "independent_accuracy_estimated": false,
+  "ecological_models_executed": false,
+  "limits": [
+    "Do not treat hue components, composition parts, exposure strata or perturbation conditions as independent biological tests.",
+    "Pairwise change summaries describe surviving usable pairs; report eligibility loss alongside them.",
+    "Equal dependence-component weighting is not a probability-sampling correction or proof of biological independence.",
+    "No recorded development exposure is not a guarantee of fresh independent evaluation.",
+    "No automated pass/fail accuracy threshold or ecological claim is inferred from these descriptive summaries."
+  ]
+}

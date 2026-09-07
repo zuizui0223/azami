@@ -1,0 +1,191 @@
+{
+  "status": "FULL_SOURCE_LINKED_IMAGE_MEASUREMENT_VIEWS_BUILT_NOT_ECOLOGICALLY_ADMITTED",
+  "execution_contract": {
+    "specification": {
+      "version": "v3_observation_image_means_v1",
+      "source_universe": "every reconciled observation, including those without a cached or usable image; upstream immutable ledgers retain all photo links",
+      "head_to_image": "arithmetic mean of endpoint-eligible heads within an exact image; separately retain the mean and count of all finite values including QC failures",
+      "joint_eligibility": "hue sine/cosine share one finite usable head set; the four colour parts share one usable bounded closed-composition head set; raw eligibility remains recorded",
+      "image_identity": "EXIF-oriented decoded-pixel identity; multiple byte encodings must have identical processing summaries or the build stops; photo-ID aliases of the same pixels receive one image weight within an observation",
+      "photo_versions": "retain every version link. A photo ID with multiple distinct pixel versions has unresolved version choice and contributes no selected image through that photo ID; no first, best-QC or latest version is silently selected",
+      "image_to_observation": "equal weight per distinct eligible image pixel identity; retain support counts and missing means. Different photographs are not demonstrated same-head replicates",
+      "shared_observations": "retain shared-image links and dependence-component IDs; shared images are not independent observation evidence or resolved taxonomic assignments",
+      "quality_covariates": "endpoint-matched means of head minimum pixel dimension and Laplacian variance; if any eligible head lacks a covariate, that covariate mean is unavailable rather than a different subset mean",
+      "colour_pairs": "both registered colour endpoints must be usable, uniform floral pixels present, and context support available with finite lightness/chroma. Compare legacy colour, uniform-floral colour and context using exactly the same heads and images; retain losses separately",
+      "colour_contrast": "uniform floral minus context is an uncalibrated paired image contrast, not an illumination correction or physiological measurement",
+      "missingness": "an unmeasured endpoint is never zero; unavailable bytes, detector negatives, processing errors and endpoint QC remain distinguishable upstream and in support tables",
+      "claim_limit": "descriptive image-feature aggregation; not full-source image execution, a selected ecological cohort, a new independent test sample or a biological variance estimate",
+      "design_status": "specified after v2 and cached baseline inspection, before these observation means; no preregistration claim"
+    },
+    "input_database_sha256": {
+      "workspace": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+      "detection": "d385825e646ff867ba48b60385e92ea28cb572f4747221d323ca0078898dfe91",
+      "measurement": "4f5b1f69e88ec436f330b2c22f44511d22ebf1fd8c546ae7a72422f0caf280f2",
+      "dependence": "75945b8bf69fcd81e79591bb83cc776ba1f640dc2930007d20b4b5b2d17728ab"
+    },
+    "implementation_sha256_text_lf": "47d26a080a1279a6c3ddba55545137d60cdeb52c973dd138fdb11ff802b3cf4e",
+    "registry_sha256_text_lf": "cde8b8bb990d65fd2c9b2c247633eb47630e532cc69bec132c74f3b6bcfc29f1"
+  },
+  "counts": {
+    "source_observations_retained": 665139,
+    "source_photo_links_referenced": 1122901,
+    "cached_objects_retained": 2092,
+    "cached_photo_version_links_retained": 2095,
+    "photo_ids_with_unresolved_pixel_version_choice": 0,
+    "distinct_pixel_images": 2092,
+    "image_endpoint_rows": 56484,
+    "observation_endpoint_inventory_slots": 17958753,
+    "observations_with_selected_cached_images": 2085,
+    "observations_with_shared_selected_images": 6,
+    "observations_with_any_eligible_endpoint": 1099,
+    "observations_with_paired_green_context": 745,
+    "source_observations_deleted": 0
+  },
+  "endpoint_coverage": {
+    "bract_projection_asymmetry": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "bract_projection_maximum": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "bract_projection_p95": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "bract_projection_peak_density": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "bract_projection_roughness": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "bract_spread_fraction": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "capitulum_outline_aspect_ratio": {
+      "observations": 898,
+      "observation_image_links": 900,
+      "unique_pixel_images": 898
+    },
+    "capitulum_outline_circularity": {
+      "observations": 898,
+      "observation_image_links": 900,
+      "unique_pixel_images": 898
+    },
+    "capitulum_outline_solidity": {
+      "observations": 898,
+      "observation_image_links": 900,
+      "unique_pixel_images": 898
+    },
+    "capitulum_width_profile_cv": {
+      "observations": 898,
+      "observation_image_links": 900,
+      "unique_pixel_images": 898
+    },
+    "corolla_hue_cos": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_hue_sin": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_lab_chroma": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_lab_lightness": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_purple_pixel_fraction": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_redmagenta_pixel_fraction": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_white_pixel_fraction": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "corolla_yellow_pixel_fraction": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    },
+    "involucre_apical_taper_ratio": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "involucre_basal_taper_ratio": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "involucre_length_width_ratio": {
+      "observations": 148,
+      "observation_image_links": 149,
+      "unique_pixel_images": 149
+    },
+    "involucre_surface_edge_density": {
+      "observations": 50,
+      "observation_image_links": 50,
+      "unique_pixel_images": 50
+    },
+    "involucre_surface_high_frequency_energy": {
+      "observations": 50,
+      "observation_image_links": 50,
+      "unique_pixel_images": 50
+    },
+    "involucre_surface_lbp_entropy": {
+      "observations": 50,
+      "observation_image_links": 50,
+      "unique_pixel_images": 50
+    },
+    "involucre_surface_specular_fraction": {
+      "observations": 50,
+      "observation_image_links": 50,
+      "unique_pixel_images": 50
+    },
+    "orientation_image_vertical_angle": {
+      "observations": 795,
+      "observation_image_links": 796,
+      "unique_pixel_images": 794
+    },
+    "visible_floret_fraction": {
+      "observations": 977,
+      "observation_image_links": 979,
+      "unique_pixel_images": 977
+    }
+  },
+  "output_database_sha256": "f0d5b6a532659782593e4fe0ae2ba9acd23781697d6ad9ed0cce338604a14c30",
+  "ecological_models_executed": false,
+  "limits": [
+    "Cached historical images are not a representative sample of the full source universe.",
+    "Shared-image observation values remain linked through dependence components and require explicit treatment in the eventual ecological cohort.",
+    "Repeated photographs do not establish same-head identity or separate photographic from biological variance.",
+    "Paired colour contrasts are descriptive and uncalibrated; context may contain non-leaf material or undetected flowers.",
+    "Raw finite means include QC failures and must not be mistaken for eligible ecological measurements.",
+    "All 27 columns remain visible; joint hue and the closed composition are not independent biological traits."
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "status": "TECHNICAL_COVERAGE_FIGURE_RENDERED_VISUAL_REVIEW_REQUIRED",
+  "summary_sha256": "2068c4f17d17ef0cade5d7453fb009193ea724983fd84d257b9a972d4c6d716d",
+  "verification_sha256": "b0341e56bb792b0a5159ed00c12f51bd6fd1be69154950ae2d735d9c462e4fab",
+  "figure_contract_sha256_text_lf": "88dc10fb1beeeffb45ff3e5f8f37aaf2da3a8ed8623fe783174a3ac09e3ff67d",
+  "implementation_sha256_text_lf": "2251dd127a3036a3f71faa9571aa64586970af22ec28aebd2518955f5adcb630",
+  "endpoint_order": [
+    "orientation_image_vertical_angle",
+    "corolla_lab_lightness",
+    "corolla_lab_chroma",
+    "corolla_hue_sin",
+    "corolla_hue_cos",
+    "visible_floret_fraction",
+    "corolla_white_pixel_fraction",
+    "corolla_redmagenta_pixel_fraction",
+    "corolla_purple_pixel_fraction",
+    "corolla_yellow_pixel_fraction",
+    "capitulum_outline_aspect_ratio",
+    "capitulum_outline_circularity",
+    "capitulum_outline_solidity",
+    "capitulum_width_profile_cv",
+    "involucre_length_width_ratio",
+    "involucre_apical_taper_ratio",
+    "involucre_basal_taper_ratio",
+    "bract_projection_roughness",
+    "bract_projection_p95",
+    "bract_projection_maximum",
+    "bract_spread_fraction",
+    "bract_projection_peak_density",
+    "bract_projection_asymmetry",
+    "involucre_surface_edge_density",
+    "involucre_surface_lbp_entropy",
+    "involucre_surface_high_frequency_energy",
+    "involucre_surface_specular_fraction"
+  ],
+  "scheduled_heads": 2853,
+  "outputs": {
+    "technical_coverage.png": "58e6c239305f3fb1237c4ded9d1750577bb23eae88d880336df670bd27c0b89a",
+    "technical_coverage.pdf": "dbf248e1033c5d0e9f14cd77eb077a4d902d1092a4020b368e311d7832ae5fe2"
+  },
+  "matplotlib_version": "3.11.1",
+  "ecological_models_executed": false,
+  "visual_review": {
+    "status": "PNG_INSPECTED_AFTER_LAYOUT_REVISION",
+    "checks": [
+      "All 27 registry labels matched their endpoints",
+      "Panel headings and subtitle separated",
+      "Baseline counts and component-weighted loss have distinct stated denominators",
+      "Missing loss is labelled NA; zero is distinct",
+      "No claim of accuracy or journal-format compliance"
+    ],
+    "reviewed_output_sha256": "58e6c239305f3fb1237c4ded9d1750577bb23eae88d880336df670bd27c0b89a"
+  }
+}

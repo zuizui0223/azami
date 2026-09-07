@@ -48,7 +48,10 @@ jobs:
             tests/test_v3_dependence_groups.py \
             tests/test_v3_perturbations.py \
             tests/test_v3_perturbation_summary.py \
-            tests/test_v3_observation_annotations.py
+            tests/test_v3_observation_annotations.py \
+            tests/test_v3_observation_measurements.py \
+            tests/test_v3_summary_verification.py \
+            tests/test_v3_technical_coverage_figure.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan

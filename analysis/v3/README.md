@@ -59,9 +59,9 @@ analysis view, not irreversible source reduction.
 |---|---|---|
 | Inventory | Every merged/source row and archived API link accounted for; lost links restored; source hashes, observation aggregation and v2 overlap | First chunk's raw API file is absent; complete collection-time recovery cannot be certified |
 | Recover | Six original metadata archives, the unthinned processing archive, verified local image bytes and full-source known-dependence groups | Full-source image availability and a rights-aware acquisition/retention schedule; processing records are not image files |
-| Measure | Historical five-field recovery; executed cached-image detection and all-27 baseline extraction; implemented 14-condition perturbation runner and component-weighted summary | Complete the running cached perturbation grid and its summary; full-source execution and propagation of measurement uncertainty |
+| Measure | Historical five-field recovery; cached detection, all-27 baseline extraction, completed 14-condition perturbations and component-weighted summary; independent scalar arithmetic verification | Full-source image execution and propagation of measurement uncertainty |
 | Analyse | Executed full-source observation annotations, kept separate from image measurements; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
-| Report | Aggregate inventory, historical recovery and cached-execution receipts | Complete technical-evaluation and ecological tables/figures from the same saved outputs |
+| Report | Aggregate receipts, full technical-sensitivity table and reproducible coverage/loss figure; full-source-linked observation measurement view | Model-specific ecological tables/figures from saved outputs |
 
 The specification is [`workflow_contract.json`](workflow_contract.json).
 It fixes procedures and evidential limits, **not the result direction or its
@@ -349,8 +349,10 @@ image. Encoded-sRGB changes are specified digital stress tests, not physical cam
 calibration or a validated illumination correction. The runner supports bounded
 execution and resume of pending jobs, with an operating-system lock and unchanged
 input/code/environment identities. A partial receipt cannot become a completed
-summary. The full 2,853-head cached grid is running; no completed perturbation
-result is claimed by this implementation checkpoint.
+summary. The [completed cached pass](../../reproducibility/v3_cached_perturbation_20260907.json)
+contains 39,942 head-condition rows and 1,078,434 endpoint rows across all 2,853
+heads, without baseline-replay, engine or worker errors. This completes the saved
+digital probes on the historical local cache, not the full-source image pass.
 
 The summary reports absolute and signed changes, rank agreement and all four QC
 transitions. It averages heads within exact image, then images within known
@@ -361,6 +363,63 @@ recorded provenance, not independent validation. Joint hue uses circular angular
 distance; the four colour fractions additionally use a joint composition distance.
 These diagnostics do not add independent ecological endpoints. No favourable rank
 threshold, accuracy claim or ecological conclusion is built into the summary.
+
+The [executed summary](../../reproducibility/v3_technical_sensitivity_20260907.json)
+contains all 1,218 rows: 14 conditions, 27 scalar endpoints plus two joint metrics,
+and three recorded-exposure strata. The full [aggregate table](../../analysis_outputs/v3/technical_sensitivity_summary_20260907.csv)
+is public. An [independent SQLite recomputation](../../reproducibility/v3_technical_summary_verification_20260907.json)
+matched the counts, means and loss fractions of all 1,134 scalar rows. This checks
+arithmetic, not accuracy; rank correlations, quantiles and joint metrics were not
+independently recomputed in that check.
+
+In the all-cached stratum, halving image dimensions removed baseline eligibility
+for 55.2% of orientation, 49.2% of colour/display, 56.1% of outline, 80.9% of
+architecture and 100% of surface measurements under component weighting. The
+surface endpoints had only 53 eligible heads at baseline. This loss includes
+crossing the saved minimum-pixel requirements; it is not an engine failure, a
+biological absence or proof of inaccurate values. Finite QC-failed values remain
+saved. Remaining paired orientation measurements had a rank correlation of 0.984
+under halving, so high surviving-pair rank agreement must not hide substantial
+eligibility loss.
+
+Absolute shifts also matter: specified warm-channel gains changed paired chroma
+by 6.54 Lab-chroma units on average, and blur with sigma 1 changed paired
+orientation by 9.85 degrees, with the same image/component weighting. These are
+native-unit digital-probe changes, not calibrated real-camera error estimates.
+They cannot be compared directly with standardized ecological coefficients or
+used alone to invalidate a v2 association. No favourable threshold was fitted to
+these outcomes.
+
+`plot_technical_coverage.py` draws all 27 baseline counts beside their eligibility
+loss under every non-baseline condition. It requires the exact verified aggregate
+and exports a local PNG and vector PDF. Its [figure specification](technical_coverage_figure_contract.json)
+separates denominators and missing values explicitly. This is a diagnostic figure,
+not a claim of journal-format compliance or a replacement manuscript.
+
+### Observation measurement views without source deletion
+
+The [executed aggregation](../../reproducibility/v3_observation_measurements_20260907.json)
+retains all 665,139 observations and references all 1,122,901 source photo links.
+Its logical inventory has 17,958,753 observation-endpoint slots, including missing
+measurements. It reads image measurements and source identities, but no coordinates,
+taxon assignments, environmental predictors or perturbation outcomes.
+
+Eligible heads are averaged within each image and distinct eligible images receive
+equal weight within each observation. Exact decoded-pixel aliases count once;
+multiple encodings must agree in processing summaries. Unresolved distinct-pixel
+versions of one photo ID remain explicit and are not selected by favourable QC.
+Shared-image observations retain their dependence links. Hue components and the
+four composition parts use joint eligible sets. Quality covariates and paired
+flower/context contrasts use the same supporting heads and images as their values.
+Raw finite means including QC failures are retained separately, never substituted
+for eligible means.
+
+The current cache supports 2,085 observations with selected images and 1,099 with
+at least one eligible endpoint: 795 for orientation, 977 for colour/display, 898
+for outline, 148 for architecture and 50 for surface endpoints. Paired green-context
+colour is available for 745 observations. These are not representative full-source
+coverage estimates, a final ecological cohort or a completed negative-control
+regression. No v3 ecological model has yet been fitted.
 
 ### Run cached-image processing
 
@@ -398,6 +457,18 @@ python -m analysis.v3.perturb_cached_heads \
 python -m analysis.v3.summarize_perturbations \
   --perturbation /path/to/completed-perturbations --measurement /path/to/cached-measurement \
   --dependence /path/to/dependence-groups --out-dir /path/to/new-technical-summary
+python -m analysis.v3.verify_perturbation_summary \
+  --perturbation /path/to/completed-perturbations --measurement /path/to/cached-measurement \
+  --dependence /path/to/dependence-groups --summary /path/to/technical-summary \
+  --out-dir /path/to/new-summary-verification
+python -m analysis.v3.build_observation_measurements \
+  --workspace /path/to/image-workspace --detection /path/to/cached-detection \
+  --measurement /path/to/cached-measurement --dependence /path/to/dependence-groups \
+  --out-dir /path/to/new-observation-measurements
+python -m analysis.v3.plot_technical_coverage \
+  --summary analysis_outputs/v3/technical_sensitivity_summary_20260907.csv \
+  --verification reproducibility/v3_technical_summary_verification_20260907.json \
+  --out-dir outputs/new-technical-coverage-figure
 python -m analysis.v3.recover_display_composition \
   --heads /path/to/exhaustive_merged/exhaustive_continuous_head_level.csv \
   --out-dir /path/to/new-display-composition-view

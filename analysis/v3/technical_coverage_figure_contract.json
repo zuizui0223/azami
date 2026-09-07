@@ -1,0 +1,15 @@
+{
+  "question": "How many cached heads meet each endpoint's baseline requirements, and how often is that eligibility lost under each specified digital perturbation?",
+  "takeaway": "Baseline coverage and subsequent eligibility loss are different quantities; stable values among surviving pairs do not establish retained coverage or accuracy.",
+  "surface": "reproducible standalone scientific PNG and vector PDF, not a manuscript or interactive report",
+  "renderer": "Matplotlib",
+  "family": "aligned horizontal bars and annotated heatmap",
+  "data": "27 registered endpoints, 14 conditions, all_cached stratum; require the complete 1218-row public summary and its matching arithmetic-verification receipt",
+  "left_denominator": "all scheduled cached heads; endpoint-specific baseline QC-usable count shown directly",
+  "right_denominator": "original-baseline-eligible heads within image, then equal image weight within known-dependence component and equal component weight; components with no surviving pair retained",
+  "missing": "an unavailable loss is grey and labelled NA, never zero",
+  "palette": "single blue root #416C91 with light-to-dark discrete heatmap tones, charcoal labels, neutral background; numeric cell labels provide non-colour distinction",
+  "layout": "10.8 by 10.3 inches; 27 rows in the original registry order; minimum 8 point main labels; 300 dpi PNG and vector PDF with embedded TrueType fonts",
+  "branding": "third-party user scientific figure; no platform ornament or branding",
+  "qa": "inspect exported PNG for label collisions, missing values, all27 completeness and explicit different denominators; do not infer journal compliance from this diagnostic figure"
+}

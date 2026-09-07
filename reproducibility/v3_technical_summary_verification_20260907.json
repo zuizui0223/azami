@@ -1,0 +1,42 @@
+{
+  "status": "SCALAR_PERTURBATION_MEANS_AND_ATTRITION_RECOMPUTED_BY_SQL",
+  "scalar_rows_checked": 1134,
+  "checked_fields": [
+    "scheduled_heads",
+    "scheduled_images",
+    "scheduled_components",
+    "baseline_usable_heads",
+    "paired_usable_heads",
+    "lost_usable_heads",
+    "gained_usable_heads",
+    "neither_usable_heads",
+    "paired_images",
+    "paired_components",
+    "mean_signed_change",
+    "mean_absolute_change",
+    "component_weighted_loss_fraction"
+  ],
+  "max_absolute_numerical_differences": {
+    "mean_signed_change": 1.7763568394002505e-15,
+    "mean_absolute_change": 1.7763568394002505e-15,
+    "component_weighted_loss_fraction": 2.220446049250313e-16
+  },
+  "numerical_comparison_tolerance": {
+    "absolute": 1e-10,
+    "relative": 1e-10
+  },
+  "summary_sha256": "2068c4f17d17ef0cade5d7453fb009193ea724983fd84d257b9a972d4c6d716d",
+  "input_database_sha256": {
+    "perturbation": "e01f0a40764ab2312ffd8d333e11a69e28a3b6fc0f3b1104088d027295781dfc",
+    "measurement": "4f5b1f69e88ec436f330b2c22f44511d22ebf1fd8c546ae7a72422f0caf280f2",
+    "dependence": "75945b8bf69fcd81e79591bb83cc776ba1f640dc2930007d20b4b5b2d17728ab"
+  },
+  "implementation_sha256_text_lf": "21c508c5eeef952e45623ec87a2ef9fe3a08785c0b06b7d6c8f0a0a5493d25ac",
+  "not_independently_recomputed_here": [
+    "rank correlations",
+    "component quantiles",
+    "joint circular hue changes",
+    "joint composition distances"
+  ],
+  "scientific_limit": "Arithmetic verification is not physical accuracy, real-camera uncertainty calibration or evidence of ecological association."
+}
