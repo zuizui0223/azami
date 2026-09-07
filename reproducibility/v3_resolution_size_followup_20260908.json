@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "status": "LARGE_ORIGINAL_STREAM_FOLLOWUP_COMPLETE",
+  "study_status": "post_inspection_technical_followup_after_32_photo_gate",
+  "workflow": {
+    "run_id": 34167969002,
+    "artifact_id": 10034896212,
+    "artifact_name": "ch1-v3-large-original-resolution-followup-34167969002",
+    "artifact_sha256": "f48c572fcf4a0b048db49a513d018fb4f373d980bb9bfa5b658c5274b0ccb005"
+  },
+  "artifact_members": {
+    "resolution_followup_report.json": {
+      "bytes": 23296,
+      "sha256": "eeecfbee6d81f4ac6148213df7165f55972bc1ead451a2a59078a4ce754e49d5"
+    },
+    "pair_transfer_and_detection.csv": {
+      "bytes": 24998,
+      "sha256": "30c5c4441e63c4debfc5fdc7266899ef3c5fc174e52d2e68888ccaceaf32f624"
+    },
+    "matched_endpoint_measurements.csv": {
+      "bytes": 897444,
+      "sha256": "a4a642208a187fd4b687b62ca2311229e3ebbdf18046485db1b36fabd03636f1"
+    }
+  },
+  "execution": {
+    "photos_requested": 128,
+    "photos_selected": 128,
+    "successful_pairs": 128,
+    "matched_head_pairs": 206,
+    "bytes_transferred_total": 300223711,
+    "maximum_source_image_bytes_live_at_once": 6903291,
+    "source_images_persisted": 0,
+    "full_original_archive_required_by_design": false,
+    "ecological_models_executed": false
+  },
+  "decision_thresholds": {
+    "minimum_common_usable_head_pairs": 30,
+    "minimum_discordant_eligibility_pairs": 15,
+    "original_gain_share_among_discordant": 0.8,
+    "eligibility_exact_p_max": 0.01,
+    "rank_correlation_min": 0.9,
+    "median_abs_delta_over_original_iqr_max": 0.15
+  },
+  "endpoint_status_counts": {
+    "NO_FOLLOWUP_EVIDENCE_ORIGINAL_REQUIRED_BEYOND_LARGE": 9,
+    "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE": 14,
+    "INSUFFICIENT_FOLLOWUP_INFORMATION": 4
+  },
+  "key_results": {
+    "orientation_image_vertical_angle": {
+      "status": "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE",
+      "large_usable": 92,
+      "original_usable": 126,
+      "both_usable": 83,
+      "original_gain": 43,
+      "original_loss": 9,
+      "rank_correlation": 0.9745392720708617,
+      "median_abs_difference_over_original_iqr": 0.015915815634532295,
+      "flags": ["original_eligibility_gain_over_large"]
+    },
+    "colour_module_common_pattern": {
+      "endpoints": [
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos",
+        "corolla_white_pixel_fraction",
+        "corolla_redmagenta_pixel_fraction",
+        "corolla_purple_pixel_fraction",
+        "corolla_yellow_pixel_fraction"
+      ],
+      "status": "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE",
+      "large_usable_per_endpoint": 121,
+      "original_usable_per_endpoint": 156,
+      "both_usable_per_endpoint": 115,
+      "original_gain_per_endpoint": 41,
+      "original_loss_per_endpoint": 6,
+      "rank_correlation_range": [0.9888161224559888, 0.9983113706304744],
+      "reason": "Eligibility gain at original resolution; paired numerical agreement is otherwise high."
+    },
+    "visible_floret_fraction": {
+      "status": "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE",
+      "large_usable": 121,
+      "original_usable": 156,
+      "both_usable": 115,
+      "original_gain": 41,
+      "original_loss": 6,
+      "rank_correlation": 0.9912806754517479,
+      "median_abs_difference_over_original_iqr": 0.04141375433984414
+    },
+    "gross_outline": {
+      "endpoints": [
+        "capitulum_outline_aspect_ratio",
+        "capitulum_outline_circularity",
+        "capitulum_outline_solidity",
+        "capitulum_width_profile_cv"
+      ],
+      "status": "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE",
+      "large_usable_per_endpoint": 99,
+      "original_usable_per_endpoint": 141,
+      "both_usable_per_endpoint": 96,
+      "original_gain_per_endpoint": 45,
+      "original_loss_per_endpoint": 3,
+      "rank_correlation_range": [0.6995659251220837, 0.8455236028214869],
+      "reason": "Original resolution strongly raises eligibility and several outline metrics also fail rank/native-unit-shift thresholds."
+    },
+    "fine_architecture": {
+      "endpoints_with_no_followup_evidence_original_required": 9,
+      "common_usable_pairs_range": [8, 9],
+      "contract_interpretation": "Despite the generic endpoint status, common usable pairs are far below the predeclared numeric-comparability minimum of 30. The measurement qualification contract therefore blocks these endpoints from primary ecology rather than treating them as resolution-equivalent."
+    },
+    "surface_texture": {
+      "endpoints": 4,
+      "status": "INSUFFICIENT_FOLLOWUP_INFORMATION",
+      "common_usable_pairs": 3,
+      "contract_interpretation": "Blocked from primary ecological inference."
+    }
+  },
+  "limits": [
+    "The followup was designed after the completed 32-photo medium-original gate and is not preregistration.",
+    "Large-original agreement measures pipeline information retention, not physical botanical accuracy or detector truth.",
+    "Eligibility differences can combine image resizing/JPEG, detector localization, crop pixel dimensions and endpoint QC.",
+    "No source image bytes were retained and the result does not require a permanent original-image archive."
+  ]
+}
