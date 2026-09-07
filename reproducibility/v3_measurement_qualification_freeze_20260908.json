@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_TRAIT_ENVIRONMENT_JOIN",
+  "scope": "Durable aggregate receipt for the image-only measurement qualification freeze. No observation identifiers, coordinates or ecological coefficients are stored here.",
+  "freeze_workflow": {
+    "run_id": 34168543633,
+    "artifact_id": 10034956298,
+    "artifact_name": "ch1-v3-measurement-freeze-34168543633",
+    "artifact_sha256": "316f6e6c0cd5b31e0730c7d77592f4fc97739ceff464a40c033709fb37f9cbd2",
+    "receipt_member": "v3_measurement_qualification_freeze_20260908.json",
+    "receipt_sha256": "b8c4cb2e184fe057e9c4263b5f63bc847015334532a870061d344acc2283cf65",
+    "receipt_bytes": 1873
+  },
+  "followup_provenance": {
+    "workflow_run_id": 34167969002,
+    "artifact_id": 10034896212,
+    "artifact_name": "ch1-v3-large-original-resolution-followup-34167969002",
+    "artifact_sha256": "f48c572fcf4a0b048db49a513d018fb4f373d980bb9bfa5b658c5274b0ccb005",
+    "report_sha256": "eeecfbee6d81f4ac6148213df7165f55972bc1ead451a2a59078a4ce754e49d5",
+    "photos": 128,
+    "successful_pairs": 128,
+    "matched_head_pairs": 206
+  },
+  "endpoint_count": 27,
+  "resolution_status_counts": {
+    "NO_FOLLOWUP_EVIDENCE_ORIGINAL_REQUIRED_BEYOND_LARGE": 9,
+    "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE": 14,
+    "INSUFFICIENT_FOLLOWUP_INFORMATION": 4
+  },
+  "ecological_route_counts": {
+    "stream_original_required": 14,
+    "blocked_by_other_measurement_rule": 9,
+    "blocked_pending_additional_gate": 4
+  },
+  "original_stream_modules": ["orientation", "visible_colour", "visible_display", "gross_shape"],
+  "blocked_primary_ecology_module": "fine_architecture_and_surface",
+  "orientation": {
+    "resolution_status": "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE",
+    "ecological_route": "stream_original_required",
+    "bbox_uncertainty_required": true,
+    "bbox_uncertainty_source": "predeclared four +/-5% bounding-box shifts from cached 14-condition perturbation design"
+  },
+  "raw_values_retained_when_inferentially_ineligible": true,
+  "trait_environment_results_inspected": false,
+  "ecological_models_executed": 0,
+  "trait_environment_join_authorized_by_measurement_gate": true,
+  "full_original_archive_required": false,
+  "source_image_route": "stream/process/discard",
+  "decision_file": "analysis/v3/measurement_qualification_decision_20260908.json",
+  "claim_boundary": "Qualification addresses image-pipeline information retention and synthetic technical sensitivity, not detector truth or physical botanical accuracy."
+}
