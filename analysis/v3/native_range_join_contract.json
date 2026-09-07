@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "contract_id": "ch1_v3_full_source_native_range_join_20260907",
+  "status": "source_backed_join_before_ecological_fitting",
+  "purpose": "Resolve source taxon names and classify public observation coordinates as native, introduced or unresolved before constructing the primary ecological cohort.",
+  "source_taxonomy_and_distribution": {
+    "dataset": "World Checklist of Vascular Plants via GBIF dataset endpoints",
+    "dataset_key": "f382f0ce-323a-4091-bb9f-add557f3a9a2",
+    "dataset_doi": "10.15468/6h8ucr",
+    "dataset_modified": "2026-06-10T05:03:50.116+00:00",
+    "license": "CC BY 4.0"
+  },
+  "tdwg_level3": {
+    "repository": "https://github.com/tdwg/wgsrpd",
+    "commit": "52da7828aba9d461dd133c27b3bd7a4407161f54",
+    "path": "geojson/level3.geojson",
+    "expected_sha256": "c172bcf6aba20e19477adc60aebf0023068f0175dca8480f0760b090dcf64840"
+  },
+  "name_resolution_rule": "Resolve a source canonical name only when exact canonical-name records with usable accepted keys converge on one accepted WCVP key; otherwise unresolved.",
+  "distribution_rule": "Blank or NATIVE establishment means on a non-doubtful present record are native; INTRODUCED is introduced; conflicts, doubtful, absent, unknown and unlisted states are not guessed.",
+  "geometry_rule": "Assign a TDWG level-3 region only when a public coordinate lies within exactly one pinned polygon; boundary/overlap/unmapped points remain unresolved.",
+  "retention_rule": "All observations remain in the master ledger. This join adds status and taxonomic provenance; it never deletes source observations.",
+  "primary_ecology_rule": "Only observations explicitly classified native and otherwise meeting the separately frozen ecological support rules may enter primary ecological inference.",
+  "introduced_rule": "Introduced observations may be used only in separately labelled range-transfer/transportability analyses, never as evidence defining the primary native-range association.",
+  "misidentification_boundary": "Name resolution is not independent image-identification validation."
+}
