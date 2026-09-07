@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "contract_id": "ch1_v3_measurement_qualification_20260908",
   "status": "fixed_before_128_photo_followup_results",
   "purpose": "Freeze image-only rules that determine whether a capitulum endpoint/module may enter ecological inference, and how technical uncertainty is propagated, before inspecting any v3 trait-environment coefficient.",
@@ -50,6 +50,12 @@
       "photometric_rule": "gamma/intensity/channel perturbations are part of technical uncertainty/context diagnostics; camera-space colour is not pigment concentration or calibrated reflectance",
       "interpretation_ceiling": "visible camera-space colour state"
     },
+    "visible_display": {
+      "endpoints": ["visible_floret_fraction"],
+      "ecological_priority": "Tier_2_only_if_construct_and_resolution_qualified",
+      "resolution_rule": "insufficient or original-required status blocks primary ecological use through large derivatives",
+      "interpretation_ceiling": "image-defined visible-floret/display fraction only; not developmental stage, floral display area or pollinator accessibility without external validation"
+    },
     "gross_shape": {
       "endpoints": [
         "capitulum_outline_aspect_ratio",
@@ -82,6 +88,7 @@
       "interpretation_ceiling": "image geometry/texture only; do not rename as spine length, stiffness, gland density or secretion"
     }
   },
+  "endpoint_partition_count": 27,
   "measurement_freeze_requirement": {
     "required_before_trait_environment_join": true,
     "must_record": [
