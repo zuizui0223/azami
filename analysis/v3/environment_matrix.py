@@ -3,7 +3,9 @@
 This module must not read capitulum trait files. It samples CHELSA 2.1 long-term
 monthly climatologies at observation coordinates using the observation month and
 can sample broader annual/seasonal representations at the same coordinates. It
-then reports coverage and environmental redundancy before any trait join.
+then reports coverage and environmental redundancy before any trait join. If the
+source cohort carries ``equal_taxon_weight``, the primary correlation/VIF matrix
+uses those weights so photo-rich taxa cannot dominate environmental selection.
 """
 from __future__ import annotations
 
@@ -76,6 +78,10 @@ def validate_observation_frame(frame: pd.DataFrame, require_native: bool) -> pd.
     if invalid.any():
         raise ValueError(f"Invalid coordinate/month rows: {int(invalid.sum())}")
     out["observation_month"] = out["observation_month"].astype(int)
+    if "equal_taxon_weight" in out.columns:
+        out["equal_taxon_weight"] = pd.to_numeric(out["equal_taxon_weight"], errors="coerce")
+        if out["equal_taxon_weight"].isna().any() or (out["equal_taxon_weight"] <= 0).any():
+            raise ValueError("equal_taxon_weight must be finite and positive")
     if require_native:
         if "native_range_status" not in out.columns:
             raise ValueError("native_range_status is required for the primary environment cohort")
@@ -187,18 +193,34 @@ def candidate_specs(contract: dict) -> list[RasterCandidate]:
     return specs
 
 
-def coverage_table(environment: pd.DataFrame, variables: Iterable[str]) -> pd.DataFrame:
+def _numeric_weights(environment: pd.DataFrame, weight_column: str | None) -> pd.Series:
+    if weight_column is None:
+        return pd.Series(np.ones(len(environment), dtype=float), index=environment.index)
+    if weight_column not in environment.columns:
+        raise ValueError(f"Missing weight column: {weight_column}")
+    weights = pd.to_numeric(environment[weight_column], errors="coerce")
+    if weights.isna().any() or (weights <= 0).any() or not np.isfinite(weights.to_numpy(dtype=float)).all():
+        raise ValueError("Diagnostic weights must be finite and positive")
+    return weights.astype(float)
+
+
+def coverage_table(environment: pd.DataFrame, variables: Iterable[str], weight_column: str | None = None) -> pd.DataFrame:
     n = len(environment)
+    weights = _numeric_weights(environment, weight_column)
+    total_weight = float(weights.sum())
     rows = []
     for variable in variables:
         values = pd.to_numeric(environment[variable], errors="coerce")
         finite = np.isfinite(values.to_numpy(dtype=float))
+        finite_weights = weights.loc[finite]
+        weighted_coverage = float(finite_weights.sum() / total_weight) if total_weight > 0 else np.nan
         rows.append(
             {
                 "variable": variable,
                 "n_total": n,
                 "n_finite": int(finite.sum()),
                 "coverage": float(finite.mean()) if n else np.nan,
+                "weighted_coverage": weighted_coverage,
                 "mean": float(values[finite].mean()) if finite.any() else np.nan,
                 "sd": float(values[finite].std(ddof=1)) if finite.sum() > 1 else np.nan,
             }
@@ -206,59 +228,117 @@ def coverage_table(environment: pd.DataFrame, variables: Iterable[str]) -> pd.Da
     return pd.DataFrame(rows)
 
 
-def correlation_long(environment: pd.DataFrame, variables: list[str], method: str) -> pd.DataFrame:
-    corr = environment[variables].corr(method=method, min_periods=3)
+def _weighted_corr_pair(x: pd.Series, y: pd.Series, weights: pd.Series, rank: bool) -> float:
+    frame = pd.DataFrame({"x": pd.to_numeric(x, errors="coerce"), "y": pd.to_numeric(y, errors="coerce"), "w": weights})
+    frame = frame.replace([np.inf, -np.inf], np.nan).dropna()
+    if len(frame) < 3 or frame["x"].nunique() < 2 or frame["y"].nunique() < 2:
+        return np.nan
+    if rank:
+        frame["x"] = frame["x"].rank(method="average")
+        frame["y"] = frame["y"].rank(method="average")
+    w = frame["w"].to_numpy(dtype=float)
+    xv = frame["x"].to_numpy(dtype=float)
+    yv = frame["y"].to_numpy(dtype=float)
+    wsum = float(w.sum())
+    mx = float(np.sum(w * xv) / wsum)
+    my = float(np.sum(w * yv) / wsum)
+    dx = xv - mx
+    dy = yv - my
+    cov = float(np.sum(w * dx * dy) / wsum)
+    vx = float(np.sum(w * dx * dx) / wsum)
+    vy = float(np.sum(w * dy * dy) / wsum)
+    if vx <= 0 or vy <= 0:
+        return np.nan
+    return cov / math.sqrt(vx * vy)
+
+
+def correlation_long(
+    environment: pd.DataFrame,
+    variables: list[str],
+    method: str,
+    weight_column: str | None = None,
+) -> pd.DataFrame:
+    if method not in {"pearson", "spearman"}:
+        raise ValueError("Correlation method must be pearson or spearman")
     rows = []
+    if weight_column is None:
+        corr = environment[variables].corr(method=method, min_periods=3)
+        for i, left in enumerate(variables):
+            for right in variables[i + 1 :]:
+                rows.append({"method": method, "variable_a": left, "variable_b": right, "correlation": corr.loc[left, right]})
+        return pd.DataFrame(rows)
+    weights = _numeric_weights(environment, weight_column)
+    label = method + "_equal_taxon_weight" if weight_column == "equal_taxon_weight" else method + "_weighted"
     for i, left in enumerate(variables):
         for right in variables[i + 1 :]:
             rows.append(
                 {
-                    "method": method,
+                    "method": label,
                     "variable_a": left,
                     "variable_b": right,
-                    "correlation": corr.loc[left, right],
+                    "correlation": _weighted_corr_pair(environment[left], environment[right], weights, rank=method == "spearman"),
                 }
             )
     return pd.DataFrame(rows)
 
 
-def complete_standardized(environment: pd.DataFrame, variables: list[str]) -> tuple[pd.DataFrame, list[str]]:
-    data = (
-        environment[variables]
-        .apply(pd.to_numeric, errors="coerce")
-        .replace([np.inf, -np.inf], np.nan)
-        .dropna()
-    )
+def complete_standardized(
+    environment: pd.DataFrame,
+    variables: list[str],
+    weight_column: str | None = None,
+) -> tuple[pd.DataFrame, pd.Series, list[str]]:
+    columns = list(variables) + ([weight_column] if weight_column else [])
+    data = environment[columns].copy()
+    for variable in variables:
+        data[variable] = pd.to_numeric(data[variable], errors="coerce")
+    if weight_column:
+        data[weight_column] = pd.to_numeric(data[weight_column], errors="coerce")
+    data = data.replace([np.inf, -np.inf], np.nan).dropna()
+    weights = _numeric_weights(data, weight_column)
     retained = [column for column in variables if data[column].nunique(dropna=True) > 1]
-    data = data[retained]
     if data.empty or not retained:
-        return data, retained
-    sd = data.std(ddof=0)
-    retained = [column for column in retained if float(sd[column]) > 0]
-    data = data[retained]
-    if not retained:
-        return data, retained
-    return (data - data.mean()) / data.std(ddof=0), retained
+        return pd.DataFrame(index=data.index), weights, retained
+    standardized = pd.DataFrame(index=data.index)
+    final: list[str] = []
+    w = weights.to_numpy(dtype=float)
+    wsum = float(w.sum())
+    for column in retained:
+        values = data[column].to_numpy(dtype=float)
+        mean = float(np.sum(w * values) / wsum)
+        variance = float(np.sum(w * (values - mean) ** 2) / wsum)
+        if variance <= 0:
+            continue
+        standardized[column] = (values - mean) / math.sqrt(variance)
+        final.append(column)
+    return standardized, weights.loc[standardized.index], final
 
 
-def vif_table(environment: pd.DataFrame, variables: list[str]) -> tuple[pd.DataFrame, dict]:
-    standardized, retained = complete_standardized(environment, variables)
+def vif_table(
+    environment: pd.DataFrame,
+    variables: list[str],
+    weight_column: str | None = None,
+) -> tuple[pd.DataFrame, dict]:
+    standardized, weights, retained = complete_standardized(environment, variables, weight_column)
     report = {
         "n_complete_rows": int(len(standardized)),
         "n_candidate_variables": len(variables),
         "n_nonconstant_complete_variables": len(retained),
         "matrix_rank": 0,
         "condition_number": None,
+        "weight_column": weight_column,
+        "complete_row_total_weight": float(weights.sum()) if len(weights) else 0.0,
     }
     if len(retained) == 0 or len(standardized) < 3:
         return pd.DataFrame(columns=["variable", "vif"]), report
-    matrix = standardized.to_numpy(dtype=float)
-    report["matrix_rank"] = int(np.linalg.matrix_rank(matrix))
-    singular = np.linalg.svd(matrix, compute_uv=False)
-    if singular[-1] > np.finfo(float).eps:
-        report["condition_number"] = float(singular[0] / singular[-1])
-    else:
-        report["condition_number"] = "infinite"
+    matrix = standardized[retained].to_numpy(dtype=float)
+    w = weights.to_numpy(dtype=float)
+    sqrt_w = np.sqrt(w / np.mean(w))
+    weighted_matrix = matrix * sqrt_w[:, None]
+    report["matrix_rank"] = int(np.linalg.matrix_rank(weighted_matrix))
+    singular = np.linalg.svd(weighted_matrix, compute_uv=False)
+    report["condition_number"] = (
+        float(singular[0] / singular[-1]) if singular[-1] > np.finfo(float).eps else "infinite"
+    )
     rows = []
     for idx, variable in enumerate(retained):
         y = matrix[:, idx]
@@ -267,17 +347,25 @@ def vif_table(environment: pd.DataFrame, variables: list[str]) -> tuple[pd.DataF
             vif: float | str = 1.0
         else:
             design = np.column_stack([np.ones(len(others)), others])
-            coef, *_ = np.linalg.lstsq(design, y, rcond=None)
+            weighted_design = design * sqrt_w[:, None]
+            weighted_y = y * sqrt_w
+            coef, *_ = np.linalg.lstsq(weighted_design, weighted_y, rcond=None)
             fitted = design @ coef
-            ss_res = float(np.sum((y - fitted) ** 2))
-            ss_tot = float(np.sum((y - y.mean()) ** 2))
+            mean_y = float(np.sum(w * y) / np.sum(w))
+            ss_res = float(np.sum(w * (y - fitted) ** 2))
+            ss_tot = float(np.sum(w * (y - mean_y) ** 2))
             r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 1.0
             vif = "infinite" if 1.0 - r2 <= 1e-12 else 1.0 / (1.0 - r2)
         rows.append({"variable": variable, "vif": vif})
     return pd.DataFrame(rows), report
 
 
-def redundancy_components(correlations: pd.DataFrame, variables: list[str], threshold: float) -> list[list[str]]:
+def redundancy_components(
+    correlations: pd.DataFrame,
+    variables: list[str],
+    threshold: float,
+    primary_method: str = "pearson",
+) -> list[list[str]]:
     parent = {v: v for v in variables}
 
     def find(x: str) -> str:
@@ -291,8 +379,8 @@ def redundancy_components(correlations: pd.DataFrame, variables: list[str], thre
         if ra != rb:
             parent[rb] = ra
 
-    pearson = correlations.loc[correlations["method"].eq("pearson")]
-    for row in pearson.itertuples(index=False):
+    primary = correlations.loc[correlations["method"].eq(primary_method)]
+    for row in primary.itertuples(index=False):
         if pd.notna(row.correlation) and abs(float(row.correlation)) >= threshold:
             union(str(row.variable_a), str(row.variable_b))
     groups: dict[str, list[str]] = {}
@@ -301,18 +389,33 @@ def redundancy_components(correlations: pd.DataFrame, variables: list[str], thre
     return sorted((sorted(values) for values in groups.values()), key=lambda x: (len(x), x), reverse=True)
 
 
-def diagnose_environment(environment: pd.DataFrame, variables: list[str], threshold: float) -> tuple[dict, dict[str, pd.DataFrame]]:
-    coverage = coverage_table(environment, variables)
-    pearson = correlation_long(environment, variables, "pearson")
-    spearman = correlation_long(environment, variables, "spearman")
-    correlations = pd.concat([pearson, spearman], ignore_index=True)
-    vif, matrix = vif_table(environment, variables)
-    clusters = redundancy_components(correlations, variables, threshold)
+def diagnose_environment(
+    environment: pd.DataFrame,
+    variables: list[str],
+    threshold: float,
+    weight_column: str | None = None,
+) -> tuple[dict, dict[str, pd.DataFrame]]:
+    if weight_column is None and "equal_taxon_weight" in environment.columns:
+        weight_column = "equal_taxon_weight"
+    coverage = coverage_table(environment, variables, weight_column)
+    unweighted_pearson = correlation_long(environment, variables, "pearson")
+    unweighted_spearman = correlation_long(environment, variables, "spearman")
+    parts = [unweighted_pearson, unweighted_spearman]
+    primary_method = "pearson"
+    if weight_column:
+        parts.append(correlation_long(environment, variables, "pearson", weight_column))
+        parts.append(correlation_long(environment, variables, "spearman", weight_column))
+        primary_method = "pearson_equal_taxon_weight" if weight_column == "equal_taxon_weight" else "pearson_weighted"
+    correlations = pd.concat(parts, ignore_index=True)
+    vif, matrix = vif_table(environment, variables, weight_column)
+    clusters = redundancy_components(correlations, variables, threshold, primary_method=primary_method)
     report = {
         "status": "ENVIRONMENT_ONLY_DIAGNOSTICS_COMPLETE",
         "n_rows": int(len(environment)),
         "variables": variables,
         "matrix": matrix,
+        "weight_column": weight_column,
+        "primary_redundancy_correlation_method": primary_method,
         "absolute_correlation_redundancy_threshold": float(threshold),
         "redundancy_components": clusters,
         "trait_columns_read": 0,
@@ -354,7 +457,7 @@ def parse_args() -> argparse.Namespace:
         "--observations",
         type=Path,
         required=True,
-        help="CSV with obs_id, latitude, longitude, observation_month and optionally native_range_status",
+        help="CSV with obs_id, latitude, longitude, observation_month and optionally native_range_status/equal_taxon_weight",
     )
     parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
     parser.add_argument("--out-dir", type=Path, required=True)
@@ -379,7 +482,8 @@ def main() -> int:
         variables=args.variables,
     )
     threshold = float(contract["redundancy_rule"]["default_absolute_correlation_flag"])
-    report, tables = diagnose_environment(matrix, variables, threshold)
+    weight_column = "equal_taxon_weight" if "equal_taxon_weight" in matrix.columns else None
+    report, tables = diagnose_environment(matrix, variables, threshold, weight_column=weight_column)
     report.update(
         {
             "contract_id": contract["contract_id"],
@@ -404,6 +508,7 @@ def main() -> int:
                 "n_rows": report["n_rows"],
                 "variables": variables,
                 "pilot": report["engineering_pilot_only"],
+                "weight_column": report["weight_column"],
             }
         )
     )
