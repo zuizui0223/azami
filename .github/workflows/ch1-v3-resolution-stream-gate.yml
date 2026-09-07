@@ -8,6 +8,13 @@ on:
       - analysis/v3/resolution_gate_contract.json
       - tests/test_v3_resolution_stream_gate.py
       - reproducibility/v3-image-cpu-requirements.txt
+  pull_request:
+    paths:
+      - .github/workflows/ch1-v3-resolution-stream-gate.yml
+      - analysis/v3/resolution_stream_gate.py
+      - analysis/v3/resolution_gate_contract.json
+      - tests/test_v3_resolution_stream_gate.py
+      - reproducibility/v3-image-cpu-requirements.txt
   workflow_dispatch:
 permissions:
   contents: read
