@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "status": "phenotype_blind_selection_priority_fixed_before_complete_15_candidate_diagnostics",
+  "study_status": "retrospective_redesign_after_v2_results_seen_not_preregistration",
+  "contract_id": "ch1_v3_environment_exposure_candidates_20260907",
+  "complete_15_candidate_diagnostic_results_inspected": false,
+  "partial_13_candidate_run_used_for_selection": false,
+  "selection_basis": [
+    "biological_proximity",
+    "coverage",
+    "environment_only_redundancy"
+  ],
+  "general_rule": "Prefer observation-month direct physical exposures within a redundant biological exposure family; broader or derived summaries survive only when they add a distinct pre-specified process representation with usable coverage. Trait coefficients, P values and v2 candidate survival cannot arbitrate the choice.",
+  "candidate_roles_before_diagnostics": {
+    "pr_month": {
+      "priority": "primary_direct",
+      "hypotheses": ["H1", "H2", "H3"],
+      "construct": "flowering-period precipitation / wetting exposure",
+      "redundancy_preference": "preferred over BIO12, BIO18 and GSP when those are redundant representations of hydric exposure"
+    },
+    "rsds_month": {
+      "priority": "primary_direct",
+      "hypotheses": ["H2", "H3"],
+      "construct": "flowering-period shortwave radiation"
+    },
+    "vpd_month": {
+      "priority": "primary_direct",
+      "hypotheses": ["H2", "H3"],
+      "construct": "flowering-period atmospheric drying power",
+      "redundancy_preference": "preferred as the direct atmospheric-demand representation when PET or CMI does not add a distinct process"
+    },
+    "tas_month": {
+      "priority": "primary_direct_thermal_candidate",
+      "hypotheses": ["H2", "H5"],
+      "construct": "flowering-period mean thermal exposure"
+    },
+    "tasmax_month": {
+      "priority": "primary_direct_thermal_candidate",
+      "hypotheses": ["H2", "H3", "H5"],
+      "construct": "flowering-period maximum thermal exposure",
+      "redundancy_preference": "if tas_month and tasmax_month are strongly redundant and one thermal stress representation is sufficient, prefer tasmax_month because H2/H3 concern stress exposure while H5 permits maximum-temperature context"
+    },
+    "sfcWind_month": {
+      "priority": "secondary_direct",
+      "hypotheses": ["H4"],
+      "construct": "flowering-period mechanical exposure",
+      "use_boundary": "pre-specified secondary orientation/architecture exposure, not a mandatory driver in every primary module model"
+    },
+    "pet_month": {
+      "priority": "derived_alternative",
+      "hypotheses": ["H2", "H3"],
+      "construct": "potential evaporative demand",
+      "redundancy_preference": "reject from the minimal primary representation when the direct VPD/precipitation pair captures the same information; retain only if environment-only diagnostics show a distinct process representation"
+    },
+    "cmi_month": {
+      "priority": "derived_alternative",
+      "hypotheses": ["H2", "H3"],
+      "construct": "climatic moisture availability",
+      "redundancy_preference": "reject from the minimal primary representation when redundant with precipitation/VPD/PET; retain only if it adds distinct moisture-availability information"
+    },
+    "BIO12": {
+      "priority": "broad_hydric_alternative",
+      "hypotheses": ["H1", "H2", "H3"],
+      "construct": "annual precipitation",
+      "redundancy_preference": "observation-month precipitation has priority when redundant"
+    },
+    "BIO18": {
+      "priority": "broad_hydric_alternative",
+      "hypotheses": ["H1"],
+      "construct": "warmest-quarter precipitation",
+      "redundancy_preference": "observation-month precipitation has priority when redundant"
+    },
+    "GSP": {
+      "priority": "broad_hydric_alternative",
+      "hypotheses": ["H1"],
+      "construct": "growing-season precipitation",
+      "redundancy_preference": "observation-month precipitation has priority when redundant"
+    },
+    "BIO1": {
+      "priority": "broad_thermal_alternative",
+      "hypotheses": ["H2", "H5"],
+      "construct": "annual mean temperature",
+      "redundancy_preference": "month-aligned thermal exposure has priority when redundant"
+    },
+    "BIO4": {
+      "priority": "broad_context_or_sensitivity",
+      "hypotheses": [],
+      "construct": "temperature seasonality",
+      "use_boundary": "not promoted into the primary representation merely because it is non-redundant; there is no frozen primary seasonality hypothesis"
+    },
+    "BIO15": {
+      "priority": "broad_context_or_sensitivity",
+      "hypotheses": [],
+      "construct": "precipitation seasonality",
+      "use_boundary": "not promoted into the primary representation merely because it is non-redundant; there is no frozen primary seasonality hypothesis"
+    },
+    "NPP": {
+      "priority": "distal_context",
+      "hypotheses": [],
+      "construct": "potential productivity",
+      "use_boundary": "not part of the minimal primary abiotic representation unless a separately labelled resource-context analysis is justified without trait outcomes"
+    }
+  },
+  "decision_rules": [
+    "Coverage may veto a preferred direct exposure if it is not usable on the intended native-range cohort, but no trait outcome may arbitrate the fallback.",
+    "At the contract redundancy flag of absolute correlation >= 0.80, prefer the biologically closer direct exposure within the same process family unless the alternative represents a separately pre-specified process.",
+    "Non-redundancy alone is not sufficient to promote BIO4, BIO15 or NPP into a primary mechanistic model.",
+    "The final decision may assign retained variables different roles such as primary_direct, secondary_predefined or sensitivity_only; selected variables are not automatically entered into every trait-module model.",
+    "Every one of the 15 diagnosed candidates must appear exactly once as selected or rejected with a reason in the final environment decision."
+  ],
+  "claim_boundary": "This priority file fixes environment-selection logic only. It contains no capitulum-trait result and does not authorize ecological fitting before the environment freeze receipt exists."
+}
