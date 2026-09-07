@@ -51,7 +51,8 @@ jobs:
             tests/test_v3_observation_annotations.py \
             tests/test_v3_observation_measurements.py \
             tests/test_v3_summary_verification.py \
-            tests/test_v3_technical_coverage_figure.py
+            tests/test_v3_technical_coverage_figure.py \
+            tests/test_v3_resolution_stream_gate.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan
@@ -74,7 +75,11 @@ jobs:
           test -f analysis/rebuild_frozen_native_status.py
           test -f analysis/rebuild_frozen_broad_region_lookup.py
           test -f analysis/build_naturalearth_broad_region_lookup.py
+          test -f analysis/v3/resolution_stream_gate.py
+          test -f analysis/v3/resolution_gate_contract.json
+          test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
           test -f reproducibility/frozen-numerical-rebuild-requirements.txt
+          test -f reproducibility/v3-image-cpu-requirements.txt
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
           test -f ch1_global/v2/ANALYSIS_MANIFEST.tsv
           test -f reproducibility/actions_artifact_catalog.json
