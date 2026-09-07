@@ -1,0 +1,73 @@
+{
+  "audit_id": "ch1_v3_offline_consistency_20260907",
+  "status": "VERIFIED_AVAILABLE_SCOPE_ONLY",
+  "input_sha256": {
+    "traits": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "heads": "779e6f84830da56fb0d561f62042d087b5fff6b3511150c65727f0fff162a733",
+    "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+  },
+  "original_orientation": {
+    "usable_heads": 102982,
+    "observations": 37251,
+    "maximum_absolute_error_degrees": 2.842170943040401e-14
+  },
+  "fixed_subset": {"taxa": 142, "observations": 3829, "heads": 10431, "photographs": 6561},
+  "conditional_models": 22,
+  "threshold_models": 10,
+  "interval": "HC3 sandwich; normal reference; 95%; exploratory; no multiplicity or spatial adjustment",
+  "note_duplicate_model": "orientation climate_core and plus_chelsa_bio01 intentionally coincide",
+  "image_operations_performed": false,
+  "bbox_record_audit": {"status": "NOT_VERIFIED_RECORDS_NOT_SUPPLIED"},
+  "software": {"python": "3.13.5", "numpy": "2.3.5", "pandas": "2.2.3"},
+  "conditional_model_rows": [
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"univariate","n_taxa":143,"beta":-0.3453720170895292,"ci_low":-0.5079429599238763,"ci_high":-0.1828010742551822},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"climate_core","n_taxa":143,"beta":-0.4362127437810009,"ci_low":-0.6017104892847583,"ci_high":-0.2707149982772435},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_bio01","n_taxa":143,"beta":-0.4246702000916717,"ci_low":-0.5851475277693773,"ci_high":-0.2641928724139661},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_bio04","n_taxa":143,"beta":-0.4269508670010498,"ci_low":-0.5958510258894394,"ci_high":-0.2580507081126603},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_bio12","n_taxa":143,"beta":-0.3472928857187716,"ci_low":-0.5129694881670748,"ci_high":-0.1816162832704685},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_bio15","n_taxa":143,"beta":-0.4196104326671387,"ci_low":-0.605123804598568,"ci_high":-0.2340970607357095},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_vpd_mean","n_taxa":143,"beta":-0.4503467973669384,"ci_low":-0.6283365556354725,"ci_high":-0.2723570390984043},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_sfcwind_mean","n_taxa":143,"beta":-0.3615303187147882,"ci_low":-0.5184735167039369,"ci_high":-0.2045871207256394},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_gsp","n_taxa":143,"beta":-0.3395638642854375,"ci_low":-0.5033890732270005,"ci_high":-0.1757386553438744},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"plus_chelsa_npp","n_taxa":143,"beta":-0.332063438288016,"ci_low":-0.4928182205387504,"ci_high":-0.1713086560372816},
+    {"endpoint":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","model":"all_nine","n_taxa":143,"beta":-0.4531781223675954,"ci_low":-0.8102790366873992,"ci_high":-0.0960772080477917},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"univariate","n_taxa":142,"beta":0.3043592858977515,"ci_low":0.0898319661700045,"ci_high":0.5188866056254986},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"climate_core","n_taxa":142,"beta":0.3076109406355055,"ci_low":0.0928116405295006,"ci_high":0.5224102407415103},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_bio01","n_taxa":142,"beta":0.3076109406355055,"ci_low":0.0928116405295006,"ci_high":0.5224102407415103},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_bio04","n_taxa":142,"beta":0.2986776438772185,"ci_low":0.0649202791484227,"ci_high":0.5324350086060143},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_bio15","n_taxa":142,"beta":0.3063667709335559,"ci_low":0.0908508117403601,"ci_high":0.5218827301267518},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_rsds_mean","n_taxa":142,"beta":0.3029465624332439,"ci_low":0.0846878083857219,"ci_high":0.5212053164807658},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_vpd_mean","n_taxa":142,"beta":0.2923148503191058,"ci_low":0.0715719902047402,"ci_high":0.5130577104334714},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_sfcwind_mean","n_taxa":142,"beta":0.3077613941094475,"ci_low":0.0921889423079493,"ci_high":0.5233338459109456},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_gsp","n_taxa":142,"beta":0.3143432575205482,"ci_low":-0.0059759094107375,"ci_high":0.634662424451834},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"plus_chelsa_npp","n_taxa":142,"beta":0.3138832186642986,"ci_low":0.0614725278339078,"ci_high":0.5662939094946895},
+    {"endpoint":"orientation_image_vertical_angle","predictor":"chelsa_bio12","model":"all_nine","n_taxa":142,"beta":0.2193841569912973,"ci_low":-0.2457508750629024,"ci_high":0.6845191890454971}
+  ],
+  "threshold_model_rows": [
+    {"endpoint":"corolla_lab_chroma","minimum":2,"n_taxa":203,"beta":-0.283914659802768},
+    {"endpoint":"corolla_lab_chroma","minimum":5,"n_taxa":143,"beta":-0.3453720170895292},
+    {"endpoint":"corolla_lab_chroma","minimum":10,"n_taxa":104,"beta":-0.3238285289861123},
+    {"endpoint":"corolla_lab_chroma","minimum":20,"n_taxa":74,"beta":-0.3955125113159733},
+    {"endpoint":"corolla_lab_chroma","minimum":30,"n_taxa":59,"beta":-0.3894691301659115},
+    {"endpoint":"orientation_image_vertical_angle","minimum":2,"n_taxa":199,"beta":0.2684483626341059},
+    {"endpoint":"orientation_image_vertical_angle","minimum":5,"n_taxa":142,"beta":0.3043592858977515},
+    {"endpoint":"orientation_image_vertical_angle","minimum":10,"n_taxa":101,"beta":0.3806728062450107},
+    {"endpoint":"orientation_image_vertical_angle","minimum":20,"n_taxa":67,"beta":0.3415521741508298},
+    {"endpoint":"orientation_image_vertical_angle","minimum":30,"n_taxa":59,"beta":0.3391645224563183}
+  ],
+  "local_validation": {
+    "new_unit_tests": 29,
+    "existing_integrity_tests": 25,
+    "total_tests_passed": 54,
+    "rerun_output_files_byte_identical": 6,
+    "source_note": "same frozen data; not independent biological evidence"
+  },
+  "output_sha256": {
+    "conditional_models.csv": "26e77336b846661944114692c69e2ca679c48d627fa90f0da2f6bee270d5e62e",
+    "reconstructed_selection_heads.csv": "aeccd918607a813f13d0a63cea04a530aeb4612cf1314ef4bf5df5d994838ed6",
+    "minimum_observations.csv": "42d15300db73f4dff5eb00968f122dd2805f5e4fe14806fca1044a00f2cbbfb5",
+    "candidate_vif.csv": "ff2cdaaa9573bdcdbde2f80e632dc6f53aefb9799aab3058fbf7ad8c682ce836",
+    "reconstructed_selection_observations.csv": "f1ae8424ca74de39193412fb8fae15caa7ce6c5067c92993f4c6b6a8ceb30852",
+    "audit_report.json": "2664062e41d8fc20f9be88464b3b62de79f730a59ec9cd446807daab079932b3"
+  }
+}
