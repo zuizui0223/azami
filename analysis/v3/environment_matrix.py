@@ -1,7 +1,8 @@
 """Build and diagnose a phenotype-blind v3 abiotic exposure matrix.
 
 This module must not read capitulum trait files. It samples CHELSA 2.1 long-term
-monthly climatologies at observation coordinates using the observation month,
+monthly climatologies at observation coordinates using the observation month and
+can sample broader annual/seasonal representations at the same coordinates. It
 then reports coverage and environmental redundancy before any trait join.
 """
 from __future__ import annotations
@@ -27,6 +28,8 @@ class RasterCandidate:
     variable: str
     construct: str
     unit: str
+    temporal_mode: str = "monthly"
+    url: str | None = None
 
 
 def load_contract(path: Path = DEFAULT_CONTRACT) -> dict:
@@ -86,56 +89,77 @@ def _apply_raster_scale(value: float, scale: float, offset: float) -> float:
     return float(value) * float(scale) + float(offset)
 
 
-def sample_monthly_candidate(
-    frame: pd.DataFrame,
-    candidate: RasterCandidate,
-    contract: dict,
-    url_builder=month_url,
-) -> pd.Series:
-    """Sample one CHELSA variable, opening only months represented in frame."""
+def _rasterio_modules():
     try:
         import rasterio
         from rasterio.warp import transform
-    except ImportError as exc:  # pragma: no cover - exercised in full environment only
+    except ImportError as exc:  # pragma: no cover - full environment only
         raise RuntimeError("rasterio is required for CHELSA sampling; install project [full]") from exc
+    return rasterio, transform
 
-    result = pd.Series(np.nan, index=frame.index, dtype="float64", name=candidate.output_id)
-    env_options = {
+
+def _sample_dataset(dataset, frame: pd.DataFrame, transform) -> list[float]:
+    lons = frame["longitude"].astype(float).tolist()
+    lats = frame["latitude"].astype(float).tolist()
+    if dataset.crs is None:
+        raise ValueError("Raster has no CRS")
+    if str(dataset.crs).upper() not in {"EPSG:4326", "OGC:CRS84"}:
+        xs, ys = transform("EPSG:4326", dataset.crs, lons, lats)
+    else:
+        xs, ys = lons, lats
+    scale = dataset.scales[0] if dataset.scales else 1.0
+    offset = dataset.offsets[0] if dataset.offsets else 0.0
+    values: list[float] = []
+    for item in dataset.sample(zip(xs, ys), indexes=1, masked=True):
+        scalar = item[0]
+        if np.ma.is_masked(scalar):
+            values.append(np.nan)
+            continue
+        value = float(scalar)
+        values.append(_apply_raster_scale(value, scale, offset) if math.isfinite(value) else np.nan)
+    return values
+
+
+def _raster_env_options() -> dict[str, str]:
+    return {
         "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR",
         "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": ".tif,.TIF",
         "GDAL_HTTP_MULTIRANGE": "YES",
         "VSI_CACHE": "TRUE",
         "VSI_CACHE_SIZE": "50000000",
     }
-    with rasterio.Env(**env_options):
+
+
+def sample_monthly_candidate(
+    frame: pd.DataFrame,
+    candidate: RasterCandidate,
+    contract: dict,
+    url_builder=month_url,
+) -> pd.Series:
+    """Sample one CHELSA monthly candidate, opening only represented months."""
+    rasterio, transform = _rasterio_modules()
+    result = pd.Series(np.nan, index=frame.index, dtype="float64", name=candidate.output_id)
+    with rasterio.Env(**_raster_env_options()):
         for month, group in frame.groupby("observation_month", sort=True):
             source = url_builder(contract, candidate.variable, int(month))
             with rasterio.open(source) as dataset:
-                lons = group["longitude"].astype(float).tolist()
-                lats = group["latitude"].astype(float).tolist()
-                if dataset.crs is None:
-                    raise ValueError(f"Raster has no CRS: {source}")
-                if str(dataset.crs).upper() not in {"EPSG:4326", "OGC:CRS84"}:
-                    xs, ys = transform("EPSG:4326", dataset.crs, lons, lats)
-                else:
-                    xs, ys = lons, lats
-                scale = dataset.scales[0] if dataset.scales else 1.0
-                offset = dataset.offsets[0] if dataset.offsets else 0.0
-                sampled = dataset.sample(zip(xs, ys), indexes=1, masked=True)
-                values = []
-                for item in sampled:
-                    scalar = item[0]
-                    if np.ma.is_masked(scalar):
-                        values.append(np.nan)
-                    else:
-                        value = float(scalar)
-                        values.append(_apply_raster_scale(value, scale, offset) if math.isfinite(value) else np.nan)
-                result.loc[group.index] = values
+                result.loc[group.index] = _sample_dataset(dataset, group, transform)
     return result
 
 
+def sample_static_candidate(frame: pd.DataFrame, candidate: RasterCandidate) -> pd.Series:
+    """Sample one annual/seasonal CHELSA candidate at all observation points."""
+    if not candidate.url:
+        raise ValueError(f"Static candidate {candidate.output_id} has no URL")
+    rasterio, transform = _rasterio_modules()
+    with rasterio.Env(**_raster_env_options()):
+        with rasterio.open(candidate.url) as dataset:
+            values = _sample_dataset(dataset, frame, transform)
+    return pd.Series(values, index=frame.index, dtype="float64", name=candidate.output_id)
+
+
 def candidate_specs(contract: dict) -> list[RasterCandidate]:
-    specs = []
+    specs: list[RasterCandidate] = []
     for row in contract["monthly_candidates"]:
         specs.append(
             RasterCandidate(
@@ -143,8 +167,23 @@ def candidate_specs(contract: dict) -> list[RasterCandidate]:
                 variable=str(row["chelsa_variable"]),
                 construct=str(row["construct"]),
                 unit=str(row["unit"]),
+                temporal_mode="monthly",
             )
         )
+    for row in contract.get("broader_climate_representations", []):
+        specs.append(
+            RasterCandidate(
+                output_id=str(row["id"]),
+                variable=str(row["id"]),
+                construct=str(row["construct"]),
+                unit=str(row.get("unit", "CHELSA native scaled unit")),
+                temporal_mode="static",
+                url=str(row["url"]),
+            )
+        )
+    ids = [spec.output_id for spec in specs]
+    if len(ids) != len(set(ids)):
+        raise ValueError("Environment contract contains duplicate candidate IDs")
     return specs
 
 
@@ -172,12 +211,24 @@ def correlation_long(environment: pd.DataFrame, variables: list[str], method: st
     rows = []
     for i, left in enumerate(variables):
         for right in variables[i + 1 :]:
-            rows.append({"method": method, "variable_a": left, "variable_b": right, "correlation": corr.loc[left, right]})
+            rows.append(
+                {
+                    "method": method,
+                    "variable_a": left,
+                    "variable_b": right,
+                    "correlation": corr.loc[left, right],
+                }
+            )
     return pd.DataFrame(rows)
 
 
 def complete_standardized(environment: pd.DataFrame, variables: list[str]) -> tuple[pd.DataFrame, list[str]]:
-    data = environment[variables].apply(pd.to_numeric, errors="coerce").replace([np.inf, -np.inf], np.nan).dropna()
+    data = (
+        environment[variables]
+        .apply(pd.to_numeric, errors="coerce")
+        .replace([np.inf, -np.inf], np.nan)
+        .dropna()
+    )
     retained = [column for column in variables if data[column].nunique(dropna=True) > 1]
     data = data[retained]
     if data.empty or not retained:
@@ -204,13 +255,16 @@ def vif_table(environment: pd.DataFrame, variables: list[str]) -> tuple[pd.DataF
     matrix = standardized.to_numpy(dtype=float)
     report["matrix_rank"] = int(np.linalg.matrix_rank(matrix))
     singular = np.linalg.svd(matrix, compute_uv=False)
-    report["condition_number"] = float(singular[0] / singular[-1]) if singular[-1] > np.finfo(float).eps else float("inf")
+    if singular[-1] > np.finfo(float).eps:
+        report["condition_number"] = float(singular[0] / singular[-1])
+    else:
+        report["condition_number"] = "infinite"
     rows = []
     for idx, variable in enumerate(retained):
         y = matrix[:, idx]
         others = np.delete(matrix, idx, axis=1)
         if others.shape[1] == 0:
-            vif = 1.0
+            vif: float | str = 1.0
         else:
             design = np.column_stack([np.ones(len(others)), others])
             coef, *_ = np.linalg.lstsq(design, y, rcond=None)
@@ -218,7 +272,7 @@ def vif_table(environment: pd.DataFrame, variables: list[str]) -> tuple[pd.DataF
             ss_res = float(np.sum((y - fitted) ** 2))
             ss_tot = float(np.sum((y - y.mean()) ** 2))
             r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 1.0
-            vif = float("inf") if 1.0 - r2 <= 1e-12 else 1.0 / (1.0 - r2)
+            vif = "infinite" if 1.0 - r2 <= 1e-12 else 1.0 / (1.0 - r2)
         rows.append({"variable": variable, "vif": vif})
     return pd.DataFrame(rows), report
 
@@ -268,27 +322,47 @@ def diagnose_environment(environment: pd.DataFrame, variables: list[str], thresh
     return report, {"coverage": coverage, "correlations": correlations, "vif": vif}
 
 
-def build_matrix(observations: pd.DataFrame, contract: dict, require_native: bool, variables: list[str] | None = None) -> tuple[pd.DataFrame, list[str]]:
+def build_matrix(
+    observations: pd.DataFrame,
+    contract: dict,
+    require_native: bool,
+    variables: list[str] | None = None,
+) -> tuple[pd.DataFrame, list[str]]:
     frame = validate_observation_frame(observations, require_native=require_native)
     specs = candidate_specs(contract)
     if variables:
         wanted = set(variables)
-        specs = [spec for spec in specs if spec.output_id in wanted]
-        unknown = wanted - {spec.output_id for spec in specs}
+        known = {spec.output_id for spec in specs}
+        unknown = wanted - known
         if unknown:
             raise ValueError("Unknown environment variables: " + ", ".join(sorted(unknown)))
+        specs = [spec for spec in specs if spec.output_id in wanted]
     output = frame.copy()
     for spec in specs:
-        output[spec.output_id] = sample_monthly_candidate(output, spec, contract)
+        if spec.temporal_mode == "monthly":
+            output[spec.output_id] = sample_monthly_candidate(output, spec, contract)
+        elif spec.temporal_mode == "static":
+            output[spec.output_id] = sample_static_candidate(output, spec)
+        else:
+            raise ValueError(f"Unknown temporal mode: {spec.temporal_mode}")
     return output, [spec.output_id for spec in specs]
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--observations", type=Path, required=True, help="CSV with obs_id, latitude, longitude, observation_month and optionally native_range_status")
+    parser.add_argument(
+        "--observations",
+        type=Path,
+        required=True,
+        help="CSV with obs_id, latitude, longitude, observation_month and optionally native_range_status",
+    )
     parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
     parser.add_argument("--out-dir", type=Path, required=True)
-    parser.add_argument("--allow-nonnative-pilot", action="store_true", help="Engineering pilot only; cannot freeze final environment representation")
+    parser.add_argument(
+        "--allow-nonnative-pilot",
+        action="store_true",
+        help="Engineering pilot only; cannot freeze final environment representation",
+    )
     parser.add_argument("--variables", nargs="*", default=None)
     return parser.parse_args()
 
@@ -298,7 +372,12 @@ def main() -> int:
     contract = load_contract(args.contract)
     source_sha = sha256_file(args.observations)
     observations = pd.read_csv(args.observations, low_memory=False)
-    matrix, variables = build_matrix(observations, contract, require_native=not args.allow_nonnative_pilot, variables=args.variables)
+    matrix, variables = build_matrix(
+        observations,
+        contract,
+        require_native=not args.allow_nonnative_pilot,
+        variables=args.variables,
+    )
     threshold = float(contract["redundancy_rule"]["default_absolute_correlation_flag"])
     report, tables = diagnose_environment(matrix, variables, threshold)
     report.update(
@@ -315,8 +394,19 @@ def main() -> int:
     tables["coverage"].to_csv(args.out_dir / "environment_coverage.csv", index=False)
     tables["correlations"].to_csv(args.out_dir / "environment_correlations.csv", index=False)
     tables["vif"].to_csv(args.out_dir / "environment_vif.csv", index=False)
-    (args.out_dir / "environment_diagnostics.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    print(json.dumps({"status": report["status"], "n_rows": report["n_rows"], "variables": variables, "pilot": report["engineering_pilot_only"]}))
+    (args.out_dir / "environment_diagnostics.json").write_text(
+        json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                "status": report["status"],
+                "n_rows": report["n_rows"],
+                "variables": variables,
+                "pilot": report["engineering_pilot_only"],
+            }
+        )
+    )
     return 0
 
 
