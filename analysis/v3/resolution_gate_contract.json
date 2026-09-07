@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "gate_id": "ch1_v3_medium_original_stream_gate_v1",
+  "status": "specified_before_execution",
+  "purpose": "Test whether native-resolution iNaturalist image retrieval materially changes the current detector-plus-27-endpoint image-feature pipeline before any decision to scale native-resolution processing. This gate does not require permanent storage of source images.",
+  "source": {
+    "metadata_artifact_id": 8066010557,
+    "metadata_archive_sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "metadata_member": "photo_metadata_merged.csv",
+    "metadata_member_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+    "source_scope": "Frozen July 2026 merged metadata snapshot; technical pilot only, not a representative ecological cohort."
+  },
+  "detector": {
+    "artifact_id": 8076736948,
+    "artifact_sha256": "2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05",
+    "weight_member": "recovery/model/weights/best.pt",
+    "weight_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+    "parameters": "reuse analysis.v3.detect_cached_images.PARAMETERS exactly"
+  },
+  "sampling": {
+    "pilot_photos": 32,
+    "selection_salt": "ch1-v3-resolution-stream-gate-v1",
+    "rule": "From the immutable source row order, consider the first rights-usable photo encountered for each observation, then retain the 32 lowest SHA-256 scores of salt|obs_id|photo_id. No trait, taxon, geography, environment or result is used for selection.",
+    "admitted_photo_licenses": ["cc0", "cc-by", "cc-by-sa", "cc-by-nc", "cc-by-nc-sa", "cc-by-nd", "cc-by-nc-nd"]
+  },
+  "image_versions": {
+    "comparison": ["medium", "original"],
+    "url_rule": "Replace the explicit iNaturalist size path component while preserving file extension and query string.",
+    "retention": "Download one medium/original pair at a time into memory, decode with EXIF display orientation, record byte hashes/dimensions/numerical outputs, then release the bytes. Do not upload or commit source-image bytes.",
+    "full_original_archive_required": false
+  },
+  "matching": {
+    "detector_run_on_each_version": true,
+    "space": "normalized display-image coordinates",
+    "minimum_iou": 0.5,
+    "assignment": "greedy descending IoU with one-to-one detection matching"
+  },
+  "endpoint_gate": {
+    "minimum_common_usable_head_pairs": 15,
+    "flag_if_original_gain_fraction_at_least": 0.1,
+    "flag_if_rank_correlation_below": 0.9,
+    "flag_if_median_abs_delta_over_original_iqr_at_least": 0.15,
+    "insufficient_rule": "Endpoints below the common-usable minimum remain INSUFFICIENT_COMMON_USABLE and cannot trigger a full-source original-retention requirement.",
+    "promotion_rule": "A flag justifies a larger streamed native-resolution test for that endpoint. It does not justify permanent retention of every original image."
+  },
+  "outputs": {
+    "private_manifest": "pilot_manifest_private.csv; IDs and URLs stay in the Actions artifact only",
+    "pair_receipt": "pair_transfer_and_detection.csv; byte hashes, dimensions, detector counts and failures, no image bytes",
+    "measurements": "matched_endpoint_measurements.csv; medium/original numerical endpoint values and QC states",
+    "report": "resolution_gate_report.json; aggregate endpoint status and peak live source-byte footprint"
+  },
+  "claim_boundary": [
+    "This pilot measures total pipeline sensitivity to server image version, not physical botanical accuracy.",
+    "Differences can arise from server resizing/JPEG encoding, detector localization, segmentation or feature extraction.",
+    "The 32-photo deterministic pilot is a technical screen, not an ecological sample.",
+    "No result from this gate establishes adaptation, phenotype accuracy, or a need to archive approximately 1.5 TB of originals."
+  ]
+}
