@@ -57,6 +57,7 @@ jobs:
             tests/test_v3_environment_matrix.py \
             tests/test_v3_environment_source_design.py \
             tests/test_v3_environment_design_cohort_state.py \
+            tests/test_v3_environment_design_upstream_receipt.py \
             tests/test_v3_environment_freeze.py \
             tests/test_v3_native_range_join.py
 
@@ -96,6 +97,8 @@ jobs:
           test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
           test -f analysis/v3/supervisor_comment_integration_20260907.md
           test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
+          test -f .github/workflows/ch1-v3-environment-freeze.yml
+          test -f reproducibility/v3_environment_design_upstream_20260907.json
           test -f reproducibility/frozen-numerical-rebuild-requirements.txt
           test -f reproducibility/v3-image-cpu-requirements.txt
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
