@@ -1,0 +1,143 @@
+name: Chapter 1 v3 phenotype-blind environment design
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - .github/workflows/ch1-v3-phenotype-blind-environment-design.yml
+      - analysis/v3/environment_source_archives.json
+      - analysis/v3/prepare_environment_source_observations.py
+      - analysis/v3/native_range_join_contract.json
+      - analysis/v3/build_native_range_join.py
+      - analysis/v3/build_native_range_join_from_source.py
+      - analysis/v3/build_environment_design_cohort.py
+      - analysis/v3/environment_exposure_contract.json
+      - analysis/v3/environment_matrix.py
+      - analysis/v3/recover_upstream.py
+      - analysis/v3/recover_revision_inputs.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  design:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install source, taxonomy and raster environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test,full]'
+
+      - name: Recover six immutable source metadata/API archives only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          python -m analysis.v3.recover_upstream \
+            --manifest analysis/v3/environment_source_archives.json \
+            --out-dir source_archives \
+            --workers 2
+
+      - name: Reconstruct 665139 phenotype-blind source observations
+        run: |
+          python -m analysis.v3.prepare_environment_source_observations \
+            --archives source_archives \
+            --manifest analysis/v3/environment_source_archives.json \
+            --out-dir source_observations
+          python - <<'PY'
+          import json
+          r=json.load(open('source_observations/environment_source_observations_report.json'))
+          assert r['counts']['unique_observations']==665139
+          assert r['trait_files_read']==0 and r['image_files_read']==0
+          print(r['counts'])
+          PY
+
+      - name: Resolve taxon concepts and native range from WCVP TDWG
+        run: |
+          python -m analysis.v3.build_native_range_join_from_source \
+            --source-csv source_observations/environment_source_observations.csv \
+            --contract analysis/v3/native_range_join_contract.json \
+            --out-dir native_join
+          python - <<'PY'
+          import json
+          r=json.load(open('native_join/native_range_join_report.json'))
+          assert r['n_observations']==665139
+          assert r['trait_files_read']==0 and r['image_files_read']==0
+          print({'status_counts':r['status_counts'], 'taxa_by_status':r['taxa_by_status'],
+                 'primary_candidate_rows':r['primary_native_wild_public_exact_date_resolved_rows']})
+          PY
+
+      - name: Build taxon-balanced environment-design cohort without traits
+        run: |
+          python -m analysis.v3.build_environment_design_cohort \
+            --native-join native_join/native_range_join.csv \
+            --out-dir environment_design_cohort \
+            --taxon-cap 60 \
+            --minimum-taxon-support 5
+          python - <<'PY'
+          import json
+          r=json.load(open('environment_design_cohort/environment_design_cohort_report.json'))
+          assert r['trait_columns_read']==0 and r['environment_columns_read']==0
+          assert r['maximum_rows_per_taxon']<=60
+          print(r)
+          PY
+
+      - name: Sample monthly and broad CHELSA candidates and diagnose redundancy
+        run: |
+          python -m analysis.v3.environment_matrix \
+            --observations environment_design_cohort/environment_design_cohort.csv \
+            --out-dir environment_diagnostics \
+            --variables \
+              pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month \
+              BIO1 BIO4 BIO12 BIO15 BIO18 GSP
+
+      - name: Verify phenotype-blind weighted diagnostics and report hydric alternatives
+        run: |
+          python - <<'PY'
+          import json, pandas as pd
+          r=json.load(open('environment_diagnostics/environment_diagnostics.json'))
+          assert r['trait_columns_read']==0
+          assert r['native_only'] is True
+          assert r['engineering_pilot_only'] is False
+          assert r['weight_column']=='equal_taxon_weight'
+          assert r['primary_redundancy_correlation_method']=='pearson_equal_taxon_weight'
+          corr=pd.read_csv('environment_diagnostics/environment_correlations.csv')
+          target={'pr_month','BIO12','BIO18','GSP'}
+          hydric=corr[(corr['method']=='pearson_equal_taxon_weight') & corr['variable_a'].isin(target) & corr['variable_b'].isin(target)]
+          print({'matrix':r['matrix'],'redundancy_components':r['redundancy_components']})
+          print(hydric.to_string(index=False))
+          PY
+
+      - name: Retain aggregate design evidence only
+        if: always()
+        run: |
+          mkdir -p publish
+          for f in \
+            source_observations/environment_source_observations_report.json \
+            native_join/native_range_join_report.json \
+            environment_design_cohort/environment_design_cohort_report.json \
+            environment_diagnostics/environment_diagnostics.json \
+            environment_diagnostics/environment_coverage.csv \
+            environment_diagnostics/environment_correlations.csv \
+            environment_diagnostics/environment_vif.csv; do
+              if [ -f "$f" ]; then cp "$f" publish/; fi
+          done
+          test "$(find publish -type f | wc -l)" -ge 1
+          rm -rf source_archives source_observations native_join environment_design_cohort environment_diagnostics
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-phenotype-blind-environment-design-${{ github.run_id }}
+          path: publish
+          if-no-files-found: error
+          retention-days: 30
