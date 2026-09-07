@@ -1,0 +1,85 @@
+name: Chapter 1 v3 medium-original stream gate
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - .github/workflows/ch1-v3-resolution-stream-gate.yml
+      - analysis/v3/resolution_stream_gate.py
+      - analysis/v3/resolution_gate_contract.json
+      - tests/test_v3_resolution_stream_gate.py
+      - reproducibility/v3-image-cpu-requirements.txt
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned CPU image environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.11.0+cpu torchvision==0.26.0+cpu
+          python -m pip install -r reproducibility/v3-image-cpu-requirements.txt
+          python -m pip install -e . --no-deps
+      - name: Run deterministic unit tests first
+        run: python -m pytest -q tests/test_v3_resolution_stream_gate.py
+      - name: Recover frozen metadata and detector package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          mkdir -p source
+          python - <<'PY'
+          from pathlib import Path
+          from analysis.v3.recover_revision_inputs import download
+          download(8066010557, Path('source/metadata.zip'), '2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae')
+          download(8076736948, Path('source/detector.zip'), '2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05')
+          PY
+          python - <<'PY'
+          import hashlib, zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('source/metadata.zip') as z:
+              data = z.read('photo_metadata_merged.csv')
+              if hashlib.sha256(data).hexdigest() != '506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4':
+                  raise SystemExit('metadata member hash mismatch')
+              Path('source/photo_metadata_merged.csv').write_bytes(data)
+          with zipfile.ZipFile('source/detector.zip') as z:
+              data = z.read('recovery/model/weights/best.pt')
+              if hashlib.sha256(data).hexdigest() != '4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed':
+                  raise SystemExit('detector weight hash mismatch')
+              Path('source/best.pt').write_bytes(data)
+          print({'metadata_bytes': Path('source/photo_metadata_merged.csv').stat().st_size,
+                 'weights_bytes': Path('source/best.pt').stat().st_size})
+          PY
+      - name: Execute 32-photo bounded stream gate
+        run: |
+          python -m analysis.v3.resolution_stream_gate \
+            --metadata source/photo_metadata_merged.csv \
+            --weights source/best.pt \
+            --out-dir gate_output \
+            --pilot-photos 32 \
+            --min-iou 0.50
+      - name: Enforce no source-image retention
+        run: |
+          test "$(find gate_output -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | wc -l)" -eq 0
+          python - <<'PY'
+          import json
+          r = json.load(open('gate_output/resolution_gate_report.json'))
+          assert r['source_images_persisted'] == 0
+          assert r['full_original_archive_required_by_this_gate'] is False
+          print({k: r[k] for k in ('successful_pairs', 'matched_head_pairs', 'bytes_transferred_total', 'maximum_source_image_bytes_live_at_once')})
+          PY
+          rm -f source/photo_metadata_merged.csv source/metadata.zip source/detector.zip source/best.pt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-medium-original-stream-gate-${{ github.run_id }}
+          path: gate_output
+          if-no-files-found: error
+          retention-days: 30
