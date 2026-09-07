@@ -5,9 +5,6 @@ on:
     branches: [revision/ch1-v3-20260907]
     paths:
       - analysis/v3/environment_representation_decision_20260907.json
-      - analysis/v3/freeze_environment_representation.py
-      - analysis/v3/environment_exposure_contract.json
-      - .github/workflows/ch1-v3-environment-freeze.yml
   workflow_dispatch:
 
 permissions:
