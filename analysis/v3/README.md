@@ -60,7 +60,7 @@ analysis view, not irreversible source reduction.
 | Inventory | Every merged/source row and archived API link accounted for; lost links restored; source hashes, observation aggregation and v2 overlap | First chunk's raw API file is absent; complete collection-time recovery cannot be certified |
 | Recover | Six original metadata archives, the unthinned processing archive, verified local image bytes and full-source known-dependence groups | Full-source image availability and a rights-aware acquisition/retention schedule; processing records are not image files |
 | Measure | Historical five-field recovery; executed cached-image detection and all-27 baseline extraction; implemented 14-condition perturbation runner and component-weighted summary | Complete the running cached perturbation grid and its summary; full-source execution and propagation of measurement uncertainty |
-| Analyse | Workflow specification; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
+| Analyse | Full-source observation-annotation builder implemented and running separately from image measurements; no v3 ecological fitting | Complete annotation preparation; save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
 | Report | Aggregate inventory, historical recovery and cached-execution receipts | Complete technical-evaluation and ecological tables/figures from the same saved outputs |
 
 The specification is [`workflow_contract.json`](workflow_contract.json).
@@ -92,6 +92,43 @@ Native/introduced/unknown strata remain available. The old native-status table
 covers only the v2 subset; it must not assign nativeness to the rest by default.
 Define an ecological target after mapping coverage and the scientific question
 are explicit. Use matching observation IDs for trait and environment summaries.
+
+### Full-source observation preparation
+
+`prepare_observation_annotations.py` reads every original metadata row and every
+available archived API observation. It retains their exact source locators and
+separate metadata versions, then creates one annotation row per reconciled
+observation. It does not load image measurements, ecological predictors or model
+results. Raw coordinates and source identities remain in the local output only.
+
+Where archived API fields exist, they take precedence over the collector's
+flattened metadata. This preserves unknown boolean states that the old collector
+could turn into false. API-missing fields are not silently filled from those
+defaults. Where raw API is absent, flattened metadata remains an explicit fallback
+with its limits. If preferred-source versions disagree, only the affected fields
+become unavailable; every version remains saved. No latest-row or most-complete-row
+selection is used.
+
+Calendar preparation accepts exact observation dates, preserves their year and
+day of year, and uses the actual 365/366-day year in sine/cosine terms. Public
+latitude supplies a southern-hemisphere indicator and its interactions with both
+calendar terms, allowing the fitted calendar relationship to differ across
+hemispheres. Equatorial latitude has its own label. Missing or restricted location
+does not receive an inferred hemisphere. These terms are not flowering-stage
+measurements or proof that phenological confounding has been removed.
+
+The observation row separately records public-location availability, unknown or
+restricted privacy, positional accuracy, captive status and source taxonomy.
+Having a public location with reported accuracy is not yet acceptance at any
+environmental-grid resolution. Native status is explicitly unassessed in this
+preparation; a later versioned range-status join must document its own coverage.
+These are reversible annotations, not an ecological inclusion filter.
+
+```bash
+python -m analysis.v3.prepare_observation_annotations \
+  --archives /path/to/upstream-recovery --reconciliation /path/to/source-reconciliation \
+  --dependence /path/to/dependence-groups --out-dir /path/to/new-observation-annotations
+```
 
 Univariate atlas associations do not establish independent effects of correlated
 predictors. Conditional models need collinearity diagnostics on their actual
