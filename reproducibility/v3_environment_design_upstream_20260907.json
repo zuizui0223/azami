@@ -1,0 +1,66 @@
+{
+  "status": "V3_ENVIRONMENT_DESIGN_UPSTREAM_COMPLETE_BEFORE_CHELSA_DIAGNOSTICS",
+  "study_status": "retrospective_redesign_after_v2_results_seen_not_preregistration",
+  "source_workflow": {
+    "workflow": "Chapter 1 v3 phenotype-blind environment design",
+    "run_id": 34138904538,
+    "job_id": 101796254748,
+    "head_sha": "60a98c0cbf4518558ff60392c19abe1edca8fdca",
+    "artifact_id": 10025792990,
+    "artifact_name": "ch1-v3-phenotype-blind-environment-design-34138904538",
+    "artifact_sha256": "9594eebeac19a6263d1a0dfbf76f801d843ddcd93f1b45c275dc9931110c6660",
+    "workflow_terminal_state": "cancelled_after_step_9_to_expand_environment_candidates_from_13_to_all_15_contract_candidates",
+    "upstream_steps_6_to_9": "success",
+    "chelsa_step_10": "cancelled_and_not_used_from_this_run"
+  },
+  "report_sha256": {
+    "environment_source_observations_report.json": "e445b0925185e9f0cdd817f72d3f9ea5299eaf9b37083674dd4d0074d8282fa0",
+    "native_range_join_report.json": "705380bd1317118b5cac671ac12f7d6dbca5f80e2ec63a854187998183e025db",
+    "environment_design_cohort_report.json": "d20067c97e0de65577e0ff0ff61d5a4396106ac5d06342eb958768b0d68758a3"
+  },
+  "source_observations": {
+    "metadata_rows": 1122855,
+    "api_rows": 640141,
+    "unique_observations": 665139,
+    "exact_date_rows": 663255,
+    "public_coordinate_rows": 632927,
+    "source_csv_sha256": "5632f532a63c8babdc20b023bd0d3c47424d69461df5de9793028e93e819f959"
+  },
+  "native_range_join": {
+    "n_observations": 665139,
+    "n_source_taxa": 467,
+    "status_counts": {
+      "native": 384072,
+      "introduced": 157716,
+      "unmapped_or_unusable_location": 64283,
+      "unresolved_taxon": 49281,
+      "unlisted": 9787
+    },
+    "primary_native_wild_public_exact_date_resolved_rows": 382258
+  },
+  "environment_design_cohort": {
+    "eligible_rows_before_taxon_support": 319244,
+    "eligible_taxa_before_support": 355,
+    "taxa_meeting_support": 243,
+    "selected_rows": 9503,
+    "selected_taxa": 243,
+    "taxon_cap": 60,
+    "minimum_taxon_support": 5,
+    "largest_raw_eligible_taxon_fraction": 0.24606883762889828,
+    "largest_selected_taxon_fraction": 0.006313795643481006,
+    "equal_taxon_weight_fraction": 0.00411522633744856
+  },
+  "separation_checks": {
+    "trait_files_read": 0,
+    "image_files_read": 0,
+    "environment_values_used_to_select_cohort": 0,
+    "ecological_models_executed": 0,
+    "source_rows_deleted": 0
+  },
+  "limits": [
+    "This receipt certifies only source reconstruction, source-backed native-range classification and phenotype-blind taxon balancing.",
+    "The cancelled run's partial CHELSA step is not evidence and is not used to select the final environment representation.",
+    "The final environment representation remains frozen only after the complete 15-candidate native-range diagnostic run and an explicit phenotype-blind decision receipt.",
+    "Name resolution does not independently validate the photographed plant identification, and TDWG level-3 native status cannot resolve fine range boundaries."
+  ]
+}
