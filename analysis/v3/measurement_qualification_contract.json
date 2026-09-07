@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "contract_id": "ch1_v3_measurement_qualification_20260908",
+  "status": "fixed_before_128_photo_followup_results",
+  "purpose": "Freeze image-only rules that determine whether a capitulum endpoint/module may enter ecological inference, and how technical uncertainty is propagated, before inspecting any v3 trait-environment coefficient.",
+  "trait_environment_results_inspected_for_this_decision": false,
+  "environment_representation_already_frozen": true,
+  "environment_freeze_receipt": "reproducibility/v3_environment_representation_freeze_20260907.json",
+  "evidence_inputs": {
+    "cached_14_condition_perturbation": "reproducibility/v3_cached_perturbation_20260907.json",
+    "component_weighted_technical_summary": "reproducibility/v3_technical_sensitivity_20260907.json",
+    "technical_summary_verification": "reproducibility/v3_technical_summary_verification_20260907.json",
+    "completed_32_photo_resolution_gate": "reproducibility/v3_resolution_stream_gate_20260907.json",
+    "pending_128_photo_large_original_followup": "workflow Chapter 1 v3 large-original resolution followup"
+  },
+  "global_rules": [
+    "Never delete a raw measurement because it fails ecological qualification; retain value, QC state and reason and restrict only inferential membership.",
+    "Qualification is endpoint/module-specific; a photograph may contribute to colour while being ineligible for orientation or fine geometry.",
+    "Technical repeatability or large-original agreement is not physical botanical accuracy and does not validate detector localization.",
+    "No endpoint is promoted or rejected using an environmental coefficient, P value, sign or survival of a v2 candidate.",
+    "The 128-photo large-original followup uses its already coded predeclared thresholds without alteration after results are available."
+  ],
+  "resolution_followup_rules": {
+    "NO_FOLLOWUP_EVIDENCE_ORIGINAL_REQUIRED_BEYOND_LARGE": "Large derivative is permitted for that endpoint's ecological measurement route, subject to its ordinary endpoint QC and perturbation uncertainty rule.",
+    "ORIGINAL_MAY_ADD_INFORMATION_BEYOND_LARGE": "Large derivative is not accepted as the final ecological measurement source for that endpoint; use streamed original-resolution processing or keep the endpoint outside ecology until original-resolution measurements are available.",
+    "INSUFFICIENT_FOLLOWUP_INFORMATION": "Do not claim resolution adequacy. Keep the endpoint outside primary ecological inference unless a separately predeclared additional technical gate resolves it."
+  },
+  "module_rules": {
+    "orientation": {
+      "endpoints": ["orientation_image_vertical_angle"],
+      "ecological_priority": "Tier_1",
+      "resolution_rule": "must be decidable in 128-photo followup; insufficient information blocks primary ecology",
+      "bbox_rule": "Regardless of large-original status, ecological orientation requires an image-only bounding-box uncertainty representation from the four predeclared +/-5% shifts. The uncertainty definition is fixed before environmental join and must travel with the measurement rather than be added only after a significant precipitation result.",
+      "minimum_existing_qc": ["orientation_confidence >= 0.65", "registry bounds", "minimum pixel dimension", "finite value"],
+      "interpretation_ceiling": "image-referenced vertical presentation angle; not gravity-calibrated 3D orientation"
+    },
+    "visible_colour": {
+      "endpoints": [
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos",
+        "corolla_white_pixel_fraction",
+        "corolla_redmagenta_pixel_fraction",
+        "corolla_purple_pixel_fraction",
+        "corolla_yellow_pixel_fraction"
+      ],
+      "ecological_priority": "Tier_1_joint_module",
+      "resolution_rule": "large-original qualification is endpoint-specific, but ecological colour interpretation is joint; hue sine/cosine are one circular unit and four fractions are one closed composition",
+      "photometric_rule": "gamma/intensity/channel perturbations are part of technical uncertainty/context diagnostics; camera-space colour is not pigment concentration or calibrated reflectance",
+      "interpretation_ceiling": "visible camera-space colour state"
+    },
+    "gross_shape": {
+      "endpoints": [
+        "capitulum_outline_aspect_ratio",
+        "capitulum_outline_circularity",
+        "capitulum_outline_solidity",
+        "capitulum_width_profile_cv"
+      ],
+      "ecological_priority": "Tier_2_if_resolution_qualified",
+      "resolution_rule": "insufficient or original-required endpoints do not enter primary ecology through large derivatives",
+      "bbox_rule": "retain predeclared bbox perturbation sensitivity as technical uncertainty; do not infer physical 3D shape"
+    },
+    "fine_architecture_and_surface": {
+      "endpoints": [
+        "involucre_length_width_ratio",
+        "involucre_apical_taper_ratio",
+        "involucre_basal_taper_ratio",
+        "bract_projection_roughness",
+        "bract_projection_p95",
+        "bract_projection_maximum",
+        "bract_spread_fraction",
+        "bract_projection_peak_density",
+        "bract_projection_asymmetry",
+        "involucre_surface_edge_density",
+        "involucre_surface_lbp_entropy",
+        "involucre_surface_high_frequency_energy",
+        "involucre_surface_specular_fraction"
+      ],
+      "ecological_priority": "Tier_2_only_if_construct_and_resolution_qualified",
+      "resolution_rule": "lack of enough common usable large-original pairs is a block for primary ecological inference, not evidence of equivalence",
+      "interpretation_ceiling": "image geometry/texture only; do not rename as spine length, stiffness, gland density or secretion"
+    }
+  },
+  "measurement_freeze_requirement": {
+    "required_before_trait_environment_join": true,
+    "must_record": [
+      "128-photo workflow run and artifact identity",
+      "per-endpoint resolution status",
+      "module-level ecological eligibility",
+      "orientation bbox-uncertainty rule",
+      "values retained despite inferential ineligibility",
+      "claim ceiling"
+    ]
+  }
+}
