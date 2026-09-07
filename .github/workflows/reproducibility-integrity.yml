@@ -57,6 +57,7 @@ jobs:
             tests/test_v3_environment_matrix.py \
             tests/test_v3_environment_source_design.py \
             tests/test_v3_environment_design_cohort_state.py \
+            tests/test_v3_environment_freeze.py \
             tests/test_v3_native_range_join.py
 
       - name: Validate v3 workflow design without promoting scientific status
@@ -91,6 +92,7 @@ jobs:
           test -f analysis/v3/build_environment_design_cohort.py
           test -f analysis/v3/environment_exposure_contract.json
           test -f analysis/v3/environment_matrix.py
+          test -f analysis/v3/freeze_environment_representation.py
           test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
           test -f analysis/v3/supervisor_comment_integration_20260907.md
           test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
