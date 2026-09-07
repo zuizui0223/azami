@@ -69,23 +69,29 @@ jobs:
           pilot[['obs_id','latitude','longitude','observation_month']].to_csv('source/environment_pilot_observations.csv', index=False)
           print({'pilot_rows':len(pilot),'months':pilot['observation_month'].value_counts().sort_index().to_dict()})
           PY
-      - name: Sample six direct monthly CHELSA exposures
+      - name: Sample direct monthly and broad CHELSA representations
         run: |
           python -m analysis.v3.environment_matrix \
             --observations source/environment_pilot_observations.csv \
             --out-dir pilot_output \
             --allow-nonnative-pilot \
-            --variables pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month
-      - name: Enforce engineering-only boundary and strip observation-level output
+            --variables \
+              pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month \
+              BIO1 BIO4 BIO12 BIO15 BIO18 GSP
+      - name: Enforce engineering-only boundary and inspect hydric redundancy
         run: |
           python - <<'PY'
-          import json
+          import json, pandas as pd
           report = json.load(open('pilot_output/environment_diagnostics.json'))
           assert report['engineering_pilot_only'] is True
           assert report['representation_may_be_frozen_from_this_run'] is False
           assert report['trait_columns_read'] == 0
           assert report['n_rows'] == 24
-          print(report['matrix'])
+          corr = pd.read_csv('pilot_output/environment_correlations.csv')
+          target = {'pr_month','BIO12','BIO18','GSP'}
+          hydric = corr[(corr['method']=='pearson') & corr['variable_a'].isin(target) & corr['variable_b'].isin(target)]
+          print({'matrix': report['matrix'], 'redundancy_components': report['redundancy_components']})
+          print(hydric.to_string(index=False))
           PY
           rm -f pilot_output/environment_candidate_matrix.csv
           rm -rf source
