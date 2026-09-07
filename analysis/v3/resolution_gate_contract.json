@@ -44,9 +44,9 @@
     "promotion_rule": "A flag justifies a larger streamed native-resolution test for that endpoint. It does not justify permanent retention of every original image."
   },
   "outputs": {
-    "private_manifest": "pilot_manifest_private.csv; IDs and URLs stay in the Actions artifact only",
-    "pair_receipt": "pair_transfer_and_detection.csv; byte hashes, dimensions, detector counts and failures, no image bytes",
-    "measurements": "matched_endpoint_measurements.csv; medium/original numerical endpoint values and QC states",
+    "private_manifest": "pilot_manifest_private.csv; IDs and URLs exist only on the ephemeral runner and are deleted before artifact upload",
+    "pair_receipt": "pair_transfer_and_detection.csv; anonymous pair IDs, byte hashes, dimensions, detector counts and failures, no image bytes or source IDs",
+    "measurements": "matched_endpoint_measurements.csv; anonymous pair IDs plus medium/original numerical endpoint values and QC states",
     "report": "resolution_gate_report.json; aggregate endpoint status and peak live source-byte footprint"
   },
   "claim_boundary": [
