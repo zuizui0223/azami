@@ -18,6 +18,8 @@ from pathlib import Path
 import sqlite3
 import zipfile
 
+import pandas as pd
+
 from .prepare_observation_annotations import api_fields, csv_fields, consensus, annotate
 from .workflow import ROOT, canonical_digest, digest
 
