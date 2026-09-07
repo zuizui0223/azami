@@ -72,7 +72,7 @@ jobs:
             --out-dir gate_output \
             --pilot-photos 32 \
             --min-iou 0.50
-      - name: Enforce no source-image retention
+      - name: Enforce no source-image or identifier retention
         run: |
           test "$(find gate_output -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | wc -l)" -eq 0
           python - <<'PY'
@@ -82,6 +82,8 @@ jobs:
           assert r['full_original_archive_required_by_this_gate'] is False
           print({k: r[k] for k in ('successful_pairs', 'matched_head_pairs', 'bytes_transferred_total', 'maximum_source_image_bytes_live_at_once')})
           PY
+          rm -f gate_output/pilot_manifest_private.csv
+          test ! -e gate_output/pilot_manifest_private.csv
           rm -f source/photo_metadata_merged.csv source/metadata.zip source/detector.zip source/best.pt
       - uses: actions/upload-artifact@v4
         if: always()
