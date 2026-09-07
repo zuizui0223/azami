@@ -45,6 +45,11 @@ def read_source(path: Path) -> pd.DataFrame:
     return frame
 
 
+def normalized_state(values: pd.Series) -> pd.Series:
+    """Normalize CSV-round-tripped boolean/string state labels without imputing them."""
+    return values.astype("string").str.strip().str.casefold()
+
+
 def run_join(
     source_csv: Path,
     out_dir: Path,
@@ -90,7 +95,7 @@ def run_join(
     distributions.to_csv(out_dir / "wcvp_distribution_records.csv", index=False)
 
     primary = joined["native_range_status"].eq("native")
-    primary &= joined["captive_state"].eq("false")
+    primary &= normalized_state(joined["captive_state"]).eq("false")
     primary &= joined["date_status"].eq("exact_day")
     primary &= joined["coordinate_status"].eq("public_location_present_precision_not_gated")
     primary &= joined["taxon_resolution_status"].eq("resolved_unique_accepted_key")
