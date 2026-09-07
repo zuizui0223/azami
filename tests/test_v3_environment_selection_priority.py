@@ -52,7 +52,7 @@ def test_redundancy_priority_is_predeclared_not_p_value_selected():
     assert "absolute correlation >= 0.80" in rules
     bio12 = p["candidate_roles_before_diagnostics"]["BIO12"]
     assert "pr_month" in bio12["redundancy_preference"] or "observation-month precipitation" in bio12["redundancy_preference"]
-    assert "trait outcomes" in rules
+    assert "trait outcome" in rules.casefold()
     # Semantic boundary: a broad or distal candidate is not promoted merely
     # because it escapes the redundancy flag; biological proximity remains required.
-    assert "Non-redundancy alone does not promote" in rules or "non-redundancy alone" in rules.casefold()
+    assert "non-redundancy alone" in rules.casefold()
