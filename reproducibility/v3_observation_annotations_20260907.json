@@ -1,0 +1,89 @@
+{
+  "status": "FULL_SOURCE_OBSERVATION_ANNOTATIONS_PREPARED_NOT_MODELLED",
+  "execution_contract": {
+    "specification": {
+      "version": "v3_full_source_observation_annotations_v1",
+      "source": "all six pinned original metadata chunks and their available raw API records, not the thinned v2 cohort",
+      "retention": "retain every source row locator and version; one annotation row per reconciled observation; no photo, head or observation deletion",
+      "preference": "use archived API fields when any API version exists for the observation, otherwise original flattened metadata; never fill API-missing fields silently from flattened defaults",
+      "conflicts": "all versions remain saved; a field differing among preferred-source versions becomes unavailable with an explicit conflict flag; no last-row or most-complete-row choice",
+      "calendar": "exact YYYY-MM-DD only; phase 2*pi*(DOY-1)/days_in_observed_year; retain year, DOY, sine and cosine; add southern indicator and its sine/cosine interactions only with usable public latitude",
+      "hemisphere": "north for latitude>0, south for latitude<0, equatorial for exactly zero; missing or restricted coordinates give unknown; these are calendar terms, not developmental-stage labels",
+      "coordinates": "use only public API geojson/location fields or archived flattened public fields; private_* fields are never read; restricted, invalid, unknown-privacy and known-conflicting fields block derived analysis coordinates",
+      "precision": "retain reported positional accuracy and distinguish missing, invalid, zero and positive; model-resolution eligibility is not decided here",
+      "native_status": "not_assessed_full_source; never inherit native status from a photo, genus or absence of an introduced record",
+      "separation": "do not load image measurements, ecological predictors or model results; these annotations do not authorize an ecological cohort or demonstrate confounding removal",
+      "design_status": "retrospective v3 preparation after v2 results were seen; no preregistration claim"
+    },
+    "implementation_sha256_text_lf": "45b3191e00050aa000293b83c3aba517d6b466a373fe4a50cca12622af57994b",
+    "source_reconciliation_sha256": "daaa04917fbf0f1dfa03bcfa6d5a49f95074cf3ee1965e3b4a4d482d72cd0f02",
+    "dependence_groups_sha256": "75945b8bf69fcd81e79591bb83cc776ba1f640dc2930007d20b4b5b2d17728ab",
+    "archive_manifest_sha256_canonical_json": "dc9b1d948bbef91a249b1959ccdd762b4fcf1e21147f003c0507443158088404"
+  },
+  "counts": {
+    "observations_retained": 665139,
+    "annotation_rows": 665139,
+    "source_metadata_rows_retained": 1122855,
+    "source_api_rows_retained": 640141,
+    "source_versions_retained": 1305257,
+    "observations_with_conflicted_preferred_fields": 0,
+    "source_rows_deleted": 0,
+    "ecological_models_executed": 0
+  },
+  "states": {
+    "preferred_source_kind": {
+      "api": 640141,
+      "metadata": 24998
+    },
+    "date_status": {
+      "exact_day": 663255,
+      "missing": 1884
+    },
+    "coordinate_status": {
+      "missing_or_invalid": 5440,
+      "public_location_present_precision_not_gated": 632927,
+      "restricted": 26468,
+      "source_flag_not_usable": 304
+    },
+    "position_accuracy_status": {
+      "missing": 155718,
+      "reported_positive": 509343,
+      "reported_zero": 78
+    },
+    "hemisphere": {
+      "equatorial": 4,
+      "north": 611733,
+      "south": 21190,
+      "unknown": 32212
+    },
+    "captive_state": {
+      "false": 663268,
+      "true": 1871
+    },
+    "native_status": {
+      "not_assessed_full_source": 665139
+    },
+    "source_taxon_rank": {
+      "complex": 502,
+      "genus": 72399,
+      "hybrid": 344,
+      "section": 110,
+      "species": 580087,
+      "subspecies": 1640,
+      "variety": 10057
+    }
+  },
+  "integrity_checks": {
+    "metadata_locator_mismatches": 0,
+    "api_locator_mismatches": 0
+  },
+  "output_database_sha256": "edeca109294a0f3b291ac81ebc99fdeb04c41cf37adffdf41640a14e6a7172a7",
+  "limits": [
+    "Public coordinates with reported accuracy are not yet matched to environmental grids or accepted for any spatial-resolution model.",
+    "Calendar harmonics do not identify flowering stage; archived annotations have not been treated as verified stage labels.",
+    "First-chunk raw API records are absent. Its flattened boolean flags may already conflate missing with false; the original record cannot be reconstructed from those flags.",
+    "Source taxon assignment is not a resolved or independently checked botanical identification.",
+    "Native status remains unassessed here, including records previously assessed in a smaller v2 view.",
+    "Separate annotation preparation does not join or inspect image features or ecological associations."
+  ]
+}

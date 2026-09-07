@@ -60,7 +60,7 @@ analysis view, not irreversible source reduction.
 | Inventory | Every merged/source row and archived API link accounted for; lost links restored; source hashes, observation aggregation and v2 overlap | First chunk's raw API file is absent; complete collection-time recovery cannot be certified |
 | Recover | Six original metadata archives, the unthinned processing archive, verified local image bytes and full-source known-dependence groups | Full-source image availability and a rights-aware acquisition/retention schedule; processing records are not image files |
 | Measure | Historical five-field recovery; executed cached-image detection and all-27 baseline extraction; implemented 14-condition perturbation runner and component-weighted summary | Complete the running cached perturbation grid and its summary; full-source execution and propagation of measurement uncertainty |
-| Analyse | Full-source observation-annotation builder implemented and running separately from image measurements; no v3 ecological fitting | Complete annotation preparation; save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
+| Analyse | Executed full-source observation annotations, kept separate from image measurements; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
 | Report | Aggregate inventory, historical recovery and cached-execution receipts | Complete technical-evaluation and ecological tables/figures from the same saved outputs |
 
 The specification is [`workflow_contract.json`](workflow_contract.json).
@@ -123,6 +123,21 @@ Having a public location with reported accuracy is not yet acceptance at any
 environmental-grid resolution. Native status is explicitly unassessed in this
 preparation; a later versioned range-status join must document its own coverage.
 These are reversible annotations, not an ecological inclusion filter.
+
+The [executed preparation receipt](../../reproducibility/v3_observation_annotations_20260907.json)
+retains all 665,139 observations, 1,122,855 original photo-metadata rows and 640,141
+archived API records. All source locators and record hashes matched the reconciled
+ledger. API fields support 640,141 observation rows; 24,998 use the explicit
+first-chunk metadata fallback. No preferred-source field conflicts were found.
+
+Exact observation dates are available for 663,255 observations; 1,884 remain
+date-missing. Public locations are present for 632,927 observations, while 26,468
+are restricted, 5,440 lack valid coordinates and 304 retain a non-usable source
+flag. Positional accuracy is absent for 155,718 observations, positive for 509,343
+and reported as zero for 78. The hemisphere annotation identifies 611,733 northern,
+21,190 southern and four exactly equatorial observations; 32,212 remain unknown.
+None of these records was deleted. These counts describe source support, not
+environmental alignment, phenology correction or a final ecological sample.
 
 ```bash
 python -m analysis.v3.prepare_observation_annotations \
