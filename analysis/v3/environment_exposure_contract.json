@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "contract_id": "ch1_v3_environment_exposure_candidates_20260907",
+  "status": "environment_only_design_before_trait_join",
+  "purpose": "Construct and diagnose the abiotic exposure matrix before any v3 trait coefficients are inspected. No variable is privileged because it appeared in v2.",
+  "ecological_scope": "primary ecological inference will be native-range only after the versioned taxon/range join; engineering pilots may use a phenotype-blind subset before that join but may not freeze the final representation",
+  "time_alignment": {
+    "primary": "long-term monthly climatology matched to the observation month",
+    "climatology_period": "1981-2010",
+    "meaning": "climatological reproductive-period exposure, not weather on the photography date and not verified flowering stage",
+    "date_requirement": "exact observation month from source observation metadata",
+    "bounded_alternative": "a centred three-month climatological window may be compared only after its rule is frozen without trait outcomes"
+  },
+  "monthly_candidates": [
+    {"id":"pr_month","chelsa_variable":"pr","construct":"precipitation / wetting exposure","unit":"kg m-2 month-1"},
+    {"id":"tas_month","chelsa_variable":"tas","construct":"mean near-surface thermal exposure","unit":"K"},
+    {"id":"tasmax_month","chelsa_variable":"tasmax","construct":"maximum near-surface thermal exposure","unit":"K"},
+    {"id":"rsds_month","chelsa_variable":"rsds","construct":"surface shortwave radiation","unit":"W m-2"},
+    {"id":"vpd_month","chelsa_variable":"vpd","construct":"atmospheric drying power","unit":"Pa"},
+    {"id":"sfcWind_month","chelsa_variable":"sfcWind","construct":"near-surface mechanical exposure","unit":"m s-1"},
+    {"id":"pet_month","chelsa_variable":"pet","construct":"potential evaporative demand","unit":"kg m-2 month-1","tier":"representation_candidate"},
+    {"id":"cmi_month","chelsa_variable":"cmi","construct":"monthly climatic moisture availability","unit":"kg m-2 month-1","tier":"representation_candidate"}
+  ],
+  "monthly_url_template": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/{variable}/1981-2010/CHELSA_{variable}_{month:02d}_1981-2010_V.2.1.tif",
+  "broader_climate_representations": [
+    {"id":"BIO12","construct":"annual precipitation","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio12_1981-2010_V.2.1.tif"},
+    {"id":"BIO18","construct":"precipitation of warmest quarter","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio18_1981-2010_V.2.1.tif"},
+    {"id":"GSP","construct":"growing-season precipitation","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"}
+  ],
+  "selection_is_phenotype_blind": true,
+  "diagnostics_before_trait_join": [
+    "coverage_and_missingness",
+    "pairwise_pearson_correlation",
+    "pairwise_spearman_correlation",
+    "matrix_rank",
+    "condition_number",
+    "variance_inflation_factor",
+    "redundancy_clusters"
+  ],
+  "redundancy_rule": {
+    "default_absolute_correlation_flag": 0.80,
+    "purpose": "flag redundant representations; do not automatically discard a biologically direct exposure in favor of a distal proxy",
+    "BIO18_vs_GSP": "compare both against observation-month precipitation and each other on the same native-range environment cohort; choose the smallest biologically interpretable representation before trait fitting, never by trait P values"
+  },
+  "trait_join_prohibited_until": [
+    "full-source taxon concept join is versioned",
+    "native/introduced/unresolved range join is versioned",
+    "environment candidate matrix coverage is reported",
+    "environment redundancy and collinearity diagnostics are complete",
+    "final environment representation is frozen"
+  ],
+  "source_documentation": [
+    "https://www.chelsa-climate.org/datasets/chelsa_climatologies",
+    "https://www.chelsa-climate.org/datasets/chelsa_monthly",
+    "https://www.chelsa-climate.org/models/chelsa"
+  ],
+  "claim_boundary": "Environment-only diagnostics select a representation, not an ecological result. No capitulum trait table may be read by this stage."
+}
