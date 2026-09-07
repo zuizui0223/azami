@@ -68,13 +68,32 @@ def load_decision(path: Path) -> dict:
         raise ValueError(
             "Environment decision selection_basis must be exactly biological_proximity, coverage and environment_only_redundancy"
         )
+    try:
+        workflow_run_id = int(decision.get("diagnostics_workflow_run_id"))
+        artifact_id = int(decision.get("diagnostics_artifact_id"))
+    except (TypeError, ValueError):
+        raise ValueError("Environment decision requires numeric diagnostics workflow/artifact IDs") from None
+    artifact_name = str(decision.get("diagnostics_artifact_name") or "").strip()
+    artifact_sha256 = str(decision.get("diagnostics_artifact_sha256") or "").strip().lower()
+    if workflow_run_id <= 0 or artifact_id <= 0 or not artifact_name:
+        raise ValueError("Environment decision requires positive diagnostic IDs and artifact name")
+    if len(artifact_sha256) != 64 or any(ch not in "0123456789abcdef" for ch in artifact_sha256):
+        raise ValueError("Environment decision requires a 64-hex diagnostics artifact SHA-256")
     selected = _variable_rows(decision.get("selected"), "selected")
     rejected = _variable_rows(decision.get("rejected"), "rejected")
     selected_names = {row["variable"] for row in selected}
     rejected_names = {row["variable"] for row in rejected}
     if selected_names & rejected_names:
         raise ValueError("Selected and rejected environment variables overlap")
-    return {**decision, "selected": selected, "rejected": rejected}
+    return {
+        **decision,
+        "diagnostics_workflow_run_id": workflow_run_id,
+        "diagnostics_artifact_id": artifact_id,
+        "diagnostics_artifact_name": artifact_name,
+        "diagnostics_artifact_sha256": artifact_sha256,
+        "selected": selected,
+        "rejected": rejected,
+    }
 
 
 def validate_diagnostics(diagnostics_dir: Path) -> tuple[dict, pd.DataFrame]:
@@ -137,6 +156,12 @@ def freeze(
         "decision_status": decision["status"],
         "decision_scope": decision.get("decision_scope", "native_range_taxon_balanced_environment_only"),
         "selection_basis": sorted(ALLOWED_SELECTION_BASIS),
+        "diagnostics_provenance": {
+            "workflow_run_id": decision["diagnostics_workflow_run_id"],
+            "artifact_id": decision["diagnostics_artifact_id"],
+            "artifact_name": decision["diagnostics_artifact_name"],
+            "artifact_sha256": decision["diagnostics_artifact_sha256"],
+        },
         "selected": decision["selected"],
         "rejected": decision["rejected"],
         "selected_variables": [row["variable"] for row in decision["selected"]],
