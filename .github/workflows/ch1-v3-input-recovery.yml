@@ -1,0 +1,46 @@
+name: Chapter 1 v3 input recovery
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths: [.github/workflows/ch1-v3-input-recovery.yml, analysis/v3/recover_revision_inputs.py]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Export immutable numerical code and existing provenance
+        run: |
+          mkdir -p v3_recovery/code
+          cp -r analysis analysis_outputs ch1_global reproducibility src tests v3_recovery/code/
+          cp pyproject.toml README.md v3_recovery/code/
+          git rev-parse HEAD > v3_recovery/code/git_sha.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-code-snapshot-${{ github.run_id }}
+          path: v3_recovery/code
+          retention-days: 30
+      - name: Recover input inventories and linked measurements
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          if [ -f analysis/v3/recover_revision_inputs.py ]; then
+            python analysis/v3/recover_revision_inputs.py --out-dir v3_recovery/inputs
+          else
+            echo 'Recovery code not yet committed; this run exports code only.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-recovered-inputs-${{ github.run_id }}
+          path: v3_recovery/inputs
+          if-no-files-found: ignore
+          retention-days: 30
