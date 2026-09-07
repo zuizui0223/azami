@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "v3_all_cached_heads_technical_perturbation_v1",
+  "design_status": "specified after v2 results and cached v3 baseline were inspected, before this perturbation pass",
+  "population": "every detection in the pinned cached-image pass, regardless of baseline QC; source universe and unprocessed photos remain in the upstream ledger",
+  "selection": "no taxon, coordinate, environmental association or baseline-phenotype selection",
+  "conditions": [
+    {"id": "baseline", "kind": "identity"},
+    {"id": "bbox_left_5pct", "kind": "bbox_shift", "dx": -0.05, "dy": 0.0},
+    {"id": "bbox_right_5pct", "kind": "bbox_shift", "dx": 0.05, "dy": 0.0},
+    {"id": "bbox_up_5pct", "kind": "bbox_shift", "dx": 0.0, "dy": -0.05},
+    {"id": "bbox_down_5pct", "kind": "bbox_shift", "dx": 0.0, "dy": 0.05},
+    {"id": "resolution_75pct", "kind": "resolution", "scale": 0.75},
+    {"id": "resolution_50pct", "kind": "resolution", "scale": 0.5},
+    {"id": "gamma_0p8", "kind": "gamma", "exponent": 0.8},
+    {"id": "gamma_1p2", "kind": "gamma", "exponent": 1.2},
+    {"id": "intensity_0p8", "kind": "intensity", "multiplier": 0.8},
+    {"id": "intensity_1p2", "kind": "intensity", "multiplier": 1.2},
+    {"id": "channel_warm", "kind": "channel_gain", "bgr": [0.9, 1.0, 1.1]},
+    {"id": "channel_cool", "kind": "channel_gain", "bgr": [1.1, 1.0, 0.9]},
+    {"id": "blur_sigma1", "kind": "blur", "sigma": 1.0}
+  ],
+  "pixel_operations": "apply to the entire EXIF-oriented source image before cropping; BGR uint8; intensity/gain/power followed by numpy.rint, clipping to 0..255 and uint8 conversion; gamma operates on encoded sRGB values, not linear-light exposure",
+  "geometry": "bbox shifts use the original unpadded box width/height. Preserve head padding 0.12 and context padding 0.8. Round lower crop bounds down and upper bounds up. Clip at image boundaries and record clipping. Resolution uses OpenCV INTER_AREA with rounded positive image dimensions and actual x/y scale factors for all boxes; never upsample.",
+  "context": "exclude the union of all detected head-padded boxes; only the focal box shifts for bbox perturbations; all boxes scale for resolution changes",
+  "baseline_gate": "exact endpoint-array agreement with the saved baseline is required for each head before interpreting its perturbations; any mismatch stops new scheduling and makes the run incomplete",
+  "retain": "all 27 endpoint slots per scheduled head and condition, original/mirror values, QC transitions, engine/worker errors, transform/crop recipe, transformed pixel identity, mask identities and paired context diagnostics",
+  "mask_storage": "baseline mask files remain saved; transformed masks have exact dimension-aware pixel hashes and are reconstructible from immutable source pixels, transform recipes and pinned measurement code",
+  "dependence": "join the pinned observation/photo/exact-content connected components; summarize repeated heads within image then images within component; report historical development exposure separately",
+  "summary": "report all conditions and endpoints, baseline eligibility and paired eligibility, lost/gained QC, absolute and signed changes, group-weighted distributions and descriptive rank agreement where estimable; hue and colour fractions additionally require joint circular/compositional summaries",
+  "decision": "do not set a favourable rank-correlation threshold after seeing results or turn this pass into a claim of absolute accuracy; retain large changes, unavailable comparisons and quality failures",
+  "limits": [
+    "Synthetic perturbations characterize sensitivity to specified pixel/crop operations, not the full distribution of real photographic errors.",
+    "These settings are stress probes, not calibrated camera uncertainty or physical illumination interventions.",
+    "Stable ranks can coexist with large systematic shifts and selective loss of difficult images.",
+    "Shared-source grouping does not prove independent individuals or find all near-duplicate scenes.",
+    "The existing detector was pseudo-label-trained; technical repeatability does not establish detector precision/recall or calibrated biological accuracy."
+  ]
+}

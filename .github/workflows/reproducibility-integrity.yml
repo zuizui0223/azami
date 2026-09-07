@@ -44,7 +44,10 @@ jobs:
             tests/test_v3_display_composition.py \
             tests/test_v3_cached_detection.py \
             tests/test_v3_image_features.py \
-            tests/test_v3_cached_verification.py
+            tests/test_v3_cached_verification.py \
+            tests/test_v3_dependence_groups.py \
+            tests/test_v3_perturbations.py \
+            tests/test_v3_perturbation_summary.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan

@@ -58,8 +58,8 @@ analysis view, not irreversible source reduction.
 | Stage | Implemented now | Still to implement |
 |---|---|---|
 | Inventory | Every merged/source row and archived API link accounted for; lost links restored; source hashes, observation aggregation and v2 overlap | First chunk's raw API file is absent; complete collection-time recovery cannot be certified |
-| Recover | Six original metadata archives, the unthinned processing archive and verified local image bytes with all source links | Full-source image availability and a rights-aware acquisition/retention schedule; processing records are not image files |
-| Measure | Historical five-field recovery; resumable cached-image detection and all-27 baseline extraction with raw/QC values and paired context | Full-source execution, crop/resolution/photometric evaluation and propagation of measurement uncertainty |
+| Recover | Six original metadata archives, the unthinned processing archive, verified local image bytes and full-source known-dependence groups | Full-source image availability and a rights-aware acquisition/retention schedule; processing records are not image files |
+| Measure | Historical five-field recovery; executed cached-image detection and all-27 baseline extraction; implemented 14-condition perturbation runner and component-weighted summary | Complete the running cached perturbation grid and its summary; full-source execution and propagation of measurement uncertainty |
 | Analyse | Workflow specification; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
 | Report | Aggregate inventory, historical recovery and cached-execution receipts | Complete technical-evaluation and ecological tables/figures from the same saved outputs |
 
@@ -216,6 +216,21 @@ Three byte objects have multiple photo IDs. Usage pools overlap and are not new
 independent v3 evaluation splits. Shared observation, photo, byte or decoded-pixel
 identities must be grouped before splitting or inference.
 
+The [executed dependence ledger](../../reproducibility/v3_dependence_groups_20260907.json)
+retains every observation, photo and link. Shared photo IDs, exact bytes and exact
+EXIF-oriented pixels connect observations into 665,103 known-dependence components;
+33 components contain multiple observation IDs. The 2,092 cached image objects
+belong to 2,082 components. This is known-identity grouping, not proof that every
+duplicated scene has been found or that a component shows one biological individual.
+
+The historical 270-image training manifest (211 training and 59 validation images)
+was joined through its exact source filenames. No component crossed those recorded
+training/validation subsets under the available identity evidence. The broader
+historical development pool was conservatively propagated through components:
+1,006 cached objects have recorded development exposure. Sixteen components cross
+historical usage pools. Five deterministic operational folds keep each component
+together, but do not create a fresh independent test set or repair past model use.
+
 This local cache audit leaves **1,120,759 source photo IDs without a verified
 image in this workspace**. It does not show that those images never existed,
 are unavailable online, or are absent from every other storage location. No new
@@ -265,6 +280,36 @@ when redmagenta is dominant and the floral union otherwise. Green context is not
 verified leaf tissue, and undetected flowers can remain in it. These diagnostics
 do not, by themselves, establish illumination correction or flower specificity.
 
+### Technical perturbation evaluation
+
+The saved [14-condition specification](perturbation_contract.json) covers identity
+replay, four crop shifts, two resolution reductions, two gamma changes, two intensity
+changes, two colour-balance changes and blur. The execution grid contains every
+detected head and all 27 endpoint slots in every condition; it is not restricted
+to heads with favourable baseline QC. Baseline endpoint values and statuses must
+exactly replay the saved measurement before the other conditions proceed. A replay
+mismatch stops new scheduling. Failed and unavailable values retain their slots.
+
+Whole-image transforms precede crop extraction. The saved recipes, source hashes,
+transformed-pixel hashes, masks' pixel hashes and linked original/mirror/QC results
+make each comparison traceable without saving another copy of every transformed
+image. Encoded-sRGB changes are specified digital stress tests, not physical camera
+calibration or a validated illumination correction. The runner supports bounded
+execution and resume of pending jobs, with an operating-system lock and unchanged
+input/code/environment identities. A partial receipt cannot become a completed
+summary. The full 2,853-head cached grid is running; no completed perturbation
+result is claimed by this implementation checkpoint.
+
+The summary reports absolute and signed changes, rank agreement and all four QC
+transitions. It averages heads within exact image, then images within known
+dependence component, and gives components equal weight. Measurement-loss rates
+include components with no surviving usable pair. Changes among surviving pairs
+must always be read beside that loss. Separate development-exposure strata describe
+recorded provenance, not independent validation. Joint hue uses circular angular
+distance; the four colour fractions additionally use a joint composition distance.
+These diagnostics do not add independent ecological endpoints. No favourable rank
+threshold, accuracy claim or ecological conclusion is built into the summary.
+
 ### Run cached-image processing
 
 Create a separate Python 3.12 environment; do not mix the image worker's OpenCV
@@ -290,6 +335,17 @@ python -m analysis.v3.measure_cached_heads \
 python -m analysis.v3.verify_cached_pipeline \
   --workspace /path/to/image-workspace --detection /path/to/cached-detection \
   --measurement /path/to/cached-measurement --out-dir /path/to/new-verification
+python -m analysis.v3.build_dependence_groups \
+  --workspace /path/to/image-workspace \
+  --training-manifest /path/to/dataset/bootstrap_dataset_manifest.csv \
+  --out-dir /path/to/new-dependence-groups
+python -m analysis.v3.perturb_cached_heads \
+  --workspace /path/to/image-workspace --detection /path/to/cached-detection \
+  --measurement /path/to/cached-measurement --dependence /path/to/dependence-groups \
+  --out-dir /path/to/new-perturbations --workers 2
+python -m analysis.v3.summarize_perturbations \
+  --perturbation /path/to/completed-perturbations --measurement /path/to/cached-measurement \
+  --dependence /path/to/dependence-groups --out-dir /path/to/new-technical-summary
 python -m analysis.v3.recover_display_composition \
   --heads /path/to/exhaustive_merged/exhaustive_continuous_head_level.csv \
   --out-dir /path/to/new-display-composition-view

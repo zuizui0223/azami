@@ -1,0 +1,51 @@
+{
+  "status": "FULL_SOURCE_KNOWN_DEPENDENCE_GROUPS_BUILT",
+  "specification": {
+    "version": "v3_source_dependence_components_v1",
+    "source_retention": "all photos and observation-photo links",
+    "component_edges": [
+      "shared_photo_id",
+      "exact_byte_identity",
+      "exact_oriented_pixel_identity"
+    ],
+    "component_id": "obs: followed by the lexicographically smallest original observation ID in the component",
+    "development_exposure": "propagate historical usage pools and recorded training/validation membership to every connected image/observation",
+    "fold_rule": "SHA-256 of v3-dependence-fold:20260907: plus component ID, interpreted as a big-endian integer modulo 5",
+    "fold_meaning": "operational grouping only; not a new independent evaluation split or evidence that historical training was group-separated",
+    "unknown_dependence": "different encodings/crops of the same scene without exact pixel identity, photographer/site dependence and same-head identity remain unassessed"
+  },
+  "source_workspace_sha256": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+  "historical_training_manifest_sha256": "9baf5bfe477586e2e4c3c35b15af1ec34424cb2187869903a2a1f5f32bdc3871",
+  "implementation_sha256_text_lf": "304ee43cbc679c66d2682df10c5ed1393f7962bee47935bc550de22d10f29673",
+  "counts": {
+    "observations_retained": 665139,
+    "photos_retained": 1122854,
+    "source_links_retained": 1122901,
+    "components": 665103,
+    "components_with_multiple_observations": 33,
+    "maximum_observations_in_component": 5,
+    "cached_objects_retained": 2092,
+    "components_with_cached_objects": 2082,
+    "components_with_multiple_cached_objects": 10,
+    "historical_training_images": 270,
+    "historical_train_images": 211,
+    "historical_validation_images": 59,
+    "components_shared_by_historical_train_and_validation": 0,
+    "cached_objects_in_development_exposed_components": 1006,
+    "components_with_multiple_historical_usage_pools": 16,
+    "source_rows_deleted": 0
+  },
+  "integrity_checks": {
+    "source_links_crossing_components": 0,
+    "photo_versions_crossing_components": 0,
+    "identical_pixels_crossing_components": 0,
+    "folds_crossing_components": 0
+  },
+  "output_database_sha256": "75945b8bf69fcd81e79591bb83cc776ba1f640dc2930007d20b4b5b2d17728ab",
+  "limits": [
+    "Exact-identity closure does not find every duplicated scene or identify the same biological individual.",
+    "Operational folds do not retroactively repair historical training leakage or create fresh independent validation after outcome inspection.",
+    "Component grouping preserves source rows; it does not make all photos within a component identical biological measurements.",
+    "Historical development exposure is propagated conservatively; absence of that record does not establish absence of all model exposure."
+  ]
+}
