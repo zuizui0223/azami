@@ -99,7 +99,7 @@ jobs:
             --out-dir environment_diagnostics \
             --variables \
               pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month \
-              BIO1 BIO4 BIO12 BIO15 BIO18 GSP
+              BIO1 BIO4 BIO12 BIO15 BIO18 GSP NPP
 
       - name: Verify phenotype-blind weighted diagnostics and report hydric alternatives
         run: |
