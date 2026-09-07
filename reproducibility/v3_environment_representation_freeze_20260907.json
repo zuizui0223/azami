@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "V3_ENVIRONMENT_REPRESENTATION_FROZEN_BEFORE_TRAIT_JOIN",
+  "scope": "Durable aggregate receipt for the phenotype-blind native-range environment representation freeze. No observation rows, coordinates, image records or trait results are stored here.",
+  "freeze_workflow": {
+    "run_id": 34167405484,
+    "artifact_id": 10034599042,
+    "artifact_name": "ch1-v3-environment-freeze-34167405484",
+    "artifact_sha256": "83153469dc59f3c8842bd50d3f3ddab022ef150604ecc4500ba4e5a4bff73751",
+    "receipt_member": "v3_environment_representation_freeze_20260907.json",
+    "receipt_sha256": "241ab4149e04cbde1db9ccdccb4e919ff29277c433d0bc4c87c7012f747c74ac",
+    "receipt_bytes": 8515
+  },
+  "diagnostics_provenance": {
+    "workflow_run_id": 34140704734,
+    "artifact_id": 10027756150,
+    "artifact_name": "ch1-v3-phenotype-blind-environment-design-34140704734",
+    "artifact_sha256": "23675d36705552091fe2c5a086f3af24c4253d8c10c475a33e33ccca757d1008",
+    "n_rows": 9503,
+    "equal_weighted_taxa": 243,
+    "candidate_variables": 15,
+    "condition_number_all_candidates": 158.6383324873238,
+    "trait_columns_read": 0,
+    "ecological_models_executed": 0
+  },
+  "selected_variables": [
+    "pr_month",
+    "rsds_month",
+    "vpd_month",
+    "tasmax_month",
+    "sfcWind_month"
+  ],
+  "rejected_variables": [
+    "tas_month",
+    "pet_month",
+    "cmi_month",
+    "BIO1",
+    "BIO4",
+    "BIO12",
+    "BIO15",
+    "BIO18",
+    "GSP",
+    "NPP"
+  ],
+  "integrated_backbones": {
+    "drying": ["pr_month", "rsds_month", "vpd_month", "sfcWind_month"],
+    "thermal": ["pr_month", "rsds_month", "tasmax_month", "sfcWind_month"]
+  },
+  "coentry_constraint": "vpd_month and tasmax_month are not co-entered in the same primary conditional model because their equal-taxon-weighted correlation is high; drying and thermal backbones are pre-specified alternative parameterizations, not independent discovery opportunities.",
+  "candidate_partition_complete": true,
+  "trait_join_authorized_by_environment_gate": true,
+  "remaining_gate": "Trait/environment joining and ecological fitting remain prohibited until endpoint-specific image-only measurement qualification and uncertainty/stability rules are frozen.",
+  "source_of_full_rationale": "analysis/v3/environment_representation_decision_20260907.json",
+  "claim_boundary": "This receipt freezes environmental representation only and contains no capitulum-trait association, coefficient or P value."
+}
