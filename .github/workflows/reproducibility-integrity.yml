@@ -53,7 +53,8 @@ jobs:
             tests/test_v3_summary_verification.py \
             tests/test_v3_technical_coverage_figure.py \
             tests/test_v3_resolution_stream_gate.py \
-            tests/test_v3_ecological_analysis_contract.py
+            tests/test_v3_ecological_analysis_contract.py \
+            tests/test_v3_environment_matrix.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan
@@ -79,6 +80,9 @@ jobs:
           test -f analysis/v3/resolution_stream_gate.py
           test -f analysis/v3/resolution_gate_contract.json
           test -f analysis/v3/ecological_analysis_contract.json
+          test -f analysis/v3/environment_exposure_contract.json
+          test -f analysis/v3/environment_matrix.py
+          test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
           test -f analysis/v3/supervisor_comment_integration_20260907.md
           test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
           test -f reproducibility/frozen-numerical-rebuild-requirements.txt
