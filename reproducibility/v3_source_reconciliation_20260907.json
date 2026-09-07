@@ -1,0 +1,240 @@
+{
+  "status": "ARCHIVED_SOURCE_LINKS_RECONCILED_WITH_EXPLICIT_COVERAGE_GAPS",
+  "counts": {
+    "original_metadata_rows": 1122855,
+    "merged_metadata_rows": 1122854,
+    "original_metadata_observations": 665116,
+    "merged_metadata_observations": 665115,
+    "original_versions_absent_from_merge": 1,
+    "original_unique_links_absent_from_merge": 1,
+    "raw_api_records": 640141,
+    "raw_api_unique_links_absent_from_chunk_metadata": 46,
+    "retained_unique_observation_photo_links": 1122901,
+    "retained_unique_photo_ids": 1122854,
+    "retained_unique_observations": 665139,
+    "photo_ids_with_multiple_observation_links": 44,
+    "source_links_absent_from_merged_metadata": 47,
+    "source_observations_without_valid_photo_link": 0
+  },
+  "chunks": [
+    {
+      "artifact_id": 8060200007,
+      "archive_sha256": "f94afcb2d7007a2271cff354aa278d06341369a9427dcdbceacb119cc2f30583",
+      "metadata_rows": 40783,
+      "metadata_sha256": "fa499228f589dade5b0d7c978a99b502afebe8bf0b6eaacd13f030f849fc0110",
+      "collection": {
+        "requested_start_obs_id": 0,
+        "last_obs_id": 17005071,
+        "observations_seen": 25000,
+        "photos_written": 40783,
+        "started_at_utc": "2026-07-03T07:12:18.250769+00:00",
+        "completed_at_utc": "2026-07-03T07:17:14.261024+00:00",
+        "query_parameters": {
+          "taxon_id": 48561,
+          "taxon_name": "Cirsium",
+          "per_page": 200,
+          "max_observations": 25000,
+          "quality_grade": "any",
+          "photo_license": "any",
+          "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
+          "has": "photos"
+        }
+      },
+      "raw_api_member": null,
+      "raw_api_status": "NOT_PRESENT_IN_ARCHIVE",
+      "raw_api_observations": null,
+      "metadata_observations": 24998,
+      "seen_minus_metadata_observations": 2
+    },
+    {
+      "artifact_id": 8060873937,
+      "archive_sha256": "880081687dc180e874cc8387ccedf2237d4703dad9a342111771925f5cc39ae8",
+      "metadata_rows": 162828,
+      "metadata_sha256": "0c3eb34ee2b46c814d6a3368f3b2bcfbfcf7688f090061fabc92e46dc4e739b9",
+      "collection": {
+        "requested_start_obs_id": 17005071,
+        "last_obs_id": 70743299,
+        "observations_seen": 100000,
+        "photos_written": 162828,
+        "started_at_utc": "2026-07-03T07:32:32.769356+00:00",
+        "completed_at_utc": "2026-07-03T07:50:44.293744+00:00",
+        "query_parameters": {
+          "taxon_id": 48561,
+          "taxon_name": "Cirsium",
+          "per_page": 200,
+          "max_observations": 100000,
+          "quality_grade": "any",
+          "photo_license": "any",
+          "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
+          "has": "photos"
+        }
+      },
+      "raw_api_member": "observation_raw.ndjson",
+      "raw_api_status": "ARCHIVED_RECORDS_ENUMERATED",
+      "raw_api_sha256_uncompressed": "426ae2650aa5e39146071cfe7f8add55a8f811b53781d155a7f8f67445200c05",
+      "raw_api_observations": 100000,
+      "raw_photo_array_entries": 162838,
+      "raw_observations_missing_id": 0,
+      "raw_observations_without_photos": 0,
+      "raw_photo_entries_missing_id": 0,
+      "metadata_observations": 99993,
+      "seen_minus_metadata_observations": 7
+    },
+    {
+      "artifact_id": 8062930028,
+      "archive_sha256": "3aee78dc1642b712b457370adcb7f0db56308ad598ed02ff56c0e12383295727",
+      "metadata_rows": 170634,
+      "metadata_sha256": "8a534b3aff11a3a8a175d491bc5a61908a1dca644f6989de8d9d4cfd5abe1c84",
+      "collection": {
+        "requested_start_obs_id": 70743299,
+        "last_obs_id": 125380928,
+        "observations_seen": 100000,
+        "photos_written": 170634,
+        "started_at_utc": "2026-07-03T09:11:33.560564+00:00",
+        "completed_at_utc": "2026-07-03T09:30:29.486270+00:00",
+        "query_parameters": {
+          "taxon_id": 48561,
+          "taxon_name": "Cirsium",
+          "per_page": 200,
+          "max_observations": 100000,
+          "quality_grade": "any",
+          "photo_license": "any",
+          "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
+          "has": "photos"
+        }
+      },
+      "raw_api_member": "observation_raw.ndjson",
+      "raw_api_status": "ARCHIVED_RECORDS_ENUMERATED",
+      "raw_api_sha256_uncompressed": "808d1ab26013042612257be010528978c3b22147c53f6dbae49056f2eeaf6318",
+      "raw_api_observations": 100000,
+      "raw_photo_array_entries": 170636,
+      "raw_observations_missing_id": 0,
+      "raw_observations_without_photos": 0,
+      "raw_photo_entries_missing_id": 0,
+      "metadata_observations": 99998,
+      "seen_minus_metadata_observations": 2
+    },
+    {
+      "artifact_id": 8063651256,
+      "archive_sha256": "a470ab4d85675b09e0a8125d2ecf3d8e67f000a52cfd88424d8ac4fbdffb7b98",
+      "metadata_rows": 171025,
+      "metadata_sha256": "861e5ecf9193756a01cefeffdce04a99dc86e9d4b212eddfb09961152fee268c",
+      "collection": {
+        "requested_start_obs_id": 125380928,
+        "last_obs_id": 176665774,
+        "observations_seen": 100000,
+        "photos_written": 171025,
+        "started_at_utc": "2026-07-03T09:47:07.381921+00:00",
+        "completed_at_utc": "2026-07-03T10:04:33.137237+00:00",
+        "query_parameters": {
+          "taxon_id": 48561,
+          "taxon_name": "Cirsium",
+          "per_page": 200,
+          "max_observations": 100000,
+          "quality_grade": "any",
+          "photo_license": "any",
+          "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
+          "has": "photos"
+        }
+      },
+      "raw_api_member": "observation_raw.ndjson",
+      "raw_api_status": "ARCHIVED_RECORDS_ENUMERATED",
+      "raw_api_sha256_uncompressed": "359fc221d45bdcbfe189f5071aac3c0c5940f87ebf6f204fe14ed114853dd94b",
+      "raw_api_observations": 100000,
+      "raw_photo_array_entries": 171037,
+      "raw_observations_missing_id": 0,
+      "raw_observations_without_photos": 0,
+      "raw_photo_entries_missing_id": 0,
+      "metadata_observations": 99996,
+      "seen_minus_metadata_observations": 4
+    },
+    {
+      "artifact_id": 8064261214,
+      "archive_sha256": "df0519e3c62ba46f72b19b1d5021722bc4b717a29b6921d379ee04a31e82923a",
+      "metadata_rows": 172040,
+      "metadata_sha256": "6508ea4fd6810e769165d638b044716d5d702c29c6a0d407a7537a17454e6799",
+      "collection": {
+        "requested_start_obs_id": 176665774,
+        "last_obs_id": 232307038,
+        "observations_seen": 100000,
+        "photos_written": 172040,
+        "started_at_utc": "2026-07-03T10:16:53.209334+00:00",
+        "completed_at_utc": "2026-07-03T10:34:26.558980+00:00",
+        "query_parameters": {
+          "taxon_id": 48561,
+          "taxon_name": "Cirsium",
+          "per_page": 200,
+          "max_observations": 100000,
+          "quality_grade": "any",
+          "photo_license": "any",
+          "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
+          "has": "photos"
+        }
+      },
+      "raw_api_member": "observation_raw.ndjson",
+      "raw_api_status": "ARCHIVED_RECORDS_ENUMERATED",
+      "raw_api_sha256_uncompressed": "59deb9b28f096a0efb8edc2fb7e4c38cc76e154c91159ecb22b3a4b813fcbf05",
+      "raw_api_observations": 100000,
+      "raw_photo_array_entries": 172043,
+      "raw_observations_missing_id": 0,
+      "raw_observations_without_photos": 0,
+      "raw_photo_entries_missing_id": 0,
+      "metadata_observations": 99997,
+      "seen_minus_metadata_observations": 3
+    },
+    {
+      "artifact_id": 8065563950,
+      "archive_sha256": "6b3505f61b80646a258f85e0b2116ff1a42b6353cf1a5dcdafee41549fd0cc99",
+      "metadata_rows": 405545,
+      "metadata_sha256": "8838a47e3075333de30c12a76aa10b90d120e11dc81596ea0d79f23dcdd72879",
+      "collection": {
+        "requested_start_obs_id": 232307038,
+        "last_obs_id": 377701877,
+        "observations_seen": 240141,
+        "photos_written": 405545,
+        "started_at_utc": "2026-07-03T10:55:30.142894+00:00",
+        "completed_at_utc": "2026-07-03T11:41:51.672748+00:00",
+        "query_parameters": {
+          "taxon_id": 48561,
+          "taxon_name": "Cirsium",
+          "per_page": 200,
+          "max_observations": 400000,
+          "quality_grade": "any",
+          "photo_license": "any",
+          "raw_compression": "gzip",
+          "raw_payload_file": "observation_raw.ndjson.gz",
+          "pagination": "order_by=id; order=asc; id_above=checkpoint.last_obs_id",
+          "has": "photos"
+        }
+      },
+      "raw_api_member": "observation_raw.ndjson.gz",
+      "raw_api_status": "ARCHIVED_RECORDS_ENUMERATED",
+      "raw_api_sha256_uncompressed": "9cb78ae031c640fb1258dc2a9da50b3c7d3f7f82bb61312ffa22d96c93fe9fd6",
+      "raw_api_observations": 240141,
+      "raw_photo_array_entries": 405564,
+      "raw_observations_missing_id": 0,
+      "raw_observations_without_photos": 0,
+      "raw_photo_entries_missing_id": 0,
+      "metadata_observations": 240134,
+      "seen_minus_metadata_observations": 7
+    }
+  ],
+  "raw_api_missing_archives": [
+    8060200007
+  ],
+  "manifest_sha256_canonical_json": "dc9b1d948bbef91a249b1959ccdd762b4fcf1e21147f003c0507443158088404",
+  "contract_sha256_canonical_json": "49baa9ad2e6f5046f59e6942567b0092aacd587ef1e181647c9747a2c8c54622",
+  "merged_metadata_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+  "implementation_sha256_text_lf": "0e80b598d6427fbda4f184fb942dc2ee751d07234894b270d76fd1529c8a19a5",
+  "ledger_sha256": "daaa04917fbf0f1dfa03bcfa6d5a49f95074cf3ee1965e3b4a4d482d72cd0f02",
+  "source_rows_removed_in_this_reconciliation": 0,
+  "image_bytes_verified": false,
+  "ecological_models_executed": false,
+  "limits": [
+    "Archive recovery is not evidence of image-byte availability or new trait accuracy.",
+    "Unique links are a derived view; all original metadata and API record locators remain in separate tables and exact archives.",
+    "A photo linked to several observations is not an independent replicate and may have conflicting source assignments.",
+    "Missing raw API archives prevent complete reconstruction of collection-time losses.",
+    "The query required photos; its changing API population and records outside that query are not a closed census."
+  ]
+}

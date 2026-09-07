@@ -8,9 +8,19 @@ The archived July 2026 photo metadata contain **665,115 observations and
 1,122,854 photos**. These are records of photos, not proof that every image file
 has been downloaded. The snapshot is not a count of all iNaturalist records today.
 
-Executed evidence: [source inventory receipt](../../reproducibility/v3_source_inventory_20260907.json).
+Executed evidence: [source inventory receipt](../../reproducibility/v3_source_inventory_20260907.json),
+[original-archive recovery](../../reproducibility/v3_upstream_recovery_20260907.json), and
+[historical processing recount](../../reproducibility/v3_historical_processing_20260907.json).
 The full snapshot was inventoried twice with byte-identical copies of all four
 outputs; no source row was removed. The 46,276 legacy observations all matched.
+
+The later [pre-merge/API reconciliation](../../reproducibility/v3_source_reconciliation_20260907.json)
+restored **47 observation-photo links** missing from the merged snapshot:
+one lost during merging and 46 recoverable from archived API records. The local
+source-link ledger now covers **665,139 observation IDs, 1,122,854 unique photo IDs
+and 1,122,901 unique links**. These are not 47 new photos: 44 photos have links to
+multiple observations. Keep these links and flag shared-photo dependence before
+evaluation splits or analysis; do not count them as independent image evidence.
 
 ## One source, reversible analysis views
 
@@ -47,8 +57,8 @@ analysis view, not irreversible source reduction.
 
 | Stage | Implemented now | Still to implement |
 |---|---|---|
-| Inventory | Exact source hash; streaming ledger preserving every photo row; observation aggregation; duplicate/conflict accounting; optional v2 overlap | Reconcile six pre-merge chunks and original API collection coverage |
-| Recover | Source metadata are locally recovered | Reconcile all cached/downloaded photos, exact image versions and rights; raw observations without photos |
+| Inventory | Every merged/source row and archived API link accounted for; lost links restored; source hashes, observation aggregation and v2 overlap | First chunk's raw API file is absent; complete collection-time recovery cannot be certified |
+| Recover | Six original metadata archives and the unthinned historical processing archive locally preserved with exact hashes | Reconcile actual cached image bytes, image versions and rights; do not confuse processing records with image files |
 | Measure | Existing v2 code and results preserved as references | Full-inventory detector and measurement execution, linked failures, endpoint-specific automated technical evaluation |
 | Analyse | Workflow specification; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
 | Report | Aggregate source-inventory receipt | Measurement/association tables and figures from the same saved outputs |
@@ -58,6 +68,11 @@ It fixes procedures and evidential limits, **not the result direction or its
 explanation**. V2 results have already been seen: this is retrospective redesign,
 not preregistration. Unexpected results and alternative explanations are welcome;
 new analyses prompted by them must be labelled as post-inspection exploration.
+
+The completed inventory/reconciliation/recount receipts retain the canonical
+contract hash from [their execution checkpoint](https://github.com/zuizui0223/azami/blob/4e55670373c2e2fe0b8fc55b13ee065727369703/analysis/v3/workflow_contract.json).
+The current contract updates the implementation labels and known source limits;
+the historical receipts and their denominators are not silently rewritten.
 
 ## Integrate controls; do not move a long list of repairs upstream
 
@@ -141,13 +156,74 @@ including those not duplicated in the compact ledger. Keep it locally with the
 ledger. Raw metadata, user identifiers, attribution, coordinates and images are
 not added to GitHub. Only aggregate receipts are public.
 
-The input was already merged upstream: the saved provenance reports **one
-duplicate photo row removed from six chunks** (1,122,855 → 1,122,854).
-V3's zero-row-loss inventory does not undo or certify that earlier merge.
-Original API/query completeness and records without photos remain explicit
-acquisition checks.
+The first inventory receipt describes the already merged input and remains an
+unchanged historical checkpoint. The later reconciliation retains the original
+1,122,855 chunk rows and 640,141 archived API records separately, together with
+the unique-link view. It verifies every merged row against its exact original
+source version, rather than treating photo-ID deduplication as lossless.
 
-## Preserved checkpoints, not the v3 universe
+## Recovered processing history
+
+The all-photo processing archive was independently recounted at photo, observation
+and head level. All eight source/queue/screen/head/crop identity and state checks
+had zero mismatches. These are historical processing counts, not new v3 results:
+
+| Historical stage | Photos | Observations |
+|---|---:|---:|
+| Merged photo-metadata snapshot | 1,122,854 | 665,115 |
+| Queued for the all-photo detector pass | 777,766 | 460,036 |
+| At least one detected head | 637,745 | 406,582 |
+| Strict spatially thinned observation view | Not a photo-level count | 46,276 |
+
+The detector pass recorded 1,255,791 heads, 139,797 no-detection photos and 224
+missing-image jobs. Another 345,088 source photos were not in this historical
+queue. Do not convert unqueued or missing jobs into detection negatives, or
+detection negatives into ecological absences. The archive retains the earlier
+orientation/colour/outline measurements; it does **not** establish full-22-endpoint
+coverage across 406,582 observations.
+
+There are 137,492 detector-positive observations with more than one photo.
+They are candidates for automated cross-photo matching, not already established
+repeated measurements of the same head. Their extra photos must not silently
+receive independent observation weight. Preserve the historical head-to-observation
+summaries and create explicitly versioned alternatives when changing aggregation.
+
+The recovered processing archive contains **no image files**. It preserves exact
+processing records and old image/crop paths, not a verified current image cache.
+
+### Recover and audit original archives locally
+
+The archive manifest is [`upstream_sources.json`](upstream_sources.json). Recovery
+needs read access to the existing GitHub Actions archives (a `GH_TOKEN` in the
+environment), but makes no new source-photo requests. It preserves exact ZIPs,
+verifies selected extracted members, and will not overwrite changed local files.
+Use ignored `local_data/` or an external directory. For example:
+
+```bash
+python -m analysis.v3.recover_upstream --out-dir /path/to/archives
+python -m analysis.v3.reconcile_sources \
+  --archives /path/to/archives --metadata /path/to/photo_metadata_merged.csv \
+  --out-dir /path/to/new-source-reconciliation
+python -m analysis.v3.audit_processing_history \
+  --archive /path/to/archives/8269246732/source.zip \
+  --metadata /path/to/photo_metadata_merged.csv \
+  --out-dir /path/to/new-processing-recount
+```
+
+Source reconciliation reads original photo rows and raw API observation-photo
+links, including the final chunk's compressed API file. The derived unique-link
+table does not replace the original records: exact archives, source row/line
+locators and hashes remain available locally. Multiple observations can reference
+the same photo, so deduplicating image bytes must not discard their source links.
+
+The first chunk has no archived raw API file; collection-time losses there cannot
+be fully reconstructed. Collection used a photo-bearing-record query while the
+API population could change. Matching chunk ID boundaries does not turn it into
+a closed census of all iNaturalist observations. Its 25,000-observation collection
+checkpoint and 24,998 metadata observation IDs differ by two; the missing raw API
+file prevents resolving that difference from this archive.
+
+### Preserved numerical checkpoints
 
 The [offline numerical audit](OFFLINE_AUDIT.md) retains the existing PR #92
 arithmetic and original subset verification. It does not define full v3 coverage,

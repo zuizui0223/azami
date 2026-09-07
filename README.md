@@ -6,7 +6,9 @@ Prepublication manuscript prose and journal-submission packages are intentionall
 
 Chapter 1 v3 starts from the [full-source, information-retaining workflow](analysis/v3/README.md),
 not the already thinned v2 subset. It preserves the frozen v2 results below.
-Source metadata inventory is not completed image retrieval, remeasurement or a new ecological analysis.
+Original source links and unthinned processing history have been reconciled; the
+runbook separates recovered records from pending image-cache and measurement work.
+These audits are not new image retrieval, remeasurement or ecological analysis.
 
 ## Third-party reproducibility status
 

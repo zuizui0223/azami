@@ -1,0 +1,66 @@
+{
+  "status": "PINNED_UPSTREAM_ARCHIVES_RECOVERED",
+  "local_preservation": "Exact original ZIP archives and verified selected metadata/API/processing members; raw records are not published.",
+  "archives": [
+    {
+      "artifact_id": 8060200007,
+      "archive_sha256": "f94afcb2d7007a2271cff354aa278d06341369a9427dcdbceacb119cc2f30583",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 11,
+      "extracted_members": 10,
+      "extracted_bytes": 24643946
+    },
+    {
+      "artifact_id": 8060873937,
+      "archive_sha256": "880081687dc180e874cc8387ccedf2237d4703dad9a342111771925f5cc39ae8",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 12,
+      "extracted_members": 11,
+      "extracted_bytes": 6378661359
+    },
+    {
+      "artifact_id": 8062930028,
+      "archive_sha256": "3aee78dc1642b712b457370adcb7f0db56308ad598ed02ff56c0e12383295727",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 12,
+      "extracted_members": 11,
+      "extracted_bytes": 5890083059
+    },
+    {
+      "artifact_id": 8063651256,
+      "archive_sha256": "a470ab4d85675b09e0a8125d2ecf3d8e67f000a52cfd88424d8ac4fbdffb7b98",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 12,
+      "extracted_members": 11,
+      "extracted_bytes": 5621496983
+    },
+    {
+      "artifact_id": 8064261214,
+      "archive_sha256": "df0519e3c62ba46f72b19b1d5021722bc4b717a29b6921d379ee04a31e82923a",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 12,
+      "extracted_members": 11,
+      "extracted_bytes": 5346249756
+    },
+    {
+      "artifact_id": 8065563950,
+      "archive_sha256": "6b3505f61b80646a258f85e0b2116ff1a42b6353cf1a5dcdafee41549fd0cc99",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 12,
+      "extracted_members": 11,
+      "extracted_bytes": 693252862
+    },
+    {
+      "artifact_id": 8269246732,
+      "archive_sha256": "5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
+      "status": "EXACT_ARCHIVE_AND_SELECTED_MEMBERS_VERIFIED",
+      "total_members": 21,
+      "extracted_members": 21,
+      "extracted_bytes": 5448723677
+    }
+  ],
+  "new_source_photo_downloads": 0,
+  "ecological_models_executed": false,
+  "current_image_cache_availability": "NOT_ASSESSED",
+  "source_manifest": "analysis/v3/upstream_sources.json"
+}

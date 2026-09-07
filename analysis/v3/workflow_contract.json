@@ -14,7 +14,7 @@
     "expected_photo_rows": 1122854,
     "expected_observations_with_photos": 665115,
     "source_scope": "recovered photo-metadata snapshot, not all iNaturalist records at present and not proof that all image bytes were downloaded",
-    "earlier_source_limit": "The saved merge report records six input chunks and one removed duplicate photo row (1122855 to 1122854). Raw chunk reconciliation, API query coverage and observations without photos remain separate acquisition checks."
+    "earlier_source_limit": "The merged snapshot omits one original chunk link and 46 additional links recovered from archived API records; see reproducibility/v3_source_reconciliation_20260907.json. Its inventory remains a historical comparison, not the fully reconciled source-link ledger. The first chunk has no raw API archive and collection-time coverage is not fully recoverable."
   },
   "legacy_v2_native_reference_sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
   "preservation": {
@@ -41,8 +41,8 @@
     "repeat_photo_limit": "same observation ID alone does not establish the same individual or head; unmatched photos cannot identify pure photographic variance"
   },
   "stages": [
-    {"id": "inventory", "implementation": "workflow.py inventory", "output": "complete photo-record ledger, observation aggregation, legacy-v2 overlap, source/processing availability and loss accounting"},
-    {"id": "recover", "implementation": "pending source-chunk and image-cache reconciler", "output": "raw-query coverage; photo retrieval/cache status with hashes and rights; preserve missing and restricted sources"},
+    {"id": "inventory", "implementation": "workflow.py inventory; reconcile_sources.py for original/API source-link recovery", "output": "source-record and observation-photo link ledgers, observation aggregation, legacy-v2 overlap and explicit collection-coverage gaps"},
+    {"id": "recover", "implementation": "recover_upstream.py and audit_processing_history.py for existing archives; image-byte/cache reconciliation remains pending", "output": "archived raw-query and historical-processing coverage; subsequently verify photo retrieval/cache status with hashes and rights, retaining missing and restricted sources"},
     {"id": "measure", "implementation": "pending full-inventory detector and measurement executor", "output": "all detections and negative/failed jobs; masks, continuous endpoints, technical uncertainty and no silent phenotype-based photo choice"},
     {"id": "analyse", "implementation": "pending model-specific dataset builder and runner", "output": "reversible observation-membership views with exact formulas, denominators and uncertainty"},
     {"id": "report", "implementation": "pending result-table and figure builder", "output": "methodological and ecological results from shared saved tables; include missingness and failures"}

@@ -1,0 +1,83 @@
+{
+  "status": "HISTORICAL_PROCESSING_RECOUNTED_NOT_V3_REMEASUREMENT",
+  "artifact_id": 8269246732,
+  "archive_sha256": "5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
+  "merged_source_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+  "contract_sha256_canonical_json": "49baa9ad2e6f5046f59e6942567b0092aacd587ef1e181647c9747a2c8c54622",
+  "implementation_sha256_text_lf": "d702f4018d9bd63f90761e68c827fabe2adaffdad0bb9e37bbea82303f5a0806",
+  "counts": {
+    "n_queue_photos": 777766,
+    "n_queue_observations": 460036,
+    "n_queue_species": 288,
+    "n_detected_photos": 637745,
+    "n_no_detection_photos": 139797,
+    "n_failed_screening_photos": 224,
+    "n_observations_with_detected_heads": 406582,
+    "n_detected_heads": 1255791,
+    "n_colour_usable": 1053623,
+    "n_shape_usable": 952578,
+    "n_orientation_usable": 863191,
+    "source_photos_not_in_historical_queue": 345088,
+    "queued_observations_with_multiple_photos": 170887,
+    "detected_observations_with_multiple_photos": 137492
+  },
+  "source_counts": {
+    "photos": 1122854,
+    "observations": 665115
+  },
+  "screen_status_counts": {
+    "detected": 637745,
+    "missing_image": 224,
+    "no_detection": 139797
+  },
+  "identity_checks": {
+    "queue_source_identity_mismatches": 0,
+    "queue_without_screen": 0,
+    "screen_without_queue": 0,
+    "invalid_screen_states": 0,
+    "head_queue_identity_mismatches": 0,
+    "head_crop_identity_mismatches": 0,
+    "crop_without_head": 0,
+    "screen_head_count_mismatches": 0
+  },
+  "postprediction_views": [
+    {
+      "cohort": "all_detected_observations",
+      "observations": 406582,
+      "taxa": 286
+    },
+    {
+      "cohort": "between_species_balanced_40_observations",
+      "observations": 3723,
+      "taxa": 259
+    },
+    {
+      "cohort": "coordinate_usable_observations",
+      "observations": 392989,
+      "taxa": 271
+    },
+    {
+      "cohort": "strict_10km_observations",
+      "observations": 297293,
+      "taxa": 259
+    },
+    {
+      "cohort": "strict_spatial_thinned_observations",
+      "observations": 46276,
+      "taxa": 259
+    }
+  ],
+  "historical_report_counts_matched": true,
+  "archive_image_members": 0,
+  "current_image_cache_availability": "NOT_ASSESSED",
+  "new_image_operations": false,
+  "ecological_models_executed": false,
+  "ledger_sha256": "b156097f654b8f2f2dc88857ef500ef11c8463c8b572953a86c0d79ef2208f8e",
+  "limits": [
+    "Head counts and technical usability are historical pipeline outputs, not validated biological individuals or accuracy.",
+    "A no-detection result is not an ecological absence; missing/error and not-queued states remain separate.",
+    "Several photos within an observation are not independent samples or automatically repeat measurements of the same head.",
+    "Source links reconstructed from archived API records are tracked separately by reconcile_sources; this comparison uses the exact historical merged snapshot.",
+    "Only the core source/queue/screen/head/crop relations and cohort membership were recounted; trait values and model results were not recomputed."
+  ]
+}

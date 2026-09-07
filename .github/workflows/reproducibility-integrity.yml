@@ -36,7 +36,10 @@ jobs:
             tests/test_azami_ch1_provenance.py \
             tests/test_azami_ch1_tabular.py \
             tests/test_v3_revision_consistency.py \
-            tests/test_v3_workflow.py
+            tests/test_v3_workflow.py \
+            tests/test_v3_upstream_recovery.py \
+            tests/test_v3_source_reconciliation.py \
+            tests/test_v3_processing_history.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan

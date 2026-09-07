@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only recovery of six source chunks and the unthinned historical all-photo processing archive. Not new image downloads or ecological analysis.",
+  "archives": [
+    {
+      "artifact_id": 8060200007,
+      "name": "ch1-inat-metadata-id_000000000",
+      "archive_sha256": "f94afcb2d7007a2271cff354aa278d06341369a9427dcdbceacb119cc2f30583",
+      "archive_bytes": 2976497,
+      "workflow_run_id": 28644714792,
+      "source_commit": "ad240188282eddb1f0fbb5b6ce43602b57cf1886",
+      "role": "raw_metadata_chunk",
+      "required_member": "photo_metadata.csv",
+      "required_member_sha256": "fa499228f589dade5b0d7c978a99b502afebe8bf0b6eaacd13f030f849fc0110"
+    },
+    {
+      "artifact_id": 8060873937,
+      "name": "ch1-inat-metadata-id_017005071",
+      "archive_sha256": "880081687dc180e874cc8387ccedf2237d4703dad9a342111771925f5cc39ae8",
+      "archive_bytes": 246974367,
+      "workflow_run_id": 28645654315,
+      "source_commit": "bfb522ba8dbe4686ec48e1b44a50e4b287d27583",
+      "role": "raw_metadata_chunk",
+      "required_member": "photo_metadata.csv",
+      "required_member_sha256": "0c3eb34ee2b46c814d6a3368f3b2bcfbfcf7688f090061fabc92e46dc4e739b9"
+    },
+    {
+      "artifact_id": 8062930028,
+      "name": "ch1-inat-metadata-id_70743299",
+      "archive_sha256": "3aee78dc1642b712b457370adcb7f0db56308ad598ed02ff56c0e12383295727",
+      "archive_bytes": 232800213,
+      "workflow_run_id": 28650654246,
+      "source_commit": "bdf4747c342d3df60170a738a065f69b3d0bbf6b",
+      "role": "raw_metadata_chunk",
+      "required_member": "photo_metadata.csv",
+      "required_member_sha256": "8a534b3aff11a3a8a175d491bc5a61908a1dca644f6989de8d9d4cfd5abe1c84"
+    },
+    {
+      "artifact_id": 8063651256,
+      "name": "ch1-inat-metadata-id_125380928",
+      "archive_sha256": "a470ab4d85675b09e0a8125d2ecf3d8e67f000a52cfd88424d8ac4fbdffb7b98",
+      "archive_bytes": 222901663,
+      "workflow_run_id": 28652522336,
+      "source_commit": "bdf4747c342d3df60170a738a065f69b3d0bbf6b",
+      "role": "raw_metadata_chunk",
+      "required_member": "photo_metadata.csv",
+      "required_member_sha256": "861e5ecf9193756a01cefeffdce04a99dc86e9d4b212eddfb09961152fee268c"
+    },
+    {
+      "artifact_id": 8064261214,
+      "name": "ch1-inat-metadata-id_176665774",
+      "archive_sha256": "df0519e3c62ba46f72b19b1d5021722bc4b717a29b6921d379ee04a31e82923a",
+      "archive_bytes": 213404271,
+      "workflow_run_id": 28654080729,
+      "source_commit": "de8ee66f35a7cda2d891de73f8064c22dc35eadb",
+      "role": "raw_metadata_chunk",
+      "required_member": "photo_metadata.csv",
+      "required_member_sha256": "6508ea4fd6810e769165d638b044716d5d702c29c6a0d407a7537a17454e6799"
+    },
+    {
+      "artifact_id": 8065563950,
+      "name": "ch1-inat-metadata-id_232307038_final",
+      "archive_sha256": "6b3505f61b80646a258f85e0b2116ff1a42b6353cf1a5dcdafee41549fd0cc99",
+      "archive_bytes": 401057416,
+      "workflow_run_id": 28655974252,
+      "source_commit": "d36bd9d0aaadd836dc4365e1cbf30f3eea794b3d",
+      "role": "raw_metadata_chunk",
+      "required_member": "photo_metadata.csv",
+      "required_member_sha256": "8838a47e3075333de30c12a76aa10b90d120e11dc81596ea0d79f23dcdd72879"
+    },
+    {
+      "artifact_id": 8269246732,
+      "name": "ch1-exhaustive-continuous-merged-all_photos_20260711_v1-recovery",
+      "archive_sha256": "5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
+      "archive_bytes": 923684917,
+      "workflow_run_id": 29216617585,
+      "source_commit": "de4b64d93ab98827121090997b62869a65c7cd4b",
+      "role": "historical_all_photo_processing"
+    }
+  ]
+}
