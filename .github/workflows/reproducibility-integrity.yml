@@ -35,7 +35,11 @@ jobs:
             tests/test_material_availability.py \
             tests/test_azami_ch1_provenance.py \
             tests/test_azami_ch1_tabular.py \
-            tests/test_v3_revision_consistency.py
+            tests/test_v3_revision_consistency.py \
+            tests/test_v3_workflow.py
+
+      - name: Validate v3 workflow design without promoting scientific status
+        run: python -m analysis.v3.workflow plan
 
       - name: Confirm prepublication documents are absent
         shell: bash

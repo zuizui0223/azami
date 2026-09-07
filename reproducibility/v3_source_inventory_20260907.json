@@ -1,0 +1,94 @@
+{
+  "workflow_id": "ch1_v3_full_source_information_retention_20260907",
+  "status": "FULL_PHOTO_METADATA_INVENTORIED_NOT_IMAGE_VALIDATED",
+  "contract_sha256_canonical_json": "49baa9ad2e6f5046f59e6942567b0092aacd587ef1e181647c9747a2c8c54622",
+  "metadata_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+  "implementation_sha256_text_lf": "81e7455efea019e23fad61d92d454e356159848db529a0ac856bfda56cc116f5",
+  "counts": {
+    "source_photo_rows": 1122854,
+    "retained_photo_record_rows": 1122854,
+    "unique_photo_ids": 1122854,
+    "observations_with_photos": 665115,
+    "observations_with_multiple_photos": 244528,
+    "additional_photos_beyond_one_per_observation": 457739,
+    "species_rank_taxa": 350,
+    "rows_with_missing_identifiers": 0,
+    "duplicate_observation_photo_rows": 0,
+    "photo_ids_linked_to_multiple_observations": 0,
+    "observations_with_conflicting_taxon_labels": 0,
+    "rows_removed_in_v3_inventory": 0
+  },
+  "photo_record_counts_by_status": {
+    "coordinate_status": {
+      "false": 60304,
+      "true": 1062550
+    },
+    "captive_status": {
+      "false": 1119688,
+      "true": 3166
+    },
+    "taxon_rank": {
+      "complex": 874,
+      "genus": 118331,
+      "hybrid": 997,
+      "section": 244,
+      "species": 976242,
+      "subspecies": 3353,
+      "variety": 22813
+    },
+    "photo_license_code": {
+      "": 236681,
+      "cc-by": 103541,
+      "cc-by-nc": 711725,
+      "cc-by-nc-nd": 11781,
+      "cc-by-nc-sa": 12382,
+      "cc-by-nd": 1431,
+      "cc-by-sa": 6665,
+      "cc0": 38648
+    },
+    "native_status_v2": {
+      "introduced": 18362,
+      "native": 50700,
+      "not_assessed_outside_v2": 1037903,
+      "unlisted": 1942,
+      "unmapped_tdwg": 3607,
+      "unresolved_taxon": 10340
+    }
+  },
+  "legacy_v2_comparison": {
+    "status": "LINKED_COMPARISON_ONLY",
+    "source_v2_observations": 46276,
+    "overlapping_observations": 46276,
+    "missing_from_photo_snapshot": 0
+  },
+  "legacy_mapping_sha256_canonical_json": "5567aa0675a599e2df89cdcaf7ab2e63a13b59c359e453f62275ebb72ab8b003",
+  "stages": {
+    "inventory": "COMPLETED_FOR_RECOVERED_PHOTO_SNAPSHOT",
+    "recover": "NOT_EXECUTED",
+    "measure": "NOT_EXECUTED",
+    "analyse": "NOT_EXECUTED",
+    "report": "NOT_EXECUTED"
+  },
+  "image_download_completeness": "NOT_ASSESSED_FROM_METADATA",
+  "detector_negative_count": null,
+  "image_operations_performed": false,
+  "ecological_models_executed": false,
+  "upstream_merge_loss": "The saved merge report records six input chunks and one removed duplicate photo row (1122855 to 1122854). Raw chunk reconciliation, API query coverage and observations without photos remain separate acquisition checks.",
+  "raw_observations_without_photos": "NOT_ENUMERATED_BY_PHOTO_METADATA",
+  "software": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1"
+  },
+  "output_sha256": {
+    "source_ledger.sqlite": "a5a6c8fd312e8ca36dd94b5c6850327c9cf2de1035f47dbdea8d363349ebfe78",
+    "observation_ledger.csv": "730a505aeba89da87b04e4921a199bf0dc4c991f791f0d2ad943df0d8626a819",
+    "workflow_contract.json": "ba2ce6ee1670c3f7d5bfa569ed6b36a9a58da8218e59d27bcb8cecaa2a1d484a"
+  },
+  "local_validation": {
+    "source_workflow_synthetic_tests": 23,
+    "existing_integrity_and_numerical_tests": 54,
+    "total_tests_passed": 77,
+    "second_execution_byte_identical_outputs": 4,
+    "note": "Snapshot row conservation and software consistency only; not image availability, measurement accuracy or ecological results."
+  }
+}

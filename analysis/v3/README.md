@@ -1,85 +1,159 @@
-# Chapter 1 v3 offline numerical audit
+# Chapter 1 v3: retain the source information, then define analysis views
 
-`audit_revision_consistency.py` reads existing local CSV files only. It does not
-retrieve or transform images, rerun the detector, or modify frozen v2 inputs,
-models, multiplicity families or result tables. Manuscripts and reviewer responses
-remain outside this repository.
+V3 starts with the recovered acquisition snapshot, not the 46,276 observations
+already selected for v2. The current entry point is
+`python -m analysis.v3.workflow inventory`.
 
-## Verified scope
+The archived July 2026 photo metadata contain **665,115 observations and
+1,122,854 photos**. These are records of photos, not proof that every image file
+has been downloaded. The snapshot is not a count of all iNaturalist records today.
 
-The executed report is `reproducibility/v3_offline_audit_20260907.json`.
+Executed evidence: [source inventory receipt](../../reproducibility/v3_source_inventory_20260907.json).
+The full snapshot was inventoried twice with byte-identical copies of all four
+outputs; no source row was removed. The 46,276 legacy observations all matched.
 
-- All 37,251 original orientation observation medians were reconstructed from
-  102,982 usable heads; maximum absolute discrepancy was 2.84e-14 degrees.
-- The declared hash-ordered subset was reconstructed: 142 taxa, 3,829
-  observations, 10,431 heads and 6,561 photographs. This verifies selection, not
-  image remeasurement or measurement stability.
-- The audit recomputes 22 conditional model rows and ten minimum-replication rows.
-  The orientation `climate_core` and `plus_chelsa_bio01` rows intentionally have
-  the same design and must not be counted as independent evidence.
-- Two local executions produced byte-identical copies of all six audit outputs.
-  Twenty-nine new synthetic unit tests and 25 existing integrity tests passed.
-  These checks establish numerical/code consistency, not independent biological
-  validation or a new confirmatory analysis.
-
-The all-nine conditional orientation coefficient has an exploratory HC3 interval
-that includes zero. Chroma retains a negative coefficient in the listed models.
-These results do not identify independent causal environmental effects. Strongly
-correlated predictors and unmodelled spatial/phylogenetic dependencies remain.
-
-## Required local inputs
-
-The command verifies the exact SHA-256 values defined in `HASHES` before fitting.
-
-| Argument | Original member / provenance |
-|---|---|
-| `--traits` | `universe/continuous_trait_universe_observation_long.csv` in continuous artifact `9612943217` |
-| `--heads` | `8269246732_exhaustive_continuous_head_level.csv` in recovered artifact `10004125659` |
-| `--environment` | Exact reconstructed `strict_spatial_chelsa_process.csv`, SHA-256 `e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7` |
-
-Use the frozen public v2 runbook for original numerical-input recovery. The head
-recovery artifact is a separate v3 input; its identity does not make this a new
-public archival release. No unverified replacement CSV is accepted.
-
-From the repository root, in an environment containing numpy, pandas and scipy:
-
-```bash
-python analysis/v3/audit_revision_consistency.py \
-  --traits /path/to/continuous_trait_universe_observation_long.csv \
-  --heads /path/to/8269246732_exhaustive_continuous_head_level.csv \
-  --environment /path/to/strict_spatial_chelsa_process.csv \
-  --out-dir /path/to/external-v3-audit
-
-python -m pytest -q tests/test_v3_revision_consistency.py
-```
-
-Conditional coefficients use separately standardized predictors and response,
-with HC3 sandwich covariance and a normal-reference 95% interval. Environmental
-medians are from all original primary observations, not recalculated after
-endpoint missingness or minimum-replication restrictions. These exploratory
-intervals are not spatial, phylogenetic or multiplicity-adjusted. Output hashes
-record the executed software environment; numerical agreement should also be
-checked when software versions or CSV serialization differ.
-
-## Linked records remain a separate verification step
-
-The executed audit had no linked bounding-box perturbation CSV. Its recorded
-status is therefore `NOT_VERIFIED_RECORDS_NOT_SUPPLIED`, not failed remeasurement
-and not a claim that remeasurement was never conducted elsewhere. Aggregate
-reported values cannot substitute for per-head linked records.
-
-An optional `--bbox-records` argument accepts a normalized CSV with:
+## One source, reversible analysis views
 
 ```text
-annotation_unit_id,obs_id,photo_id,condition,angle_deg,usable,head_clipped,source_sha256
+Acquisition snapshot: every observation-photo record
+  → Rights-aware image cache: exact bytes, hashes, missing/restricted states
+  → Detection: all heads plus explicit negative and failed photo jobs
+  → Measurement: per-head/photo features, masks, QC and uncertainty
+  → Analysis views: observation-level or nested, question-specific membership
+  → Shared result tables: methodological and ecological findings
 ```
 
-Exactly five rows are required per scheduled head, with conditions `baseline`,
-`x_minus_5pct`, `x_plus_5pct`, `y_minus_5pct` and `y_plus_5pct`. Failed executions
-must remain explicit rows with `usable=False`, rather than disappearing.
+Keep all available source records and relationships. Native range, coordinate
+quality, taxonomic rank, captive status, flowering state and image quality are
+annotations, not reasons to delete records from the master data. A photo can be
+useful for one endpoint and not another. Coordinates are needed for exposure
+alignment, not for every image measurement. Restricted locations must not be
+de-obscured; metadata retention does not authorize every image download or redistribution.
 
-The validator checks IDs, condition completeness, image-hash consistency,
-booleans, angle bounds, original-baseline agreement and nested 5/10/20-degree
-stability flags. It does not verify image authenticity, perform image operations,
-or fit stable-subset environmental models. Adaptation to another record schema
-must be explicit and provenance-preserving; missing fields must not be invented.
+Multiple photos and multiple heads are retained, but they are not independent
+observation replicates. One observation can show different heads or individuals.
+A same-head match is needed before interpreting repeated photos as photographic
+repeat measurements. Preserve raw values before deriving summaries, and use
+appropriate nesting/weighting so photo-rich observations do not get unintended
+extra weight.
+
+The first-photo queue in `05_build_image_screening_queue.py` and the later
+all-photo queue in `71_build_within_species_expansion_queue.py` are different
+historical routes. Do not assume the first-photo filter applied to all v2 data.
+V3 records which route each source followed. Spatial thinning becomes a justified
+analysis view, not irreversible source reduction.
+
+## Implementation and present boundary
+
+| Stage | Implemented now | Still to implement |
+|---|---|---|
+| Inventory | Exact source hash; streaming ledger preserving every photo row; observation aggregation; duplicate/conflict accounting; optional v2 overlap | Reconcile six pre-merge chunks and original API collection coverage |
+| Recover | Source metadata are locally recovered | Reconcile all cached/downloaded photos, exact image versions and rights; raw observations without photos |
+| Measure | Existing v2 code and results preserved as references | Full-inventory detector and measurement execution, linked failures, endpoint-specific automated technical evaluation |
+| Analyse | Workflow specification; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
+| Report | Aggregate source-inventory receipt | Measurement/association tables and figures from the same saved outputs |
+
+The specification is [`workflow_contract.json`](workflow_contract.json).
+It fixes procedures and evidential limits, **not the result direction or its
+explanation**. V2 results have already been seen: this is retrospective redesign,
+not preregistration. Unexpected results and alternative explanations are welcome;
+new analyses prompted by them must be labelled as post-inspection exploration.
+
+## Integrate controls; do not move a long list of repairs upstream
+
+- **Common design:** source identity, dates with hemisphere-aware encoding,
+  photo/observation nesting, exposure uncertainty and question-specific spatial
+  structure belong in preparation and the relevant model.
+- **Measurement-specific evaluation:** crop shifts for orientation/outline;
+  paired flower/context colour and photometric perturbations for colour;
+  pixel size, sharpness and fixed-resolution checks for fine geometry.
+  Save parameters and linked results before environmental interpretation.
+- **Limited sensitivity comparisons:** assumptions not covered by the main
+  design, such as dominant-taxon influence, range-scope differences and propagation
+  of measurement uncertainty. Report coefficient ranges and support changes,
+  not only preserved signs.
+
+Native/introduced/unknown strata remain available. The old native-status table
+covers only the v2 subset; it must not assign nativeness to the rest by default.
+Define an ecological target after mapping coverage and the scientific question
+are explicit. Use matching observation IDs for trait and environment summaries.
+
+Univariate atlas associations do not establish independent effects of correlated
+predictors. Conditional models need collinearity diagnostics on their actual
+cohort and a saved covariate rationale. Tree placements are sensitivities, not
+independent datasets; report direct-tip coverage and lambda.
+
+## Two contributions, without required positive findings
+
+**Methodological:** a traceable photo-to-feature procedure, coverage, failures,
+technical error, comparability and reproducibility. Explain detector localization
+separately from deterministic measurement. Report existing training/evaluation
+metrics with their actual split provenance. The fully automated route does not
+require new human reference measurements, but consistency alone does not establish
+detector or physical-trait accuracy.
+
+**Ecological:** image-feature associations and uncertainty for a stated population,
+scale and model. V2-selected candidates remain post-selection; they need not
+survive. Image variation is not automatically biological variation, low chroma
+does not determine anthocyanin content, and spatial association does not establish
+adaptation. Context colour and calendar timing do not by themselves rule out
+illumination or developmental-stage explanations.
+
+Keep all 27 original endpoints in the registry: 22 previously measured and five
+with unfinished functions, not five QC rejections. Future functions or endpoint
+extensions need new versions. Joint hue has two columns but one inferential unit.
+
+## Run the full-source inventory
+
+From the repository root (standard-library Python only):
+
+```bash
+python -m analysis.v3.workflow plan
+python -m analysis.v3.workflow inventory \
+  --metadata /path/to/photo_metadata_merged.csv \
+  --legacy-v2-native /path/to/observation_native_status.csv \
+  --out-dir /path/to/new-external-v3-inventory
+python -m pytest -q tests/test_v3_workflow.py
+```
+
+The optional v2 native input only annotates overlap; it never filters the source.
+The source member SHA-256, archived source identity and collection time are pinned
+in the contract. Recover artifact `8066010557`, named
+`ch1-inat-metadata-merged-full_inventory_20260703`, from run `28659167379` or its
+owner archive; verify the extracted metadata against the contract. Actions
+artifacts are temporary, not a durable public v3 release.
+
+Use a new output directory; within the repository use ignored `local_data/` or
+`outputs/`. Inputs and earlier runs are not overwritten. Local outputs are:
+
+- `source_ledger.sqlite`: every photo record with its original row number and
+  source-chunk link, plus observation-level counts; duplicates/conflicts are
+  visible rather than silently removed.
+- `observation_ledger.csv`: observation/photo aggregation without deleting the
+  linked photo rows.
+- `workflow_contract.json` and `source_inventory_report.json`: exact source
+  and output hashes, canonical JSON identity, software versions, counts and
+  stage status. Code text hashes explicitly normalize newlines to LF.
+- On failure, `incomplete_run.json`: the partial run must not be used as complete.
+
+The source CSV itself remains the immutable reference for all original fields,
+including those not duplicated in the compact ledger. Keep it locally with the
+ledger. Raw metadata, user identifiers, attribution, coordinates and images are
+not added to GitHub. Only aggregate receipts are public.
+
+The input was already merged upstream: the saved provenance reports **one
+duplicate photo row removed from six chunks** (1,122,855 → 1,122,854).
+V3's zero-row-loss inventory does not undo or certify that earlier merge.
+Original API/query completeness and records without photos remain explicit
+acquisition checks.
+
+## Preserved checkpoints, not the v3 universe
+
+The [offline numerical audit](OFFLINE_AUDIT.md) retains the existing PR #92
+arithmetic and original subset verification. It does not define full v3 coverage,
+its final ecological cohort or its model plan. Interim native-only preparation
+files are retained locally, not published as a competing v3 entry point.
+
+Frozen v2 reproduction remains documented in
+[the public runbook](../../reproducibility/README.md).
+Prepublication manuscripts and individual comment responses remain outside GitHub.

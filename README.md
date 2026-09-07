@@ -4,6 +4,10 @@ This repository retains the code and frozen machine-readable products needed to 
 
 Prepublication manuscript prose and journal-submission packages are intentionally kept outside GitHub.
 
+Chapter 1 v3 starts from the [full-source, information-retaining workflow](analysis/v3/README.md),
+not the already thinned v2 subset. It preserves the frozen v2 results below.
+Source metadata inventory is not completed image retrieval, remeasurement or a new ecological analysis.
+
 ## Third-party reproducibility status
 
 The frozen Chapter 1 v2 analysis code, contracts, frozen outputs, validation reports and figure sources are public and auditable in this repository. The complete independent-reader procedure is [`reproducibility/README.md`](reproducibility/README.md).

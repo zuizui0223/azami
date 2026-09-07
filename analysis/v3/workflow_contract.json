@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "workflow_id": "ch1_v3_full_source_information_retention_20260907",
+  "study_status": "retrospective_redesign_after_v2_results_seen",
+  "purpose": "Start at the recovered acquisition snapshot, preserve all available records and relationships, and define question-specific analysis views after measurement. Fix evaluation procedures, not expected findings or their explanations.",
+  "source": {
+    "artifact_id": 8066010557,
+    "artifact_run": 28659167379,
+    "artifact_name": "ch1-inat-metadata-merged-full_inventory_20260703",
+    "archive_sha256_from_existing_catalog": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "member": "photo_metadata_merged.csv",
+    "member_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+    "snapshot_merged_at_utc": "2026-07-03T12:04:31.720132+00:00",
+    "expected_photo_rows": 1122854,
+    "expected_observations_with_photos": 665115,
+    "source_scope": "recovered photo-metadata snapshot, not all iNaturalist records at present and not proof that all image bytes were downloaded",
+    "earlier_source_limit": "The saved merge report records six input chunks and one removed duplicate photo row (1122855 to 1122854). Raw chunk reconciliation, API query coverage and observations without photos remain separate acquisition checks."
+  },
+  "legacy_v2_native_reference_sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
+  "preservation": {
+    "retain_every_source_row": true,
+    "retain_all_photos_per_observation": true,
+    "drop_rows_for_qc": false,
+    "thin_at_acquisition": false,
+    "first_photo_only": false,
+    "native_only_at_acquisition": false,
+    "require_coordinates_for_image_measurement": false,
+    "delete_detector_negative_photos": false,
+    "keep_unfinished_endpoints_in_inventory": true,
+    "raw_source": "retain immutable metadata/API snapshots separately from versioned local ledgers; exact hashes and source row numbers preserve links",
+    "images": "cache permissible exact bytes once per content hash, retain every observation-photo link and processing version; record unavailable, changed, failed and rights-restricted sources explicitly",
+    "privacy_and_rights": "no de-obscuring coordinates; metadata retention is not permission to download or redistribute every image; raw identifiers, attribution and image files remain outside GitHub"
+  },
+  "units": {
+    "record": "a row in a versioned source snapshot; retain duplicates and conflicts as explicit records",
+    "photo": "an image identity/content version with one or more observation links",
+    "head": "a detection within a specific photo/model version; not automatically a biological individual",
+    "observation": "the analysis sampling unit; may contain several photos and several heads",
+    "taxon": "versioned source assignment plus resolved-name provenance; not independently verified image identification",
+    "replication": "never count related photos or heads as independent observations; split development/evaluation by source observation and content-duplicate group",
+    "repeat_photo_limit": "same observation ID alone does not establish the same individual or head; unmatched photos cannot identify pure photographic variance"
+  },
+  "stages": [
+    {"id": "inventory", "implementation": "workflow.py inventory", "output": "complete photo-record ledger, observation aggregation, legacy-v2 overlap, source/processing availability and loss accounting"},
+    {"id": "recover", "implementation": "pending source-chunk and image-cache reconciler", "output": "raw-query coverage; photo retrieval/cache status with hashes and rights; preserve missing and restricted sources"},
+    {"id": "measure", "implementation": "pending full-inventory detector and measurement executor", "output": "all detections and negative/failed jobs; masks, continuous endpoints, technical uncertainty and no silent phenotype-based photo choice"},
+    {"id": "analyse", "implementation": "pending model-specific dataset builder and runner", "output": "reversible observation-membership views with exact formulas, denominators and uncertainty"},
+    {"id": "report", "implementation": "pending result-table and figure builder", "output": "methodological and ecological results from shared saved tables; include missingness and failures"}
+  ],
+  "measurement_design": {
+    "detector_role": "locate visible capitula; detection negatives are not ecological absences",
+    "functions_role": "extract declared continuous image features from explicit head/corolla/involucre masks",
+    "endpoint_scope": "retain the original 27-endpoint inventory (22 measured, five unfinished functions); implement any extension as a new version, not a retrospective QC pass",
+    "image_quality": "endpoint-specific flags and uncertainty, not a universal image deletion rule; a photo can support colour but not outline or vice versa",
+    "automated_evaluation": "source-observation-separated model provenance, bbox perturbation, resolution/sharpness and relevant photometric perturbations; preserve linked per-unit outcomes",
+    "colour_context": "paired flower and non-flower context, with lightness/hue; background ecology and low power limit negative-control interpretation",
+    "stage_and_time": "retain observed date, encode calendar harmonics with hemisphere interactions, and characterize automated stage-state uncertainty separately",
+    "new_human_reference_required": false,
+    "evidence_ceiling": "technical repeatability and image-feature comparability; automated consistency alone is not physical accuracy, pigment calibration or biological-stage ground truth",
+    "parameters": "save code/model/input hashes and an endpoint-specific execution specification before each image pass; no selection by ecological significance"
+  },
+  "analysis_views": {
+    "methodology": "all rights-usable image records, including non-species assignments, non-native or unknown status, and unavailable coordinates where appropriate; report eligibility per endpoint",
+    "ecology": "wild records with adequate identification and exposure support for the question; retain native, introduced and unresolved strata rather than imposing one destructive global filter",
+    "native_status": "attach a versioned source-backed regional assignment before applicable models; unassessed outside the v2 subset stays unassessed, never guessed from absence",
+    "spatial_sampling": "preserve unthinned observations in the master data; use appropriate spatial dependence/weighting in analysis and thinning only as an explicitly justified analysis view",
+    "aggregation": "retain head/photo values and uncertainty; derive observation summaries or nested models without assigning extra independent weight to photo-rich observations",
+    "environment_alignment": "trait and exposure summaries use the same eligible observation IDs for that endpoint/model; store geographic uncertainty and missing exposure separately",
+    "models": "distinguish exploratory marginal atlas from conditional questions; include relevant timing/imaging and spatial terms in the saved primary specification, not a significance-driven sequence of repairs",
+    "collinearity": "assess correlations, rank, condition number and VIF on the actual conditional-model cohort; no significance-driven covariate deletion or independent-effect claims from univariate fits",
+    "phylogeny": "use the same model specification for applicable placement sensitivity; direct-tip coverage and lambda limit interpretation; placements are not independent replicates",
+    "remaining_sensitivities": "retain only assumptions not already handled in the main design, such as dominant-taxon influence, range-scope comparison and measurement uncertainty; report magnitude changes, not sign alone",
+    "before_execution": "save the exact estimand, cohort membership, formulas, weighting/nesting, resampling units/seeds and multiplicity grid after the full-source audit, before fitting v3 models",
+    "legacy_v2": "46276 thinned observations are a comparison view, never the new acquisition denominator; earlier 142-taxon and native 50-observation audit schedules are checkpoints, not full v3 measurement coverage"
+  },
+  "reporting": {
+    "no_required_result_direction": true,
+    "no_requirement_that_candidates_survive": true,
+    "outcome_exposure": "v2-selected follow-ups remain post-selection; no retrospective preregistration claim",
+    "unexpected_findings": "report and interpret them; mark new explanations and follow-up analyses as post-inspection exploration",
+    "methodological_contribution": "recoverable coverage, image-to-feature procedure, technical error, comparability and reproducibility",
+    "ecological_contribution": "estimated image-feature associations and uncertainty within the stated sampling and exposure support",
+    "limits": "no adaptation from association, no biological variance from image variance alone, no anthocyanin from chroma alone, no absolute accuracy from repeatability",
+    "public_repository": "scientific code, protocols and aggregate outputs only; private manuscripts and individual replies stay local"
+  }
+}

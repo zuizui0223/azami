@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 venv/
 .env
+*.egg-info/
 
 # Prepublication writing / submission packages
 manuscript/
