@@ -58,7 +58,6 @@ jobs:
           test -f reproducibility/frozen-numerical-rebuild-requirements.txt
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
           test -f ch1_global/v2/ANALYSIS_MANIFEST.tsv
-          test -f reproducducibility_not_required_marker 2>/dev/null || true
           test -f reproducibility/actions_artifact_catalog.json
           test -f reproducibility/durable_archive_manifest.json
           test -f reproducibility/material_availability.json
