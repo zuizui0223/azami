@@ -49,6 +49,11 @@ def normalize_accepted_key(values: pd.Series) -> pd.Series:
     return numeric.astype("string")
 
 
+def normalized_state(values: pd.Series) -> pd.Series:
+    """Normalize CSV-round-tripped boolean/string state labels without imputing them."""
+    return values.astype("string").str.strip().str.casefold()
+
+
 def build_design_cohort(
     frame: pd.DataFrame,
     taxon_cap: int = SPECIFICATION["taxon_cap"],
@@ -74,12 +79,13 @@ def build_design_cohort(
     x["analysis_longitude"] = pd.to_numeric(x["analysis_longitude"], errors="coerce")
     x["source_taxon_rank"] = x["source_taxon_rank"].fillna("").astype(str).str.lower()
     x["accepted_key_normalized"] = normalize_accepted_key(x["accepted_key"])
+    captive_state = normalized_state(x["captive_state"])
     taxonomic_rank_ok = x["source_taxon_rank"].isin(ALLOWED_SOURCE_RANKS)
     eligible = (
         x["native_range_status"].astype(str).eq("native")
         & x["taxon_resolution_status"].astype(str).eq("resolved_unique_accepted_key")
         & taxonomic_rank_ok
-        & x["captive_state"].astype(str).eq("false")
+        & captive_state.eq("false")
         & x["date_status"].astype(str).eq("exact_day")
         & x["coordinate_status"].astype(str).eq("public_location_present_precision_not_gated")
         & x["accepted_key_normalized"].notna()
