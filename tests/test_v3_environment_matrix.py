@@ -78,6 +78,31 @@ def test_environment_diagnostics_detect_redundancy_without_traits():
     assert report["matrix"]["matrix_rank"] == len(variables)
 
 
+def test_equal_taxon_weights_drive_primary_redundancy_and_vif():
+    # Taxon A has many rows with a different relationship; equal taxon weighting
+    # must be detected and used rather than treating raw row count as biological weight.
+    a = pd.DataFrame({
+        "x": np.arange(100, dtype=float),
+        "y": np.arange(100, dtype=float),
+        "z": np.sin(np.arange(100)),
+        "equal_taxon_weight": np.repeat(1/100, 100),
+    })
+    b = pd.DataFrame({
+        "x": [0.0, 1.0, 2.0, 3.0, 4.0],
+        "y": [4.0, 3.0, 2.0, 1.0, 0.0],
+        "z": [0.0, 1.0, 0.0, 1.0, 0.0],
+        "equal_taxon_weight": np.repeat(1/5, 5),
+    })
+    matrix = pd.concat([a,b], ignore_index=True)
+    report, tables = env.diagnose_environment(matrix, ["x","y","z"], threshold=0.80)
+    assert report["weight_column"] == "equal_taxon_weight"
+    assert report["primary_redundancy_correlation_method"] == "pearson_equal_taxon_weight"
+    assert report["matrix"]["weight_column"] == "equal_taxon_weight"
+    assert "pearson_equal_taxon_weight" in set(tables["correlations"]["method"])
+    assert "spearman_equal_taxon_weight" in set(tables["correlations"]["method"])
+    assert tables["coverage"]["weighted_coverage"].eq(1.0).all()
+
+
 def test_missingness_is_reported_not_imputed():
     matrix = pd.DataFrame({"pr_month":[1.0, np.nan, 3.0], "vpd_month":[10.0, 11.0, 12.0]})
     coverage = env.coverage_table(matrix, ["pr_month", "vpd_month"]).set_index("variable")
