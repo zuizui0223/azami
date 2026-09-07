@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "contract_id": "ch1_v3_environment_exposure_candidates_20260907",
   "status": "environment_only_design_before_trait_join",
   "purpose": "Construct and diagnose the abiotic exposure matrix before any v3 trait coefficients are inspected. No variable is privileged because it appeared in v2.",
@@ -12,20 +12,24 @@
     "bounded_alternative": "a centred three-month climatological window may be compared only after its rule is frozen without trait outcomes"
   },
   "monthly_candidates": [
-    {"id":"pr_month","chelsa_variable":"pr","construct":"precipitation / wetting exposure","unit":"kg m-2 month-1"},
-    {"id":"tas_month","chelsa_variable":"tas","construct":"mean near-surface thermal exposure","unit":"K"},
-    {"id":"tasmax_month","chelsa_variable":"tasmax","construct":"maximum near-surface thermal exposure","unit":"K"},
-    {"id":"rsds_month","chelsa_variable":"rsds","construct":"surface shortwave radiation","unit":"W m-2"},
-    {"id":"vpd_month","chelsa_variable":"vpd","construct":"atmospheric drying power","unit":"Pa"},
-    {"id":"sfcWind_month","chelsa_variable":"sfcWind","construct":"near-surface mechanical exposure","unit":"m s-1"},
-    {"id":"pet_month","chelsa_variable":"pet","construct":"potential evaporative demand","unit":"kg m-2 month-1","tier":"representation_candidate"},
-    {"id":"cmi_month","chelsa_variable":"cmi","construct":"monthly climatic moisture availability","unit":"kg m-2 month-1","tier":"representation_candidate"}
+    {"id":"pr_month","chelsa_variable":"pr","construct":"precipitation / wetting exposure","unit":"kg m-2 month-1","role":"direct_exposure"},
+    {"id":"tas_month","chelsa_variable":"tas","construct":"mean near-surface thermal exposure","unit":"K","role":"direct_exposure"},
+    {"id":"tasmax_month","chelsa_variable":"tasmax","construct":"maximum near-surface thermal exposure","unit":"K","role":"direct_exposure"},
+    {"id":"rsds_month","chelsa_variable":"rsds","construct":"surface shortwave radiation","unit":"W m-2","role":"direct_exposure"},
+    {"id":"vpd_month","chelsa_variable":"vpd","construct":"atmospheric drying power","unit":"Pa","role":"direct_exposure"},
+    {"id":"sfcWind_month","chelsa_variable":"sfcWind","construct":"near-surface mechanical exposure","unit":"m s-1","role":"direct_exposure"},
+    {"id":"pet_month","chelsa_variable":"pet","construct":"potential evaporative demand","unit":"kg m-2 month-1","role":"derived_representation_candidate"},
+    {"id":"cmi_month","chelsa_variable":"cmi","construct":"monthly climatic moisture availability","unit":"kg m-2 month-1","role":"derived_representation_candidate"}
   ],
   "monthly_url_template": "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/climatologies/{variable}/1981-2010/CHELSA_{variable}_{month:02d}_1981-2010_V.2.1.tif",
   "broader_climate_representations": [
-    {"id":"BIO12","construct":"annual precipitation","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio12_1981-2010_V.2.1.tif"},
-    {"id":"BIO18","construct":"precipitation of warmest quarter","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio18_1981-2010_V.2.1.tif"},
-    {"id":"GSP","construct":"growing-season precipitation","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"}
+    {"id":"BIO1","construct":"annual mean temperature","unit":"degree C after CHELSA scale/offset","family":"thermal","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio1_1981-2010_V.2.1.tif"},
+    {"id":"BIO4","construct":"temperature seasonality","unit":"CHELSA native scaled unit","family":"thermal","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio4_1981-2010_V.2.1.tif"},
+    {"id":"BIO12","construct":"annual precipitation","unit":"kg m-2 year-1 / mm equivalent","family":"hydric","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio12_1981-2010_V.2.1.tif"},
+    {"id":"BIO15","construct":"precipitation seasonality","unit":"CHELSA native scaled unit","family":"hydric","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio15_1981-2010_V.2.1.tif"},
+    {"id":"BIO18","construct":"precipitation of warmest quarter","unit":"kg m-2 quarter-1 / mm equivalent","family":"hydric","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio18_1981-2010_V.2.1.tif"},
+    {"id":"GSP","construct":"growing-season precipitation","unit":"CHELSA BIOCLIM+ native scaled unit","family":"hydric","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"},
+    {"id":"NPP","construct":"potential net primary productivity","unit":"CHELSA BIOCLIM+ native scaled unit","family":"habitat_context","role":"distal_context_candidate","url":"https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_npp_1981-2010_V.2.1.tif"}
   ],
   "selection_is_phenotype_blind": true,
   "diagnostics_before_trait_join": [
@@ -40,8 +44,11 @@
   "redundancy_rule": {
     "default_absolute_correlation_flag": 0.80,
     "purpose": "flag redundant representations; do not automatically discard a biologically direct exposure in favor of a distal proxy",
-    "BIO18_vs_GSP": "compare both against observation-month precipitation and each other on the same native-range environment cohort; choose the smallest biologically interpretable representation before trait fitting, never by trait P values"
+    "within_family_rule": "compare direct month-aligned and broad/derived representations within biological exposure families before deciding the final matrix",
+    "BIO18_vs_GSP": "compare BIO18, GSP and BIO12 against observation-month precipitation and each other on the same native-range environment cohort; choose the smallest biologically interpretable representation before trait fitting, never by trait P values",
+    "temperature_rule": "compare observation-month tas/tasmax with BIO1/BIO4 as distinct timing/seasonality representations rather than assuming annual temperature variables are the baseline"
   },
+  "representation_rule": "Variables are equal at candidate entry. Final inclusion is determined before trait join from biological proximity to the stated capitulum hypothesis, coverage and non-redundancy. A distal context such as NPP is not forced to survive merely to make all candidates numerically symmetric.",
   "trait_join_prohibited_until": [
     "full-source taxon concept join is versioned",
     "native/introduced/unresolved range join is versioned",
