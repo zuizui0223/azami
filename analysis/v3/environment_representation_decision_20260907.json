@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "status": "phenotype_blind_environment_representation_decision",
+  "contract_id": "ch1_v3_environment_exposure_candidates_20260907",
+  "decision_scope": "native_range_taxon_balanced_environment_only",
+  "trait_results_inspected": false,
+  "selection_basis": [
+    "biological_proximity",
+    "coverage",
+    "environment_only_redundancy"
+  ],
+  "diagnostics_workflow_run_id": 34140704734,
+  "diagnostics_artifact_id": 10027756150,
+  "diagnostics_artifact_name": "ch1-v3-phenotype-blind-environment-design-34140704734",
+  "diagnostics_artifact_sha256": "23675d36705552091fe2c5a086f3af24c4253d8c10c475a33e33ccca757d1008",
+  "diagnostic_summary": {
+    "n_rows": 9503,
+    "n_taxa_equal_weighted": 243,
+    "candidate_count": 15,
+    "all_candidate_weighted_coverage": 1.0,
+    "full_15_matrix_rank": 15,
+    "full_15_condition_number": 158.6383324873238,
+    "full_15_vif_examples": {
+      "pr_month": 1918.0123673623655,
+      "cmi_month": 2472.1365296548256,
+      "pet_month": 193.85283805160446
+    },
+    "key_equal_taxon_weighted_correlations": {
+      "pr_month__cmi_month": 0.9675549864063708,
+      "pr_month__BIO18": 0.8068097151545071,
+      "pr_month__BIO12": 0.7574982148786679,
+      "pr_month__GSP": -0.0100338049131876,
+      "tas_month__tasmax_month": 0.9408213155106394,
+      "tasmax_month__vpd_month": 0.9134037692410932,
+      "rsds_month__pet_month": 0.8824867219909456,
+      "pr_month__vpd_month": -0.3918532822928598,
+      "rsds_month__vpd_month": 0.5405636106027732
+    }
+  },
+  "selected": [
+    {
+      "variable": "pr_month",
+      "role": "primary_direct_wetting",
+      "hypotheses": ["H1", "H2", "H3"],
+      "rationale": "Retain the observation-month precipitation climatology as the biologically closest representation of reproductive-period wetting/moisture exposure. It has complete weighted coverage and has pre-diagnostic priority over broader hydric summaries."
+    },
+    {
+      "variable": "rsds_month",
+      "role": "primary_direct_radiation",
+      "hypotheses": ["H2", "H3"],
+      "rationale": "Retain direct observation-month shortwave radiation. PET is strongly redundant with it (equal-taxon-weighted r=0.8825) and is a derived rather than direct exposure."
+    },
+    {
+      "variable": "vpd_month",
+      "role": "primary_direct_drying_formulation",
+      "hypotheses": ["H2", "H3"],
+      "coentry_rule": "Do not co-enter with tasmax_month in the same primary conditional model because their equal-taxon-weighted correlation is 0.9134; use the drying formulation as one pre-specified integrated backbone.",
+      "rationale": "Retain direct atmospheric drying power for the water-stress formulation. It is biologically distinct from temperature even though the realized global cohort cannot cleanly separate VPD from maximum temperature."
+    },
+    {
+      "variable": "tasmax_month",
+      "role": "primary_direct_thermal_formulation",
+      "hypotheses": ["H2", "H3", "H5"],
+      "coentry_rule": "Do not co-enter with vpd_month in the same primary conditional model because their equal-taxon-weighted correlation is 0.9134; use the thermal formulation as the pre-specified alternative integrated backbone.",
+      "rationale": "Retain maximum temperature rather than mean temperature because tas and tasmax are strongly redundant (r=0.9408) and the pre-diagnostic priority favored maximum thermal stress for H2/H3/H5."
+    },
+    {
+      "variable": "sfcWind_month",
+      "role": "secondary_direct_mechanical",
+      "hypotheses": ["H4"],
+      "rationale": "Retain observation-month near-surface wind as the pre-specified secondary mechanical exposure. It is not part of every module model and forms its own non-redundant component in the environment-only diagnostics."
+    }
+  ],
+  "rejected": [
+    {
+      "variable": "tas_month",
+      "rationale": "Reject from the minimal representation because it is strongly redundant with tasmax_month (r=0.9408); the pre-diagnostic rule selected tasmax for thermal-stress interpretation."
+    },
+    {
+      "variable": "pet_month",
+      "rationale": "Reject from the minimal representation because it is a derived evaporative-demand alternative and is strongly redundant with direct shortwave radiation (r=0.8825); direct VPD and precipitation remain available for atmospheric/hydric stress."
+    },
+    {
+      "variable": "cmi_month",
+      "rationale": "Reject from the minimal representation because this derived moisture index is nearly redundant with direct observation-month precipitation (r=0.9676), for which biological proximity was pre-specified."
+    },
+    {
+      "variable": "BIO1",
+      "rationale": "Reject from the primary representation because annual mean temperature is a broad summary and month-aligned thermal exposure is available; non-redundancy alone does not override biological proximity."
+    },
+    {
+      "variable": "BIO4",
+      "rationale": "Reject from the primary representation because no primary temperature-seasonality hypothesis was frozen before diagnostics; non-redundancy alone is not sufficient for promotion."
+    },
+    {
+      "variable": "BIO12",
+      "rationale": "Reject from the primary representation because annual precipitation is a broader version of the same hydric process and observation-month precipitation is the pre-specified direct exposure. Its correlation with pr_month is 0.7575, but a correlation below the 0.80 flag is not by itself a reason to retain a biologically more distal duplicate process."
+    },
+    {
+      "variable": "BIO15",
+      "rationale": "Reject from the primary representation because no primary precipitation-seasonality hypothesis was frozen before diagnostics; non-redundancy alone is not sufficient for promotion."
+    },
+    {
+      "variable": "BIO18",
+      "rationale": "Reject from the primary representation because warmest-quarter precipitation is a broader seasonal version of H1 wetting exposure and is redundant with observation-month precipitation at the pre-specified threshold (r=0.8068)."
+    },
+    {
+      "variable": "GSP",
+      "rationale": "Reject from the primary representation because growing-season precipitation is a broader temporal summary of the same H1 hydric process, not a separately pre-specified process. Its low correlation with pr_month (r=-0.0100) does not by itself justify promotion because the pre-diagnostic rule explicitly states that non-redundancy alone is insufficient for a broader alternative."
+    },
+    {
+      "variable": "NPP",
+      "rationale": "Reject from the primary representation because potential productivity is a distal habitat-context variable and no primary resource-limitation hypothesis was frozen before diagnostics."
+    }
+  ],
+  "integrated_model_backbones": {
+    "drying_backbone": {
+      "variables": ["pr_month", "rsds_month", "vpd_month", "sfcWind_month"],
+      "purpose": "Integrated direct-exposure formulation emphasizing atmospheric drying.",
+      "approximate_vif_from_equal_taxon_weighted_correlation_matrix": {
+        "pr_month": 1.3424,
+        "rsds_month": 1.6036,
+        "vpd_month": 1.4856,
+        "sfcWind_month": 1.0322
+      }
+    },
+    "thermal_backbone": {
+      "variables": ["pr_month", "rsds_month", "tasmax_month", "sfcWind_month"],
+      "purpose": "Pre-specified alternative integrated direct-exposure formulation emphasizing maximum thermal exposure.",
+      "approximate_vif_from_equal_taxon_weighted_correlation_matrix": {
+        "pr_month": 1.3088,
+        "rsds_month": 1.5734,
+        "tasmax_month": 1.4001,
+        "sfcWind_month": 1.0762
+      }
+    }
+  },
+  "interpretation_rule": "The two backbones are alternative parameterizations of the same environment design, not two opportunities to fish for significance. VPD and Tmax effects are not claimed to be independently identified because their realized exposure correlation is high. Trait modules may omit variables that are outside their pre-specified biological hypothesis, but may not add rejected variables after inspecting trait outcomes.",
+  "claim_boundary": "This decision uses no capitulum trait values, coefficients or P values. It freezes environmental representation only and does not itself constitute an ecological result."
+}
