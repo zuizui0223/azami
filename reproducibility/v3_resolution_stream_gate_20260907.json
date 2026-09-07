@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "analysis_id": "ch1_v3_medium_original_stream_gate_v1",
+  "executed_on": "2026-09-07",
+  "status": "COMPLETE_PREDECLARED_GATE_INSUFFICIENT_COMMON_USABLE",
+  "provenance": {
+    "github_actions_run_id": 34126539680,
+    "source_head_sha": "15edfdf476aef9a62ec9a6bd81996d9d109f63e8",
+    "artifact_id": 10020598935,
+    "artifact_digest": "sha256:f3c3254b05e0f6ddab70182e6ca73f3d64a75c3b5c3d4e294ede6c6ac3ff21cd"
+  },
+  "streaming": {
+    "pilot_photos_requested": 32,
+    "pilot_photos_selected": 32,
+    "successful_pairs": 32,
+    "matched_head_pairs": 56,
+    "medium_bytes_total": 5667669,
+    "original_bytes_total": 66206251,
+    "bytes_transferred_total": 71873920,
+    "maximum_source_image_bytes_live_at_once": 5304908,
+    "source_images_persisted": 0,
+    "full_original_archive_required": false
+  },
+  "detector": {
+    "medium_detections_total": 60,
+    "original_detections_total": 72,
+    "matched_detections": 56,
+    "photo_pairs_with_equal_detection_counts": 21,
+    "photo_pairs_with_unmatched_medium_detection": 4,
+    "photo_pairs_with_unmatched_original_detection": 9
+  },
+  "predeclared_gate": {
+    "minimum_common_usable_head_pairs": 15,
+    "endpoint_status_counts": {
+      "INSUFFICIENT_COMMON_USABLE": 27
+    },
+    "decision": "No endpoint reached the predeclared common-usable minimum; no endpoint-level native-resolution requirement is promoted from this 32-photo gate."
+  },
+  "descriptive_findings": {
+    "colour_and_visible": {
+      "medium_usable": 13,
+      "original_usable": 41,
+      "both_usable": 12,
+      "original_gain": 29,
+      "original_loss": 1,
+      "lightness_rank": 0.9790209790209791,
+      "lightness_median_abs_difference": 0.5882339477539062,
+      "chroma_rank": 0.993006993006993,
+      "chroma_median_abs_difference": 1.1531319618225098
+    },
+    "orientation": {
+      "medium_usable": 9,
+      "original_usable": 32,
+      "both_usable": 8,
+      "original_gain": 24,
+      "original_loss": 1,
+      "rank": 1.0,
+      "median_abs_difference_degrees": 1.441859807309342,
+      "p95_abs_difference_degrees": 4.157883329638058
+    },
+    "outline": {
+      "medium_usable_per_endpoint": 10,
+      "original_usable_per_endpoint": 37,
+      "both_usable_per_endpoint": 8,
+      "original_gain_per_endpoint": 29,
+      "original_loss_per_endpoint": 2,
+      "rank_range": [0.6666666666666666, 0.9047619047619048],
+      "median_abs_difference_over_original_iqr_range": [0.21357137869620876, 0.5554122961502835]
+    },
+    "fine_architecture": {
+      "medium_usable_range": [1, 1],
+      "original_usable_range": [4, 5],
+      "both_usable": 0,
+      "interpretation": "Original resolution increased eligibility descriptively, but there were no common-usable pairs for numeric comparability."
+    },
+    "surface": {
+      "medium_usable": 1,
+      "original_usable": 2,
+      "both_usable": 0,
+      "interpretation": "Original resolution increased eligibility descriptively, but there were no common-usable pairs for numeric comparability."
+    }
+  },
+  "next_step": {
+    "status": "POST_INSPECTION_TECHNICAL_FOLLOWUP",
+    "action": "Run the same no-retention stream design on a 128-photo deterministic prefix to raise common-usable counts for primary colour, outline and orientation endpoints; retain fine-geometry eligibility as a separate technical question.",
+    "not_required": "No permanent original-image archive or external 1.5-TB storage path is required for this follow-up."
+  },
+  "limits": [
+    "This is a deterministic technical pilot, not a representative ecological cohort.",
+    "A medium/original difference combines server-side resizing, JPEG encoding, detector localization and feature extraction.",
+    "No source image bytes are retained; hashes and numerical outputs do not establish physical accuracy.",
+    "A flagged endpoint justifies a larger streamed native-resolution test, not a 1.5-TB archive."
+  ]
+}
