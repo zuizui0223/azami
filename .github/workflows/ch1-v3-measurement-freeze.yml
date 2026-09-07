@@ -1,0 +1,88 @@
+name: Chapter 1 v3 measurement qualification freeze
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/measurement_qualification_decision_20260908.json
+      - analysis/v3/measurement_qualification_contract.json
+      - analysis/v3/freeze_measurement_qualification.py
+      - .github/workflows/ch1-v3-measurement-freeze.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install minimal freeze environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test]'
+
+      - name: Verify exact 128-photo artifact provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: '34167969002'
+          ARTIFACT_ID: '10034896212'
+          ARTIFACT_NAME: 'ch1-v3-large-original-resolution-followup-34167969002'
+          ARTIFACT_SHA: 'f48c572fcf4a0b048db49a513d018fb4f373d980bb9bfa5b658c5274b0ccb005'
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" > artifacts.json
+          python - <<'PY'
+          import json, os
+          data=json.load(open('artifacts.json'))
+          target=next((a for a in data.get('artifacts',[]) if str(a.get('id'))==os.environ['ARTIFACT_ID']), None)
+          if target is None:
+              raise SystemExit('128-photo artifact ID missing')
+          if target.get('name') != os.environ['ARTIFACT_NAME']:
+              raise SystemExit('128-photo artifact name mismatch')
+          if target.get('digest') != 'sha256:'+os.environ['ARTIFACT_SHA']:
+              raise SystemExit('128-photo artifact SHA mismatch')
+          if target.get('expired'):
+              raise SystemExit('128-photo artifact expired')
+          PY
+          mkdir followup
+          gh run download "$RUN_ID" -n "$ARTIFACT_NAME" -D followup
+          test -f followup/resolution_followup_report.json
+          python - <<'PY'
+          import hashlib
+          p='followup/resolution_followup_report.json'
+          sha=hashlib.sha256(open(p,'rb').read()).hexdigest()
+          assert sha=='eeecfbee6d81f4ac6148213df7165f55972bc1ead451a2a59078a4ce754e49d5', sha
+          PY
+
+      - name: Freeze measurement qualification
+        run: |
+          mkdir freeze
+          python -m analysis.v3.freeze_measurement_qualification \
+            --contract analysis/v3/measurement_qualification_contract.json \
+            --followup-report followup/resolution_followup_report.json \
+            --decision analysis/v3/measurement_qualification_decision_20260908.json \
+            --out freeze/v3_measurement_qualification_freeze_20260908.json
+          python - <<'PY'
+          import json
+          r=json.load(open('freeze/v3_measurement_qualification_freeze_20260908.json'))
+          assert r['status']=='V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_TRAIT_ENVIRONMENT_JOIN'
+          assert r['endpoint_count']==27
+          assert r['trait_environment_results_inspected'] is False
+          assert r['ecological_models_executed']==0
+          assert r['orientation']['bbox_uncertainty_required'] is True
+          print({'resolution':r['resolution_status_counts'],'routes':r['ecological_route_counts'],'orientation':r['orientation']})
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-measurement-freeze-${{ github.run_id }}
+          path: freeze/v3_measurement_qualification_freeze_20260908.json
+          if-no-files-found: error
+          retention-days: 30
