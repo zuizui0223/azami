@@ -250,6 +250,13 @@ each surface endpoint. Thus requiring complete data for all endpoints would disc
 most otherwise usable measurements in this cache. These are endpoint-coverage
 counts, not accuracy estimates or estimates for the full source population.
 
+The [saved-product verification](../../reproducibility/v3_cached_pipeline_verification_20260907.json)
+reopened every image object, crop and mask; checked exact hashes, dimensions,
+binary masks and raw-to-endpoint table agreement; and confirmed all per-head
+endpoint sets. This checks file/relationship integrity, not biological correctness.
+Raw measurements, failed eligibility and diagnostic availability remain inspectable
+without changing the source or rerunning a significance-selected subset.
+
 Paired colour diagnostics use the same Lab/hue statistics on union floral pixels,
 all non-head context and green non-head context. Context masks exclude the union
 of all detected head boxes, not only the focal head. The new uniform floral

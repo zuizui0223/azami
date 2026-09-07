@@ -1,0 +1,29 @@
+{
+  "status": "CACHED_PIPELINE_FILE_AND_RELATIONSHIP_INTEGRITY_VERIFIED",
+  "counts": {
+    "verified_image_objects": 2092,
+    "verified_crops": 5706,
+    "verified_masks": 11412,
+    "heads_with_flower_and_green_context_pixels": 2345,
+    "heads_with_supported_green_context": 2003,
+    "detections_retained": 2853,
+    "endpoint_rows_retained": 77031,
+    "finite_qc_failed_values_retained": 30071,
+    "heads_without_any_usable_endpoint_retained": 1445,
+    "negative_image_jobs_retained": 333
+  },
+  "input_database_sha256": {
+    "workspace_database_sha256": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+    "detection_database_sha256": "d385825e646ff867ba48b60385e92ea28cb572f4747221d323ca0078898dfe91",
+    "measurement_database_sha256": "4f5b1f69e88ec436f330b2c22f44511d22ebf1fd8c546ae7a72422f0caf280f2"
+  },
+  "implementation_sha256_text_lf": "5e6b4c056e7ada0d25f387dad9587252c5af9829089707f6e0b449f6b4ee0dc7",
+  "measurement_job_states": {
+    "measured": 2853
+  },
+  "limits": [
+    "Byte identity, complete endpoint slots and linked masks are not biological accuracy or full-source coverage.",
+    "Context pixel availability is not a successful negative-control regression or independent illumination calibration.",
+    "Finite QC-failed values remain inspectable; retaining them does not make them eligible for ecological inference."
+  ]
+}
