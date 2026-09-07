@@ -107,16 +107,16 @@ jobs:
           print(r)
           PY
 
-      - name: Sample monthly and broad CHELSA candidates and diagnose redundancy
+      - name: Sample all monthly and broad CHELSA candidates and diagnose redundancy
         run: |
           python -m analysis.v3.environment_matrix \
             --observations "$V3_ENV_COHORT/environment_design_cohort.csv" \
             --out-dir "$V3_ENV_DIAGNOSTICS" \
             --variables \
-              pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month \
+              pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month pet_month cmi_month \
               BIO1 BIO4 BIO12 BIO15 BIO18 GSP NPP
 
-      - name: Verify phenotype-blind weighted diagnostics and report hydric alternatives
+      - name: Verify phenotype-blind weighted diagnostics and report exposure alternatives
         run: |
           python - <<'PY'
           import json, os, pandas as pd
@@ -128,11 +128,18 @@ jobs:
           assert r['engineering_pilot_only'] is False
           assert r['weight_column']=='equal_taxon_weight'
           assert r['primary_redundancy_correlation_method']=='pearson_equal_taxon_weight'
+          coverage=pd.read_csv(root/'environment_coverage.csv')
+          assert {'pet_month','cmi_month'}.issubset(set(coverage['variable']))
           corr=pd.read_csv(root/'environment_correlations.csv')
-          target={'pr_month','BIO12','BIO18','GSP'}
-          hydric=corr[(corr['method']=='pearson_equal_taxon_weight') & corr['variable_a'].isin(target) & corr['variable_b'].isin(target)]
+          hydric_target={'pr_month','BIO12','BIO18','GSP'}
+          hydric=corr[(corr['method']=='pearson_equal_taxon_weight') & corr['variable_a'].isin(hydric_target) & corr['variable_b'].isin(hydric_target)]
+          water_stress_target={'pr_month','vpd_month','pet_month','cmi_month'}
+          water_stress=corr[(corr['method']=='pearson_equal_taxon_weight') & corr['variable_a'].isin(water_stress_target) & corr['variable_b'].isin(water_stress_target)]
           print({'matrix':r['matrix'],'redundancy_components':r['redundancy_components']})
+          print('hydric alternatives')
           print(hydric.to_string(index=False))
+          print('water-stress alternatives')
+          print(water_stress.to_string(index=False))
           PY
 
       - name: Retain aggregate design evidence only
