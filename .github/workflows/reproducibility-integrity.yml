@@ -53,6 +53,8 @@ jobs:
             tests/test_v3_summary_verification.py \
             tests/test_v3_technical_coverage_figure.py \
             tests/test_v3_resolution_stream_gate.py \
+            tests/test_v3_resolution_size_followup.py \
+            tests/test_v3_measurement_qualification_contract.py \
             tests/test_v3_ecological_analysis_contract.py \
             tests/test_v3_environment_matrix.py \
             tests/test_v3_environment_source_design.py \
@@ -84,7 +86,9 @@ jobs:
           test -f analysis/rebuild_frozen_broad_region_lookup.py
           test -f analysis/build_naturalearth_broad_region_lookup.py
           test -f analysis/v3/resolution_stream_gate.py
+          test -f analysis/v3/resolution_size_followup.py
           test -f analysis/v3/resolution_gate_contract.json
+          test -f analysis/v3/measurement_qualification_contract.json
           test -f analysis/v3/ecological_analysis_contract.json
           test -f analysis/v3/native_range_join_contract.json
           test -f analysis/v3/build_native_range_join.py
@@ -99,8 +103,10 @@ jobs:
           test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
           test -f analysis/v3/supervisor_comment_integration_20260907.md
           test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
+          test -f .github/workflows/ch1-v3-resolution-size-followup.yml
           test -f .github/workflows/ch1-v3-environment-freeze.yml
           test -f reproducibility/v3_environment_design_upstream_20260907.json
+          test -f reproducibility/v3_environment_representation_freeze_20260907.json
           test -f reproducibility/frozen-numerical-rebuild-requirements.txt
           test -f reproducibility/v3-image-cpu-requirements.txt
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
