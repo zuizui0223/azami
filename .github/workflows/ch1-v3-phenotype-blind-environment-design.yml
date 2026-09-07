@@ -17,6 +17,10 @@ on:
       - analysis/v3/recover_revision_inputs.py
   workflow_dispatch:
 
+concurrency:
+  group: ch1-v3-phenotype-blind-environment-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
@@ -25,6 +29,12 @@ jobs:
   design:
     runs-on: ubuntu-latest
     timeout-minutes: 240
+    env:
+      V3_SOURCE_ARCHIVES: ${{ runner.temp }}/v3-source-archives
+      V3_SOURCE_OBSERVATIONS: ${{ runner.temp }}/v3-source-observations
+      V3_NATIVE_JOIN: ${{ runner.temp }}/v3-native-join
+      V3_ENV_COHORT: ${{ runner.temp }}/v3-environment-design-cohort
+      V3_ENV_DIAGNOSTICS: ${{ runner.temp }}/v3-environment-diagnostics
     steps:
       - uses: actions/checkout@v4
 
@@ -45,18 +55,19 @@ jobs:
         run: |
           python -m analysis.v3.recover_upstream \
             --manifest analysis/v3/environment_source_archives.json \
-            --out-dir source_archives \
+            --out-dir "$V3_SOURCE_ARCHIVES" \
             --workers 2
 
       - name: Reconstruct 665139 phenotype-blind source observations
         run: |
           python -m analysis.v3.prepare_environment_source_observations \
-            --archives source_archives \
+            --archives "$V3_SOURCE_ARCHIVES" \
             --manifest analysis/v3/environment_source_archives.json \
-            --out-dir source_observations
+            --out-dir "$V3_SOURCE_OBSERVATIONS"
           python - <<'PY'
-          import json
-          r=json.load(open('source_observations/environment_source_observations_report.json'))
+          import json, os
+          from pathlib import Path
+          r=json.load(open(Path(os.environ['V3_SOURCE_OBSERVATIONS'])/'environment_source_observations_report.json'))
           assert r['counts']['unique_observations']==665139
           assert r['trait_files_read']==0 and r['image_files_read']==0
           print(r['counts'])
@@ -65,12 +76,13 @@ jobs:
       - name: Resolve taxon concepts and native range from WCVP TDWG
         run: |
           python -m analysis.v3.build_native_range_join_from_source \
-            --source-csv source_observations/environment_source_observations.csv \
+            --source-csv "$V3_SOURCE_OBSERVATIONS/environment_source_observations.csv" \
             --contract analysis/v3/native_range_join_contract.json \
-            --out-dir native_join
+            --out-dir "$V3_NATIVE_JOIN"
           python - <<'PY'
-          import json
-          r=json.load(open('native_join/native_range_join_report.json'))
+          import json, os
+          from pathlib import Path
+          r=json.load(open(Path(os.environ['V3_NATIVE_JOIN'])/'native_range_join_report.json'))
           assert r['n_observations']==665139
           assert r['trait_files_read']==0 and r['image_files_read']==0
           print({'status_counts':r['status_counts'], 'taxa_by_status':r['taxa_by_status'],
@@ -80,13 +92,14 @@ jobs:
       - name: Build taxon-balanced environment-design cohort without traits
         run: |
           python -m analysis.v3.build_environment_design_cohort \
-            --native-join native_join/native_range_join.csv \
-            --out-dir environment_design_cohort \
+            --native-join "$V3_NATIVE_JOIN/native_range_join.csv" \
+            --out-dir "$V3_ENV_COHORT" \
             --taxon-cap 60 \
             --minimum-taxon-support 5
           python - <<'PY'
-          import json
-          r=json.load(open('environment_design_cohort/environment_design_cohort_report.json'))
+          import json, os
+          from pathlib import Path
+          r=json.load(open(Path(os.environ['V3_ENV_COHORT'])/'environment_design_cohort_report.json'))
           assert r['trait_columns_read']==0 and r['environment_columns_read']==0
           assert r['maximum_rows_per_taxon']<=60
           print(r)
@@ -95,8 +108,8 @@ jobs:
       - name: Sample monthly and broad CHELSA candidates and diagnose redundancy
         run: |
           python -m analysis.v3.environment_matrix \
-            --observations environment_design_cohort/environment_design_cohort.csv \
-            --out-dir environment_diagnostics \
+            --observations "$V3_ENV_COHORT/environment_design_cohort.csv" \
+            --out-dir "$V3_ENV_DIAGNOSTICS" \
             --variables \
               pr_month tas_month tasmax_month rsds_month vpd_month sfcWind_month \
               BIO1 BIO4 BIO12 BIO15 BIO18 GSP NPP
@@ -104,14 +117,16 @@ jobs:
       - name: Verify phenotype-blind weighted diagnostics and report hydric alternatives
         run: |
           python - <<'PY'
-          import json, pandas as pd
-          r=json.load(open('environment_diagnostics/environment_diagnostics.json'))
+          import json, os, pandas as pd
+          from pathlib import Path
+          root=Path(os.environ['V3_ENV_DIAGNOSTICS'])
+          r=json.load(open(root/'environment_diagnostics.json'))
           assert r['trait_columns_read']==0
           assert r['native_only'] is True
           assert r['engineering_pilot_only'] is False
           assert r['weight_column']=='equal_taxon_weight'
           assert r['primary_redundancy_correlation_method']=='pearson_equal_taxon_weight'
-          corr=pd.read_csv('environment_diagnostics/environment_correlations.csv')
+          corr=pd.read_csv(root/'environment_correlations.csv')
           target={'pr_month','BIO12','BIO18','GSP'}
           hydric=corr[(corr['method']=='pearson_equal_taxon_weight') & corr['variable_a'].isin(target) & corr['variable_b'].isin(target)]
           print({'matrix':r['matrix'],'redundancy_components':r['redundancy_components']})
@@ -123,17 +138,19 @@ jobs:
         run: |
           mkdir -p publish
           for f in \
-            source_observations/environment_source_observations_report.json \
-            native_join/native_range_join_report.json \
-            environment_design_cohort/environment_design_cohort_report.json \
-            environment_diagnostics/environment_diagnostics.json \
-            environment_diagnostics/environment_coverage.csv \
-            environment_diagnostics/environment_correlations.csv \
-            environment_diagnostics/environment_vif.csv; do
+            "$V3_SOURCE_OBSERVATIONS/environment_source_observations_report.json" \
+            "$V3_NATIVE_JOIN/native_range_join_report.json" \
+            "$V3_ENV_COHORT/environment_design_cohort_report.json" \
+            "$V3_ENV_DIAGNOSTICS/environment_diagnostics.json" \
+            "$V3_ENV_DIAGNOSTICS/environment_coverage.csv" \
+            "$V3_ENV_DIAGNOSTICS/environment_correlations.csv" \
+            "$V3_ENV_DIAGNOSTICS/environment_vif.csv"; do
               if [ -f "$f" ]; then cp "$f" publish/; fi
           done
-          test "$(find publish -type f | wc -l)" -ge 1
-          rm -rf source_archives source_observations native_join environment_design_cohort environment_diagnostics
+          if [ "$(find publish -type f | wc -l)" -eq 0 ]; then
+            printf '%s\n' '{"status":"INCOMPLETE_BEFORE_AGGREGATE_RECEIPT"}' > publish/workflow_incomplete.json
+          fi
+          rm -rf "$V3_SOURCE_ARCHIVES" "$V3_SOURCE_OBSERVATIONS" "$V3_NATIVE_JOIN" "$V3_ENV_COHORT" "$V3_ENV_DIAGNOSTICS"
 
       - uses: actions/upload-artifact@v4
         if: always()
