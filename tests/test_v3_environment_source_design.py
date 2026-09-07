@@ -9,7 +9,7 @@ from analysis.v3.build_environment_design_cohort import build_design_cohort
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _eligible_rows(key: int, n: int, status: str = "native") -> list[dict]:
+def _eligible_rows(key: int, n: int, status: str = "native", rank: str = "species") -> list[dict]:
     rows = []
     for i in range(n):
         rows.append({
@@ -17,6 +17,7 @@ def _eligible_rows(key: int, n: int, status: str = "native") -> list[dict]:
             "accepted_key": key,
             "accepted_name": f"Taxon {key}",
             "source_taxon_name": f"Taxon {key}",
+            "source_taxon_rank": rank,
             "taxon_resolution_status": "resolved_unique_accepted_key",
             "native_range_status": status,
             "captive_state": "false",
@@ -56,6 +57,22 @@ def test_environment_design_cohort_caps_common_taxa_and_excludes_low_support():
     assert ((sums - 1.0).abs() < 1e-12).all()
     assert report["trait_columns_read"] == 0
     assert report["environment_columns_read"] == 0
+
+
+def test_non_species_ranks_do_not_enter_environment_design():
+    frame = pd.DataFrame(
+        _eligible_rows(1, 10, rank="species")
+        + _eligible_rows(2, 10, rank="subspecies")
+        + _eligible_rows(3, 10, rank="variety")
+        + _eligible_rows(4, 20, rank="genus")
+        + _eligible_rows(5, 20, rank="hybrid")
+        + _eligible_rows(6, 20, rank="complex")
+    )
+    selected, report = build_design_cohort(frame, taxon_cap=10, minimum_taxon_support=5)
+    assert set(selected["accepted_key"]) == {"1", "2", "3"}
+    assert report["selected_taxa"] == 3
+    assert report["rows_excluded_by_non_species_source_rank_before_other_gates"] == 60
+    assert report["non_species_source_rank_counts"] == {"genus": 20, "hybrid": 20, "complex": 20}
 
 
 def test_environment_design_selection_is_deterministic_and_outcome_blind():
