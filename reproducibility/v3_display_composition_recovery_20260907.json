@@ -1,0 +1,73 @@
+{
+  "status": "FIVE_PREVIOUSLY_MEASURED_FIELDS_RECOVERED_TO_VERSIONED_OBSERVATION_VIEW",
+  "historical_source_artifact": 8269246732,
+  "source_head_sha256": "b3d13ba7014100d4e44bf63d7732e21361c863db949f304e513be140a5011aa8",
+  "counts": {
+    "source_heads": 1255791,
+    "retained_head_records": 1255791,
+    "source_photos": 637745,
+    "source_observations": 406582,
+    "colour_qc_usable_heads": 1053623,
+    "eligible_visible_heads": 1053623,
+    "eligible_composition_heads": 1053623,
+    "colour_qc_usable_with_invalid_composition": 0,
+    "head_records_deleted": 0
+  },
+  "endpoints": {
+    "visible_floret_fraction": {
+      "source_field": "corolla_visible_fraction",
+      "finite_head_values": 1240991,
+      "finite_colour_qc_usable_heads": 1053623,
+      "recovered_photo_values": 530128,
+      "recovered_observation_values": 347608
+    },
+    "corolla_white_pixel_fraction": {
+      "source_field": "corolla_white_fraction",
+      "finite_head_values": 1223346,
+      "finite_colour_qc_usable_heads": 1053623,
+      "recovered_photo_values": 530128,
+      "recovered_observation_values": 347608
+    },
+    "corolla_redmagenta_pixel_fraction": {
+      "source_field": "corolla_redmagenta_fraction",
+      "finite_head_values": 1223346,
+      "finite_colour_qc_usable_heads": 1053623,
+      "recovered_photo_values": 530128,
+      "recovered_observation_values": 347608
+    },
+    "corolla_purple_pixel_fraction": {
+      "source_field": "corolla_purple_fraction",
+      "finite_head_values": 1223346,
+      "finite_colour_qc_usable_heads": 1053623,
+      "recovered_photo_values": 530128,
+      "recovered_observation_values": 347608
+    },
+    "corolla_yellow_pixel_fraction": {
+      "source_field": "corolla_yellow_fraction",
+      "finite_head_values": 1223346,
+      "finite_colour_qc_usable_heads": 1053623,
+      "recovered_photo_values": 530128,
+      "recovered_observation_values": 347608
+    }
+  },
+  "composition_max_abs_sum_error": 4.440892098500626e-16,
+  "implementation_sha256_text_lf": "71fb3502a0b175578b8a4a943d4b61db749dcdc7667010c5d445089bbf05628f",
+  "aggregation_version": "v3_equal_photo_means_display_composition_v1",
+  "aggregation": "Keep all source rows. For visibility, use colour-QC-usable finite bounded head values. For colour composition, require colour QC plus all four finite bounded fractions summing to one within 1e-6. Average eligible heads within photo, then average photo means within observation with equal photo weight. Keep missing values and support counts; never replace missingness with zero.",
+  "correction": "These five head-level fields were computed, not absent because of unfinished measurement functions. The historical 73_merge_exhaustive_continuous_shards.py TRAITS mapping omitted them from photo/observation aggregation. Their absence from the frozen v2 atlas does not establish that they were never measured.",
+  "new_image_operations": false,
+  "ecological_models_executed": false,
+  "frozen_v2_results_changed": false,
+  "limits": [
+    "This is a new aggregation view, not retroactive execution of the frozen v2 atlas.",
+    "Four colour fractions are one composition, not four independent biological traits; downstream analysis must respect closure.",
+    "Visible floral-pixel fraction is not a validated flowering-stage label, and pixel fractions are not pigment concentrations.",
+    "Original head/photo observation assignments are preserved; recovered shared-photo links are not fanned out into independent trait replicates.",
+    "The complete 27-endpoint v3 measurement and ecological workflow remains to be executed and evaluated."
+  ],
+  "output_sha256": {
+    "display_composition.sqlite": "3681d303b19ce8b51eb0bda378fd10606ea7e8c8c3d5d610e2d737b493fb86b0",
+    "photo_values.csv": "231764e6ed2664efb0cbe6bb6a30e893170b3a9dd960a2cb847d421db5f8a94c",
+    "observation_values.csv": "3cefda56dc6b84ce5aa60d3927eda30712b5245630ecac6265de5d362d286c69"
+  }
+}

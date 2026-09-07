@@ -1,0 +1,222 @@
+{
+  "status": "CACHED_27_BASELINE_COMPLETED",
+  "execution_contract": {
+    "detector_database_sha256": "d385825e646ff867ba48b60385e92ea28cb572f4747221d323ca0078898dfe91",
+    "detector_execution": {
+      "source_workspace_sha256": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+      "model_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+      "implementation_sha256_text_lf": "bb3ba717f0b230046649947d945b8fb3198d85e7994a345a78382ad4ee226b6b",
+      "parameters": {
+        "conf": 0.25,
+        "iou": 0.7,
+        "imgsz": 640,
+        "max_det": 300,
+        "device": "cpu",
+        "augment": false,
+        "verbose": false
+      },
+      "workspace_helper_sha256_text_lf": "6417e585a60056a92431cd590d4f891d9fbccf8f031dfd3ea9ec04add6188c7d",
+      "python": "3.12.14",
+      "head_padding": 0.12,
+      "context_padding": 0.8,
+      "rounding": "floor_left_top_ceil_right_bottom",
+      "seed": 20260907,
+      "torch_threads": 2,
+      "opencv_threads": 1,
+      "software": {
+        "torch": "2.11.0+cpu",
+        "torchvision": "0.26.0+cpu",
+        "ultralytics": "8.4.87",
+        "numpy": "2.2.6",
+        "pillow": "12.2.0",
+        "opencv-python": "4.13.0.92"
+      }
+    },
+    "feature_specification": {
+      "parameters": {
+        "version": "v3_cached_27_image_features_v1",
+        "primary_min_dimension": 96,
+        "colour_confidence_floor": 0.55,
+        "shape_confidence_floor": 0.5,
+        "orientation_confidence_floor": 0.65,
+        "flip_angle_tolerance": 20,
+        "min_architecture_dimension": 150,
+        "min_surface_dimension": 300,
+        "min_architecture_sharpness": 45,
+        "min_surface_sharpness": 80,
+        "context_green_hue_opencv": [
+          39,
+          104
+        ],
+        "context_green_min_saturation": 35,
+        "context_green_min_value": 40,
+        "context_min_pixels": 100,
+        "context_min_total_area_fraction": 0.01,
+        "composition_tolerance": 0.000001,
+        "context_exclusion": "union of every detector head-padded box, intersected with this context",
+        "paired_colour": "same OpenCV uint8 Lab/hue statistics on union floral pixels, all non-head context and green non-head context; no dominant-colour switching",
+        "legacy_chroma": "unchanged engine 56: redmagenta-only when dominant redmagenta, otherwise union floral pixels",
+        "primary_qc": "legacy mirror quality plus both values finite, registry bounds and minimum pixel dimension; retain all raw values",
+        "extended_qc": "engine 89 endpoint-specific mirror, geometry, resolution and sharpness flags plus registry bounds",
+        "new_diagnostics_are_not_endpoints": true
+      },
+      "source_sha256_text_lf": {
+        "ch1_global/v2/52_measure_primary_traits_continuous.py": "df3c5e3673d2fed9053512843d2eae12a46a3d75a007b7ac386e610f10815610",
+        "ch1_global/v2/55_run_primary_traits_continuous.py": "26a95146c7bf263676e7a15fdc783764f5603fc83b0ef09bd8fd3c7a878d7b5c",
+        "ch1_global/v2/56_run_primary_traits_continuous_v2.py": "b9c9614829da04a8dd203e58efaa3a8f3ecf9e7b65cd855a7a4e915c2431e70e",
+        "ch1_global/v2/89_measure_extended_continuous_traits.py": "382045f172205d1ceb453e35b912318861afc1653db78d39895cdb12304e54c7",
+        "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv": "cde8b8bb990d65fd2c9b2c247633eb47630e532cc69bec132c74f3b6bcfc29f1",
+        "analysis/v3/image_features.py": "e6075d14441083fb2f0769eb0448b27aa71aefc9a6b6851360c41ffd1d8be998"
+      }
+    },
+    "worker_sha256_text_lf": "89d8027d78f9aab502e102cb1bc78a3cfe415dbe93cf05c43bed650d345611a2",
+    "python": "3.12.14",
+    "software": {
+      "numpy": "2.2.6",
+      "pandas": "2.3.3",
+      "pillow": "12.2.0",
+      "cv2": "4.13.0",
+      "opencv-python": "4.13.0.92"
+    },
+    "io_helpers_sha256_text_lf": {
+      "detect_cached_images.py": "bb3ba717f0b230046649947d945b8fb3198d85e7994a345a78382ad4ee226b6b",
+      "build_image_workspace.py": "6417e585a60056a92431cd590d4f891d9fbccf8f031dfd3ea9ec04add6188c7d"
+    },
+    "opencv_threads": 1,
+    "seed": 20260907,
+    "mask_outputs": "primary head foreground/floral union and paired context masks; extended engine regions remain reconstructible from crops plus pinned code"
+  },
+  "counts": {
+    "input_detections": 2853,
+    "completed_this_invocation": 2828,
+    "endpoint_rows_retained": 77031,
+    "heads_with_any_usable_endpoint": 1408,
+    "heads_with_all_27_usable": 25
+  },
+  "job_states": {
+    "measured": 2853
+  },
+  "endpoint_coverage": {
+    "orientation_image_vertical_angle": {
+      "finite_raw_means": 2623,
+      "usable_heads": 995
+    },
+    "corolla_lab_lightness": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "corolla_lab_chroma": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "corolla_hue_sin": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "corolla_hue_cos": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "visible_floret_fraction": {
+      "finite_raw_means": 2838,
+      "usable_heads": 1250
+    },
+    "corolla_white_pixel_fraction": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "corolla_redmagenta_pixel_fraction": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "corolla_purple_pixel_fraction": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "corolla_yellow_pixel_fraction": {
+      "finite_raw_means": 2799,
+      "usable_heads": 1250
+    },
+    "capitulum_outline_aspect_ratio": {
+      "finite_raw_means": 2838,
+      "usable_heads": 1136
+    },
+    "capitulum_outline_circularity": {
+      "finite_raw_means": 2838,
+      "usable_heads": 1136
+    },
+    "capitulum_outline_solidity": {
+      "finite_raw_means": 2838,
+      "usable_heads": 1136
+    },
+    "capitulum_width_profile_cv": {
+      "finite_raw_means": 2838,
+      "usable_heads": 1136
+    },
+    "involucre_length_width_ratio": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "involucre_apical_taper_ratio": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "involucre_basal_taper_ratio": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "bract_projection_roughness": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "bract_projection_p95": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "bract_projection_maximum": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "bract_spread_fraction": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "bract_projection_peak_density": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "bract_projection_asymmetry": {
+      "finite_raw_means": 723,
+      "usable_heads": 160
+    },
+    "involucre_surface_edge_density": {
+      "finite_raw_means": 700,
+      "usable_heads": 53
+    },
+    "involucre_surface_lbp_entropy": {
+      "finite_raw_means": 700,
+      "usable_heads": 53
+    },
+    "involucre_surface_high_frequency_energy": {
+      "finite_raw_means": 700,
+      "usable_heads": 53
+    },
+    "involucre_surface_specular_fraction": {
+      "finite_raw_means": 700,
+      "usable_heads": 53
+    }
+  },
+  "measurement_database_sha256": "4f5b1f69e88ec436f330b2c22f44511d22ebf1fd8c546ae7a72422f0caf280f2",
+  "ecological_models_executed": false,
+  "technical_perturbation_evaluation_completed": false,
+  "independent_accuracy_estimated": false,
+  "limits": [
+    "Cached historical images are not a representative full-source sample or a newly independent evaluation set.",
+    "All 27 slots are retained, including nulls, errors, QC failures and finite values below eligibility thresholds.",
+    "Mirror QC and baseline extraction do not replace crop, resolution and photometric perturbation evaluation.",
+    "Paired context masks exclude all detected head boxes, not all true flowers; green pixels are not verified leaf tissue.",
+    "Context colour does not alone separate photographic illumination from background ecology or prove flower-specific biology.",
+    "EXIF vertical, JPEG-derived colour and normalized geometry remain image features, not calibrated physical or botanical quantities.",
+    "The 27-endpoint denominator includes joint hue and a closed four-part composition; it is not 27 independent tests."
+  ]
+}

@@ -26,7 +26,7 @@
     "native_only_at_acquisition": false,
     "require_coordinates_for_image_measurement": false,
     "delete_detector_negative_photos": false,
-    "keep_unfinished_endpoints_in_inventory": true,
+    "keep_all_endpoint_slots_in_inventory": true,
     "raw_source": "retain immutable metadata/API snapshots separately from versioned local ledgers; exact hashes and source row numbers preserve links",
     "images": "cache permissible exact bytes once per content hash, retain every observation-photo link and processing version; record unavailable, changed, failed and rights-restricted sources explicitly",
     "privacy_and_rights": "no de-obscuring coordinates; metadata retention is not permission to download or redistribute every image; raw identifiers, attribution and image files remain outside GitHub"
@@ -42,15 +42,15 @@
   },
   "stages": [
     {"id": "inventory", "implementation": "workflow.py inventory; reconcile_sources.py for original/API source-link recovery", "output": "source-record and observation-photo link ledgers, observation aggregation, legacy-v2 overlap and explicit collection-coverage gaps"},
-    {"id": "recover", "implementation": "recover_upstream.py and audit_processing_history.py for existing archives; image-byte/cache reconciliation remains pending", "output": "archived raw-query and historical-processing coverage; subsequently verify photo retrieval/cache status with hashes and rights, retaining missing and restricted sources"},
-    {"id": "measure", "implementation": "pending full-inventory detector and measurement executor", "output": "all detections and negative/failed jobs; masks, continuous endpoints, technical uncertainty and no silent phenotype-based photo choice"},
+    {"id": "recover", "implementation": "recover_upstream.py, audit_processing_history.py and build_image_workspace.py; verified local image objects remain linked to the full source universe", "output": "archived raw-query and historical-processing coverage; photo/cache byte identity, versions and usage provenance without claiming full-source image availability"},
+    {"id": "measure", "implementation": "detect_cached_images.py; image_features.py and measure_cached_heads.py for resumable all-27 baseline extraction on cached images; recover_display_composition.py for five historically measured but unaggregated fields; full-source execution and complete technical perturbation evaluation remain pending", "output": "all detections and negative/failed jobs; raw values, endpoint-specific eligibility, masks, paired context and explicit measurement/evaluation coverage"},
     {"id": "analyse", "implementation": "pending model-specific dataset builder and runner", "output": "reversible observation-membership views with exact formulas, denominators and uncertainty"},
     {"id": "report", "implementation": "pending result-table and figure builder", "output": "methodological and ecological results from shared saved tables; include missingness and failures"}
   ],
   "measurement_design": {
     "detector_role": "locate visible capitula; detection negatives are not ecological absences",
     "functions_role": "extract declared continuous image features from explicit head/corolla/involucre masks",
-    "endpoint_scope": "retain the original 27-endpoint inventory (22 measured, five unfinished functions); implement any extension as a new version, not a retrospective QC pass",
+    "endpoint_scope": "retain all 27 original endpoint slots. Correction: the five endpoints absent from the frozen v2 atlas were already computed at head level; the historical aggregator omitted visibility and four colour fractions. Their recovery is a new aggregation view, not retroactive v2 execution or a claim that five functions were unfinished. Preserve joint hue and closed colour composition; version any changed measurement or aggregation definition.",
     "image_quality": "endpoint-specific flags and uncertainty, not a universal image deletion rule; a photo can support colour but not outline or vice versa",
     "automated_evaluation": "source-observation-separated model provenance, bbox perturbation, resolution/sharpness and relevant photometric perturbations; preserve linked per-unit outcomes",
     "colour_context": "paired flower and non-flower context, with lightness/hue; background ecology and low power limit negative-control interpretation",

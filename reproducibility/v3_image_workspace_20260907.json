@@ -1,0 +1,60 @@
+{
+  "status": "LOCAL_IMAGE_BYTES_INDEXED_FULL_SOURCE_RETAINED",
+  "counts": {
+    "source_photo_ids": 1122854,
+    "source_observation_ids": 665139,
+    "source_observation_photo_links": 1122901,
+    "declared_local_image_records": 2100,
+    "verified_image_objects": 2092,
+    "cached_source_photo_ids": 2095,
+    "retained_photo_content_versions": 2095,
+    "photos_with_multiple_cached_versions": 0,
+    "photo_ids_without_verified_local_image": 1120759,
+    "objects_linked_to_multiple_photo_ids": 3,
+    "decoded_pixel_groups_with_multiple_encodings": 0,
+    "objects_with_nonidentity_exif_orientation": 0,
+    "source_photo_rows_deleted": 0
+  },
+  "cache_record_states": {
+    "available": 2100
+  },
+  "usage_pools": [
+    {
+      "pool": "historical_detector_audit_pool_not_independent_v3_evaluation",
+      "records": 1000,
+      "available": 1000
+    },
+    {
+      "pool": "historical_detector_development_pool",
+      "records": 1000,
+      "available": 1000
+    },
+    {
+      "pool": "historical_trait_perturbation_pool",
+      "records": 100,
+      "available": 100
+    }
+  ],
+  "metadata_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+  "reconciled_ledger_sha256": "daaa04917fbf0f1dfa03bcfa6d5a49f95074cf3ee1965e3b4a4d482d72cd0f02",
+  "implementation_sha256_text_lf": "6417e585a60056a92431cd590d4f891d9fbccf8f031dfd3ea9ec04add6188c7d",
+  "contract_sha256_canonical_json": "b86e1c53d645b4e6fcb35f99994503705af08b1063e342b429f77ab1f1f3d6fe",
+  "source_manifest_sha256": [
+    "4d55341631efd8cf0fdf67db1cebe1f69f529f8a70b918c657b8a106b3fbb92b",
+    "6ca1e51fcbb8b58e0f4364cd21b63a4877a9b5a79bf26e9e73a722ce07600497",
+    "5199360989e9f39d516613c8fabc4751312b39ebee850f781ac7105b7548d7c0",
+    "67bd95c6a9166dbf6ca68ce84b41ea3817a108cc886136ad09d1f6a1a83c5e7d",
+    "5ef9c7af6db0f7e6083012da91b1ec91aa1c99359a4c4e7cfbf77d9464d504c1"
+  ],
+  "workspace_database_sha256": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+  "new_source_photo_downloads": 0,
+  "detector_executed": false,
+  "ecological_models_executed": false,
+  "limits": [
+    "Local cache coverage is not full-source download completeness; unobserved cache locations are outside this audit.",
+    "Historical development/audit/perturbation pools are usage provenance, not new independent v3 evaluation splits.",
+    "All byte versions and links are retained. Shared photos, content or decoded pixels require grouping before splitting or inference.",
+    "Raw bytes are preserved. Display orientation uses recorded EXIF; this is not gravity-referenced biological orientation.",
+    "Cached local copies may be processed under the existing research scope; their presence does not authorize public image redistribution."
+  ]
+}

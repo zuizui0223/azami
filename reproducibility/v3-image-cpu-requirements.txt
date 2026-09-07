@@ -1,0 +1,10 @@
+# Separate image environment: executed with Python 3.12.14 on Windows.
+# Install torch==2.11.0+cpu and torchvision==0.26.0+cpu first, using only
+# https://download.pytorch.org/whl/cpu as the package index for that command.
+# Do not mix opencv-python and opencv-python-headless in this environment.
+ultralytics==8.4.87
+numpy==2.2.6
+pandas==2.3.3
+pillow==12.2.0
+opencv-python==4.13.0.92
+pytest==9.1.1

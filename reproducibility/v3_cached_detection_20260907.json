@@ -1,0 +1,55 @@
+{
+  "status": "CACHED_IMAGE_DETECTION_COMPLETED",
+  "execution_contract": {
+    "source_workspace_sha256": "8cdeed12d796a187cab3183a56dedff3cf3b82935840c682507bdd990989e498",
+    "model_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+    "implementation_sha256_text_lf": "bb3ba717f0b230046649947d945b8fb3198d85e7994a345a78382ad4ee226b6b",
+    "parameters": {
+      "conf": 0.25,
+      "iou": 0.7,
+      "imgsz": 640,
+      "max_det": 300,
+      "device": "cpu",
+      "augment": false,
+      "verbose": false
+    },
+    "workspace_helper_sha256_text_lf": "6417e585a60056a92431cd590d4f891d9fbccf8f031dfd3ea9ec04add6188c7d",
+    "python": "3.12.14",
+    "head_padding": 0.12,
+    "context_padding": 0.8,
+    "rounding": "floor_left_top_ceil_right_bottom",
+    "seed": 20260907,
+    "torch_threads": 2,
+    "opencv_threads": 1,
+    "software": {
+      "torch": "2.11.0+cpu",
+      "torchvision": "0.26.0+cpu",
+      "ultralytics": "8.4.87",
+      "numpy": "2.2.6",
+      "pillow": "12.2.0",
+      "opencv-python": "4.13.0.92"
+    }
+  },
+  "counts": {
+    "input_image_objects": 2092,
+    "completed_this_invocation": 2092,
+    "raw_detections": 2853,
+    "valid_head_context_pairs": 2853,
+    "possible_max_det_truncations": 0
+  },
+  "job_states": {
+    "detected": 1759,
+    "no_detection": 333
+  },
+  "source_photo_ids": 1122854,
+  "source_photo_ids_without_verified_image_in_this_workspace": 1120759,
+  "detection_database_sha256": "d385825e646ff867ba48b60385e92ea28cb572f4747221d323ca0078898dfe91",
+  "ecological_models_executed": false,
+  "limits": [
+    "Cached-image execution is not full-source processing or detector accuracy.",
+    "The production detector was trained against automatic pseudo-labels; no independent precision/recall is estimated here.",
+    "All detector proposals, invalid ROIs, negative jobs and errors remain distinct; confidence is not calibrated correctness.",
+    "EXIF display orientation is not gravity. PNG crops are lossless derivatives; source objects remain unchanged.",
+    "Raw head/context crops do not establish finalized continuous traits or biological stage."
+  ]
+}

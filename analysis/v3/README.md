@@ -58,10 +58,10 @@ analysis view, not irreversible source reduction.
 | Stage | Implemented now | Still to implement |
 |---|---|---|
 | Inventory | Every merged/source row and archived API link accounted for; lost links restored; source hashes, observation aggregation and v2 overlap | First chunk's raw API file is absent; complete collection-time recovery cannot be certified |
-| Recover | Six original metadata archives and the unthinned historical processing archive locally preserved with exact hashes | Reconcile actual cached image bytes, image versions and rights; do not confuse processing records with image files |
-| Measure | Existing v2 code and results preserved as references | Full-inventory detector and measurement execution, linked failures, endpoint-specific automated technical evaluation |
+| Recover | Six original metadata archives, the unthinned processing archive and verified local image bytes with all source links | Full-source image availability and a rights-aware acquisition/retention schedule; processing records are not image files |
+| Measure | Historical five-field recovery; resumable cached-image detection and all-27 baseline extraction with raw/QC values and paired context | Full-source execution, crop/resolution/photometric evaluation and propagation of measurement uncertainty |
 | Analyse | Workflow specification; no v3 ecological fitting | Save exact estimands, cohort memberships, formulas, uncertainty, spatial/nesting design and multiplicity before fitting |
-| Report | Aggregate source-inventory receipt | Measurement/association tables and figures from the same saved outputs |
+| Report | Aggregate inventory, historical recovery and cached-execution receipts | Complete technical-evaluation and ecological tables/figures from the same saved outputs |
 
 The specification is [`workflow_contract.json`](workflow_contract.json).
 It fixes procedures and evidential limits, **not the result direction or its
@@ -114,9 +114,22 @@ does not determine anthocyanin content, and spatial association does not establi
 adaptation. Context colour and calendar timing do not by themselves rule out
 illumination or developmental-stage explanations.
 
-Keep all 27 original endpoints in the registry: 22 previously measured and five
-with unfinished functions, not five QC rejections. Future functions or endpoint
-extensions need new versions. Joint hue has two columns but one inferential unit.
+Keep all 27 original endpoints in the registry. **Correction to the earlier v3
+description:** the five endpoints missing from the v2 atlas were not unmeasured
+because of unfinished functions. Visibility and four colour fractions were already
+computed at head level; the historical aggregator did not carry them into the
+observation-level atlas input. They are not five QC rejections either.
+Their [versioned recovery](../../reproducibility/v3_display_composition_recovery_20260907.json)
+retains all 1,255,791 head records and produces values for 347,608 observations,
+using 1,053,623 colour-QC-usable heads from 530,128 photos. It does not rewrite
+the frozen v2 atlas or retroactively execute its missing analyses.
+
+The new view averages eligible heads within each photo, then photo means within
+each observation, giving each eligible photo equal weight. Original values and
+missingness remain available. The four fractions sum to one and form a single
+composition; joint hue has two columns but one inferential unit. Do not turn these
+columns into independent biological traits or replace missing fractions with zero.
+Changed functions, aggregation or endpoint extensions require explicit new versions.
 
 ## Run the full-source inventory
 
@@ -190,6 +203,104 @@ summaries and create explicitly versioned alternatives when changing aggregation
 
 The recovered processing archive contains **no image files**. It preserves exact
 processing records and old image/crop paths, not a verified current image cache.
+
+## Executed local image workspace and versioned extraction
+
+The [image workspace](../../reproducibility/v3_image_workspace_20260907.json)
+retains the full 1,122,854-photo universe and all 1,122,901 recovered source links.
+An audit of the available local development, audit and perturbation caches found
+2,100 file declarations, representing 2,095 photo IDs and 2,092 distinct byte
+objects. All declared files were available and decoded; 2,000 matched previously
+archived file hashes and 100 received their first cache-inventory hashes.
+Three byte objects have multiple photo IDs. Usage pools overlap and are not new
+independent v3 evaluation splits. Shared observation, photo, byte or decoded-pixel
+identities must be grouped before splitting or inference.
+
+This local cache audit leaves **1,120,759 source photo IDs without a verified
+image in this workspace**. It does not show that those images never existed,
+are unavailable online, or are absent from every other storage location. No new
+source-photo requests were made. The workspace receipt retains its execution
+contract hash from [checkpoint a4f910a](https://github.com/zuizui0223/azami/blob/a4f910a7b40dabfa593efb4ff998b2e7925d02e5/analysis/v3/workflow_contract.json).
+
+The [cached detector pass](../../reproducibility/v3_cached_detection_20260907.json)
+processed all 2,092 distinct objects: 1,759 had detections and 333 did not.
+It saved 2,853 head/context pairs, with no failed jobs, invalid crops or 300-box
+limit flags. This is execution and coverage evidence, **not detector accuracy**.
+The pinned weights were trained against automatic pseudo-labels; historical
+development metrics are not independent precision or recall against true heads.
+All photo/observation links remain in the source workspace rather than expanding
+shared images into independent detections.
+
+The measurement adapter uses corrected engine `56_run_primary_traits_continuous_v2.py`
+(through its 55/52 compatibility dependencies) and extended engine 89. It does
+not use the obsolete head-peduncle orientation definition from engine 52 alone.
+Each detected head has all 27 endpoint slots, raw original/mirror values, finite
+means even when QC fails, and endpoint-specific eligibility. The registry's pixel
+requirements are explicit v3 gates. Primary foreground/floral and context masks,
+crop identities, image dimensions and sharpness are saved. Engine and worker
+errors remain distinct from ordinary low-quality or missing measurements.
+
+The [executed baseline measurement](../../reproducibility/v3_cached_measurement_20260907.json)
+completed all 2,853 head jobs without engine or worker errors and retained 77,031
+endpoint rows (2,853 times 27), including null and ineligible values. In this
+historical cached sample, 1,408 heads had at least one eligible endpoint but only
+25 had all 27 eligible. Eligibility was 995 heads for orientation, 1,250 for colour
+and visibility, 1,136 for outline, 160 for each architecture endpoint and 53 for
+each surface endpoint. Thus requiring complete data for all endpoints would discard
+most otherwise usable measurements in this cache. These are endpoint-coverage
+counts, not accuracy estimates or estimates for the full source population.
+
+Paired colour diagnostics use the same Lab/hue statistics on union floral pixels,
+all non-head context and green non-head context. Context masks exclude the union
+of all detected head boxes, not only the focal head. The new uniform floral
+statistic is separate from legacy chroma, whose engine selects redmagenta pixels
+when redmagenta is dominant and the floral union otherwise. Green context is not
+verified leaf tissue, and undetected flowers can remain in it. These diagnostics
+do not, by themselves, establish illumination correction or flower specificity.
+
+### Run cached-image processing
+
+Create a separate Python 3.12 environment; do not mix the image worker's OpenCV
+package with `opencv-python-headless` from the numerical environment. The
+[executed package inventory](../../reproducibility/v3_image_environment_20260907.json)
+and per-run code/model/runtime hashes record the local environment. Cross-platform
+bitwise equivalence has not been established.
+
+```bash
+python -m pip install torch==2.11.0+cpu torchvision==0.26.0+cpu --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -r reproducibility/v3-image-cpu-requirements.txt
+python -m analysis.v3.build_image_workspace \
+  --metadata /path/to/photo_metadata_merged.csv \
+  --source-links /path/to/source-reconciliation/source_reconciliation.sqlite \
+  --local-materials-root /path/to/azami_ch1_method_reproducibility_20260831 \
+  --perturbation-root /path/to/perturbation_n100 \
+  --out-dir /path/to/new-image-workspace
+python -m analysis.v3.detect_cached_images \
+  --workspace /path/to/image-workspace --weights /path/to/model/weights/best.pt \
+  --out-dir /path/to/new-cached-detection
+python -m analysis.v3.measure_cached_heads \
+  --detection /path/to/cached-detection --out-dir /path/to/new-cached-measurement
+python -m analysis.v3.verify_cached_pipeline \
+  --workspace /path/to/image-workspace --detection /path/to/cached-detection \
+  --measurement /path/to/cached-measurement --out-dir /path/to/new-verification
+python -m analysis.v3.recover_display_composition \
+  --heads /path/to/exhaustive_merged/exhaustive_continuous_head_level.csv \
+  --out-dir /path/to/new-display-composition-view
+```
+
+The detector accepts only the model hash recorded in its receipt; the model
+comes from archived artifact `8076736948`. The local cache adapter uses explicit
+photo-ID/filename joins from archived manifests; it does not guess identities
+from image similarity or inspect human labels. All inputs and outputs remain
+local, including licenses/attribution and private observation links.
+
+Detector and measurement workers accept `--limit N` for a bounded invocation.
+Reusing the same output directory resumes pending jobs under an identical saved
+execution context. Completed/error jobs are not silently retried. Changed code,
+inputs or parameters require a new versioned output. A bounded pass does not
+redefine the source denominator; missing, pending and no-detection are separate.
+Cached baseline extraction and mirror QC are not the full crop, resolution and
+photometric evaluation, and no v3 ecological model has been fitted here.
 
 ### Recover and audit original archives locally
 

@@ -39,7 +39,12 @@ jobs:
             tests/test_v3_workflow.py \
             tests/test_v3_upstream_recovery.py \
             tests/test_v3_source_reconciliation.py \
-            tests/test_v3_processing_history.py
+            tests/test_v3_processing_history.py \
+            tests/test_v3_image_workspace.py \
+            tests/test_v3_display_composition.py \
+            tests/test_v3_cached_detection.py \
+            tests/test_v3_image_features.py \
+            tests/test_v3_cached_verification.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan
