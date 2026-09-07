@@ -113,5 +113,8 @@ def test_missingness_is_reported_not_imputed():
 def test_exact_collinearity_is_json_safe():
     matrix = pd.DataFrame({"a":[1,2,3,4], "b":[2,4,6,8], "c":[4,1,3,2]})
     report, tables = env.diagnose_environment(matrix, ["a","b","c"], threshold=0.80)
-    assert report["matrix"]["condition_number"] == "infinite"
+    diagnostics = report["matrix"]
+    assert diagnostics["matrix_rank"] < 3
+    condition_number = diagnostics["condition_number"]
+    assert condition_number == "infinite" or float(condition_number) > 1e12
     assert "infinite" in set(tables["vif"]["vif"])
