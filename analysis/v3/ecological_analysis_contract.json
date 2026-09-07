@@ -11,20 +11,12 @@
   "taxonomic_identity": {
     "master_rule": "Retain every source taxon assignment and its provenance in the master ledger; never rewrite source records destructively.",
     "ecological_join_required": true,
-    "analysis_fields_required": [
-      "source_taxon_name",
-      "resolved_taxon_concept",
-      "accepted_name_source",
-      "rank",
-      "synonym_status",
-      "hybrid_or_uncertain_status",
-      "resolution_status"
-    ],
+    "analysis_fields_required": ["source_taxon_name","resolved_taxon_concept","accepted_name_source","rank","synonym_status","hybrid_or_uncertain_status","resolution_status"],
     "primary_ecology_requirement": "Use only observations with a documented taxon concept adequate for the model. Unresolved or uncertain assignments remain in coverage accounting but do not silently enter taxon-level ecological inference.",
     "misidentification_boundary": "Name resolution does not independently verify image identification. Residual source-identification error remains an explicit limitation."
   },
   "sampling_and_replication": {
-    "hierarchy": ["head", "photo", "observation", "taxon"],
+    "hierarchy": ["head","photo","observation","taxon"],
     "independence_rule": "Multiple heads or photos must not receive independent observation weight merely because they are numerous.",
     "dependence_rule": "Known shared photo IDs, exact bytes and decoded-pixel identities remain grouped in all splitting, resampling and inference.",
     "range_status_join_required": true,
@@ -36,112 +28,32 @@
   },
   "measurement_uncertainty": {
     "general_rule": "Measurement diagnostics are upstream inputs to ecological inference, not post-hoc defenses of selected associations.",
-    "orientation": {
-      "required_diagnostics": ["bbox_shift", "resolution", "sharpness", "mirror_or_replay_consistency"],
-      "stable_subset_required": true,
-      "stable_subset_thresholds": "Freeze from image-only perturbation behavior before joining environmental outcomes; do not choose thresholds from precipitation results.",
-      "primary_reporting": "Report the main orientation model together with a predeclared stable-measurement subset or explicit measurement-uncertainty propagation. The precipitation coefficient must not be promoted if its interpretation depends on unstable measurements."
-    },
-    "colour": {
-      "required_diagnostics": ["photometric_perturbation", "paired_flower_context", "resolution", "sharpness"],
-      "interpretation_rule": "Chroma is one coordinate of colour, not a direct pale-dark scale and not an anthocyanin assay. Interpret environmental colour structure jointly with lightness and circular hue; closed colour-composition fractions remain one composition rather than independent traits."
-    },
-    "outline_and_fine_geometry": {
-      "required_diagnostics": ["bbox_shift", "resolution", "sharpness"],
-      "interpretation_rule": "Image geometry remains viewpoint- and resolution-dependent unless separately calibrated."
-    },
-    "absolute_size_rule": "Do not infer physical head size from ordinary photographs without an independent scale reference. Pixel size or normalized geometry may be used only as image quantities with their stated units."
+    "orientation": {"required_diagnostics":["bbox_shift","resolution","sharpness","mirror_or_replay_consistency"],"stable_subset_required":true,"stable_subset_thresholds":"Freeze from image-only perturbation behavior before joining environmental outcomes; do not choose thresholds from precipitation results.","primary_reporting":"Report the main orientation model together with a predeclared stable-measurement subset or explicit measurement-uncertainty propagation. The precipitation coefficient must not be promoted if its interpretation depends on unstable measurements."},
+    "colour": {"required_diagnostics":["photometric_perturbation","paired_flower_context","resolution","sharpness"],"interpretation_rule":"Chroma is one coordinate of colour, not a direct pale-dark scale and not an anthocyanin assay. Interpret environmental colour structure jointly with lightness and circular hue; closed colour-composition fractions remain one composition rather than independent traits."},
+    "outline_and_fine_geometry": {"required_diagnostics":["bbox_shift","resolution","sharpness"],"interpretation_rule":"Image geometry remains viewpoint- and resolution-dependent unless separately calibrated."},
+    "absolute_size_rule":"Do not infer physical head size from ordinary photographs without an independent scale reference. Pixel size or normalized geometry may be used only as image quantities with their stated units."
   },
   "visible_variation": {
-    "primary_quantity": "image_observation_variation_below_taxon_summary",
-    "hierarchical_decomposition_required": true,
-    "variance_levels": ["head_within_photo", "photo_within_observation", "observation_within_taxon", "between_taxon"],
-    "terminology": "Do not call the combined quantity biological intraspecific variance. Report it as visible image-phenotype or image-observation variation unless a biological component is independently identified.",
-    "ecological_importance_rule": "Ecological importance of the retained below-taxon image variation is a downstream hypothesis, not a result implied by its magnitude alone."
+    "primary_quantity":"image_observation_variation_below_taxon_summary",
+    "hierarchical_decomposition_required":true,
+    "variance_levels":["head_within_photo","photo_within_observation","observation_within_taxon","between_taxon"],
+    "terminology":"Do not call the combined quantity biological intraspecific variance. Report it as visible image-phenotype or image-observation variation unless a biological component is independently identified.",
+    "ecological_importance_rule":"Ecological importance of the retained below-taxon image variation is a downstream hypothesis, not a result implied by its magnitude alone."
   },
   "abiotic_environment": {
-    "core": {
-      "thermal": ["BIO1", "BIO4"],
-      "hydric": ["BIO12", "BIO15"]
-    },
-    "additional_blocks": {
-      "radiation_and_atmospheric_drying": ["shortwave_radiation", "VPD"],
-      "mechanical_exposure": ["near_surface_wind"],
-      "growing_season_water": ["growing_season_precipitation"],
-      "productivity": ["potential_NPP"]
-    },
-    "warm_season_precipitation_alternative": {
-      "predictor": "BIO18",
-      "role": "predeclared alternative representation of warm/growing-season precipitation motivated by supervisor review",
-      "comparison_rule": "Compare BIO18 with the existing growing-season-water formulation as an alternative hydric representation using the same cohort and response definition. Do not include both merely to retain the more significant result, and do not promote whichever yields the smaller P value."
-    },
-    "collinearity_before_fit": {
-      "required": true,
-      "diagnostics": ["correlation_matrix", "matrix_rank", "condition_number", "VIF"],
-      "cohort_rule": "Compute diagnostics on the exact model cohort, not on a different global table."
-    },
-    "primary_test_order": [
-      "fit_core_environment_representation",
-      "test_each_predeclared_additional_block_for_information_beyond_core",
-      "only_then_decompose_supported_multivariate_or_module_level_patterns_to_endpoint_coefficients"
-    ],
-    "added_information_rule": "The phrase 'added information beyond the climate core' is supported only by an explicit nested or otherwise formally comparable model test of the predeclared block against the same core model and cohort.",
-    "univariate_rule": "Single-predictor atlas slopes may be retained as descriptive maps but are not evidence of independent environmental effects when predictors are correlated."
+    "core":{"thermal":["BIO1","BIO4"],"hydric":["BIO12","BIO15"]},
+    "additional_blocks":{"radiation_and_atmospheric_drying":["shortwave_radiation","VPD"],"mechanical_exposure":["near_surface_wind"],"growing_season_water":["growing_season_precipitation"],"productivity":["potential_NPP"]},
+    "warm_season_precipitation_alternative":{"predictor":"BIO18","role":"predeclared alternative representation of warm/growing-season precipitation motivated by supervisor review","comparison_rule":"Compare BIO18 with the existing growing-season-water formulation as an alternative hydric representation using the same cohort and response definition. Do not include both merely to retain the more significant result, and do not promote whichever yields the smaller P value."},
+    "collinearity_before_fit":{"required":true,"diagnostics":["correlation_matrix","matrix_rank","condition_number","VIF"],"cohort_rule":"Compute diagnostics on the exact model cohort, not on a different global table."},
+    "primary_test_order":["fit_core_environment_representation","test_each_predeclared_additional_block_for_information_beyond_core","only_then_decompose_supported_multivariate_or_module_level_patterns_to_endpoint_coefficients"],
+    "added_information_rule":"The phrase 'added information beyond the climate core' is supported only by an explicit nested or otherwise formally comparable model test of the predeclared block against the same core model and cohort.",
+    "univariate_rule":"Single-predictor atlas slopes may be retained as descriptive maps but are not evidence of independent environmental effects when predictors are correlated."
   },
-  "trait_structure": {
-    "modules": ["orientation", "visible_colour", "gross_shape", "involucral_architecture_and_fine_geometry"],
-    "primary_logic": "Test coherent trait-module or multivariate structure before treating every endpoint by predictor combination as an independent biological story.",
-    "endpoint_decomposition": "Endpoint coefficients explain a supported module-level pattern; they do not replace the module-level test with significance hunting.",
-    "colour_joint_rule": "Lightness, chroma and circular hue are interpreted together at the colour-module level before any single coordinate is given a biological narrative.",
-    "whole_capitulum": "Retain a whole-capitulum multivariate summary to test whether modules collapse to one syndrome or remain multidimensional."
-  },
-  "biological_scale": {
-    "within_taxon": {
-      "model": "hierarchical_partial_pooling_random_slopes",
-      "purpose": "Estimate the distribution of within-taxon abiotic associations while allowing adequately sampled taxa to deviate without noisy unpooled slopes or domination by the two most photographed taxa.",
-      "not_primary": "one pooled taxon-demeaned slope across all observation rows",
-      "required_outputs": ["hypermean_or_population_distribution", "taxon_slope_distribution", "between_taxon_slope_variance", "taxon_sample_support", "environmental_range_support", "effective_taxon_contribution"]
-    },
-    "among_taxon": {
-      "purpose": "Estimate environmental sorting of uncertainty-aware taxon-level phenotype summaries across the declared native-range scope.",
-      "taxon_weighting_rule": "One taxon summary enters the taxon-level comparison; raw photograph abundance is not a biological weight.",
-      "phylogeny_role": "Historical placement is a sensitivity on the same ecological model, not an independent evidence replication."
-    }
-  },
-  "external_benchmarking": {
-    "botanical_descriptions": "Authoritative flora/monograph trait descriptions may be used as a separate external consistency benchmark where states and taxon concepts can be matched. They do not substitute for individual physical reference measurements.",
-    "purpose": "Use external descriptions to test whether the image-derived axis is directionally compatible with established botanical knowledge, not to manufacture a stronger P value by changing taxon coverage."
-  },
-  "phylogenetic_sensitivity": {
-    "required_reporting": ["direct_tip_coverage", "Pagel_lambda", "coefficient_distribution_across_placements", "uncertainty_distribution_across_placements"],
-    "interpretation_rule": "If alternative placements have negligible leverage, report that directly. Do not strengthen a claim by counting near-identical placement fits as independent confirmations.",
-    "binary_pass_count_is_secondary": true,
-    "candidate_promotion_gate": false
-  },
-  "workflow_style": {
-    "primary_rule": "Build sampling, measurement uncertainty, taxon hierarchy, abiotic covariate structure and spatial dependence into the primary model specification wherever possible.",
-    "do_not_use": "a long significance-triggered ladder in which only FDR-positive rows receive taxon omission, native-only, spatial, measurement and phylogenetic checks and are promoted for surviving them",
-    "remaining_sensitivities": ["range-scope/transportability comparison", "predeclared measurement-uncertainty formulation", "phylogenetic placement when taxon-level inference requires it"],
-    "reporting_rule": "Sensitivities describe how an estimate moves under a bounded alternative assumption; they do not accumulate as independent evidence votes."
-  },
-  "claim_language": {
-    "allowed_candidate_label": "candidate_association_for_functional_validation",
-    "disallowed_primary_label": "adaptive-pattern candidate",
-    "rule": "Functional precedent may motivate the next experiment but does not upgrade an observational association to adaptation or mechanism."
-  },
-  "execution_gate": {
-    "ecological_fit_allowed_only_after": [
-      "taxonomic analysis join is versioned",
-      "native/introduced/unresolved range status join is versioned and primary native-range membership is saved",
-      "endpoint-specific measurement diagnostics and stable-or-error-aware analysis rules are frozen",
-      "exact model cohorts and hierarchy are saved",
-      "taxon-support and environmental-range eligibility rules are frozen",
-      "abiotic core and additional block definitions including the BIO18 alternative are frozen",
-      "collinearity diagnostic procedure is frozen",
-      "within- and among-taxon model formulas are saved",
-      "multiplicity or multivariate testing families are saved"
-    ],
-    "result_direction_not_required": true,
-    "legacy_v2_candidates_need_not_survive": true
-  }
+  "trait_structure": {"modules":["orientation","visible_colour","gross_shape","involucral_architecture_and_fine_geometry"],"primary_logic":"Test coherent trait-module or multivariate structure before treating every endpoint by predictor combination as an independent biological story.","endpoint_decomposition":"Endpoint coefficients explain a supported module-level pattern; they do not replace the module-level test with significance hunting.","colour_joint_rule":"Lightness, chroma and circular hue are interpreted together at the colour-module level before any single coordinate is given a biological narrative.","whole_capitulum":"Retain a whole-capitulum multivariate summary to test whether modules collapse to one syndrome or remain multidimensional."},
+  "biological_scale": {"within_taxon":{"model":"hierarchical_partial_pooling_random_slopes","purpose":"Estimate the distribution of within-taxon abiotic associations while allowing adequately sampled taxa to deviate without noisy unpooled slopes or domination by the two most photographed taxa.","not_primary":"one pooled taxon-demeaned slope across all observation rows","required_outputs":["hypermean_or_population_distribution","taxon_slope_distribution","between_taxon_slope_variance","taxon_sample_support","environmental_range_support","effective_taxon_contribution"]},"among_taxon":{"purpose":"Estimate environmental sorting of uncertainty-aware taxon-level phenotype summaries across the declared native-range scope.","taxon_weighting_rule":"One taxon summary enters the taxon-level comparison; raw photograph abundance is not a biological weight.","phylogeny_role":"Historical placement is a sensitivity on the same ecological model, not an independent evidence replication."}},
+  "external_benchmarking": {"botanical_descriptions":"Authoritative flora/monograph trait descriptions may be used as a separate external consistency benchmark where states and taxon concepts can be matched. They do not substitute for individual physical reference measurements.","purpose":"Use external descriptions to test whether the image-derived axis is directionally compatible with established botanical knowledge, not to manufacture a stronger P value by changing taxon coverage."},
+  "phylogenetic_sensitivity": {"required_reporting":["direct_tip_coverage","Pagel_lambda","coefficient_distribution_across_placements","uncertainty_distribution_across_placements"],"interpretation_rule":"If alternative placements have negligible leverage, report that directly. Do not strengthen a claim by counting near-identical placement fits as independent confirmations.","binary_pass_count_is_secondary":true,"candidate_promotion_gate":false},
+  "workflow_style": {"primary_rule":"Build sampling, measurement uncertainty, taxon hierarchy, abiotic covariate structure and spatial dependence into the primary model specification wherever possible.","do_not_use":"a long significance-triggered ladder in which only FDR-positive rows receive taxon omission, native-only, spatial, measurement and phylogenetic checks and are promoted for surviving them","remaining_sensitivities":["range-scope/transportability comparison","predeclared measurement-uncertainty formulation","phylogenetic placement when taxon-level inference requires it"],"reporting_rule":"Sensitivities describe how an estimate moves under a bounded alternative assumption; they do not accumulate as independent evidence votes."},
+  "claim_language": {"allowed_candidate_label":"candidate_association_for_functional_validation","disallowed_primary_label":"adaptive-pattern candidate","rule":"Functional precedent may motivate the next experiment but does not upgrade an observational association to adaptation or mechanism."},
+  "execution_gate": {"ecological_fit_allowed_only_after":["taxonomic analysis join is versioned","native/introduced/unresolved range status join is versioned and primary native-range membership is saved","endpoint-specific measurement diagnostics and stable-or-error-aware analysis rules are frozen","exact model cohorts and hierarchy are saved","taxon-support and environmental-range eligibility rules are frozen","abiotic core and additional block definitions including the BIO18 alternative are frozen","collinearity diagnostic procedure is frozen","within- and among-taxon model formulas are saved","multiplicity or multivariate testing families are saved"],"result_direction_not_required":true,"legacy_v2_candidates_need_not_survive":true}
 }
