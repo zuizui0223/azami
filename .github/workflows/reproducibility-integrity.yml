@@ -55,6 +55,7 @@ jobs:
             tests/test_v3_resolution_stream_gate.py \
             tests/test_v3_ecological_analysis_contract.py \
             tests/test_v3_environment_matrix.py \
+            tests/test_v3_environment_source_design.py \
             tests/test_v3_native_range_join.py
 
       - name: Validate v3 workflow design without promoting scientific status
@@ -83,6 +84,10 @@ jobs:
           test -f analysis/v3/ecological_analysis_contract.json
           test -f analysis/v3/native_range_join_contract.json
           test -f analysis/v3/build_native_range_join.py
+          test -f analysis/v3/build_native_range_join_from_source.py
+          test -f analysis/v3/environment_source_archives.json
+          test -f analysis/v3/prepare_environment_source_observations.py
+          test -f analysis/v3/build_environment_design_cohort.py
           test -f analysis/v3/environment_exposure_contract.json
           test -f analysis/v3/environment_matrix.py
           test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
