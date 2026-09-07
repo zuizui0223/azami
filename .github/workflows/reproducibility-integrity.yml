@@ -58,6 +58,7 @@ jobs:
             tests/test_v3_environment_source_design.py \
             tests/test_v3_environment_design_cohort_state.py \
             tests/test_v3_environment_design_upstream_receipt.py \
+            tests/test_v3_environment_selection_priority.py \
             tests/test_v3_environment_freeze.py \
             tests/test_v3_native_range_join.py
 
@@ -92,6 +93,7 @@ jobs:
           test -f analysis/v3/prepare_environment_source_observations.py
           test -f analysis/v3/build_environment_design_cohort.py
           test -f analysis/v3/environment_exposure_contract.json
+          test -f analysis/v3/environment_selection_priority_20260907.json
           test -f analysis/v3/environment_matrix.py
           test -f analysis/v3/freeze_environment_representation.py
           test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
