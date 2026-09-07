@@ -29,14 +29,16 @@ jobs:
   design:
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    env:
-      V3_SOURCE_ARCHIVES: ${{ runner.temp }}/v3-source-archives
-      V3_SOURCE_OBSERVATIONS: ${{ runner.temp }}/v3-source-observations
-      V3_NATIVE_JOIN: ${{ runner.temp }}/v3-native-join
-      V3_ENV_COHORT: ${{ runner.temp }}/v3-environment-design-cohort
-      V3_ENV_DIAGNOSTICS: ${{ runner.temp }}/v3-environment-diagnostics
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set private runner-temporary working directories
+        run: |
+          echo "V3_SOURCE_ARCHIVES=$RUNNER_TEMP/v3-source-archives" >> "$GITHUB_ENV"
+          echo "V3_SOURCE_OBSERVATIONS=$RUNNER_TEMP/v3-source-observations" >> "$GITHUB_ENV"
+          echo "V3_NATIVE_JOIN=$RUNNER_TEMP/v3-native-join" >> "$GITHUB_ENV"
+          echo "V3_ENV_COHORT=$RUNNER_TEMP/v3-environment-design-cohort" >> "$GITHUB_ENV"
+          echo "V3_ENV_DIAGNOSTICS=$RUNNER_TEMP/v3-environment-diagnostics" >> "$GITHUB_ENV"
 
       - uses: actions/setup-python@v5
         with:
