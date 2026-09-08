@@ -1,0 +1,28 @@
+{
+  "status": "CLEAN_RUNTIME_DEPENDENCIES_VERIFIED_SYNTHETIC_EXECUTION_PENDING",
+  "initial_run_id": 34221358515,
+  "initial_execution_commit": "4ce5311e8c04b2aec4c5d5ea3e2e7a9a561e1171",
+  "failed_job_evidence": 102044975156,
+  "failure_stage": "test collection before simulation",
+  "failure": "ModuleNotFoundError: No module named 'shapely' in the numerical-output helper import chain",
+  "response": "Cancel the invalid synthetic-only wave; add the existing Shapely2.1.2 dependency to its explicit runtime; verify in a newly created isolated environment before replacement execution. The live original-image wave34213194212 is untouched.",
+  "fresh_environment": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1",
+    "requests": "2.34.2",
+    "shapely": "2.1.2",
+    "pytest": "9.1.1",
+    "targeted_tests_passed": 43,
+    "runner_import_and_help_passed": true
+  },
+  "previous_full_v3_tests_passed": 628,
+  "previous_remote_integrity_run": 34221362559,
+  "previous_remote_integrity_conclusion": "success",
+  "unchanged": ["model", "synthetic scenarios and generating parameters", "random seeds", "bootstrap counts", "optimizer bounds and score tolerance", "inference qualification boundary", "all27 raw endpoint inventory"],
+  "simulation_steps_started_in_initial_run_at_inspection": 0,
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}

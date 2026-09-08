@@ -40,5 +40,6 @@ def test_calibration_slices_cover_every_planned_case_without_admitting_primary_f
     assert 'max-parallel: 4' in workflow and 'cancel-in-progress: false' in workflow
     assert 'start: [0, 5, 10, 15, 20, 25, 30, 35]' in workflow
     assert 'contents: read' in workflow and 'retention-days: 30' in workflow
+    assert 'shapely==2.1.2' in workflow  # protected numerical-output helper imports it
     assert '--end "$(( ${{ matrix.start }} + 5 ))"' in workflow
     assert sorted(i for start in range(0,40,5) for i in range(start,start+5))==list(range(40))
