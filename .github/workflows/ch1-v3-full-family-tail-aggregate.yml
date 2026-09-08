@@ -1,0 +1,51 @@
+name: Chapter 1 v3 aggregate full-family tail mechanics
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/full_family_tail_aggregate_contract.json
+      - analysis/v3/summarize_full_family_tail_pilot.py
+      - .github/workflows/ch1-v3-full-family-tail-aggregate.yml
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  aggregate:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install lightweight runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 pytest==9.1.1
+      - name: Download all 32 immutable tail-pilot artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v3-full36-tail-*
+          path: runs/tail-artifacts
+          merge-multiple: false
+          github-token: ${{ github.token }}
+          run-id: '34239896034'
+      - name: Verify inventory and aggregate all public reports
+        run: |
+          count="$(find runs/tail-artifacts -name public_report.json -type f | wc -l)"
+          test "$count" -eq 32
+          mapfile -t reports < <(find runs/tail-artifacts -name public_report.json -type f | sort)
+          python -m analysis.v3.summarize_full_family_tail_pilot \
+            --reports "${reports[@]}" \
+            --out runs/v3_full36_tail_mechanics_aggregate_20260908.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v3-full36-tail-mechanics-aggregate-${{ github.run_id }}
+          path: runs/v3_full36_tail_mechanics_aggregate_20260908.json
+          if-no-files-found: error
+          retention-days: 30
+      # Aggregate is synthetic-only. It is a mechanics receipt, not final
+      # multicoordinate calibration and not ecological admission.
