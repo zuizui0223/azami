@@ -90,8 +90,9 @@
       "remaining": "Run on each realized model cohort with finalized nuisance terms and weights; older 9503-row diagnostics are not substitutes."
     },
     "joint_covariance_aware_hierarchy": {
-      "state": "not_executed",
-      "remaining": "Joint numerical taxon slopes with arbitrary shared nuisance columns and full cross-taxon HC3 covariance match dense interaction-design tests. This is an independent-error numerical reference; cross-covariance pooling, sparse taxa and the dependence-aware direct scale-contrast runner remain unfinished."
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/joint_partial_pooling.py",
+      "remaining": "One-stage Gaussian random-slope likelihood now retains singleton and locally aliased taxa and full cross-taxon prediction-error covariance; dense-reference tests and a 319244-row synthetic benchmark pass. The paired 360-replicate numerical checks in reproducibility/v3_joint_pooling_validation_20260908.json retain nine-predictor conditional 95% interval coverage of only90%. This does not complete ecological inference: spatial/component joint resampling, cross-response module statistics, matched-support among-minus-within covariance and measurement propagation remain required."
     },
     "calendar_imaging_nuisance_design": {
       "state": "not_executed",
@@ -99,7 +100,7 @@
     },
     "dependence_aware_inference_simulation": {
       "state": "not_executed",
-      "remaining": "Implement and check null error, coverage, heterogeneity and spatial/component-respecting resampling; HC3 alone is not spatially robust inference."
+      "remaining": "The working-likelihood conditional-interval limitations were measured in the complete synthetic check recorded by reproducibility/v3_joint_pooling_validation_20260908.json. That is not calibration of dependence-aware inference. Implement and check the actual spatial/component joint runner for null error, coverage, heterogeneity and cross-scale covariance; neither HC3 nor conditional Gaussian intervals establish spatial robustness."
     },
     "fixed_full_test_family": {
       "state": "implementation_tested_execution_pending",

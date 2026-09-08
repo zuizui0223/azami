@@ -1,0 +1,84 @@
+{
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "execution_contract": {
+    "implementation_sha256_text_lf": "13851f324bfb1d31602bb824d552883cca20e394efbc1724154bd91cdb865fac",
+    "pooling_contract_canonical_sha256": "f83b9d0cbc7dab9a49ad5322f86fb489414adc577a916fb467225fa930a18889",
+    "simulation_sha256_text_lf": "89cdb2ac811cfd53901d183a703a6b55ddba41b3b1e40de093fcb02a7ce3afde",
+    "specification": {
+      "design": "Unbalanced counts: one singleton, one three-observation locally aliased taxon, and 30 lognormal-count taxa. Correlated predictors (0.65 shared Gaussian factor), two shared nuisance columns correlated with exposures, and an eight-term spherical spatial basis. Predictors stay on common generating units. Taxon slope deviations have SD 0.45 for every coordinate; the first hypermean is zero, remaining coordinates have mean 0.3.",
+      "ecological_models_executed": 0,
+      "empirical_trait_environment_values_read": 0,
+      "errors": "IID scenarios use observation SD1. The spatial stress case uses sqrt(0.35)*iid plus sqrt(0.65)*shared Gaussian error in each of24 broad source cells, even though a spherical mean basis is in the fitted model. This deliberately probes a violated independent-error working likelihood.",
+      "id": "v3_joint_pooling_synthetic_reference_checks_v1",
+      "replicates_per_scenario": 120,
+      "report": "Record every replicate, optimizer success/failure and all attempts; retained taxon count, first hypermean and conditional working-model SE, first tau, null rejection using absolute z>1.959963984540054, coverage, and Wilson95 intervals. Failed fits stay in the planned denominator and no probability is invented.",
+      "scenarios": [
+        "iid_two_predictors",
+        "iid_nine_predictors",
+        "spatially_correlated_errors_two_predictors"
+      ],
+      "schema_version": 1,
+      "scope": "Evaluate numerical behavior and show the limitation of conditional SEs. These checks do not validate the unfinished source-component/spatial-block bootstrap, cross-response module statistic, direct among-minus-within contrast, or ecological claims. No scenario or seed is selected from empirical v3 outcomes.",
+      "seed": 2026090813,
+      "status": "specified_before_this_synthetic_execution_not_full_ecological_inference_calibration",
+      "taxa": 32
+    },
+    "specification_canonical_sha256": "8f9758e7ab7f8be947f1c77aba53a52064e2dd91ff14ca89110a5eb16ed8c633"
+  },
+  "limits": "Evaluate numerical behavior and show the limitation of conditional SEs. These checks do not validate the unfinished source-component/spatial-block bootstrap, cross-response module statistic, direct among-minus-within contrast, or ecological claims. No scenario or seed is selected from empirical v3 outcomes.",
+  "replicate_file_sha256": "d0f59a62ae3a661cdb1583a776ec39bcf379b069285adfc582c39e8ea04ffaef",
+  "replicate_records": 360,
+  "status": "JOINT_POOLING_SYNTHETIC_REFERENCE_CHECK_EXECUTED_NOT_SPATIAL_INFERENCE_ADMISSION",
+  "summaries": [
+    {
+      "all_taxa_retained_in_every_estimable_replicate": true,
+      "coverage_among_estimable": 0.9666666666666667,
+      "estimable_replicates": 120,
+      "hypermean_bias": -0.005207923628905767,
+      "mean_tau": 0.4458073068218515,
+      "planned_replicates": 120,
+      "rejection_rate_among_estimable": 0.03333333333333333,
+      "rejection_rate_wilson95": [
+        0.0130375510983506,
+        0.082580337559106
+      ],
+      "scenario": "iid_two_predictors",
+      "unestimable_replicates": 0,
+      "zero_rejections": 4
+    },
+    {
+      "all_taxa_retained_in_every_estimable_replicate": true,
+      "coverage_among_estimable": 0.9,
+      "estimable_replicates": 120,
+      "hypermean_bias": 0.022205537307478984,
+      "mean_tau": 0.4376613770399267,
+      "planned_replicates": 120,
+      "rejection_rate_among_estimable": 0.1,
+      "rejection_rate_wilson95": [
+        0.058133592026010775,
+        0.166681741108952
+      ],
+      "scenario": "iid_nine_predictors",
+      "unestimable_replicates": 0,
+      "zero_rejections": 12
+    },
+    {
+      "all_taxa_retained_in_every_estimable_replicate": true,
+      "coverage_among_estimable": 0.9333333333333333,
+      "estimable_replicates": 120,
+      "hypermean_bias": 0.006912169769632326,
+      "mean_tau": 0.43574449828073897,
+      "planned_replicates": 120,
+      "rejection_rate_among_estimable": 0.06666666666666667,
+      "rejection_rate_wilson95": [
+        0.03416530686090633,
+        0.12605130403530337
+      ],
+      "scenario": "spatially_correlated_errors_two_predictors",
+      "unestimable_replicates": 0,
+      "zero_rejections": 8
+    }
+  ]
+}

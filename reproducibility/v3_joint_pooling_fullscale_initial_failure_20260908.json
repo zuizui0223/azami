@@ -1,0 +1,86 @@
+[
+  {
+    "accepted": false,
+    "criterion": 12663.747075285777,
+    "initial_variance_ratio": 0.0,
+    "iterations": 9,
+    "projected_gradient_max": 0.003338654382686764,
+    "stationary": false,
+    "success": true,
+    "upper_bound_hit": false,
+    "variance_ratios": [
+      0.20298459332364827,
+      0.18583775077710524,
+      0.19214400432055792,
+      0.23105029794941762,
+      0.20133485332917428,
+      0.20330234387390297,
+      0.22725275247501953,
+      0.19425779455080922,
+      0.1961974797248929
+    ]
+  },
+  {
+    "accepted": false,
+    "criterion": 12663.747075289602,
+    "initial_variance_ratio": 0.1,
+    "iterations": 10,
+    "projected_gradient_max": 0.0010166768682558244,
+    "stationary": false,
+    "success": true,
+    "upper_bound_hit": false,
+    "variance_ratios": [
+      0.20298454798595061,
+      0.18583787785758568,
+      0.19214394609731555,
+      0.23104987233197646,
+      0.20133481908833914,
+      0.20330227870933343,
+      0.22725267737042987,
+      0.19425775697925746,
+      0.19619747350194158
+    ]
+  },
+  {
+    "accepted": false,
+    "criterion": 12663.747075286452,
+    "initial_variance_ratio": 1.0,
+    "iterations": 8,
+    "projected_gradient_max": 0.0006025849428134534,
+    "stationary": false,
+    "success": true,
+    "upper_bound_hit": false,
+    "variance_ratios": [
+      0.20298459230501661,
+      0.18583773052874178,
+      0.19214400862793246,
+      0.23104987707343638,
+      0.20133486261748917,
+      0.20330232259151587,
+      0.2272526879030928,
+      0.19425781008880008,
+      0.19619749952597398
+    ]
+  },
+  {
+    "accepted": false,
+    "criterion": 12663.74707528964,
+    "initial_variance_ratio": 10.0,
+    "iterations": 9,
+    "projected_gradient_max": 0.00014366717206678898,
+    "stationary": false,
+    "success": true,
+    "upper_bound_hit": false,
+    "variance_ratios": [
+      0.2029845811246334,
+      0.1858377831720484,
+      0.19214397955152332,
+      0.23104986478062967,
+      0.20133484373534902,
+      0.20330231357722234,
+      0.22725265267534153,
+      0.1942577785620832,
+      0.19619747209401794
+    ]
+  }
+]

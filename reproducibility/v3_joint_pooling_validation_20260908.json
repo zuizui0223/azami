@@ -1,0 +1,49 @@
+{
+  "conditional_interval_result": "In each 120-replicate scenario, first-hypermean null rejections remain 4/120 (IID two predictors), 12/120 (IID nine predictors), and 8/120 (spatial-error stress). Nine-predictor conditional 95% interval coverage is 90%; these intervals are not admitted as final ecological inference.",
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "evidence": {
+    "initial_fullscale_failure": {
+      "canonical_json_sha256": "7c19e30ad4daaca611d07bd731d0509f8b6c821e57946edd36a2e3f10eb2d16a",
+      "path": "reproducibility/v3_joint_pooling_fullscale_initial_failure_20260908.json"
+    },
+    "initial_simulation": {
+      "canonical_json_sha256": "c911990d2c1c036dac0075eb6ef88857c62a9a77858544fc35bb6ceabe7eff0a",
+      "path": "reproducibility/v3_joint_pooling_synthetic_initial_20260908.json"
+    },
+    "scorefix_fullscale": {
+      "canonical_json_sha256": "5d6769143f63e101391f621a2c2543f10a4734b32dafacb0cfa773d83369f97a",
+      "path": "reproducibility/v3_joint_pooling_fullscale_scorefix_20260908.json"
+    },
+    "scorefix_simulation": {
+      "canonical_json_sha256": "a2e51c8600caa1e8b8e1984241b641db72b16b506b2c7c343ff7677cd321a3f5",
+      "path": "reproducibility/v3_joint_pooling_synthetic_scorefix_20260908.json"
+    }
+  },
+  "fullscale_execution": {
+    "implementation_sha256_text_lf": "13851f324bfb1d31602bb824d552883cca20e394efbc1724154bd91cdb865fac",
+    "observations": 319244,
+    "predictors": 9,
+    "seed": 2026090871,
+    "source": "generated independent synthetic arrays; no real observations or environmental matrix read",
+    "taxa": 354
+  },
+  "fullscale_generator_reference": {
+    "path": "tests/test_v3_pooling_fullscale.py",
+    "sha256_text_lf": "2b94e8088ef3ecfd5002d71f62fbdee5867cda514c2aebe3d73b977c5aa19b65"
+  },
+  "initial_failure": "All four L-BFGS-B attempts reported relative-objective convergence but failed the unchanged 1e-4 absolute projected-score threshold. The original run and deterministic reproduction are preserved; no estimate was admitted from them.",
+  "numerical_correction": "Analytic-score polishing at a reported minimum, with original bounds, starts, score threshold, positive free-coordinate curvature and non-worse objective. The same full-size generated data now meets the original threshold; no statistical criterion was relaxed.",
+  "numerical_correction_commit": "22fb8d6ad9d0e84a639dfa52b43a9911ff1ce167",
+  "rank_boundary": "All 32 supplied taxa, including a singleton and a locally aliased taxon, were retained in every estimable replicate. A pooled prediction for an uninformative taxon is not an independently estimated local slope.",
+  "remaining": [
+    "Component/spatial joint resampling and its null/coverage validation",
+    "Rank-aware cross-response module statistics",
+    "Matched-support among-minus-within covariance",
+    "Production assessability and qualified measurement-formulation propagation"
+  ],
+  "replication_boundary": "The second 360-replicate execution repeats the same seeds and scenarios after a numerical correction. It is a paired regression check, not 360 additional independent replicates or a new calibration sample.",
+  "source": "Generated synthetic arrays only; zero empirical trait-environment values read.",
+  "status": "JOINT_POOLING_WORKING_LIKELIHOOD_VALIDATED_NUMERICALLY_INFERENCE_UNCALIBRATED"
+}

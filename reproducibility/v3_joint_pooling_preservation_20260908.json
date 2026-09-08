@@ -1,0 +1,26 @@
+{
+  "anonymous_release_and_asset_requests": "404",
+  "asset": {
+    "asset_id": 550323809,
+    "asset_name": "v3-joint-pooling-synthetic-20260908-a.zip",
+    "bundle_bytes": 817636,
+    "bundle_sha256": "dc8b49f1b23732d2a108ba402759feb785c9828ab4e0e113a92a1fc270cc458e",
+    "files": 13,
+    "manifest_sha256": "1fe9d472f9ed038e4c53dd74429f078720dd832a4c7fa6d9d464ebc27d7dbc45",
+    "restored_bytes": 1866975,
+    "source_images_included": false
+  },
+  "bytes_restored": 1866975,
+  "contents": "Both complete360-replicate executions, original full-size failure, full-size score correction, and minimized synthetic likelihood crossproducts/probes; no empirical arrays.",
+  "distinct_simulated_datasets": 360,
+  "draft_verified": true,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "files_restored": 13,
+  "image_requests": 0,
+  "paired_execution_records": 720,
+  "source_images_included": false,
+  "source_validation_canonical_sha256": "8beb8e4c5c07f2b9e3d26996f3f4d53d97723e1364885ef99d25c26b37c15bfe",
+  "status": "SYNTHETIC_POOLING_REPLICATES_AND_FAILURE_EVIDENCE_PROTECTED_AND_RESTORED"
+}

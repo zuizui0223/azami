@@ -18,7 +18,7 @@ contract lists exactly which model/ordering provisions it supersedes.
 | 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. An 872-file source snapshot was restored on Actions and its returned worker packet verified locally. Historical HTTP identity is still unverified. |
 | 2. Measurement | What can each photo measure, with what uncertainty? | Actions raw chunks extend the reused 128-observation pilot. A verified partial observation view contains 800 photo units and 1,381 detected heads, with all 27 slots retained. Full-cohort streaming and a separately qualified uniform-floral chroma definition remain unfinished; the 13 held routes stay held. |
 | 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
-| 4. Ecology | Do within- and among-taxon associations agree? | Joint slope algebra is verified. Covariance-aware pooling, matched-support scale contrasts and dependence-aware inference still require a validated runner. |
+| 4. Ecology | Do within- and among-taxon associations agree? | Joint Gaussian pooling retains sparse and locally aliased taxa and passes dense-reference and full-size synthetic numerical tests. Conditional intervals remain uncalibrated; matched-support scale contrasts and dependence-aware joint inference are unfinished. |
 | 5. Synthesis | Do observed environmental and phenotype breadths covary? | Optional secondary Hypervolume B; common axes, bandwidth and sample-size/convergence qualification must precede it. Its failure cannot block otherwise supported primary ecology. |
 
 This keeps two contributions together: an auditable image-to-distribution method,
@@ -69,6 +69,13 @@ concurrency. Per-chunk limits remain 64 requests and 128 observations; the
 was protected and restored before dispatch. These planned counts are not
 completed measurements. Asset lookup uses the complete paginated inventory
 instead of relying on the embedded release list as the number of chunks grows.
+The [first 13-chunk numerical checkpoint](../../reproducibility/v3_native_raw_wave_c_checkpoint_20260908.json)
+independently verifies 598 observations, 823 photo units, 1,390 heads and 37,530
+all27 slots. Ten cloud reports agree with locally restored numerical archives.
+Three other jobs timed out while downloading their already uploaded final
+archives; all 189 of their committed photo units were restored locally without
+image requests. Those cloud jobs remain failed, and the live 128-chunk wave is
+not complete. No successful sibling or live job was restarted.
 For Windows verification of Linux-produced units, use a separate LF decision-file
 view only after its exact SHA-256 matches the execution report. Do not relax the
 unit hash checks, rewrite the original checkout or treat a newline mismatch as a
@@ -269,12 +276,41 @@ not justify deleting the other 193 taxa. Sparse/aliased support must remain
 explicit in the hierarchy. Imaging covariates and realized module membership are
 absent from this source audit; actual model diagnostics remain necessary.
 
+### Joint pooling: numerical implementation, not final inference
+
+`joint_partial_pooling.py` fits common environmental slopes, taxon deviations
+and shared nuisance terms in one Gaussian likelihood. It does not require a
+separately identifiable nine-variable regression in every taxon. Singleton and
+locally aliased taxa remain in the model; their pooled predictions are not
+independent local slope estimates. Full cross-taxon prediction-error covariance
+includes uncertainty in the shared hypermean and nuisance effects. Independent
+homoskedastic residuals and diagonal random-slope variances are explicit working
+assumptions, not claims that environmental processes or observations are independent.
+
+The [synthetic validation receipt](../../reproducibility/v3_joint_pooling_validation_20260908.json)
+retains an initial numerical failure, its correction and both complete simulation
+executions. A 319,244-row, 354-taxon generated-data benchmark now meets the original
+stationarity threshold after analytic-score polishing. No real trait-environment
+values were read. Repeating the same 360 simulated datasets after the correction
+is a regression check, not another independent calibration sample.
+Both complete replicate files and the original failure/diagnosis numerics were
+[protected and independently restored](../../reproducibility/v3_joint_pooling_preservation_20260908.json)
+as 13 files. The numerical draft remains unpublished.
+
+The limitation is substantive: conditional 95% intervals contained the true
+first hypermean in only 90% of the 120 nine-predictor simulations. Null rejection
+counts were 4/120 for two IID predictors, 12/120 for nine IID predictors and 8/120
+under spatially correlated errors. These intervals are **not** the final
+ecological uncertainty measure. Component/spatial joint resampling, cross-response
+module tests, matched-support among-minus-within covariance and measurement
+propagation must be implemented and validated before ecological inference.
+
 The following sections document the source inventory and earlier implementation
 checkpoints. Their historical completion labels do not override the active
 five-stage contract or the execution boundary above.
 
-Current execution boundary (8 September 2026): the source-first design remains,
-but full original-image processing and ecological fitting are **held**. The
+Earlier implementation checkpoint (8 September 2026, before the bounded raw waves):
+full original-image processing and ecological fitting were **held**. The
 [implementation correction](ecological_model_review_addendum_20260908.json)
 records a synthetic counterexample to splitting common spatial residuals into
 taxon-specific regressions. A joint block solver now matches the full interaction
