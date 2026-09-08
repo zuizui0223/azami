@@ -1,7 +1,7 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "contract_id": "ch1_v3_ecological_analysis_20260907",
-  "status": "measurement_qualification_freeze_pending_before_v3_ecological_fitting",
+  "status": "final_ecological_source_cohort_freeze_pending_before_trait_join",
   "study_status": "retrospective_redesign_after_v2_results_seen_not_preregistration",
   "scope": {
     "primary_question": "Quantify within- and among-taxon spatial associations between auditable image-defined capitulum phenotype modules and a phenotype-blind, pre-frozen abiotic exposure representation in the native range.",
@@ -13,20 +13,24 @@
     "full_source_native_environment_upstream": "reproducibility/v3_environment_design_upstream_20260907.json",
     "environment_decision": "analysis/v3/environment_representation_decision_20260907.json",
     "environment_freeze_receipt": "reproducibility/v3_environment_representation_freeze_20260907.json",
-    "environment_freeze_status": "V3_ENVIRONMENT_REPRESENTATION_FROZEN_BEFORE_TRAIT_JOIN"
+    "environment_freeze_status": "V3_ENVIRONMENT_REPRESENTATION_FROZEN_BEFORE_TRAIT_JOIN",
+    "measurement_contract": "analysis/v3/measurement_qualification_contract.json",
+    "measurement_decision": "analysis/v3/measurement_qualification_decision_20260908.json",
+    "measurement_freeze_receipt": "reproducibility/v3_measurement_qualification_freeze_20260908.json",
+    "measurement_freeze_status": "V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_ECOLOGY"
   },
   "design_hold": {
     "ecological_fitting_paused": true,
-    "reason": "The abiotic exposure representation is now frozen without trait outcomes. Before any trait-environment join or ecological coefficient is inspected, endpoint-specific image-only measurement qualification and uncertainty/stability rules must be frozen, with orientation bounding-box and resolution sensitivity handled upstream.",
+    "reason": "Environment and measurement qualification are frozen without inspecting v3 trait-environment coefficients. The final phenotype-blind ecological source cohort and support bookkeeping must now be frozen before original-image trait execution is joined to environmental exposures.",
     "next_required_artifacts": [
-      "image-only endpoint qualification decision derived from existing perturbation/QC evidence and, only if necessary, the independent resolution-stream gate",
-      "durable measurement qualification freeze receipt"
+      "analysis/v3/ecological_source_cohort_contract.json",
+      "phenotype-blind full native-range species-level source cohort receipt and digest",
+      "pre-outcome taxon-support rules for hierarchical slope interpretation"
     ],
-    "trait_join_requires_environment_freeze_receipt": true,
     "environment_gate_completed": true,
-    "trait_join_requires_measurement_freeze_receipt": true,
-    "measurement_freeze_completed": false,
-    "trait_results_must_not_be_inspected_during_measurement_selection": true
+    "measurement_freeze_completed": true,
+    "trait_join_requires_source_cohort_freeze_receipt": true,
+    "trait_results_must_not_be_inspected_during_source_cohort_or_support_selection": true
   },
   "preserved_requirements": {
     "primary_ecological_range_scope": "native_only",
@@ -37,9 +41,11 @@
     "measurement_uncertainty_upstream": true,
     "orientation_stability_required_before_environment_join": true,
     "measurement_values_are_retained_even_when_inferentially_ineligible": true,
+    "no_taxon_row_cap_in_final_ecological_source_cohort": true,
+    "no_spatial_thinning_in_master_ecological_source_cohort": true,
     "environment_collinearity_diagnostics_required": ["correlation_matrix", "matrix_rank", "condition_number", "VIF"],
     "environment_selection_basis": ["biological_proximity", "coverage", "environment_only_redundancy"],
-    "trait_modules": ["orientation", "visible_colour", "gross_shape", "involucral_architecture_and_fine_geometry"],
+    "trait_modules": ["orientation", "visible_colour", "visible_display", "gross_shape", "involucral_architecture_and_fine_geometry"],
     "phylogenetic_placements_are_not_independent_evidence_votes": true,
     "legacy_v2_candidates_need_not_survive": true
   }
