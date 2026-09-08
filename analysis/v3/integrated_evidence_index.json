@@ -32,6 +32,11 @@
       "id": "schedule_replay_receipt",
       "path": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
       "canonical_json_sha256": "75a5ae72cb3697a658e6bfa37278f042a8eed32c11666bab76dee99ef30b250d"
+    },
+    {
+      "id": "protected_replay_receipt",
+      "path": "reproducibility/v3_protected_numerical_replay_20260908.json",
+      "canonical_json_sha256": "ed6561d6dbf5fb318771e1f91bbc3fd6e3b19b8a5f4aa90814152ff9e139d535"
     }
   ],
   "requirements": {
@@ -44,7 +49,7 @@
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "implementation": "analysis/v3/recover_native_source_authority.py",
-      "remaining": "Exact source and native-cohort bytes are recovered; 855 reacquired authority responses reproduce all three join products offline. Historical HTTP/full-join identity remains unprovable because old pins were absent. Keep this distinction and verify off-device private preservation before cloud execution."
+      "remaining": "Exact source and native-cohort bytes are recovered; 855 reacquired authority responses reproduce all three join products offline. Historical HTTP/full-join identity remains unprovable because old pins were absent. Protected cloud recovery is verified separately below; it does not establish those missing historical identities."
     },
     "enriched_source_cohort": {
       "state": "execution_evidence_recorded",
@@ -65,13 +70,13 @@
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
       "implementation": "analysis/v3/reconciled_stream_input.py",
-      "remaining": "All native source observations and links are scheduled; all six archives and target-photo versions were checked. The original/restored whole-component pilot inputs match, and offline tests exercise the worker. No new real images were fetched. Production admission and realized measurement coverage remain unexecuted; never fall back to the merged snapshot."
+      "remaining": "All native source observations and links are scheduled; all six archives and target-photo versions were checked. The original/restored whole-component pilot inputs match. The subsequent real-image pilot is recorded separately in reproducibility/v3_native_original_pilot_20260908.json (128 observations; 167 successful downloads; 315 heads; all27 slots verified). Full-production admission and full-source measurement coverage remain unexecuted; never fall back to the merged snapshot."
     },
     "durable_private_numerical_replay": {
-      "state": "local_execution_recorded_off_device_pending",
-      "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
-      "implementation": "analysis/v3/private_replay.py",
-      "remaining": "872 explicitly selected numerical/provenance files (2374321149 bytes) were copied, restored and byte-verified locally. Continue on the existing GitHub Actions execution route: preserve exact numerical outputs as protected artifacts, download them locally and verify restoration before cloud cleanup or production promotion. A new external drive and a permanent original-image archive are not prerequisites. The repository is public, so private identifiers/coordinates must not be exposed through unprotected artifacts. Artifact transport/protection is not yet implemented by private_replay.py, and finite artifact retention is not a permanent publication archive."
+      "state": "execution_evidence_recorded",
+      "evidence": "reproducibility/v3_protected_numerical_replay_20260908.json",
+      "implementation": "analysis/v3/protected_artifacts.py",
+      "remaining": "Actions run 34197391286 restored all 872 numerical/provenance files (2374321149 bytes); a protected returned worker packet was downloaded locally and exactly matched. Keep the draft unpublished. The subsequent 337-file output bundle is separately recorded in reproducibility/v3_executed_outputs_preservation_20260908.json. Future outputs also require their own protected assets and restoration checks. This closes transport/recovery, not permanent archiving or scientific validation. No external drive or permanent original-image archive is required."
     },
     "native_source_to_measurement_coverage": {
       "state": "implementation_tested_execution_pending",

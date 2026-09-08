@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "status": "FULL_NATIVE_ENVIRONMENT_ACQUIRED_SOURCE_QC_AND_CANDIDATE_SELECTION_VERIFIED_NO_ECOLOGY",
+  "acquisition": {
+    "status": "FULL_NATIVE_ENVIRONMENT_EXTRACTION_COMPLETE_NO_ECOLOGY",
+    "run_id": "0fc20fd53ac6b34ee585cc08dbc5ce9d4353c73fbccd5e45f3058e3c90b4050d",
+    "observations": 319244,
+    "taxa": 355,
+    "tasks_total": 103,
+    "tasks_completed": 103,
+    "tasks_failed": [],
+    "trait_values_read": 0,
+    "image_requests_executed": 0,
+    "ecological_models_executed": 0,
+    "ecological_fitting_authorized": false,
+    "off_device_restore_verified": false,
+    "updated_at": "2026-09-08T06:35:37.980979+00:00",
+    "selection_status": "NOT_EXECUTED_ACQUISITION_ONLY",
+    "matrix_sha256": "a60d155cc79c9fe32ecc704b563fa0362df97c4a4297c0b7044bc1745583342d"
+  },
+  "source_qc": {
+    "contract_canonical_sha256": "09a539c5824581656661552c7d581a2edf3355a03847db00a0c579e91b00c43f",
+    "ecological_fitting_authorized": false,
+    "ecological_models_executed": 0,
+    "flagged_working_values_set_missing": {
+      "BIO12": 2,
+      "GSP": 1252
+    },
+    "implementation_sha256_text_lf": "49657cf87633135d26ca60dc25824ec26860220bd3e8f5081cf9299bf6d9eaf8",
+    "limits": [
+      "This is invalid/ceiling-value QC, not provider-confirmed missingness, interpolation or ecological inference."
+    ],
+    "qc_matrix_sha256": "47b03edaab16546c958d07cd1f41574319bee9182a3c666797335b0b2c08d074",
+    "raw_matrix_sha256": "a60d155cc79c9fe32ecc704b563fa0362df97c4a4297c0b7044bc1745583342d",
+    "raw_values_retained": true,
+    "schema_version": 1,
+    "source_rows": 319244,
+    "source_rows_deleted": 0,
+    "source_taxa": 355,
+    "status": "ENVIRONMENT_SOURCE_QC_VIEW_VERIFIED_NO_ECOLOGY"
+  },
+  "candidate_selection": {
+    "active_ecological_contract_changed": false,
+    "candidate_only": true,
+    "centers": {
+      "BIO1": 8.959568947924206,
+      "BIO12": 1443.9253331635387,
+      "BIO18": 444.04761795678667,
+      "GSP": 1071.2446362923777,
+      "pr_month": 130.36448695621414,
+      "rsds_month": 202.98562148694097,
+      "sfcWind_month": 3.104265242743061,
+      "tas_month": 288.97478199392515,
+      "vpd_month": 802.7379654448328
+    },
+    "complete_case_scope_fixed": true,
+    "complete_rows": 317986,
+    "complete_taxa": 354,
+    "context_only": {
+      "BIO15": "Precipitation seasonality has no separate primary hypothesis in this process design.",
+      "BIO4": "Temperature seasonality has no separate primary hypothesis in this process design.",
+      "NPP": "Distal productivity context, not a direct physical head exposure."
+    },
+    "contract_canonical_sha256": "41311dfd9d76f752a0ba0bc9bfe3671ddf6d6517a35b8db23ccb5a7aae684148",
+    "ecological_fitting_authorized": false,
+    "ecological_models_executed": 0,
+    "implementation_sha256_text_lf": "6f30ac41e43c3d9706d1857a29e57f0d525a7bc54f580c5a3343fbb265146ab6",
+    "limits": [
+      "Outcome-blind redundancy screening is not evidence of independent causal effects.",
+      "Actual within/among module designs and nuisance-adjusted identification still need diagnostics before fitting.",
+      "Removed columns remain in the complete saved matrix; their unique variation was not separately tested."
+    ],
+    "matrix_sha256": "47b03edaab16546c958d07cd1f41574319bee9182a3c666797335b0b2c08d074",
+    "primary_test_slots": 36,
+    "processes": {
+      "heat_drying": [
+        "vpd_month",
+        "tas_month",
+        "BIO1"
+      ],
+      "mechanical": [
+        "sfcWind_month"
+      ],
+      "radiation": [
+        "rsds_month"
+      ],
+      "wetting_moisture": [
+        "pr_month",
+        "BIO12",
+        "BIO18",
+        "GSP"
+      ]
+    },
+    "removed": [
+      "cmi_month",
+      "tasmax_month",
+      "pet_month"
+    ],
+    "scales": {
+      "BIO1": 5.787100538769062,
+      "BIO12": 1069.089269257659,
+      "BIO18": 425.48229391517873,
+      "GSP": 956.0098390689589,
+      "pr_month": 127.03046910790296,
+      "rsds_month": 52.769515013403385,
+      "sfcWind_month": 1.4817589845425616,
+      "tas_month": 4.80410856652161,
+      "vpd_month": 311.7497769244933
+    },
+    "schema_version": 1,
+    "selected": [
+      "pr_month",
+      "BIO12",
+      "BIO18",
+      "GSP",
+      "rsds_month",
+      "vpd_month",
+      "tas_month",
+      "BIO1",
+      "sfcWind_month"
+    ],
+    "selector_sha256_text_lf": "8521a143915af87c9e9a05350c664bd2a668ec6e749b7e54491516a3723eeb6d",
+    "source_rows": 319244,
+    "source_rows_deleted": 0,
+    "source_rows_excluded_from_selection_only": 1258,
+    "source_taxa": 355,
+    "status": "FULL_NATIVE_ENVIRONMENT_REPRESENTATION_SELECTED_NO_ECOLOGY",
+    "trace": [
+      {
+        "matrix": {
+          "complete_row_total_weight": 354,
+          "condition_number": 165.7428245355235,
+          "matrix_rank": 12,
+          "n_candidate_variables": 12,
+          "n_complete_rows": 317986,
+          "n_nonconstant_complete_variables": 12,
+          "weight_column": "equal_taxon_weight"
+        },
+        "removed": "cmi_month",
+        "variables": [
+          "pr_month",
+          "cmi_month",
+          "BIO12",
+          "BIO18",
+          "GSP",
+          "rsds_month",
+          "vpd_month",
+          "tasmax_month",
+          "tas_month",
+          "pet_month",
+          "BIO1",
+          "sfcWind_month"
+        ],
+        "vif": [
+          {
+            "variable": "pr_month",
+            "vif": 2019.620925031622
+          },
+          {
+            "variable": "cmi_month",
+            "vif": 2592.515517871126
+          },
+          {
+            "variable": "BIO12",
+            "vif": 6.5107263178924795
+          },
+          {
+            "variable": "BIO18",
+            "vif": 6.63710507352812
+          },
+          {
+            "variable": "GSP",
+            "vif": 6.435236045871361
+          },
+          {
+            "variable": "rsds_month",
+            "vif": 14.746533087049121
+          },
+          {
+            "variable": "vpd_month",
+            "vif": 6.377016609859814
+          },
+          {
+            "variable": "tasmax_month",
+            "vif": 21.101380257748623
+          },
+          {
+            "variable": "tas_month",
+            "vif": 17.238336756225927
+          },
+          {
+            "variable": "pet_month",
+            "vif": 185.79427734504264
+          },
+          {
+            "variable": "BIO1",
+            "vif": 2.5493045631402844
+          },
+          {
+            "variable": "sfcWind_month",
+            "vif": 1.8798527180063913
+          }
+        ]
+      },
+      {
+        "matrix": {
+          "complete_row_total_weight": 354,
+          "condition_number": 14.268962824008971,
+          "matrix_rank": 11,
+          "n_candidate_variables": 11,
+          "n_complete_rows": 317986,
+          "n_nonconstant_complete_variables": 11,
+          "weight_column": "equal_taxon_weight"
+        },
+        "removed": "tasmax_month",
+        "variables": [
+          "pr_month",
+          "BIO12",
+          "BIO18",
+          "GSP",
+          "rsds_month",
+          "vpd_month",
+          "tasmax_month",
+          "tas_month",
+          "pet_month",
+          "BIO1",
+          "sfcWind_month"
+        ],
+        "vif": [
+          {
+            "variable": "pr_month",
+            "vif": 4.556021695719827
+          },
+          {
+            "variable": "BIO12",
+            "vif": 6.489820637848166
+          },
+          {
+            "variable": "BIO18",
+            "vif": 6.61963617443166
+          },
+          {
+            "variable": "GSP",
+            "vif": 6.427815127531121
+          },
+          {
+            "variable": "rsds_month",
+            "vif": 14.727644167571508
+          },
+          {
+            "variable": "vpd_month",
+            "vif": 6.376866877165631
+          },
+          {
+            "variable": "tasmax_month",
+            "vif": 21.097078400779907
+          },
+          {
+            "variable": "tas_month",
+            "vif": 17.22707610613257
+          },
+          {
+            "variable": "pet_month",
+            "vif": 17.596453631429316
+          },
+          {
+            "variable": "BIO1",
+            "vif": 2.5486358018308515
+          },
+          {
+            "variable": "sfcWind_month",
+            "vif": 1.8777694848138966
+          }
+        ]
+      },
+      {
+        "matrix": {
+          "complete_row_total_weight": 354,
+          "condition_number": 12.452693299154479,
+          "matrix_rank": 10,
+          "n_candidate_variables": 10,
+          "n_complete_rows": 317986,
+          "n_nonconstant_complete_variables": 10,
+          "weight_column": "equal_taxon_weight"
+        },
+        "removed": "pet_month",
+        "variables": [
+          "pr_month",
+          "BIO12",
+          "BIO18",
+          "GSP",
+          "rsds_month",
+          "vpd_month",
+          "tas_month",
+          "pet_month",
+          "BIO1",
+          "sfcWind_month"
+        ],
+        "vif": [
+          {
+            "variable": "pr_month",
+            "vif": 4.5428593076864034
+          },
+          {
+            "variable": "BIO12",
+            "vif": 6.450570986338101
+          },
+          {
+            "variable": "BIO18",
+            "vif": 6.5896007079355865
+          },
+          {
+            "variable": "GSP",
+            "vif": 6.368690246673153
+          },
+          {
+            "variable": "rsds_month",
+            "vif": 14.378594102531627
+          },
+          {
+            "variable": "vpd_month",
+            "vif": 5.476045436210876
+          },
+          {
+            "variable": "tas_month",
+            "vif": 6.67287995882893
+          },
+          {
+            "variable": "pet_month",
+            "vif": 17.586663590700176
+          },
+          {
+            "variable": "BIO1",
+            "vif": 2.5255580525110903
+          },
+          {
+            "variable": "sfcWind_month",
+            "vif": 1.8485896901270655
+          }
+        ]
+      },
+      {
+        "matrix": {
+          "complete_row_total_weight": 354,
+          "condition_number": 6.890625711790509,
+          "matrix_rank": 9,
+          "n_candidate_variables": 9,
+          "n_complete_rows": 317986,
+          "n_nonconstant_complete_variables": 9,
+          "weight_column": "equal_taxon_weight"
+        },
+        "removed": null,
+        "variables": [
+          "pr_month",
+          "BIO12",
+          "BIO18",
+          "GSP",
+          "rsds_month",
+          "vpd_month",
+          "tas_month",
+          "BIO1",
+          "sfcWind_month"
+        ],
+        "vif": [
+          {
+            "variable": "pr_month",
+            "vif": 4.338666903019262
+          },
+          {
+            "variable": "BIO12",
+            "vif": 6.444290025535807
+          },
+          {
+            "variable": "BIO18",
+            "vif": 6.584575457130878
+          },
+          {
+            "variable": "GSP",
+            "vif": 6.363559010799365
+          },
+          {
+            "variable": "rsds_month",
+            "vif": 2.149400209357766
+          },
+          {
+            "variable": "vpd_month",
+            "vif": 5.431923885622732
+          },
+          {
+            "variable": "tas_month",
+            "vif": 4.49136364045628
+          },
+          {
+            "variable": "BIO1",
+            "vif": 2.484674859091704
+          },
+          {
+            "variable": "sfcWind_month",
+            "vif": 1.2332654258432891
+          }
+        ]
+      }
+    ],
+    "trait_values_read": 0
+  },
+  "raw_selection_admitted": false,
+  "active_ecological_contract_changed": false,
+  "source_quality_audit": "reproducibility/v3_environment_sentinel_audit_20260908.json",
+  "limits": [
+    "The original acquisition receipt's finite-value coverage is not source-quality-qualified coverage.",
+    "Complete candidate support is 317986 observations and 354 taxa, not the full source of 319244 observations and 355 taxa. Source rows and invalid raw values remain saved.",
+    "The legacy two-formulation model remains historical active code until its separately tested integration is explicitly superseded; no ecological coefficients have been fitted."
+  ]
+}

@@ -17,6 +17,38 @@ INDEX = "analysis/v3/integrated_evidence_index.json"
 SOURCE_RECOVERY_STATUS = "EXACT_SOURCE_COHORT_RECOVERED_ENRICHED_AND_LOCAL_AUTHORITY_REPLAY_VERIFIED"
 
 
+def _check_protected_replay(receipt: dict, previous: dict) -> None:
+    """Bind cloud recovery to the prior local source without model promotion."""
+    cloud, local = receipt["cloud"], receipt["local_verification"]
+    source, handoff = previous["private_restore"], previous["worker_handoff"]
+    if (receipt["status"] != "PROTECTED_ACTIONS_NUMERICAL_REPLAY_AND_LOCAL_RECOVERY_VERIFIED"
+            or cloud["status"] != "GITHUB_DRAFT_NUMERICAL_RESTORE_AND_OUTPUT_ROUNDTRIP_VERIFIED"
+            or local["status"] != "ACTIONS_SOURCE_RESTORE_AND_LOCAL_RETURNED_PACKET_VERIFIED"
+            or cloud["draft_verified"] is not True
+            or cloud["anonymous_release_and_asset_requests"] != "404"
+            or cloud["repository"] != "zuizui0223/azami"):
+        raise ValueError("Protected replay is not a verified private roundtrip")
+    if (cloud["run_id"] != local["cloud_run_id"] or cloud["commit"] != local["cloud_commit"]
+            or cloud["contract_sha256"] != local["contract_sha256"]
+            or cloud["output_asset"] != local["returned_asset"]
+            or cloud["source_files_restored"] != local["source_files_restored_on_actions"]
+            or cloud["source_files_restored"] != source["files"]
+            or cloud["source_bytes_restored"] != local["source_bytes_restored_on_actions"]
+            or cloud["source_bytes_restored"] != source["restored_bytes"]
+            or local["source_asset"]["manifest_sha256"] != source["snapshot_manifest_sha256"]
+            or local["local_and_cloud_packet_canonical_sha256"] != handoff["packet_canonical_sha256"]
+            or not local["selected_observations"] == cloud["selected_observations"] == handoff["selected_observations"]
+            or local["request_candidates_not_executed"] != handoff["request_candidates"]):
+        raise ValueError("Protected replay source, cloud or local identity differs")
+    if (any(cloud[key] != 0 for key in ("source_images_persisted", "image_requests_executed", "ecological_models_executed"))
+            or any(local[key] != 0 for key in ("source_files_deleted", "original_images_persisted", "ecological_models_executed"))
+            or cloud["production_image_execution_authorized"] is not False
+            or local["full_original_stream_authorized"] is not False
+            or cloud["ecological_fitting_authorized"] is not False
+            or local["ecological_fitting_authorized"] is not False):
+        raise ValueError("Protected replay cannot authorize production or ecology")
+
+
 def _check_schedule_replay(receipt: dict, recovery: dict) -> None:
     """Validate source conservation and local replay without a durability claim."""
     if receipt.get("status") != "RECONCILED_SCHEDULE_AND_LOCAL_PRIVATE_REPLAY_VERIFIED_OFF_DEVICE_PENDING":
@@ -123,7 +155,7 @@ def validate(root: Path = ROOT) -> dict:
     checked = []
     ids = [item["id"] for item in evidence["inputs"]]
     paths = [item["path"] for item in evidence["inputs"]]
-    required_ids = {"source_receipt", "environment_receipt", "measurement_receipt", "measurement_decision", "source_recovery_receipt", "schedule_replay_receipt"}
+    required_ids = {"source_receipt", "environment_receipt", "measurement_receipt", "measurement_decision", "source_recovery_receipt", "schedule_replay_receipt", "protected_replay_receipt"}
     if set(ids) != required_ids or len(ids) != len(set(ids)) or len(paths) != len(set(paths)):
         raise ValueError("Evidence index has missing or duplicate required identities/paths")
     for item in evidence["inputs"]:
@@ -135,6 +167,7 @@ def validate(root: Path = ROOT) -> dict:
         checked.append({"id": item["id"], "path": item["path"], "canonical_json_sha256": actual})
     _check_source_recovery(loaded["source_recovery_receipt"], loaded["source_receipt"])
     _check_schedule_replay(loaded["schedule_replay_receipt"], loaded["source_recovery_receipt"])
+    _check_protected_replay(loaded["protected_replay_receipt"], loaded["schedule_replay_receipt"])
     measurement = loaded["measurement_receipt"]
     environment = loaded["environment_receipt"]
     decision = loaded["measurement_decision"]
@@ -171,9 +204,9 @@ def validate(root: Path = ROOT) -> dict:
             if spec["state"] == "historical_evidence_recorded" and spec.get("evidence") not in paths:
                 raise ValueError("Historical evidence requirement is not bound to a verified input")
             bound = {"native_authority_input_chain": "source_recovery_receipt", "enriched_source_cohort": "source_recovery_receipt",
-                     "reconciled_stream_schedule": "schedule_replay_receipt", "durable_private_numerical_replay": "schedule_replay_receipt"}
+                     "reconciled_stream_schedule": "schedule_replay_receipt", "durable_private_numerical_replay": "protected_replay_receipt"}
             if spec["state"] in {"execution_evidence_recorded", "local_execution_recorded_off_device_pending"}:
-                expected_state = "local_execution_recorded_off_device_pending" if key == "durable_private_numerical_replay" else "execution_evidence_recorded"
+                expected_state = "execution_evidence_recorded"
                 if (key not in bound or spec["state"] != expected_state
                         or spec.get("evidence") != next(item["path"] for item in evidence["inputs"] if item["id"] == bound[key])):
                     raise ValueError("Executed evidence requirement is not bound to its verified bounded receipt")
@@ -188,7 +221,7 @@ def validate(root: Path = ROOT) -> dict:
         "evidence_index_sha256_canonical_json": canonical_digest(evidence),
         "verified_public_evidence": checked,
         "stages": stage_reports,
-        "next_source_gate": "The exact native cohort drives a verified reconciled schedule and byte-identical local worker handoff. Implement protected numerical artifacts on the existing GitHub Actions route and verify downloaded restoration before cleanup or production promotion; no separate external drive or permanent original-image archive is required. Calendar/support and versioned colour handling remain unfinished. Historical HTTP bytes remain unavailable.",
+        "next_source_gate": "The exact native source and 872-file numerical snapshot have been restored on GitHub Actions; the returned worker packet matches local input. Protected transfer is verified, not permanent archival assurance. The completed local all27 pilot and source-QC environment outputs have a separate 337-file protected restoration receipt. Next implement bounded, resumable reconciled-schedule cloud measurement and qualify versioned colour handling, then full-source assessability and calendar/covariance-aware ecological inference. Historical HTTP bytes remain unavailable; no new drive or permanent original-image archive is required.",
         "ecological_fitting_authorized": False,
         "full_original_stream_authorized": False,
         "trait_values_read": 0, "ecological_models_executed": 0,

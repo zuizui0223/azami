@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "PROTECTED_ACTIONS_NUMERICAL_REPLAY_AND_LOCAL_RECOVERY_VERIFIED",
+  "cloud": {
+    "anonymous_release_and_asset_requests": "404",
+    "commit": "ddfc9b6cfdbc450af6177313278ff69095d7e1c9",
+    "contract_sha256": "23fb02819c944a7f5a7b73c2c8285530334c866068d655093cda9fdfd3ad8bb8",
+    "draft_verified": true,
+    "ecological_fitting_authorized": false,
+    "ecological_models_executed": 0,
+    "image_requests_executed": 0,
+    "implementation_sha256_text_lf": "757d9816865184cb7d16040be359437b5b29fd8aca788e640bd1c9970adf966f",
+    "limits": [
+      "Draft access control is not encryption or permanent publication archiving; never publish this draft.",
+      "Transport/byte identity does not establish scientific validity or measurement coverage."
+    ],
+    "output_asset": {
+      "asset_id": 550033231,
+      "asset_name": "v3-replay-34197391286-1.zip",
+      "bundle_bytes": 124712,
+      "bundle_sha256": "89d3171bca3c66b7705f45111a92512af5f12e8dad3aca89acf69c500e305370",
+      "files": 1,
+      "manifest_sha256": "1614bbc87d5eb1447a5c9ff81f8565ad5c8805ee7f7683895ad16e86bc5acc2e",
+      "restored_bytes": 891445,
+      "source_images_included": false
+    },
+    "production_image_execution_authorized": false,
+    "release_id": 384499945,
+    "repository": "zuizui0223/azami",
+    "request_candidates_not_executed": 168,
+    "returned_files_restored": 1,
+    "run_attempt": "1",
+    "run_id": "34197391286",
+    "selected_observations": 128,
+    "source_bytes_restored": 2374321149,
+    "source_files_restored": 872,
+    "source_images_persisted": 0,
+    "status": "GITHUB_DRAFT_NUMERICAL_RESTORE_AND_OUTPUT_ROUNDTRIP_VERIFIED"
+  },
+  "local_verification": {
+    "cloud_commit": "ddfc9b6cfdbc450af6177313278ff69095d7e1c9",
+    "cloud_receipt_sha256": "d83d27a46b02690b1261c579c1fa2ea84c991825e27036dcc4037f14c384c2be",
+    "cloud_run_id": "34197391286",
+    "contract_sha256": "23fb02819c944a7f5a7b73c2c8285530334c866068d655093cda9fdfd3ad8bb8",
+    "ecological_fitting_authorized": false,
+    "ecological_models_executed": 0,
+    "full_original_stream_authorized": false,
+    "limits": [
+      "Verified protected numerical transfer is not measurement validation or model readiness.",
+      "Keep the draft unpublished; access control is not encryption or permanent publication archiving."
+    ],
+    "local_and_cloud_packet_canonical_sha256": "42fab6f6d5c0871526b5329e1b30d304d4309edc9ecf7a849ec0fc0c3a5512f7",
+    "original_images_persisted": 0,
+    "request_candidates_not_executed": 168,
+    "returned_asset": {
+      "asset_id": 550033231,
+      "asset_name": "v3-replay-34197391286-1.zip",
+      "bundle_bytes": 124712,
+      "bundle_sha256": "89d3171bca3c66b7705f45111a92512af5f12e8dad3aca89acf69c500e305370",
+      "files": 1,
+      "manifest_sha256": "1614bbc87d5eb1447a5c9ff81f8565ad5c8805ee7f7683895ad16e86bc5acc2e",
+      "restored_bytes": 891445,
+      "source_images_included": false
+    },
+    "returned_file_sha256": "e3a48b50c19e4577f342d60a8f46867a6fe6ceced126ccab5f5cd49d92057542",
+    "schedule_sha256": "f778c542e35bf84e3fb1c9028207b448f1285e89be3d2dc95f871a72298c52f9",
+    "schema_version": 1,
+    "selected_observations": 128,
+    "source_asset": {
+      "asset_id": 550019482,
+      "asset_name": "v3-source-numerical-20260908.zip",
+      "bundle_bytes": 705331143,
+      "bundle_sha256": "d2cfc1787796782ceb763a0bea7c0bfa19d385e246eb1270ae8c4c3122348fe5",
+      "files": 872,
+      "manifest_sha256": "b0e52b311a07af9349791c12a95af327c5d2322d1a80fe54662e81952c7b4721",
+      "restored_bytes": 2374321149,
+      "source_images_included": false
+    },
+    "source_bytes_restored_on_actions": 2374321149,
+    "source_files_deleted": 0,
+    "source_files_restored_on_actions": 872,
+    "status": "ACTIONS_SOURCE_RESTORE_AND_LOCAL_RETURNED_PACKET_VERIFIED",
+    "verification_script_sha256_text_lf": "72df4286752d4c2578649b6a5a0285a0c4daefde2f5f3ef27f22d319d29b4fb3"
+  }
+}

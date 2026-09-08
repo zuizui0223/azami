@@ -1,14 +1,7 @@
 name: Chapter 1 v3 large-original resolution followup
 
 on:
-  push:
-    branches: [revision/ch1-v3-20260907]
-    paths:
-      - .github/workflows/ch1-v3-resolution-size-followup.yml
-      - analysis/v3/resolution_size_followup.py
-      - analysis/v3/resolution_stream_gate.py
-      - tests/test_v3_resolution_size_followup.py
-      - reproducibility/v3-image-cpu-requirements.txt
+  # Completed historical qualification: dependency edits must not refetch images.
   workflow_dispatch:
 
 concurrency:

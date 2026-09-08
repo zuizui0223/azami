@@ -15,8 +15,8 @@ contract lists exactly which model/ordering provisions it supersedes.
 
 | Stage | Question | Current implementation boundary |
 |---|---|---|
-| 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. Historical HTTP identity and off-device private preservation are separate, unverified claims. |
-| 2. Measurement | What can each photo measure, with what uncertainty? | All 27 raw slots retained; 14 original-image routes are operationally qualified. The full native-photo schedule and exact local restoration are verified. Production streaming, off-device preservation and a separately versioned uniform-floral chroma definition remain unfinished. |
+| 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. An 872-file source snapshot was restored on Actions and its returned worker packet verified locally. Historical HTTP identity is still unverified. |
+| 2. Measurement | What can each photo measure, with what uncertainty? | A local 128-observation pilot retained all 27 raw slots for 315 detected heads. Its numerical integrity is verified, not physical accuracy. Full-cohort streaming and a separately qualified uniform-floral chroma definition remain unfinished; the 13 held routes stay held. |
 | 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
 | 4. Ecology | Do within- and among-taxon associations agree? | Joint slope algebra is verified. Covariance-aware pooling, matched-support scale contrasts and dependence-aware inference still require a validated runner. |
 | 5. Synthesis | Do observed environmental and phenotype breadths covary? | Optional secondary Hypervolume B; common axes, bandwidth and sample-size/convergence qualification must precede it. Its failure cannot block otherwise supported primary ecology. |
@@ -41,7 +41,9 @@ provenance: protected numerical assets, exact local recovery and hash checks
 before cleanup. It does not require the user to supply another external drive.
 Because this repository is public, private identifiers/coordinates cannot simply
 be added to an unrestricted workflow artifact. The protected transfer described
-below is implemented; an executed cloud/local roundtrip is still required.
+below has passed an [executed cloud/local roundtrip](../../reproducibility/v3_protected_numerical_replay_20260908.json)
+in Actions run 34197391286: 872 files and 2,374,321,149 bytes restored on Actions,
+followed by exact local verification of its returned 128-observation packet.
 Finite workflow-artifact retention is not permanent archiving.
 
 The [protected numerical replay contract](protected_numerical_replay_contract.json)
@@ -55,6 +57,14 @@ Only an aggregate receipt goes into the ordinary workflow artifact. This route
 requires no new external drive or permanent original-image archive; draft access
 control is not encryption or a permanent publication archive. A successful
 transport test does not authorize ecological fitting or full image processing.
+
+The [subsequent output-preservation receipt](../../reproducibility/v3_executed_outputs_preservation_20260908.json)
+adds 337 numerical/provenance files (225,714,529 restored bytes), including the
+completed image pilot, raw environment checkpoints, rejected preliminary
+selection, source-QC view and corrected candidate selection. The 70,163,053-byte
+protected bundle was uploaded, downloaded afresh and restored with every file's
+hash verified. Original images and private numerical rows are absent from this
+repository and from the public workflow receipt.
 
 The study's measurement scope remains all 27 registered endpoints. The number
 14 describes the current original-image operating routes, not a replacement
@@ -80,6 +90,15 @@ A missing completion report, changed hash or incomplete denominator is an error,
 not a partial pilot promoted to completion. Download/no-detection/QC failures
 remain valid recorded outcomes, distinct from integrity failures.
 
+The [completed native pilot](../../reproducibility/v3_native_original_pilot_20260908.json)
+covered 128 observations and 196 photo links: 28 lacked an eligible licence;
+167 of 168 requests succeeded, one failed, and 30 downloaded images had no
+detected head. The 315 detected heads have 8,505 raw endpoint slots and 7,875
+bbox-condition slots, all reconciled by the independent output checker. Paired
+non-head context was available for 276 heads and green context for 228 heads.
+No source image was persisted and no environment values were joined. These are
+pilot throughput/support results, not full-cohort coverage or detector accuracy.
+
 ### Full-native environmental acquisition
 
 `python -m analysis.v3.production_environment --source PRIVATE_ENRICHED_CSV
@@ -96,10 +115,25 @@ the hypotheses, literature, proxy limits and one-model proposal. Its four proces
 groups overlap physically; a conditional block coefficient is not an isolated
 causal effect. All 15 columns are retained, including broader context. The
 acquisition command deliberately does **not** execute variable selection or ecology.
-The candidate weighted keep-style selector is tested, but its full-source result,
-within/among/calendar-spatial diagnostics and replacement of the historical
-two-formulation inference contract remain unexecuted. The image and ecology holds
-are unchanged.
+The [executed acquisition/QC receipt](../../reproducibility/v3_full_native_environment_qc_selection_20260908.json)
+records 103 completed checkpoints. A separate source audit found 1,252 unmasked
+uint32-maximum GSP values and two BIO12 storage-ceiling values. The original
+matrix and its preliminary VIF result are retained; that preliminary selection
+is **not admitted**. The [explicit source-QC rule](environment_source_qc_contract_20260908.json)
+creates a separate view, retains the original values and reason flags, and masks
+only the affected working values. No source observations are deleted or imputed.
+
+Run `python -m analysis.v3.environment_source_qc --matrix PRIVATE_RAW_MATRIX
+--out-dir PRIVATE_NEW_QC_DIRECTORY`, then `python -m
+analysis.v3.select_production_environment --matrix PRIVATE_QC_MATRIX
+--expected-matrix-sha256 EXACT_SHA --out PRIVATE_NEW_SELECTION.json`.
+The same weighted VIF-10 rule then retained nine variables in four process
+blocks on 317,986 complete observations from 354 taxa; maximum VIF was 6.585
+and condition number 6.891. CMI, Tmax and PET were removed from the candidate
+representation, not deleted from the data. This candidate result does not yet
+replace the historical two-formulation model. Actual module-specific within/among
+and nuisance-adjusted diagnostics, the exact test-family integration and the
+covariance-aware ecological runner remain unfinished. No ecological model was fitted.
 
 The following sections document the source inventory and earlier implementation
 checkpoints. Their historical completion labels do not override the active
@@ -113,14 +147,15 @@ taxon-specific regressions. A joint block solver now matches the full interactio
 design, including its cross-taxon HC3 covariance. This is verified numerical
 machinery, not a completed ecological hierarchy or spatially robust inference.
 
-The streamed local pilot retains all 27 raw endpoints separately from the 14
-ecologically qualified routes, individual bbox-shift values, paired background
+The completed local pilot retains all 27 raw endpoints separately from the 14
+candidate operational routes, individual bbox-shift values, paired background
 colour, image hashes, detector geometry and link-level scheduling states. Its
-tests use synthetic images and mocked retrieval; they do not establish real-image
-coverage or accuracy. The worker now accepts only an explicitly pinned reconciled
+real-image numerical output is verified; synthetic tests additionally exercise
+failure cases, not physical accuracy. The worker accepts only an explicitly pinned reconciled
 schedule or an explicitly labelled legacy metadata pilot; it rejects mixed inputs.
-Production still needs calendar/imaging nuisance design, dependence-aware pooling
-and verified off-device private numerical preservation. The cloud pilot stops
+Ecological fitting still needs calendar/imaging nuisance design and dependence-aware
+pooling. Source numerical transfer is verified; each new output bundle must be
+preserved and restored through that route. The historical cloud pilot still stops
 before retrieval. Earlier aggregate receipts are not retroactively promoted.
 
 The source-cohort cloud workflow is also held and no longer runs automatically

@@ -17,7 +17,8 @@ from .enriched_source_cohort import pinned_hash
 from .recover_native_source_authority import private_directory, write_new_json
 from .workflow import digest
 
-EXTENSIONS = {".csv", ".tsv", ".sqlite", ".json", ".jsonl", ".ndjson", ".txt"}
+# NPZ checkpoints are copied as opaque, pinned numerical bytes, never executed.
+EXTENSIONS = {".csv", ".tsv", ".sqlite", ".json", ".jsonl", ".ndjson", ".txt", ".npz"}
 
 
 def checked_entries(entries: list[dict]) -> list[dict]:

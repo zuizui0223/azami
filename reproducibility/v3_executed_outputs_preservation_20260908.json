@@ -1,0 +1,32 @@
+{
+  "anonymous_access": "404",
+  "asset": {
+    "asset_id": 550051255,
+    "asset_name": "v3-native-environment-and-pilot-20260908.zip",
+    "bundle_bytes": 70163053,
+    "bundle_sha256": "e794fc3a3e6e27e3f20fc0d49b57e7256969a8a97de5a678965243f09e527b7a",
+    "files": 337,
+    "manifest_sha256": "3ee448d149a0c7e821e1db4cc3335c94eb5e8add627c3746956044416f350db9",
+    "restored_bytes": 225714529,
+    "source_images_included": false
+  },
+  "draft_verified": true,
+  "ecological_models_executed": 0,
+  "implementation_sha256_text_lf": "0fbeafe86cb32bc7dc5ad3aec7fcfa28425060d52465a50433ef8ab60e19710a",
+  "includes": [
+    "all27 original-image pilot, failures, bbox and paired-context diagnostics",
+    "original environment matrix and 103 numerical checkpoints",
+    "rejected raw-matrix selection, source sentinel audit, explicit QC view and corrected candidate selection",
+    "numerical audit execution sources"
+  ],
+  "limits": [
+    "Keep the draft unpublished. This verifies saved numerical bytes, not model readiness or permanent publication archiving."
+  ],
+  "original_images_included": false,
+  "release_id": 384499945,
+  "restored_bytes": 225714529,
+  "restored_files": 337,
+  "schema_version": 1,
+  "source_files_deleted": 0,
+  "status": "EXECUTED_V3_NUMERICAL_OUTPUTS_PROTECTED_AND_RETURN_RESTORE_VERIFIED"
+}

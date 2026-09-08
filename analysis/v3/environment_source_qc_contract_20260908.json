@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "source_value_qc_before_trait_join_not_model_selection",
+  "input_matrix_sha256": "a60d155cc79c9fe32ecc704b563fa0362df97c4a4297c0b7044bc1745583342d",
+  "observations": 319244,
+  "taxa": 355,
+  "evidence": "reproducibility/v3_environment_sentinel_audit_20260908.json",
+  "rules": [
+    {
+      "variable": "GSP",
+      "exact_scaled_value": 429496729.5,
+      "expected_rows": 1252,
+      "flag": "invalid_unmasked_uint32_max",
+      "reason": "The source contains uint32 maximum (4294967295), scaled by 0.1, while its advertised nodata is 2147483647. This is not a plausible precipitation total. The provider's missingness mechanism is unconfirmed; mark an invalid source value, not a known biological zero."
+    },
+    {
+      "variable": "BIO12",
+      "exact_scaled_value": 6553.5,
+      "expected_rows": 2,
+      "flag": "source_dtype_ceiling_censored_or_invalid",
+      "reason": "Two values reach the uint16 storage ceiling (65535 times 0.1); their GSP totals exceed this annual precipitation value. Clipping is plausible, but a true annual amount is not recovered. Treat this source-ceiling value as unresolved, not a measured exact value or confirmed missing code."
+    }
+  ],
+  "operation": "Keep the original matrix immutable. In a separate QC view, preserve every row and all raw columns, add original-value and reason columns for the two variables, and set only the flagged working values to missing. No imputation or percentile winsorization.",
+  "prior_selection": "The preliminary raw-matrix candidate_process_selection.json is retained as a rejected computational result. Its low GSP VIF reflected invalid finite values and cannot be adopted.",
+  "remaining": "Rerun the same candidate selector without changing thresholds or protected processes. This QC view does not activate an ecological model; nuisance-adjusted, within/among and measurement-support diagnostics remain required.",
+  "trait_values_read": 0,
+  "ecological_fitting_authorized": false,
+  "source_definition": "https://www.chelsa-climate.org/datasets/chelsa_bioclim"
+}

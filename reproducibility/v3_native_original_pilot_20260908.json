@@ -1,0 +1,800 @@
+{
+  "schema_version": 1,
+  "status": "LOCAL_NATIVE_ORIGINAL_ALL27_PILOT_COMPLETED_AND_VERIFIED_NOT_FULL_PRODUCTION",
+  "worker_report": {
+    "status": "ORIGINAL_STREAM_PILOT_COMPLETE_NO_ECOLOGICAL_MODEL",
+    "selection": {
+      "mode": "reconciled_whole_component_pilot",
+      "ordering_salt": "ch1-v3-reconciled-native-photo-schedule-v1",
+      "maximum_observations": 128,
+      "selected_observations": 128,
+      "selected_components": 128,
+      "selected_photo_links": 196,
+      "selected_photo_jobs": 196,
+      "request_candidates": 168,
+      "photo_states": {
+        "license_unavailable": 28,
+        "request_candidate_not_authorized": 168
+      },
+      "source_reconciliation_verified": true,
+      "production_image_execution_authorized": false,
+      "images_fetched": 0,
+      "trait_values_read": 0,
+      "adapter_sha256_text_lf": "a154b029bc3353c2ee406d43b37707a48b128066cd0b0941b3770a78af2deb46"
+    },
+    "cohort_sha256": "ce9178ef70c2850939c64ba065e783726cbd207cb30ffc8978d6d95d0b14dd40",
+    "metadata_sha256": null,
+    "reconciled_schedule_sha256": "f778c542e35bf84e3fb1c9028207b448f1285e89be3d2dc95f871a72298c52f9",
+    "measurement_decision_sha256": "f2a8c5c937f47d755d4f93bf8510f144726a397eb4d6450f0d740a4e7e756b2a",
+    "qualified_endpoints": [
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv",
+      "corolla_hue_cos",
+      "corolla_hue_sin",
+      "corolla_lab_chroma",
+      "corolla_lab_lightness",
+      "corolla_purple_pixel_fraction",
+      "corolla_redmagenta_pixel_fraction",
+      "corolla_white_pixel_fraction",
+      "corolla_yellow_pixel_fraction",
+      "orientation_image_vertical_angle",
+      "visible_floret_fraction"
+    ],
+    "retained_endpoints": [
+      "bract_projection_asymmetry",
+      "bract_projection_maximum",
+      "bract_projection_p95",
+      "bract_projection_peak_density",
+      "bract_projection_roughness",
+      "bract_spread_fraction",
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv",
+      "corolla_hue_cos",
+      "corolla_hue_sin",
+      "corolla_lab_chroma",
+      "corolla_lab_lightness",
+      "corolla_purple_pixel_fraction",
+      "corolla_redmagenta_pixel_fraction",
+      "corolla_white_pixel_fraction",
+      "corolla_yellow_pixel_fraction",
+      "involucre_apical_taper_ratio",
+      "involucre_basal_taper_ratio",
+      "involucre_length_width_ratio",
+      "involucre_surface_edge_density",
+      "involucre_surface_high_frequency_energy",
+      "involucre_surface_lbp_entropy",
+      "involucre_surface_specular_fraction",
+      "orientation_image_vertical_angle",
+      "visible_floret_fraction"
+    ],
+    "retained_endpoints_per_detected_head": 27,
+    "production_execution_authorized": false,
+    "operational_pilot_only": true,
+    "execution_contract_sha256": "5b52cde129e7cf01e4bc0bd5539f6fecf042c2ece3ba14547159a5805ef88274",
+    "model_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed",
+    "worker_sha256_text_lf": "92080171bec5b24fc51657b0c54d2188f28c4de850a413285862193ffc7a9925",
+    "numerical_file_sha256": {
+      "bbox_measurements_private.csv": "2fd902a294b3aa1198197302dcfeaaa549a8107efe7eea05fc55cd5f4d3707f2",
+      "bbox_uncertainty_private.csv": "078e33930e9deceb6676c55b48b583a08be8a75f6f7d3e0b30e1e66c0f31e058",
+      "endpoint_measurements_private.csv": "9adca94ec5a811561fda15b997734c4503129f9544a9a56d629a1f6d7c9c3923",
+      "execution_contract.json": "5b52cde129e7cf01e4bc0bd5539f6fecf042c2ece3ba14547159a5805ef88274",
+      "head_diagnostics_private.jsonl": "bd38bdd83858b805f189cc5c90698f159795d0dcbe92e43a61e5eac0bb03a113",
+      "photo_detection_private.jsonl": "5af0f31661b33df803c9cb8d305974217304e7ef566ce5a962d524d29da7c6f0",
+      "photo_observation_links_private.csv": "14d0c42ddbb4d063cf4104b155b1fece5ce85f20c87a139efb78e789e3461423",
+      "selected_observations_private.csv": "c20c721f62e9d55fc4210355d517e93dd6a535d81f8a726a2a303f968ad62dd9",
+      "transfer_private.csv": "3683912b51942d771d18a3b63fcb8adfc631078070fed9706fb14b1ec126c879"
+    },
+    "bbox_uncertainty_endpoints": [
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv",
+      "orientation_image_vertical_angle"
+    ],
+    "schedule": {
+      "mode": "reconciled_whole_component_pilot",
+      "ordering_salt": "ch1-v3-reconciled-native-photo-schedule-v1",
+      "maximum_observations": 128,
+      "selected_observations": 128,
+      "selected_components": 128,
+      "selected_photo_links": 196,
+      "selected_photo_jobs": 196,
+      "request_candidates": 168,
+      "photo_states": {
+        "license_unavailable": 28,
+        "request_candidate_not_authorized": 168
+      },
+      "source_reconciliation_verified": true,
+      "production_image_execution_authorized": false,
+      "images_fetched": 0,
+      "trait_values_read": 0,
+      "adapter_sha256_text_lf": "a154b029bc3353c2ee406d43b37707a48b128066cd0b0941b3770a78af2deb46"
+    },
+    "transfer": {
+      "success": 167,
+      "error": 1,
+      "download_success": 167,
+      "detector_positive": 137,
+      "no_detection": 30,
+      "bytes": 269586343,
+      "heads": 315,
+      "head_measurement_errors": 0
+    },
+    "endpoint_usable_heads": {
+      "capitulum_outline_aspect_ratio": 241,
+      "capitulum_outline_circularity": 241,
+      "capitulum_outline_solidity": 241,
+      "capitulum_width_profile_cv": 241,
+      "corolla_hue_cos": 250,
+      "corolla_hue_sin": 250,
+      "corolla_lab_chroma": 250,
+      "corolla_lab_lightness": 250,
+      "corolla_purple_pixel_fraction": 250,
+      "corolla_redmagenta_pixel_fraction": 250,
+      "corolla_white_pixel_fraction": 250,
+      "corolla_yellow_pixel_fraction": 250,
+      "orientation_image_vertical_angle": 195,
+      "visible_floret_fraction": 250
+    },
+    "primary_measurement_eligible_heads": {
+      "capitulum_outline_aspect_ratio": 228,
+      "capitulum_outline_circularity": 228,
+      "capitulum_outline_solidity": 228,
+      "capitulum_width_profile_cv": 228,
+      "corolla_hue_cos": 250,
+      "corolla_hue_sin": 250,
+      "corolla_lab_chroma": 250,
+      "corolla_lab_lightness": 250,
+      "corolla_purple_pixel_fraction": 250,
+      "corolla_redmagenta_pixel_fraction": 250,
+      "corolla_white_pixel_fraction": 250,
+      "corolla_yellow_pixel_fraction": 250,
+      "orientation_image_vertical_angle": 144,
+      "visible_floret_fraction": 250
+    },
+    "all_endpoint_usable_heads": {
+      "bract_projection_asymmetry": 42,
+      "bract_projection_maximum": 42,
+      "bract_projection_p95": 42,
+      "bract_projection_peak_density": 42,
+      "bract_projection_roughness": 42,
+      "bract_spread_fraction": 42,
+      "capitulum_outline_aspect_ratio": 241,
+      "capitulum_outline_circularity": 241,
+      "capitulum_outline_solidity": 241,
+      "capitulum_width_profile_cv": 241,
+      "corolla_hue_cos": 250,
+      "corolla_hue_sin": 250,
+      "corolla_lab_chroma": 250,
+      "corolla_lab_lightness": 250,
+      "corolla_purple_pixel_fraction": 250,
+      "corolla_redmagenta_pixel_fraction": 250,
+      "corolla_white_pixel_fraction": 250,
+      "corolla_yellow_pixel_fraction": 250,
+      "involucre_apical_taper_ratio": 42,
+      "involucre_basal_taper_ratio": 42,
+      "involucre_length_width_ratio": 42,
+      "involucre_surface_edge_density": 20,
+      "involucre_surface_high_frequency_energy": 20,
+      "involucre_surface_lbp_entropy": 20,
+      "involucre_surface_specular_fraction": 20,
+      "orientation_image_vertical_angle": 195,
+      "visible_floret_fraction": 250
+    },
+    "bbox_uncertainty_coverage": {
+      "capitulum_outline_aspect_ratio": {
+        "heads": 315,
+        "four_usable_shifts": 228
+      },
+      "capitulum_outline_circularity": {
+        "heads": 315,
+        "four_usable_shifts": 228
+      },
+      "capitulum_outline_solidity": {
+        "heads": 315,
+        "four_usable_shifts": 228
+      },
+      "capitulum_width_profile_cv": {
+        "heads": 315,
+        "four_usable_shifts": 228
+      },
+      "orientation_image_vertical_angle": {
+        "heads": 315,
+        "four_usable_shifts": 144
+      }
+    },
+    "paired_context_support": {
+      "non_head_context_available": 276,
+      "green_non_head_context_available": 228,
+      "heads": 315
+    },
+    "elapsed_seconds": 2802.159734600049,
+    "mean_seconds_per_scheduled_photo": 16.679522229762195,
+    "mean_original_bytes_per_downloaded_photo": 1614289.479041916,
+    "maximum_source_image_bytes_live_at_once": 4658450,
+    "source_images_persisted": 0,
+    "environment_values_read": 0,
+    "ecological_models_executed": 0,
+    "technical_uncertainty": {
+      "bbox": "per-head baseline and all four +/-5% shift values/statuses, recipes, maximum and median absolute changes are retained for orientation and gross-shape endpoints",
+      "colour": "paired flower/non-head/green-context diagnostics are retained per head; population photometric stress sensitivity is supplied by the frozen 14-condition technical audit rather than re-running six synthetic photometric transforms for every original image"
+    },
+    "limits": [
+      "The pilot measures execution throughput and endpoint yield, not ecological associations.",
+      "Production is blocked until reconciled source/dependence scheduling and a verified durable private numerical destination are implemented.",
+      "No source image bytes are written to the output directory.",
+      "Detector localization remains pseudo-label-trained; streamed measurement does not create independent detector accuracy validation.",
+      "Metadata scheduling does not invent a phenotype for unavailable, unlicensed, failed-download or no-detection photos."
+    ]
+  },
+  "independent_verification": {
+    "status": "ORIGINAL_STREAM_ALL27_NUMERICAL_INTEGRITY_VERIFIED",
+    "input_report_sha256": "75405472531ea02ca3fd79dd4b70840b2c1a6a96acf833ddc73eed4b0a860376",
+    "verified_file_sha256": {
+      "bbox_measurements_private.csv": "2fd902a294b3aa1198197302dcfeaaa549a8107efe7eea05fc55cd5f4d3707f2",
+      "bbox_uncertainty_private.csv": "078e33930e9deceb6676c55b48b583a08be8a75f6f7d3e0b30e1e66c0f31e058",
+      "endpoint_measurements_private.csv": "9adca94ec5a811561fda15b997734c4503129f9544a9a56d629a1f6d7c9c3923",
+      "execution_contract.json": "5b52cde129e7cf01e4bc0bd5539f6fecf042c2ece3ba14547159a5805ef88274",
+      "head_diagnostics_private.jsonl": "bd38bdd83858b805f189cc5c90698f159795d0dcbe92e43a61e5eac0bb03a113",
+      "photo_detection_private.jsonl": "5af0f31661b33df803c9cb8d305974217304e7ef566ce5a962d524d29da7c6f0",
+      "photo_observation_links_private.csv": "14d0c42ddbb4d063cf4104b155b1fece5ce85f20c87a139efb78e789e3461423",
+      "selected_observations_private.csv": "c20c721f62e9d55fc4210355d517e93dd6a535d81f8a726a2a303f968ad62dd9",
+      "transfer_private.csv": "3683912b51942d771d18a3b63fcb8adfc631078070fed9706fb14b1ec126c879"
+    },
+    "selected_observations": 128,
+    "scheduled_photos": 168,
+    "transfer_status_counts": {
+      "success": 167,
+      "error": 1
+    },
+    "detected_heads": 315,
+    "raw_endpoint_slots": 8505,
+    "bbox_slots": 7875,
+    "endpoint_status_counts": {
+      "bract_projection_asymmetry": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 40,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "bract_projection_maximum": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 37,
+        "low_resolution": 12,
+        "low_mask_quality;unstable_under_horizontal_flip": 3,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "bract_projection_p95": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 40,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "bract_projection_peak_density": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 40,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "bract_projection_roughness": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 39,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2,
+        "low_mask_quality;unstable_under_horizontal_flip": 1
+      },
+      "bract_spread_fraction": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 38,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2,
+        "low_mask_quality;unstable_under_horizontal_flip": 2
+      },
+      "capitulum_outline_aspect_ratio": {
+        "usable": 241,
+        "low_outline_quality": 63,
+        "low_resolution": 10,
+        "unstable_under_horizontal_flip": 1
+      },
+      "capitulum_outline_circularity": {
+        "usable": 241,
+        "low_outline_quality": 63,
+        "low_resolution": 10,
+        "unstable_under_horizontal_flip": 1
+      },
+      "capitulum_outline_solidity": {
+        "usable": 241,
+        "low_outline_quality": 63,
+        "low_resolution": 10,
+        "unstable_under_horizontal_flip": 1
+      },
+      "capitulum_width_profile_cv": {
+        "usable": 241,
+        "low_outline_quality": 63,
+        "low_resolution": 10,
+        "unstable_under_horizontal_flip": 1
+      },
+      "corolla_hue_cos": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_hue_sin": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_lab_chroma": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_lab_lightness": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_purple_pixel_fraction": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "incomplete_or_unclosed_composition;low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_redmagenta_pixel_fraction": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "incomplete_or_unclosed_composition;low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_white_pixel_fraction": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "incomplete_or_unclosed_composition;low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "corolla_yellow_pixel_fraction": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "incomplete_or_unclosed_composition;low_visible_corolla_fraction;measurement_missing": 3
+      },
+      "involucre_apical_taper_ratio": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 39,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2,
+        "low_mask_quality;unstable_under_horizontal_flip": 1
+      },
+      "involucre_basal_taper_ratio": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 40,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "involucre_length_width_ratio": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "usable": 42,
+        "low_mask_quality": 40,
+        "low_resolution": 12,
+        "low_sharpness": 3,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "involucre_surface_edge_density": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "low_surface_resolution": 20,
+        "low_surface_sharpness": 2,
+        "low_mask_quality": 33,
+        "usable": 20,
+        "low_resolution;low_surface_resolution": 12,
+        "low_mask_quality;low_surface_resolution": 7,
+        "low_sharpness;low_surface_sharpness": 2,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "low_sharpness;low_surface_sharpness;measurement_missing;surface_region_too_small": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "involucre_surface_high_frequency_energy": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "low_surface_resolution": 20,
+        "low_surface_sharpness": 2,
+        "low_mask_quality": 33,
+        "usable": 20,
+        "low_resolution;low_surface_resolution": 12,
+        "low_mask_quality;low_surface_resolution": 7,
+        "low_sharpness;low_surface_sharpness": 2,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "low_sharpness;low_surface_sharpness;measurement_missing;surface_region_too_small": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "involucre_surface_lbp_entropy": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "low_surface_resolution": 20,
+        "low_surface_sharpness": 2,
+        "low_mask_quality": 33,
+        "usable": 20,
+        "low_resolution;low_surface_resolution": 12,
+        "low_mask_quality;low_surface_resolution": 7,
+        "low_sharpness;low_surface_sharpness": 2,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "low_sharpness;low_surface_sharpness;measurement_missing;surface_region_too_small": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "involucre_surface_specular_fraction": {
+        "mask_failed;measurement_missing": 13,
+        "floral_region_implausible;measurement_missing": 126,
+        "involucre_contour_not_recovered;measurement_missing": 76,
+        "low_surface_resolution": 20,
+        "low_surface_sharpness": 2,
+        "low_mask_quality": 33,
+        "usable": 20,
+        "low_resolution;low_surface_resolution": 12,
+        "low_mask_quality;low_surface_resolution": 7,
+        "low_sharpness;low_surface_sharpness": 2,
+        "involucre_region_not_recovered;measurement_missing": 1,
+        "low_sharpness;low_surface_sharpness;measurement_missing;surface_region_too_small": 1,
+        "involucre_contour_not_recovered;low_mask_quality;measurement_missing": 2
+      },
+      "orientation_image_vertical_angle": {
+        "usable": 195,
+        "low_axis_quality": 63,
+        "unstable_under_horizontal_flip": 8,
+        "measurement_missing;signed_head_axis_not_recovered": 39,
+        "low_resolution": 10
+      },
+      "visible_floret_fraction": {
+        "usable": 250,
+        "low_colour_quality": 52,
+        "low_resolution": 10,
+        "low_visible_corolla_fraction": 3
+      }
+    },
+    "endpoint_coverage": {
+      "bract_projection_asymmetry": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "bract_projection_maximum": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "bract_projection_p95": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "bract_projection_peak_density": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "bract_projection_roughness": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "bract_spread_fraction": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "capitulum_outline_aspect_ratio": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 315,
+        "raw_usable_heads": 241,
+        "raw_usable_photos": 104,
+        "raw_usable_observations": 72,
+        "measurement_eligible_photos": 99,
+        "measurement_eligible_observations": 67
+      },
+      "capitulum_outline_circularity": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 315,
+        "raw_usable_heads": 241,
+        "raw_usable_photos": 104,
+        "raw_usable_observations": 72,
+        "measurement_eligible_photos": 99,
+        "measurement_eligible_observations": 67
+      },
+      "capitulum_outline_solidity": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 315,
+        "raw_usable_heads": 241,
+        "raw_usable_photos": 104,
+        "raw_usable_observations": 72,
+        "measurement_eligible_photos": 99,
+        "measurement_eligible_observations": 67
+      },
+      "capitulum_width_profile_cv": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 315,
+        "raw_usable_heads": 241,
+        "raw_usable_photos": 104,
+        "raw_usable_observations": 72,
+        "measurement_eligible_photos": 99,
+        "measurement_eligible_observations": 67
+      },
+      "corolla_hue_cos": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_hue_sin": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_lab_chroma": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_lab_lightness": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_purple_pixel_fraction": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_redmagenta_pixel_fraction": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_white_pixel_fraction": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "corolla_yellow_pixel_fraction": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 312,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      },
+      "involucre_apical_taper_ratio": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "involucre_basal_taper_ratio": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "involucre_length_width_ratio": {
+        "route": "blocked_by_other_measurement_rule",
+        "finite_raw_heads_including_qc_failure": 97,
+        "raw_usable_heads": 42,
+        "raw_usable_photos": 31,
+        "raw_usable_observations": 24,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "involucre_surface_edge_density": {
+        "route": "blocked_pending_additional_gate",
+        "finite_raw_heads_including_qc_failure": 96,
+        "raw_usable_heads": 20,
+        "raw_usable_photos": 17,
+        "raw_usable_observations": 15,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "involucre_surface_high_frequency_energy": {
+        "route": "blocked_pending_additional_gate",
+        "finite_raw_heads_including_qc_failure": 96,
+        "raw_usable_heads": 20,
+        "raw_usable_photos": 17,
+        "raw_usable_observations": 15,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "involucre_surface_lbp_entropy": {
+        "route": "blocked_pending_additional_gate",
+        "finite_raw_heads_including_qc_failure": 96,
+        "raw_usable_heads": 20,
+        "raw_usable_photos": 17,
+        "raw_usable_observations": 15,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "involucre_surface_specular_fraction": {
+        "route": "blocked_pending_additional_gate",
+        "finite_raw_heads_including_qc_failure": 96,
+        "raw_usable_heads": 20,
+        "raw_usable_photos": 17,
+        "raw_usable_observations": 15,
+        "measurement_eligible_photos": 0,
+        "measurement_eligible_observations": 0
+      },
+      "orientation_image_vertical_angle": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 283,
+        "raw_usable_heads": 195,
+        "raw_usable_photos": 96,
+        "raw_usable_observations": 69,
+        "measurement_eligible_photos": 83,
+        "measurement_eligible_observations": 60
+      },
+      "visible_floret_fraction": {
+        "route": "stream_original_required",
+        "finite_raw_heads_including_qc_failure": 315,
+        "raw_usable_heads": 250,
+        "raw_usable_photos": 109,
+        "raw_usable_observations": 76,
+        "measurement_eligible_photos": 109,
+        "measurement_eligible_observations": 76
+      }
+    },
+    "measurement_eligible_heads": {
+      "bract_projection_asymmetry": 0,
+      "bract_projection_maximum": 0,
+      "bract_projection_p95": 0,
+      "bract_projection_peak_density": 0,
+      "bract_projection_roughness": 0,
+      "bract_spread_fraction": 0,
+      "capitulum_outline_aspect_ratio": 228,
+      "capitulum_outline_circularity": 228,
+      "capitulum_outline_solidity": 228,
+      "capitulum_width_profile_cv": 228,
+      "corolla_hue_cos": 250,
+      "corolla_hue_sin": 250,
+      "corolla_lab_chroma": 250,
+      "corolla_lab_lightness": 250,
+      "corolla_purple_pixel_fraction": 250,
+      "corolla_redmagenta_pixel_fraction": 250,
+      "corolla_white_pixel_fraction": 250,
+      "corolla_yellow_pixel_fraction": 250,
+      "involucre_apical_taper_ratio": 0,
+      "involucre_basal_taper_ratio": 0,
+      "involucre_length_width_ratio": 0,
+      "involucre_surface_edge_density": 0,
+      "involucre_surface_high_frequency_energy": 0,
+      "involucre_surface_lbp_entropy": 0,
+      "involucre_surface_specular_fraction": 0,
+      "orientation_image_vertical_angle": 144,
+      "visible_floret_fraction": 250
+    },
+    "technical_hold_endpoint_count": 13,
+    "environment_values_read": 0,
+    "v2_result_files_read": 0,
+    "ecological_models_executed": 0,
+    "ecological_fitting_authorized": false,
+    "production_image_execution_authorized": false,
+    "limits": [
+      "Numerical integrity and operational coverage, not botanical accuracy or inference admission.",
+      "Missing or held endpoints retain their slots; this audit changes no thresholds or routes.",
+      "A completed pilot can contain failed transfers and unmeasurable heads.",
+      "Image hashes identify consumed bytes; source images were not saved or replayed here.",
+      "Observation coverage counts links; it does not aggregate traits or make shared photos independent."
+    ]
+  },
+  "limits": [
+    "No trait-environment join or ecological model was run.",
+    "These image-only numerical checks do not validate physical trait accuracy or the uniform floral-union colour revision.",
+    "All 27 raw slots are retained; the 13 held routes are not promoted by pilot availability."
+  ]
+}

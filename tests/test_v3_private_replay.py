@@ -81,3 +81,15 @@ def test_existing_snapshot_and_restore_are_preserved(tmp_path):
     with pytest.raises(ValueError, match="exists"):
         replay.restore(snapshot, restored, expected_manifest_sha256=report["snapshot_manifest_sha256"])
     assert source.read_bytes() == (restored / "measurements/source.csv").read_bytes()
+
+
+def test_numpy_checkpoint_bytes_can_be_preserved_without_loading_them(tmp_path):
+    import numpy as np
+    source = tmp_path / "checkpoint.npz"
+    np.savez_compressed(source, indices=np.arange(3), values=np.array([1.0, np.nan, 3.0]))
+    plan = tmp_path / "selection.json"
+    plan.write_text(json.dumps({"schema_version": 1, "files": [
+        {"name": "checkpoints/x.npz", "path": str(source.resolve()), "sha256": digest(source)}]}))
+    report = replay.snapshot(plan, tmp_path / "packed")
+    replay.restore(tmp_path / "packed", tmp_path / "restored", expected_manifest_sha256=report["snapshot_manifest_sha256"])
+    assert (tmp_path / "restored/checkpoints/x.npz").read_bytes() == source.read_bytes()

@@ -1,0 +1,71 @@
+{
+  "ecological_models_executed": 0,
+  "implementation_sha256_text_lf": "5bb67fd0117bb1c2bb9e50c09a81f83d51e89e21b261b47bb0125734432164f3",
+  "limitations": [
+    "Maximum-integer detection identifies suspect coding, not a provider-confirmed missingness mechanism. No values have been changed."
+  ],
+  "source_matrix_sha256": "a60d155cc79c9fe32ecc704b563fa0362df97c4a4297c0b7044bc1745583342d",
+  "status": "ENVIRONMENT_RASTER_METADATA_AND_SAVED_SENTINEL_AUDIT_COMPLETE",
+  "tasks": 103,
+  "tasks_with_unmasked_dtype_max": [
+    {
+      "checkpoint_sha256": "73ab2602a5aa16c5411f8bfb20c417cbad2b8cd0e55ae6e650f3680969e5a42a",
+      "dtype_max_raw": 65535,
+      "dtype_max_scaled": 6553.5,
+      "finite_rows": 319244,
+      "maximum": 6553.5,
+      "metadata": {
+        "band_tags": {},
+        "dtype": "uint16",
+        "mask_flags": "([<MaskFlags.all_valid: 1>],)",
+        "nodata": null,
+        "offset": 0.0,
+        "scale": 0.1,
+        "tags": {
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "minimum": 23.200000000000003,
+      "rows": 319244,
+      "source": {
+        "bytes": 655151886,
+        "etag": "\"8d4f0130e23a16158c1a50460ce50bc7-125\"",
+        "last_modified": "Fri, 13 Sep 2024 01:13:23 GMT",
+        "resolved_url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio12_1981-2010_V.2.1.tif",
+        "url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_bio12_1981-2010_V.2.1.tif"
+      },
+      "task": "BIO12_00",
+      "unmasked_dtype_max_rows": 2
+    },
+    {
+      "checkpoint_sha256": "7e3ed1e395eac8d9165004569288cc6952a0185925b6344d0cfa5ed038e33aeb",
+      "dtype_max_raw": 4294967295,
+      "dtype_max_scaled": 429496729.5,
+      "finite_rows": 319244,
+      "maximum": 429496729.5,
+      "metadata": {
+        "band_tags": {},
+        "dtype": "uint32",
+        "mask_flags": "([<MaskFlags.nodata: 8>],)",
+        "nodata": 2147483647.0,
+        "offset": 0.0,
+        "scale": 0.1,
+        "tags": {
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "minimum": 0.0,
+      "rows": 319244,
+      "source": {
+        "bytes": 633418215,
+        "etag": "\"93962c74421091fd08e715be0fab1ae1-121\"",
+        "last_modified": "Fri, 13 Sep 2024 01:14:44 GMT",
+        "resolved_url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif",
+        "url": "https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/bio/CHELSA_gsp_1981-2010_V.2.1.tif"
+      },
+      "task": "GSP_00",
+      "unmasked_dtype_max_rows": 1252
+    }
+  ],
+  "trait_values_read": 0
+}
