@@ -1,0 +1,1 @@
+Primary breadth estimator is a shrinkage-covariance ellipsoid, not a post-hoc KDE hypervolume.
