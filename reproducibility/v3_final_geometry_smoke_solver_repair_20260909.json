@@ -1,0 +1,87 @@
+{
+  "cases": [
+    {
+      "grid_degrees": 2,
+      "scenario": "crossed_spatial_null",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 5,
+      "scenario": "crossed_spatial_null",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 2,
+      "scenario": "heterogeneous_slopes",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 5,
+      "scenario": "heterogeneous_slopes",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 2,
+      "scenario": "iid_null",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 5,
+      "scenario": "iid_null",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 2,
+      "scenario": "scale_difference",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    },
+    {
+      "grid_degrees": 5,
+      "scenario": "scale_difference",
+      "status": "FINAL_GEOMETRY_SMOKE_COMPLETE_NOT_CALIBRATED"
+    }
+  ],
+  "complete_grid_cases": 8,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "input_manifest": [
+    {
+      "artifact_path": "v3-final-geometry-smoke-crossed_spatial_null-34248192547-1",
+      "scenario": "crossed_spatial_null",
+      "sha256": "4bb5119d88eaa90e02faf25a98cf856acee796d22db6369825a53676332194c1"
+    },
+    {
+      "artifact_path": "v3-final-geometry-smoke-heterogeneous_slopes-34248192547-2",
+      "scenario": "heterogeneous_slopes",
+      "sha256": "021ac1394492f6ad1f25ce5f7095ac5ddb5a72431f8ad46acedbe94699212dc5"
+    },
+    {
+      "artifact_path": "v3-final-geometry-smoke-iid_null-34248192547-2",
+      "scenario": "iid_null",
+      "sha256": "510ba26a01620355733edb520055c03804a8c2eb5d9fb82b8cfe24a4706acf4e"
+    },
+    {
+      "artifact_path": "v3-final-geometry-smoke-scale_difference-34248192547-1",
+      "scenario": "scale_difference",
+      "sha256": "edfa5d69f4964af4036db50fd6b9ce2dfac12e5ce05e9f7a8ef87c4f4d1c5e82"
+    }
+  ],
+  "recorded_grid_cases": 8,
+  "retry_reason": "Two attempt-1 jobs completed all numerical work but failed only while finalizing Actions artifacts with HTTP 403; only those failed jobs were retried.",
+  "scenarios": [
+    "crossed_spatial_null",
+    "heterogeneous_slopes",
+    "iid_null",
+    "scale_difference"
+  ],
+  "schema_version": 1,
+  "solver_repair_scope": "Final geometry revalidated after the stationary-candidate solver repair; no ecological data were accessed and no calibration threshold, seed, grid or response geometry changed.",
+  "source_head_sha": "db3c2cb0afc8b4c16a970719e55e2f57153776b5",
+  "source_run_attempts": [
+    1,
+    2
+  ],
+  "source_workflow_run_id": 34248192547,
+  "status": "FINAL_GEOMETRY_SMOKE_SOLVER_REPAIR_REVALIDATED_8_OF_8_COMPLETE"
+}
