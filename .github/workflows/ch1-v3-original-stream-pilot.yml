@@ -1,0 +1,160 @@
+name: Chapter 1 v3 original stream pilot
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - reproducibility/v3_ecological_source_cohort_freeze_20260908.json
+  workflow_dispatch:
+
+concurrency:
+  group: ch1-v3-original-stream-pilot-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set runner-temporary private paths
+        run: |
+          echo "V3_SOURCE_ARCHIVES=$RUNNER_TEMP/v3-source-archives" >> "$GITHUB_ENV"
+          echo "V3_SOURCE_OBSERVATIONS=$RUNNER_TEMP/v3-source-observations" >> "$GITHUB_ENV"
+          echo "V3_NATIVE_JOIN=$RUNNER_TEMP/v3-native-join" >> "$GITHUB_ENV"
+          echo "V3_ECO_COHORT=$RUNNER_TEMP/v3-ecological-source-cohort" >> "$GITHUB_ENV"
+          echo "V3_SOURCE=$RUNNER_TEMP/v3-original-stream-source" >> "$GITHUB_ENV"
+          echo "V3_STREAM=$RUNNER_TEMP/v3-original-stream-output" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned CPU image environment plus source dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.11.0+cpu torchvision==0.26.0+cpu
+          python -m pip install -r reproducibility/v3-image-cpu-requirements.txt
+          python -m pip install -e . --no-deps
+          python -m pip install 'pandas>=2.0' 'shapely>=2.1,<3' 'requests>=2.31'
+
+      - name: Run deterministic stream scheduling tests
+        run: python -m pytest -q tests/test_v3_original_stream_traits.py tests/test_v3_ecological_source_cohort.py
+
+      - name: Read frozen source-cohort identity
+        run: |
+          test -f reproducibility/v3_ecological_source_cohort_freeze_20260908.json
+          python - <<'PY'
+          import json
+          r=json.load(open('reproducibility/v3_ecological_source_cohort_freeze_20260908.json'))
+          assert r['status']=='V3_ECOLOGICAL_SOURCE_COHORT_FROZEN_BEFORE_TRAIT_EXECUTION'
+          assert r['rows']==319244 and r['accepted_taxa']==355
+          assert len(r['cohort_sha256'])==64
+          print({'cohort_sha256':r['cohort_sha256'],'rows':r['rows'],'accepted_taxa':r['accepted_taxa']})
+          PY
+
+      - name: Reconstruct exact private source cohort
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          python -m analysis.v3.recover_upstream \
+            --manifest analysis/v3/environment_source_archives.json \
+            --out-dir "$V3_SOURCE_ARCHIVES" \
+            --workers 2
+          python -m analysis.v3.prepare_environment_source_observations \
+            --archives "$V3_SOURCE_ARCHIVES" \
+            --manifest analysis/v3/environment_source_archives.json \
+            --out-dir "$V3_SOURCE_OBSERVATIONS"
+          python -m analysis.v3.build_native_range_join_from_source \
+            --source-csv "$V3_SOURCE_OBSERVATIONS/environment_source_observations.csv" \
+            --contract analysis/v3/native_range_join_contract.json \
+            --out-dir "$V3_NATIVE_JOIN"
+          python -m analysis.v3.build_ecological_source_cohort \
+            --native-join "$V3_NATIVE_JOIN/native_range_join.csv" \
+            --contract analysis/v3/ecological_source_cohort_contract.json \
+            --out-dir "$V3_ECO_COHORT"
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          expected=json.load(open('reproducibility/v3_ecological_source_cohort_freeze_20260908.json'))['cohort_sha256']
+          path=Path(os.environ['V3_ECO_COHORT'])/'ecological_source_cohort.csv'
+          actual=hashlib.sha256(path.read_bytes()).hexdigest()
+          assert actual==expected,(actual,expected)
+          PY
+
+      - name: Recover immutable merged photo metadata and pinned detector
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          mkdir -p "$V3_SOURCE"
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from analysis.v3.recover_revision_inputs import download
+          root=Path(os.environ['V3_SOURCE'])
+          download(8066010557, root/'metadata.zip', '2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae')
+          download(8076736948, root/'detector.zip', '2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05')
+          PY
+          python - <<'PY'
+          import hashlib,os,zipfile
+          from pathlib import Path
+          root=Path(os.environ['V3_SOURCE'])
+          with zipfile.ZipFile(root/'metadata.zip') as z:
+              data=z.read('photo_metadata_merged.csv')
+              assert hashlib.sha256(data).hexdigest()=='506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4'
+              (root/'photo_metadata_merged.csv').write_bytes(data)
+          with zipfile.ZipFile(root/'detector.zip') as z:
+              data=z.read('recovery/model/weights/best.pt')
+              assert hashlib.sha256(data).hexdigest()=='4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed'
+              (root/'best.pt').write_bytes(data)
+          PY
+
+      - name: Stream 64 frozen-cohort observations at original resolution
+        run: |
+          COHORT_SHA=$(python -c "import json;print(json.load(open('reproducibility/v3_ecological_source_cohort_freeze_20260908.json'))['cohort_sha256'])")
+          python -m analysis.v3.stream_original_traits \
+            --metadata "$V3_SOURCE/photo_metadata_merged.csv" \
+            --cohort "$V3_ECO_COHORT/ecological_source_cohort.csv" \
+            --weights "$V3_SOURCE/best.pt" \
+            --decision analysis/v3/measurement_qualification_decision_20260908.json \
+            --out-dir "$V3_STREAM" \
+            --pilot-observations 64 \
+            --expected-cohort-sha256 "$COHORT_SHA"
+
+      - name: Enforce no image retention and publish aggregate receipt only
+        if: always()
+        run: |
+          mkdir -p publish
+          if [ -f "$V3_STREAM/original_stream_report.json" ]; then
+            cp "$V3_STREAM/original_stream_report.json" publish/
+            python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['V3_STREAM'])
+          r=json.load(open(root/'original_stream_report.json'))
+          assert r['source_images_persisted']==0
+          assert r['environment_values_read']==0 and r['ecological_models_executed']==0
+          assert len(r['qualified_endpoints'])==14
+          print(json.dumps({'schedule':r['schedule'],'transfer':r['transfer'],'elapsed_seconds':r['elapsed_seconds']},indent=2))
+          PY
+          else
+            printf '%s\n' '{"status":"INCOMPLETE_DO_NOT_USE"}' > publish/workflow_incomplete.json
+          fi
+          test "$(find "$V3_STREAM" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | wc -l)" -eq 0
+          rm -rf "$V3_SOURCE_ARCHIVES" "$V3_SOURCE_OBSERVATIONS" "$V3_NATIVE_JOIN" "$V3_ECO_COHORT" "$V3_SOURCE" "$V3_STREAM"
+          test "$(find publish -type f | wc -l)" -eq 1
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-original-stream-pilot-${{ github.run_id }}
+          path: publish
+          if-no-files-found: error
+          retention-days: 30
