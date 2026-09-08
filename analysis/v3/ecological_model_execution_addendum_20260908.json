@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "fixed_before_original_stream_trait_outcomes_and_ecological_coefficients",
+  "parent_contract": "analysis/v3/ecological_model_contract.json",
+  "purpose": "Clarify the computational realization of the frozen spatial-plus-hierarchical model so sparse taxa are not forced to estimate eight spatial nuisance coefficients independently.",
+  "reason_for_clarification": "The source-cohort reporting floor is 10 observations per taxon. Fitting eight spherical-basis coefficients separately inside every taxon would consume most or all residual degrees of freedom and would not be a faithful implementation of the intended common broad-scale spatial control.",
+  "within_taxon_spatial_realization": {
+    "method": "Frisch-Waugh-Lovell residualization with common nuisance effects",
+    "nuisance_design": ["taxon intercepts", "x", "y", "z", "x*y", "x*z", "y*z", "x^2-y^2", "3*z^2-1"],
+    "steps": [
+      "For each response coordinate, residualize the observation-level response against taxon intercepts plus the common second-order spherical basis.",
+      "For each frozen environmental predictor in the hypothesis-specific conditional model, residualize that predictor against the same taxon intercepts plus the same common spherical basis.",
+      "Within each taxon, regress the residualized response on the residualized hypothesis-specific environmental predictors without another intercept.",
+      "Retain the slope vector and its sampling covariance when the within-taxon environmental design has full column rank and at least three residual degrees of freedom."
+    ],
+    "minimum_individual_slope_reporting_floor": 10,
+    "additional_estimability_rule": "n_taxon >= number_of_environment_predictors + 3, full predictor rank, >=4 quarter-degree support cells, and each predictor being interpreted must vary within taxon",
+    "effect_of_nonestimability": "The taxon remains in source/measurement coverage summaries but does not contribute an unstable taxon-specific slope to that formulation's random-effects hyperdistribution. This is an algebraic estimability rule, not an outcome-dependent exclusion."
+  },
+  "partial_pooling_realization": {
+    "per_slope_coordinate": "normal-normal random-effects meta-analysis using taxon slope estimates and their sampling variances",
+    "between_taxon_variance": "estimate tau^2 by REML with tau^2 constrained >=0",
+    "shrinkage": "report empirical-Bayes posterior means and variances under the fitted normal-normal model",
+    "taxon_weight_interpretation": "weights are statistical precision from observation-level slope uncertainty, not raw photograph counts or biological abundance weights"
+  },
+  "among_taxon_spatial_realization": {
+    "method": "include the same eight second-order spherical terms evaluated at the equal-observation taxon coordinate centroid directly in the weighted among-taxon meta-regression",
+    "minimum_residual_degrees_of_freedom": 5
+  },
+  "residual_spatial_check": {
+    "moran_k": 8,
+    "maximum_observations": 5000,
+    "deterministic_sampling": true,
+    "two_sided_permutations": 999,
+    "interpretation": "Residual spatial autocorrelation is reported as model limitation/diagnostic and does not trigger significance-based model switching."
+  },
+  "separation": {
+    "trait_values_read": 0,
+    "trait_environment_coefficients_read": 0,
+    "ecological_models_executed": 0
+  }
+}
