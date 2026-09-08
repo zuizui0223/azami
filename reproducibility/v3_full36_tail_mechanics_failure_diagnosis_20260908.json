@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "TAIL_MECHANICS_NUMERICAL_FAILURE_DIAGNOSED_PRE_EMPIRICAL_REPAIR_PENDING_RECALIBRATION",
+  "source_mechanics": {
+    "run_id": 34239896034,
+    "conclusion": "success_with_one_retained_nonestimable_shared_draw",
+    "aggregate_run_id": 34245859463,
+    "aggregate_artifact_id": 10063946201,
+    "aggregate_artifact_digest": "sha256:c7fd4045a59460d5118f6e9c8d87b4c4b45cdba0edeb1aae09766869629cb3ef",
+    "complete_grid_cases": 63,
+    "expected_grid_cases": 64,
+    "coefficient_interval_coverage": {
+      "covered": 5026,
+      "total": 5103,
+      "fraction": 0.9849108367626886
+    }
+  },
+  "retained_failure": {
+    "scenario": "heterogeneous_slopes",
+    "outer_replicate": 7,
+    "grid_degrees": 2,
+    "bootstrap_replicate": 562,
+    "seed": 2026110868,
+    "estimable_shared_bootstrap_replicates": 998,
+    "planned_shared_bootstrap_replicates": 999,
+    "family_slots_emitted": 0,
+    "failed_module": "visible_colour",
+    "orientation_same_draw_status": "estimated",
+    "gross_shape_same_draw_status": "estimated"
+  },
+  "diagnostic": {
+    "run_id": 34247512639,
+    "artifact_id": 10064664227,
+    "artifact_digest": "sha256:82bee86620ca892539c63a6adc102f4d6f0550ce0659dac25286b8de99cf6713",
+    "sampled_observations": 2633,
+    "sampled_taxon_copies": 64,
+    "lbfgsb_initial_variance_ratios": [0.0, 0.1, 1.0, 10.0],
+    "scipy_statuses": [2, 2, 2, 2],
+    "scipy_messages": ["ABNORMAL: ", "ABNORMAL: ", "ABNORMAL: ", "ABNORMAL: "],
+    "all_attempts_stationary_under_existing_projected_gradient_tolerance": true,
+    "all_attempts_upper_bound_hit": false,
+    "projected_gradient_max_range": [2.112712632672325e-06, 3.1392321393765836e-05],
+    "reml_criterion_range_across_four_starts": 1.0182077403442236e-10,
+    "maximum_variance_ratio_range_across_four_starts": 1.9932009061029987e-06
+  },
+  "diagnosis": "The retained failure is not a rank collapse. Four independent L-BFGS-B starts reach numerically indistinguishable interior stationary REML candidates, but scipy reports status 2 ABNORMAL for all four. The existing score-root polishing verifier was only invoked after a successful L-BFGS-B flag, so these stationary candidates were never independently checked for positive curvature and non-worse objective.",
+  "repair_rule": "Do not accept scipy success=false directly. Pass an abnormal L-BFGS-B candidate through the already-existing score-root polishing verifier. Accept only if the same pre-existing projected-gradient tolerance, positive free-parameter curvature, unchanged variance bounds and non-worse REML objective checks all pass. Do not change thresholds, seeds, family slots, grids, synthetic truth or replace the retained draw.",
+  "required_revalidation": [
+    "Re-execute the pinned heterogeneous_slopes outer 7 grid 2 replicate 562 case without generating a replacement draw.",
+    "Re-run the complete 32-outer 999-draw mechanics pilot under the repaired estimator and require all 64 grid cases to retain all 999 draws and all 36 family slots.",
+    "Re-run final 1/8/4 response-geometry smoke under the repaired estimator before scheduling final multicoordinate calibration."
+  ],
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
