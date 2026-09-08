@@ -1,0 +1,59 @@
+name: Chapter 1 v3 final multicoordinate geometry smoke
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/final_geometry_smoke_contract.json
+      - analysis/v3/run_final_geometry_smoke.py
+      - tests/test_v3_final_geometry_smoke.py
+      - .github/workflows/ch1-v3-final-geometry-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        scenario: [iid_null, crossed_spatial_null, heterogeneous_slopes, scale_difference]
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 pytest==9.1.1
+      - name: Verify final geometry smoke contract and estimator prerequisites
+        run: |
+          python -m pytest -q \
+            tests/test_v3_final_geometry_smoke.py \
+            tests/test_v3_multicoordinate_calibration.py \
+            tests/test_v3_module_ecology.py \
+            tests/test_v3_joint_partial_pooling.py \
+            tests/test_v3_dependence_resampling.py
+      - name: Execute one final-geometry smoke case on both spatial grids
+        run: |
+          python -m analysis.v3.run_final_geometry_smoke \
+            --scenario '${{ matrix.scenario }}' \
+            --out runs/final-geometry-smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-final-geometry-smoke-${{ matrix.scenario }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/final-geometry-smoke/
+          if-no-files-found: warn
+          retention-days: 30
+      # Synthetic generated arrays only. No empirical traits, source coordinates,
+      # image requests or ecological coefficients are accessed.
