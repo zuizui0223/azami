@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from analysis.v3.integrated_preflight import CONTRACT, INDEX, validate
+from analysis.v3.integrated_preflight import CONTRACT, INDEX, _check_source_recovery, validate
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,7 +28,7 @@ def test_actual_integrated_preflight_has_no_execution_promotion():
     assert [s["optional_for_primary_ecology"] for s in result["stages"]] == [False] * 4 + [True]
     assert result["ecological_fitting_authorized"] is False
     assert result["full_original_stream_authorized"] is False
-    assert len(result["verified_public_evidence"]) == 4
+    assert len(result["verified_public_evidence"]) == 5
 
 
 def test_pinned_evidence_change_is_rejected_even_if_status_unchanged(tmp_path):
@@ -127,3 +127,30 @@ def test_cloud_source_rebuild_stops_before_repeating_lossy_execution():
     assert workflow.index("exit 1") < workflow.index("actions/checkout")
     assert "exact source, authority, native join and cohort persistence/recovery" in workflow
     assert workflow.count("if: always() && steps.private_archive.outcome == 'success'") == 2
+
+
+@pytest.mark.parametrize("section,field,value", [
+    ("cohort", "historical_csv_sha256", "0" * 64),
+    ("cohort", "rows", 319243),
+    ("authority", "historical_http_response_identity_verified", True),
+    ("authority", "all_three_outputs_byte_identical_in_offline_replay", False),
+    ("enrichment", "cohort_membership_changed", True),
+    ("private_preservation", "cloud_execution_hold_preserved", False),
+])
+def test_source_recovery_receipt_cannot_change_identity_or_promote_claims(section, field, value):
+    receipt = json.loads((ROOT / "reproducibility/v3_source_cohort_recovery_20260908.json").read_text())
+    source = json.loads((ROOT / "reproducibility/v3_source_reconciliation_20260907.json").read_text())
+    receipt[section][field] = value
+    with pytest.raises(ValueError, match="Source"):
+        _check_source_recovery(receipt, source)
+
+
+def test_tested_or_planned_stage_cannot_claim_the_source_execution_receipt(tmp_path):
+    root = clone_inputs(tmp_path)
+    path = root / INDEX
+    index = json.loads(path.read_text())
+    index["requirements"]["joint_covariance_aware_hierarchy"].update(
+        state="execution_evidence_recorded", evidence="reproducibility/v3_source_cohort_recovery_20260908.json")
+    path.write_text(json.dumps(index))
+    with pytest.raises(ValueError, match="Executed evidence requirement"):
+        validate(root)

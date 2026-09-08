@@ -15,7 +15,7 @@ contract lists exactly which model/ordering provisions it supersedes.
 
 | Stage | Question | Current implementation boundary |
 |---|---|---|
-| 1. Source | Which records support the native-range ecological question? | Full source links and annotations verified. The new `enriched_source_cohort` builder retains dates and full-source dependence; actual enrichment needs the exact old native-cohort CSV and authority chain. |
+| 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. Historical HTTP identity and off-device private preservation are separate, unverified claims. |
 | 2. Measurement | What can each photo measure, with what uncertainty? | All 27 raw slots retained; 14 original-image routes are operationally qualified. Full reconciled streaming, private durable replay and a separately versioned uniform-floral chroma definition remain unfinished. |
 | 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
 | 4. Ecology | Do within- and among-taxon associations agree? | Joint slope algebra is verified. Covariance-aware pooling, matched-support scale contrasts and dependence-aware inference still require a validated runner. |
@@ -57,9 +57,67 @@ The source-cohort cloud workflow is also held and no longer runs automatically
 on pushes: its historical recipe published only a report and then removed the
 exact private source, authority join and cohort files. It must verify private
 preservation and restoration before another cloud source freeze. The local
-builders remain available. A source-only integrity probe can verify the existing
-annotation/reconciliation databases without pretending that the missing native
-cohort has been recovered.
+builders remain available. The subsequent local recovery below restores the exact
+cohort and verifies local replay; it does not satisfy the separate off-device
+private-archive gate or authorize cloud cleanup.
+
+### Exact native-source recovery and local replay
+
+The [executed recovery receipt](../../reproducibility/v3_source_cohort_recovery_20260908.json)
+records the following checks, made without reading traits or fitting ecology:
+
+- The six original archives reproduce all 665,139 source observations. A new LF
+  serialization view matches the historical source CSV hash `5632f532...`; the
+  Windows-native output is also retained, not overwritten.
+- Reacquired WCVP responses and the pinned TDWG geometry reproduce the exact
+  319,244-observation, 355-taxon cohort hash `b52503cd...`. The previous cohort
+  report also agrees in full. These are source-support counts, not measured/QC
+  endpoint counts.
+- All 855 authority responses are saved in a private, hash-bound cache. Offline
+  replay reproduces the native join, name-resolution and distribution tables
+  byte for byte. The old HTTP responses/full join had no original pins: the new
+  reconstruction is verified, not retroactively described as historical bytes.
+- Enrichment preserves every observation and all 12 inherited fields, attaches
+  exact source dates and full-source known dependence, and retains every photo
+  link. There are 319,230 known components among the native observations; this
+  does not prove all other observations independent.
+
+All native-cohort records are northern-hemisphere records, so southern interaction
+columns are structurally constant in this view. Source dates range from 1899 to
+2026, including 29 records before 1980. They remain in the source ledger: syntactic
+date validity does not verify photography dates. Calendar/year and exposure-support
+rules must be fixed before fitting, without silent repair or outcome-led exclusion.
+Date terms do not replace observed developmental-stage labels.
+
+The first-page name-search limitation was also checked. Only `Cirsium` (genus)
+and `Altissima` (complex) indicated further results; both ranks are outside the
+unchanged ecological scope. No eligible source-rank query was truncated in this
+reacquired response set. This does not independently verify image identification.
+
+`recover_native_source_authority` injects cached acquisition into an isolated copy
+of the unchanged classification helpers. It refuses changed source/authority
+identities, altered cached responses, missing offline requests and existing output
+directories. Outputs inside this repository must be under ignored `local_data/`.
+For Windows source rebuilds, `recover_lf_source(source, destination, expected_sha256)`
+creates a separate LF byte view only if it exactly matches the historical pin.
+
+```bash
+python -m analysis.v3.recover_native_source_authority \
+  --source-csv /private/source-historical-lf.csv \
+  --expected-source-sha256 5632f532a63c8babdc20b023bd0d3c47424d69461df5de9793028e93e819f959 \
+  --cache-dir /private/authority-cache --out-dir /private/new-native-join
+
+# Replay the same requests with no network; use the saved manifest's exact hash.
+python -m analysis.v3.recover_native_source_authority \
+  --source-csv /private/source-historical-lf.csv \
+  --expected-source-sha256 5632f532a63c8babdc20b023bd0d3c47424d69461df5de9793028e93e819f959 \
+  --cache-dir /private/authority-cache --out-dir /private/new-offline-replay \
+  --offline --expected-cache-manifest-sha256 SAVED_MANIFEST_SHA256
+```
+
+Next connect the pinned enriched cohort and reconciled links to actual image
+scheduling, and verify private off-device restoration. Local retention is not a
+permanent archive. Full image production and ecological fitting remain held.
 
 The archived July 2026 photo metadata contain **665,115 observations and
 1,122,854 photos**. These are records of photos, not proof that every image file

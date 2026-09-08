@@ -22,6 +22,11 @@
       "id": "measurement_decision",
       "path": "analysis/v3/measurement_qualification_decision_20260908.json",
       "canonical_json_sha256": "ebce105f60f6812d2d28ab2a72ea12c58d4c2f7253abb5137d712802b0c14f8f"
+    },
+    {
+      "id": "source_recovery_receipt",
+      "path": "reproducibility/v3_source_cohort_recovery_20260908.json",
+      "canonical_json_sha256": "2cad97fb8d6f0145226a72f2b33a8bf3b70bda3975a4f9e3882e45d4465aa1a4"
     }
   ],
   "requirements": {
@@ -31,13 +36,16 @@
       "remaining": "Use this full link ledger in the actual stream schedule; the merged snapshot is insufficient."
     },
     "native_authority_input_chain": {
-      "state": "not_executed",
-      "remaining": "The completed remote join has aggregate evidence; exact full-source authority/join products must be recoverable and hash-verified, not replaced by a new lookup or legacy v2 mask."
+      "state": "execution_evidence_recorded",
+      "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
+      "implementation": "analysis/v3/recover_native_source_authority.py",
+      "remaining": "Exact source and native-cohort bytes are recovered; 855 reacquired authority responses reproduce all three join products offline. Historical HTTP/full-join identity remains unprovable because old pins were absent. Keep this distinction and verify off-device private preservation before cloud execution."
     },
     "enriched_source_cohort": {
-      "state": "implementation_tested_execution_pending",
+      "state": "execution_evidence_recorded",
+      "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "implementation": "analysis/v3/enriched_source_cohort.py",
-      "remaining": "Exact old native cohort CSV absent locally; verify it against b52503cd891313daaa83dacddc5be92bd781bdbbb2e96b3b75da740239816314 before enrichment."
+      "remaining": "All 319244 observations retain exact membership and inherited fields, dates and full-source known dependence. Connect this pinned product to actual measurement scheduling and freeze calendar/support handling; dates are not stage labels."
     },
     "image_only_qualification": {
       "state": "historical_evidence_recorded",
@@ -72,7 +80,7 @@
     },
     "calendar_imaging_nuisance_design": {
       "state": "not_executed",
-      "remaining": "Freeze exact transformations/identification and missingness rules after enriched source and endpoint-matched imaging columns are connected; dates are not stage labels."
+      "remaining": "Freeze exact transformations/identification and missingness rules with endpoint-matched imaging columns. All recovered native records are northern: southern interactions are structurally constant here. Source dates include 29 before 1980; fix year/exposure-support rules without silent date repair or coefficient-guided exclusion. Dates are not stage labels."
     },
     "dependence_aware_inference_simulation": {
       "state": "not_executed",

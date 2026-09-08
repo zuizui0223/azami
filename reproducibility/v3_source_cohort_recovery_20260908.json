@@ -1,0 +1,177 @@
+{
+  "authority": {
+    "additional_search_pages_affect_eligible_source_ranks": false,
+    "all_three_outputs_byte_identical_in_offline_replay": true,
+    "authority_responses": 855,
+    "dataset_version_check": "pinned_DOI_and_modified_verified_before_and_after_acquisition",
+    "evidence_kind": "reacquired_855_responses_with_new_exact_private_manifest_not_recovered_historical_HTTP_bytes",
+    "historical_http_response_identity_verified": false,
+    "manifest_sha256": "ab8934c3f64be36aa304a6cde7fd3947ff1de5a53641c9467dff24bfe6c512d9",
+    "n_source_taxa": 467,
+    "offline_replay_outputs_sha256": {
+      "native_range_join.csv": "8dac422c313c8ae096e70e44ae6062df7a845fdf8134c390a36d5174dea1b3cc",
+      "taxon_resolution.csv": "aa4351cac97b5a459205a7faa3b3b64a0af04e4d164df14348d7652e1b623a97",
+      "wcvp_distribution_records.csv": "5aa790a40f2cb4f943e36c64a899b85d2c3d4a1857753c8202775cb1342ff1f7"
+    },
+    "search_pagination_scope_audit": [
+      {
+        "name": "Altissima",
+        "provider_count": 435,
+        "returned_records": 100,
+        "source_rank_counts": {
+          "complex": 502
+        }
+      },
+      {
+        "name": "Cirsium",
+        "provider_count": 2129,
+        "returned_records": 100,
+        "source_rank_counts": {
+          "genus": 72399
+        }
+      }
+    ],
+    "search_responses_indicating_additional_pages": 2,
+    "status_counts": {
+      "introduced": 157716,
+      "native": 384072,
+      "unlisted": 9787,
+      "unmapped_or_unusable_location": 64283,
+      "unresolved_taxon": 49281
+    }
+  },
+  "cohort": {
+    "accepted_taxa": 355,
+    "aggregate_report_matches_historical_report": true,
+    "exact_historical_csv_identity_verified": true,
+    "historical_csv_sha256": "b52503cd891313daaa83dacddc5be92bd781bdbbb2e96b3b75da740239816314",
+    "historical_report_canonical_sha256": "2b142407219b76f03fc46b2457ed584e7c00a7f053e86a90aea858912ee65b63",
+    "rows": 319244
+  },
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "enrichment": {
+    "accepted_taxa": 355,
+    "annotation_helper_sha256_text_lf": "45b3191e00050aa000293b83c3aba517d6b466a373fe4a50cca12622af57994b",
+    "calendar": {
+      "exact_date_rows": 319244,
+      "hemisphere_counts": {
+        "north": 319244
+      },
+      "numeric_roundtrip_absolute_tolerance": 1e-10,
+      "recomputed_and_compared_to_source_annotation": true
+    },
+    "checked_upstream_receipts": {
+      "annotations": {
+        "present": true,
+        "receipt_sha256": "d888ee40793483d13c6729e795c18fc0ab18c1169663c228534ffb561a7d646a",
+        "verification": "receipt_and_caller_pin"
+      },
+      "cohort": {
+        "present": true,
+        "receipt_sha256": "8c65be91dcbdafbd4a71d20394743b065bd0b35873feec112c7ecc6a2037a38e",
+        "verification": "receipt_and_caller_pin"
+      },
+      "reconciliation": {
+        "present": true,
+        "receipt_sha256": "5b5fc6c33cafdf4668477a89421259e4896bb819c5287ec52ab39bd159a064b0",
+        "verification": "receipt_and_caller_pin"
+      }
+    },
+    "cohort_membership_changed": false,
+    "cohort_rows": 319244,
+    "dependence": {
+      "cohort_known_components": 319230,
+      "cohort_observations_with_source_photo_links": 319244,
+      "full_source_components_with_multiple_observations": 33,
+      "full_source_observations": 665139,
+      "known_dependence_components": 665103,
+      "prior_annotation_components_preserved": true,
+      "reconciled_source_photo_links": 1122901
+    },
+    "ecological_fitting_authorized": false,
+    "ecological_models_executed": 0,
+    "environment_values_read": 0,
+    "implementation_sha256_text_lf": "27fde86ffdefdf632a3e06cdaae86153c19bfd1ca62c287d705bd43a1a617302",
+    "input_sha256": {
+      "annotations": "edeca109294a0f3b291ac81ebc99fdeb04c41cf37adffdf41640a14e6a7172a7",
+      "cohort": "b52503cd891313daaa83dacddc5be92bd781bdbbb2e96b3b75da740239816314",
+      "reconciliation": "daaa04917fbf0f1dfa03bcfa6d5a49f95074cf3ee1965e3b4a4d482d72cd0f02"
+    },
+    "limits": [
+      "Known shared-photo and existing annotation components are retained across the full source; this does not prove all remaining observations independent.",
+      "Exact dates and hemisphere harmonics describe calendar timing, not observed developmental stage.",
+      "Endpoint-matched resolution, sharpness and colour context are not present until joined from verified measurement products.",
+      "Native classification is inherited from the pinned old cohort; no taxonomy or distribution decision was changed."
+    ],
+    "output_csv_bytes": 214499181,
+    "output_csv_sha256": "ce9178ef70c2850939c64ba065e783726cbd207cb30ffc8978d6d95d0b14dd40",
+    "production_image_execution_authorized": false,
+    "schema_version": 1,
+    "source_rows_deleted": 0,
+    "status": "ENRICHED_SOURCE_COHORT_VERIFIED_NO_ECOLOGICAL_AUTHORIZATION",
+    "trait_files_read": 0,
+    "version": "v3_enriched_native_source_cohort_v1"
+  },
+  "environment_values_read": 0,
+  "implementation_sha256_text_lf": {
+    "analysis/rebuild_frozen_native_status.py": "df5ad02f5c9a478e14b5e1f7a8410c8f7a78ee2337e68a081c69b4c5390b8081",
+    "analysis/v3/build_native_range_join.py": "57c458b9bcb78edf43e05bbeb11bb780bb8571caca0b8e9c3e828f82564f4bfd",
+    "analysis/v3/build_native_range_join_from_source.py": "1ffa43bd4a4b81211d38ce0e00f9a3ee5ab27c0e8145f0f80f0d15ac80066980",
+    "analysis/v3/recover_native_source_authority.py": "9a82282bd321c507ec3e00764f44a264e9cbeb15bd98aa2db5c38ea95a2fb8c9"
+  },
+  "independent_saved_csv_audit": {
+    "cohort_known_components": 319230,
+    "date_support_audit": {
+      "before_1950": 1,
+      "before_1980": 29,
+      "before_2000": 180,
+      "before_2008": 1103
+    },
+    "exact_dates_checked": 319244,
+    "exact_membership_and_all_12_inherited_fields_preserved": true,
+    "hemisphere_counts": {
+      "north": 319244
+    },
+    "maximum_observation_year": 2026,
+    "minimum_observation_year": 1899,
+    "unusual_source_dates_deleted_or_silently_repaired": false
+  },
+  "limits": [
+    "Exact source and native-cohort bytes are recovered; the historical full native join and HTTP responses lacked original pins, so only their newly archived reconstruction is replay-verified.",
+    "The first original archive still lacks its raw API stream; metadata fallback is not complete collection-time recovery.",
+    "All native-cohort records are northern-hemisphere records. Southern interaction terms are structurally constant in this source view, not additional estimable adjustment terms.",
+    "Dates are calendar timing, not developmental-stage labels; known photo dependence is not proof of independence of all other observations.",
+    "Source dates range from 1899 to 2026, including 29 records before 1980. Exact syntax does not verify true photography dates; year/support handling must be fixed before ecological fitting, with no silent date repair or deletion.",
+    "Local preservation and replay are not a verified off-device private archive or permanent data deposition.",
+    "No full-source image measurements, assessability audit, environmental model or ecological result is supplied by this recovery."
+  ],
+  "private_preservation": {
+    "cloud_execution_hold_preserved": true,
+    "local_exact_files_retained": true,
+    "off_device_private_restore_verified": false,
+    "offline_authority_replay_verified": true,
+    "permanent_public_data_deposition": false
+  },
+  "production_image_execution_authorized": false,
+  "schema_version": 1,
+  "source": {
+    "archive_manifest_canonical_sha256": "c0496cd963558764276406f700c86511d63401464eb90f3748e10acecfee278e",
+    "counts": {
+      "api_rows": 640141,
+      "exact_date_rows": 663255,
+      "metadata_rows": 1122855,
+      "public_coordinate_rows": 632927,
+      "unique_observations": 665139
+    },
+    "serialization_recovery": {
+      "crlf_pairs_replaced": 665140,
+      "historical_source_bytes_verified": true,
+      "input_sha256": "555477b8d6aba8f6d7399723d00fc353e73821d30815408a393acfc6ef4d331c",
+      "original_preserved": true,
+      "output_sha256": "5632f532a63c8babdc20b023bd0d3c47424d69461df5de9793028e93e819f959"
+    }
+  },
+  "status": "EXACT_SOURCE_COHORT_RECOVERED_ENRICHED_AND_LOCAL_AUTHORITY_REPLAY_VERIFIED",
+  "trait_files_read": 0
+}
