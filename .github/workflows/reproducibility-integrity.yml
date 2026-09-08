@@ -40,6 +40,9 @@ jobs:
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan
 
+      - name: Verify active integrated design and pinned evidence without authorizing execution
+        run: python -m analysis.v3.integrated_preflight
+
       - name: Confirm prepublication documents are absent
         shell: bash
         run: |

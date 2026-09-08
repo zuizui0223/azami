@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "status": "INTEGRATED_DESIGN_AND_LIMITED_IMPLEMENTATIONS_VERIFIED",
+  "base_reviewed_head": "2c8292477a55e28503522ecae7a932d2b3db7740",
+  "active_contract": "analysis/v3/integrated_workflow_contract.json",
+  "contract_sha256_canonical_json": "8ffce5a8e22aab7091553424d225b2e6135b6946e9390c917b16f2b6df23b9b1",
+  "evidence_index_sha256_canonical_json": "6d924eab653ab5020c0435376f68614a250251edc5e00154814c128a5c9909fc",
+  "hash_convention": "implementation_sha256_text_lf hashes UTF-8 source after universal-newline normalization; exact artifact/database hashes retain the byte convention of their original receipts.",
+  "implementation_sha256_text_lf": {
+    "analysis/v3/assessability.py": "bb7a1fa200047e9d42af7f636f3e052609f9e0d686bbe0914739ba1eb75a4856",
+    "analysis/v3/model_design_diagnostics.py": "b95c243963757d1f112e5caca1133d9780cb39e555248d4242e3a460cda997e0",
+    "analysis/v3/enriched_source_cohort.py": "27fde86ffdefdf632a3e06cdaae86153c19bfd1ca62c287d705bd43a1a617302",
+    "analysis/v3/integrated_preflight.py": "699274c35acbf5ec633510fc1464a1e04b05f0116940a91d0c5541a830c57110",
+    "analysis/v3/freeze_measurement_qualification.py": "4177b2e7f73811411e036c88cb43613597f161da097875b3f46cfec9d59d3888",
+    "analysis/v3/stream_original_traits.py": "e3f391befe0c8a061615dd34ad9e7da469fb7d7e468fd7ffb8f521fb4639d74c"
+  },
+  "tests": {
+    "tests": 416,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_exact_sha256": "2cc73b86fba1efad6ff0ecdea95583913e6b427e3b21874fb48954c9cfcb7cbf",
+    "scope": "All test_v3_*.py plus test_ch1_canonical_manifest, test_reproducibility_manifest, test_material_availability, test_azami_ch1_provenance and test_azami_ch1_tabular; local Python 3.12.14."
+  },
+  "executed_real_source_probe": {
+    "schema_version": 1,
+    "status": "SOURCE_INTEGRITY_VERIFIED_NATIVE_COHORT_UNCHECKED",
+    "input_sha256": {
+      "annotations": "edeca109294a0f3b291ac81ebc99fdeb04c41cf37adffdf41640a14e6a7172a7",
+      "reconciliation": "daaa04917fbf0f1dfa03bcfa6d5a49f95074cf3ee1965e3b4a4d482d72cd0f02"
+    },
+    "checked_upstream_receipts": {
+      "annotations": {
+        "present": true,
+        "receipt_sha256": "d888ee40793483d13c6729e795c18fc0ab18c1169663c228534ffb561a7d646a",
+        "verification": "receipt_and_caller_pin"
+      },
+      "reconciliation": {
+        "present": true,
+        "receipt_sha256": "5b5fc6c33cafdf4668477a89421259e4896bb819c5287ec52ab39bd159a064b0",
+        "verification": "receipt_and_caller_pin"
+      }
+    },
+    "dependence": {
+      "full_source_observations": 665139,
+      "reconciled_source_photo_links": 1122901,
+      "known_dependence_components": 665103,
+      "prior_annotation_components_preserved": true,
+      "full_source_components_with_multiple_observations": 33
+    },
+    "implementation_sha256_text_lf": "27fde86ffdefdf632a3e06cdaae86153c19bfd1ca62c287d705bd43a1a617302",
+    "native_cohort_verified": false,
+    "ecological_fitting_authorized": false,
+    "production_image_execution_authorized": false,
+    "trait_files_read": 0,
+    "limits": [
+      "This probe verifies source identities, full membership and known dependence only; it does not verify the missing native cohort or native authority chain.",
+      "Known dependence components do not prove independence of all other records."
+    ]
+  },
+  "executed_frozen_measurement_compatibility": {
+    "status": "EXACT_FROZEN_AGGREGATE_COMPATIBILITY_VERIFIED",
+    "artifact_id": 10034896212,
+    "archive_sha256": "f48c572fcf4a0b048db49a513d018fb4f373d980bb9bfa5b658c5274b0ccb005",
+    "report_sha256": "eeecfbee6d81f4ac6148213df7165f55972bc1ead451a2a59078a4ce754e49d5",
+    "report_bytes": 23296,
+    "routes": {
+      "blocked_by_other_measurement_rule": 9,
+      "stream_original_required": 14,
+      "blocked_pending_additional_gate": 4
+    },
+    "historical_receipts_modified": false,
+    "source_images_requested": 0,
+    "ecological_models_executed": 0
+  },
+  "implementation_evidence": [
+    "Versioned native-cohort enrichment: synthetic identity, calendar, privacy and dependence tests; actual native cohort not executed.",
+    "Assessability: fixed native-source taxon weights, explicit unreported/transfer/detection/QC states and per-module denominators; full realized native cohort not executed.",
+    "Environmental diagnostics: actual-cohort interface, separate raw/within/among/nuisance-residualized correlation, rank, condition and VIF; tested on synthetic counterexamples, not final ecological data.",
+    "Integrity preflight verifies unique pinned historical evidence and active ordering, but has no production or ecological fitting path."
+  ],
+  "pending_full_execution": [
+    "Recover and hash-verify exact native cohort and complete authority/join products; aggregate count agreement is insufficient.",
+    "Connect reconciled scheduling, verified private numerical persistence and restoration to image processing.",
+    "Qualify a separately versioned uniform-floral chroma definition without rewriting legacy chroma.",
+    "Freeze and connect calendar/imaging nuisance terms and execute realized-cohort assessability/design diagnostics.",
+    "Complete covariance-aware hierarchy, sparse support, direct scale contrasts and validated dependence-aware null/uncertainty inference.",
+    "Optional breadth synthesis only after common-axis, sample-size, bandwidth and convergence qualification; not a prerequisite to otherwise valid primary ecology."
+  ],
+  "public_data_policy": "No observation IDs, coordinates, source user IDs, raw image rows, manuscript prose or individual supervisor replies are added.",
+  "v2_results_rewritten": false,
+  "v3_ecological_models_executed": 0,
+  "production_image_execution_authorized": false,
+  "ecological_fitting_authorized": false
+}

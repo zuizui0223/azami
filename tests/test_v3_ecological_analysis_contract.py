@@ -49,7 +49,8 @@ def test_completed_environment_and_measurement_gates_are_recorded():
     assert done["measurement_contract"] == "analysis/v3/measurement_qualification_contract.json"
     assert done["measurement_decision"] == "analysis/v3/measurement_qualification_decision_20260908.json"
     assert done["measurement_freeze_receipt"] == "reproducibility/v3_measurement_qualification_freeze_20260908.json"
-    assert done["measurement_freeze_status"] == "V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_ECOLOGY"
+    receipt = json.loads((ROOT / done["measurement_freeze_receipt"]).read_text(encoding="utf-8"))
+    assert done["measurement_freeze_status"] == receipt["status"]
 
 
 def test_preserved_scientific_requirements_survive_redesign():

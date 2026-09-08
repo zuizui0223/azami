@@ -1,18 +1,6 @@
 name: Chapter 1 v3 ecological source cohort freeze
 
 on:
-  push:
-    branches: [revision/ch1-v3-20260907]
-    paths:
-      - .github/workflows/ch1-v3-ecological-source-cohort.yml
-      - analysis/v3/ecological_source_cohort_contract.json
-      - analysis/v3/build_ecological_source_cohort.py
-      - analysis/v3/native_range_join_contract.json
-      - analysis/v3/build_native_range_join.py
-      - analysis/v3/build_native_range_join_from_source.py
-      - analysis/v3/environment_source_archives.json
-      - analysis/v3/prepare_environment_source_observations.py
-      - tests/test_v3_ecological_source_cohort.py
   workflow_dispatch:
 
 concurrency:
@@ -28,6 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
+      # The historical run retained only aggregate counts and deleted the exact
+      # native join/cohort. Do not repeat that lossy execution. Local builders
+      # remain available; cloud execution requires verified private persistence.
+      - name: Require verified private source and cohort archive
+        id: private_archive
+        shell: bash
+        run: |
+          echo "::error::STOP: exact source, authority, native join and cohort persistence/recovery are not implemented. Aggregate counts alone cannot freeze reproducible source membership."
+          exit 1
+
       - uses: actions/checkout@v4
 
       - name: Set runner-temporary private paths
@@ -107,7 +105,7 @@ jobs:
           PY
 
       - name: Publish aggregate receipt only and remove private row identifiers
-        if: always()
+        if: always() && steps.private_archive.outcome == 'success'
         run: |
           mkdir -p publish
           if [ -f "$V3_ECO_COHORT/ecological_source_cohort_report.json" ]; then
@@ -119,7 +117,7 @@ jobs:
           test "$(find publish -type f | wc -l)" -eq 1
 
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.private_archive.outcome == 'success'
         with:
           name: ch1-v3-ecological-source-cohort-${{ github.run_id }}
           path: publish

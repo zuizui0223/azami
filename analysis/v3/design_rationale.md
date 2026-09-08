@@ -6,6 +6,12 @@ measurement evaluation and the model specification come before interpretation.
 V2 results have already been inspected, so this is retrospective redesign, not
 preregistration. This document explains the design; it is not an execution receipt.
 
+The active order is source definition, measurement, assessability, primary
+within/among inference, then optional breadth synthesis. See the
+[integrated contract](integrated_workflow_contract.json) for explicit revisions to
+earlier model mappings and the [evidence index](integrated_evidence_index.json) for
+what is actually implemented. A successful preflight is not production permission.
+
 ## 1. Preserve the source; define the ecological target separately
 
 The master ledger retains every recovered observation-photo link, including
@@ -49,6 +55,20 @@ meaning and environmental support before joining traits. The frozen drying and
 thermal alternatives are reported together, not chosen by the more favourable
 outcome. Marginal slopes cannot establish independent environmental effects.
 
+The current revision uses the same four-exposure drying and thermal formulations
+for each primary module. Precipitation is the focal orientation coefficient;
+that focal hypothesis is not a reason to leave correlated exposures unadjusted.
+This supersedes the earlier precipitation-only primary orientation model, without
+rewriting its historical contract. The choice changes the conditional question;
+it does not demonstrate that all confounders have been measured. Removing annual
+or growing-season representations also narrows the temporal question, not just
+redundant information.
+
+Before fitting, diagnose the realized endpoint/module cohort at both scales and
+after nuisance adjustment. A low VIF in a capped source-diagnostic sample cannot
+certify identification in the final cohort or in every taxon. Keep singular and
+weakly supported contrasts visible as non-estimable or uncertain.
+
 Chapter 1 is abiotic-only. Globally comparable pollinator exposure is not included;
 pollinator filtering remains an untested alternative explanation, not a proxy to
 add after inspecting an abiotic result.
@@ -67,6 +87,11 @@ need the specified bbox-stable formulation and its bounded alternatives. Colour
 needs paired flower/non-head/green-context values, not only availability counts.
 Background associations limit floral specificity; their absence does not establish
 calibrated reflectance.
+
+The current legacy chroma function changes its pixel subset with the dominant
+colour class. Preserve its raw values and version history. A consistently defined
+floral-union chroma is a candidate new measurement, not an automatically qualified
+replacement; its image-only evaluation must precede primary colour fitting.
 
 Lightness, chroma and circular hue are interpreted jointly. Low chroma alone cannot
 distinguish pale from dark colour or quantify anthocyanin. The four colour fractions
@@ -101,6 +126,22 @@ bounded geographic uncertainty comparisons describe remaining dependence, not
 sequential gates that promote surviving associations. The implemented estimator
 must be checked against the intended hierarchy before use on trait outcomes.
 
+Exact dates and hemisphere-specific calendar harmonics belong in the source-to-
+model path, alongside endpoint-matched imaging terms. They do not identify
+developmental stage. The primary estimand describes the photographed mixture of
+stages; conditioning on stage or restricting to anthesis asks a different question.
+Partial pooling likewise does not recover missing recording effort. Assessability
+compares the eligible native source with attempted, downloaded, detected and
+QC-usable records, using fixed source-taxon weights and endpoint/module cohorts.
+Unreported processing states must not be called failures or detector negatives.
+
+The central ecological comparison is direct: estimate the difference between
+within- and among-taxon associations on matched support and a common measurement
+scale, with joint uncertainty. Comparing a significant slope with a nonsignificant
+slope is not such a test. Within-group centering separates the two association
+scales, but does not by itself establish a causal interpretation
+([van de Pol & Wright, 2009](https://doi.org/10.1016/j.anbehav.2008.11.006)).
+
 ## 5. Report contributions without promoting association to mechanism
 
 The methodological contribution includes recoverable source coverage, endpoint
@@ -116,6 +157,24 @@ analysis until an executed receipt and numerical results exist.
 Joint colour and shape modules organize the main questions; individual endpoint
 slopes decompose those questions. Whole-capitulum synthesis is secondary and cannot
 rescue an unsupported module by searching for a favourable combination.
+
+The reporting structure therefore remains: image-to-trait coverage and technical
+evaluation; measured distributions and module covariance; within/among ecological
+estimates and their direct contrast; then optional breadth synthesis. The method's
+contribution is this traceable distribution-level evidence, not the invention of
+YOLO, PCA or hypervolume. The ecological contribution is the scale comparison,
+whether its associations are clear, weak, absent or different from v2.
+
+Hypervolume A can visualize environmental coverage at assessability, but does not
+replace retention and density diagnostics. Hypervolume B is a secondary comparison
+of environmental and phenotype breadth on the same observation sets. Use common
+axes and units across taxa, sample-size controls, declared bandwidth and probability
+mass, and convergence checks. Different spaces cannot be compared by direct set
+overlap. Bandwidth, dimension and sample size affect estimated hypervolumes
+([Blonder et al., 2018](https://doi.org/10.1111/2041-210X.12865)); these choices need
+outcome-blind qualification. B is optional and is not independent corroboration of
+the same-data primary association. Observed environmental breadth is not a complete
+fundamental niche, and image-phenotype breadth is not plasticity.
 
 Flora or monograph descriptions can provide a separate taxon-matched external
 consistency benchmark, not individual-level physical calibration. Phylogenetic

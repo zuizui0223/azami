@@ -268,3 +268,31 @@ def test_oriented_pixel_identity_encodes_dimensions_and_rgb():
     assert flat.tobytes() == wide.tobytes()
     assert stream.oriented_pixel_identity(flat) != stream.oriented_pixel_identity(wide)
     assert stream.oriented_pixel_identity(flat) == stream.oriented_pixel_identity(flat.copy())
+
+
+def test_runtime_records_actual_metadata_not_requirement_pins(monkeypatch):
+    versions = {name: "observed-test-version-9.7" for name in
+                ("torch", "torchvision", "ultralytics", "numpy", "pandas", "pillow", "requests", "opencv-python")}
+    def installed_version(name):
+        if name not in versions:
+            raise stream.importlib.metadata.PackageNotFoundError(name)
+        return versions[name]
+    monkeypatch.setattr(stream.importlib.metadata, "version", installed_version)
+    monkeypatch.setattr(stream.platform, "python_version", lambda: "3.12.runtime-test")
+    runtime = stream.software_runtime()
+    assert runtime["python"] == "3.12.runtime-test"
+    assert runtime["distribution_versions"]["torch"] == "observed-test-version-9.7"
+    assert runtime["distribution_versions"]["opencv-python-headless"] is None
+    assert runtime["missing_distribution_metadata"] == ["opencv-python-headless"]
+    assert runtime["requirements_conformance_verified"] is False
+    assert runtime["loaded_feature_module_versions"]["cv2"] == stream.features.cv2.__version__
+
+
+def test_stream_execution_contract_persists_actual_runtime_snapshot(offline_run, monkeypatch):
+    runtime = {"python": "actual-interpreter-test", "distribution_versions": {"torch": "actual-torch-test"},
+               "requirements_conformance_verified": False}
+    monkeypatch.setattr(stream, "software_runtime", lambda: runtime)
+    out, report = offline_run.invoke()
+    execution = json.loads((out / "execution_contract.json").read_text(encoding="utf-8"))
+    assert execution["software_runtime"] == runtime
+    assert report["execution_contract_sha256"] == hashlib.sha256((out / "execution_contract.json").read_bytes()).hexdigest()

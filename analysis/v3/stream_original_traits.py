@@ -15,9 +15,11 @@ import argparse
 from contextlib import ExitStack
 import csv
 import hashlib
+import importlib.metadata
 import json
 import math
 from pathlib import Path
+import platform
 import statistics
 import time
 
@@ -249,6 +251,27 @@ def oriented_pixel_identity(image) -> str:
     return hashlib.sha256(prefix + rgb.tobytes()).hexdigest()
 
 
+def software_runtime() -> dict:
+    """Record this interpreter's runtime, never infer it from requirements text."""
+    distributions = {}
+    for name in ("torch", "torchvision", "ultralytics", "numpy", "pandas", "pillow",
+                 "opencv-python", "opencv-python-headless", "requests"):
+        try:
+            distributions[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            distributions[name] = None
+    return {
+        "python": platform.python_version(),
+        "implementation": platform.python_implementation(),
+        "system": platform.system(),
+        "machine": platform.machine(),
+        "distribution_versions": distributions,
+        "loaded_feature_module_versions": {"cv2": features.cv2.__version__, "numpy": features.np.__version__},
+        "missing_distribution_metadata": sorted(name for name, version in distributions.items() if version is None),
+        "requirements_conformance_verified": False,
+    }
+
+
 def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: Path,
         pilot_observations: int = 128, shard_index: int = 0, shard_count: int = 1,
         expected_cohort_sha256: str | None = None) -> dict:
@@ -290,6 +313,7 @@ def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: P
         "helper_sha256_text_lf": {name: text_digest(Path(__file__).with_name(name)) for name in
                                    ("resolution_stream_gate.py", "perturb_cached_heads.py", "detect_cached_images.py")},
         "feature_specification": features.specification(),
+        "software_runtime": software_runtime(),
         "cohort_sha256": digest(cohort), "metadata_sha256": digest(metadata),
         "measurement_decision_sha256": digest(decision_path),
         "retained_endpoint_count": 27, "ecological_route_endpoint_count": len(qualified),

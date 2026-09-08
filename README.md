@@ -14,6 +14,12 @@ The [v3 scientific design rationale](analysis/v3/design_rationale.md) explains t
 measurement and ecological questions. Cloud original-image streaming is stopped
 until durable private numerical storage and verification are implemented.
 
+The [active five-stage v3 design](analysis/v3/integrated_workflow_contract.json)
+places source and measurement assessability before within/among ecological
+inference, followed by optional breadth synthesis. Run
+`python -m analysis.v3.integrated_preflight` to check its pinned evidence and
+unfinished requirements. A successful integrity check is not production readiness.
+
 ## Third-party reproducibility status
 
 The frozen Chapter 1 v2 analysis code, contracts, frozen outputs, validation reports and figure sources are public and auditable in this repository. The complete independent-reader procedure is [`reproducibility/README.md`](reproducibility/README.md).

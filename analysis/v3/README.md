@@ -1,8 +1,40 @@
 # Chapter 1 v3: retain the source information, then define analysis views
 
 V3 starts with the recovered acquisition snapshot, not the 46,276 observations
-already selected for v2. The current entry point is
+already selected for v2. The active design and readiness entry point is
+`python -m analysis.v3.integrated_preflight`. The source-inventory utility remains
 `python -m analysis.v3.workflow inventory`.
+
+## Active five-stage workflow
+
+The [integrated contract](integrated_workflow_contract.json) is the current
+ordering and revision authority. Its [evidence index](integrated_evidence_index.json)
+distinguishes pinned historical evidence, tested code and unexecuted work.
+Earlier contracts below remain historical input definitions; the integrated
+contract lists exactly which model/ordering provisions it supersedes.
+
+| Stage | Question | Current implementation boundary |
+|---|---|---|
+| 1. Source | Which records support the native-range ecological question? | Full source links and annotations verified. The new `enriched_source_cohort` builder retains dates and full-source dependence; actual enrichment needs the exact old native-cohort CSV and authority chain. |
+| 2. Measurement | What can each photo measure, with what uncertainty? | All 27 raw slots retained; 14 original-image routes are operationally qualified. Full reconciled streaming, private durable replay and a separately versioned uniform-floral chroma definition remain unfinished. |
+| 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
+| 4. Ecology | Do within- and among-taxon associations agree? | Joint slope algebra is verified. Covariance-aware pooling, matched-support scale contrasts and dependence-aware inference still require a validated runner. |
+| 5. Synthesis | Do observed environmental and phenotype breadths covary? | Optional secondary Hypervolume B; common axes, bandwidth and sample-size/convergence qualification must precede it. Its failure cannot block otherwise supported primary ecology. |
+
+This keeps two contributions together: an auditable image-to-distribution method,
+and a test of module-specific ecological associations across scales. It does not
+require any positive result or the survival of the v2 candidates. Technical
+repeatability is not physical trait accuracy, and spatial association is not
+adaptation. Full-production and ecological-fit authorization remain **false**.
+
+The frozen 9,503-row environment diagnostic is not the final model cohort.
+VIF/rank must be reported on each actual endpoint/module design, including
+within-taxon and among-taxon support. Partial pooling addresses unstable taxon
+slopes; it does not by itself repair selective photography or recording effort.
+
+The following sections document the source inventory and earlier implementation
+checkpoints. Their historical completion labels do not override the active
+five-stage contract or the execution boundary above.
 
 Current execution boundary (8 September 2026): the source-first design remains,
 but full original-image processing and ecological fitting are **held**. The
@@ -20,6 +52,14 @@ coverage or accuracy. Production still needs the reconciled photo-link input,
 calendar/imaging nuisance design, dependence-aware pooling and verified private
 numerical preservation. The cloud pilot stops before retrieval until that private
 archive is implemented. Earlier aggregate receipts are not retroactively promoted.
+
+The source-cohort cloud workflow is also held and no longer runs automatically
+on pushes: its historical recipe published only a report and then removed the
+exact private source, authority join and cohort files. It must verify private
+preservation and restoration before another cloud source freeze. The local
+builders remain available. A source-only integrity probe can verify the existing
+annotation/reconciliation databases without pretending that the missing native
+cohort has been recovered.
 
 The archived July 2026 photo metadata contain **665,115 observations and
 1,122,854 photos**. These are records of photos, not proof that every image file

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "hash_convention": "canonical_json_sha256 = SHA-256 of UTF-8 JSON with sorted keys, separators comma/colon, ensure_ascii false and no NaN; raw data artifacts use exact byte SHA-256 in their own receipts.",
+  "scope": "Public evidence identity and unfinished implementation ledger, not an authorization token.",
+  "inputs": [
+    {
+      "id": "source_receipt",
+      "path": "reproducibility/v3_source_reconciliation_20260907.json",
+      "canonical_json_sha256": "3f95bd967ff85ee883c4f08d61aff0377f1899042efd8e80df55ef216364ac76"
+    },
+    {
+      "id": "environment_receipt",
+      "path": "reproducibility/v3_environment_representation_freeze_20260907.json",
+      "canonical_json_sha256": "a569e11f00d3184c203ffe628f12d8e9c83d7bdeb643117ee8f6570d2296c0b5"
+    },
+    {
+      "id": "measurement_receipt",
+      "path": "reproducibility/v3_measurement_qualification_freeze_20260908.json",
+      "canonical_json_sha256": "18d74106b2ef0fbe144fab06d36558343f9e270f11c6cb3f49e2cb242c4c6eb2"
+    },
+    {
+      "id": "measurement_decision",
+      "path": "analysis/v3/measurement_qualification_decision_20260908.json",
+      "canonical_json_sha256": "ebce105f60f6812d2d28ab2a72ea12c58d4c2f7253abb5137d712802b0c14f8f"
+    }
+  ],
+  "requirements": {
+    "reconciled_source_links": {
+      "state": "historical_evidence_recorded",
+      "evidence": "reproducibility/v3_source_reconciliation_20260907.json",
+      "remaining": "Use this full link ledger in the actual stream schedule; the merged snapshot is insufficient."
+    },
+    "native_authority_input_chain": {
+      "state": "not_executed",
+      "remaining": "The completed remote join has aggregate evidence; exact full-source authority/join products must be recoverable and hash-verified, not replaced by a new lookup or legacy v2 mask."
+    },
+    "enriched_source_cohort": {
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/enriched_source_cohort.py",
+      "remaining": "Exact old native cohort CSV absent locally; verify it against b52503cd891313daaa83dacddc5be92bd781bdbbb2e96b3b75da740239816314 before enrichment."
+    },
+    "image_only_qualification": {
+      "state": "historical_evidence_recorded",
+      "evidence": "reproducibility/v3_measurement_qualification_freeze_20260908.json",
+      "remaining": "Operational 14-route qualification is not physical accuracy or an automatic admission of a changed colour definition."
+    },
+    "versioned_colour_definition": {
+      "state": "not_executed",
+      "remaining": "Qualify uniform-floral-union chroma under a new recipe identity; retain legacy dominance-dependent values."
+    },
+    "reconciled_stream_schedule": {
+      "state": "not_executed",
+      "remaining": "Wire actual reconciled links and known dependence to source cohort and stream; no merged-snapshot fallback."
+    },
+    "durable_private_numerical_replay": {
+      "state": "not_executed",
+      "remaining": "Test verified durable private writes/restoration before cloud cleanup or production. Local retention tests are not a durable cloud archive."
+    },
+    "native_source_to_measurement_coverage": {
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/assessability.py",
+      "remaining": "Run on actual native source plus complete observation-endpoint disposition ledger; synthesized tests do not establish full-source assessability."
+    },
+    "model_specific_environment_diagnostics": {
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/model_design_diagnostics.py",
+      "remaining": "Run on each realized model cohort with finalized nuisance terms and weights; older 9503-row diagnostics are not substitutes."
+    },
+    "joint_covariance_aware_hierarchy": {
+      "state": "not_executed",
+      "remaining": "Joint numerical taxon-slope solver exists; full cross-covariance pooling, sparse taxa and direct scale-contrast runner are unfinished."
+    },
+    "calendar_imaging_nuisance_design": {
+      "state": "not_executed",
+      "remaining": "Freeze exact transformations/identification and missingness rules after enriched source and endpoint-matched imaging columns are connected; dates are not stage labels."
+    },
+    "dependence_aware_inference_simulation": {
+      "state": "not_executed",
+      "remaining": "Implement and check null error, coverage, heterogeneity and spatial/component-respecting resampling; HC3 alone is not spatially robust inference."
+    },
+    "fixed_full_test_family": {
+      "state": "not_executed",
+      "remaining": "The 18-slot family is declared in the integrated design; rank-aware module/contrast tests and missing-slot handling need executable validation."
+    },
+    "outcome_blind_common_axes": {
+      "state": "not_executed",
+      "remaining": "Optional synthesis only: fit and retain common module-balanced transforms with no coefficient-guided selection."
+    },
+    "hypervolume_sampling_and_bandwidth_validation": {
+      "state": "not_executed",
+      "remaining": "Optional synthesis only: qualify dimensionality, common bandwidth/quantile, sample-size controls and convergence without examining ecological associations."
+    }
+  }
+}

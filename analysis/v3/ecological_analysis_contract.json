@@ -17,7 +17,7 @@
     "measurement_contract": "analysis/v3/measurement_qualification_contract.json",
     "measurement_decision": "analysis/v3/measurement_qualification_decision_20260908.json",
     "measurement_freeze_receipt": "reproducibility/v3_measurement_qualification_freeze_20260908.json",
-    "measurement_freeze_status": "V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_ECOLOGY"
+    "measurement_freeze_status": "V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_TRAIT_ENVIRONMENT_JOIN"
   },
   "design_hold": {
     "ecological_fitting_paused": true,

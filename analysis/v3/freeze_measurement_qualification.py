@@ -8,8 +8,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import inspect
 import json
 from pathlib import Path
+
+from .resolution_size_followup import summarize_endpoint as summarize_resolution_followup
 
 
 FREEZE_STATUS = "V3_MEASUREMENT_QUALIFICATION_FROZEN_BEFORE_TRAIT_ENVIRONMENT_JOIN"
@@ -45,10 +48,32 @@ def expected_route(status: str) -> set[str]:
     raise ValueError(f"Unknown resolution followup status: {status}")
 
 
+def followup_thresholds() -> dict:
+    """Read the existing predeclared followup defaults, not new gate cutoffs."""
+    defaults = inspect.signature(summarize_resolution_followup).parameters
+    return {field: defaults[parameter].default for field, parameter in {
+        "minimum_common_usable_head_pairs": "min_common",
+        "minimum_discordant_eligibility_pairs": "min_discordant",
+        "original_gain_share_among_discordant": "comparison_gain_share",
+        "eligibility_exact_p_max": "eligibility_p_max",
+        "rank_correlation_min": "rank_threshold",
+        "median_abs_delta_over_original_iqr_max": "normalized_delta_threshold",
+    }.items()}
+
+
 def freeze(contract_path: Path, followup_report_path: Path, decision_path: Path, out_path: Path) -> dict:
     contract = json.loads(contract_path.read_text(encoding="utf-8"))
-    report = json.loads(followup_report_path.read_text(encoding="utf-8"))
+    report_bytes = followup_report_path.read_bytes()
+    report_sha = hashlib.sha256(report_bytes).hexdigest()
+    report = json.loads(report_bytes)
     decision = json.loads(decision_path.read_text(encoding="utf-8"))
+
+    declared_sha = (decision.get("followup_provenance") or {}).get("report_sha256")
+    if (not isinstance(declared_sha, str) or len(declared_sha) != 64
+            or any(ch not in "0123456789abcdef" for ch in declared_sha)):
+        raise ValueError("Measurement decision requires the exact followup report SHA-256")
+    if declared_sha != report_sha:
+        raise ValueError("Followup report SHA-256 differs from decision provenance")
 
     if contract.get("status") != "fixed_before_128_photo_followup_results":
         raise ValueError("Measurement qualification contract is not the pre-result frozen contract")
@@ -64,6 +89,9 @@ def freeze(contract_path: Path, followup_report_path: Path, decision_path: Path,
         raise ValueError("Followup unexpectedly requires a full image archive")
     if report.get("ecological_models_executed") is not False:
         raise ValueError("Followup is not ecology-blind")
+    thresholds = followup_thresholds()
+    if report.get("decision_thresholds") != thresholds:
+        raise ValueError("Followup thresholds differ from the predeclared resolution analysis")
 
     if decision.get("status") != DECISION_STATUS:
         raise ValueError("Measurement decision has wrong status")
@@ -73,6 +101,8 @@ def freeze(contract_path: Path, followup_report_path: Path, decision_path: Path,
         raise ValueError("Measurement decision and contract IDs differ")
 
     endpoints = endpoint_universe(contract)
+    modules = {endpoint: name for name, module in contract["module_rules"].items()
+               for endpoint in module["endpoints"]}
     followup = report.get("endpoint_summary") or {}
     if set(followup) != endpoints:
         missing = sorted(endpoints - set(followup))
@@ -87,12 +117,26 @@ def freeze(contract_path: Path, followup_report_path: Path, decision_path: Path,
         endpoint = str(entry.get("endpoint_id") or "")
         if endpoint in by_endpoint or endpoint not in endpoints:
             raise ValueError(f"Duplicate or unknown measurement decision endpoint: {endpoint}")
+        module = modules[endpoint]
+        if entry.get("module") != module:
+            raise ValueError(f"Decision module differs from the contract for {endpoint}")
         status = str(entry.get("resolution_status") or "")
         if status != str(followup[endpoint].get("status")):
             raise ValueError(f"Decision resolution status disagrees for {endpoint}")
         route = str(entry.get("ecological_route") or "")
         if route not in expected_route(status):
             raise ValueError(f"Ecological route {route} is not allowed for {endpoint} with status {status}")
+        if "bbox_rule" in contract["module_rules"][module] and entry.get("bbox_uncertainty_required") is not True:
+            raise ValueError(f"Contract module requires bbox uncertainty for {endpoint}")
+        if module == "fine_architecture_and_surface":
+            common = followup[endpoint].get("both_usable")
+            if type(common) is not int or common < 0:
+                raise ValueError(f"Missing or invalid common-usable count for {endpoint}")
+            numeric_decidable = common >= thresholds["minimum_common_usable_head_pairs"]
+            if followup[endpoint].get("numeric_decidable") is not numeric_decidable:
+                raise ValueError(f"Common-usable count and numeric qualification disagree for {endpoint}")
+            if not numeric_decidable and not route.startswith("blocked_"):
+                raise ValueError(f"Fine-architecture module requires a blocked route for insufficient common-usable pairs: {endpoint}")
         rationale = str(entry.get("rationale") or "").strip()
         if not rationale:
             raise ValueError(f"Missing measurement rationale for {endpoint}")
@@ -122,7 +166,7 @@ def freeze(contract_path: Path, followup_report_path: Path, decision_path: Path,
             "successful_pairs": report.get("successful_pairs"),
             "matched_head_pairs": report.get("matched_head_pairs"),
             "endpoint_status_counts": report.get("endpoint_status_counts"),
-            "report_sha256": sha256_file(followup_report_path),
+            "report_sha256": report_sha,
         },
         "decision_sha256": sha256_file(decision_path),
         "contract_sha256": sha256_file(contract_path),
