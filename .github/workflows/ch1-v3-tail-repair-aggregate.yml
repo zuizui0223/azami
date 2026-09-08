@@ -1,0 +1,93 @@
+name: Chapter 1 v3 repaired tail mechanics receipt
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/tail_repair_aggregate_launch_20260909.json
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  aggregate:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install lightweight runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 pytest==9.1.1
+      - name: Require completed repaired source run
+        run: |
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/34247983094 --jq .conclusion)" = "success"
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/34247983094 --jq .head_sha)" = "cd9562fb800447b4b9853d8617ace8b2288477e7"
+      - name: Download all 32 repaired mechanics artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v3-full36-tail-*-34247983094-1
+          path: runs/tail-repair-artifacts
+          merge-multiple: false
+          github-token: ${{ github.token }}
+          run-id: '34247983094'
+      - name: Aggregate exact repaired inventory and create gate receipt
+        shell: bash
+        run: |
+          count="$(find runs/tail-repair-artifacts -name public_report.json -type f | wc -l)"
+          test "$count" -eq 32
+          mapfile -t reports < <(find runs/tail-repair-artifacts -name public_report.json -type f | sort)
+          mkdir -p runs/tail-repair-receipt
+          python -m analysis.v3.summarize_full_family_tail_pilot \
+            --reports "${reports[@]}" \
+            --out runs/tail-repair-receipt/aggregate.json
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from analysis.v3.workflow import canonical_digest
+
+          p = Path('runs/tail-repair-receipt/aggregate.json')
+          agg = json.loads(p.read_text(encoding='utf-8'))
+          assert agg['status'] == 'FULL36_TAIL_MECHANICS_PILOT_AGGREGATED_NOT_ECOLOGY_ADMISSION'
+          assert agg['recorded_outer_reports'] == 32
+          assert agg['recorded_grid_cases'] == 64
+          assert agg['complete_grid_cases'] == 64
+          assert not agg['missing_outer_reports']
+          assert not agg['incomplete_grid_cases']
+          assert agg['empirical_trait_environment_values_read'] == 0
+          assert agg['ecological_models_executed'] == 0
+          assert agg['ecological_fitting_authorized'] is False
+          raw_sha = hashlib.sha256(p.read_bytes()).hexdigest()
+          receipt = {
+              'schema_version': 1,
+              'status': 'TAIL_MECHANICS_SOLVER_REPAIR_REVALIDATED_64_OF_64_COMPLETE',
+              'source_workflow_run_id': 34247983094,
+              'source_head_sha': 'cd9562fb800447b4b9853d8617ace8b2288477e7',
+              'source_run_attempt': 1,
+              'recorded_outer_reports': 32,
+              'recorded_grid_cases': 64,
+              'complete_grid_cases': 64,
+              'aggregate_sha256': raw_sha,
+              'aggregate_canonical_sha256': canonical_digest(agg),
+              'solver_repair_scope': 'Existing score-root stationarity verification may validate an L-BFGS-B abnormal-termination candidate only when the pre-existing stationarity, positive-curvature and non-worsening-objective requirements pass; no threshold, seed, synthetic truth, grid or family definition changed.',
+              'empirical_trait_environment_values_read': 0,
+              'ecological_models_executed': 0,
+              'ecological_fitting_authorized': False,
+          }
+          Path('runs/tail-repair-receipt/v3_tail_mechanics_solver_repair_verification_20260909.json').write_text(
+              json.dumps(receipt, indent=2, sort_keys=True, allow_nan=False) + '\n', encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v3-tail-mechanics-solver-repair-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/tail-repair-receipt/
+          if-no-files-found: error
+          retention-days: 30
+
+# Inert until the repaired 32-outer source workflow has completed successfully.
+# Synthetic mechanics only; this receipt cannot authorize ecological fitting.
