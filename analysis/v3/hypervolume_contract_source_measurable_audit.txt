@@ -1,0 +1,1 @@
+Primary coverage audit: compare each taxon's full source environmental space with its successfully measurable subset; interpret contraction or shift as image-assessability selection.
