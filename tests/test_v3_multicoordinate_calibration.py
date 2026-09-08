@@ -58,7 +58,7 @@ def test_all_three_multicoordinate_point_estimators_are_identifiable_on_generate
         np.arange(len(data["taxa"])), data["taxa"], data["components"],
         data["latitude"], data["longitude"], grid_degrees=2,
     )
-    assert len(source.positions) == len(data["taxa"])
+    assert len(source.observation_ids) == len(data["taxa"])
 
 
 def test_wilson_precision_rule_cannot_stop_before_minimum_and_fails_bad_calibration():
