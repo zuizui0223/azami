@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "v3_final_1_8_4_geometry_crossed_smoke_v1",
+  "status": "computational_smoke_only_not_calibration_or_ecology_admission",
+  "seed": 2026090891,
+  "scenarios": ["iid_null", "crossed_spatial_null", "heterogeneous_slopes", "scale_difference"],
+  "outer_replicates_per_scenario": 1,
+  "bootstrap_replicates": 199,
+  "grid_degrees": [2, 5],
+  "module_dimensions": {"orientation": 1, "visible_colour": 8, "gross_shape": 4},
+  "predictors": 9,
+  "nuisance_columns": 13,
+  "family_slots": 36,
+  "purpose": "Verify that the frozen final multicoordinate response geometry, nine-predictor design, thirteen-column nuisance matrix and dependence-preserving crossed refits are jointly executable before scheduling the much larger 999-draw sequential calibration.",
+  "success_definition": "Every predeclared scenario-grid case produces point estimates for all three modules and all 199 planned crossed draws per module; all 36 family slots are structurally present. No tail, FWER, coverage or power claim is calibrated from this smoke run.",
+  "failure_rule": "Preserve any failed module/draw/case and diagnose the numerical or rank failure. Do not redraw, remove coordinates, remove predictors, choose a favourable grid or relax the final geometry based on the smoke result.",
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
