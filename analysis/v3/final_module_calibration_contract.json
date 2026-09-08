@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "ch1_v3_final_multicoordinate_inference_calibration_v1",
+  "status": "prepared_before_empirical_trait_environment_fitting_not_scheduled_until_tail_mechanics_closes",
+  "scenarios": ["iid_null", "crossed_spatial_null", "heterogeneous_slopes", "scale_difference"],
+  "bootstrap_replicates": 999,
+  "grid_degrees": [2, 5],
+  "taxa": 64,
+  "predictors": 9,
+  "nuisance_columns": 13,
+  "module_dimensions": {"orientation": 1, "visible_colour": 8, "gross_shape": 4},
+  "module_geometry_source": "analysis/v3/module_response_contract.json",
+  "nuisance_source": "analysis/v3/nuisance_design_contract.json",
+  "environment_source": "analysis/v3/environment_model.py",
+  "family_slots": 36,
+  "resampling": "One source-component/taxon/spatial crossed draw is shared across all three modules. A failed shared draw is retained as failed and never redrawn. Both 2-degree and 5-degree grids are always reported; neither is selected by observed performance.",
+  "synthetic_environment": "Generate nine standardized predictors from fixed global plus process-block latent factors and taxon-level means. This exercises moderate within-block and cross-block dependence without reading empirical trait associations. Predictor order and process partition are the frozen source-QC order.",
+  "synthetic_nuisance": "Generate exact-day calendar harmonics, observation years including a small pre-1980 fraction, positive head-size, nonnegative sharpness and public coordinates; construct the exact frozen 13-column nuisance matrix through analysis.v3.nuisance_design.matrix. Imaging quality may correlate with generated predictors to stress adjustment.",
+  "synthetic_responses": "Generate three modules with exactly 1, 8 and 4 continuous transformed response coordinates. Coordinates share module/global residual factors, spatial-region effects and correlated taxon random slopes. This validates final estimator dimensionality and joint covariance/rank handling; it does not assert a Gaussian biological model for hue/composition or replace a later realized-design calibration.",
+  "truth": "Wetting/moisture and radiation blocks are generating-null for within and among in null scenarios. Heat/drying and mechanical blocks contain fixed nonzero coefficients. In scale_difference, radiation has a predeclared nonzero among coefficient with zero within coefficient, making the direct among-minus-within contrast nonzero. Save complete generating coefficients for every module coordinate.",
+  "sequential_outer_rule": {
+    "batch_size_per_scenario": 25,
+    "minimum_outer_replicates_per_scenario": 100,
+    "maximum_outer_replicates_per_scenario": 400,
+    "precision_checks": [
+      "For each scenario and grid, Wilson 95% half-width for outer-dataset familywise false-Holm-rejection rate among generating-null slots must be <=0.025 before stopping for precision.",
+      "For each scenario and grid, Wilson 95% half-width for pooled generating-coefficient basic-interval coverage must be <=0.015 before stopping for precision."
+    ],
+    "admission_checks": [
+      "For generating-null families, the Wilson 95% upper bound for familywise false-Holm-rejection rate must be <=0.075.",
+      "For generating coefficients, the Wilson 95% lower bound for basic-interval coverage must be >=0.90.",
+      "Every retained outer dataset must have all 999 planned shared draws and all 36 family slots estimable; failures are reported, never replaced."
+    ],
+    "failure_rule": "If an admission check fails, calibration fails. Diagnose estimator/design assumptions; do not tune thresholds, delete slots, select a grid or change the synthetic truth to rescue the result."
+  },
+  "later_realized_design_gate": "Even a successful multicoordinate synthetic calibration cannot authorize ecology alone. After full measurement reconciliation, rerun null/coverage stress tests on each realized module's frozen taxon/environment/nuisance/dependence design with synthetic responses before empirical probabilities are computed.",
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
