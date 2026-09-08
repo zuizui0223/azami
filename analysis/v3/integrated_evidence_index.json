@@ -64,7 +64,8 @@
     },
     "versioned_colour_definition": {
       "state": "not_executed",
-      "remaining": "Qualify uniform-floral-union chroma under a new recipe identity; retain legacy dominance-dependent values."
+      "implementation": "analysis/v3/uniform_colour_profile.py",
+      "remaining": "The candidate recipe is versioned in uniform_floral_chroma_recipe.json and a complete 2853-head x 14-condition numerical profile is recorded in reproducibility/v3_uniform_colour_technical_profile_20260908.json. This completes technical characterization, not the qualification requirement: colour-gain shifts, resolution attrition and inherited dominance-dependent QC remain. Do not replace legacy values or admit this candidate to ecology without an explicit bounded measurement decision and full production-cohort assessability."
     },
     "reconciled_stream_schedule": {
       "state": "execution_evidence_recorded",

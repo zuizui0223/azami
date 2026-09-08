@@ -1,0 +1,24 @@
+{
+  "anonymous_release_and_asset_requests": "404",
+  "asset": {
+    "asset_id": 550258786,
+    "asset_name": "v3-uniform-colour-profile-20260908-a.zip",
+    "bundle_bytes": 2221828,
+    "bundle_sha256": "f3198167dedd245067d1cb8797d441e19caec6aa22fbdb5334e6554224506f4f",
+    "files": 4,
+    "manifest_sha256": "5633442bef18eda8d665ba6f7e8ea62008c1fe8018a478f5a7dbbcbfb250ceb9",
+    "restored_bytes": 13047445,
+    "source_images_included": false
+  },
+  "bytes_restored": 13047445,
+  "draft_verified": true,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "environment_values_read": 0,
+  "files_restored": 4,
+  "image_requests": 0,
+  "source_images_included": false,
+  "source_profile_report_canonical_sha256": "cd373711ab2a6cd624472f3489e18645fb8bfa44e96154c9987fd0fbb997ab99",
+  "status": "UNIFORM_COLOUR_NUMERICAL_PROFILE_PROTECTED_AND_RESTORED",
+  "verified_condition_rows": 39942
+}

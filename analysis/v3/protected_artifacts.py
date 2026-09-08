@@ -132,6 +132,25 @@ class DraftStore:
         require(release.get("tag_name") == self.contract["tag_name"] and release.get("id") == self.contract["release_id"], "Draft identity differs")
         public = self.anonymous.get(url, timeout=(15, 60), allow_redirects=False)
         require(public.status_code == 404, "Draft is not verified hidden from anonymous access")
+        # The embedded release list is not a complete inventory contract. Use
+        # the documented paginated endpoint as production adds many chunks.
+        assets, seen = [], set()
+        for page in range(1, 1001):
+            reply = self.session.get(url + "/assets", params={"per_page": 100, "page": page}, timeout=(15, 60))
+            reply.raise_for_status()
+            rows = reply.json()
+            require(isinstance(rows, list) and len(rows) <= 100, "Invalid draft asset page")
+            for row in rows:
+                require(isinstance(row, dict) and type(row.get("id")) is int and row["id"] not in seen,
+                        "Duplicate or invalid draft asset identity across pages; STOP")
+                seen.add(row["id"])
+                assets.append(row)
+            if len(rows) < 100:
+                break
+        else:
+            raise ValueError("Draft inventory exceeds bounded pagination; STOP")
+        require(all(row["id"] in seen for row in release.get("assets", [])), "Draft inventory changed or is incomplete; STOP")
+        release["assets"] = assets
         return release
 
     def download(self, asset: dict, out: Path):

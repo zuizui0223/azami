@@ -55,9 +55,20 @@ restored locally (1,412 files). One post-upload confirmation timed out; the fail
 job restored all 64 completed photo units on its next attempt with **zero new
 image requests**. The successful sibling job was not re-executed. The earlier
 128-observation pilot also remains reused, including its terminal transfer failure.
-The [next 16-chunk wave](native_measurement_wave_20260908_b.json) authorizes only
-the next source-ordered 711 observations and 1,000 requests, with four concurrent
-workers and the same algorithms. Pending wave counts are not completed measurements.
+The [completed 16-chunk wave B](../../reproducibility/v3_native_raw_wave_b_20260908.json)
+verifies another 711 observations, 1,000 photo units, 1,684 heads, 45,468 all27
+slots and 42,100 bbox slots against locally restored protected numerics. Four
+failed confirmations reused all 250 already completed photo units with zero new
+requests. A fifth failed job lacked committed-unit evidence; its earlier
+uncommitted request count remains unknown. Successful siblings were not repeated.
+The [128-chunk wave C](native_measurement_wave_20260908_c.json) then authorizes
+only c000018–c000145: 5,784 source-ordered observations and 8,086 request slots.
+This expands the scheduling wave, not the scientific scope or four-worker
+concurrency. Per-chunk limits remain 64 requests and 128 observations; the
+27-slot algorithm and runtime pins are unchanged. Its 129-file numerical input
+was protected and restored before dispatch. These planned counts are not
+completed measurements. Asset lookup uses the complete paginated inventory
+instead of relying on the embedded release list as the number of chunks grows.
 For Windows verification of Linux-produced units, use a separate LF decision-file
 view only after its exact SHA-256 matches the execution report. Do not relax the
 unit hash checks, rewrite the original checkout or treat a newline mismatch as a
@@ -111,6 +122,34 @@ python -m analysis.v3.stream_observation_views --inputs PRIVATE_INPUT_LIST.json 
 Use a new output directory for a new verification/view. Keep private packets,
 input lists and numerical databases outside Git. Public outputs contain only
 aggregate receipts; they do not authorize an environmental join or a fit.
+
+### Versioned uniform colour: executed technical profile, not ecological admission
+
+The [candidate recipe](uniform_floral_chroma_recipe.json) uses the unchanged
+floral-union mask for every original crop, irrespective of dominant colour.
+It does not overwrite the registered legacy chroma or its mirror average.
+The [complete numerical profile](../../reproducibility/v3_uniform_colour_technical_profile_20260908.json)
+reuses all 2,853 cached heads under all 14 saved perturbations, with zero new
+image requests or environmental values read. It reports 210 condition-by-metric-
+by-development-stratum rows, including matched floral/green context and losses.
+
+At baseline, inherited QC admits 1,250 heads; 944 also have available green
+context. For the uniform floral candidate, the four 5% bbox shifts give
+component-weighted mean absolute changes of 0.25–0.29 camera-space chroma units.
+Warm/cool channel gains give much larger changes (6.20 and 5.14), despite
+rank correlations of 0.87 and 0.90. Halving resolution removes 657 of the
+1,250 baseline-eligible heads; the small paired change does not describe those
+lost heads. All conditions, unsuccessful comparisons and strata remain reported.
+The inherited colour-confidence score includes a dominance term, and synthetic
+probes are not calibrated camera errors. These findings do not establish
+reflectance or pigment accuracy, a passed ecological negative control, or
+permission to replace the primary colour definition.
+
+All 39,942 candidate head-condition rows were independently reconciled to the
+saved numerical probes. The [protected restoration receipt](../../reproducibility/v3_uniform_colour_profile_preservation_20260908.json)
+verifies four files and 13,047,445 bytes, including the private candidate table.
+Qualification and production-cohort assessability remain separate unfinished
+requirements; no ecological fit was run from this technical profile.
 
 GitHub Actions remains the intended production compute platform. Images are
 temporary inputs, not Git objects or a required permanent image archive. The

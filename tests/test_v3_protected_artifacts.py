@@ -79,7 +79,12 @@ def test_original_images_are_not_allowed_in_numerical_manifest():
 def store(public_code=404, draft=True, published=None, tag="private-v3-numerical-test", assets=None):
     release = {"id": 123, "draft": draft, "published_at": published, "tag_name": tag, "assets": assets or []}
     reply = SimpleNamespace(raise_for_status=lambda: None, json=lambda: release)
-    session = SimpleNamespace(get=lambda *a, **k: reply)
+    def get(url, **kwargs):
+        if url.endswith('/assets'):
+            start = (kwargs['params']['page'] - 1) * 100
+            return SimpleNamespace(raise_for_status=lambda: None, json=lambda: release['assets'][start:start + 100])
+        return reply
+    session = SimpleNamespace(get=get)
     anon = SimpleNamespace(get=lambda *a, **k: SimpleNamespace(status_code=public_code))
     return DraftStore({"repository": "zuizui0223/azami", "release_id": 123, "tag_name": "private-v3-numerical-test"}, session, anon)
 
@@ -101,9 +106,39 @@ def test_asset_download_rejects_foreign_or_missing_id_before_transfer(tmp_path):
 
 
 def test_upload_does_not_replace_existing_assets(bundle):
-    existing = store(assets=[{"name": "v3-replay-test.zip"}])
+    existing = store(assets=[{"id": 1, "name": "v3-replay-test.zip"}])
     with pytest.raises(ValueError, match="no overwrite"):
         existing.upload(bundle.path, "v3-replay-test.zip")
+
+
+def test_all_pages_are_listed_before_asset_reuse_or_upload():
+    assets = [{'id': i, 'name': f'v3-unit-{i}.zip'} for i in range(205)]
+    assert store(assets=assets).check()['assets'] == assets
+
+
+def test_embedded_release_list_does_not_hide_later_assets():
+    target = store(assets=[{'id': 1}])
+    original = target.session.get
+    target.session.get = lambda url, **kwargs: (
+        SimpleNamespace(raise_for_status=lambda: None, json=lambda: [{'id': 1}, {'id': 2}])
+        if url.endswith('/assets') else original(url, **kwargs))
+    assert [r['id'] for r in target.check()['assets']] == [1, 2]
+
+
+def test_duplicate_paginated_identity_is_rejected():
+    target = store(assets=[{'id': i} for i in range(101)] + [{'id': 0}])
+    with pytest.raises(ValueError, match='Duplicate'):
+        target.check()
+
+
+def test_disappeared_embedded_asset_is_not_silently_accepted():
+    target = store(assets=[{'id': 1}])
+    original = target.session.get
+    target.session.get = lambda url, **kwargs: (
+        SimpleNamespace(raise_for_status=lambda: None, json=lambda: [])
+        if url.endswith('/assets') else original(url, **kwargs))
+    with pytest.raises(ValueError, match='incomplete'):
+        target.check()
 
 
 def test_complete_cloud_replay_keeps_private_packet_out_of_public_report(bundle, tmp_path, monkeypatch):
