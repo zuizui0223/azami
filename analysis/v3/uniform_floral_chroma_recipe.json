@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "v3_uniform_floral_chroma_original_union_v1",
+  "status": "versioned_candidate_technical_characterization_not_ecological_admission",
+  "timing": "Specified after v2 results, v3 cached baseline and registered-endpoint perturbation summaries were inspected, before this candidate-specific numerical profile. Not preregistered or an independent replication.",
+  "source": "Existing image_features.measure diagnostics.paired_colour.floral_union.lab_chroma. Do not request images or modify any saved all27 endpoint.",
+  "definition": "On the original EXIF-oriented head crop, use the union of the unchanged white, redmagenta, purple and yellow pixel masks from engine 56. Convert encoded BGR uint8 pixels with OpenCV COLOR_BGR2LAB and take median(sqrt((a8-128)^2+(b8-128)^2)) over that union. Never switch the mask according to dominant colour. This original-crop statistic is not the legacy original/mirror average.",
+  "source_functions": ["analysis/v3/image_features.py", "ch1_global/v2/56_run_primary_traits_continuous_v2.py", "ch1_global/v2/52_measure_primary_traits_continuous.py"],
+  "support": "Retain every raw candidate value and every scheduled head. For inherited-QC summaries require the saved registered corolla_lab_chroma endpoint status to be usable, a finite union chroma in [0, sqrt(2)*128], a positive floral pixel count, and head minimum dimension at least 96 px. This deliberately inherits the existing colour-confidence rule, including its dominance term; it is not a claim of unbiased selection or a newly validated mask.",
+  "context": "Use green_non_head_context from the same condition and head. Matched floral, green and floral-minus-green summaries require the floral eligibility above plus saved green support_status=available and a finite bounded green chroma. Insufficient context remains a missing comparison, not zero or a passed negative control. Green pixels are not verified leaf tissue.",
+  "population": "Every head in the pinned completed cached perturbation grid, all 14 conditions, and all three historical-development-exposure strata. No value, taxon or environmental association selection.",
+  "metrics": ["uniform_floral_chroma", "matched_floral_chroma", "matched_green_chroma", "matched_floral_minus_green_chroma", "uniform_minus_legacy_chroma"],
+  "weighting": "Use summarize_perturbations.summarize_frame: heads within image, images within known source component, then equal component weights. Keep all four QC transitions and loss from groups with no surviving pairs.",
+  "decision": "Report every condition's absolute and signed shifts, rank agreement where estimable, and eligibility losses. No p-values, favourable pass threshold, recipe choice by environmental signal, calibrated measurement-error variance, independent accuracy claim, or automatic ecological admission.",
+  "ecological_fitting_authorized": false,
+  "replaces_registered_chroma": false,
+  "limits": [
+    "The mask itself depends on encoded image colour and can change under illumination probes; uniform refers to the same rule, not invariant pixels.",
+    "Synthetic colour and crop operations do not reproduce all real camera, illumination, developmental or selection effects.",
+    "The legacy comparison includes both mask-selection and original-versus-mirror-aggregation differences; it does not isolate one cause.",
+    "CIELAB-like camera-space chroma is not reflectance, anthocyanin concentration or a biological pigment calibration.",
+    "A full technical profile does not complete the production-cohort assessability or ecological measurement model."
+  ]
+}
