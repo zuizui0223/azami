@@ -71,7 +71,7 @@
       "state": "local_execution_recorded_off_device_pending",
       "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
       "implementation": "analysis/v3/private_replay.py",
-      "remaining": "872 explicitly selected files (2374321149 bytes) were copied, restored and byte-verified on one local device; the restored schedule reproduces the same worker packet. Verify a private off-device destination and restoration before any cloud cleanup or production. This tool supplies no cloud transport or encryption."
+      "remaining": "872 explicitly selected numerical/provenance files (2374321149 bytes) were copied, restored and byte-verified locally. Continue on the existing GitHub Actions execution route: preserve exact numerical outputs as protected artifacts, download them locally and verify restoration before cloud cleanup or production promotion. A new external drive and a permanent original-image archive are not prerequisites. The repository is public, so private identifiers/coordinates must not be exposed through unprotected artifacts. Artifact transport/protection is not yet implemented by private_replay.py, and finite artifact retention is not a permanent publication archive."
     },
     "native_source_to_measurement_coverage": {
       "state": "implementation_tested_execution_pending",

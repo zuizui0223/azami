@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "contract_id": "v3_native_environment_process_vif10_20260908",
+  "status": "candidate_selection_rule_recorded_before_full_native_environment_execution",
+  "study_status": "retrospective_redesign_after_v2_results_and_preliminary_environment_diagnostics_seen_not_preregistration",
+  "proposed_supersession": "The integrated two-formulation environment mapping and 18-test family. This acquisition contract does not activate ecological fitting or overwrite historical receipts. Selection and integration require a separate verified result.",
+  "source": {
+    "enriched_csv_sha256": "ce9178ef70c2850939c64ba065e783726cbd207cb30ffc8978d6d95d0b14dd40",
+    "observations": 319244,
+    "taxa": 355,
+    "range": "native",
+    "thinning_or_taxon_cap": false
+  },
+  "acquire": ["pr_month", "tas_month", "tasmax_month", "rsds_month", "vpd_month", "sfcWind_month", "pet_month", "cmi_month", "BIO1", "BIO4", "BIO12", "BIO15", "BIO18", "GSP", "NPP"],
+  "processes": {
+    "wetting_moisture": ["pr_month", "cmi_month", "BIO12", "BIO18", "GSP"],
+    "radiation": ["rsds_month"],
+    "heat_drying": ["vpd_month", "tasmax_month", "tas_month", "pet_month", "BIO1"],
+    "mechanical": ["sfcWind_month"]
+  },
+  "hypothesis_boundary": "Process blocks overlap physically and are not independent causes. These are literature-motivated association hypotheses, not established Cirsium mechanisms. Module-by-process tests are two-sided; only narrowly justified directions may be discussed as candidate interpretations. A protected representative preserves the question, not its statistical significance.",
+  "hypothesis_evidence": {
+    "wetting_moisture": {
+      "question": "Does orientation or visible geometry covary with precipitation/moisture after conditioning on the other retained exposures?",
+      "basis": "Wetting can reduce pollen longevity; floral structures and orientation can alter rain entry and pollen protection. Moisture also affects plant water supply, so precipitation does not isolate a rain-protection pathway.",
+      "limit": "Monthly precipitation is not rain duration, intensity, actual capitulum wetness or verified rain avoidance. Image-relative orientation cannot directly establish gravitational inclination or adaptation.",
+      "sources": ["https://doi.org/10.1111/j.1469-8137.2009.02925.x", "https://doi.org/10.1111/plb.13197"]
+    },
+    "radiation": {
+      "question": "Does the colour module, and potentially orientation, covary with shortwave radiation?",
+      "basis": "Light enhanced anthocyanin synthesis in intact Petunia corollas; sunflower head-orientation experiments link orientation to temperature, flowering physiology and reproductive performance.",
+      "limit": "These findings motivate, but do not demonstrate, the mechanism in Cirsium. Broadband shortwave is not UV exposure or head-absorbed radiation. JPEG CIELAB chroma is not anthocyanin concentration; no universal chroma coefficient sign follows.",
+      "sources": ["https://doi.org/10.1111/j.1399-3054.1991.tb01724.x", "https://doi.org/10.1111/nph.17627"]
+    },
+    "heat_drying": {
+      "question": "Does visible geometry or colour covary with atmospheric water demand and thermal exposure?",
+      "basis": "VPD treatments in cut roses changed transpiration and hydration; carnation temperature treatments changed anthocyanin content and flower development. Floral energy-balance modelling connects geometry, radiation, convection and transpiration.",
+      "limit": "Evidence for water balance and temperature is stronger than a signed prediction for these dimensionless image endpoints. Cut-flower responses do not establish wild Cirsium adaptation. VPD is not soil drought or a replacement for temperature.",
+      "sources": ["https://doi.org/10.2503/jjshs.69.584", "https://doi.org/10.2503/jjshs.45.375", "https://www.adamroddy.com/publication/roddy-2019-ac/roddy-2019-ac.pdf"]
+    },
+    "mechanical": {
+      "question": "Does orientation or geometry covary with wind exposure, without assuming a universal coefficient direction?",
+      "basis": "Daffodil flowers reoriented in wind and reduced drag; bumblebee landing experiments show that wind can alter flower approach independently of orientation.",
+      "limit": "Transfer to thistle heads is indirect. Mean gridded wind does not measure gusts, local head motion, stem stiffness or drag; dimensionless outline metrics do not measure absolute frontal area. Wind also affects heat and water exchange, so the block is not mechanically exclusive.",
+      "sources": ["https://pubmed.ncbi.nlm.nih.gov/10636827/", "https://journals.biologists.com/jeb/article/219/18/2819/15418/Wind-alters-landing-dynamics-in-bumblebees"]
+    }
+  },
+  "context_only": {
+    "BIO4": "Temperature seasonality has no separate primary hypothesis in this process design.",
+    "BIO15": "Precipitation seasonality has no separate primary hypothesis in this process design.",
+    "NPP": "Distal productivity context, not a direct physical head exposure."
+  },
+  "selection": {
+    "threshold": 10.0,
+    "protected": ["pr_month", "rsds_month", "vpd_month", "sfcWind_month"],
+    "protection_reason": "One direct month-aligned representation per stated process, selected by biological proximity, not trait associations; protected variables are still diagnosed and can block readiness.",
+    "algorithm": "On a single fixed complete-case cohort for the 12 process candidates, iteratively remove the unprotected variable with the largest VIF >= 10. Lexicographic variable ID breaks exact ties. Recompute VIF after each removal. If protected variables still have VIF >= 10, stop without a selected model. This is an explicitly weighted keep-style VIF procedure, not an invocation of usdm or its default random 5000-row sample.",
+    "weights": "Each taxon represented in the fixed complete-case selection cohort has total weight one; no random subsampling. All source observations remain in the saved matrix, including missing environment values.",
+    "missingness": "No imputation or fallback exposure. Report variable coverage and source-to-complete-case attrition, including taxa lost. Missing required process support or a constant eligible variable blocks automatic selection.",
+    "threshold_meaning": "A redundancy screen, not proof of stable independent effects or control of confounding.",
+    "excluded_information": "Retain all 15 numerical columns. An excluded variable's unique variation was not separately tested; retained proxies do not recover it without loss."
+  },
+  "model": {
+    "formulations": 1,
+    "modules": ["orientation", "visible_colour", "gross_shape"],
+    "questions": ["within", "among", "among_minus_within"],
+    "primary_tests": 36,
+    "family": "3 modules x 4 process blocks x 3 scale questions; Holm across all 36 slots, with non-estimable slots retained and no fabricated P values.",
+    "test": "Joint coefficients of one retained process block across the module response coordinates, conditional on every other retained block and nuisance terms; not separate single-process regressions and not sequential order-dependent sums of squares.",
+    "scale": "Use the same saved source-taxon-balanced predictor centers and SDs across modules and within/among scales; diagnose actual complete model support without reselecting variables using outcomes.",
+    "time_windows": "Observation-month 1981-2010 climatology plus any retained annual/seasonal context within its process block. Distinguish these time windows when interpreting coefficients; none is actual photography-day weather.",
+    "interactions": "Not included in the primary additive model. Any bounded interaction extension requires a separate pre-outcome rule and within/among estimand.",
+    "remaining": "Model-cohort calendar/imaging/spatial identification, joint covariance-aware hierarchy and dependence-aware null/coverage calibration remain necessary before fitting."
+  },
+  "execution": {
+    "scope": "Local full-native environment extraction and outcome-blind selection only",
+    "trait_columns_read": 0,
+    "image_requests": 0,
+    "ecological_fitting_authorized": false,
+    "production_image_execution_authorized": false,
+    "private_numerical_checkpoints": true,
+    "source_identity": "Save strong object ETag, content length and last-modified before and after raster sampling, plus numerical checkpoint SHA-256. Range-sampled source object identity is not a locally verified SHA-256 of the entire remote raster.",
+    "provider_failure": "Preserve completed checkpoints and report incomplete acquisition; never encode a network failure as environmental missingness or a biological negative."
+  }
+}

@@ -188,7 +188,7 @@ def validate(root: Path = ROOT) -> dict:
         "evidence_index_sha256_canonical_json": canonical_digest(evidence),
         "verified_public_evidence": checked,
         "stages": stage_reports,
-        "next_source_gate": "The exact native cohort now drives a verified reconciled schedule and byte-identical local restoration/worker handoff. Verify an off-device private destination and freeze calendar/support and versioned colour handling before production. Local copies do not authorize cloud cleanup; historical HTTP bytes remain unavailable.",
+        "next_source_gate": "The exact native cohort drives a verified reconciled schedule and byte-identical local worker handoff. Implement protected numerical artifacts on the existing GitHub Actions route and verify downloaded restoration before cleanup or production promotion; no separate external drive or permanent original-image archive is required. Calendar/support and versioned colour handling remain unfinished. Historical HTTP bytes remain unavailable.",
         "ecological_fitting_authorized": False,
         "full_original_stream_authorized": False,
         "trait_values_read": 0, "ecological_models_executed": 0,

@@ -32,6 +32,75 @@ VIF/rank must be reported on each actual endpoint/module design, including
 within-taxon and among-taxon support. Partial pooling addresses unstable taxon
 slopes; it does not by itself repair selective photography or recording effort.
 
+### All-27 measurement, without v2-result selection
+
+GitHub Actions remains the intended production compute platform. Images are
+temporary inputs, not Git objects or a required permanent image archive. The
+preservation requirement concerns numerical results, source links and processing
+provenance: protected numerical assets, exact local recovery and hash checks
+before cleanup. It does not require the user to supply another external drive.
+Because this repository is public, private identifiers/coordinates cannot simply
+be added to an unrestricted workflow artifact. The protected transfer described
+below is implemented; an executed cloud/local roundtrip is still required.
+Finite workflow-artifact retention is not permanent archiving.
+
+The [protected numerical replay contract](protected_numerical_replay_contract.json)
+pins an existing **unpublished draft release**, source asset and all numerical
+manifest identities. `protected_artifacts cloud-replay` restores the source on
+Actions, derives the fixed 128-observation packet without fetching any images,
+and uploads and downloads the resulting packet through that same protected
+store. Anonymous release/asset access must return 404, and authenticated metadata
+must confirm draft status before and after transfer. **Never publish this draft.**
+Only an aggregate receipt goes into the ordinary workflow artifact. This route
+requires no new external drive or permanent original-image archive; draft access
+control is not encryption or a permanent publication archive. A successful
+transport test does not authorize ecological fitting or full image processing.
+
+The study's measurement scope remains all 27 registered endpoints. The number
+14 describes the current original-image operating routes, not a replacement
+scientific denominator. The other 13 architecture/surface endpoints are also
+measured and retained, including finite QC-failed values and explicit nulls.
+Their technical holds remain unchanged until separately specified image-only
+evidence resolves them; availability in a new pilot does not itself admit them
+to ecological inference. No all-27 complete-case requirement is imposed.
+
+V2 significance, coefficient direction and headline survival are not selection
+inputs. Reusing deterministic measurement functions is distinct from selecting
+v3 questions by their v2 results. Because the redesign follows v2 and shares
+source records, it is not a preregistration or an independent replication.
+
+The bounded `stream_original_traits` command now has an offline output checker:
+`python -m analysis.v3.verify_original_stream --input-dir PRIVATE_COMPLETED_PILOT
+--out PRIVATE_NEW_VERIFICATION.json`. It reopens every numerical file, checks
+all 27 slots for each detected head, reconciles source links and transfer states,
+and recomputes the bbox-shift summaries and measurement eligibility. Reported
+coverage distinguishes heads, photos and linked observations. It changes no
+measurement threshold or ecological route and performs no environmental join.
+A missing completion report, changed hash or incomplete denominator is an error,
+not a partial pilot promoted to completion. Download/no-detection/QC failures
+remain valid recorded outcomes, distinct from integrity failures.
+
+### Full-native environmental acquisition
+
+`python -m analysis.v3.production_environment --source PRIVATE_ENRICHED_CSV
+--out-dir PRIVATE_NEW_DIRECTORY` extracts all 15 environmental candidates for
+the exact 319,244-observation source. It neither samples a smaller cohort nor
+reads trait columns. Occupied raster blocks are read once per variable/month;
+each numerical checkpoint has an exact hash and the remote object's identity.
+`--resume` requires identical source, contracts, implementation and runtime, and
+replays committed checkpoints offline. A failed transfer is incomplete acquisition,
+not environmental missingness. Coordinates and numerical matrices stay private.
+
+The [candidate process/VIF-10 rule](environment_production_contract.json) records
+the hypotheses, literature, proxy limits and one-model proposal. Its four process
+groups overlap physically; a conditional block coefficient is not an isolated
+causal effect. All 15 columns are retained, including broader context. The
+acquisition command deliberately does **not** execute variable selection or ecology.
+The candidate weighted keep-style selector is tested, but its full-source result,
+within/among/calendar-spatial diagnostics and replacement of the historical
+two-formulation inference contract remain unexecuted. The image and ecology holds
+are unchanged.
+
 The following sections document the source inventory and earlier implementation
 checkpoints. Their historical completion labels do not override the active
 five-stage contract or the execution boundary above.

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "numerical_transport_only_no_image_or_ecological_authorization",
+  "repository": "zuizui0223/azami",
+  "release_id": 384499945,
+  "tag_name": "private-v3-numerical-20260908",
+  "source_asset": {
+    "asset_id": 550019482,
+    "asset_name": "v3-source-numerical-20260908.zip",
+    "bundle_bytes": 705331143,
+    "bundle_sha256": "d2cfc1787796782ceb763a0bea7c0bfa19d385e246eb1270ae8c4c3122348fe5",
+    "files": 872,
+    "manifest_sha256": "b0e52b311a07af9349791c12a95af327c5d2322d1a80fe54662e81952c7b4721",
+    "restored_bytes": 2374321149,
+    "source_images_included": false
+  },
+  "schedule_member": "schedule/reconciled_photo_schedule_private.sqlite",
+  "schedule_sha256": "f778c542e35bf84e3fb1c9028207b448f1285e89be3d2dc95f871a72298c52f9",
+  "execution_boundary": {
+    "compute": "GitHub Actions",
+    "operation": "Restore the exact numerical source, derive the fixed 128-observation worker packet, and verify its protected upload/download roundtrip.",
+    "image_requests": 0,
+    "ecological_models": 0,
+    "public_workflow_artifact": "Aggregate receipt only; never numerical rows, coordinates, photo identifiers or source URLs.",
+    "protected_store": "Existing UNPUBLISHED draft release. Verify draft status and anonymous denial before and after transfer. Never publish this draft.",
+    "local_verification_required": "Download the returned numerical asset and compare the canonical worker packet with the local schedule-derived packet.",
+    "limitations": "Access control is not encryption or permanent publication archiving. Successful numerical transport does not authorize full image processing or establish scientific validity."
+  }
+}
