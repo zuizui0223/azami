@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "v3_full36_tail_resolved_family_mechanics_pilot_v1",
+  "status": "tail_resolved_full36_family_mechanics_pilot_not_ecology_admission",
+  "seed": 2026090861,
+  "scenarios": ["iid_null", "crossed_spatial_null", "heterogeneous_slopes", "scale_difference"],
+  "replicates_per_scenario": 8,
+  "bootstrap_replicates": 999,
+  "grid_degrees": [2, 5],
+  "modules": ["orientation", "visible_colour", "gross_shape"],
+  "processes": ["wetting_moisture", "radiation", "heat_drying", "mechanical"],
+  "scales": ["within", "among", "among_minus_within"],
+  "family_slots": 36,
+  "minimum_plus_one_probability": 0.001,
+  "first_holm_threshold": 0.001388888888888889,
+  "response_geometry": "One generated response coordinate is assigned to each of the three modules. The third coordinate is a fixed linear combination of the two preliminary generated coordinates plus independent noise, with its generating coefficient transformed identically. This pilot validates complete-family assembly and minimally resolves the first Holm threshold; it does not validate the final multicoordinate colour or gross-shape geometry.",
+  "family_rule": "For every outer dataset and grid, use one paired crossed bootstrap to preserve cross-module dependence, derive each module-process-scale candidate probability from the corresponding response coordinate, fill all 36 planned slots, then apply the frozen holm_complete_family rule. No missing slot is replaced and no favourable grid is selected.",
+  "qualification_boundary": "999 planned draws give plus-one tail resolution 0.001, sufficient to cross the first 0.05/36 Holm threshold but still coarse. Eight outer replicates per scenario cannot estimate FWER or coverage precisely, and one-coordinate synthetic modules do not reproduce final colour/shape dimensionality. This is an executable family-mechanics and tail-resolution pilot only. It cannot authorize empirical trait-environment fitting regardless of outcome. A later adequately replicated calibration using the final module geometry and realized-cohort nuisance/rank support remains required.",
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "ecological_fitting_authorized": false
+}
