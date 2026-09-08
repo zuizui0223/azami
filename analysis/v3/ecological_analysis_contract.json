@@ -1,7 +1,7 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "contract_id": "ch1_v3_ecological_analysis_20260907",
-  "status": "final_ecological_source_cohort_freeze_pending_before_trait_join",
+  "status": "implementation_corrections_pending_before_trait_join",
   "study_status": "retrospective_redesign_after_v2_results_seen_not_preregistration",
   "scope": {
     "primary_question": "Quantify within- and among-taxon spatial associations between auditable image-defined capitulum phenotype modules and a phenotype-blind, pre-frozen abiotic exposure representation in the native range.",
@@ -21,11 +21,13 @@
   },
   "design_hold": {
     "ecological_fitting_paused": true,
-    "reason": "Environment and measurement qualification are frozen without inspecting v3 trait-environment coefficients. The final phenotype-blind ecological source cohort and support bookkeeping must now be frozen before original-image trait execution is joined to environmental exposures.",
+    "reason": "Environment and measurement qualification are frozen without inspecting v3 trait-environment coefficients. A phenotype-blind ecological source cohort was built in run 34174862892, but source-link reconciliation, timing/imaging nuisance terms, covariance-aware hierarchical inference and persistent numerical products require validation before original-image trait execution is joined to environmental exposures.",
+    "implementation_review": "analysis/v3/ecological_model_review_addendum_20260908.json",
     "next_required_artifacts": [
       "analysis/v3/ecological_source_cohort_contract.json",
       "phenotype-blind full native-range species-level source cohort receipt and digest",
-      "pre-outcome taxon-support rules for hierarchical slope interpretation"
+      "pre-outcome taxon-support rules for hierarchical slope interpretation",
+      "validated reconciled photo links, calendar/imaging covariates, hierarchical covariance and private numerical retention"
     ],
     "environment_gate_completed": true,
     "measurement_freeze_completed": true,

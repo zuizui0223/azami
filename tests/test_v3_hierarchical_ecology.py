@@ -1,10 +1,13 @@
 import numpy as np
+import pytest
 
 from analysis.v3.hierarchical_ecology import (
     common_spatial_residualize,
     estimate_taxon_slopes,
     random_effects_reml,
     spherical_basis,
+    joint_spatial_taxon_slopes,
+    morans_i,
 )
 
 
@@ -48,3 +51,113 @@ def test_random_effects_reml_shrinks_noisy_taxon_slopes():
     noisy = result.shrinkage.set_index("taxon").loc["noisy"]
     assert abs(noisy["shrunken_slope"] - result.hypermean) < abs(noisy["raw_slope"] - result.hypermean)
     assert result.tau2 >= 0
+
+
+def heterogeneous_fixture(noise=0.0):
+    rng = np.random.default_rng(809)
+    taxa = np.repeat(["a", "b"], 200)
+    lat = rng.uniform(-70, 70, len(taxa))
+    lon = rng.uniform(-180, 180, len(taxa))
+    b = spherical_basis(lat, lon)
+    x = 3 * b[:, 0] + rng.normal(0, .3, len(taxa))
+    y = np.where(taxa == "a", 2.0, -1.0) * x + 1.3 * b[:, 2] + np.where(taxa == "a", 4., -3.)
+    y += rng.normal(0, noise, len(y))
+    return y, x[:, None], taxa, lat, lon
+
+
+def test_joint_spatial_fit_recovers_heterogeneous_slopes_without_noise():
+    y, x, g, lat, lon = heterogeneous_fixture()
+    fit = joint_spatial_taxon_slopes(y, x, g, lat, lon)
+    np.testing.assert_allclose(fit.slopes[:, 0], [2, -1], atol=1e-11)
+    np.testing.assert_allclose(fit.residuals, 0, atol=1e-11)
+    # Regression evidence for the rejected split-after-common-FWL shortcut:
+    # the original commit produced 1.979819 and -1.265935, not 2 and -1.
+    yr, xr, _ = common_spatial_residualize(y, x, g, lat, lon)
+    rejected = [np.linalg.lstsq(xr[g == t], yr[g == t], rcond=None)[0][0] for t in fit.taxa]
+    assert max(abs(np.asarray(rejected) - [2, -1])) > .25
+
+
+@pytest.mark.parametrize("predictor_count", [1, 3])
+def test_block_solver_and_full_hc3_covariance_match_dense_joint_reference(predictor_count):
+    y, x, g, lat, lon = heterogeneous_fixture(noise=.6)
+    if predictor_count > 1:
+        extra = np.random.default_rng(8).normal(size=(len(y), predictor_count - 1))
+        x = np.column_stack([x, extra])
+        y += extra @ np.array([.7, -.3])
+    fit = joint_spatial_taxon_slopes(y, x, g, lat, lon)
+    indicators = np.column_stack([g == t for t in fit.taxa])
+    interactions = np.column_stack([x * (g == t)[:, None] for t in fit.taxa])
+    design = np.column_stack([indicators, spherical_basis(lat, lon), interactions])
+    inverse = np.linalg.pinv(design)
+    beta = np.linalg.lstsq(design, y, rcond=None)[0]
+    residual = y - design @ beta
+    leverage = np.einsum("ij,ji->i", design, inverse)
+    covariance = (inverse * (residual / (1 - leverage))**2) @ inverse.T
+    size = interactions.shape[1]
+    np.testing.assert_allclose(fit.slopes.ravel(), beta[-size:], atol=1e-10)
+    np.testing.assert_allclose(fit.covariance, covariance[-size:, -size:], atol=1e-10)
+    np.testing.assert_allclose(fit.leverage, leverage, atol=1e-11)
+    np.testing.assert_allclose(fit.residuals, residual, atol=1e-10)
+    assert fit.residual_df == len(y) - np.linalg.matrix_rank(design)
+    assert abs(fit.covariance[0, -1]) > 1e-8  # shared nuisance induces cross-taxon dependence
+
+
+def test_joint_solver_rejects_slope_spatial_alias_and_missing_taxa():
+    y, x, g, lat, lon = heterogeneous_fixture()
+    with pytest.raises(ValueError, match="aliased"):
+        joint_spatial_taxon_slopes(y, spherical_basis(lat, lon)[:, :1], g, lat, lon)
+    missing = g.astype(object)
+    missing[0] = None
+    with pytest.raises(ValueError, match="nonmissing"):
+        joint_spatial_taxon_slopes(y, x, missing, lat, lon)
+
+
+@pytest.mark.parametrize("constant", [0.1, 1e12])
+def test_joint_solver_rejects_exact_constant_predictors(constant):
+    y, x, g, lat, lon = heterogeneous_fixture()
+    with pytest.raises(ValueError, match="not estimable"):
+        joint_spatial_taxon_slopes(y, np.full_like(x, constant), g, lat, lon)
+
+
+def test_centering_costs_an_intercept_degree_of_freedom():
+    rng = np.random.default_rng(11)
+    y = rng.normal(size=10)
+    x = rng.normal(size=(10, 1))
+    slopes, _ = estimate_taxon_slopes(y, x, np.repeat("a", 10), np.arange(10), ["x"])
+    assert slopes[0].residual_df == 8
+
+
+def test_moran_excludes_self_when_coordinates_coincide():
+    # k=n-1 must give the complete graph without diagonal self-edges, even
+    # when every point has identical coordinates (query order is then tied).
+    n = 10
+    assert morans_i(np.arange(n), np.zeros(n), np.zeros(n), k=n-1) == pytest.approx(-1/(n-1))
+
+
+def test_moran_rejects_misaligned_coordinates():
+    with pytest.raises(ValueError, match="length"):
+        morans_i(np.arange(10), np.zeros(11), np.zeros(11))
+
+
+@pytest.mark.parametrize("vary_longitude", [False, True])
+def test_constant_or_redundant_spatial_terms_do_not_create_extra_rank(vary_longitude):
+    rng = np.random.default_rng(915)
+    n = 60
+    taxa = np.repeat(["a", "b"], 30)
+    lat = np.full(n, 37.2)
+    lon = rng.uniform(-160, 160, n) if vary_longitude else np.full(n, 135.7)
+    x = rng.normal(size=(n, 1))
+    y = x[:, 0] + rng.normal(size=n)
+    fit = joint_spatial_taxon_slopes(y, x, taxa, lat, lon)
+    indicators = np.column_stack([taxa == t for t in fit.taxa])
+    design = np.column_stack([indicators, spherical_basis(lat, lon),
+                              *[x * (taxa == t)[:, None] for t in fit.taxa]])
+    inverse = np.linalg.pinv(design)
+    residual = y - design @ (inverse @ y)
+    leverage = np.einsum("ij,ji->i", design, inverse)
+    covariance = (inverse * (residual / (1-leverage))**2) @ inverse.T
+    assert fit.residual_df == n - np.linalg.matrix_rank(design)
+    np.testing.assert_allclose(fit.covariance, covariance[-2:, -2:], atol=1e-10)
+    np.testing.assert_allclose(fit.leverage, leverage, atol=1e-11)
+    if not vary_longitude:
+        assert fit.spatial_rank == 0

@@ -4,6 +4,23 @@ V3 starts with the recovered acquisition snapshot, not the 46,276 observations
 already selected for v2. The current entry point is
 `python -m analysis.v3.workflow inventory`.
 
+Current execution boundary (8 September 2026): the source-first design remains,
+but full original-image processing and ecological fitting are **held**. The
+[implementation correction](ecological_model_review_addendum_20260908.json)
+records a synthetic counterexample to splitting common spatial residuals into
+taxon-specific regressions. A joint block solver now matches the full interaction
+design, including its cross-taxon HC3 covariance. This is verified numerical
+machinery, not a completed ecological hierarchy or spatially robust inference.
+
+The streamed local pilot retains all 27 raw endpoints separately from the 14
+ecologically qualified routes, individual bbox-shift values, paired background
+colour, image hashes, detector geometry and link-level scheduling states. Its
+tests use synthetic images and mocked retrieval; they do not establish real-image
+coverage or accuracy. Production still needs the reconciled photo-link input,
+calendar/imaging nuisance design, dependence-aware pooling and verified private
+numerical preservation. The cloud pilot stops before retrieval until that private
+archive is implemented. Earlier aggregate receipts are not retroactively promoted.
+
 The archived July 2026 photo metadata contain **665,115 observations and
 1,122,854 photos**. These are records of photos, not proof that every image file
 has been downloaded. The snapshot is not a count of all iNaturalist records today.
@@ -75,6 +92,13 @@ The current contract updates the implementation labels and known source limits;
 the historical receipts and their denominators are not silently rewritten.
 
 ## Integrate controls; do not move a long list of repairs upstream
+
+The [scientific design rationale](design_rationale.md) connects the measurement
+contribution with the ecological questions and their interpretation limits.
+Original-image cloud streaming currently stops before source retrieval: no
+authorized durable private numerical destination and verification path is
+implemented. Discarding streamed image bytes must not discard numerical results,
+source links or processing provenance. Aggregate-only receipts are insufficient.
 
 - **Common design:** source identity, dates with hemisphere-aware encoding,
   photo/observation nesting, exposure uncertainty and question-specific spatial

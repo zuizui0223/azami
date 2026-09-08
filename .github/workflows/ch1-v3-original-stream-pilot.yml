@@ -20,6 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
+      # Replace this stop only with authorized private persistence and verified
+      # numerical/provenance recovery. A configured path alone is insufficient.
+      - name: Require verified durable private numerical archive
+        id: private_archive
+        shell: bash
+        run: |
+          echo "::error::STOP: durable private numerical archive and verification are not implemented. No source retrieval or image processing is authorized by this workflow."
+          exit 1
+
       - uses: actions/checkout@v4
 
       - name: Set runner-temporary private paths
@@ -128,13 +137,13 @@ jobs:
             --pilot-observations 64 \
             --expected-cohort-sha256 "$COHORT_SHA"
 
-      - name: Enforce no image retention and publish aggregate receipt only
-        if: always()
+      - name: Publish aggregate only after verified private numerical preservation
+        if: ${{ success() && steps.private_archive.outputs.verified == 'true' }}
         run: |
           mkdir -p publish
-          if [ -f "$V3_STREAM/original_stream_report.json" ]; then
-            cp "$V3_STREAM/original_stream_report.json" publish/
-            python - <<'PY'
+          test -f "$V3_STREAM/original_stream_report.json"
+          cp "$V3_STREAM/original_stream_report.json" publish/
+          python - <<'PY'
           import json,os
           from pathlib import Path
           root=Path(os.environ['V3_STREAM'])
@@ -144,15 +153,11 @@ jobs:
           assert len(r['qualified_endpoints'])==14
           print(json.dumps({'schedule':r['schedule'],'transfer':r['transfer'],'elapsed_seconds':r['elapsed_seconds']},indent=2))
           PY
-          else
-            printf '%s\n' '{"status":"INCOMPLETE_DO_NOT_USE"}' > publish/workflow_incomplete.json
-          fi
           test "$(find "$V3_STREAM" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) 2>/dev/null | wc -l)" -eq 0
-          rm -rf "$V3_SOURCE_ARCHIVES" "$V3_SOURCE_OBSERVATIONS" "$V3_NATIVE_JOIN" "$V3_ECO_COHORT" "$V3_SOURCE" "$V3_STREAM"
           test "$(find publish -type f | wc -l)" -eq 1
 
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ success() && steps.private_archive.outputs.verified == 'true' }}
         with:
           name: ch1-v3-original-stream-pilot-${{ github.run_id }}
           path: publish

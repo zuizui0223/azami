@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "NUMERICAL_CORRECTIONS_VERIFIED_FULL_ECOLOGICAL_EXECUTION_HELD",
+  "reviewed_commit": "fdc1b2241cd74d5fde3b0e31ab5d4d1479f395f7",
+  "preserved_parent_contract": "analysis/v3/ecological_model_contract.json",
+  "superseded_computational_claim": "The split-after-common-FWL steps in ecological_model_execution_addendum_20260908.json do not implement heterogeneous taxon slopes jointly adjusted for a common spatial effect.",
+  "numerical_correction": {
+    "implementation": "analysis.v3.hierarchical_ecology.joint_spatial_taxon_slopes",
+    "model": "taxon intercepts + taxon-by-environment slope columns + common eight-column spherical spatial basis",
+    "solver": "block Frisch-Waugh-Lovell with the full taxon-by-environment design; retain all cross-taxon slope covariance from shared nuisance estimation",
+    "covariance": "full HC3 observational covariance verified against an independently assembled dense design; not cluster- or spatial-dependence-robust inference",
+    "units": "raw response units per raw predictor unit; final standardized ecological reporting remains to be specified consistently",
+    "old_common_residualizer_scope": "Valid only for a common environmental slope; its residuals must not be split into separate taxon regressions and called a jointly adjusted heterogeneous model.",
+    "other_corrections": [
+      "Separate-group centering consumes an intercept degree of freedom.",
+      "Moran neighbour construction removes self by index even at coincident coordinates."
+    ],
+    "synthetic_regression": {
+      "seed": 809,
+      "observations": 400,
+      "true_taxon_slopes": [2.0, -1.0],
+      "rejected_shortcut_slopes": [1.9798192316168428, -1.2659349614197268],
+      "joint_slopes_absolute_tolerance": 1e-11,
+      "dense_joint_coefficient_and_full_HC3_tolerance": 1e-10,
+      "test_file": "tests/test_v3_hierarchical_ecology.py"
+    },
+    "theorem_reference": "https://arxiv.org/abs/2307.00369"
+  },
+  "required_before_ecological_execution": [
+    "Use the reconciled source-photo ledger, not the merged snapshot missing 47 recovered links, and propagate shared-photo/exact-content dependence through actual model cohorts.",
+    "Retain exact dates and hemisphere-aware calendar terms plus endpoint-matched imaging covariates from source/measurement into the finalized nuisance design; month-matched climatology is not developmental-stage control.",
+    "Specify and validate standardized slopes, cross-taxon covariance-aware pooling, sparse-taxon treatment and the predeclared spatial-block uncertainty implementation. The independent-variance REML helper is not a complete implementation of that hierarchy.",
+    "Verify persistent private numerical products before any cloud runner cleanup or production promotion; do not publish private rows in a public Actions artifact.",
+    "Validate the joined model-specific environmental design and all module/formulation inference, without selecting by v3 outcomes."
+  ],
+  "v3_trait_environment_models_executed_in_this_review": 0,
+  "ecological_fitting_authorized": false,
+  "full_original_stream_authorized": false,
+  "historical_results_rewritten": false,
+  "claim_boundary": "Synthetic algebra checks and output-retention tests are implementation evidence, not evidence for a capitulum-environment association or absolute measurement accuracy."
+}

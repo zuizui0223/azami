@@ -1,8 +1,9 @@
 """Core estimators for the frozen Chapter 1 v3 hierarchical ecology model.
 
-This module implements only analysis mechanics fixed before v3 trait outcomes:
-common taxon+spatial nuisance residualization, supported taxon-specific
-standardized conditional slopes, and normal-normal REML partial pooling. It does
+This module contains pre-outcome numerical building blocks, not an authorized
+ecological runner. Common-slope residualization must not be followed by separate
+taxon fits: heterogeneous slopes require the joint interaction design below.
+Temporal/imaging adjustment and dependence-aware pooling remain unimplemented. It does
 not choose predictors, endpoints or cohorts and does not inspect v2 results.
 """
 from __future__ import annotations
@@ -58,6 +59,10 @@ def common_spatial_residualize(
     is algebraically the nuisance-removal part of a model containing taxon fixed
     intercepts and common spatial-basis coefficients; it does not estimate eight
     spatial coefficients separately within every taxon.
+
+    This reduction is valid for a COMMON environmental slope. Splitting these
+    residuals by taxon afterward is not FWL for heterogeneous slopes: the
+    taxon-by-predictor columns must enter the joint model before projection.
     """
     y = np.asarray(response, dtype=float)
     x = np.asarray(predictors, dtype=float)
@@ -124,8 +129,9 @@ def estimate_taxon_slopes(
 ) -> tuple[list[TaxonSlope], pd.DataFrame]:
     """Estimate supported within-taxon standardized conditional slopes.
 
-    All predictors and the response are standardized within taxon after common
-    nuisance residualization. Taxa failing source support, predictor rank or
+    This is a separate-group OLS helper, NOT the spatial hierarchical estimator.
+    Do not pass global common-spatial residuals to it and interpret the results
+    as jointly adjusted taxon slopes. Taxa failing source support, predictor rank or
     residual-df rules are returned in the support ledger but not as unstable
     slope estimates.
     """
@@ -147,7 +153,7 @@ def estimate_taxon_slopes(
             reasons.append("below_minimum_observations")
         if n_cells < minimum_cells:
             reasons.append("below_minimum_cells")
-        if n < p + minimum_residual_df:
+        if n < p + 1 + minimum_residual_df:
             reasons.append("insufficient_residual_df")
         yy = y[index]
         xx = x[index]
@@ -171,7 +177,8 @@ def estimate_taxon_slopes(
                 reasons.append("predictor_rank_deficient")
         else:
             design, rank = None, 0
-        residual_df = n - p
+        # Centering estimates one group intercept even without an explicit column.
+        residual_df = n - p - 1
         if not reasons and y_std is not None and design is not None:
             xtx_inverse = np.linalg.inv(design.T @ design)
             beta = xtx_inverse @ design.T @ y_std
@@ -200,6 +207,120 @@ def estimate_taxon_slopes(
             "reasons": ";".join(sorted(set(reasons))),
         })
     return records, pd.DataFrame(ledger)
+
+
+@dataclass(frozen=True)
+class JointSpatialSlopes:
+    """Raw-unit joint slopes and full HC3 covariance (taxon-major ordering).
+
+    HC3 assumes independent observational errors. It is a numerical reference,
+    not a substitute for shared-image grouping or spatial block uncertainty.
+    Off-diagonal taxon covariance must not be discarded when pooling.
+    """
+
+    taxa: tuple[str, ...]
+    slopes: np.ndarray
+    covariance: np.ndarray
+    residuals: np.ndarray
+    leverage: np.ndarray
+    residual_df: int
+    spatial_rank: int
+
+
+def joint_spatial_taxon_slopes(response, predictors, taxa, latitude, longitude) -> JointSpatialSlopes:
+    """Fit taxon intercepts/slopes and common spatial effects JOINTLY.
+
+    Use block FWL: first remove each taxon's intercept and predictor columns
+    from the common spatial basis, solve the remaining eight-column system,
+    then recover all taxon slopes. This avoids an observations-by-all-taxon-
+    interactions dense matrix. No response scaling, cohort selection, scientific
+    support threshold, timing/imaging adjustment or pooling is performed here.
+    The caller must supply the predeclared aligned observational units.
+    """
+    y, x = np.asarray(response, float), np.asarray(predictors, float)
+    groups = np.asarray(taxa)
+    if (y.ndim != 1 or x.ndim != 2 or groups.ndim != 1
+            or len(x) != len(y) or len(groups) != len(y) or x.shape[1] == 0):
+        raise ValueError("Joint slope inputs have incompatible dimensions")
+    if (not np.isfinite(y).all() or not np.isfinite(x).all()
+            or pd.isna(groups).any()):
+        raise ValueError("Joint slope inputs must be finite with nonmissing taxa")
+    groups = groups.astype(str)
+    if np.any(groups == ""):
+        raise ValueError("Missing taxon label")
+    basis = spherical_basis(latitude, longitude)
+    if len(basis) != len(y):
+        raise ValueError("Coordinate length mismatch")
+    labels, p = tuple(sorted(set(groups))), x.shape[1]
+    y_perp, b_perp = np.empty_like(y), np.empty_like(basis)
+    b_centered = np.empty_like(basis)
+    blocks = []
+    for label in labels:
+        ix = np.flatnonzero(groups == label)
+        # Subtract an observed anchor before the mean: exactly constant input
+        # then maps to exact zero instead of being admitted as rounding noise.
+        xx = x[ix] - x[ix[0]]
+        xx -= xx.mean(axis=0)
+        yy = y[ix] - y[ix[0]]
+        yy -= yy.mean()
+        bb = basis[ix] - basis[ix[0]]
+        bb -= bb.mean(axis=0)
+        # A repeated floating-point coordinate can leave mean-subtraction dust.
+        # Exact within-block constants belong to the taxon intercept, not space.
+        bb[:, np.ptp(basis[ix], axis=0) == 0] = 0.0
+        if len(ix) <= p + 1 or np.linalg.matrix_rank(xx) < p:
+            raise ValueError(f"Taxon predictor block not estimable: {label}")
+        inverse_x = np.linalg.pinv(xx)
+        a = inverse_x @ bb
+        y_perp[ix] = yy - xx @ (inverse_x @ yy)
+        b_perp[ix] = bb - xx @ a
+        b_centered[ix] = bb
+        blocks.append((ix, xx, yy, bb, inverse_x, a))
+
+    # Scale the nuisance columns before solving; exact redundant spatial terms
+    # are allowed, but confounding of an environmental slope with space is not.
+    scales = np.linalg.norm(b_centered, axis=0)
+    inactive = scales <= 1e-12
+    scales[inactive] = 1.0
+    bc, bp = b_centered / scales, b_perp / scales
+    bc[:, inactive] = 0.0
+    bp[:, inactive] = 0.0
+    tolerance = np.linalg.norm(bc, ord=2) * max(bc.shape) * np.finfo(float).eps
+    u, singular, vt = np.linalg.svd(bp, full_matrices=False)
+    retained = singular > tolerance
+    rank = int(retained.sum())
+    if rank < np.linalg.matrix_rank(bc, tol=tolerance):
+        raise ValueError("Taxon slopes aliased with the common spatial basis")
+    residual_df = len(y) - len(labels) * (p + 1) - rank
+    if residual_df <= 0:
+        raise ValueError("Joint model has no residual degrees of freedom")
+    # Use the SAME threshold in rank accounting and the pseudoinverse.
+    inverse_b = (vt[retained].T / singular[retained]) @ u[:, retained].T
+    gamma = inverse_b @ y_perp
+    slopes, residual, leverage, scaled_a = [], np.empty_like(y), np.empty_like(y), []
+    for ix, xx, yy, bb, inverse_x, a in blocks:
+        beta = inverse_x @ (yy - (bb / scales) @ gamma)
+        slopes.append(beta)
+        scaled_a.append(a / scales)
+        residual[ix] = yy - xx @ beta - (bb / scales) @ gamma
+        leverage[ix] = (1.0 / len(ix) + np.einsum("ij,ji->i", xx, inverse_x)
+                        + np.einsum("ij,ji->i", bp[ix], inverse_b[:, ix]))
+    if np.any(1.0 - leverage <= 1e-10):
+        raise ValueError("HC3 covariance not estimable at unit leverage")
+    error2 = (residual / (1.0 - leverage)) ** 2
+    gamma_cov = (inverse_b * error2) @ inverse_b.T
+    # Full cross-taxon covariance from estimating the shared nuisance effects.
+    # Memory is O(N*8 + (taxa*predictors)^2), not O(N*taxa*predictors).
+    aa = np.vstack(scaled_a)
+    cc = np.vstack([(inverse_x * error2[ix]) @ inverse_b[:, ix].T
+                    for ix, _, _, _, inverse_x, _ in blocks])
+    covariance = aa @ gamma_cov @ aa.T - cc @ aa.T - aa @ cc.T
+    for i, (ix, _, _, _, inverse_x, _) in enumerate(blocks):
+        sl = slice(i*p, (i+1)*p)
+        covariance[sl, sl] += (inverse_x * error2[ix]) @ inverse_x.T
+    covariance = (covariance + covariance.T) / 2.0
+    return JointSpatialSlopes(labels, np.asarray(slopes), covariance, residual,
+                              leverage, residual_df, rank)
 
 
 @dataclass(frozen=True)
@@ -277,10 +398,16 @@ def random_effects_reml(estimates: Iterable[float], variances: Iterable[float], 
 
 def morans_i(values: np.ndarray, latitude: np.ndarray, longitude: np.ndarray, k: int = 8) -> float:
     values = np.asarray(values, dtype=float)
+    if values.ndim != 1 or not isinstance(k, int) or k < 1:
+        raise ValueError("Moran inputs require a vector and positive integer k")
+    if len(latitude) != len(values) or len(longitude) != len(values):
+        raise ValueError("Moran coordinate length mismatch")
     if len(values) <= k or not np.all(np.isfinite(values)):
         return float("nan")
     xyz = spherical_basis(latitude, longitude)[:, :3]
-    neighbours = cKDTree(xyz).query(xyz, k=k+1)[1][:, 1:]
+    candidates = cKDTree(xyz).query(xyz, k=k+1)[1]
+    # With coincident coordinates the query point need not be the first result.
+    neighbours = np.array([row[row != i][:k] for i, row in enumerate(candidates)])
     centred = values - float(np.mean(values))
     denominator = float(np.dot(centred, centred))
     if denominator <= 0:

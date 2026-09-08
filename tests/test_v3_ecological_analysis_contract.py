@@ -10,9 +10,10 @@ def load_contract():
     return json.loads(CONTRACT.read_text(encoding="utf-8"))
 
 
-def test_ecological_fitting_is_paused_until_source_cohort_is_frozen():
+def test_ecological_fitting_is_paused_until_implementation_is_verified():
     c = load_contract()
-    assert c["status"] == "final_ecological_source_cohort_freeze_pending_before_trait_join"
+    assert c["status"] == "implementation_corrections_pending_before_trait_join"
+    assert hold_review(c)["ecological_fitting_authorized"] is False
     hold = c["design_hold"]
     assert hold["ecological_fitting_paused"] is True
     assert hold["environment_gate_completed"] is True
@@ -22,6 +23,19 @@ def test_ecological_fitting_is_paused_until_source_cohort_is_frozen():
     assert "analysis/v3/ecological_source_cohort_contract.json" in hold["next_required_artifacts"]
     assert any("phenotype-blind" in item for item in hold["next_required_artifacts"])
     assert any("taxon-support" in item for item in hold["next_required_artifacts"])
+
+
+def hold_review(contract):
+    return json.loads((ROOT / contract["design_hold"]["implementation_review"]).read_text(encoding="utf-8"))
+
+
+def test_numerical_review_does_not_silently_promote_ecological_execution():
+    review = hold_review(load_contract())
+    assert review["full_original_stream_authorized"] is False
+    assert review["v3_trait_environment_models_executed_in_this_review"] == 0
+    assert review["historical_results_rewritten"] is False
+    assert "cross-taxon" in review["numerical_correction"]["solver"]
+    assert len(review["required_before_ecological_execution"]) >= 4
 
 
 def test_completed_environment_and_measurement_gates_are_recorded():
@@ -73,7 +87,7 @@ def test_abiotic_only_scope_is_retained():
 
 def test_design_ledgers_and_freeze_artifacts_exist():
     assert (ROOT / "analysis" / "v3" / "capitulum_abiotic_hypotheses_v3.md").is_file()
-    assert (ROOT / "analysis" / "v3" / "supervisor_comment_integration_20260907.md").is_file()
+    assert (ROOT / "analysis" / "v3" / "design_rationale.md").is_file()
     assert (ROOT / "analysis" / "v3" / "environment_exposure_contract.json").is_file()
     assert (ROOT / "analysis" / "v3" / "environment_representation_decision_20260907.json").is_file()
     assert (ROOT / "reproducibility" / "v3_environment_representation_freeze_20260907.json").is_file()

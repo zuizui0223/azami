@@ -35,38 +35,7 @@ jobs:
             tests/test_material_availability.py \
             tests/test_azami_ch1_provenance.py \
             tests/test_azami_ch1_tabular.py \
-            tests/test_v3_revision_consistency.py \
-            tests/test_v3_workflow.py \
-            tests/test_v3_upstream_recovery.py \
-            tests/test_v3_source_reconciliation.py \
-            tests/test_v3_processing_history.py \
-            tests/test_v3_image_workspace.py \
-            tests/test_v3_display_composition.py \
-            tests/test_v3_cached_detection.py \
-            tests/test_v3_image_features.py \
-            tests/test_v3_cached_verification.py \
-            tests/test_v3_dependence_groups.py \
-            tests/test_v3_perturbations.py \
-            tests/test_v3_perturbation_summary.py \
-            tests/test_v3_observation_annotations.py \
-            tests/test_v3_observation_measurements.py \
-            tests/test_v3_summary_verification.py \
-            tests/test_v3_technical_coverage_figure.py \
-            tests/test_v3_resolution_stream_gate.py \
-            tests/test_v3_resolution_size_followup.py \
-            tests/test_v3_measurement_qualification_contract.py \
-            tests/test_v3_measurement_freeze.py \
-            tests/test_v3_ecological_analysis_contract.py \
-            tests/test_v3_ecological_source_cohort.py \
-            tests/test_v3_ecological_model_contract.py \
-            tests/test_v3_original_stream_traits.py \
-            tests/test_v3_environment_matrix.py \
-            tests/test_v3_environment_source_design.py \
-            tests/test_v3_environment_design_cohort_state.py \
-            tests/test_v3_environment_design_upstream_receipt.py \
-            tests/test_v3_environment_selection_priority.py \
-            tests/test_v3_environment_freeze.py \
-            tests/test_v3_native_range_join.py
+            tests/test_v3_*.py
 
       - name: Validate v3 workflow design without promoting scientific status
         run: python -m analysis.v3.workflow plan
@@ -111,7 +80,7 @@ jobs:
           test -f analysis/v3/environment_matrix.py
           test -f analysis/v3/freeze_environment_representation.py
           test -f analysis/v3/capitulum_abiotic_hypotheses_v3.md
-          test -f analysis/v3/supervisor_comment_integration_20260907.md
+          test -f analysis/v3/design_rationale.md
           test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
           test -f .github/workflows/ch1-v3-resolution-size-followup.yml
           test -f .github/workflows/ch1-v3-measurement-freeze.yml

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "LOCAL_IMPLEMENTATION_TESTS_PASSED_ECOLOGICAL_EXECUTION_HELD",
+  "reviewed_pr": 92,
+  "reviewed_head": "fdc1b2241cd74d5fde3b0e31ab5d4d1479f395f7",
+  "unchanged_main": "a52ff425c49611be804c4070e491f76a7d129482",
+  "evidence_type": "aggregate record of executed offline tests and independently inspected upstream artifact; not a new image or ecological execution receipt",
+  "local_validation": {
+    "passed": 343,
+    "failed": 0,
+    "elapsed_seconds": 25.33,
+    "selection": [
+      "tests/test_ch1_canonical_manifest.py",
+      "tests/test_reproducibility_manifest.py",
+      "tests/test_material_availability.py",
+      "tests/test_azami_ch1_provenance.py",
+      "tests/test_azami_ch1_tabular.py",
+      "tests/test_v3_*.py"
+    ],
+    "compileall": "passed: analysis, src, ch1_global/v2 and reproducibility/verify_local_materials.py",
+    "diff_check": "passed",
+    "new_numerical_tests": "joint interaction-design coefficient and full HC3 covariance equivalence; heterogeneous slopes; exact constant/aliased/redundant columns; intercept degrees of freedom; coincident-coordinate Moran self exclusion",
+    "new_stream_tests": "real private CSV/JSONL writes using synthetic images and mocked network/detector/features; all 27 slots and 14 route flags; baseline/four bbox shifts; paired context; attribution; hashes; explicit failed jobs; production guard",
+    "image_requests": 0,
+    "v3_trait_environment_fits": 0
+  },
+  "software": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "scipy": "1.18.1",
+    "pandas": "3.0.1",
+    "pytest": "9.1.1"
+  },
+  "implementation_sha256_text_lf": {
+    "analysis/v3/hierarchical_ecology.py": "2b16ac41e2edea63039e8eed0f1a76afccf1f5732d4db398ab9a0b6a8bc8aa2d",
+    "analysis/v3/stream_original_traits.py": "a7920435778163962253f22402e6516c4f6fa505e8e95aeaa08d87d7903a4e91",
+    "analysis/v3/ecological_model_review_addendum_20260908.json": "34134a20ed52c3f6310ce495919692501c19fc4a76bebfa72e33d006c957a8e7",
+    "tests/test_v3_hierarchical_ecology.py": "251ea94dd31bb3486f04ba94903a9859d7eff3146f7c0d6477d4018d7275c7dd",
+    "tests/test_v3_original_stream_traits.py": "81fbd0c95be6a437c67003332c4abdc3f988d5dedd348038d2c6c16350846213"
+  },
+  "inspected_source_cohort_artifact": {
+    "workflow_run": 34174862892,
+    "artifact_id": 10037174780,
+    "artifact_name": "ch1-v3-ecological-source-cohort-34174862892",
+    "provider_reported_archive_sha256": "3a323d13537817a933f9a7dda8f526d5e3a58f4b795b5bfc0242d3eb507df88b",
+    "reported_status": "FINAL_PHENOTYPE_BLIND_ECOLOGICAL_SOURCE_COHORT_BUILT_BEFORE_TRAIT_EXECUTION",
+    "reported_rows": 319244,
+    "reported_accepted_taxa": 355,
+    "reported_cohort_sha256": "b52503cd891313daaa83dacddc5be92bd781bdbbb2e96b3b75da740239816314",
+    "verification_scope": "Read the downloaded aggregate report; private cohort rows were not independently rebuilt in this review. This build does not supply the missing complete original-stream execution or a production authorization."
+  },
+  "historical_execution_receipts_modified": false,
+  "production_stream_authorized": false,
+  "ecological_fitting_authorized": false,
+  "remaining_requirements": "analysis/v3/ecological_model_review_addendum_20260908.json"
+}

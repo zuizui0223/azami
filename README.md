@@ -10,6 +10,9 @@ Original source links and unthinned processing history have been reconciled.
 The v3 runbook separates full-source metadata, recovered historical measurements,
 new cached-image execution and still-unexecuted ecological analyses. All raw
 images/identifiers remain local; only scientific code and aggregate receipts are public.
+The [v3 scientific design rationale](analysis/v3/design_rationale.md) explains the
+measurement and ecological questions. Cloud original-image streaming is stopped
+until durable private numerical storage and verification are implemented.
 
 ## Third-party reproducibility status
 
