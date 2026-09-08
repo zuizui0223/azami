@@ -55,7 +55,7 @@
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "implementation": "analysis/v3/enriched_source_cohort.py",
-      "remaining": "All 319244 observations now connect to the verified photo schedule with exact membership, dates and full-source known dependence preserved. Freeze calendar/support handling before fitting; dates are not stage labels."
+      "remaining": "All 319244 observations now connect to the verified photo schedule with exact membership, dates and full-source known dependence preserved. Realized module support still depends on completed raw measurement and endpoint-specific assessability."
     },
     "image_only_qualification": {
       "state": "historical_evidence_recorded",
@@ -65,13 +65,13 @@
     "versioned_colour_definition": {
       "state": "not_executed",
       "implementation": "analysis/v3/uniform_colour_profile.py",
-      "remaining": "The candidate recipe is versioned in uniform_floral_chroma_recipe.json and a complete 2853-head x 14-condition numerical profile is recorded in reproducibility/v3_uniform_colour_technical_profile_20260908.json. This completes technical characterization, not the qualification requirement: colour-gain shifts, resolution attrition and inherited dominance-dependent QC remain. Do not replace legacy values or admit this candidate to ecology without an explicit bounded measurement decision and full production-cohort assessability."
+      "remaining": "The candidate recipe is versioned in uniform_floral_chroma_recipe.json and a complete 2853-head x 14-condition numerical profile is recorded in reproducibility/v3_uniform_colour_technical_profile_20260908.json. This completes technical characterization, not the qualification requirement: colour-gain shifts, resolution attrition and inherited dominance-dependent QC remain. The frozen primary module response continues to use registered legacy corolla_lab_chroma; do not silently replace it with the candidate."
     },
     "reconciled_stream_schedule": {
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
       "implementation": "analysis/v3/reconciled_stream_input.py",
-      "remaining": "All native source observations and links are scheduled; all six archives and target-photo versions were checked. The original/restored whole-component pilot inputs match. The subsequent real-image pilot is recorded separately in reproducibility/v3_native_original_pilot_20260908.json (128 observations; 167 successful downloads; 315 heads; all27 slots verified). Full-production admission and full-source measurement coverage remain unexecuted; never fall back to the merged snapshot."
+      "remaining": "All native source observations and links are scheduled; all six archives and target-photo versions were checked. The original/restored whole-component pilot inputs match. Native raw wave C is an explicitly bounded 128-chunk execution (c000018-c000145; 5784 selected observations, 9944 photo jobs, 8086 requests) and is still running in Actions run 34213194212. Failed cloud confirmations are not automatically missing science: reconcile protected numerical assets after the live wave closes, then resume only truly missing photo units."
     },
     "durable_private_numerical_replay": {
       "state": "execution_evidence_recorded",
@@ -82,32 +82,42 @@
     "native_source_to_measurement_coverage": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/assessability.py",
-      "remaining": "stream_observation_views has executed on 800 verified photo units and 1381 heads while preserving all 319244 source observations and 27 endpoint slots (reproducibility/v3_partial_raw_stream_observation_views_20260908.json). It separates complete, pending and source-blocked records and uses shared head/image support for modules. This partial measurement inventory does not establish full-source assessability. Finish raw acquisition and versioned measurement qualification before running exposure/taxon support audits."
+      "remaining": "stream_observation_views already separates complete, pending and source-blocked records and uses shared head/image support for modules. Partial receipts do not establish full-source assessability. Finish the bounded raw wave, reconcile protected chunks and rebuild endpoint/module-specific source-to-measurable coverage before ecology."
+    },
+    "primary_module_response_geometry": {
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/module_response.py",
+      "contract": "analysis/v3/module_response_contract.json",
+      "remaining": "The frozen primary geometry is orientation=1 registered coordinate, visible_colour=8 coordinates (L*, registered legacy chroma, joint hue sine/cosine and four Hellinger-transformed closed-composition coordinates), gross_shape=4 registered coordinates. Realized support and bbox technical envelopes still require completed production measurement. No reduced outcome-driven module, composition renormalization or silent uniform-chroma substitution is allowed."
     },
     "model_specific_environment_diagnostics": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/model_design_diagnostics.py",
-      "remaining": "Run on each realized model cohort with finalized nuisance terms and weights; older 9503-row diagnostics are not substitutes."
+      "remaining": "Run on each realized module cohort after measurement reconciliation, using the frozen nine predictors and finalized nuisance matrix. Older 9503-row diagnostics are not substitutes. Report exact membership, nuisance rank, environmental rank/condition/VIF and per-taxon identification before interpreting coefficients."
     },
     "joint_covariance_aware_hierarchy": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/joint_partial_pooling.py",
-      "remaining": "One-stage Gaussian random-slope likelihood retains singleton and locally aliased taxa and cross-taxon prediction covariance. Dense/full-size reference tests pass. Equivalent matrix-contraction reordering and a repeated360-case simulation retain conditional nine-predictor coverage of only90% (reproducibility/v3_joint_pooling_synthetic_contractions_20260908.json). module_ecology.py now implements matched within/among/difference estimates and paired cross-response covariance, but dependence-aware calibration, actual support and measurement propagation remain unqualified."
+      "remaining": "One-stage Gaussian random-slope likelihood retains singleton and locally aliased taxa and cross-taxon prediction covariance. Dense/full-size reference tests pass. module_ecology.py implements matched within/among/difference estimates and paired cross-response covariance, but final multicoordinate dependence-aware calibration, actual support and measurement propagation remain unqualified."
     },
     "calendar_imaging_nuisance_design": {
-      "state": "not_executed",
-      "remaining": "Freeze exact transformations/identification and missingness rules with endpoint-matched imaging columns. All recovered native records are northern: southern interactions are structurally constant here. Source dates include 29 before 1980; fix year/exposure-support rules without silent date repair or coefficient-guided exclusion. Dates are not stage labels."
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/nuisance_design.py",
+      "contract": "analysis/v3/nuisance_design_contract.json",
+      "remaining": "The pre-outcome nuisance matrix is now fixed and CI-tested: exact-day sin/cos, (year-2010)/10, module-matched log head minimum dimension, module-matched log1p Laplacian variance and all eight spherical basis terms. The native ecological source is northern-only, so southern interactions are retained in annotations but excluded as structurally constant. No imputation or cross-module quality borrowing. Execute and diagnose this exact matrix on each realized module cohort after measurement completion."
     },
     "dependence_aware_inference_simulation": {
-      "state": "implementation_tested_execution_pending",
+      "state": "preliminary_execution_evidence_recorded_tail_pilot_in_progress",
       "implementation": "analysis/v3/simulate_crossed_bootstrap.py",
-      "evidence": "reproducibility/v3_crossed_bootstrap_paired_replay_20260908.json",
-      "remaining": "The component-preserving crossed bootstrap and rank-aware joint process statistics are implemented. One generated dataset was replayed on two grids with199draws each, retaining all398draws and paired numerical equivalence; this is not independent calibration. The four-condition40-dataset plan is preliminary. Validate error rates, coverage, variance heterogeneity, actual support and the complete36slot family at sufficient tail resolution before ecology; preserve failed draws."
+      "evidence": "reproducibility/v3_crossed_bootstrap_preliminary_aggregate_20260908.json",
+      "tail_pilot_implementation": "analysis/v3/simulate_full_family_tail_pilot.py",
+      "tail_pilot_contract": "analysis/v3/full_family_tail_pilot_contract.json",
+      "remaining": "The completed 4-scenario x 40-outer x 2-grid preliminary calibration recorded all 320 cases and all 199 planned draws, with about 97.4% coefficient interval coverage and low descriptive unadjusted null rejection; by contract this cannot validate the 36-slot Holm family. Actions run 34239896034 is executing the 999-draw shared-resampling full36 family mechanics pilot. Its 0.001 minimum plus-one tail can resolve 0.05/36, but eight outer replicates per scenario and one-coordinate synthetic modules cannot establish final FWER/coverage. Preserve every failed draw and do not authorize ecology from this pilot."
     },
     "fixed_full_test_family": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/environment_model.py",
-      "remaining": "The one-model source-QC definition, shared predictor transformations and complete36slot Holm family with missing-slot retention are tested. Rank-aware joint module/contrast statistics are now implemented in module_ecology.py, including nonestimable covariance-range failures, but full-family dependence-aware calibration remains unfinished. No ecological probability was calculated."
+      "remaining": "The one-model source-QC definition, shared predictor transformations and complete36-slot Holm family with missing-slot retention are tested. The tail-resolved mechanics pilot now exercises all 36 planned slots with shared crossed draws; final multicoordinate calibration on the frozen 1/8/4 module geometry and realized-cohort nuisance/rank support remains unfinished. No ecological probability has been calculated."
     },
     "outcome_blind_common_axes": {
       "state": "not_executed",
