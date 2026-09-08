@@ -1,5 +1,7 @@
 import copy
 import json
+import re
+from pathlib import Path
 
 import pytest
 
@@ -8,6 +10,13 @@ from analysis.v3.reconciled_stream_input import pilot_input
 from analysis.v3 import reconciled_photo_schedule as schedule
 from analysis.v3.workflow import digest
 from test_v3_reconciled_photo_schedule import fixture as source_fixture
+
+
+def test_cloud_workflow_references_existing_tests():
+    root=Path(__file__).resolve().parents[1]
+    workflow=(root/'.github/workflows/ch1-v3-native-raw-chunks.yml').read_text()
+    files=re.findall(r'tests/test_[a-z0-9_]+\.py',workflow)
+    assert files and all((root/p).is_file() for p in files)
 
 
 def test_consecutive_chunks_cover_all_components_without_splitting_or_repeating_pilot():

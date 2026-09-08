@@ -5,6 +5,7 @@ on:
     branches: [revision/ch1-v3-20260907]
     paths:
       - analysis/v3/native_measurement_batch_20260908.json
+      - .github/workflows/ch1-v3-native-raw-chunks.yml
   workflow_dispatch:
 
 permissions:
@@ -42,7 +43,7 @@ jobs:
           python -m pip install -r reproducibility/v3-image-cpu-requirements.txt requests==2.34.2
       - name: Test chunk conservation, checkpoint recovery and protected transport
         run: |
-          python -m pytest -q tests/test_v3_measurement_chunks.py tests/test_v3_cloud_measurement_chunks.py tests/test_v3_reconciled_stream_input.py tests/test_v3_protected_artifacts.py tests/test_v3_private_replay.py
+          python -m pytest -q tests/test_v3_measurement_chunks.py tests/test_v3_cloud_measurement_chunks.py tests/test_v3_reconciled_photo_schedule.py tests/test_v3_protected_artifacts.py tests/test_v3_private_replay.py
       - name: Measure only missing photo units and preserve numerical results
         env:
           GH_TOKEN: ${{ github.token }}
