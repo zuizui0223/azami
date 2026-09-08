@@ -1,0 +1,127 @@
+name: Chapter 1 v3 ecological source cohort freeze
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - .github/workflows/ch1-v3-ecological-source-cohort.yml
+      - analysis/v3/ecological_source_cohort_contract.json
+      - analysis/v3/build_ecological_source_cohort.py
+      - analysis/v3/native_range_join_contract.json
+      - analysis/v3/build_native_range_join.py
+      - analysis/v3/build_native_range_join_from_source.py
+      - analysis/v3/environment_source_archives.json
+      - analysis/v3/prepare_environment_source_observations.py
+      - tests/test_v3_ecological_source_cohort.py
+  workflow_dispatch:
+
+concurrency:
+  group: ch1-v3-ecological-source-cohort-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  freeze-source-cohort:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set runner-temporary private paths
+        run: |
+          echo "V3_SOURCE_ARCHIVES=$RUNNER_TEMP/v3-source-archives" >> "$GITHUB_ENV"
+          echo "V3_SOURCE_OBSERVATIONS=$RUNNER_TEMP/v3-source-observations" >> "$GITHUB_ENV"
+          echo "V3_NATIVE_JOIN=$RUNNER_TEMP/v3-native-join" >> "$GITHUB_ENV"
+          echo "V3_ECO_COHORT=$RUNNER_TEMP/v3-ecological-source-cohort" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install source and taxonomy environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test]'
+
+      - name: Run cohort contract and builder tests before source execution
+        run: python -m pytest -q tests/test_v3_ecological_source_cohort.py tests/test_v3_native_range_join.py
+
+      - name: Recover six immutable source metadata/API archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: |
+          python -m analysis.v3.recover_upstream \
+            --manifest analysis/v3/environment_source_archives.json \
+            --out-dir "$V3_SOURCE_ARCHIVES" \
+            --workers 2
+
+      - name: Reconstruct phenotype-blind source observations
+        run: |
+          python -m analysis.v3.prepare_environment_source_observations \
+            --archives "$V3_SOURCE_ARCHIVES" \
+            --manifest analysis/v3/environment_source_archives.json \
+            --out-dir "$V3_SOURCE_OBSERVATIONS"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.load(open(Path(os.environ['V3_SOURCE_OBSERVATIONS'])/'environment_source_observations_report.json'))
+          assert r['counts']['unique_observations']==665139
+          assert r['trait_files_read']==0 and r['image_files_read']==0
+          PY
+
+      - name: Rebuild pinned WCVP TDWG native-range join
+        run: |
+          python -m analysis.v3.build_native_range_join_from_source \
+            --source-csv "$V3_SOURCE_OBSERVATIONS/environment_source_observations.csv" \
+            --contract analysis/v3/native_range_join_contract.json \
+            --out-dir "$V3_NATIVE_JOIN"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.load(open(Path(os.environ['V3_NATIVE_JOIN'])/'native_range_join_report.json'))
+          assert r['n_observations']==665139
+          assert r['primary_native_wild_public_exact_date_resolved_rows']==382258
+          assert r['trait_files_read']==0 and r['image_files_read']==0
+          PY
+
+      - name: Build uncapped final ecological source cohort
+        run: |
+          python -m analysis.v3.build_ecological_source_cohort \
+            --native-join "$V3_NATIVE_JOIN/native_range_join.csv" \
+            --contract analysis/v3/ecological_source_cohort_contract.json \
+            --out-dir "$V3_ECO_COHORT"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          r=json.load(open(Path(os.environ['V3_ECO_COHORT'])/'ecological_source_cohort_report.json'))
+          assert r['status']=='FINAL_PHENOTYPE_BLIND_ECOLOGICAL_SOURCE_COHORT_BUILT_BEFORE_TRAIT_EXECUTION'
+          assert r['rows']==319244 and r['accepted_taxa']==355
+          assert r['row_cap'] is None and r['taxon_cap'] is None
+          assert r['spatial_thinning'] is False and r['top_taxon_deletion'] is False
+          assert r['trait_columns_read']==0 and r['environment_columns_read']==0 and r['v2_results_read']==0
+          print(json.dumps({k:r[k] for k in ('rows','accepted_taxa','cohort_sha256','support')}, indent=2))
+          PY
+
+      - name: Publish aggregate receipt only and remove private row identifiers
+        if: always()
+        run: |
+          mkdir -p publish
+          if [ -f "$V3_ECO_COHORT/ecological_source_cohort_report.json" ]; then
+            cp "$V3_ECO_COHORT/ecological_source_cohort_report.json" publish/
+          else
+            printf '%s\n' '{"status":"INCOMPLETE_DO_NOT_USE"}' > publish/workflow_incomplete.json
+          fi
+          rm -rf "$V3_SOURCE_ARCHIVES" "$V3_SOURCE_OBSERVATIONS" "$V3_NATIVE_JOIN" "$V3_ECO_COHORT"
+          test "$(find publish -type f | wc -l)" -eq 1
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-ecological-source-cohort-${{ github.run_id }}
+          path: publish
+          if-no-files-found: error
+          retention-days: 30
