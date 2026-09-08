@@ -57,6 +57,8 @@ jobs:
             tests/test_v3_measurement_qualification_contract.py \
             tests/test_v3_measurement_freeze.py \
             tests/test_v3_ecological_analysis_contract.py \
+            tests/test_v3_ecological_source_cohort.py \
+            tests/test_v3_original_stream_traits.py \
             tests/test_v3_environment_matrix.py \
             tests/test_v3_environment_source_design.py \
             tests/test_v3_environment_design_cohort_state.py \
@@ -90,8 +92,12 @@ jobs:
           test -f analysis/v3/resolution_size_followup.py
           test -f analysis/v3/resolution_gate_contract.json
           test -f analysis/v3/measurement_qualification_contract.json
+          test -f analysis/v3/measurement_qualification_decision_20260908.json
           test -f analysis/v3/freeze_measurement_qualification.py
           test -f analysis/v3/ecological_analysis_contract.json
+          test -f analysis/v3/ecological_source_cohort_contract.json
+          test -f analysis/v3/build_ecological_source_cohort.py
+          test -f analysis/v3/stream_original_traits.py
           test -f analysis/v3/native_range_join_contract.json
           test -f analysis/v3/build_native_range_join.py
           test -f analysis/v3/build_native_range_join_from_source.py
@@ -106,9 +112,12 @@ jobs:
           test -f analysis/v3/supervisor_comment_integration_20260907.md
           test -f .github/workflows/ch1-v3-resolution-stream-gate.yml
           test -f .github/workflows/ch1-v3-resolution-size-followup.yml
+          test -f .github/workflows/ch1-v3-measurement-freeze.yml
+          test -f .github/workflows/ch1-v3-ecological-source-cohort.yml
           test -f .github/workflows/ch1-v3-environment-freeze.yml
           test -f reproducibility/v3_environment_design_upstream_20260907.json
           test -f reproducibility/v3_environment_representation_freeze_20260907.json
+          test -f reproducibility/v3_measurement_qualification_freeze_20260908.json
           test -f reproducibility/frozen-numerical-rebuild-requirements.txt
           test -f reproducibility/v3-image-cpu-requirements.txt
           test -f reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv
