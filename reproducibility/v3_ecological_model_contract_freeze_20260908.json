@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "V3_ECOLOGICAL_MODEL_SPECIFICATION_FROZEN_BEFORE_TRAIT_OUTCOMES",
+  "contract_id": "ch1_v3_hierarchical_ecological_model_20260908",
+  "contract_path": "analysis/v3/ecological_model_contract.json",
+  "contract_git_blob_sha": "92076cc392c30496290e40bfce2b1b45d2e273e2",
+  "freeze_branch": "revision/ch1-v3-20260907",
+  "integrity_validation": {
+    "workflow": "Reproducibility integrity",
+    "run_id": 34175550726,
+    "conclusion": "success"
+  },
+  "timing_boundary": {
+    "v3_original_stream_trait_values_inspected": false,
+    "v3_trait_environment_coefficients_inspected": false,
+    "v3_ecological_models_executed": false,
+    "v2_results_known": true,
+    "preregistration_claimed": false
+  },
+  "frozen_primary_structure": {
+    "hierarchy": ["head", "photo", "observation", "taxon"],
+    "within_taxon": "taxon-specific conditional slopes with random-effects partial pooling and shrinkage summaries",
+    "among_taxon": "one uncertainty-aware taxon phenotype summary and equal-observation exposure summary per taxon",
+    "spatial": "second-order spherical-coordinate basis in every primary within/among fit plus residual Moran diagnostic and bounded geographic block-bootstrap uncertainty",
+    "orientation_primary": ["pr_month"],
+    "colour_drying": ["pr_month", "rsds_month", "vpd_month"],
+    "colour_thermal": ["pr_month", "rsds_month", "tasmax_month"],
+    "shape_drying": ["pr_month", "rsds_month", "vpd_month"],
+    "shape_thermal": ["pr_month", "rsds_month", "tasmax_month"],
+    "bbox_stability": "original baseline plus all four +/-5% shifts must be QC-usable for the primary bbox-sensitive formulation; five formulations form one technical uncertainty envelope",
+    "colour_context_negative_control": true,
+    "no_global_endpoint_by_raster_screen": true
+  },
+  "claim_boundary": "This freezes analysis choices only. It contains no v3 ecological result and cannot be cited as evidence for adaptation, mechanism, pigment chemistry or true 3D/gravity orientation."
+}
