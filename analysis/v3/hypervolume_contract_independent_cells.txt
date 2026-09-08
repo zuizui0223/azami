@@ -1,0 +1,1 @@
+Taxon-level hypervolume interpretation additionally requires at least four independent quarter-degree cells.
