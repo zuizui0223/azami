@@ -58,6 +58,7 @@ jobs:
             tests/test_v3_measurement_freeze.py \
             tests/test_v3_ecological_analysis_contract.py \
             tests/test_v3_ecological_source_cohort.py \
+            tests/test_v3_ecological_model_contract.py \
             tests/test_v3_original_stream_traits.py \
             tests/test_v3_environment_matrix.py \
             tests/test_v3_environment_source_design.py \
@@ -96,6 +97,7 @@ jobs:
           test -f analysis/v3/freeze_measurement_qualification.py
           test -f analysis/v3/ecological_analysis_contract.json
           test -f analysis/v3/ecological_source_cohort_contract.json
+          test -f analysis/v3/ecological_model_contract.json
           test -f analysis/v3/build_ecological_source_cohort.py
           test -f analysis/v3/stream_original_traits.py
           test -f analysis/v3/native_range_join_contract.json
@@ -114,6 +116,7 @@ jobs:
           test -f .github/workflows/ch1-v3-resolution-size-followup.yml
           test -f .github/workflows/ch1-v3-measurement-freeze.yml
           test -f .github/workflows/ch1-v3-ecological-source-cohort.yml
+          test -f .github/workflows/ch1-v3-original-stream-pilot.yml
           test -f .github/workflows/ch1-v3-environment-freeze.yml
           test -f reproducibility/v3_environment_design_upstream_20260907.json
           test -f reproducibility/v3_environment_representation_freeze_20260907.json
