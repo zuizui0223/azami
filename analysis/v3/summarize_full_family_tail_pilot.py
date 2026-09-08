@@ -77,6 +77,20 @@ def aggregate(report_paths, *, root: Path = ROOT):
         if seen_grids != set(contract["grid_degrees"]):
             raise ValueError(f"Grid inventory differs for {key}: {sorted(seen_grids)}")
 
+    def is_complete(row):
+        return (row["estimable_shared_bootstrap_replicates"] == contract["bootstrap_replicates"]
+                and row["family_slots"] == contract["family_slots"])
+
+    incomplete_cases = [{
+        "scenario": row["scenario"],
+        "outer_replicate": row["outer_replicate"],
+        "grid_degrees": row["grid_degrees"],
+        "status": row["status"],
+        "planned_bootstrap_replicates": row["planned_bootstrap_replicates"],
+        "estimable_shared_bootstrap_replicates": row["estimable_shared_bootstrap_replicates"],
+        "family_slots": row["family_slots"],
+    } for row in rows if not is_complete(row)]
+
     scenario_grid = []
     for scenario in contract["scenarios"]:
         for grid in contract["grid_degrees"]:
@@ -85,8 +99,7 @@ def aggregate(report_paths, *, root: Path = ROOT):
                 "scenario": scenario,
                 "grid_degrees": grid,
                 "outer_reports": len(subset),
-                "complete_cases": sum(row["estimable_shared_bootstrap_replicates"] == contract["bootstrap_replicates"]
-                                      and row["family_slots"] == contract["family_slots"] for row in subset),
+                "complete_cases": sum(is_complete(row) for row in subset),
                 "outer_with_any_false_holm_rejection": sum(row["any_false_holm_rejection"] for row in subset),
                 "false_holm_rejections": sum(row["false_holm_rejections"] for row in subset),
                 "true_holm_rejections": sum(row["true_holm_rejections"] for row in subset),
@@ -101,8 +114,7 @@ def aggregate(report_paths, *, root: Path = ROOT):
     outer_either_grid_false = sum(any(row["any_false_holm_rejection"] for row in group)
                                   for group in by_outer.values())
     complete = (not missing and not unexpected and len(rows) == len(expected) * len(contract["grid_degrees"])
-                and all(row["estimable_shared_bootstrap_replicates"] == contract["bootstrap_replicates"]
-                        and row["family_slots"] == contract["family_slots"] for row in rows))
+                and not incomplete_cases)
     covered = sum(row["covered_coefficients"] for row in rows)
     coefficient_total = sum(row["coefficient_total"] for row in rows)
     result = {
@@ -117,8 +129,8 @@ def aggregate(report_paths, *, root: Path = ROOT):
         "unexpected_outer_reports": [{"scenario": s, "outer_replicate": o} for s, o in unexpected],
         "expected_grid_cases": len(expected) * len(contract["grid_degrees"]),
         "recorded_grid_cases": len(rows),
-        "complete_grid_cases": sum(row["estimable_shared_bootstrap_replicates"] == contract["bootstrap_replicates"]
-                                   and row["family_slots"] == contract["family_slots"] for row in rows),
+        "complete_grid_cases": sum(is_complete(row) for row in rows),
+        "incomplete_grid_cases": incomplete_cases,
         "outer_reports_with_any_false_holm_on_either_grid": outer_either_grid_false,
         "total_false_holm_rejections": sum(row["false_holm_rejections"] for row in rows),
         "total_true_holm_rejections": sum(row["true_holm_rejections"] for row in rows),
