@@ -34,6 +34,20 @@ slopes; it does not by itself repair selective photography or recording effort.
 
 ### All-27 measurement, without v2-result selection
 
+The [native chunk contract](measurement_chunk_contract.json) extends the
+completed pilot to bounded raw acquisition. The complete source is partitioned
+into 7,023 remaining chunks, retaining whole known dependence components and
+excluding the already measured 128 observations. The first
+[two-chunk batch](native_measurement_batch_20260908.json) contains 100 observations
+and 128 request candidates. Each chunk has at most 128 observations and 64
+requests. Only these two chunks are authorized by this batch, not all 7,023.
+The Actions worker keeps the pinned detector, measurement functions and CPU
+runtime, saves all 27 slots and bbox perturbations, and uploads numerical
+transactions to the unpublished draft. A completed transaction, including a
+download failure, is restored rather than re-requested. Interrupted unverified
+partial files are retained separately and never counted as complete.
+No environmental values are read and no ecological model is fitted in this step.
+
 GitHub Actions remains the intended production compute platform. Images are
 temporary inputs, not Git objects or a required permanent image archive. The
 preservation requirement concerns numerical results, source links and processing

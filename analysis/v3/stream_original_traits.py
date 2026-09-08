@@ -295,6 +295,31 @@ def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path
         if metadata is None or cohort is None or expected_schedule_sha256 is not None:
             raise ValueError("Choose pinned reconciled input or both explicit legacy metadata and cohort")
         cohort_hash, metadata_hash = digest(cohort), digest(metadata)
+    return _execute(packet, metadata, cohort, weights, decision_path, out,
+                    cohort_hash, metadata_hash, expected_schedule_sha256,
+                    expected_cohort_sha256, pilot_observations, shard_index, shard_count)
+
+
+def run_photo_unit(packet: dict, weights: Path, decision_path: Path, out: Path, *, model=None) -> dict:
+    """One photo transaction; the controller retains complete component chunks."""
+    out = out.resolve()
+    if out == ROOT or (ROOT in out.parents and not any(out.is_relative_to(ROOT / name) for name in ("local_data", "outputs"))):
+        raise ValueError("Private numerical outputs require an external or ignored local_data/outputs directory")
+    if (packet["report"]["mode"] != "reconciled_photo_unit" or len(packet["queue"]) != 1
+            or not 1 <= len(packet["selected"]) <= 128
+            or {row["photo_id"] for row in packet["links"]} != {packet["queue"][0]["photo_id"]}
+            or {row["obs_id"] for row in packet["links"]} != set(packet["selected"])):
+        raise ValueError("Malformed bounded photo-unit packet")
+    from .measurement_chunks import validate_algorithm
+    validate_algorithm()
+    return _execute(packet, None, None, weights, decision_path, out.resolve(),
+                    packet["input_sha256"]["enriched"], None, packet["schedule_sha256"],
+                    raw_unit=True, cached_model=model)
+
+
+def _execute(packet, metadata, cohort, weights, decision_path, out, cohort_hash, metadata_hash,
+             expected_schedule_sha256, expected_cohort_sha256=None, pilot_observations=128,
+             shard_index=0, shard_count=1, *, raw_unit=False, cached_model=None):
     import requests
     from ultralytics import YOLO
     from .detect_cached_images import MODEL_SHA, PARAMETERS
@@ -326,7 +351,7 @@ def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path
         raise ValueError("Use a fresh output directory")
     out.mkdir(parents=True)
     execution = {
-        "status": "LOCAL_OPERATIONAL_PILOT_NOT_PRODUCTION",
+        "status": "BOUNDED_RAW_PHOTO_UNIT_NO_ECOLOGY" if raw_unit else "LOCAL_OPERATIONAL_PILOT_NOT_PRODUCTION",
         "model_sha256": MODEL_SHA, "detector_parameters": PARAMETERS,
         "worker_sha256_text_lf": text_digest(Path(__file__)),
         "helper_sha256_text_lf": {name: text_digest(Path(__file__).with_name(name)) for name in
@@ -363,7 +388,7 @@ def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path
     max_live_bytes = 0
     started = time.perf_counter()
 
-    model = YOLO(str(weights))
+    model = cached_model if cached_model is not None else YOLO(str(weights))
     session = requests.Session()
     session.headers.update({"User-Agent": "azami-ch1-v3-original-stream/1.0"})
 
@@ -474,7 +499,7 @@ def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path
 
     elapsed = time.perf_counter() - started
     report = {
-        "status": "ORIGINAL_STREAM_PILOT_COMPLETE_NO_ECOLOGICAL_MODEL",
+        "status": "ORIGINAL_STREAM_PHOTO_UNIT_COMPLETE_NO_ECOLOGICAL_MODEL" if raw_unit else "ORIGINAL_STREAM_PILOT_COMPLETE_NO_ECOLOGICAL_MODEL",
         "selection": selection,
         "cohort_sha256": cohort_hash,
         "metadata_sha256": metadata_hash,
@@ -484,7 +509,8 @@ def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path
         "retained_endpoints": sorted(registry_ids),
         "retained_endpoints_per_detected_head": 27,
         "production_execution_authorized": False,
-        "operational_pilot_only": True,
+        "operational_pilot_only": not raw_unit,
+        "raw_measurement_unit_only": raw_unit,
         "execution_contract_sha256": digest(out / "execution_contract.json"),
         "model_sha256": MODEL_SHA,
         "worker_sha256_text_lf": execution["worker_sha256_text_lf"],
@@ -517,7 +543,8 @@ def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path
         ],
     }
     (out / "original_stream_report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps(report, indent=2))
+    if not raw_unit:
+        print(json.dumps(report, indent=2))
     return report
 
 

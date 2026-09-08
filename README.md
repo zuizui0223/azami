@@ -9,13 +9,21 @@ not the already thinned v2 subset. It preserves the frozen v2 results below.
 Original source links and unthinned processing history have been reconciled.
 The v3 runbook separates full-source metadata, recovered historical measurements,
 new cached-image execution and still-unexecuted ecological analyses. All raw
-images/identifiers remain local; only scientific code and aggregate receipts are public.
+images remain temporary and identifiers remain in private numerical storage;
+only scientific code and aggregate receipts are public.
 The [v3 scientific design rationale](analysis/v3/design_rationale.md) explains the
-measurement and ecological questions. Cloud original-image streaming is stopped
-until off-device private numerical storage and restoration are verified. The
+measurement and ecological questions. Protected numerical storage and cloud/local
+restoration are now verified. The
 [native-photo schedule and local replay receipt](reproducibility/v3_reconciled_schedule_private_replay_20260908.json)
 now records all 319,244 native observations, 548,123 unique photos and an exact
-872-file local restoration. It is not production measurement or off-device backup.
+872-file local restoration. The later
+[executed Actions replay](reproducibility/v3_protected_numerical_replay_20260908.json)
+verifies its protected cloud restoration and returned packet. A completed
+128-observation all-27 measurement pilot is retained without re-fetching.
+The [bounded native measurement batch](analysis/v3/native_measurement_batch_20260908.json)
+authorizes the next two unprocessed chunks on Actions with verified per-photo
+checkpoints. This is raw measurement, not full-cohort completion or ecological
+admission; the 13 held measurement routes remain held.
 
 The [active five-stage v3 design](analysis/v3/integrated_workflow_contract.json)
 places source and measurement assessability before within/among ecological

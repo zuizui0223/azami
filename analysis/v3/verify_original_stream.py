@@ -55,7 +55,8 @@ def unique(rows, fields):
 def verify(directory: Path, decision_path: Path) -> dict:
     report_path = directory / "original_stream_report.json"
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    require(report["status"] == "ORIGINAL_STREAM_PILOT_COMPLETE_NO_ECOLOGICAL_MODEL", "Not a completed pilot")
+    is_unit = report["status"] == "ORIGINAL_STREAM_PHOTO_UNIT_COMPLETE_NO_ECOLOGICAL_MODEL"
+    require(is_unit or report["status"] == "ORIGINAL_STREAM_PILOT_COMPLETE_NO_ECOLOGICAL_MODEL", "Not a completed pilot or photo unit")
     require(set(report["numerical_file_sha256"]) == FILES, "Incomplete numerical-file manifest")
     for name in sorted(FILES):
         require(digest(directory / name) == report["numerical_file_sha256"][name], "Saved file hash changed: " + name)
@@ -64,7 +65,10 @@ def verify(directory: Path, decision_path: Path) -> dict:
     require(digest(decision_path) == report["measurement_decision_sha256"] == execution["measurement_decision_sha256"], "Measurement decision identity changed")
     require(digest(directory / "execution_contract.json") == report["execution_contract_sha256"], "Execution identity changed")
     require(report["selection"] == execution["selection"], "Selection identity changed")
-    require(report["production_execution_authorized"] is False and report["operational_pilot_only"] is True, "Pilot scope was promoted")
+    require(report["production_execution_authorized"] is False and report["operational_pilot_only"] is (not is_unit), "Pilot scope was promoted")
+    if is_unit:
+        require(report.get("raw_measurement_unit_only") is True and execution["input_mode"] == "reconciled_photo_unit"
+                and execution["status"] == "BOUNDED_RAW_PHOTO_UNIT_NO_ECOLOGY", "Photo-unit scope differs")
     require(report["source_images_persisted"] == report["environment_values_read"] == report["ecological_models_executed"] == 0, "Pilot scope was exceeded")
     routes = {row["endpoint_id"]: row["ecological_route"] for row in decision["endpoints"]}
     ids = set(routes)
@@ -84,9 +88,11 @@ def verify(directory: Path, decision_path: Path) -> dict:
     scheduled_states = {"request_candidate_not_authorized", "scheduled"}
     scheduled = {row["photo_id"] for row in links if row["status"] in scheduled_states}
     require(set(transfer_by) == {(photo,) for photo in scheduled}, "Scheduled transfer missing or extra")
-    if execution["input_mode"] == "reconciled_whole_component_pilot":
+    if execution["input_mode"] in {"reconciled_whole_component_pilot", "reconciled_photo_unit"}:
         require(len(links) == report["schedule"]["selected_photo_links"], "Source links lost")
         require(len(transfers) == report["schedule"]["request_candidates"], "Request denominator differs")
+        if is_unit:
+            require(len(transfers) == 1, "Photo unit must contain exactly one request")
     detections = [json.loads(line) for line in (directory / "photo_detection_private.jsonl").read_text(encoding="utf-8").splitlines()]
     detection_by = unique(detections, ("photo_id",))
     require(set(detection_by) == set(transfer_by), "Detection/transfer identities differ")

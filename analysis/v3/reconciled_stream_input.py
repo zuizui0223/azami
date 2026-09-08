@@ -14,7 +14,7 @@ from .reconciled_photo_schedule import STATUS, component_score
 from .workflow import ROOT, canonical_digest, digest, text_digest
 
 
-def pilot_input(path: Path, expected_sha256: str, maximum_observations: int = 128) -> dict:
+def pilot_input(path: Path, expected_sha256: str, maximum_observations: int = 128, *, component_ids: list[str] | None = None) -> dict:
     if not 1 <= maximum_observations <= 128:
         raise ValueError("Reconciled pilot size must be 1..128 observations")
     if not expected_sha256 or digest(path) != expected_sha256:
@@ -30,6 +30,13 @@ def pilot_input(path: Path, expected_sha256: str, maximum_observations: int = 12
                   db.execute("SELECT component_id,COUNT(*) FROM native_observations GROUP BY component_id")]
         groups.sort()
         selected_groups, actual = [], 0
+        if component_ids is not None:
+            if not component_ids or len(component_ids) != len(set(component_ids)):
+                raise ValueError("Chunk components must be nonempty and unique")
+            requested = set(component_ids)
+            groups = [g for g in groups if g[1] in requested]
+            if {g[1] for g in groups} != requested or sum(g[2] for g in groups) > maximum_observations:
+                raise ValueError("Chunk components are absent or exceed the observation bound")
         for score, component, count in groups:
             if actual + count > maximum_observations:
                 break
@@ -81,7 +88,7 @@ def pilot_input(path: Path, expected_sha256: str, maximum_observations: int = 12
             raise ValueError("Selected observations or photo links were lost")
     return {"selected": selected, "selection_scores": scores, "queue": queue, "links": links,
             "input_sha256": execution["input_sha256"], "schedule_sha256": expected_sha256,
-            "report": {"mode": "reconciled_whole_component_pilot", "ordering_salt": contract["ordering_salt"],
+            "report": {"mode": "reconciled_whole_component_chunk" if component_ids is not None else "reconciled_whole_component_pilot", "ordering_salt": contract["ordering_salt"],
                        "maximum_observations": maximum_observations, "selected_observations": actual,
                        "selected_components": len(selected_groups), "selected_photo_links": len(links),
                        "selected_photo_jobs": len(jobs), "request_candidates": len(queue), "photo_states": states,

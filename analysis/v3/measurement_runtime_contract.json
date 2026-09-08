@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "pinned_raw_measurement_runtime_no_ecological_admission",
+  "python": "3.12.14",
+  "system": "Linux",
+  "distribution_versions": {
+    "torch": "2.11.0+cpu",
+    "torchvision": "0.26.0+cpu",
+    "ultralytics": "8.4.87",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "pillow": "12.2.0",
+    "opencv-python": "4.13.0.92",
+    "requests": "2.34.2"
+  },
+  "bbox_identity_pixel_and_detector_canonical_sha256": "3084e13432b9224a7e2ad8c24ca47e731c1bc6c0d9e6a9d30730d572b778e87e",
+  "helper_sha256_text_lf": {
+    "resolution_stream_gate.py": "37a630f6b48a76014dd22d955b9df160099d1b3c5966603f59b5197d0a3a5093",
+    "perturb_cached_heads.py": "c732317f48e770e9839fa27ddbd19c40bf044a73258aef8e445056c71d373d91",
+    "detect_cached_images.py": "bb3ba717f0b230046649947d945b8fb3198d85e7994a345a78382ad4ee226b6b"
+  },
+  "legacy_pilot": "The preserved 128-observation pilot used Windows with the same pinned scientific library versions and unchanged measurement functions. Its platform is retained in provenance; this is not a claim of bit-identical cross-platform image replay.",
+  "ecological_fitting_authorized": false
+}

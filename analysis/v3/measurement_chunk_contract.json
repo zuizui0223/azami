@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "bounded_raw_measurement_chunks_authorized_no_ecological_admission",
+  "source_schedule_sha256": "f778c542e35bf84e3fb1c9028207b448f1285e89be3d2dc95f871a72298c52f9",
+  "maximum_observations_per_chunk": 128,
+  "maximum_requests_per_chunk": 64,
+  "ordering": "The reconciled full-source component hash order; retain whole known components, including blocked jobs. The first completed 128-observation pilot is reused, including its one transfer failure, not resampled.",
+  "reused_pilot": {
+    "selected_observations_file_sha256": "c20c721f62e9d55fc4210355d517e93dd6a535d81f8a726a2a303f968ad62dd9",
+    "observations": 128,
+    "receipt": "reproducibility/v3_native_original_pilot_20260908.json",
+    "protected_asset_id": 550051255
+  },
+  "algorithm": {
+    "measure_head_source_sha256": "07574d67d58af8a5d027ae7775dd99d9e917c988e8a9f222215550acdf1f8e9a",
+    "feature_specification_canonical_sha256": "2d670dfc1cc203c099dcd6c7f5a95e4cafad65e076613bd51cb2ff5923259cfb",
+    "measurement_decision_canonical_sha256": "ebce105f60f6812d2d28ab2a72ea12c58d4c2f7253abb5137d712802b0c14f8f",
+    "model_sha256": "4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed"
+  },
+  "retention": "Keep all 27 raw endpoint slots, 5 bbox conditions for the five bbox-sensitive endpoints, source and oriented-pixel hashes, detector geometry, paired floral/non-head/green-context statistics, and every blocked/download/no-detection/QC outcome. Source images are temporary memory inputs only.",
+  "resume": "Each photo is a numerical transaction inside a component-preserving chunk. Reuse only integrity-verified unit outputs bound to the same packet and algorithm. Persist completed units when a chunk is interrupted; restore those units before requesting remaining photos. Do not retry a recorded terminal transfer failure without a separate policy revision. A verified completed chunk is downloaded and checked, not rerun.",
+  "protected_transport_receipt": "reproducibility/v3_protected_numerical_replay_20260908.json",
+  "scope_revision": "The verified source replay and completed all27 pilot permit bounded raw acquisition. This does not admit a changed colour recipe, resolve the 13 technical holds, authorize any trait-environment join, or claim full-cohort completion. Raw acquisition may precede those inference qualifications because all candidate values and QC states remain saved.",
+  "raw_measurement_chunk_authorized": true,
+  "full_cohort_completion_claimed": false,
+  "ecological_fitting_authorized": false,
+  "source_images_archived": false
+}

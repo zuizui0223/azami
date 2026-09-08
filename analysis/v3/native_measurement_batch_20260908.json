@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "bounded_native_raw_measurement_batch_no_ecology",
+  "repository": "zuizui0223/azami",
+  "release_id": 384499945,
+  "tag_name": "private-v3-numerical-20260908",
+  "measurement_contract_canonical_sha256": "0c7d748d41c9fd093ee1032ac86fb6ebd76fd0fe170c623a86d385afd0d40e0c",
+  "runtime_contract_canonical_sha256": "63a8293c5b9501e7b00f45a51383caba8558c69cdf227503f37118a410328622",
+  "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+  "input_asset": {
+    "bundle_sha256": "92152268136efe36e37fe6375549976104addad34a3d266c9eb1eec09afa7eb0",
+    "bundle_bytes": 13348920,
+    "manifest_sha256": "eb29b1d4c938d26e65401b03708288ac2858a2fdace115ed3b8333c2aaa41aaa",
+    "files": 3,
+    "restored_bytes": 31795342,
+    "source_images_included": false,
+    "asset_id": 550098483,
+    "asset_name": "v3-native-chunk-input-20260908-a.zip"
+  },
+  "chunks": {
+    "c000000": {
+      "packet_sha256": "b9303daccd487ba7e7d12d7442c90a106d5065121dba65513bd7f763866d0bf5",
+      "observations": 58,
+      "requests": 64,
+      "photo_jobs": 81
+    },
+    "c000001": {
+      "packet_sha256": "d9cacd84f3aa8bdeed7b33fb3cf8a18e00086061f64b679cca4beef3be0960d3",
+      "observations": 42,
+      "requests": 64,
+      "photo_jobs": 71
+    }
+  },
+  "pilot_observations_reused_not_refetched": 128,
+  "source_totals": {
+    "observations": 319244,
+    "photo_jobs": 548123,
+    "requests": 443811
+  },
+  "source_partition_chunks": 7023,
+  "scope": "Only these two unprocessed chunks are authorized. No trait-environment join, full-cohort completion or scientific admission is asserted.",
+  "local_input_roundtrip_verified": true
+}
