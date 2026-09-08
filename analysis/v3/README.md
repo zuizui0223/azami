@@ -95,6 +95,12 @@ means. All 13 held routes have missing operational values. This snapshot is not
 the final measurement cohort, an ecological result or independent accuracy
 validation. Later raw chunks need separate restoration before collection.
 
+The numerical observation database, private input list and verification records
+also have a [protected roundtrip receipt](../../reproducibility/v3_partial_observation_view_preservation_20260908.json):
+35 files and 305,150,427 restored bytes. The returned database passed SQLite
+integrity checking and retained the same 8,619,588-slot view. The draft remains
+unpublished and anonymously inaccessible; no source images are included.
+
 Private replay entry points:
 
 ```text

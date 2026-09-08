@@ -1,0 +1,29 @@
+{
+  "anonymous_release_and_asset_requests": "404",
+  "asset": {
+    "asset_id": 550200944,
+    "asset_name": "v3-raw-observation-view-20260908-a.zip",
+    "bundle_bytes": 101764794,
+    "bundle_sha256": "f726791bb48025510be635b04008157f39f6ca9971a74bf2c820af43fb8910d9",
+    "files": 35,
+    "manifest_sha256": "def3c433c569c1e8f6de31c60a625766469af34acbce0e34a646837a33fe2daa",
+    "restored_bytes": 305150427,
+    "source_images_included": false
+  },
+  "bytes_restored": 305150427,
+  "draft_verified": true,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "environment_values_read": 0,
+  "files_restored": 35,
+  "image_requests": 0,
+  "limit": "Protected recovery of a partial numerical view; not full-cohort completion, permanent public archiving or ecological admission.",
+  "release_id": 384499945,
+  "repository": "zuizui0223/azami",
+  "retained_observation_endpoint_slots": 8619588,
+  "source_images_included": false,
+  "source_view_database_sha256": "b59ffd0e038a1002986469fc700632025eef49d804cc19d596238ede012696be",
+  "source_view_report_canonical_sha256": "703ce2313939348ea7e3d0a2a6b745ae0df4f05bf07de791acfc525a9230fc55",
+  "sqlite_integrity_check": "ok",
+  "status": "PARTIAL_RAW_OBSERVATION_VIEW_PROTECTED_ROUNDTRIP_AND_SQLITE_VERIFIED"
+}
