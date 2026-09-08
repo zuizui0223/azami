@@ -12,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def clone_inputs(tmp_path):
     index = json.loads((ROOT / INDEX).read_text(encoding="utf-8"))
     paths = [CONTRACT, INDEX, "analysis/v3/ecological_analysis_contract.json"]
+    paths += ['reproducibility/v3_full_native_environment_qc_selection_20260908.json',
+              'analysis/v3/environment_production_contract.json']
     paths += [item["path"] for item in index["inputs"]]
     paths += [item["implementation"] for item in index["requirements"].values() if item.get("implementation")]
     for relative in paths:
@@ -72,11 +74,11 @@ def test_secondary_synthesis_cannot_become_primary_prerequisite(tmp_path):
         validate(root)
 
 
-def test_primary_formulations_stay_inside_frozen_exposures(tmp_path):
+def test_primary_formulation_stays_inside_verified_source_selected_exposures(tmp_path):
     root = clone_inputs(tmp_path)
     path = root / CONTRACT
     contract = json.loads(path.read_text(encoding="utf-8"))
-    contract["environment_and_inference"]["drying"].append("tasmax_month")
+    contract["environment_and_inference"]["retained_variables"].append("tasmax_month")
     path.write_text(json.dumps(contract), encoding="utf-8")
     with pytest.raises(ValueError, match="formulation differs"):
         validate(root)
@@ -99,7 +101,7 @@ def test_two_contributions_are_questions_not_required_positive_results():
     assert "not 14 independently calibrated" in contract["stages"][1]["output"]
     assert "not claimed as new inventions" in contract["two_contributions"]["methodological"]
     assert "without requiring either v2 candidate to survive" in contract["two_contributions"]["ecological"]
-    assert "18 tests" in contract["environment_and_inference"]["primary_probability_family"]
+    assert "36 tests" in contract["environment_and_inference"]["primary_probability_family"]
     assert "not evidence of a difference" in contract["environment_and_inference"]["scale_contrast"]
 
 

@@ -7,8 +7,52 @@ from analysis.v3.hierarchical_ecology import (
     random_effects_reml,
     spherical_basis,
     joint_spatial_taxon_slopes,
+    joint_nuisance_taxon_slopes,
     morans_i,
 )
+
+
+@pytest.mark.parametrize('nuisance_count',[0,4,13])
+def test_shared_calendar_imaging_nuisance_matches_full_joint_interaction_reference(nuisance_count):
+    rng=np.random.default_rng(81037)
+    groups=np.repeat(['a','b','c'],45)
+    n=len(groups)
+    x=rng.normal(size=(n,3))
+    nuisance=rng.normal(size=(n,nuisance_count))
+    if nuisance_count:
+        nuisance[:,0]+=.6*x[:,0]
+        # Retain redundant and structurally constant nuisance terms without
+        # making extra environmental slopes or silently changing membership.
+        nuisance=np.column_stack([nuisance,nuisance[:,0],np.ones(n)])
+    y=rng.normal(size=n)+x[:,0]*(1+np.repeat([-.8,.2,1.3],45))
+    if nuisance_count: y+=nuisance[:,:nuisance_count]@rng.normal(size=nuisance_count)
+    fit=joint_nuisance_taxon_slopes(y,x,groups,nuisance)
+    indicators=np.column_stack([groups==t for t in fit.taxa])
+    interactions=np.column_stack([x*(groups==t)[:,None] for t in fit.taxa])
+    design=np.column_stack([indicators,nuisance,interactions])
+    inverse=np.linalg.pinv(design)
+    beta=inverse@y
+    residual=y-design@beta
+    leverage=np.einsum('ij,ji->i',design,inverse)
+    covariance=(inverse*(residual/(1-leverage))**2)@inverse.T
+    np.testing.assert_allclose(fit.slopes.ravel(),beta[-9:],atol=1e-10)
+    np.testing.assert_allclose(fit.covariance,covariance[-9:,-9:],atol=1e-10)
+    np.testing.assert_allclose(fit.residuals,residual,atol=1e-10)
+    np.testing.assert_allclose(fit.leverage,leverage,atol=1e-10)
+    assert fit.residual_df==n-np.linalg.matrix_rank(design)
+
+
+def test_shared_nuisance_alias_or_invalid_rows_are_not_silently_repaired():
+    rng=np.random.default_rng(431)
+    n=90
+    x=rng.normal(size=(n,2))
+    y=rng.normal(size=n)
+    groups=np.repeat(['a','b','c'],30)
+    with pytest.raises(ValueError,match='aliased'):
+        joint_nuisance_taxon_slopes(y,x,groups,x[:,:1])
+    bad=np.ones((n,1)); bad[0,0]=np.nan
+    with pytest.raises(ValueError,match='finite and aligned'):
+        joint_nuisance_taxon_slopes(y,x,groups,bad)
 
 
 def test_common_spatial_residualization_recovers_within_taxon_signal():

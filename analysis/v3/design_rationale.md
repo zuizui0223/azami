@@ -51,18 +51,21 @@ Ecosystem productivity is not interchangeable with a direct physical exposure.
 
 Use the environment-only cohort to assess coverage, Pearson/Spearman correlation,
 rank, condition number, VIF and redundancy. Select representations using biological
-meaning and environmental support before joining traits. The frozen drying and
-thermal alternatives are reported together, not chosen by the more favourable
-outcome. Marginal slopes cannot establish independent environmental effects.
+meaning and environmental support before joining traits. The source-only
+weighted VIF-10 rule has now been executed after explicit raster-source QC.
+Marginal slopes cannot establish independent environmental effects.
 
-The current revision uses the same four-exposure drying and thermal formulations
-for each primary module. Precipitation is the focal orientation coefficient;
-that focal hypothesis is not a reason to leave correlated exposures unadjusted.
-This supersedes the earlier precipitation-only primary orientation model, without
-rewriting its historical contract. The choice changes the conditional question;
-it does not demonstrate that all confounders have been measured. Removing annual
-or growing-season representations also narrows the temporal question, not just
-redundant information.
+The current revision uses one conditional model with four process blocks for
+each primary module: wetting/moisture (monthly, annual, warm-quarter and
+growing-season precipitation), radiation (monthly shortwave), heat/drying
+(monthly VPD and temperature, annual temperature), and mechanical exposure
+(monthly wind). Each block is tested jointly, conditional on every other retained
+block and nuisance term. Orientation is not restricted to a precipitation test.
+This replaces the earlier two-formulation model without rewriting its historical
+contract or selecting a favourable trait result. CMI, Tmax and PET remain saved;
+their unique information is not claimed recovered by other predictors. The blocks
+overlap physically and the retained time windows differ. Conditional block
+associations do not demonstrate isolated mechanisms or complete confounder control.
 
 Before fitting, diagnose the realized endpoint/module cohort at both scales and
 after nuisance adjustment. A low VIF in a capped source-diagnostic sample cannot

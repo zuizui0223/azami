@@ -90,7 +90,7 @@
     },
     "joint_covariance_aware_hierarchy": {
       "state": "not_executed",
-      "remaining": "Joint numerical taxon-slope solver exists; full cross-covariance pooling, sparse taxa and direct scale-contrast runner are unfinished."
+      "remaining": "Joint numerical taxon slopes with arbitrary shared nuisance columns and full cross-taxon HC3 covariance match dense interaction-design tests. This is an independent-error numerical reference; cross-covariance pooling, sparse taxa and the dependence-aware direct scale-contrast runner remain unfinished."
     },
     "calendar_imaging_nuisance_design": {
       "state": "not_executed",
@@ -101,8 +101,9 @@
       "remaining": "Implement and check null error, coverage, heterogeneity and spatial/component-respecting resampling; HC3 alone is not spatially robust inference."
     },
     "fixed_full_test_family": {
-      "state": "not_executed",
-      "remaining": "The 18-slot family is declared in the integrated design; rank-aware module/contrast tests and missing-slot handling need executable validation."
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/environment_model.py",
+      "remaining": "The one-model source-QC definition, shared predictor transformations and complete 36-slot Holm family with missing-slot retention are tested. Rank-aware joint module/contrast statistics and dependence-aware calibration remain unfinished; no ecological probability was calculated."
     },
     "outcome_blind_common_axes": {
       "state": "not_executed",

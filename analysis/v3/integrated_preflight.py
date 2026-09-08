@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from .workflow import ROOT, canonical_digest
+from .environment_model import definition as environment_definition
 
 CONTRACT = "analysis/v3/integrated_workflow_contract.json"
 INDEX = "analysis/v3/integrated_evidence_index.json"
@@ -184,12 +185,14 @@ def validate(root: Path = ROOT) -> dict:
         raise ValueError("Measurement route counts disagree")
     if len(decision["endpoints"]) != measurement["endpoint_count"]:
         raise ValueError("Endpoint denominator disagrees")
-    for name in ("drying", "thermal"):
-        variables = contract["environment_and_inference"][name]
-        if variables != environment["integrated_backbones"][name]:
-            raise ValueError("Integrated exposure formulation differs from the frozen environment representation")
-        if "vpd_month" in variables and "tasmax_month" in variables:
-            raise ValueError("Collinear alternatives cannot be co-entered")
+    active_environment=environment_definition(root)
+    active=contract['environment_and_inference']
+    if (active['retained_variables']!=active_environment['variables']
+            or active['process_blocks']!=active_environment['processes']
+            or active['environment_selection_receipt']!=active_environment['receipt']
+            or active['environment_selection_receipt_canonical_sha256']!=active_environment['receipt_canonical_sha256']
+            or 'drying' in active or 'thermal' in active):
+        raise ValueError('Integrated exposure formulation differs from the verified source-QC process model')
     requirements = evidence["requirements"]
     expected = {key for stage in contract["stages"] for key in stage["required"]}
     if expected != set(requirements):
@@ -220,8 +223,9 @@ def validate(root: Path = ROOT) -> dict:
         "contract_sha256_canonical_json": canonical_digest(contract),
         "evidence_index_sha256_canonical_json": canonical_digest(evidence),
         "verified_public_evidence": checked,
+        "active_environment_model": active_environment,
         "stages": stage_reports,
-        "next_source_gate": "The exact native source and 872-file numerical snapshot have been restored on GitHub Actions; the returned worker packet matches local input. Protected transfer is verified, not permanent archival assurance. The completed local all27 pilot and source-QC environment outputs have a separate 337-file protected restoration receipt. Next implement bounded, resumable reconciled-schedule cloud measurement and qualify versioned colour handling, then full-source assessability and calendar/covariance-aware ecological inference. Historical HTTP bytes remain unavailable; no new drive or permanent original-image archive is required.",
+        "next_source_gate": "The exact native source and 872-file numerical snapshot have been restored on Actions; the returned worker packet matches local input. The all27 pilot and source-QC environment outputs have a separate 337-file protected restoration receipt. Bounded resumable native cloud chunks are implemented with a separate two-chunk batch authority; their executed outcomes require separate restoration receipts. Next verify those outputs, qualify versioned colour handling, and complete full-source assessability and calendar/covariance-aware ecological inference. The source-QC process model is now adopted without fitting coefficients. Historical HTTP bytes remain unavailable; no new drive or permanent original-image archive is required.",
         "ecological_fitting_authorized": False,
         "full_original_stream_authorized": False,
         "trait_values_read": 0, "ecological_models_executed": 0,

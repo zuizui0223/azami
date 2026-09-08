@@ -144,10 +144,27 @@ analysis.v3.select_production_environment --matrix PRIVATE_QC_MATRIX
 The same weighted VIF-10 rule then retained nine variables in four process
 blocks on 317,986 complete observations from 354 taxa; maximum VIF was 6.585
 and condition number 6.891. CMI, Tmax and PET were removed from the candidate
-representation, not deleted from the data. This candidate result does not yet
-replace the historical two-formulation model. Actual module-specific within/among
-and nuisance-adjusted diagnostics, the exact test-family integration and the
-covariance-aware ecological runner remain unfinished. No ecological model was fitted.
+representation, not deleted from the data. The integrated design now adopts this
+source-QC selection as **one conditional model**, using the unchanged saved
+predictor centers/SDs across modules and scales. Its four process blocks retain
+4 wetting/moisture, 1 radiation, 3 heat/drying and 1 wind variables. The executable
+definition in `environment_model.py` verifies the source receipt and reserves all
+36 module-by-process-by-scale test slots; unavailable probabilities stay missing.
+This supersedes the original drying/thermal alternatives, without rewriting their
+historical receipts. Actual module-specific within/among and nuisance-adjusted
+diagnostics, joint test calibration and the covariance-aware ecological runner
+remain unfinished. No ecological model was fitted.
+
+The [subsequent source-only identification audit](../../reproducibility/v3_source_environment_identification_20260908.json)
+uses all 317,986 complete native source records, without traits. After shared
+calendar/year and spherical-basis projection, pooled within/among matrices both
+retain rank nine; their maximum VIFs are 5.530 and 9.792. Unadjusted among-taxon
+BIO18 VIF is 11.105, so the earlier pooled source VIF is not a guarantee for every
+scale. A conservative local nuisance-projection check retains rank nine for only
+161 of 354 taxa. This is not the rank of the joint shared-nuisance model and does
+not justify deleting the other 193 taxa. Sparse/aliased support must remain
+explicit in the hierarchy. Imaging covariates and realized module membership are
+absent from this source audit; actual model diagnostics remain necessary.
 
 The following sections document the source inventory and earlier implementation
 checkpoints. Their historical completion labels do not override the active

@@ -3,7 +3,8 @@
 This module contains pre-outcome numerical building blocks, not an authorized
 ecological runner. Common-slope residualization must not be followed by separate
 taxon fits: heterogeneous slopes require the joint interaction design below.
-Temporal/imaging adjustment and dependence-aware pooling remain unimplemented. It does
+Arbitrary shared nuisance columns are supported by the joint solver; their exact
+calendar/imaging construction and dependence-aware pooling remain unfinished. It does
 not choose predictors, endpoints or cohorts and does not inspect v2 results.
 """
 from __future__ import annotations
@@ -228,13 +229,35 @@ class JointSpatialSlopes:
 
 
 def joint_spatial_taxon_slopes(response, predictors, taxa, latitude, longitude) -> JointSpatialSlopes:
-    """Fit taxon intercepts/slopes and common spatial effects JOINTLY.
+    """Historical eight-term spatial wrapper around the general joint solver."""
+    result=joint_nuisance_taxon_slopes(response,predictors,taxa,spherical_basis(latitude,longitude))
+    return JointSpatialSlopes(result.taxa,result.slopes,result.covariance,result.residuals,
+                              result.leverage,result.residual_df,result.nuisance_rank)
+
+
+@dataclass(frozen=True)
+class JointNuisanceSlopes:
+    """Joint raw-unit slopes with all shared nuisance terms fitted together.
+
+    HC3 remains an independent-error reference, not spatial/component inference.
+    """
+    taxa: tuple[str,...]
+    slopes: np.ndarray
+    covariance: np.ndarray
+    residuals: np.ndarray
+    leverage: np.ndarray
+    residual_df: int
+    nuisance_rank: int
+
+
+def joint_nuisance_taxon_slopes(response,predictors,taxa,nuisance) -> JointNuisanceSlopes:
+    """Fit taxon intercepts/slopes and arbitrary shared nuisance effects JOINTLY.
 
     Use block FWL: first remove each taxon's intercept and predictor columns
-    from the common spatial basis, solve the remaining eight-column system,
+    from the common nuisance basis, solve the remaining small-column system,
     then recover all taxon slopes. This avoids an observations-by-all-taxon-
     interactions dense matrix. No response scaling, cohort selection, scientific
-    support threshold, timing/imaging adjustment or pooling is performed here.
+    support threshold, timing/imaging coding or pooling is performed here.
     The caller must supply the predeclared aligned observational units.
     """
     y, x = np.asarray(response, float), np.asarray(predictors, float)
@@ -248,9 +271,9 @@ def joint_spatial_taxon_slopes(response, predictors, taxa, latitude, longitude) 
     groups = groups.astype(str)
     if np.any(groups == ""):
         raise ValueError("Missing taxon label")
-    basis = spherical_basis(latitude, longitude)
-    if len(basis) != len(y):
-        raise ValueError("Coordinate length mismatch")
+    basis=np.asarray(nuisance,float)
+    if basis.ndim!=2 or len(basis)!=len(y) or not np.isfinite(basis).all():
+        raise ValueError("Nuisance matrix must be finite and aligned")
     labels, p = tuple(sorted(set(groups))), x.shape[1]
     y_perp, b_perp = np.empty_like(y), np.empty_like(basis)
     b_centered = np.empty_like(basis)
@@ -285,12 +308,13 @@ def joint_spatial_taxon_slopes(response, predictors, taxa, latitude, longitude) 
     bc, bp = b_centered / scales, b_perp / scales
     bc[:, inactive] = 0.0
     bp[:, inactive] = 0.0
-    tolerance = np.linalg.norm(bc, ord=2) * max(bc.shape) * np.finfo(float).eps
+    tolerance = (np.linalg.norm(bc, ord=2) if bc.shape[1] else 0.0) * max(bc.shape) * np.finfo(float).eps
     u, singular, vt = np.linalg.svd(bp, full_matrices=False)
     retained = singular > tolerance
     rank = int(retained.sum())
-    if rank < np.linalg.matrix_rank(bc, tol=tolerance):
-        raise ValueError("Taxon slopes aliased with the common spatial basis")
+    centered_rank=int(np.linalg.matrix_rank(bc,tol=tolerance)) if bc.shape[1] else 0
+    if rank < centered_rank:
+        raise ValueError("Taxon slopes aliased with the common nuisance basis")
     residual_df = len(y) - len(labels) * (p + 1) - rank
     if residual_df <= 0:
         raise ValueError("Joint model has no residual degrees of freedom")
@@ -319,7 +343,7 @@ def joint_spatial_taxon_slopes(response, predictors, taxa, latitude, longitude) 
         sl = slice(i*p, (i+1)*p)
         covariance[sl, sl] += (inverse_x * error2[ix]) @ inverse_x.T
     covariance = (covariance + covariance.T) / 2.0
-    return JointSpatialSlopes(labels, np.asarray(slopes), covariance, residual,
+    return JointNuisanceSlopes(labels, np.asarray(slopes), covariance, residual,
                               leverage, residual_df, rank)
 
 

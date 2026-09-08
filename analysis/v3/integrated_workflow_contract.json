@@ -13,7 +13,8 @@
       "ecological_model_contract.json environment_mapping: focal hypothesis does not justify leaving correlated environmental covariates unadjusted",
       "ecological_model_contract.json within/among standardization and multiplicity: use a common scale and an explicit scale-contrast family",
       "ecological_model_contract.json among spatial location: average the observation basis, not the basis evaluated at a geographic centroid",
-      "ecological_model_execution_addendum_20260908.json split-after-common-FWL algorithm: use the reviewed joint design"
+      "ecological_model_execution_addendum_20260908.json split-after-common-FWL algorithm: use the reviewed joint design",
+      "This integrated contract's original drying/thermal formulations and 18-test family are superseded by the verified source-QC process-block selection: one model, four process blocks and 36 primary slots. Historical acquisition and candidate receipts remain unchanged."
     ],
     "entrypoint": "python -m analysis.v3.integrated_preflight",
     "entrypoint_scope": "Integrity and readiness reporting only; cannot authorize image production or ecological fitting."
@@ -64,10 +65,19 @@
   "environment_and_inference": {
     "primary_modules": ["orientation", "visible_colour", "gross_shape"],
     "descriptive_module": "visible_display",
-    "drying": ["pr_month", "rsds_month", "vpd_month", "sfcWind_month"],
-    "thermal": ["pr_month", "rsds_month", "tasmax_month", "sfcWind_month"],
-    "formulation_rule": "Use both fixed four-exposure conditional formulations for every primary module; never co-enter VPD and Tmax or select the favourable formulation. Orientation's focal coefficient is precipitation; other exposures are adjustment variables, not asserted independent mechanisms.",
-    "temporal_target": "Observation-month long-term climatology, not event weather, actual head exposure or a developmental-stage label.",
+    "environment_definition": "analysis/v3/environment_model.py",
+    "environment_selection_receipt": "reproducibility/v3_full_native_environment_qc_selection_20260908.json",
+    "environment_selection_receipt_canonical_sha256": "1dbddaa1cfab0075e89fa3fed1b1934e7aaa5e25041678513611542bc346e2d8",
+    "retained_variables": ["pr_month", "BIO12", "BIO18", "GSP", "rsds_month", "vpd_month", "tas_month", "BIO1", "sfcWind_month"],
+    "process_blocks": {
+      "wetting_moisture": ["pr_month", "BIO12", "BIO18", "GSP"],
+      "radiation": ["rsds_month"],
+      "heat_drying": ["vpd_month", "tas_month", "BIO1"],
+      "mechanical": ["sfcWind_month"]
+    },
+    "formulation_rule": "One additive conditional model includes every retained variable for every primary module. Test each process block jointly, conditional on the other three blocks and nuisance terms. Orientation is tested against all four processes; precipitation is not selected as a winner or an exclusive primary test. Blocks are not mutually independent causal mechanisms. The source-only weighted keep-style VIF10 selection is adopted without changing its rule or using trait associations.",
+    "temporal_target": "Observation-month 1981-2010 climatology plus retained annual/seasonal context within its process block; distinguish their time windows. None is event weather, actual head exposure or a developmental-stage label.",
+    "environment_missingness": "Selection and predictor transformations used the fixed complete-case 12-candidate source (317986 observations, 354 taxa). A realized module requires its retained nine predictors and declared response/nuisance support, not a new requirement for removed candidates. Report the exact resulting membership and exclusions; retain all source rows and all 15 environmental columns. No imputation, silent row deletion or outcome-driven reselection.",
     "nuisance": "Source-date harmonics with hemisphere interactions, observation year where identifiable, endpoint-matched log head pixels and sharpness, and the eight-term spherical basis. Freeze exact coding and missingness handling before fitting.",
     "stage_estimand": "Primary estimates describe the photographed stage mixture. A stage-restricted or stage-conditioned target is different; automated stage uncertainty is not ground truth and is not silently called controlled.",
     "environment_diagnostics": ["raw correlation", "within-taxon correlation", "among-taxon-mean correlation", "nuisance-residualized rank", "condition number", "VIF", "per-taxon identification"],
@@ -76,7 +86,7 @@
     "among": "One matched phenotype/exposure summary per taxon; average the observation-level spatial basis and nuisance terms over those same records.",
     "common_scale": "Report raw-unit effects and use one saved transformation per response/predictor across within and among comparisons; never standardize separately within every taxon or scale when comparing slopes.",
     "scale_contrast": "Estimate beta_among minus the within hypermean on matched eligible taxa/support with their joint resampling covariance. A significant effect on one scale and a nonsignificant effect on the other is not evidence of a difference.",
-    "primary_probability_family": "If probabilities are reported, one Holm family covers 3 modules x 2 formulations x 3 questions (within, among, direct scale contrast) = 18 tests. Orientation tests the precipitation coefficient; colour/shape use rank-aware joint module tests. Non-estimable slots stay in the planned denominator without a fabricated P value.",
+    "primary_probability_family": "If probabilities are reported, one Holm family covers 3 modules x 4 process blocks x 3 questions (within, among, direct scale contrast) = 36 tests. Each test includes all retained coefficients of its process block across the response coordinates of that module, conditional on the full model. Non-estimable slots stay in the planned denominator without a fabricated P value. Endpoint decompositions are secondary, not extra confirmatory tests.",
     "inference_gate": "The exact rank-aware statistic, joint null/resampling algorithm and 2-degree/5-degree dependence-preserving uncertainty implementation need simulation tests for null error, coverage and heterogeneity before data fitting. Unrestricted row permutations and independent-variance pooling are not substitutes.",
     "secondary_only": "Endpoint decompositions, bounded measurement envelopes and influence summaries explain estimates; they do not form survivor gates or rescue a failed module.",
     "phylogeny": "No claim that phylogenetic dependence has been removed. The legacy placement exercise is not primary control or repeated independent evidence.",
