@@ -2,7 +2,7 @@ import json
 
 import numpy as np
 
-from analysis.v3.environment_model import test_family
+from analysis.v3.environment_model import test_family as _test_family
 from analysis.v3.module_ecology import SCALES
 from analysis.v3.simulate_full_family_tail_pilot import (
     SPEC,
@@ -14,7 +14,7 @@ from analysis.v3.simulate_full_family_tail_pilot import (
 
 def test_tail_pilot_contract_resolves_first_holm_threshold_without_authorizing_ecology():
     spec, prelim = _specs()
-    assert spec["family_slots"] == 36 == len(test_family())
+    assert spec["family_slots"] == 36 == len(_test_family())
     assert spec["bootstrap_replicates"] == 999
     assert spec["minimum_plus_one_probability"] == 0.001
     assert spec["minimum_plus_one_probability"] <= 0.05 / 36
@@ -70,5 +70,5 @@ def test_full_36_slot_assembly_reserves_every_module_process_scale_key():
     rows = _slot_rows(summaries, truths, blocks)
     assert len(rows) == 36
     keys = {(row["module"], row["process"], row["question"]) for row in rows}
-    assert keys == set(test_family())
+    assert keys == set(_test_family())
     assert all(row["holm_probability"] is not None for row in rows)
