@@ -108,8 +108,6 @@ class JointSlopeLikelihood:
         a = np.eye(self.p) + root[None,:,None]*self.gram*root[None,None,:]
         chol = np.linalg.cholesky(a)
         m = root[None,:,None]*np.linalg.solve(a,np.broadcast_to(np.diag(root),a.shape))
-        # Contract the small random-slope index first. A direct three-operand
-        # einsum repeats it for every pair of fixed columns on every iteration.
         mxf = m@self.xf
         mxy = np.einsum('tpq,tq->tp',m,self.xy)
         info = self.ff - np.einsum('tpi,tpj->ij',self.xf,mxf)
@@ -228,6 +226,7 @@ def fit_joint_partial_pooling(response, predictors, taxa, nuisance):
         upper = bool(np.any(position>=ceiling-1e-6))
         accepted = bool(result.success and stationary and not upper)
         attempts.append({'initial_variance_ratio':initial,'success':bool(result.success),'accepted':accepted,
+                         'scipy_status':int(result.status),'scipy_message':str(result.message),
                          'stationary':stationary,'upper_bound_hit':upper,'criterion':evaluation['criterion'],
                          'projected_gradient_max':float(np.max(np.abs(projected))),
                          'iterations':int(result.nit),'variance_ratios':evaluation['lambda'].tolist(),
