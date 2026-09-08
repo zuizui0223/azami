@@ -166,9 +166,9 @@ def _projected_gradient(position, gradient):
 def _polish_stationarity(objective, position, ceiling):
     """Solve the score near a reported minimum, without loosening acceptance.
 
-    Large-N objective subtraction can trigger relative-function convergence
-    before the analytic score is small. Keep the same likelihood and bounds;
-    only accept a stationary, positive-curvature, non-worse nearby solution.
+    Large-N objective subtraction or L-BFGS line-search termination can stop the
+    outer optimizer before it emits a success flag. Keep the same likelihood and
+    bounds; only accept a stationary, positive-curvature, non-worse nearby root.
     """
     before, gradient = objective(position)
     free = np.flatnonzero(position>1e-10)
@@ -216,17 +216,22 @@ def fit_joint_partial_pooling(response, predictors, taxa, nuisance):
                           bounds=[(0.,ceiling)]*likelihood.p,
                           options={'maxiter':500,'ftol':1e-12,'gtol':1e-6,'maxls':40})
         position = result.x
+        initial_projected = float(np.max(abs(_projected_gradient(position,objective(position)[1]))))
         polishing = {'attempted':False,'accepted':False}
-        if result.success and np.max(abs(_projected_gradient(position,objective(position)[1])))>1e-4:
+        if (not result.success) or initial_projected>1e-4:
             position,polishing = _polish_stationarity(objective,position,ceiling)
         evaluation = likelihood.evaluate(np.expm1(position))
         gradient = evaluation['gradient']*np.exp(position)
         projected = _projected_gradient(position,gradient)
         stationary = float(np.max(np.abs(projected))) <= 1e-4
         upper = bool(np.any(position>=ceiling-1e-6))
-        accepted = bool(result.success and stationary and not upper)
+        termination_verified = bool(result.success or polishing.get('accepted',False))
+        accepted = bool(termination_verified and stationary and not upper)
         attempts.append({'initial_variance_ratio':initial,'success':bool(result.success),'accepted':accepted,
                          'scipy_status':int(result.status),'scipy_message':str(result.message),
+                         'termination_verified_by':('lbfgsb_success' if result.success else
+                                                    'score_root_polish' if polishing.get('accepted',False) else
+                                                    'unverified'),
                          'stationary':stationary,'upper_bound_hit':upper,'criterion':evaluation['criterion'],
                          'projected_gradient_max':float(np.max(np.abs(projected))),
                          'iterations':int(result.nit),'variance_ratios':evaluation['lambda'].tolist(),
@@ -234,7 +239,7 @@ def fit_joint_partial_pooling(response, predictors, taxa, nuisance):
         evaluations.append(evaluation)
     accepted = [i for i,a in enumerate(attempts) if a['accepted']]
     if not accepted:
-        raise PoolingNotEstimable('No converged interior-or-zero-boundary REML solution; do not report estimates',attempts)
+        raise PoolingNotEstimable('No verified interior-or-zero-boundary REML solution; do not report estimates',attempts)
     best = min(accepted,key=lambda i:attempts[i]['criterion'])
     if min(a['criterion'] for a in attempts) < attempts[best]['criterion']-1e-6:
         raise PoolingNotEstimable('Unresolved lower REML objective from failed attempt',attempts)
