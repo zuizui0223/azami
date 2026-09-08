@@ -1,0 +1,49 @@
+name: Chapter 1 v3 tail mechanics failure diagnostic
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/joint_partial_pooling.py
+      - analysis/v3/diagnose_tail_mechanics_failure.py
+      - .github/workflows/ch1-v3-tail-failure-diagnostic.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 pytest==9.1.1
+      - name: Verify unchanged pooling and mechanics prerequisites
+        run: |
+          python -m pytest -q \
+            tests/test_v3_joint_partial_pooling.py \
+            tests/test_v3_module_ecology.py \
+            tests/test_v3_full_family_tail_pilot.py
+      - name: Reproduce retained failure and record termination reasons
+        run: |
+          mkdir -p runs/tail-failure-diagnostic
+          python -m analysis.v3.diagnose_tail_mechanics_failure \
+            --out runs/tail-failure-diagnostic/report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-tail-failure-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/tail-failure-diagnostic/
+          if-no-files-found: warn
+          retention-days: 30
