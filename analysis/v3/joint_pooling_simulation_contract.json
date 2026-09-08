@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "v3_joint_pooling_synthetic_reference_checks_v1",
+  "status": "specified_before_this_synthetic_execution_not_full_ecological_inference_calibration",
+  "seed": 2026090813,
+  "replicates_per_scenario": 120,
+  "scenarios": ["iid_two_predictors", "iid_nine_predictors", "spatially_correlated_errors_two_predictors"],
+  "taxa": 32,
+  "design": "Unbalanced counts: one singleton, one three-observation locally aliased taxon, and 30 lognormal-count taxa. Correlated predictors (0.65 shared Gaussian factor), two shared nuisance columns correlated with exposures, and an eight-term spherical spatial basis. Predictors stay on common generating units. Taxon slope deviations have SD 0.45 for every coordinate; the first hypermean is zero, remaining coordinates have mean 0.3.",
+  "errors": "IID scenarios use observation SD1. The spatial stress case uses sqrt(0.35)*iid plus sqrt(0.65)*shared Gaussian error in each of24 broad source cells, even though a spherical mean basis is in the fitted model. This deliberately probes a violated independent-error working likelihood.",
+  "report": "Record every replicate, optimizer success/failure and all attempts; retained taxon count, first hypermean and conditional working-model SE, first tau, null rejection using absolute z>1.959963984540054, coverage, and Wilson95 intervals. Failed fits stay in the planned denominator and no probability is invented.",
+  "scope": "Evaluate numerical behavior and show the limitation of conditional SEs. These checks do not validate the unfinished source-component/spatial-block bootstrap, cross-response module statistic, direct among-minus-within contrast, or ecological claims. No scenario or seed is selected from empirical v3 outcomes.",
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0
+}

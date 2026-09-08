@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "v3_joint_gaussian_partial_pooling_numerics_v1",
+  "status": "numerical_implementation_specification_not_ecological_authorization",
+  "timing": "Specified before inspecting any v3 trait-environment coefficient. V2 and v3 image-only technical results are already known; not preregistered.",
+  "target": "For each response coordinate, jointly fit taxon intercepts, the same conditional environmental predictors, shared nuisance effects, and taxon-specific deviations from a slope hypermean. Keep every supplied taxon, including locally rank-deficient and single-observation taxa.",
+  "model": "y_ij = a_i + x_ij^T(mu + b_i) + nuisance_ij^T gamma + epsilon_ij. Within-taxon centering analytically removes fixed intercepts. b_i ~ N(0, sigma^2 diag(lambda)), lambda>=0; independent homoskedastic epsilon is the WORKING likelihood, not the final spatial uncertainty claim.",
+  "computational_realization": "One-stage Gaussian likelihood is used so an unestimable local slope need not be invented or discarded before pooling. All taxon slope and shared-nuisance columns are fitted jointly. For a full-rank homoskedastic design this is the Gaussian hierarchy represented by joint slope estimates with their complete sampling covariance; do not feed only diagonal HC3 variances to this implementation. The earlier joint HC3 solver remains an independent-error algebra reference.",
+  "heterogeneity_structure": "A diagonal random-slope covariance in the fixed, common predictor coordinates is an explicit working-model restriction inherited from coordinate-wise heterogeneity, not a claim that ecological processes are independent. Predictor conditional dependence and full cross-taxon prediction-error covariance from shared fixed effects are retained. Cross-response inference requires joint resampling; these coordinate fits do not provide a module test on their own.",
+  "rank": "Use each local centered environmental rank only as an information annotation. Zero local information produces a model-based pooled prediction, not an independently estimable taxon slope. Fail if the common environmental effects are globally aliased with each other or the shared nuisance span; compress only redundant nuisance columns, never silently drop an exposure.",
+  "reml": "Profile residual scale and fixed effects. Optimize nonnegative variance ratios in log1p coordinates with analytic gradients and four deterministic starts at lambda 0, 0.1, 1 and 10. Record all attempts. A solution at the upper numerical search bound or an unresolved lower objective in a failed attempt is not accepted. Numerical stationarity is not a proof of global optimality.",
+  "conditional_uncertainty": "Report fixed-effect covariance and full joint empirical-Bayes slope prediction-error covariance conditional on fitted variance components. Include hypermean/nuisance estimation uncertainty: at tau=0 taxon predictions share the nonzero hypermean uncertainty. Do not label these as calibrated spatial intervals or full parameter-uncertainty posterior distributions.",
+  "next_inference_gate": "Joint multiresponse statistics, whole-source-component preserving 2-degree/5-degree resampling, matched-support among-minus-within covariance, measurement-formulation envelopes and null/coverage simulations remain required before ecological probabilities or conclusions.",
+  "sources": [
+    {"title": "Bates et al. 2015, Fitting Linear Mixed-Effects Models Using lme4", "url": "https://www.jstatsoft.org/article/view/v067i01/", "method": "Gaussian mixed models, relative covariance factors, profiled REML, and conditional modes"},
+    {"title": "statsmodels Linear Mixed Effects Models documentation", "url": "https://www.statsmodels.org/stable/mixed_linear.html", "method": "Independent group random effects and variance-component model definitions"}
+  ],
+  "ecological_fitting_authorized": false,
+  "trait_environment_values_read": 0
+}
