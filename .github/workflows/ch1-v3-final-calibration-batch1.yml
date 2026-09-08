@@ -1,0 +1,171 @@
+name: Chapter 1 v3 final multicoordinate calibration batch 1
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/final_calibration_batch1_launch_20260909.json
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  preflight:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    outputs:
+      validated_code_sha: ${{ steps.gate.outputs.validated_code_sha }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 pytest==9.1.1
+      - id: gate
+        name: Require green repaired mechanics, smoke and previous-head integrity
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          from analysis.v3.workflow import canonical_digest
+
+          marker_path = Path('analysis/v3/final_calibration_batch1_launch_20260909.json')
+          marker = json.loads(marker_path.read_text(encoding='utf-8'))
+          contract = json.loads(Path('analysis/v3/final_module_calibration_contract.json').read_text(encoding='utf-8'))
+          assert marker['id'] == 'ch1_v3_final_multicoordinate_calibration_batch1_launch_v1'
+          assert marker['batch_index'] == 0
+          assert marker['outer_start_inclusive'] == 0 and marker['outer_stop_exclusive'] == 25
+          assert marker['contract_canonical_sha256'] == canonical_digest(contract)
+          assert marker['empirical_trait_environment_values_read'] == 0
+          assert marker['ecological_models_executed'] == 0
+          assert marker['ecological_fitting_authorized'] is False
+          parent = subprocess.check_output(['git','rev-parse','HEAD^'], text=True).strip()
+          changed = subprocess.check_output(['git','diff','--name-only','HEAD^','HEAD'], text=True).splitlines()
+          assert changed == [marker_path.as_posix()], f'Launch commit changed more than marker: {changed}'
+          assert marker['validated_code_sha'] == parent
+
+          required = {
+              'reproducibility/v3_tail_mechanics_solver_repair_verification_20260909.json':
+                  'TAIL_MECHANICS_SOLVER_REPAIR_REVALIDATED_64_OF_64_COMPLETE',
+              'reproducibility/v3_final_geometry_smoke_solver_repair_20260909.json':
+                  'FINAL_GEOMETRY_SMOKE_SOLVER_REPAIR_REVALIDATED_8_OF_8_COMPLETE',
+          }
+          for path, status in required.items():
+              data = json.loads(Path(path).read_text(encoding='utf-8'))
+              assert data['status'] == status, (path, data.get('status'))
+              assert data['empirical_trait_environment_values_read'] == 0
+              assert data['ecological_models_executed'] == 0
+              assert data['ecological_fitting_authorized'] is False
+              expected = marker['gate_receipt_canonical_sha256'][path]
+              assert canonical_digest(data) == expected, f'Gate receipt changed: {path}'
+          print(parent)
+          with open('/tmp/validated_code_sha','w',encoding='utf-8') as handle:
+              handle.write(parent)
+          PY
+          VALIDATED_CODE_SHA="$(cat /tmp/validated_code_sha)"
+          echo "validated_code_sha=$VALIDATED_CODE_SHA" >> "$GITHUB_OUTPUT"
+          RUN_ID="$(python -c "import json; print(json.load(open('analysis/v3/final_calibration_batch1_launch_20260909.json'))['validated_integrity_run_id'])")"
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" --jq .conclusion)" = "success"
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}" --jq .head_sha)" = "$VALIDATED_CODE_SHA"
+      - name: Re-run estimator and final calibration contract tests before launch
+        run: |
+          pytest -q \
+            tests/test_v3_joint_partial_pooling.py \
+            tests/test_v3_pooling_abnormal_fallback.py \
+            tests/test_v3_module_ecology.py \
+            tests/test_v3_dependence_resampling.py \
+            tests/test_v3_multicoordinate_calibration.py \
+            tests/test_v3_final_geometry_smoke.py
+
+  outer:
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        scenario: [iid_null, crossed_spatial_null, heterogeneous_slopes, scale_difference]
+        outer: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+    concurrency:
+      group: v3-final-calibration-b1-${{ matrix.scenario }}-${{ matrix.outer }}
+      cancel-in-progress: false
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2
+      - name: Execute one frozen 999-draw outer on both spatial grids
+        run: |
+          OUT="runs/final-calibration/${{ matrix.scenario }}/${{ matrix.outer }}"
+          python -m analysis.v3.run_final_calibration_outer \
+            --scenario '${{ matrix.scenario }}' \
+            --outer '${{ matrix.outer }}' \
+            --out "$OUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-final-calibration-b1-${{ matrix.scenario }}-${{ matrix.outer }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/final-calibration/${{ matrix.scenario }}/${{ matrix.outer }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+  aggregate:
+    needs: [preflight, outer]
+    if: always() && needs.preflight.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install lightweight numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: v3-final-calibration-b1-*
+          path: downloaded
+          merge-multiple: false
+      - name: Aggregate exactly the frozen first batch and compute sequential diagnostics
+        shell: bash
+        run: |
+          mapfile -t REPORTS < <(find downloaded -type f -name public_report.json | sort)
+          echo "outer reports found: ${#REPORTS[@]}"
+          mkdir -p runs/final-calibration-batch1-aggregate
+          set +e
+          python -m analysis.v3.summarize_final_calibration_batch \
+            --batch-index 0 \
+            --reports "${REPORTS[@]}" \
+            --out runs/final-calibration-batch1-aggregate/report.json
+          CODE=$?
+          set -e
+          echo "$CODE" > runs/final-calibration-batch1-aggregate/aggregate_exit_code.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-final-calibration-batch1-aggregate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/final-calibration-batch1-aggregate/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Fail the workflow after preserving an incomplete aggregate
+        run: exit "$(cat runs/final-calibration-batch1-aggregate/aggregate_exit_code.txt)"
+
+# This workflow is intentionally inert until the single launch-marker file is
+# committed after repaired mechanics, repaired final-geometry smoke and a green
+# integrity run are durably pinned. It never reads empirical traits or exposures.
