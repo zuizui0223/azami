@@ -1,1 +1,0 @@
-Predeclared taxon summaries are centroid, regularized breadth (log determinant), and secondary covariance geometry; taxon phenotype-environment correspondence remains secondary to the hierarchical slope models.

@@ -1,1 +1,0 @@
-Taxon breadth comparisons use 200 repeated without-replacement rarefactions to 20 measurable observations per eligible taxon; low-support taxa remain in coverage accounting only.

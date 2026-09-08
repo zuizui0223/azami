@@ -1,1 +1,0 @@
-Paired environmental formulations are fixed as drying = pr_month + rsds_month + vpd_month + sfcWind_month and thermal = pr_month + rsds_month + tasmax_month + sfcWind_month; do not select between them by p-value.

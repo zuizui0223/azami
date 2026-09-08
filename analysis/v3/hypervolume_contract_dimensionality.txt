@@ -1,1 +1,0 @@
-Joint phenotype space is capped at orientation plus up to three colour latent axes plus up to two gross-shape latent axes; dimensionality may not be expanded after inspecting ecological associations.
