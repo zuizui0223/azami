@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "PRELIMINARY_CROSSED_BOOTSTRAP_CALIBRATION_AGGREGATED_NOT_ECOLOGY_ADMISSION",
+  "source_workflow_run_id": 34221950093,
+  "source_head_sha": "382db3cc455f6fbf98e030a7e84e5beaa49d33f1",
+  "simulation_contract_id": "v3_crossed_module_scale_bootstrap_preliminary_simulation_v1",
+  "simulation_boundary": "Preliminary only: 199 bootstrap draws cannot validate the 36-slot Holm family and 40 outer replicates per scenario are imprecise. This receipt does not authorize empirical ecological fitting.",
+  "case_summary": {
+    "recorded_cases": 320,
+    "expected_cases": 320,
+    "complete_cases": 320,
+    "point_or_design_failures": 0,
+    "planned_bootstrap_replicates_per_case": 199,
+    "min_estimable_bootstrap_replicates": 199,
+    "max_estimable_bootstrap_replicates": 199
+  },
+  "overall_descriptive": {
+    "candidate_null_test_instances": 2400,
+    "candidate_null_rejections_at_point05": 14,
+    "candidate_null_rejection_fraction": 0.005833333333333334,
+    "candidate_nonnull_test_instances": 1440,
+    "candidate_nonnull_rejections_at_point05": 1156,
+    "candidate_nonnull_rejection_fraction": 0.8027777777777778,
+    "coefficient_interval_coverage_fraction": 0.9743055555555555
+  },
+  "scenario_grid_summary": [
+    {"scenario":"crossed_spatial_null","grid_degrees":2,"outer_replicates":40,"null_test_instances":320,"null_rejections_at_candidate_point05":1,"descriptive_null_rejection_fraction":0.003125,"outer_replicates_with_any_unadjusted_null_rejection":1,"descriptive_any_unadjusted_null_rejection_fraction":0.025,"nonnull_test_instances":160,"nonnull_rejections_at_candidate_point05":125,"descriptive_nonnull_rejection_fraction":0.78125,"coefficient_interval_coverage_fraction":0.9768518518518519},
+    {"scenario":"crossed_spatial_null","grid_degrees":5,"outer_replicates":40,"null_test_instances":320,"null_rejections_at_candidate_point05":1,"descriptive_null_rejection_fraction":0.003125,"outer_replicates_with_any_unadjusted_null_rejection":1,"descriptive_any_unadjusted_null_rejection_fraction":0.025,"nonnull_test_instances":160,"nonnull_rejections_at_candidate_point05":124,"descriptive_nonnull_rejection_fraction":0.775,"coefficient_interval_coverage_fraction":0.975462962962963},
+    {"scenario":"heterogeneous_slopes","grid_degrees":2,"outer_replicates":40,"null_test_instances":320,"null_rejections_at_candidate_point05":4,"descriptive_null_rejection_fraction":0.0125,"outer_replicates_with_any_unadjusted_null_rejection":4,"descriptive_any_unadjusted_null_rejection_fraction":0.1,"nonnull_test_instances":160,"nonnull_rejections_at_candidate_point05":121,"descriptive_nonnull_rejection_fraction":0.75625,"coefficient_interval_coverage_fraction":0.9726851851851852},
+    {"scenario":"heterogeneous_slopes","grid_degrees":5,"outer_replicates":40,"null_test_instances":320,"null_rejections_at_candidate_point05":3,"descriptive_null_rejection_fraction":0.009375,"outer_replicates_with_any_unadjusted_null_rejection":3,"descriptive_any_unadjusted_null_rejection_fraction":0.075,"nonnull_test_instances":160,"nonnull_rejections_at_candidate_point05":124,"descriptive_nonnull_rejection_fraction":0.775,"coefficient_interval_coverage_fraction":0.9675925925925926},
+    {"scenario":"iid_null","grid_degrees":2,"outer_replicates":40,"null_test_instances":320,"null_rejections_at_candidate_point05":2,"descriptive_null_rejection_fraction":0.00625,"outer_replicates_with_any_unadjusted_null_rejection":2,"descriptive_any_unadjusted_null_rejection_fraction":0.05,"nonnull_test_instances":160,"nonnull_rejections_at_candidate_point05":126,"descriptive_nonnull_rejection_fraction":0.7875,"coefficient_interval_coverage_fraction":0.9824074074074074},
+    {"scenario":"iid_null","grid_degrees":5,"outer_replicates":40,"null_test_instances":320,"null_rejections_at_candidate_point05":1,"descriptive_null_rejection_fraction":0.003125,"outer_replicates_with_any_unadjusted_null_rejection":1,"descriptive_any_unadjusted_null_rejection_fraction":0.025,"nonnull_test_instances":160,"nonnull_rejections_at_candidate_point05":126,"descriptive_nonnull_rejection_fraction":0.7875,"coefficient_interval_coverage_fraction":0.9814814814814815},
+    {"scenario":"scale_difference","grid_degrees":2,"outer_replicates":40,"null_test_instances":240,"null_rejections_at_candidate_point05":0,"descriptive_null_rejection_fraction":0.0,"outer_replicates_with_any_unadjusted_null_rejection":0,"descriptive_any_unadjusted_null_rejection_fraction":0.0,"nonnull_test_instances":240,"nonnull_rejections_at_candidate_point05":201,"descriptive_nonnull_rejection_fraction":0.8375,"coefficient_interval_coverage_fraction":0.9717592592592592},
+    {"scenario":"scale_difference","grid_degrees":5,"outer_replicates":40,"null_test_instances":240,"null_rejections_at_candidate_point05":2,"descriptive_null_rejection_fraction":0.008333333333333333,"outer_replicates_with_any_unadjusted_null_rejection":2,"descriptive_any_unadjusted_null_rejection_fraction":0.05,"nonnull_test_instances":240,"nonnull_rejections_at_candidate_point05":209,"descriptive_nonnull_rejection_fraction":0.8708333333333333,"coefficient_interval_coverage_fraction":0.9662037037037037}
+  ],
+  "scale_difference_radiation_recovery": [
+    {"grid_degrees":2,"scale":"among","outer_replicates":40,"candidate_point05_rejections":40,"candidate_point05_rejection_fraction":1.0},
+    {"grid_degrees":2,"scale":"among_minus_within","outer_replicates":40,"candidate_point05_rejections":40,"candidate_point05_rejection_fraction":1.0},
+    {"grid_degrees":5,"scale":"among","outer_replicates":40,"candidate_point05_rejections":40,"candidate_point05_rejection_fraction":1.0},
+    {"grid_degrees":5,"scale":"among_minus_within","outer_replicates":40,"candidate_point05_rejections":40,"candidate_point05_rejection_fraction":1.0}
+  ],
+  "interpretation": {
+    "complete_execution": "All 320 planned scenario-grid cases executed with all 199 bootstrap replicates estimable.",
+    "null_behavior": "No evidence of gross candidate-tail anti-conservatism in this preliminary design; descriptive raw candidate-P<0.05 rates were low overall, but correlated test instances and only 40 outer replicates per scenario preclude a calibration claim.",
+    "coverage": "Overall basic coefficient-interval coverage was about 97.4%; scenario/grid/scale coverage must remain visible rather than reduced to this average.",
+    "scale_contrast": "The predeclared radiation among-vs-within difference in scale_difference was detected in all 40 outer replicates at each grid using the unadjusted candidate tail, but this is a power probe, not full-family admission.",
+    "next_required": "Run a sufficiently tail-resolved, adequately replicated full 36-slot family calibration plus realized-cohort nuisance/rank diagnostics before any empirical trait-environment probability is computed."
+  },
+  "artifact_manifest": {
+    "workflow_artifacts": 32,
+    "downloaded_and_aggregated": 32,
+    "source_run_id": 34221950093,
+    "source_head_sha": "382db3cc455f6fbf98e030a7e84e5beaa49d33f1",
+    "note": "Per-artifact immutable digests remain available on the GitHub Actions run; this public aggregate does not duplicate private/synthetic nested records."
+  },
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
