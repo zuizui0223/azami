@@ -6,7 +6,16 @@ on:
     paths:
       - analysis/v3/full_family_tail_pilot_contract.json
       - analysis/v3/simulate_full_family_tail_pilot.py
+      - analysis/v3/simulate_crossed_bootstrap.py
+      - analysis/v3/dependence_resampling.py
+      - analysis/v3/environment_model.py
+      - analysis/v3/joint_partial_pooling.py
+      - analysis/v3/module_ecology.py
       - tests/test_v3_full_family_tail_pilot.py
+      - tests/test_v3_environment_model.py
+      - tests/test_v3_dependence_resampling.py
+      - tests/test_v3_module_ecology.py
+      - tests/test_v3_joint_partial_pooling.py
       - .github/workflows/ch1-v3-full-family-tail-pilot.yml
   workflow_dispatch:
 
