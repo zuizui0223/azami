@@ -1,0 +1,101 @@
+name: Chapter 1 v3 repaired final geometry smoke receipt
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/final_geometry_smoke_repair_aggregate_launch_20260909.json
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  aggregate:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install lightweight runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1
+      - name: Require completed repaired smoke retry
+        run: |
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/34248192547 --jq .conclusion)" = "success"
+          test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/34248192547 --jq .head_sha)" = "db3c2cb0afc8b4c16a970719e55e2f57153776b5"
+      - name: Download all four attempt-2 smoke artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v3-final-geometry-smoke-*-34248192547-2
+          path: runs/smoke-repair-artifacts
+          merge-multiple: false
+          github-token: ${{ github.token }}
+          run-id: '34248192547'
+      - name: Verify exact 4-scenario x 2-grid inventory and create gate receipt
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from analysis.v3.workflow import canonical_digest
+
+          reports = sorted(Path('runs/smoke-repair-artifacts').glob('**/public_report.json'))
+          assert len(reports) == 4, len(reports)
+          expected_scenarios = {'iid_null','crossed_spatial_null','heterogeneous_slopes','scale_difference'}
+          seen = set()
+          cases = []
+          manifest = []
+          for path in reports:
+              report = json.loads(path.read_text(encoding='utf-8'))
+              scenario = report['execution_contract']['scenario']
+              assert scenario not in seen
+              seen.add(scenario)
+              assert report['status'] == 'FINAL_MULTICOORDINATE_GEOMETRY_SMOKE_EXECUTED_NO_ECOLOGY'
+              assert report['empirical_trait_environment_values_read'] == 0
+              assert report['ecological_models_executed'] == 0
+              assert report['ecological_fitting_authorized'] is False
+              assert len(report['cases']) == 2
+              grids = {int(case['grid_degrees']) for case in report['cases']}
+              assert grids == {2,5}, (scenario, grids)
+              for case in report['cases']:
+                  assert int(case['planned_bootstrap_replicates']) == 199
+                  assert int(case['estimable_shared_bootstrap_replicates']) == 199
+                  assert case['ecological_fitting_authorized'] is False
+                  cases.append({'scenario': scenario, 'grid_degrees': int(case['grid_degrees']), 'status': case['status']})
+              manifest.append({'scenario': scenario, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+          assert seen == expected_scenarios, seen
+          assert len(cases) == 8
+          receipt = {
+              'schema_version': 1,
+              'status': 'FINAL_GEOMETRY_SMOKE_SOLVER_REPAIR_REVALIDATED_8_OF_8_COMPLETE',
+              'source_workflow_run_id': 34248192547,
+              'source_head_sha': 'db3c2cb0afc8b4c16a970719e55e2f57153776b5',
+              'source_run_attempt': 2,
+              'scenarios': sorted(seen),
+              'recorded_grid_cases': len(cases),
+              'complete_grid_cases': len(cases),
+              'input_manifest': sorted(manifest, key=lambda row: row['scenario']),
+              'cases': sorted(cases, key=lambda row: (row['scenario'], row['grid_degrees'])),
+              'solver_repair_scope': 'Final geometry revalidated after the stationary-candidate solver repair; no ecological data were accessed and no calibration threshold, seed, grid or response geometry changed.',
+              'empirical_trait_environment_values_read': 0,
+              'ecological_models_executed': 0,
+              'ecological_fitting_authorized': False,
+          }
+          out = Path('runs/smoke-repair-receipt/v3_final_geometry_smoke_solver_repair_20260909.json')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(receipt, indent=2, sort_keys=True, allow_nan=False) + '\n', encoding='utf-8')
+          print(json.dumps({'status': receipt['status'], 'cases': len(cases), 'receipt_canonical_sha256': canonical_digest(receipt)}))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v3-final-geometry-smoke-solver-repair-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/smoke-repair-receipt/
+          if-no-files-found: error
+          retention-days: 30
+
+# Inert until the repaired smoke retry has completed successfully.
+# Synthetic-only; this receipt cannot authorize ecological fitting.
