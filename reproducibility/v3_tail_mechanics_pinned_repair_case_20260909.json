@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "status": "TAIL_MECHANICS_PINNED_FAILURE_SAME_DRAW_REPAIRED_WITHOUT_REPLACEMENT",
+  "source_failure": {
+    "mechanics_run_id": 34239896034,
+    "scenario": "heterogeneous_slopes",
+    "outer_replicate": 7,
+    "grid_degrees": 2,
+    "bootstrap_replicate": 562,
+    "seed": 2026110868,
+    "original_estimable_shared_bootstrap_replicates": 998,
+    "original_planned_shared_bootstrap_replicates": 999
+  },
+  "repair": {
+    "solver_commit": "cd9562fb800447b4b9853d8617ace8b2288477e7",
+    "rule": "An L-BFGS-B success=false candidate is never accepted directly. The existing score-root verifier must independently confirm the unchanged projected-gradient tolerance, positive free-parameter curvature, unchanged bounds and non-worse REML objective.",
+    "thresholds_changed": false,
+    "seed_changed": false,
+    "grid_changed": false,
+    "family_changed": false,
+    "synthetic_truth_changed": false
+  },
+  "reexecution": {
+    "run_id": 34247983131,
+    "conclusion": "success",
+    "artifact_id": 10065048709,
+    "artifact_digest": "sha256:9bc14100c1833d0b0cb632a82b5c300b68c379c5b705fd9a9f99f102664dbb67",
+    "report_raw_sha256": "c856d2ccc770cf5c8f13e19813ce4546879fb80128b35cb284bd02a7d4088308",
+    "report_canonical_json_sha256": "f5b261bf8b4c51145d07b9f604a29034e75065f14e811b61824291b025884079",
+    "sampled_observations": 2633,
+    "sampled_taxon_copies": 64,
+    "all_modules_estimated": true,
+    "not_estimable_modules": 0,
+    "replacement_draw_generated": false,
+    "visible_colour": {
+      "scipy_status": 2,
+      "scipy_message": "ABNORMAL: ",
+      "lbfgsb_success": false,
+      "termination_verified_by": "score_root_polish",
+      "stationarity_polishing_accepted": true,
+      "minimum_free_curvature_minimum_across_starts": 100.60461529345758,
+      "post_polish_projected_gradient_max_maximum_across_starts": 5.7425006986344e-11,
+      "upper_bound_hit": false
+    }
+  },
+  "remaining_gate": "This closes only the pinned same-draw numerical failure. Require the complete repaired 32-outer x 2-grid 999-draw mechanics rerun to achieve 64/64 complete cases, and revalidate the final 1/8/4 geometry smoke, before final calibration Batch 1 can launch.",
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
