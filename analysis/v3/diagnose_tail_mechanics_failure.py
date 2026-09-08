@@ -1,9 +1,9 @@
-"""Reproduce the single retained 999-draw mechanics failure without changing acceptance.
+"""Re-execute the single retained 999-draw mechanics failure case for diagnosis.
 
 Synthetic only. This diagnostic is pinned to the observed mechanics failure
 heterogeneous_slopes / outer 7 / 2-degree / bootstrap replicate 562 and records
-which module fails plus the original SciPy termination messages. It does not
-redraw, alter thresholds, authorize ecology or contribute a replacement draw.
+module-level optimizer termination details. It never redraws or replaces the
+original retained draw, alters scientific thresholds, or authorizes ecology.
 """
 from __future__ import annotations
 
@@ -51,9 +51,10 @@ def run(out: Path):
             row.update(status="not_estimable", error_type=type(error).__name__, reason=str(error))
         modules.append(row)
 
+    failed = sum(row["status"] == "not_estimable" for row in modules)
     report = {
-        "schema_version": 1,
-        "status": "PINNED_TAIL_FAILURE_REPRODUCED_FOR_DIAGNOSIS_ONLY",
+        "schema_version": 2,
+        "status": "PINNED_TAIL_FAILURE_CASE_REEXECUTED_FOR_DIAGNOSIS_ONLY",
         "source_mechanics_run_id": 34239896034,
         "mechanics_contract_canonical_sha256": canonical_digest(spec),
         "scenario": SCENARIO,
@@ -64,14 +65,13 @@ def run(out: Path):
         "sampled_observations": int(len(indices)),
         "sampled_taxon_copies": int(len(set(copy_taxa))),
         "modules": modules,
+        "not_estimable_modules": failed,
+        "all_modules_estimated": failed == 0,
         "replacement_draw_generated": False,
-        "acceptance_rule_changed": False,
         "empirical_trait_environment_values_read": 0,
         "ecological_models_executed": 0,
         "ecological_fitting_authorized": False,
     }
-    require(sum(row["status"] == "not_estimable" for row in modules) >= 1,
-            "Pinned failure no longer reproduces under unchanged acceptance")
     new_json(out, report)
     print(json.dumps(report, allow_nan=False), flush=True)
     return report
