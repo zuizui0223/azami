@@ -1,0 +1,73 @@
+{
+  "status": "fixed_before_original_stream_trait_outcomes_and_trait_environment_coefficients",
+  "purpose": "Pre-specify multivariate synthesis and measurement-selection diagnostics without replacing the primary hierarchical slope models.",
+  "claim_ceiling": "association_and_coverage_audit_only",
+  "environment_spaces": {
+    "drying": ["pr_month", "rsds_month", "vpd_month", "sfcWind_month"],
+    "thermal": ["pr_month", "rsds_month", "tasmax_month", "sfcWind_month"],
+    "rule": "Treat drying and thermal as paired pre-specified parameterizations, not as alternative significance opportunities."
+  },
+  "phenotype_modules": {
+    "orientation": {
+      "inputs": ["orientation_image_vertical_angle"],
+      "representation": "standardized_1d"
+    },
+    "visible_colour": {
+      "inputs": ["L_star", "chroma", "hue_sin", "hue_cos", "composition_fraction_1", "composition_fraction_2", "composition_fraction_3", "composition_fraction_4"],
+      "representation": "phenotype_only_module_reduction_after_circular_and_compositional_transforms",
+      "maximum_latent_dimensions": 3,
+      "notes": "Hue sine/cosine are not counted as independent linear traits; closed composition fractions require an isometric log-ratio representation before Euclidean reduction."
+    },
+    "gross_shape": {
+      "inputs": ["aspect_ratio", "circularity", "solidity", "width_profile_cv"],
+      "representation": "phenotype_only_standardization_then_module_reduction",
+      "maximum_latent_dimensions": 2
+    }
+  },
+  "joint_phenotype_space": {
+    "construction": "concatenate orientation plus retained colour latent axes plus retained gross-shape latent axes",
+    "maximum_dimensions": 6,
+    "rule": "Do not use blocked fine-architecture or surface endpoints."
+  },
+  "hypervolume_definition": {
+    "primary": "shrinkage_covariance_ellipsoid",
+    "breadth_metric": "log_determinant_of_regularized_covariance",
+    "centroid_metric": "mean_vector_in_frozen_standardized_space",
+    "shape_metric": "eigenvalue_spectrum_and_principal_directions_secondary",
+    "reason": "Avoid high-dimensional KDE instability and make sample-size effects explicit."
+  },
+  "support_and_standardization": {
+    "minimum_measurable_observations_per_taxon": 20,
+    "minimum_independent_quarter_degree_cells_for_taxon_level_interpretation": 4,
+    "sample_size_control": "repeat_without_replacement_rarefaction_to_20_observations_per_taxon_for_breadth_comparisons",
+    "rarefaction_repeats": 200,
+    "standardization": "global robust center and scale fixed from the eligible analysis cohort within each environmental or phenotype representation before taxon summaries",
+    "low_support_rule": "retain low-support taxa in coverage accounting but do not estimate taxon hypervolume breadth below the fixed minimum"
+  },
+  "predeclared_primary_summaries": [
+    "source_environment_hypervolume_breadth",
+    "measurable_subset_environment_hypervolume_breadth",
+    "source_vs_measurable_environment_centroid_distance",
+    "source_vs_measurable_environment_breadth_ratio",
+    "taxon_phenotype_hypervolume_breadth",
+    "taxon_environment_hypervolume_breadth",
+    "phenotype_vs_environment_centroid_correspondence"
+  ],
+  "measurement_selection_audit": {
+    "primary_question": "Does the successfully measurable subset occupy a restricted or shifted environmental region relative to the full source cohort within the same taxon?",
+    "comparison": "full_source_environment_space_vs_measurable_subset_environment_space",
+    "interpretation": "Evidence of environmental selection in image assessability is a measurement-selection result, not a biological trait-environment effect."
+  },
+  "ecological_synthesis": {
+    "breadth_question": "Do taxa exposed to broader abiotic environments show broader image-derived phenotype distributions?",
+    "centroid_question": "Do taxon phenotype centroids correspond to taxon environmental centroids?",
+    "covariance_question": "Do principal directions of within-taxon phenotype variation align descriptively with principal directions of within-taxon environmental variation?",
+    "role": "secondary multivariate synthesis after the pre-specified hierarchical ecological models"
+  },
+  "prohibitions": [
+    "Do not replace primary hierarchical slope models with hypervolume tests.",
+    "Do not choose dimensionality, support thresholds, rarefaction depth, or environment formulation based on trait-environment p-values.",
+    "Do not infer plasticity, adaptation, genetic differentiation, or mechanism from hypervolume correspondence.",
+    "Do not treat image vertical as gravity or camera-space colour as pigment chemistry."
+  ]
+}
