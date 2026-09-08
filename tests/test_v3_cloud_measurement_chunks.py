@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import pytest
+from requests.exceptions import ReadTimeout
 
 from analysis.v3 import cloud_measurement_chunks as cloud
 from analysis.v3 import measurement_chunks as chunks
@@ -57,6 +58,26 @@ def test_cloud_chunk_all27_and_complete_resume_never_refetches(prepared,tmp_path
     assert 'original.jpg' not in public and 'photo_id' not in public and 'obs_id' not in public
     logs=capsys.readouterr().out
     assert all(secret not in logs for secret in ('original.jpg','photo_id','obs_id','component-one'))
+
+
+def test_post_upload_read_timeout_is_tagged_and_resume_reuses_all_units(prepared,tmp_path,monkeypatch):
+    packet,store,fixture=prepared
+    original=store.download
+    first=True
+    def flaky_download(asset,out):
+        nonlocal first
+        if first:
+            first=False
+            raise ReadTimeout('private signed URL must never enter public output')
+        return original(asset,out)
+    monkeypatch.setattr(store,'download',flaky_download)
+    with pytest.raises(ReadTimeout) as caught:
+        cloud.execute_packet(packet,store,tmp_path/'first',fixture.weights)
+    assert getattr(caught.value,'cloud_stage',None)=='checkpoint_return_download'
+    assert len(store.assets)==1
+    monkeypatch.setattr(worker,'_download',lambda *a,**k:pytest.fail('Already saved measurements must not be requested again'))
+    report=cloud.execute_packet(packet,store,tmp_path/'resume',fixture.weights)
+    assert report['new_photo_units_executed']==0 and report['units_restored_without_requests']==2
 
 
 def test_interrupted_chunk_restores_only_completed_photo_then_continues(prepared,tmp_path,monkeypatch):

@@ -20,10 +20,13 @@ now records all 319,244 native observations, 548,123 unique photos and an exact
 [executed Actions replay](reproducibility/v3_protected_numerical_replay_20260908.json)
 verifies its protected cloud restoration and returned packet. A completed
 128-observation all-27 measurement pilot is retained without re-fetching.
-The [bounded native measurement batch](analysis/v3/native_measurement_batch_20260908.json)
-authorizes the next two unprocessed chunks on Actions with verified per-photo
-checkpoints. This is raw measurement, not full-cohort completion or ecological
-admission; the 13 held measurement routes remain held.
+The first two native measurement chunks are complete. The
+[next bounded wave](analysis/v3/native_measurement_wave_20260908_b.json) continues
+raw measurement on Actions with verified per-photo checkpoints. A
+[partial observation-view snapshot](reproducibility/v3_partial_raw_stream_observation_views_20260908.json)
+now contains 800 verified photo units and 1,381 detected heads, while preserving
+the full 319,244-observation, 27-endpoint inventory. This is not full-cohort
+completion or ecological admission; the 13 held measurement routes remain held.
 
 The [active five-stage v3 design](analysis/v3/integrated_workflow_contract.json)
 places source and measurement assessability before within/among ecological

@@ -16,7 +16,7 @@ contract lists exactly which model/ordering provisions it supersedes.
 | Stage | Question | Current implementation boundary |
 |---|---|---|
 | 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. An 872-file source snapshot was restored on Actions and its returned worker packet verified locally. Historical HTTP identity is still unverified. |
-| 2. Measurement | What can each photo measure, with what uncertainty? | A local 128-observation pilot retained all 27 raw slots for 315 detected heads. Its numerical integrity is verified, not physical accuracy. Full-cohort streaming and a separately qualified uniform-floral chroma definition remain unfinished; the 13 held routes stay held. |
+| 2. Measurement | What can each photo measure, with what uncertainty? | Actions raw chunks extend the reused 128-observation pilot. A verified partial observation view contains 800 photo units and 1,381 detected heads, with all 27 slots retained. Full-cohort streaming and a separately qualified uniform-floral chroma definition remain unfinished; the 13 held routes stay held. |
 | 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
 | 4. Ecology | Do within- and among-taxon associations agree? | Joint slope algebra is verified. Covariance-aware pooling, matched-support scale contrasts and dependence-aware inference still require a validated runner. |
 | 5. Synthesis | Do observed environmental and phenotype breadths covary? | Optional secondary Hypervolume B; common axes, bandwidth and sample-size/convergence qualification must precede it. Its failure cannot block otherwise supported primary ecology. |
@@ -62,6 +62,49 @@ For Windows verification of Linux-produced units, use a separate LF decision-fil
 view only after its exact SHA-256 matches the execution report. Do not relax the
 unit hash checks, rewrite the original checkout or treat a newline mismatch as a
 scientific result.
+
+### Verified raw streams to observation and module views
+
+`archived_measurement` keeps each complete numerical ZIP locally and verifies
+every decompressed member against its exact hash. It restores one photo's
+numerical files at a time for independent all27/QC verification, then removes
+only those temporary copies. The original ZIP remains. No original image is
+requested or retained. An interrupted download is preserved, not overwritten.
+The original batch packet keeps its exact byte pin; the cloud's reserialized
+packet must have the same JSON identity as that separately verified input.
+
+`stream_observation_views` consumes these verified units and the reused pilot.
+It retains every observation and link in the pinned native source schedule.
+Heads receive equal weight within each image; distinct decoded images receive
+equal weight within each observation. Photo-ID aliases of identical pixels are
+not extra replicates. Conflicting measurements of identical pixels stop the
+build. Raw finite, joint-QC and operational-route means remain distinct.
+Module coordinates use the same eligible heads and images; orientation and
+gross-shape modules retain all four bbox perturbations on that same support.
+Missing matched image-quality covariates remain missing. None of this calibrates
+physical measurement error or establishes that different photos show one head.
+
+The [executed partial snapshot](../../reproducibility/v3_partial_raw_stream_observation_views_20260908.json)
+contains 800 verified photo units and 1,381 heads. Its full inventory has
+8,619,588 observation-by-endpoint slots, without materializing millions of
+placeholder rows. At this checkpoint, 466 observations have all requested photo
+transactions verified, 255,696 remain pending, and 63,082 have only source
+rights/metadata-blocked jobs. These categories sum to the original 319,244.
+Pending observations retain partial descriptive values, not final operational
+means. All 13 held routes have missing operational values. This snapshot is not
+the final measurement cohort, an ecological result or independent accuracy
+validation. Later raw chunks need separate restoration before collection.
+
+Private replay entry points:
+
+```text
+python -m analysis.v3.archived_measurement --batch BATCH.json --chunk CHUNK --packet PRIVATE_PACKET.json --out local_data/ARCHIVE
+python -m analysis.v3.stream_observation_views --inputs PRIVATE_INPUT_LIST.json --out local_data/OBSERVATION_VIEW
+```
+
+Use a new output directory for a new verification/view. Keep private packets,
+input lists and numerical databases outside Git. Public outputs contain only
+aggregate receipts; they do not authorize an environmental join or a fit.
 
 GitHub Actions remains the intended production compute platform. Images are
 temporary inputs, not Git objects or a required permanent image archive. The

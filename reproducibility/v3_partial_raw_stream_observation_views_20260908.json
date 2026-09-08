@@ -1,0 +1,63 @@
+{
+  "complete_request_observations": 466,
+  "database_sha256": "b59ffd0e038a1002986469fc700632025eef49d804cc19d596238ede012696be",
+  "decision_canonical_sha256": "ebce105f60f6812d2d28ab2a72ea12c58d4c2f7253abb5137d712802b0c14f8f",
+  "detected_heads": 1381,
+  "distinct_measured_pixel_identities": 799,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "environment_values_read": 0,
+  "held_routes": 13,
+  "implementation_sha256_text_lf": "b1ca1e769a3f71e2cf4cb82fd531316e7adf62d38d61aaa503737b87f7af23d9",
+  "local_image_requests": 0,
+  "operational_routes": 14,
+  "pending_observations": 255696,
+  "retained_endpoints": 27,
+  "source_images_persisted": 0,
+  "source_links": 548139,
+  "source_observations": 319244,
+  "source_only_blocked_observations": 63082,
+  "source_photo_jobs": 548123,
+  "source_schedule_sha256": "f778c542e35bf84e3fb1c9028207b448f1285e89be3d2dc95f871a72298c52f9",
+  "specification": {
+    "bbox": "Orientation and gross-shape modules retain baseline and all four fixed perturbations on the same head/image set. These are technical envelopes, not calibrated error variances.",
+    "colour": "Preserve legacy operational colour and same-head floral/context candidate contrasts separately. Uniform-floral colour still needs its own image-only qualification; neither is pigment concentration.",
+    "dependence": "Retain original source component IDs and derived joins from exact bytes/pixels. These groups are not biological individuals; no approximate scene matching is claimed.",
+    "head_to_photo": "Arithmetic mean of eligible heads. Raw finite and joint-QC means remain separate from 14-route operational means.",
+    "identity_conflict": "Identical pixels require identical detector and full head numerical summaries. Conflicting processing outcomes stop the build, never choose the best result.",
+    "incomplete": "Observed partial values remain descriptive fields. Final operational values require every request-candidate photo linked to the observation to have a verified terminal record. Rights/metadata-blocked photos are retained, not requested.",
+    "interpretation": "This is not ecological admission, botanical accuracy, independent same-head replication or separation of photographic and biological variance.",
+    "joint_modules": "Within each module, all coordinates use the SAME operationally eligible heads in each image and the SAME images in each observation. Colour retains its raw coordinates; this does not choose a model representation.",
+    "photo_to_observation": "Equal weight per distinct EXIF-oriented pixel identity, not per photo alias or detected head.",
+    "quality": "Module/endpoint-matched pixel-size and sharpness means are unavailable if any contributing head or image lacks them.",
+    "source_denominator": "Every observation and photo link in the exact pinned native source schedule; never a union of successful photos.",
+    "version": "v3_verified_raw_stream_observation_views_v1"
+  },
+  "status": "PARTIAL_RAW_STREAM_OBSERVATION_VIEWS_BUILT_NO_ECOLOGY",
+  "verified_photo_units": 800,
+  "local_verification": {
+    "all27_inventory_rows": 8619588,
+    "held_routes_with_nonnull_operational_values": 0,
+    "implementation_matches_executed_view": true,
+    "database_bytes": 304918528
+  },
+  "input_archives": [
+    "c000000",
+    "c000001",
+    "c000002",
+    "c000003",
+    "c000004",
+    "c000005",
+    "c000006",
+    "c000008",
+    "c000009",
+    "c000010"
+  ],
+  "reused_pilot_observations": 128,
+  "execution_boundary": "A partial measurement snapshot, not the completed native image cohort. Later cloud outputs must receive their own exact restoration checks before joining this view.",
+  "cloud_run_ids": [
+    34202525828,
+    34204622177
+  ],
+  "cloud_wave_b_execution_commit": "bbe2e6c8c7be0c8d268f8914b73b88989f9136f9"
+}

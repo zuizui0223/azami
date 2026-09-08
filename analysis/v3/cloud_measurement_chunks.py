@@ -26,6 +26,16 @@ DECISION = ROOT/'analysis/v3/measurement_qualification_decision_20260908.json'
 RUNTIME = ROOT/'analysis/v3/measurement_runtime_contract.json'
 
 
+def at_stage(name,callback,*args,**kwargs):
+    """Expose only a fixed stage label, never private exception messages."""
+    try:
+        return callback(*args,**kwargs)
+    except (Exception,KeyboardInterrupt) as error:
+        if not hasattr(error,'cloud_stage'):
+            error.cloud_stage=name
+        raise
+
+
 def runtime_guard():
     from . import stream_original_traits as worker
     from .detect_cached_images import PARAMETERS
@@ -79,8 +89,8 @@ def download_result(store, metadata, out):
     return out/'verified/restored',asset
 
 
-def verify_unit(path, expected):
-    receipt=verify(path,DECISION)
+def verify_unit(path, expected, *, decision_path=None):
+    receipt=verify(path,DECISION if decision_path is None else decision_path)
     execution=json.loads((path/'execution_contract.json').read_text())
     require(execution['selection']==expected['report'],'Completed unit belongs to a different packet')
     from . import stream_original_traits as worker
@@ -120,11 +130,11 @@ def persist(store, packet, units, out, name, complete, interrupted=None):
     selection=out/'selection.json'; new_json(selection,{'schema_version':1,'files':entries})
     snapshot(selection,out/'snapshot')
     asset=pack(out/'snapshot',out/'result.zip')
-    asset.update(store.upload(out/'result.zip',name))
+    asset.update(at_stage('checkpoint_upload',store.upload,out/'result.zip',name))
     new_json(out/'upload_receipt.json',asset)
     # A receipt is not complete until a fresh protected download also restores.
-    store.download(asset,out/'returned.zip')
-    unpack(out/'returned.zip',out/'return',asset)
+    at_stage('checkpoint_return_download',store.download,asset,out/'returned.zip')
+    at_stage('checkpoint_return_restore',unpack,out/'returned.zip',out/'return',asset)
     require(json.loads((out/'return/restored/chunk_state.json').read_text())==state,'Returned checkpoint state differs')
     return asset
 
@@ -224,23 +234,23 @@ def run_cloud(batch_path,chunk_id,out):
                 'Previous batch completion or disjoint next-wave identity differs')
     require(not out.exists(),'Preserve previous batch output')
     out.mkdir(parents=True)
-    runtime_guard()
+    at_stage('measurement_runtime_validation',runtime_guard)
     store=DraftStore(batch)
     try:
-        store.download(batch['input_asset'],out/'input.zip')
-        unpack(out/'input.zip',out/'input',batch['input_asset'])
+        at_stage('input_download',store.download,batch['input_asset'],out/'input.zip')
+        at_stage('input_restore',unpack,out/'input.zip',out/'input',batch['input_asset'])
         packet_path=out/'input/restored'/f'{chunk_id}_packet_private.json'
         require(digest(packet_path)==batch['chunks'][chunk_id]['packet_sha256'],'Batch packet bytes differ')
         packet=json.loads(packet_path.read_text())
         require(packet['plan_id']==batch['plan_id'] and packet['chunk_id']==chunk_id,'Batch plan differs')
         from .recover_revision_inputs import download
-        download(8076736948,out/'detector.zip','2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05')
+        at_stage('detector_download',download,8076736948,out/'detector.zip','2bc7cc49c2f213d4a5c5dab96e42fcdda7ceda23ffc3130520a5dd44b8c76c05')
         with zipfile.ZipFile(out/'detector.zip') as zipped:
             weights=zipped.read('recovery/model/weights/best.pt')
         require(hashlib.sha256(weights).hexdigest()==contract()['algorithm']['model_sha256'],'Detector model differs')
         path=out/'best.pt'
         with path.open('xb') as handle: handle.write(weights)
-        return execute_packet(packet,store,out/'measurement',path)
+        return at_stage('measurement_execution',execute_packet,packet,store,out/'measurement',path)
     finally:
         store.close()
 
@@ -259,7 +269,8 @@ def main():
     except (Exception, KeyboardInterrupt) as error:
         # Public Actions logs must not receive private URLs, signed download
         # addresses, photo identifiers or traceback locals from an exception.
-        print(json.dumps({'status':'RAW_MEASUREMENT_RUN_INCOMPLETE','error_type':type(error).__name__}),flush=True)
+        print(json.dumps({'status':'RAW_MEASUREMENT_RUN_INCOMPLETE','error_type':type(error).__name__,
+                          'stage':getattr(error,'cloud_stage','batch_or_packet_preflight')}),flush=True)
         raise SystemExit(1) from None
 
 

@@ -81,7 +81,7 @@
     "native_source_to_measurement_coverage": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/assessability.py",
-      "remaining": "Run on actual native source plus complete observation-endpoint disposition ledger; synthesized tests do not establish full-source assessability."
+      "remaining": "stream_observation_views has executed on 800 verified photo units and 1381 heads while preserving all 319244 source observations and 27 endpoint slots (reproducibility/v3_partial_raw_stream_observation_views_20260908.json). It separates complete, pending and source-blocked records and uses shared head/image support for modules. This partial measurement inventory does not establish full-source assessability. Finish raw acquisition and versioned measurement qualification before running exposure/taxon support audits."
     },
     "model_specific_environment_diagnostics": {
       "state": "implementation_tested_execution_pending",
