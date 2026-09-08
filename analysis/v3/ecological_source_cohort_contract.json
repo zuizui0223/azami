@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "contract_id": "ch1_v3_ecological_source_cohort_20260908",
+  "status": "fixed_before_original_trait_execution_and_trait_environment_join",
+  "purpose": "Define the observation-level master cohort for Chapter 1 v3 ecological inference without reading capitulum measurements or environmental outcomes.",
+  "source_universe": {
+    "observations": 665139,
+    "native_range_join_receipt": "reproducibility/v3_environment_design_upstream_20260907.json",
+    "native_rows": 384072,
+    "native_wild_public_exact_date_resolved_rows": 382258
+  },
+  "eligibility": [
+    "native_range_status == native",
+    "taxon_resolution_status == resolved_unique_accepted_key",
+    "source_taxon_rank in species/subspecies/variety",
+    "captive_state == false",
+    "date_status == exact_day",
+    "coordinate_status == public_location_present_precision_not_gated",
+    "accepted_key present",
+    "analysis_latitude in [-90,90]",
+    "analysis_longitude in [-180,180]",
+    "observation_month in 1..12"
+  ],
+  "expected_phenotype_blind_denominator_from_completed_upstream": {
+    "rows": 319244,
+    "accepted_taxa": 355
+  },
+  "sampling_rules": {
+    "row_cap": null,
+    "taxon_cap": null,
+    "spatial_thinning": false,
+    "top_taxon_deletion": false,
+    "selection_hash_sampling": false,
+    "reason": "The 60-row taxon cap used for environment-only collinearity diagnostics is not inherited by ecological inference. Dominance is handled in the hierarchical model rather than by deleting observations."
+  },
+  "measurement_scheduling": {
+    "master_observations_are_not_deleted_for_missing_images": true,
+    "eligible_source_linked_photos": "schedule every recoverable source-linked photo for a master-cohort observation when the source license permits image retrieval and an original-size URL can be constructed",
+    "image_version": "original",
+    "storage": "stream/process/discard; source image bytes are not retained as the analysis archive",
+    "photo_weighting": "multiple eligible photos remain nested within observation and do not receive independent observation weight",
+    "head_weighting": "multiple detected heads remain nested within photo and do not receive independent observation weight",
+    "failure_states": "download failure, no detection, no endpoint-eligible head, license-unavailable and unresolved image version remain explicit states rather than zero-valued phenotypes"
+  },
+  "post_measurement_support_rules_fixed_before_coefficients": {
+    "global_hierarchical_fit": "retain all master-cohort observations with a QC-qualified endpoint and finite frozen environmental exposure; taxa are partially pooled and photograph abundance is not a taxon weight",
+    "taxon_specific_slope_reporting": {
+      "minimum_distinct_observations_with_qualified_endpoint": 10,
+      "minimum_distinct_quarter_degree_coordinate_cells": 4,
+      "environment_requirement": "the frozen exposure must have more than one finite value within the taxon; report actual within-taxon exposure span and uncertainty rather than selecting a favourable span cutoff",
+      "effect_of_failure": "taxon remains in coverage and pooled hierarchy but its individual slope is not interpreted as a supported taxon-level estimate"
+    },
+    "among_taxon_summary_reporting": {
+      "minimum_distinct_observations_with_qualified_endpoint": 5,
+      "effect_of_failure": "retain in coverage ledger but do not present the taxon mean as a primary among-taxon point estimate"
+    }
+  },
+  "spatial_design": {
+    "primary_model_requires_spatial_structure": true,
+    "master_cohort_is_not_spatially_thinned": true,
+    "support_cell_definition": "floor(latitude*4)/4 by floor(longitude*4)/4, used only for descriptive support accounting and taxon-specific slope reporting eligibility",
+    "note": "Spatial structure belongs in the primary model. Quarter-degree support cells are not treated as independent biological replicates or a substitute for the spatial model."
+  },
+  "separation": {
+    "trait_values_read": 0,
+    "environment_values_used_for_cohort_selection": 0,
+    "v2_candidate_survival_used_for_selection": false
+  },
+  "claim_ceiling": "This cohort defines source support for spatial association. It does not validate image identification, physical trait accuracy, adaptation or mechanism."
+}
