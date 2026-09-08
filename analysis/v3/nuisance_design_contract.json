@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "ch1_v3_calendar_imaging_spatial_nuisance_v1",
+  "status": "fixed_before_empirical_trait_environment_fitting",
+  "scope": "Shared nuisance construction for realized primary module cohorts. This definition reads no ecological response coefficient and authorizes no fit by itself.",
+  "calendar": {
+    "date_source": "Exact observed_on day already frozen by v3_full_source_observation_annotations_v1.",
+    "seasonal_terms": ["sin_doy", "cos_doy"],
+    "phase_definition": "Use the annotation phase 2*pi*(DOY-1)/days_in_observed_year; do not recompute a 365-day approximation.",
+    "year_term": "(observed_year - 2010) / 10",
+    "pre_1980_rule": "Retain exact-day observations before 1980. Observation year is a nuisance term; CHELSA 1981-2010 values are climatological month/context exposures, not weather in the observation year.",
+    "hemisphere_rule": "The recovered native ecological source is northern-only. south_indicator, south_sin and south_cos are therefore structurally constant/aliased and are not supplied to the v3 primary model. Preserve them in source annotations for audit; do not add/remove hemisphere interactions later using trait associations."
+  },
+  "imaging": {
+    "support": "Use endpoint/module-matched quality summaries from the exact same operational heads/images/observation rows as the response module.",
+    "size_source": "head_min_dimension_px aggregated as the module-matched observation quality field size",
+    "size_transform": "natural log(size); require finite size > 0",
+    "sharpness_source": "head_laplacian_variance aggregated as the module-matched observation quality field sharpness",
+    "sharpness_transform": "log1p(sharpness); require finite sharpness >= 0",
+    "missingness": "No imputation and no borrowing quality values from another endpoint/module. A realized module row lacking its matched size or sharpness is non-eligible for that module fit but remains in source/measurement coverage accounting.",
+    "not_used": ["camera make/model", "EXIF exposure settings", "user identity"],
+    "reason_not_used": "Not consistently available across the full source and not required for the predeclared minimal imaging adjustment."
+  },
+  "spatial": {
+    "basis": ["x", "y", "z", "xy", "xz", "yz", "x2_minus_y2", "three_z2_minus_1"],
+    "definition": "Use analysis.v3.hierarchical_ecology.spherical_basis on public analysis latitude/longitude.",
+    "handling": "Supply all eight predeclared columns. The joint solver may orthogonalize redundant nuisance span without deleting environmental predictors; global exposure aliasing or insufficient residual rank is non-estimable, not permission for outcome-driven term deletion."
+  },
+  "matrix_order": [
+    "calendar_sin_doy",
+    "calendar_cos_doy",
+    "observation_year_decade",
+    "log_head_min_dimension_px",
+    "log1p_head_laplacian_variance",
+    "spatial_x",
+    "spatial_y",
+    "spatial_z",
+    "spatial_xy",
+    "spatial_xz",
+    "spatial_yz",
+    "spatial_x2_minus_y2",
+    "spatial_three_z2_minus_1"
+  ],
+  "intercept": "No explicit intercept in this matrix. Within fitting removes taxon intercepts; among fitting adds its own intercept to matched taxon summaries.",
+  "realized_model_diagnostics": "For each module, report exact row/taxon membership, nuisance rank, residual degrees of freedom, environmental rank/condition/VIF and reasons for non-eligibility before interpreting coefficients.",
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
