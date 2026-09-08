@@ -107,11 +107,13 @@
       "remaining": "The pre-outcome nuisance matrix is now fixed and CI-tested: exact-day sin/cos, (year-2010)/10, module-matched log head minimum dimension, module-matched log1p Laplacian variance and all eight spherical basis terms. The native ecological source is northern-only, so southern interactions are retained in annotations but excluded as structurally constant. No imputation or cross-module quality borrowing. Execute and diagnose this exact matrix on each realized module cohort after measurement completion."
     },
     "dependence_aware_inference_simulation": {
-      "state": "preliminary_execution_evidence_recorded_tail_pilot_in_progress",
+      "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/simulate_crossed_bootstrap.py",
       "evidence": "reproducibility/v3_crossed_bootstrap_preliminary_aggregate_20260908.json",
+      "preliminary_execution_recorded": true,
       "tail_pilot_implementation": "analysis/v3/simulate_full_family_tail_pilot.py",
       "tail_pilot_contract": "analysis/v3/full_family_tail_pilot_contract.json",
+      "tail_pilot_state": "in_progress",
       "remaining": "The completed 4-scenario x 40-outer x 2-grid preliminary calibration recorded all 320 cases and all 199 planned draws, with about 97.4% coefficient interval coverage and low descriptive unadjusted null rejection; by contract this cannot validate the 36-slot Holm family. Actions run 34239896034 is executing the 999-draw shared-resampling full36 family mechanics pilot. Its 0.001 minimum plus-one tail can resolve 0.05/36, but eight outer replicates per scenario and one-coordinate synthetic modules cannot establish final FWER/coverage. Preserve every failed draw and do not authorize ecology from this pilot."
     },
     "fixed_full_test_family": {
