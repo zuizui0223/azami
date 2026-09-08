@@ -41,8 +41,8 @@
     {
       "id": "ecology",
       "question": "Are the conditional environment associations shared across taxa and across within/among scales?",
-      "required": ["joint_covariance_aware_hierarchy", "calendar_imaging_nuisance_design", "dependence_aware_inference_simulation", "fixed_full_test_family"],
-      "output": "Taxon slopes, pooling and heterogeneity; among-taxon associations; direct matched-support scale contrasts, with effect sizes and uncertainty."
+      "required": ["primary_module_response_geometry", "joint_covariance_aware_hierarchy", "calendar_imaging_nuisance_design", "dependence_aware_inference_simulation", "fixed_full_test_family"],
+      "output": "Frozen module geometry; taxon slopes, pooling and heterogeneity; among-taxon associations; direct matched-support scale contrasts, with effect sizes and uncertainty."
     },
     {
       "id": "synthesis",
