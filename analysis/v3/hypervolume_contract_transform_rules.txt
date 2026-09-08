@@ -1,0 +1,1 @@
+Colour reduction must respect circular hue and ilr-transform closed composition before Euclidean latent-axis reduction; gross shape uses only the four frozen qualified endpoints; blocked fine architecture/surface remain excluded.
