@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from scipy.linalg import block_diag, helmert
 
-from analysis.v3.joint_partial_pooling import JointSlopeLikelihood, fit_joint_partial_pooling
+from analysis.v3.joint_partial_pooling import JointSlopeLikelihood, fit_joint_partial_pooling, _polish_stationarity
 
 
 def fixture(seed=981):
@@ -144,3 +144,17 @@ def test_common_unit_change_does_not_change_fitted_values_or_information():
     second = c.result(c.evaluate(np.array([.4,.8])/units**2))
     np.testing.assert_allclose(first.taxon_predictions,second.taxon_predictions*units,atol=1e-10)
     np.testing.assert_allclose(first.residuals,second.residuals,atol=1e-10)
+
+
+def test_stationarity_polish_does_not_accept_a_maximum_or_relax_score_tolerance():
+    position = np.array([.50001])
+    def concave(value):
+        return -float((value[0]-.5)**2),-2*(value-.5)
+    candidate, record = _polish_stationarity(concave,position,10.)
+    assert not record['accepted']
+    np.testing.assert_array_equal(candidate,position)
+    def convex(value):
+        return float((value[0]-.5)**2),2*(value-.5)
+    candidate, record = _polish_stationarity(convex,position,10.)
+    assert record['accepted'] and record['projected_gradient_max']<=1e-4
+    np.testing.assert_allclose(candidate,[.5])

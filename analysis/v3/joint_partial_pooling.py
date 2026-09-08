@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import minimize
+from scipy.optimize import minimize, root
 
 
 @dataclass
@@ -155,6 +155,53 @@ class JointSlopeLikelihood:
                           evaluation['criterion'],residuals,self.support.copy(),attempts or [])
 
 
+def _projected_gradient(position, gradient):
+    projected = gradient.copy()
+    projected[(position<=1e-10)&(gradient>0)] = 0
+    return projected
+
+
+def _polish_stationarity(objective, position, ceiling):
+    """Solve the score near a reported minimum, without loosening acceptance.
+
+    Large-N objective subtraction can trigger relative-function convergence
+    before the analytic score is small. Keep the same likelihood and bounds;
+    only accept a stationary, positive-curvature, non-worse nearby solution.
+    """
+    before, gradient = objective(position)
+    free = np.flatnonzero(position>1e-10)
+    record = {'attempted':True,'accepted':False,'initial_projected_gradient_max':float(abs(_projected_gradient(position,gradient)).max())}
+    if not len(free):
+        return position, record
+    def expand(values):
+        candidate = position.copy(); candidate[free] = values
+        if np.any(candidate<0) or np.any(candidate>=ceiling):
+            raise ValueError('Score polishing left the original variance bounds')
+        return candidate
+    try:
+        fitted = root(lambda values:objective(expand(values))[1][free],position[free],method='hybr',options={'xtol':1e-9})
+        candidate = expand(fitted.x)
+        after, score = objective(candidate)
+        maximum = float(abs(_projected_gradient(candidate,score)).max())
+        hessian = np.empty((len(free),len(free)))
+        for column,index in enumerate(free):
+            step = min(1e-5,candidate[index]/2,(ceiling-candidate[index])/2)
+            if step<=1e-12:
+                raise ValueError('Interior curvature cannot be checked at this boundary')
+            delta = np.eye(len(position))[index]*step
+            hessian[:,column] = (objective(candidate+delta)[1][free]-objective(candidate-delta)[1][free])/(2*step)
+        curvature = float(np.linalg.eigvalsh((hessian+hessian.T)/2).min())
+        accepted = bool(fitted.success and maximum<=1e-4 and curvature>0
+                        and after<=before+max(1e-7,1e-10*abs(before)))
+        record.update(success=bool(fitted.success),accepted=accepted,projected_gradient_max=maximum,
+                      minimum_free_curvature=curvature,criterion_change=float(after-before),
+                      maximum_log1p_parameter_change=float(abs(candidate-position).max()))
+        return (candidate if accepted else position),record
+    except (ValueError,np.linalg.LinAlgError) as error:
+        record['error_type'] = type(error).__name__
+        return position,record
+
+
 def fit_joint_partial_pooling(response, predictors, taxa, nuisance):
     likelihood = JointSlopeLikelihood(response,predictors,taxa,nuisance)
     attempts, evaluations = [], []
@@ -166,17 +213,21 @@ def fit_joint_partial_pooling(response, predictors, taxa, nuisance):
         result = minimize(objective,np.full(likelihood.p,np.log1p(initial)),jac=True,method='L-BFGS-B',
                           bounds=[(0.,ceiling)]*likelihood.p,
                           options={'maxiter':500,'ftol':1e-12,'gtol':1e-6,'maxls':40})
-        evaluation = likelihood.evaluate(np.expm1(result.x))
-        gradient = evaluation['gradient']*np.exp(result.x)
-        projected = gradient.copy()
-        projected[(result.x<=1e-10)&(gradient>0)] = 0
+        position = result.x
+        polishing = {'attempted':False,'accepted':False}
+        if result.success and np.max(abs(_projected_gradient(position,objective(position)[1])))>1e-4:
+            position,polishing = _polish_stationarity(objective,position,ceiling)
+        evaluation = likelihood.evaluate(np.expm1(position))
+        gradient = evaluation['gradient']*np.exp(position)
+        projected = _projected_gradient(position,gradient)
         stationary = float(np.max(np.abs(projected))) <= 1e-4
-        upper = bool(np.any(result.x>=ceiling-1e-6))
+        upper = bool(np.any(position>=ceiling-1e-6))
         accepted = bool(result.success and stationary and not upper)
         attempts.append({'initial_variance_ratio':initial,'success':bool(result.success),'accepted':accepted,
                          'stationary':stationary,'upper_bound_hit':upper,'criterion':evaluation['criterion'],
                          'projected_gradient_max':float(np.max(np.abs(projected))),
-                         'iterations':int(result.nit),'variance_ratios':evaluation['lambda'].tolist()})
+                         'iterations':int(result.nit),'variance_ratios':evaluation['lambda'].tolist(),
+                         'stationarity_polishing':polishing})
         evaluations.append(evaluation)
     accepted = [i for i,a in enumerate(attempts) if a['accepted']]
     if not accepted:
