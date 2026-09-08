@@ -1,0 +1,17 @@
+{
+  "status": "frozen_before_original_stream_trait_outcomes_and_trait_environment_coefficients",
+  "contract_path": "analysis/v3/hypervolume_synthesis_contract.json",
+  "frozen_items": [
+    "paired drying and thermal environmental spaces",
+    "phenotype module transformation and reduction rules",
+    "shrinkage-covariance ellipsoidal hypervolume definition",
+    "minimum taxon support of 20 measurable observations",
+    "four quarter-degree cell interpretation floor",
+    "200 repeats of rarefaction to 20 observations per taxon",
+    "primary breadth and centroid summaries",
+    "source-vs-measurable environmental coverage audit",
+    "claim ceiling and prohibitions"
+  ],
+  "outcome_blinding_statement": "No original-stream v3 trait-environment coefficient or ecological significance result was used to choose these rules.",
+  "role": "secondary multivariate synthesis and measurement-selection audit; not a replacement for primary hierarchical ecological models"
+}
