@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "contract_id": "ch1_v3_hierarchical_ecological_model_20260908",
+  "status": "fixed_before_original_stream_trait_outcomes_and_trait_environment_coefficients",
+  "study_status": "retrospective_redesign_after_v2_results_seen_not_preregistration",
+  "purpose": "Freeze the estimands, hierarchy, spatial adjustment, hypothesis-to-exposure mapping, measurement-stability handling and multiplicity structure before any v3 trait-environment coefficient is inspected.",
+  "separation": {
+    "v3_original_stream_trait_values_inspected_when_fixed": false,
+    "v3_trait_environment_coefficients_inspected_when_fixed": false,
+    "v2_candidate_survival_used_to_choose_model": false,
+    "environment_representation_already_frozen": "reproducibility/v3_environment_representation_freeze_20260907.json",
+    "measurement_qualification_already_frozen": "reproducibility/v3_measurement_qualification_freeze_20260908.json",
+    "source_cohort_contract": "analysis/v3/ecological_source_cohort_contract.json"
+  },
+  "analysis_unit": {
+    "nesting": ["head", "photo", "observation", "taxon"],
+    "head_to_photo": "For an endpoint/formulation, average QC-usable detected heads within the photo; heads are not independent replicates.",
+    "photo_to_observation": "Average distinct eligible photos with equal photo weight within observation; photos are not independent observations.",
+    "observation_to_taxon": "Observations remain the within-taxon sampling units; raw photo abundance does not create taxon weight.",
+    "shared_photo_or_exact_content": "Known shared-photo/content components remain linked and cannot be split or counted as independent support."
+  },
+  "measurement_formulation": {
+    "primary_image_version": "original",
+    "bbox_sensitive_endpoints": [
+      "orientation_image_vertical_angle",
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv"
+    ],
+    "bbox_primary_stability_rule": "A head contributes to the primary bbox-sensitive formulation only when the original baseline and all four predeclared +/-5% bbox-shift measurements are QC-usable. No magnitude cutoff is tuned from ecological results.",
+    "bbox_uncertainty_reporting": "Retain the per-head maximum and median absolute change across the four shifts. Production execution must also retain each shifted value so the same ecological model can be refit across the five predeclared measurement formulations. The coefficient range is one technical-uncertainty envelope, not five evidence votes.",
+    "bbox_secondary_coverage_view": "Report the baseline-original fit on all baseline-usable observations as a coverage comparison, labelled less strictly measurement-stable; it cannot replace the stable primary formulation merely because it is more significant.",
+    "colour_primary_rule": "Use QC-usable original camera-space colour. Hue sine/cosine form one circular unit and the four colour fractions form one closed compositional unit; no component is counted as an independent biological trait.",
+    "colour_context_negative_control": "For every head where paired non-head or green non-head context is available, retain same-image context lightness/chroma/hue diagnostics. Fit the same frozen environmental design to context colour as a negative-control analysis. A parallel context association lowers the specificity of a floral-colour interpretation; absence of a context association does not prove calibrated reflectance or pigment biology.",
+    "synthetic_photometric_stress": "The frozen 14-condition cached-image audit remains the population technical stress characterization. It is not converted to a calibrated stochastic camera-error distribution."
+  },
+  "environment_mapping": {
+    "orientation_H1_primary": {
+      "response_module": "orientation",
+      "conditional_predictors": ["pr_month"],
+      "directional_prediction": "positive coefficient: larger image-referenced vertical angle under higher observation-month precipitation",
+      "wind_secondary": ["pr_month", "sfcWind_month"],
+      "excluded_from_primary": ["rsds_month", "vpd_month", "tasmax_month"],
+      "reason": "H1 is the direct wetting hypothesis; temperature/radiation are not co-equal vertical-angle mechanisms."
+    },
+    "visible_colour_H2_primary": {
+      "response_module": "visible_colour",
+      "drying_formulation": ["pr_month", "rsds_month", "vpd_month"],
+      "thermal_formulation": ["pr_month", "rsds_month", "tasmax_month"],
+      "wind_in_primary": false,
+      "directional_single_coordinate_prediction": null,
+      "rule": "Drying and thermal formulations are pre-specified alternatives because VPD and Tmax are not independently identified; neither is selected by the more favourable trait result."
+    },
+    "gross_shape_H3_primary": {
+      "response_module": "gross_shape",
+      "drying_formulation": ["pr_month", "rsds_month", "vpd_month"],
+      "thermal_formulation": ["pr_month", "rsds_month", "tasmax_month"],
+      "wind_secondary": ["pr_month", "rsds_month", "vpd_month", "sfcWind_month"],
+      "directional_endpoint_prediction": null,
+      "rule": "Gross-shape endpoints are image constructs; the primary question is module structure along desiccation/radiation exposure, not a signed botanical architecture claim."
+    },
+    "visible_display": {
+      "response_module": "visible_display",
+      "primary_hypothesis_test": false,
+      "use": "descriptive/whole-capitulum synthesis unless a separate biological hypothesis is fixed without inspecting its environmental coefficients"
+    },
+    "fine_architecture_and_surface": {
+      "primary_hypothesis_test": false,
+      "reason": "blocked by the frozen measurement qualification decision"
+    }
+  },
+  "spatial_primary_specification": {
+    "included_in_every_primary_within_and_among_fit": true,
+    "basis": "second-order spherical-coordinate basis",
+    "terms": ["x", "y", "z", "x*y", "x*z", "y*z", "x^2-y^2", "3*z^2-1"],
+    "coordinates": "public observation latitude/longitude from the frozen source cohort; among-taxon fits use equal-observation taxon centroids only as the spatial-basis location, not as a range centroid claim",
+    "within_taxon_handling": "spatial basis terms and environmental predictors are centered within taxon before taxon-specific slope estimation so within-taxon slopes are not driven by among-taxon differences",
+    "residual_diagnostic": "Report residual Moran's I using eight nearest neighbours on a deterministic maximum-5000-observation support sample per fitted inferential unit.",
+    "bounded_spatial_sensitivity": "Also report 2-degree and 5-degree geographic block-bootstrap uncertainty for the hypermean/among-taxon coefficient. These are uncertainty comparisons, not survivor gates or independent confirmations.",
+    "claim_limit": "This controls broad spatial structure and quantifies residual dependence; it is not a claim that all spatial confounding is removed."
+  },
+  "within_taxon_estimand": {
+    "primary_estimand": "distribution of taxon-specific conditional slopes and its random-effects hyperdistribution",
+    "eligible_individual_slope_reporting": "use the pre-frozen source-cohort rule: >=10 distinct observations with a QC-qualified endpoint and >=4 quarter-degree support cells; the frozen exposure must vary within the taxon",
+    "sparse_taxa": "remain in coverage accounting and any estimable pooled hierarchy, but are not individually interpreted when the reporting-support rule fails",
+    "taxon_slope_estimation": "For each supported taxon and inferential response coordinate, estimate standardized conditional slopes with the frozen environmental predictors and within-taxon centered spherical basis. Use observation-level units after head/photo aggregation.",
+    "partial_pooling": "For each predeclared slope coordinate, fit a normal-normal random-effects model: observed taxon slope with its sampling variance is modeled around a common hypermean with between-taxon variance. Report empirical-Bayes shrinkage estimates, hypermean, 95% interval and tau. Do not treat the number of photos as a biological taxon weight.",
+    "heterogeneity": "Report tau and the distribution of shrinkage estimates. Opposite taxon slopes are biological/statistical heterogeneity, not failed replication."
+  },
+  "among_taxon_estimand": {
+    "primary_estimand": "association between one uncertainty-aware taxon phenotype summary and one equal-observation taxon exposure summary per accepted taxon",
+    "minimum_reporting_support": ">=5 distinct observations with a QC-qualified endpoint, as frozen in the source-cohort contract",
+    "taxon_summary": "head mean within photo, equal-photo mean within observation, equal-observation mean within taxon; retain sampling standard error",
+    "exposure_summary": "equal-observation mean of the frozen exposure within taxon; photograph abundance is not a weight",
+    "fit": "weighted linear meta-regression using taxon phenotype sampling variance plus estimated residual between-taxon variance, with the frozen spherical spatial basis",
+    "phylogeny": "not part of the primary source-cohort estimand. A later direct-tip/placement sensitivity may refit the same among-taxon specification, but placement trees are not evidence votes."
+  },
+  "response_inferential_units": {
+    "orientation": {
+      "primary_unit": ["orientation_image_vertical_angle"],
+      "transform": "degrees retained for reporting; standardized response used for slope comparability"
+    },
+    "visible_colour": {
+      "joint_first": true,
+      "units": {
+        "lightness_chroma": {
+          "endpoints": ["corolla_lab_lightness", "corolla_lab_chroma"],
+          "transform": "standardize each coordinate on the realized QC-qualified observation cohort"
+        },
+        "circular_hue": {
+          "endpoints": ["corolla_hue_sin", "corolla_hue_cos"],
+          "transform": "retain sine/cosine jointly; never linearize hue angle across the wrap point"
+        },
+        "closed_colour_composition": {
+          "endpoints": ["corolla_white_pixel_fraction", "corolla_redmagenta_pixel_fraction", "corolla_purple_pixel_fraction", "corolla_yellow_pixel_fraction"],
+          "transform": "square-root/Hellinger transform of the four closed fractions; analyze the four coordinates jointly, never as four independent tests"
+        }
+      },
+      "module_omnibus": "Combine the standardized conditional-slope coordinates of the three predeclared colour units into a single multivariate module statistic; assess it by taxon-respecting Freedman-Lane permutation under the same spatial/environment design. Coordinate slopes are decompositions after the module result and remain reported regardless of their individual P values."
+    },
+    "gross_shape": {
+      "joint_first": true,
+      "endpoints": ["capitulum_outline_aspect_ratio", "capitulum_outline_circularity", "capitulum_outline_solidity", "capitulum_width_profile_cv"],
+      "transform": "standardize each coordinate on the stable realized observation cohort",
+      "module_omnibus": "multivariate taxon-respecting Freedman-Lane statistic under the same spatial/environment design; endpoint slopes decompose the module result"
+    },
+    "visible_display": {
+      "endpoints": ["visible_floret_fraction"],
+      "primary_test": false
+    }
+  },
+  "multiplicity_and_decision": {
+    "no_global_endpoint_by_raster_screen": true,
+    "primary_hypothesis_families": [
+      "H1_orientation_precipitation",
+      "H2_visible_colour_environment",
+      "H3_gross_shape_environment"
+    ],
+    "H1": "one directional primary test for precipitation in the stable original-resolution orientation formulation; wind is explicitly secondary",
+    "H2": "drying and thermal backbones are paired alternative parameterizations of one colour hypothesis family. Report both; do not select the favourable formulation. Adjust the two module-level omnibus probabilities with Holm within H2 if probability summaries are used.",
+    "H3": "drying and thermal backbones are paired alternative parameterizations of one gross-shape hypothesis family. Report both; do not select the favourable formulation. Adjust the two module-level omnibus probabilities with Holm within H3 if probability summaries are used.",
+    "endpoint_decomposition": "Endpoint/coordinate intervals and coefficients are always reported for decomposition. If coordinate-level P values are shown, BH correction is applied only within the corresponding predeclared module/formulation and they do not promote a new biological story without module support.",
+    "whole_capitulum": "secondary synthesis only; it cannot rescue an unsupported primary module by searching a new combination after inspecting outcomes",
+    "v2_survival": "not a criterion"
+  },
+  "reporting": {
+    "always_report": [
+      "source-cohort denominator and realized endpoint-specific denominator",
+      "number of observations and accepted taxa",
+      "per-taxon observation and geographic support",
+      "within-taxon hypermean, tau and taxon shrinkage slopes",
+      "among-taxon coefficient and uncertainty",
+      "spatial basis specification and residual Moran diagnostic",
+      "bbox stable-cohort retention and five-formulation coefficient envelope for orientation/gross shape",
+      "colour context negative-control results",
+      "drying and thermal formulations side by side",
+      "all exclusions/missing image/no-detection/QC states"
+    ],
+    "disallowed_language": [
+      "adaptation established",
+      "mechanism demonstrated",
+      "anthocyanin concentration inferred from camera chroma",
+      "true gravitational orientation",
+      "52 placement trees as independent confirmations"
+    ]
+  }
+}
