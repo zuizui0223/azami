@@ -1,0 +1,64 @@
+name: Chapter 1 v3 full-family tail mechanics pilot
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/full_family_tail_pilot_contract.json
+      - analysis/v3/simulate_full_family_tail_pilot.py
+      - tests/test_v3_full_family_tail_pilot.py
+      - .github/workflows/ch1-v3-full-family-tail-pilot.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pilot:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        scenario: [iid_null, crossed_spatial_null, heterogeneous_slopes, scale_difference]
+        outer: [0, 1, 2, 3, 4, 5, 6, 7]
+    concurrency:
+      group: v3-full36-tail-pilot-${{ matrix.scenario }}-${{ matrix.outer }}
+      cancel-in-progress: false
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 pytest==9.1.1
+      - name: Verify family geometry, Holm reservation and crossed estimator
+        run: |
+          python -m pytest -q \
+            tests/test_v3_full_family_tail_pilot.py \
+            tests/test_v3_environment_model.py \
+            tests/test_v3_dependence_resampling.py \
+            tests/test_v3_module_ecology.py \
+            tests/test_v3_joint_partial_pooling.py
+      - name: Execute one predeclared outer dataset on both spatial grids
+        run: |
+          python -m analysis.v3.simulate_full_family_tail_pilot \
+            --scenario '${{ matrix.scenario }}' \
+            --outer-replicate '${{ matrix.outer }}' \
+            --out runs/full36-tail
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-full36-tail-${{ matrix.scenario }}-${{ matrix.outer }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/full36-tail/
+          if-no-files-found: warn
+          retention-days: 30
+      # Synthetic generated arrays only. The pilot never restores source assets,
+      # image measurements, empirical exposures or ecological coefficients.
