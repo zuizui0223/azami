@@ -1,0 +1,44 @@
+{
+  "changes": "Only order of identical crossproduct contractions. Model, covariance restriction, starts, bounds, score tolerance, seeds and inferential criteria unchanged.",
+  "differences": [
+    {
+      "criterion_absolute_difference": 1.5006662579253316e-11,
+      "hypermean_max_absolute_difference": 3.853477637677516e-09,
+      "joint_prediction_covariance_max_absolute_difference": 9.797001776501446e-08,
+      "retained_taxa": 64,
+      "tau2_max_absolute_difference": 9.639901499269854e-08
+    },
+    {
+      "criterion_absolute_difference": 2.9558577807620168e-12,
+      "hypermean_max_absolute_difference": 1.512033435957516e-09,
+      "joint_prediction_covariance_max_absolute_difference": 5.513159900827347e-08,
+      "retained_taxa": 64,
+      "tau2_max_absolute_difference": 5.424912136176019e-08
+    }
+  ],
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "implementation_sha256_text_lf": "14c0f6333814c5aea0b2c79c7a5b13402abf0837fa5683845fcf971fe5426c6a",
+  "median_speed_ratio": 3.71994397891023,
+  "observations": 2654,
+  "reference_implementation_commit": "2bc191bde25b04bcd39c46e3792cc5facd547d82",
+  "reference_sha256_text_lf": "13851f324bfb1d31602bb824d552883cca20e394efbc1724154bd91cdb865fac",
+  "remaining": "Complete paired synthetic regression and spatial/component calibration; speed and numerical equivalence are not ecological inference.",
+  "repeated_fits_are_not_independent_simulations": true,
+  "seed": 2026090841,
+  "source": "Generated64taxon9predictor2coordinate arrays; no empirical source or trait values",
+  "status": "REORDERED_GAUSSIAN_CONTRACTIONS_NUMERICALLY_EQUIVALENT_ON_GENERATED_REFERENCE",
+  "timings_seconds": {
+    "reference": [
+      1.4316353000467643,
+      1.245658400002867,
+      1.2847603999543935
+    ],
+    "reordered": [
+      0.3190633999183774,
+      0.3453709000023082,
+      0.3746520000277087
+    ]
+  }
+}

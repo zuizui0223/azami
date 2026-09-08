@@ -92,20 +92,22 @@
     "joint_covariance_aware_hierarchy": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/joint_partial_pooling.py",
-      "remaining": "One-stage Gaussian random-slope likelihood now retains singleton and locally aliased taxa and full cross-taxon prediction-error covariance; dense-reference tests and a 319244-row synthetic benchmark pass. The paired 360-replicate numerical checks in reproducibility/v3_joint_pooling_validation_20260908.json retain nine-predictor conditional 95% interval coverage of only90%. This does not complete ecological inference: spatial/component joint resampling, cross-response module statistics, matched-support among-minus-within covariance and measurement propagation remain required."
+      "remaining": "One-stage Gaussian random-slope likelihood retains singleton and locally aliased taxa and cross-taxon prediction covariance. Dense/full-size reference tests pass. Equivalent matrix-contraction reordering and a repeated360-case simulation retain conditional nine-predictor coverage of only90% (reproducibility/v3_joint_pooling_synthetic_contractions_20260908.json). module_ecology.py now implements matched within/among/difference estimates and paired cross-response covariance, but dependence-aware calibration, actual support and measurement propagation remain unqualified."
     },
     "calendar_imaging_nuisance_design": {
       "state": "not_executed",
       "remaining": "Freeze exact transformations/identification and missingness rules with endpoint-matched imaging columns. All recovered native records are northern: southern interactions are structurally constant here. Source dates include 29 before 1980; fix year/exposure-support rules without silent date repair or coefficient-guided exclusion. Dates are not stage labels."
     },
     "dependence_aware_inference_simulation": {
-      "state": "not_executed",
-      "remaining": "The working-likelihood conditional-interval limitations were measured in the complete synthetic check recorded by reproducibility/v3_joint_pooling_validation_20260908.json. That is not calibration of dependence-aware inference. Implement and check the actual spatial/component joint runner for null error, coverage, heterogeneity and cross-scale covariance; neither HC3 nor conditional Gaussian intervals establish spatial robustness."
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/simulate_crossed_bootstrap.py",
+      "evidence": "reproducibility/v3_crossed_bootstrap_paired_replay_20260908.json",
+      "remaining": "The component-preserving crossed bootstrap and rank-aware joint process statistics are implemented. One generated dataset was replayed on two grids with199draws each, retaining all398draws and paired numerical equivalence; this is not independent calibration. The four-condition40-dataset plan is preliminary. Validate error rates, coverage, variance heterogeneity, actual support and the complete36slot family at sufficient tail resolution before ecology; preserve failed draws."
     },
     "fixed_full_test_family": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/environment_model.py",
-      "remaining": "The one-model source-QC definition, shared predictor transformations and complete 36-slot Holm family with missing-slot retention are tested. Rank-aware joint module/contrast statistics and dependence-aware calibration remain unfinished; no ecological probability was calculated."
+      "remaining": "The one-model source-QC definition, shared predictor transformations and complete36slot Holm family with missing-slot retention are tested. Rank-aware joint module/contrast statistics are now implemented in module_ecology.py, including nonestimable covariance-range failures, but full-family dependence-aware calibration remains unfinished. No ecological probability was calculated."
     },
     "outcome_blind_common_axes": {
       "state": "not_executed",

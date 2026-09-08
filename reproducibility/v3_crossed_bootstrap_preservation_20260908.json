@@ -1,0 +1,27 @@
+{
+  "anonymous_release_and_asset_requests": "404",
+  "asset": {
+    "asset_id": 550375286,
+    "asset_name": "v3-crossed-bootstrap-synthetic-20260908-a.zip",
+    "bundle_bytes": 1706861,
+    "bundle_sha256": "b9f6885b2639f79dcaf259f6226db477b44b53f86fb8ff325f7bf44d690f1e28",
+    "files": 15,
+    "manifest_sha256": "1bd28225f114b9782c19a89496383edd4c665485a05f9a21f8d296d5a1aa5d3b",
+    "restored_bytes": 5999040,
+    "source_images_included": false
+  },
+  "bytes_restored": 5999040,
+  "contents": "Complete optimized360-case regression, both paired2grid199draw executions and numerical equivalence receipts; no empirical arrays.",
+  "crossed_distinct_simulated_datasets": 1,
+  "crossed_paired_draw_records": 796,
+  "draft_verified": true,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "files_restored": 15,
+  "image_requests": 0,
+  "regression_replicates": 360,
+  "source_images_included": false,
+  "source_validation_canonical_sha256": "9a7d31f55df46aed27dab16a784e2cf71630d3fbeb2b2ce03e4b6cc672812c7e",
+  "status": "SYNTHETIC_CROSSED_REPLAY_AND_CONTRACTION_REGRESSION_PROTECTED_AND_RESTORED"
+}

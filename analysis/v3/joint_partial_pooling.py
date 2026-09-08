@@ -108,15 +108,19 @@ class JointSlopeLikelihood:
         a = np.eye(self.p) + root[None,:,None]*self.gram*root[None,None,:]
         chol = np.linalg.cholesky(a)
         m = root[None,:,None]*np.linalg.solve(a,np.broadcast_to(np.diag(root),a.shape))
-        info = self.ff - np.einsum('tpi,tpq,tqj->ij',self.xf,m,self.xf)
+        # Contract the small random-slope index first. A direct three-operand
+        # einsum repeats it for every pair of fixed columns on every iteration.
+        mxf = m@self.xf
+        mxy = np.einsum('tpq,tq->tp',m,self.xy)
+        info = self.ff - np.einsum('tpi,tpj->ij',self.xf,mxf)
         info = (info+info.T)/2
-        score = self.fy - np.einsum('tpi,tpq,tq->i',self.xf,m,self.xy)
+        score = self.fy - np.einsum('tpi,tp->i',self.xf,mxy)
         scaled = info / self.column_norms[:,None] / self.column_norms[None,:]
         info_chol = np.linalg.cholesky(scaled)
         inverse = np.linalg.solve(scaled,np.eye(self.fixed_columns)) / self.column_norms[:,None] / self.column_norms[None,:]
         inverse = (inverse+inverse.T)/2
         alpha = inverse@score
-        q = self.yy - np.einsum('tp,tpq,tq->',self.xy,m,self.xy)
+        q = self.yy - np.einsum('tp,tp->',self.xy,mxy)
         rss = float(q-score@alpha)
         if rss <= max(1e-12, 1e-12*self.yy) or not np.isfinite(rss):
             raise ValueError('Residual scale is not numerically estimable')
@@ -129,7 +133,7 @@ class JointSlopeLikelihood:
         vxresid = residual_score-np.einsum('tpq,tq->tp',self.gram,random_modes)
         vxgram = self.gram-self.gram@m@self.gram
         trace = np.diagonal(vxgram,axis1=1,axis2=2).sum(axis=0)
-        trace -= np.einsum('tpi,ij,tpj->p',vxf,inverse,vxf)
+        trace -= np.einsum('tpi,tpi->p',vxf@inverse,vxf)
         gradient = trace-self.df/rss*(vxresid**2).sum(axis=0)
         return {'criterion':criterion,'gradient':gradient,'lambda':lam,'alpha':alpha,
                 'fixed_inverse_information':inverse,'rss':rss,'sigma2':rss/self.df,

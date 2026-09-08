@@ -1,0 +1,56 @@
+name: Chapter 1 v3 crossed bootstrap preliminary calibration
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/crossed_bootstrap_simulation_contract.json
+      - .github/workflows/ch1-v3-crossed-bootstrap-calibration.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  simulate:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        scenario: [iid_null, crossed_spatial_null, heterogeneous_slopes, scale_difference]
+        start: [0, 5, 10, 15, 20, 25, 30, 35]
+    concurrency:
+      group: v3-crossed-bootstrap-20260908-${{ matrix.scenario }}-${{ matrix.start }}
+      cancel-in-progress: false
+    env:
+      OMP_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 pytest==9.1.1
+      - name: Check joint covariance, source-component conservation and numerical equivalence
+        run: python -m pytest -q tests/test_v3_dependence_resampling.py tests/test_v3_module_ecology.py tests/test_v3_pooling_contractions.py tests/test_v3_joint_partial_pooling.py tests/test_v3_crossed_bootstrap_simulation.py
+      - name: Execute every predeclared synthetic case in this slice
+        run: |
+          python -m analysis.v3.simulate_crossed_bootstrap \
+            --scenario '${{ matrix.scenario }}' \
+            --start '${{ matrix.start }}' --end "$(( ${{ matrix.start }} + 5 ))" \
+            --out runs/synthetic
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-crossed-bootstrap-${{ matrix.scenario }}-${{ matrix.start }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: runs/synthetic/
+          if-no-files-found: warn
+          retention-days: 30
+      # Generated arrays only. No source-asset access, private coordinates,
+      # real image requests or empirical coefficients. Preserve failed draws.

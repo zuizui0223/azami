@@ -1,0 +1,179 @@
+{
+  "absolute_tolerance": 1e-06,
+  "comparisons": [
+    {
+      "candidate_probabilities_and_coverage_decisions_identical": true,
+      "covariance_max_absolute_difference": 2.1943597980356166e-10,
+      "draws_max_absolute_difference": 5.462252944399282e-08,
+      "grid_degrees": 2,
+      "interval_high_max_absolute_difference": 1.0330123645374556e-08,
+      "interval_low_max_absolute_difference": 1.5600965408424372e-08,
+      "paired_draws": 199,
+      "point_max_absolute_difference": 3.853477648085857e-09
+    },
+    {
+      "candidate_probabilities_and_coverage_decisions_identical": true,
+      "covariance_max_absolute_difference": 2.529735379508402e-10,
+      "draws_max_absolute_difference": 3.616500804382028e-08,
+      "grid_degrees": 5,
+      "interval_high_max_absolute_difference": 1.6351832554661883e-08,
+      "interval_low_max_absolute_difference": 1.8979957994158525e-08,
+      "paired_draws": 199,
+      "point_max_absolute_difference": 3.853477648085857e-09
+    }
+  ],
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "evidence": [
+    {
+      "elapsed_seconds_by_grid": [
+        278.3799727000296,
+        278.36815220001154
+      ],
+      "execution_contract": {
+        "ecological_fitting_authorized": false,
+        "end": 1,
+        "implementation_sha256_text_lf": {
+          "analysis/v3/dependence_resampling.py": "173f21ad01593c04afd4e3f7a1410a22e8c9c75f8b1d21d8ed21833de06c211e",
+          "analysis/v3/hierarchical_ecology.py": "7f4a37d1d64cbf00105068d2bde254da6cdcf6f413e6a420df8ef33428a5c5ae",
+          "analysis/v3/joint_partial_pooling.py": "13851f324bfb1d31602bb824d552883cca20e394efbc1724154bd91cdb865fac",
+          "analysis/v3/model_design_diagnostics.py": "b95c243963757d1f112e5caca1133d9780cb39e555248d4242e3a460cda997e0",
+          "analysis/v3/module_ecology.py": "9cc8b65eabe51f4296f17344c57fcbf971e6ca9d51f33706efaeeac881f8011d",
+          "analysis/v3/simulate_crossed_bootstrap.py": "44301d4a8211c90b0c0efad727ef1c7a30a01795beb04f3c0bdc7ed2fd42846b"
+        },
+        "resampling_contract_canonical_sha256": "0b617e025b933ede03959ae8ef73c4686b9e7b376d245a781b43502a9f2235f2",
+        "scenario": "iid_null",
+        "specification": {
+          "bootstrap_replicates": 199,
+          "design": "Generated unbalanced native-cohort-like arrays, not empirical source values. Include a singleton, a three-observation taxon, correlated nine-predictor values, shared calendar/imaging-like nuisance and the eight-term spherical basis. Generate within slopes and among coefficients explicitly on common units. Two response coordinates have correlated random slopes and residuals. Source components duplicate selected observation measurements before taxon centering.",
+          "ecological_fitting_authorized": false,
+          "ecological_models_executed": 0,
+          "empirical_trait_environment_values_read": 0,
+          "grid_degrees": [
+            2,
+            5
+          ],
+          "id": "v3_crossed_module_scale_bootstrap_preliminary_simulation_v1",
+          "nulls": "Wetting and radiation coefficient blocks are zero within and among in null scenarios; heat/drying and mechanical have nonzero common coefficients. All scale contrasts are zero except the radiation contrast in the scale_difference scenario. Save the complete generating coefficient array; determine null status from it, not observed estimates.",
+          "predictors": 9,
+          "process_indices": {
+            "heat_drying": [
+              5,
+              6,
+              7
+            ],
+            "mechanical": [
+              8
+            ],
+            "radiation": [
+              4
+            ],
+            "wetting_moisture": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "qualification_boundary": "This preliminary check probes the actual paired estimator, crossed sampling and joint statistic. Its199draw tail resolution cannot validate a36slot Holm family at0.05, and40outer replicates per scenario give imprecise error estimates. It cannot open ecological fitting. A later sufficiently resolved, adequately replicated full-family check and actual cohort/measurement qualification remain required, whether these preliminary results look favourable or not.",
+          "replicates_per_scenario": 40,
+          "report": "Record every scenario/outer replicate and both grids, including point-estimator failure, every planned bootstrap fit, missing inference, coefficients, full joint covariance, candidate intervals/tails, generating-null rejection and interval coverage. Never redraw failures or substitute another dataset. Store nested replicate records separately from compact public aggregates.",
+          "response_coordinates": 2,
+          "scenarios": [
+            "iid_null",
+            "crossed_spatial_null",
+            "heterogeneous_slopes",
+            "scale_difference"
+          ],
+          "schema_version": 1,
+          "seed": 2026090841,
+          "spatial_design": "Sixteen separated5degree regions, with observations near two2degree subcells per region. Spatial scenarios have a shared region residual term not represented exactly by the spherical mean basis. Both grids are always run and reported; the larger grid is not selected from observed fit performance.",
+          "status": "preliminary_calibration_not_full36test_family_admission",
+          "taxa": 64
+        },
+        "specification_canonical_sha256": "908e992bcc032d92e3f0bfec0fd3938d0e445c73319ed473ec93d6ddbc50a926",
+        "start": 0
+      },
+      "nested_records_sha256": "a757e35f9e66d91e671f55c5e134f293e5264bf78310787766923dbd34f7e5f4",
+      "path": "local_data\\crossed-bootstrap-local-pilot-20260908-a",
+      "public_report_canonical_sha256": "22edee279d3c95f33444d3f34eba76cfc428372312bbb100f84fe2898ccc04cb"
+    },
+    {
+      "elapsed_seconds_by_grid": [
+        61.75029400002677,
+        64.52741870004684
+      ],
+      "execution_contract": {
+        "ecological_fitting_authorized": false,
+        "end": 1,
+        "implementation_sha256_text_lf": {
+          "analysis/v3/dependence_resampling.py": "173f21ad01593c04afd4e3f7a1410a22e8c9c75f8b1d21d8ed21833de06c211e",
+          "analysis/v3/hierarchical_ecology.py": "7f4a37d1d64cbf00105068d2bde254da6cdcf6f413e6a420df8ef33428a5c5ae",
+          "analysis/v3/joint_partial_pooling.py": "14c0f6333814c5aea0b2c79c7a5b13402abf0837fa5683845fcf971fe5426c6a",
+          "analysis/v3/model_design_diagnostics.py": "b95c243963757d1f112e5caca1133d9780cb39e555248d4242e3a460cda997e0",
+          "analysis/v3/module_ecology.py": "9cc8b65eabe51f4296f17344c57fcbf971e6ca9d51f33706efaeeac881f8011d",
+          "analysis/v3/simulate_crossed_bootstrap.py": "44301d4a8211c90b0c0efad727ef1c7a30a01795beb04f3c0bdc7ed2fd42846b"
+        },
+        "resampling_contract_canonical_sha256": "0b617e025b933ede03959ae8ef73c4686b9e7b376d245a781b43502a9f2235f2",
+        "scenario": "iid_null",
+        "specification": {
+          "bootstrap_replicates": 199,
+          "design": "Generated unbalanced native-cohort-like arrays, not empirical source values. Include a singleton, a three-observation taxon, correlated nine-predictor values, shared calendar/imaging-like nuisance and the eight-term spherical basis. Generate within slopes and among coefficients explicitly on common units. Two response coordinates have correlated random slopes and residuals. Source components duplicate selected observation measurements before taxon centering.",
+          "ecological_fitting_authorized": false,
+          "ecological_models_executed": 0,
+          "empirical_trait_environment_values_read": 0,
+          "grid_degrees": [
+            2,
+            5
+          ],
+          "id": "v3_crossed_module_scale_bootstrap_preliminary_simulation_v1",
+          "nulls": "Wetting and radiation coefficient blocks are zero within and among in null scenarios; heat/drying and mechanical have nonzero common coefficients. All scale contrasts are zero except the radiation contrast in the scale_difference scenario. Save the complete generating coefficient array; determine null status from it, not observed estimates.",
+          "predictors": 9,
+          "process_indices": {
+            "heat_drying": [
+              5,
+              6,
+              7
+            ],
+            "mechanical": [
+              8
+            ],
+            "radiation": [
+              4
+            ],
+            "wetting_moisture": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "qualification_boundary": "This preliminary check probes the actual paired estimator, crossed sampling and joint statistic. Its199draw tail resolution cannot validate a36slot Holm family at0.05, and40outer replicates per scenario give imprecise error estimates. It cannot open ecological fitting. A later sufficiently resolved, adequately replicated full-family check and actual cohort/measurement qualification remain required, whether these preliminary results look favourable or not.",
+          "replicates_per_scenario": 40,
+          "report": "Record every scenario/outer replicate and both grids, including point-estimator failure, every planned bootstrap fit, missing inference, coefficients, full joint covariance, candidate intervals/tails, generating-null rejection and interval coverage. Never redraw failures or substitute another dataset. Store nested replicate records separately from compact public aggregates.",
+          "response_coordinates": 2,
+          "scenarios": [
+            "iid_null",
+            "crossed_spatial_null",
+            "heterogeneous_slopes",
+            "scale_difference"
+          ],
+          "schema_version": 1,
+          "seed": 2026090841,
+          "spatial_design": "Sixteen separated5degree regions, with observations near two2degree subcells per region. Spatial scenarios have a shared region residual term not represented exactly by the spherical mean basis. Both grids are always run and reported; the larger grid is not selected from observed fit performance.",
+          "status": "preliminary_calibration_not_full36test_family_admission",
+          "taxa": 64
+        },
+        "specification_canonical_sha256": "908e992bcc032d92e3f0bfec0fd3938d0e445c73319ed473ec93d6ddbc50a926",
+        "start": 0
+      },
+      "nested_records_sha256": "68e71c9fe92d524b23a2af86e63eaa54caa9f3fa1e76fbe6363e49a6a10dff4e",
+      "path": "local_data\\crossed-bootstrap-local-pilot-20260908-b",
+      "public_report_canonical_sha256": "d8de7abf4e452de57da0595c03ecfe12bd7881a9a98140b5a16fa0071c936c0f"
+    }
+  ],
+  "independent_generated_datasets": 1,
+  "paired_replays": 2,
+  "status": "PAIRED_SYNTHETIC_REPLAY_EQUIVALENT_NO_ECOLOGICAL_CALIBRATION"
+}

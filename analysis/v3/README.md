@@ -301,9 +301,36 @@ The limitation is substantive: conditional 95% intervals contained the true
 first hypermean in only 90% of the 120 nine-predictor simulations. Null rejection
 counts were 4/120 for two IID predictors, 12/120 for nine IID predictors and 8/120
 under spatially correlated errors. These intervals are **not** the final
-ecological uncertainty measure. Component/spatial joint resampling, cross-response
-module tests, matched-support among-minus-within covariance and measurement
-propagation must be implemented and validated before ecological inference.
+ecological uncertainty measure. Measurement propagation and validated
+component/spatial inference remain necessary before ecological inference.
+
+The [crossed-resampling candidate](dependence_resampling_contract.json) now
+preserves known source components when resampling taxon and spatial blocks.
+`module_ecology.py` estimates within, among and their direct difference on matched
+support, sharing each draw across response coordinates. Its covariance retains
+cross-scale dependence; rank-deficient process tests do not silently discard
+unestimated effects. Every failed draw is retained, with no replacement or
+inference based only on successful draws. These are implemented candidates,
+not validated ecological probabilities.
+
+A [paired numerical replay](../../reproducibility/v3_crossed_bootstrap_paired_replay_20260908.json)
+used one generated dataset, two spatial grids and 199 draws per grid. Reordering
+equivalent matrix products preserved all 398 draw statuses, tail estimates and
+coverage decisions within the recorded numerical tolerance. The
+[original 360-case regression check](../../reproducibility/v3_joint_pooling_synthetic_contractions_20260908.json)
+also preserved the 90% nine-predictor conditional coverage; faster calculation
+does not remove that limitation.
+Both complete paired bootstrap executions and the new regression numerics were
+[protected and independently restored](../../reproducibility/v3_crossed_bootstrap_preservation_20260908.json)
+as 15 files; no images or empirical arrays were included.
+
+The [preliminary calibration plan](crossed_bootstrap_simulation_contract.json)
+runs four generated-data conditions, 40 datasets per condition and both grids
+through GitHub Actions. It is not a full 36-test-family calibration: 199 draws
+cannot resolve its smallest Holm threshold, and 40 datasets per condition give
+imprecise error-rate estimates. Ecological fitting remains unauthorized pending
+adequate calibration, actual measurement/assessability qualification and matched
+model-support checks. No real trait-environment coefficients were inspected.
 
 The following sections document the source inventory and earlier implementation
 checkpoints. Their historical completion labels do not override the active

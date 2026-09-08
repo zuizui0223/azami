@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "v3_crossed_module_scale_bootstrap_preliminary_simulation_v1",
+  "status": "preliminary_calibration_not_full36test_family_admission",
+  "seed": 2026090841,
+  "scenarios": ["iid_null", "crossed_spatial_null", "heterogeneous_slopes", "scale_difference"],
+  "replicates_per_scenario": 40,
+  "bootstrap_replicates": 199,
+  "grid_degrees": [2, 5],
+  "taxa": 64,
+  "predictors": 9,
+  "response_coordinates": 2,
+  "process_indices": {"wetting_moisture":[0,1,2,3],"radiation":[4],"heat_drying":[5,6,7],"mechanical":[8]},
+  "design": "Generated unbalanced native-cohort-like arrays, not empirical source values. Include a singleton, a three-observation taxon, correlated nine-predictor values, shared calendar/imaging-like nuisance and the eight-term spherical basis. Generate within slopes and among coefficients explicitly on common units. Two response coordinates have correlated random slopes and residuals. Source components duplicate selected observation measurements before taxon centering.",
+  "spatial_design": "Sixteen separated5degree regions, with observations near two2degree subcells per region. Spatial scenarios have a shared region residual term not represented exactly by the spherical mean basis. Both grids are always run and reported; the larger grid is not selected from observed fit performance.",
+  "nulls": "Wetting and radiation coefficient blocks are zero within and among in null scenarios; heat/drying and mechanical have nonzero common coefficients. All scale contrasts are zero except the radiation contrast in the scale_difference scenario. Save the complete generating coefficient array; determine null status from it, not observed estimates.",
+  "report": "Record every scenario/outer replicate and both grids, including point-estimator failure, every planned bootstrap fit, missing inference, coefficients, full joint covariance, candidate intervals/tails, generating-null rejection and interval coverage. Never redraw failures or substitute another dataset. Store nested replicate records separately from compact public aggregates.",
+  "qualification_boundary": "This preliminary check probes the actual paired estimator, crossed sampling and joint statistic. Its199draw tail resolution cannot validate a36slot Holm family at0.05, and40outer replicates per scenario give imprecise error estimates. It cannot open ecological fitting. A later sufficiently resolved, adequately replicated full-family check and actual cohort/measurement qualification remain required, whether these preliminary results look favourable or not.",
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "ecological_fitting_authorized": false
+}
