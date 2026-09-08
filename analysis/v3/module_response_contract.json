@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "id": "ch1_v3_primary_module_response_geometry_v1",
+  "status": "fixed_before_empirical_trait_environment_fitting",
+  "source_measurement_decision": "analysis/v3/measurement_qualification_decision_20260908.json",
+  "primary_modules": {
+    "orientation": {
+      "endpoints": ["orientation_image_vertical_angle"],
+      "coordinates": ["orientation_image_vertical_angle"],
+      "transform": "identity in image-referenced degrees",
+      "joint_support": "baseline original-stream operational support",
+      "technical_envelope": "Repeat the supported ecological fit on the four predeclared +/-5% bbox translations as bounded sensitivity; baseline plus shifts are one technical envelope, not five evidence votes."
+    },
+    "visible_colour": {
+      "endpoints": [
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos",
+        "corolla_white_pixel_fraction",
+        "corolla_redmagenta_pixel_fraction",
+        "corolla_purple_pixel_fraction",
+        "corolla_yellow_pixel_fraction"
+      ],
+      "coordinates": [
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos",
+        "sqrt_corolla_white_pixel_fraction",
+        "sqrt_corolla_redmagenta_pixel_fraction",
+        "sqrt_corolla_purple_pixel_fraction",
+        "sqrt_corolla_yellow_pixel_fraction"
+      ],
+      "transform": "Identity for lightness, registered legacy chroma and circular hue sine/cosine; Hellinger square-root transform for the four registered closed composition fractions.",
+      "joint_support": "All eight registered colour endpoints must be operationally eligible on the same heads/images/observation. Hue sine/cosine are one circular quantity and the four Hellinger coordinates are one closed-composition quantity; neither is counted as independent repeated biological evidence.",
+      "composition_rule": "Require each fraction finite and >=0 and the four fractions sum to 1 within 1e-6 before square root. Never renormalize a non-closed row.",
+      "hue_rule": "Require sqrt(hue_sin^2+hue_cos^2) <= 1+1e-6. Do not convert mean sine/cosine back to a single linear angle for the primary model.",
+      "chroma_rule": "Primary uses the already-qualified registered corolla_lab_chroma exactly as measured. The uniformly-floral-union candidate remains a separate versioned candidate and cannot silently replace this coordinate without an explicit later measurement decision."
+    },
+    "gross_shape": {
+      "endpoints": [
+        "capitulum_outline_aspect_ratio",
+        "capitulum_outline_circularity",
+        "capitulum_outline_solidity",
+        "capitulum_width_profile_cv"
+      ],
+      "coordinates": [
+        "capitulum_outline_aspect_ratio",
+        "capitulum_outline_circularity",
+        "capitulum_outline_solidity",
+        "capitulum_width_profile_cv"
+      ],
+      "transform": "identity in registered image-defined units",
+      "joint_support": "All four endpoints must share the same operational heads/images/observation.",
+      "technical_envelope": "Repeat the supported ecological fit on the four predeclared +/-5% bbox translations as bounded sensitivity; do not select a favourable formulation."
+    }
+  },
+  "response_scaling": "Do not fit separate taxon- or scale-specific response standardizations. Primary coefficients remain in the transformed registered response units. Joint process statistics use the bootstrap covariance/rank geometry, which is unit-aware; any display-standardized effects are secondary and use one saved transformation across within and among scales.",
+  "excluded_primary_module": "visible_display is descriptive/construct-bounded and fine_architecture_and_surface is measurement-blocked; neither occupies the 36 primary probability slots.",
+  "missingness": "No imputation, row-wise endpoint substitution or outcome-driven reduced module. A module fit uses its exact joint support; source rows and partial endpoint values remain in assessability accounting.",
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
