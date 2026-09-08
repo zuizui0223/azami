@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "v3_full36_tail_mechanics_aggregate_20260908",
+  "source_workflow_run_id": 34239896034,
+  "source_head_sha": "695c4951c2be252533cc640d207152db4290d7ca",
+  "expected_artifacts": 32,
+  "artifact_pattern": "v3-full36-tail-*",
+  "source_contract": "analysis/v3/full_family_tail_pilot_contract.json",
+  "purpose": "Download and aggregate every immutable public synthetic report from the completed 999-draw full36 tail-mechanics pilot without reading empirical traits, exposures or images.",
+  "qualification_boundary": "Aggregate execution/mechanics only. Eight outer replicates per scenario and one coordinate per synthetic module do not authorize final multicoordinate inference or empirical ecology.",
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
