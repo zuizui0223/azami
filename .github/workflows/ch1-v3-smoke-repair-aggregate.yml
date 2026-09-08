@@ -28,15 +28,15 @@ jobs:
         run: |
           test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/34248192547 --jq .conclusion)" = "success"
           test "$(gh api repos/${GITHUB_REPOSITORY}/actions/runs/34248192547 --jq .head_sha)" = "db3c2cb0afc8b4c16a970719e55e2f57153776b5"
-      - name: Download all four attempt-2 smoke artifacts
+      - name: Download all successful smoke artifacts across original and retry attempts
         uses: actions/download-artifact@v4
         with:
-          pattern: v3-final-geometry-smoke-*-34248192547-2
+          pattern: v3-final-geometry-smoke-*-34248192547-*
           path: runs/smoke-repair-artifacts
           merge-multiple: false
           github-token: ${{ github.token }}
           run-id: '34248192547'
-      - name: Verify exact 4-scenario x 2-grid inventory and create gate receipt
+      - name: Verify exact 4-scenario x 2-grid successful inventory and create gate receipt
         run: |
           python - <<'PY'
           import hashlib, json
@@ -66,7 +66,8 @@ jobs:
                   assert int(case['estimable_shared_bootstrap_replicates']) == 199
                   assert case['ecological_fitting_authorized'] is False
                   cases.append({'scenario': scenario, 'grid_degrees': int(case['grid_degrees']), 'status': case['status']})
-              manifest.append({'scenario': scenario, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+              manifest.append({'scenario': scenario, 'artifact_path': path.parent.name,
+                               'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
           assert seen == expected_scenarios, seen
           assert len(cases) == 8
           receipt = {
@@ -74,7 +75,8 @@ jobs:
               'status': 'FINAL_GEOMETRY_SMOKE_SOLVER_REPAIR_REVALIDATED_8_OF_8_COMPLETE',
               'source_workflow_run_id': 34248192547,
               'source_head_sha': 'db3c2cb0afc8b4c16a970719e55e2f57153776b5',
-              'source_run_attempt': 2,
+              'source_run_attempts': [1, 2],
+              'retry_reason': 'Two attempt-1 jobs completed all numerical work but failed only while finalizing Actions artifacts with HTTP 403; only those failed jobs were retried.',
               'scenarios': sorted(seen),
               'recorded_grid_cases': len(cases),
               'complete_grid_cases': len(cases),
