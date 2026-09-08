@@ -5,8 +5,19 @@ on:
     branches: [revision/ch1-v3-20260907]
     paths:
       - analysis/v3/final_geometry_smoke_contract.json
+      - analysis/v3/final_module_calibration_contract.json
       - analysis/v3/run_final_geometry_smoke.py
+      - analysis/v3/multicoordinate_calibration.py
+      - analysis/v3/dependence_resampling.py
+      - analysis/v3/environment_model.py
+      - analysis/v3/joint_partial_pooling.py
+      - analysis/v3/module_ecology.py
+      - analysis/v3/nuisance_design.py
       - tests/test_v3_final_geometry_smoke.py
+      - tests/test_v3_multicoordinate_calibration.py
+      - tests/test_v3_module_ecology.py
+      - tests/test_v3_joint_partial_pooling.py
+      - tests/test_v3_dependence_resampling.py
       - .github/workflows/ch1-v3-final-geometry-smoke.yml
   workflow_dispatch:
 
