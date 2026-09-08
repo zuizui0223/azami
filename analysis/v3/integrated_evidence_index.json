@@ -27,13 +27,18 @@
       "id": "source_recovery_receipt",
       "path": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "canonical_json_sha256": "2cad97fb8d6f0145226a72f2b33a8bf3b70bda3975a4f9e3882e45d4465aa1a4"
+    },
+    {
+      "id": "schedule_replay_receipt",
+      "path": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
+      "canonical_json_sha256": "75a5ae72cb3697a658e6bfa37278f042a8eed32c11666bab76dee99ef30b250d"
     }
   ],
   "requirements": {
     "reconciled_source_links": {
       "state": "historical_evidence_recorded",
       "evidence": "reproducibility/v3_source_reconciliation_20260907.json",
-      "remaining": "Use this full link ledger in the actual stream schedule; the merged snapshot is insufficient."
+      "remaining": "The full link ledger now supplies the executed native-photo schedule below. Preserve the broader source ledger; scheduling evidence is not measured-image coverage."
     },
     "native_authority_input_chain": {
       "state": "execution_evidence_recorded",
@@ -45,7 +50,7 @@
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "implementation": "analysis/v3/enriched_source_cohort.py",
-      "remaining": "All 319244 observations retain exact membership and inherited fields, dates and full-source known dependence. Connect this pinned product to actual measurement scheduling and freeze calendar/support handling; dates are not stage labels."
+      "remaining": "All 319244 observations now connect to the verified photo schedule with exact membership, dates and full-source known dependence preserved. Freeze calendar/support handling before fitting; dates are not stage labels."
     },
     "image_only_qualification": {
       "state": "historical_evidence_recorded",
@@ -57,12 +62,16 @@
       "remaining": "Qualify uniform-floral-union chroma under a new recipe identity; retain legacy dominance-dependent values."
     },
     "reconciled_stream_schedule": {
-      "state": "not_executed",
-      "remaining": "Wire actual reconciled links and known dependence to source cohort and stream; no merged-snapshot fallback."
+      "state": "execution_evidence_recorded",
+      "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
+      "implementation": "analysis/v3/reconciled_stream_input.py",
+      "remaining": "All native source observations and links are scheduled; all six archives and target-photo versions were checked. The original/restored whole-component pilot inputs match, and offline tests exercise the worker. No new real images were fetched. Production admission and realized measurement coverage remain unexecuted; never fall back to the merged snapshot."
     },
     "durable_private_numerical_replay": {
-      "state": "not_executed",
-      "remaining": "Test verified durable private writes/restoration before cloud cleanup or production. Local retention tests are not a durable cloud archive."
+      "state": "local_execution_recorded_off_device_pending",
+      "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
+      "implementation": "analysis/v3/private_replay.py",
+      "remaining": "872 explicitly selected files (2374321149 bytes) were copied, restored and byte-verified on one local device; the restored schedule reproduces the same worker packet. Verify a private off-device destination and restoration before any cloud cleanup or production. This tool supplies no cloud transport or encryption."
     },
     "native_source_to_measurement_coverage": {
       "state": "implementation_tested_execution_pending",

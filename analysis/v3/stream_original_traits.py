@@ -272,24 +272,36 @@ def software_runtime() -> dict:
     }
 
 
-def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: Path,
+def run(metadata: Path | None, cohort: Path | None, weights: Path, decision_path: Path, out: Path,
         pilot_observations: int = 128, shard_index: int = 0, shard_count: int = 1,
-        expected_cohort_sha256: str | None = None) -> dict:
+        expected_cohort_sha256: str | None = None, *, reconciled_schedule: Path | None = None,
+        expected_schedule_sha256: str | None = None) -> dict:
     # No source bytes may be fetched for an unreconciled, non-durable production pass.
     if pilot_observations == 0:
-        raise ValueError("Production stream is blocked: reconciled source/dependence input and durable private numerical destination are not implemented")
+        raise ValueError("Production stream is blocked: an independently restored off-device private destination and production admission are not verified")
     if not 1 <= pilot_observations <= 128:
         raise ValueError("Only a bounded local operational pilot of 1..128 observations is permitted")
     out = out.resolve()
     if out == ROOT or (ROOT in out.parents and not any(out.is_relative_to(ROOT / name) for name in ("local_data", "outputs"))):
         raise ValueError("Private numerical outputs require an external or ignored local_data/outputs directory")
+    packet = None
+    if reconciled_schedule is not None:
+        if metadata is not None or cohort is not None or expected_cohort_sha256 is not None or (shard_index, shard_count) != (0, 1):
+            raise ValueError("Reconciled input cannot be mixed with legacy metadata/cohort or observation-hash shards")
+        from .reconciled_stream_input import pilot_input
+        packet = pilot_input(reconciled_schedule, expected_schedule_sha256, pilot_observations)
+        cohort_hash, metadata_hash = packet["input_sha256"]["enriched"], None
+    else:
+        if metadata is None or cohort is None or expected_schedule_sha256 is not None:
+            raise ValueError("Choose pinned reconciled input or both explicit legacy metadata and cohort")
+        cohort_hash, metadata_hash = digest(cohort), digest(metadata)
     import requests
     from ultralytics import YOLO
     from .detect_cached_images import MODEL_SHA, PARAMETERS
 
     if digest(weights) != MODEL_SHA:
         raise ValueError("Detector weight identity mismatch")
-    if expected_cohort_sha256 and digest(cohort) != expected_cohort_sha256:
+    if expected_cohort_sha256 and cohort_hash != expected_cohort_sha256:
         raise ValueError("Frozen ecological source cohort identity mismatch")
     decision = json.loads(decision_path.read_text(encoding="utf-8"))
     if decision.get("trait_environment_results_inspected") is not False:
@@ -299,10 +311,17 @@ def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: P
     registry_ids = {row["endpoint_id"] for row in features.registry()}
     if len(decision["endpoints"]) != 27 or set(routes) != registry_ids:
         raise ValueError("Decision must retain one route for every registered endpoint")
-    selected = select_observation_ids(cohort, pilot_observations, shard_index, shard_count)
-    selected_set = set(selected)
-    link_records = []
-    schedule, schedule_report = photo_schedule(metadata, selected_set, link_records)
+    if packet is None:
+        selected = select_observation_ids(cohort, pilot_observations, shard_index, shard_count)
+        selection_scores = {obs: observation_score(obs) for obs in selected}
+        link_records = []
+        schedule, schedule_report = photo_schedule(metadata, set(selected), link_records)
+        selection = {"mode": "legacy_unreconciled_metadata_pilot", "salt": SELECTION_SALT,
+                     "pilot_observations": pilot_observations, "shard_index": shard_index, "shard_count": shard_count}
+    else:
+        selected, selection_scores = packet["selected"], packet["selection_scores"]
+        schedule, schedule_report, link_records = packet["queue"], packet["report"], packet["links"]
+        selection = packet["report"]
     if out.exists():
         raise ValueError("Use a fresh output directory")
     out.mkdir(parents=True)
@@ -314,18 +333,20 @@ def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: P
                                    ("resolution_stream_gate.py", "perturb_cached_heads.py", "detect_cached_images.py")},
         "feature_specification": features.specification(),
         "software_runtime": software_runtime(),
-        "cohort_sha256": digest(cohort), "metadata_sha256": digest(metadata),
+        "cohort_sha256": cohort_hash, "metadata_sha256": metadata_hash,
+        "input_mode": selection["mode"], "selection": selection,
+        "reconciled_schedule_sha256": expected_schedule_sha256,
         "measurement_decision_sha256": digest(decision_path),
         "retained_endpoint_count": 27, "ecological_route_endpoint_count": len(qualified),
         "pixel_hash_definition": "SHA256(azami-oriented-RGB-uint8-v1 NUL + width uint64 big-endian + height uint64 big-endian + EXIF-oriented RGB uint8 row-major bytes)",
-        "source_reconciliation_verified": False, "durable_private_archive_verified": False,
+        "source_reconciliation_verified": packet is not None, "durable_private_archive_verified": False,
     }
     (out / "execution_contract.json").write_text(json.dumps(execution, indent=2, allow_nan=False) + "\n", encoding="utf-8")
 
     with (out / "selected_observations_private.csv").open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(["obs_id", "selection_sha256"])
-        writer.writerows((obs, observation_score(obs)) for obs in selected)
+        writer.writerows((obs, selection_scores[obs]) for obs in selected)
 
     endpoint_fields = ["photo_id", "head_index", "endpoint_id", "unit", "value", "original", "mirror", "mirror_abs_difference", "status", "ecological_route", "primary_measurement_eligible"]
     uncertainty_fields = ["photo_id", "head_index", "endpoint_id", "bbox_shift_usable_n", "bbox_shift_median_abs_change", "bbox_shift_max_abs_change"]
@@ -454,9 +475,10 @@ def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: P
     elapsed = time.perf_counter() - started
     report = {
         "status": "ORIGINAL_STREAM_PILOT_COMPLETE_NO_ECOLOGICAL_MODEL",
-        "selection": {"salt": SELECTION_SALT, "pilot_observations": pilot_observations, "shard_index": shard_index, "shard_count": shard_count},
-        "cohort_sha256": digest(cohort),
-        "metadata_sha256": digest(metadata),
+        "selection": selection,
+        "cohort_sha256": cohort_hash,
+        "metadata_sha256": metadata_hash,
+        "reconciled_schedule_sha256": expected_schedule_sha256,
         "measurement_decision_sha256": digest(decision_path),
         "qualified_endpoints": qualified,
         "retained_endpoints": sorted(registry_ids),
@@ -501,8 +523,10 @@ def run(metadata: Path, cohort: Path, weights: Path, decision_path: Path, out: P
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--metadata", type=Path, required=True)
-    parser.add_argument("--cohort", type=Path, required=True)
+    parser.add_argument("--metadata", type=Path)
+    parser.add_argument("--cohort", type=Path)
+    parser.add_argument("--reconciled-schedule", type=Path)
+    parser.add_argument("--expected-schedule-sha256")
     parser.add_argument("--weights", type=Path, required=True)
     parser.add_argument("--decision", type=Path, default=Path("analysis/v3/measurement_qualification_decision_20260908.json"))
     parser.add_argument("--out-dir", type=Path, required=True)
@@ -512,7 +536,8 @@ def main() -> int:
     parser.add_argument("--expected-cohort-sha256")
     args = parser.parse_args()
     run(args.metadata, args.cohort, args.weights, args.decision, args.out_dir,
-        args.pilot_observations, args.shard_index, args.shard_count, args.expected_cohort_sha256)
+        args.pilot_observations, args.shard_index, args.shard_count, args.expected_cohort_sha256,
+        reconciled_schedule=args.reconciled_schedule, expected_schedule_sha256=args.expected_schedule_sha256)
     return 0
 
 

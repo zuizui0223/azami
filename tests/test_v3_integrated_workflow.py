@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from analysis.v3.integrated_preflight import CONTRACT, INDEX, _check_source_recovery, validate
+from analysis.v3.integrated_preflight import CONTRACT, INDEX, _check_schedule_replay, _check_source_recovery, validate
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,7 +28,7 @@ def test_actual_integrated_preflight_has_no_execution_promotion():
     assert [s["optional_for_primary_ecology"] for s in result["stages"]] == [False] * 4 + [True]
     assert result["ecological_fitting_authorized"] is False
     assert result["full_original_stream_authorized"] is False
-    assert len(result["verified_public_evidence"]) == 5
+    assert len(result["verified_public_evidence"]) == 6
 
 
 def test_pinned_evidence_change_is_rejected_even_if_status_unchanged(tmp_path):
@@ -151,6 +151,32 @@ def test_tested_or_planned_stage_cannot_claim_the_source_execution_receipt(tmp_p
     index = json.loads(path.read_text())
     index["requirements"]["joint_covariance_aware_hierarchy"].update(
         state="execution_evidence_recorded", evidence="reproducibility/v3_source_cohort_recovery_20260908.json")
+    path.write_text(json.dumps(index))
+    with pytest.raises(ValueError, match="Executed evidence requirement"):
+        validate(root)
+
+
+@pytest.mark.parametrize("section,field,value", [
+    ("schedule", "all_native_observations_preserved", False),
+    ("schedule", "worker_location_taxon_date_fields_present", True),
+    ("private_restore", "off_device_private_restore_verified", True),
+    ("private_restore", "snapshot_manifest_sha256", "0" * 64),
+    ("worker_handoff", "original_and_restored_packets_canonically_identical", False),
+    ("partition_audit", "split_known_components", 1),
+])
+def test_schedule_receipt_cannot_lose_links_or_claim_off_device_validation(section, field, value):
+    receipt = json.loads((ROOT / "reproducibility/v3_reconciled_schedule_private_replay_20260908.json").read_text())
+    recovery = json.loads((ROOT / "reproducibility/v3_source_cohort_recovery_20260908.json").read_text())
+    receipt[section][field] = value
+    with pytest.raises(ValueError, match="Schedule replay"):
+        _check_schedule_replay(receipt, recovery)
+
+
+def test_local_replay_cannot_be_relabelled_as_executed_durable_storage(tmp_path):
+    root = clone_inputs(tmp_path)
+    path = root / INDEX
+    index = json.loads(path.read_text())
+    index["requirements"]["durable_private_numerical_replay"]["state"] = "execution_evidence_recorded"
     path.write_text(json.dumps(index))
     with pytest.raises(ValueError, match="Executed evidence requirement"):
         validate(root)

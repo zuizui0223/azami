@@ -1,0 +1,238 @@
+{
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "image_requests_executed": 0,
+  "implementation_sha256_text_lf": {
+    "private_replay.py": "77bf2582536be52115cef69497ae4916c80c48df6b4713d2dec5769d16268592",
+    "reconciled_photo_schedule.py": "6a548b2f993cb92cd883db9985cfc08cb1c3b2543f2702ddfd78ec4151398eca",
+    "reconciled_stream_input.py": "a154b029bc3353c2ee406d43b37707a48b128066cd0b0941b3770a78af2deb46",
+    "stream_original_traits.py": "92080171bec5b24fc51657b0c54d2188f28c4de850a413285862193ffc7a9925"
+  },
+  "limits": [
+    "All copies and restoration were on the same local device; this is not disaster recovery or durable cloud retention.",
+    "Candidate photo counts are source scheduling support, not successfully downloaded, detected or measured photos.",
+    "The unchanged cloud STOP remains before retrieval; no cleanup, cloud execution or ecological fitting is authorized."
+  ],
+  "off_device_private_restore_verified": false,
+  "partition_audit": {
+    "all_jobs_accounted_for": true,
+    "shard_counts": {
+      "0": 8913,
+      "1": 8398,
+      "2": 8580,
+      "3": 8499,
+      "4": 8274,
+      "5": 8678,
+      "6": 8698,
+      "7": 8731,
+      "8": 8738,
+      "9": 8696,
+      "10": 8542,
+      "11": 8589,
+      "12": 8509,
+      "13": 8356,
+      "14": 8672,
+      "15": 8598,
+      "16": 8411,
+      "17": 8539,
+      "18": 8506,
+      "19": 8696,
+      "20": 8645,
+      "21": 8406,
+      "22": 8433,
+      "23": 8438,
+      "24": 8487,
+      "25": 8559,
+      "26": 8409,
+      "27": 8655,
+      "28": 8846,
+      "29": 8637,
+      "30": 8491,
+      "31": 8716,
+      "32": 8401,
+      "33": 8553,
+      "34": 8525,
+      "35": 8396,
+      "36": 8588,
+      "37": 8492,
+      "38": 8647,
+      "39": 8640,
+      "40": 8598,
+      "41": 8446,
+      "42": 8520,
+      "43": 8599,
+      "44": 8983,
+      "45": 8572,
+      "46": 8632,
+      "47": 8461,
+      "48": 8769,
+      "49": 8344,
+      "50": 8507,
+      "51": 8268,
+      "52": 8527,
+      "53": 8515,
+      "54": 8698,
+      "55": 8442,
+      "56": 8573,
+      "57": 8664,
+      "58": 8704,
+      "59": 8541,
+      "60": 8590,
+      "61": 8443,
+      "62": 8488,
+      "63": 8652
+    },
+    "split_known_components": 0
+  },
+  "private_bundle_scope": {
+    "authority_cache_responses": 855,
+    "enriched_native_cohort_included": true,
+    "files": 872,
+    "original_archives_retained_separately": true,
+    "raw_source_zip_archives_included": false,
+    "scope": "Exact replay of the pinned measurement handoff and its numerical source chain; raw acquisition ZIPs and the large annotation database remain separately retained inputs, not members of this snapshot.",
+    "source_reconciliation_included": true
+  },
+  "private_restore": {
+    "ecological_fitting_authorized": false,
+    "files": 872,
+    "limits": [
+      "Restoration proves exact file bytes, not an off-device backup or independent scientific validation.",
+      "These private files are not encrypted by this tool and must not be uploaded as public artifacts."
+    ],
+    "off_device_private_restore_verified": false,
+    "production_image_execution_authorized": false,
+    "restored_bytes": 2374321149,
+    "snapshot_manifest_sha256": "b0e52b311a07af9349791c12a95af327c5d2322d1a80fe54662e81952c7b4721",
+    "source_files_deleted": 0,
+    "status": "PRIVATE_LOCAL_RESTORE_ALL_MEMBERS_BYTE_VERIFIED"
+  },
+  "private_snapshot": {
+    "ecological_fitting_authorized": false,
+    "files": 872,
+    "off_device_private_restore_verified": false,
+    "production_image_execution_authorized": false,
+    "selection_manifest_sha256": "703a6f6c4d45bdf07ed735a5511fcaad34f90181640f4e071504930360f4f628",
+    "snapshot_manifest_sha256": "b0e52b311a07af9349791c12a95af327c5d2322d1a80fe54662e81952c7b4721",
+    "status": "PRIVATE_LOCAL_SNAPSHOT_WRITTEN_AND_HASH_VERIFIED",
+    "unique_blob_bytes": 2374321149,
+    "unique_blobs": 872
+  },
+  "production_image_execution_authorized": false,
+  "schedule": {
+    "all_known_target_photo_links_preserved": true,
+    "all_native_observations_preserved": true,
+    "archive_manifest_canonical_sha256": "c0496cd963558764276406f700c86511d63401464eb90f3748e10acecfee278e",
+    "contract_canonical_sha256": "29a85ad56ce0b0eaec9455ace562a5c695e90fa0530422524269f985493c6cf6",
+    "counts": {
+      "known_photo_links": 548145,
+      "native_links": 548139,
+      "native_observations": 319244,
+      "photo_jobs": 548123,
+      "photo_versions": 1080801
+    },
+    "ecological_fitting_authorized": false,
+    "ecological_models_executed": 0,
+    "image_requests_executed": 0,
+    "implementation_sha256_text_lf": "6a548b2f993cb92cd883db9985cfc08cb1c3b2543f2702ddfd78ec4151398eca",
+    "input_sha256": {
+      "enriched": "ce9178ef70c2850939c64ba065e783726cbd207cb30ffc8978d6d95d0b14dd40",
+      "reconciliation": "daaa04917fbf0f1dfa03bcfa6d5a49f95074cf3ee1965e3b4a4d482d72cd0f02"
+    },
+    "limits": [
+      "Scheduling state is source support, not measured image availability or endpoint assessability.",
+      "Known dependence components are operational partitions, not independent validation folds.",
+      "Recorded photo-license codes are not independent legal clearance or permission to republish.",
+      "The schedule does not verify an off-device private archive or enable production image execution."
+    ],
+    "native_known_components": 319230,
+    "native_observations_with_request_candidates": 256162,
+    "native_source_rows": 319244,
+    "output_sqlite_sha256": "f778c542e35bf84e3fb1c9028207b448f1285e89be3d2dc95f871a72298c52f9",
+    "photo_states": {
+      "license_unavailable": 104304,
+      "request_candidate_not_authorized": 443811,
+      "url_unavailable_or_invalid": 8
+    },
+    "production_image_execution_authorized": false,
+    "schema_version": 1,
+    "shard_count": 64,
+    "shared_photos_partitioned_once": true,
+    "source_archive_checks": [
+      {
+        "artifact_id": 8060200007,
+        "metadata_rows_checked": 40783,
+        "retained_metadata_photo_versions": 15467
+      },
+      {
+        "api_observations_checked": 100000,
+        "api_photo_links_checked": 162838,
+        "artifact_id": 8060873937,
+        "metadata_rows_checked": 162828,
+        "retained_api_photo_versions": 75091,
+        "retained_metadata_photo_versions": 75088
+      },
+      {
+        "api_observations_checked": 100000,
+        "api_photo_links_checked": 170636,
+        "artifact_id": 8062930028,
+        "metadata_rows_checked": 170634,
+        "retained_api_photo_versions": 83292,
+        "retained_metadata_photo_versions": 83291
+      },
+      {
+        "api_observations_checked": 100000,
+        "api_photo_links_checked": 171037,
+        "artifact_id": 8063651256,
+        "metadata_rows_checked": 171025,
+        "retained_api_photo_versions": 86075,
+        "retained_metadata_photo_versions": 86066
+      },
+      {
+        "api_observations_checked": 100000,
+        "api_photo_links_checked": 172043,
+        "artifact_id": 8064261214,
+        "metadata_rows_checked": 172040,
+        "retained_api_photo_versions": 86213,
+        "retained_metadata_photo_versions": 86211
+      },
+      {
+        "api_observations_checked": 240141,
+        "api_photo_links_checked": 405564,
+        "artifact_id": 8065563950,
+        "metadata_rows_checked": 405545,
+        "retained_api_photo_versions": 202007,
+        "retained_metadata_photo_versions": 202000
+      }
+    ],
+    "source_rows_deleted": 0,
+    "status": "RECONCILED_NATIVE_PHOTO_SCHEDULE_VERIFIED_NO_IMAGE_EXECUTION",
+    "trait_files_read": 0,
+    "worker_location_taxon_date_fields_present": false
+  },
+  "schema_version": 1,
+  "source_files_deleted": 0,
+  "status": "RECONCILED_SCHEDULE_AND_LOCAL_PRIVATE_REPLAY_VERIFIED_OFF_DEVICE_PENDING",
+  "trait_values_read": 0,
+  "worker_handoff": {
+    "adapter_sha256_text_lf": "a154b029bc3353c2ee406d43b37707a48b128066cd0b0941b3770a78af2deb46",
+    "images_fetched": 0,
+    "maximum_observations": 128,
+    "mode": "reconciled_whole_component_pilot",
+    "ordering_salt": "ch1-v3-reconciled-native-photo-schedule-v1",
+    "original_and_restored_packets_canonically_identical": true,
+    "packet_canonical_sha256": "42fab6f6d5c0871526b5329e1b30d304d4309edc9ecf7a849ec0fc0c3a5512f7",
+    "photo_states": {
+      "license_unavailable": 28,
+      "request_candidate_not_authorized": 168
+    },
+    "production_image_execution_authorized": false,
+    "request_candidates": 168,
+    "selected_components": 128,
+    "selected_observations": 128,
+    "selected_photo_jobs": 196,
+    "selected_photo_links": 196,
+    "source_reconciliation_verified": true,
+    "trait_values_read": 0
+  }
+}

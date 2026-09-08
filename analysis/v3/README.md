@@ -16,7 +16,7 @@ contract lists exactly which model/ordering provisions it supersedes.
 | Stage | Question | Current implementation boundary |
 |---|---|---|
 | 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. Historical HTTP identity and off-device private preservation are separate, unverified claims. |
-| 2. Measurement | What can each photo measure, with what uncertainty? | All 27 raw slots retained; 14 original-image routes are operationally qualified. Full reconciled streaming, private durable replay and a separately versioned uniform-floral chroma definition remain unfinished. |
+| 2. Measurement | What can each photo measure, with what uncertainty? | All 27 raw slots retained; 14 original-image routes are operationally qualified. The full native-photo schedule and exact local restoration are verified. Production streaming, off-device preservation and a separately versioned uniform-floral chroma definition remain unfinished. |
 | 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
 | 4. Ecology | Do within- and among-taxon associations agree? | Joint slope algebra is verified. Covariance-aware pooling, matched-support scale contrasts and dependence-aware inference still require a validated runner. |
 | 5. Synthesis | Do observed environmental and phenotype breadths covary? | Optional secondary Hypervolume B; common axes, bandwidth and sample-size/convergence qualification must precede it. Its failure cannot block otherwise supported primary ecology. |
@@ -48,10 +48,11 @@ The streamed local pilot retains all 27 raw endpoints separately from the 14
 ecologically qualified routes, individual bbox-shift values, paired background
 colour, image hashes, detector geometry and link-level scheduling states. Its
 tests use synthetic images and mocked retrieval; they do not establish real-image
-coverage or accuracy. Production still needs the reconciled photo-link input,
-calendar/imaging nuisance design, dependence-aware pooling and verified private
-numerical preservation. The cloud pilot stops before retrieval until that private
-archive is implemented. Earlier aggregate receipts are not retroactively promoted.
+coverage or accuracy. The worker now accepts only an explicitly pinned reconciled
+schedule or an explicitly labelled legacy metadata pilot; it rejects mixed inputs.
+Production still needs calendar/imaging nuisance design, dependence-aware pooling
+and verified off-device private numerical preservation. The cloud pilot stops
+before retrieval. Earlier aggregate receipts are not retroactively promoted.
 
 The source-cohort cloud workflow is also held and no longer runs automatically
 on pushes: its historical recipe published only a report and then removed the
@@ -98,6 +99,66 @@ reacquired response set. This does not independently verify image identification
 of the unchanged classification helpers. It refuses changed source/authority
 identities, altered cached responses, missing offline requests and existing output
 directories. Outputs inside this repository must be under ignored `local_data/`.
+
+### Reconciled native-photo schedule and private numerical restoration
+
+The [executed schedule/replay receipt](../../reproducibility/v3_reconciled_schedule_private_replay_20260908.json)
+records 319,244 native observations, 548,139 native observation-photo links and
+548,123 unique photos. The ledger also keeps six external observation-photo links
+sharing these photos and 1,080,801 archived photo versions. All six source archives
+were checked against their pins and the reconciliation's original row/line hashes.
+The schedule does not substitute the merged photo table or select a preferred
+version when source rights or URLs disagree.
+
+Of these photos, 443,811 meet the recorded-license/URL scheduling rules; 104,304
+have unavailable or unsupported license codes and eight have missing/invalid URL
+support. All states and links remain present. These are source-admission counts,
+not successful downloads, detected heads, measurement QC or biological absence.
+Only 256,162 of the 319,244 native observations currently have a request candidate;
+this restriction must remain visible in the later source-to-measurement coverage
+audit. No original images were fetched by this schedule/replay execution.
+
+The 319,230 known native dependence components stay intact across 64 operational
+partitions. Each unique photo is scheduled once. These components capture known
+shared-photo dependence, not all duplicate individuals or spatial dependence, and
+are not independent validation folds. The worker input omits taxon, coordinate,
+date and source-user fields while retaining photo attribution and source locators.
+
+The new input adapter selects a hash-ordered prefix of complete components for a
+bounded pilot (at most 128 observations), including blocked photos. It neither
+splits a component to fill the budget nor substitutes available photos for blocked
+ones. The actual 128-observation input contains 196 photo links, of which 168 are
+request candidates; the original and restored inputs have identical content hashes.
+Offline synthetic tests also execute the worker and verify all endpoint slots and
+blocked links. That is not an executed real-image pilot.
+
+`reconciled_photo_schedule` requires `--enriched`, `--reconciliation`, `--archives`,
+`--out`, and both `--expected-enriched-sha256` and
+`--expected-reconciliation-sha256`. Inputs come from the pinned source chain;
+output must be a fresh private directory. To use that schedule in a bounded worker
+pilot, supply `stream_original_traits --reconciled-schedule <private-sqlite>` and
+`--expected-schedule-sha256 <receipt-hash>`, plus the existing pinned detector,
+measurement decision and private output arguments. Do not also supply legacy
+`--metadata`, `--cohort` or observation-hash shard arguments. Full production
+(`--pilot-observations 0`) remains rejected before network access.
+
+`private_replay snapshot --selection <private-selection.json> --out <fresh-private-directory>`
+copies an explicit list of files, each with a relative output `name`, absolute
+source `path` and exact `sha256`, under `schema_version: 1` and `files`. It never
+sweeps a directory, overwrites a prior snapshot or deletes source files. Restore
+with `private_replay restore --snapshot-dir <snapshot> --out <fresh-private-directory>`
+and `--expected-manifest-sha256 <snapshot-receipt-hash>`. Prefix both commands with
+`python -m analysis.v3.`. Unsupported file types, unsafe paths, conflicting names,
+changed hashes and incomplete snapshots fail closed.
+
+The real local test copied and restored 872 files (2,374,321,149 bytes), including
+the schedule, source-link database, source/native/enriched tables and 855 cached
+authority responses. Every file was byte-verified. Raw acquisition ZIPs and the
+large annotation database remain separately retained, not members of this bundle.
+All copies were on one device: the tool provides neither encryption nor cloud
+transport, and this test does not establish an off-device backup. Private raw
+records, coordinates and identifiers must not be uploaded as public artifacts.
+The cloud STOP and both production/ecological execution holds remain unchanged.
 For Windows source rebuilds, `recover_lf_source(source, destination, expected_sha256)`
 creates a separate LF byte view only if it exactly matches the historical pin.
 

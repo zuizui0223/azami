@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "version": "v3_reconciled_native_photo_schedule_v1",
+  "status": "source_only_design_before_scheduling_or_image_execution",
+  "source": "Caller-pinned enriched native cohort, reconciliation database and all six immutable source archives. Never substitute the merged photo table.",
+  "grain": "One job per unique photo; retain every native observation-photo link, every external observation sharing a target photo, and every archived target-photo version/locator.",
+  "selection": "No taxon cap, observation cap, spatial thinning or phenotype filtering. Scheduling partitions use the full-source dependence component hash, never split a known component, and are not validation folds.",
+  "ordering_salt": "ch1-v3-reconciled-native-photo-schedule-v1",
+  "license_codes": ["cc-by", "cc-by-nc", "cc-by-nc-nd", "cc-by-nc-sa", "cc-by-nd", "cc-by-sa", "cc0"],
+  "license_rule": "All archived target-photo versions, including versions linked to a non-native/unselected observation, must agree on one code in the inherited operational allowlist. Missing/unknown/conflicting codes remain explicit blocked states. This is a recorded-code screen, not independent legal clearance or a license to republish images.",
+  "url_rule": "Keep raw URLs. Canonicalize recognized size suffixes to original only; require http/https and a known iNaturalist image host, no credentials/ports/query/fragment and a matching photo ID in /photos/ID/. Every available source URL and version must agree on the same original URL; do not invent URLs for missing/invalid versions.",
+  "source_preference": "No last-record or most-complete-record preference for photo rights/identity. Compare all archived metadata and API photo versions; source record hashes and reconciliation locators must agree.",
+  "worker_boundary": "The schedule database contains opaque observation/component/photo IDs, source locators, photo URL/license/attribution fields and states, not location, dates, source user IDs, taxon labels, environmental values or traits. Raw source archives and enriched observations remain separate pinned inputs.",
+  "retention": "Keep blocked jobs/links. Unscheduled is not no detection, missing traits or biological absence. Existing source files are read-only.",
+  "production_image_execution_authorized": false,
+  "ecological_fitting_authorized": false
+}

@@ -296,3 +296,35 @@ def test_stream_execution_contract_persists_actual_runtime_snapshot(offline_run,
     execution = json.loads((out / "execution_contract.json").read_text(encoding="utf-8"))
     assert execution["software_runtime"] == runtime
     assert report["execution_contract_sha256"] == hashlib.sha256((out / "execution_contract.json").read_bytes()).hexdigest()
+
+
+def test_reconciled_input_runs_offline_without_legacy_cohort_or_metadata(offline_run, tmp_path, monkeypatch):
+    from test_v3_reconciled_photo_schedule import fixture
+    from analysis.v3 import reconciled_photo_schedule
+    kwargs = fixture(tmp_path)
+    receipt = reconciled_photo_schedule.build(**kwargs)
+    schedule_path = kwargs["out"] / "reconciled_photo_schedule_private.sqlite"
+    monkeypatch.setattr(stream, "photo_schedule", lambda *_: pytest.fail("legacy fallback must not execute"))
+    out = tmp_path / "reconciled-worker"
+    report = stream.run(None, None, offline_run.weights, DECISION, out, pilot_observations=3,
+                        reconciled_schedule=schedule_path, expected_schedule_sha256=receipt["output_sqlite_sha256"])
+    assert report["transfer"]["success"] == 1
+    assert len(csv_rows(out / "photo_observation_links_private.csv")) == 3
+    assert len(csv_rows(out / "endpoint_measurements_private.csv")) == 54
+    assert report["metadata_sha256"] is None
+    assert report["selection"]["selected_components"] == 2
+    execution = json.loads((out / "execution_contract.json").read_text())
+    assert execution["source_reconciliation_verified"] is True
+    assert execution["durable_private_archive_verified"] is False
+    assert report["production_execution_authorized"] is False
+    selected = {r["obs_id"]: r["selection_sha256"] for r in csv_rows(out / "selected_observations_private.csv")}
+    assert selected["1"] == selected["2"]
+
+
+def test_reconciled_mode_rejects_mixed_inputs_before_detector_or_network(tmp_path):
+    with pytest.raises(ValueError, match="cannot be mixed"):
+        stream.run(Path("legacy"), None, Path("absent"), DECISION, tmp_path / "out",
+                   reconciled_schedule=Path("absent"), expected_schedule_sha256="0" * 64)
+    with pytest.raises(ValueError, match="Production stream is blocked"):
+        stream.run(None, None, Path("absent"), DECISION, tmp_path / "out", pilot_observations=0,
+                   reconciled_schedule=Path("absent"), expected_schedule_sha256="0" * 64)

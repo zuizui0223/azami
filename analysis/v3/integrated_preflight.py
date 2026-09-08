@@ -17,6 +17,52 @@ INDEX = "analysis/v3/integrated_evidence_index.json"
 SOURCE_RECOVERY_STATUS = "EXACT_SOURCE_COHORT_RECOVERED_ENRICHED_AND_LOCAL_AUTHORITY_REPLAY_VERIFIED"
 
 
+def _check_schedule_replay(receipt: dict, recovery: dict) -> None:
+    """Validate source conservation and local replay without a durability claim."""
+    if receipt.get("status") != "RECONCILED_SCHEDULE_AND_LOCAL_PRIVATE_REPLAY_VERIFIED_OFF_DEVICE_PENDING":
+        raise ValueError("Schedule replay status is not the bounded local result")
+    schedule, restored = receipt["schedule"], receipt["private_restore"]
+    packed, handoff = receipt["private_snapshot"], receipt["worker_handoff"]
+    counts, enrichment = schedule["counts"], recovery["enrichment"]
+    if (schedule["input_sha256"]["enriched"] != enrichment["output_csv_sha256"]
+            or schedule["input_sha256"]["reconciliation"] != enrichment["input_sha256"]["reconciliation"]
+            or counts["native_observations"] != recovery["cohort"]["rows"]
+            or schedule["native_known_components"] != enrichment["dependence"]["cohort_known_components"]
+            or not counts["photo_versions"] >= counts["known_photo_links"] >= counts["native_links"] >= counts["photo_jobs"] > 0
+            or sum(schedule["photo_states"].values()) != counts["photo_jobs"]):
+        raise ValueError("Schedule replay source identity or count conservation differs")
+    if (any(schedule[key] is not True for key in ("all_native_observations_preserved", "all_known_target_photo_links_preserved", "shared_photos_partitioned_once"))
+            or schedule["worker_location_taxon_date_fields_present"] is not False
+            or schedule["status"] != "RECONCILED_NATIVE_PHOTO_SCHEDULE_VERIFIED_NO_IMAGE_EXECUTION"):
+        raise ValueError("Schedule replay changed preservation or worker boundaries")
+    partition = receipt["partition_audit"]
+    if (sum(partition["shard_counts"].values()) != counts["photo_jobs"]
+            or len(partition["shard_counts"]) != schedule["shard_count"]
+            or partition["split_known_components"] != 0 or partition["all_jobs_accounted_for"] is not True
+            or handoff["original_and_restored_packets_canonically_identical"] is not True
+            or not 0 < handoff["selected_observations"] <= handoff["maximum_observations"] <= 128
+            or handoff["request_candidates"] != handoff["photo_states"].get("request_candidate_not_authorized", 0)
+            or sum(handoff["photo_states"].values()) != handoff["selected_photo_jobs"]):
+        raise ValueError("Schedule replay partition or worker handoff differs")
+    if (packed["status"] != "PRIVATE_LOCAL_SNAPSHOT_WRITTEN_AND_HASH_VERIFIED"
+            or restored["status"] != "PRIVATE_LOCAL_RESTORE_ALL_MEMBERS_BYTE_VERIFIED"
+            or packed["snapshot_manifest_sha256"] != restored["snapshot_manifest_sha256"]
+            or not packed["files"] == restored["files"] == receipt["private_bundle_scope"]["files"] > 0
+            or packed["unique_blob_bytes"] > restored["restored_bytes"]):
+        raise ValueError("Schedule replay private restoration evidence differs")
+    for value in (receipt, packed, restored):
+        if (value["off_device_private_restore_verified"] is not False
+                or value["production_image_execution_authorized"] is not False
+                or value["ecological_fitting_authorized"] is not False):
+            raise ValueError("Schedule replay cannot promote off-device or production claims")
+    if (receipt["source_files_deleted"] != 0 or receipt["image_requests_executed"] != 0
+            or receipt["trait_values_read"] != 0 or receipt["ecological_models_executed"] != 0
+            or schedule["image_requests_executed"] != 0 or handoff["images_fetched"] != 0
+            or schedule["production_image_execution_authorized"] is not False
+            or handoff["production_image_execution_authorized"] is not False):
+        raise ValueError("Schedule replay is source-only, not image/ecology execution")
+
+
 def _check_source_recovery(receipt: dict, source: dict) -> None:
     """Check a public executed receipt without implying access to private files."""
     if receipt.get("status") != SOURCE_RECOVERY_STATUS:
@@ -77,7 +123,7 @@ def validate(root: Path = ROOT) -> dict:
     checked = []
     ids = [item["id"] for item in evidence["inputs"]]
     paths = [item["path"] for item in evidence["inputs"]]
-    required_ids = {"source_receipt", "environment_receipt", "measurement_receipt", "measurement_decision", "source_recovery_receipt"}
+    required_ids = {"source_receipt", "environment_receipt", "measurement_receipt", "measurement_decision", "source_recovery_receipt", "schedule_replay_receipt"}
     if set(ids) != required_ids or len(ids) != len(set(ids)) or len(paths) != len(set(paths)):
         raise ValueError("Evidence index has missing or duplicate required identities/paths")
     for item in evidence["inputs"]:
@@ -88,6 +134,7 @@ def validate(root: Path = ROOT) -> dict:
         loaded[item["id"]] = data
         checked.append({"id": item["id"], "path": item["path"], "canonical_json_sha256": actual})
     _check_source_recovery(loaded["source_recovery_receipt"], loaded["source_receipt"])
+    _check_schedule_replay(loaded["schedule_replay_receipt"], loaded["source_recovery_receipt"])
     measurement = loaded["measurement_receipt"]
     environment = loaded["environment_receipt"]
     decision = loaded["measurement_decision"]
@@ -119,14 +166,17 @@ def validate(root: Path = ROOT) -> dict:
         items = []
         for key in stage["required"]:
             spec = requirements[key]
-            if spec["state"] not in {"historical_evidence_recorded", "execution_evidence_recorded", "implementation_tested_execution_pending", "not_executed"}:
+            if spec["state"] not in {"historical_evidence_recorded", "execution_evidence_recorded", "local_execution_recorded_off_device_pending", "implementation_tested_execution_pending", "not_executed"}:
                 raise ValueError("Readiness cannot be asserted by an arbitrary status string")
             if spec["state"] == "historical_evidence_recorded" and spec.get("evidence") not in paths:
                 raise ValueError("Historical evidence requirement is not bound to a verified input")
-            if spec["state"] == "execution_evidence_recorded" and (
-                    key not in {"native_authority_input_chain", "enriched_source_cohort"}
-                    or spec.get("evidence") != next(item["path"] for item in evidence["inputs"] if item["id"] == "source_recovery_receipt")):
-                raise ValueError("Executed evidence requirement is not bound to its verified source receipt")
+            bound = {"native_authority_input_chain": "source_recovery_receipt", "enriched_source_cohort": "source_recovery_receipt",
+                     "reconciled_stream_schedule": "schedule_replay_receipt", "durable_private_numerical_replay": "schedule_replay_receipt"}
+            if spec["state"] in {"execution_evidence_recorded", "local_execution_recorded_off_device_pending"}:
+                expected_state = "local_execution_recorded_off_device_pending" if key == "durable_private_numerical_replay" else "execution_evidence_recorded"
+                if (key not in bound or spec["state"] != expected_state
+                        or spec.get("evidence") != next(item["path"] for item in evidence["inputs"] if item["id"] == bound[key])):
+                    raise ValueError("Executed evidence requirement is not bound to its verified bounded receipt")
             if spec.get("implementation") and not (root / spec["implementation"]).is_file():
                 raise ValueError(f"Indexed implementation absent: {key}")
             items.append({"id": key, **spec})
@@ -138,7 +188,7 @@ def validate(root: Path = ROOT) -> dict:
         "evidence_index_sha256_canonical_json": canonical_digest(evidence),
         "verified_public_evidence": checked,
         "stages": stage_reports,
-        "next_source_gate": "Use the recovered/enriched exact 319244-row native cohort in reconciled photo scheduling; verify off-device private preservation and freeze calendar/support handling before production. Historical HTTP bytes remain unavailable, distinct from the verified new offline replay.",
+        "next_source_gate": "The exact native cohort now drives a verified reconciled schedule and byte-identical local restoration/worker handoff. Verify an off-device private destination and freeze calendar/support and versioned colour handling before production. Local copies do not authorize cloud cleanup; historical HTTP bytes remain unavailable.",
         "ecological_fitting_authorized": False,
         "full_original_stream_authorized": False,
         "trait_values_read": 0, "ecological_models_executed": 0,
