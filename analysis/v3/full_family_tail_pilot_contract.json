@@ -13,8 +13,13 @@
   "family_slots": 36,
   "minimum_plus_one_probability": 0.001,
   "first_holm_threshold": 0.001388888888888889,
-  "response_geometry": "One generated response coordinate is assigned to each of the three modules. The third coordinate is a fixed linear combination of the two preliminary generated coordinates plus independent noise, with its generating coefficient transformed identically. This pilot validates complete-family assembly and minimally resolves the first Holm threshold; it does not validate the final multicoordinate colour or gross-shape geometry.",
-  "family_rule": "For every outer dataset and grid, use one paired crossed bootstrap to preserve cross-module dependence, derive each module-process-scale candidate probability from the corresponding response coordinate, fill all 36 planned slots, then apply the frozen holm_complete_family rule. No missing slot is replaced and no favourable grid is selected.",
+  "module_response_coordinates": {
+    "orientation": {"preliminary_coordinate": 0},
+    "visible_colour": {"preliminary_coordinate": 1},
+    "gross_shape": {"linear_combination_of_preliminary_coordinates": [0.6, -0.4], "independent_noise_sd": 0.6, "noise_seed_offset": 700000}
+  },
+  "response_geometry": "One generated response coordinate is assigned to each of the three modules. Gross shape is exactly 0.6 times preliminary coordinate 0 minus 0.4 times preliminary coordinate 1 plus independent N(0,0.6^2) noise generated with seed plus 700000; its generating environment coefficient is the same 0.6/-0.4 linear transform without a noise coefficient. This pilot validates complete-family assembly and minimally resolves the first Holm threshold; it does not validate the final multicoordinate colour or gross-shape geometry.",
+  "family_rule": "For every outer dataset and grid, use one paired crossed bootstrap draw for all three modules so cross-module dependence is preserved. Each shared draw must estimate every module; a failed module leaves that planned shared draw failed and is never replaced. Derive each module-process-scale candidate probability from the corresponding one-coordinate module draw distribution, fill all 36 planned slots, then apply the frozen holm_complete_family rule. No missing slot is replaced and no favourable grid is selected.",
   "qualification_boundary": "999 planned draws give plus-one tail resolution 0.001, sufficient to cross the first 0.05/36 Holm threshold but still coarse. Eight outer replicates per scenario cannot estimate FWER or coverage precisely, and one-coordinate synthetic modules do not reproduce final colour/shape dimensionality. This is an executable family-mechanics and tail-resolution pilot only. It cannot authorize empirical trait-environment fitting regardless of outcome. A later adequately replicated calibration using the final module geometry and realized-cohort nuisance/rank support remains required.",
   "ecological_models_executed": 0,
   "empirical_trait_environment_values_read": 0,
