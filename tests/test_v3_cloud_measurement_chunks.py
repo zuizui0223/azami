@@ -136,3 +136,18 @@ def test_interrupted_partial_numerics_are_retained_but_not_promoted(prepared,tmp
     monkeypatch.setattr(worker,'run_photo_unit',original)
     result=cloud.execute_packet(packet,store,tmp_path/'resume',fixture.weights)
     assert result['units_restored_without_requests']==0 and result['new_photo_units_executed']==2
+
+
+@pytest.mark.parametrize('change',['receipt_hash','overlapping_chunk'])
+def test_next_wave_rejects_changed_predecessor_before_runtime_or_network(tmp_path,monkeypatch,change):
+    batch=json.loads((cloud.ROOT/'analysis/v3/native_measurement_wave_20260908_b.json').read_text())
+    if change=='receipt_hash':
+        batch['previous_completion_receipt_canonical_sha256']='0'*64
+    else:
+        batch['chunks']['c000000']=batch['chunks']['c000002']
+    path=tmp_path/'bad_batch.json'; path.write_text(json.dumps(batch))
+    def forbidden(): raise AssertionError('Invalid predecessor must fail before runtime or network')
+    monkeypatch.setattr(cloud,'runtime_guard',forbidden)
+    with pytest.raises(ValueError,match='Previous batch completion'):
+        cloud.run_cloud(path,'c000002',tmp_path/'out')
+    assert not (tmp_path/'out').exists()

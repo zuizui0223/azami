@@ -1,0 +1,128 @@
+{
+  "aggregate": {
+    "observations": 711,
+    "photo_jobs": 1273,
+    "requests": 1000
+  },
+  "chunks": {
+    "c000002": {
+      "observations": 42,
+      "packet_sha256": "7a16afaa1ed9b7ab454d06621864590f677531f1f306650cbc78c7d216190c09",
+      "photo_jobs": 74,
+      "requests": 64
+    },
+    "c000003": {
+      "observations": 46,
+      "packet_sha256": "7bcc6e731526185f5a50aa1168e843dfb1112acd6b5999a9650c84143d22f031",
+      "photo_jobs": 81,
+      "requests": 64
+    },
+    "c000004": {
+      "observations": 39,
+      "packet_sha256": "af1232f8ae65b7c91e0c6289d3495cec92a44c2b7147870c11296096e2dce106",
+      "photo_jobs": 84,
+      "requests": 58
+    },
+    "c000005": {
+      "observations": 42,
+      "packet_sha256": "2875b09ab2359cba21fbcb5fdf35295401fb7830389e806e1ed5a654163ac9dc",
+      "photo_jobs": 81,
+      "requests": 63
+    },
+    "c000006": {
+      "observations": 44,
+      "packet_sha256": "bf4cf407d60458a5af2b480510fdc062e001156649de34572ae419c923749e44",
+      "photo_jobs": 77,
+      "requests": 64
+    },
+    "c000007": {
+      "observations": 45,
+      "packet_sha256": "1b282ec3955b98fbded4491ba5223466d2477cdf468b4935758795d689d82861",
+      "photo_jobs": 71,
+      "requests": 61
+    },
+    "c000008": {
+      "observations": 50,
+      "packet_sha256": "8595051e26876f03a29357547df801dcc692095562c193219a19b859b205bd98",
+      "photo_jobs": 80,
+      "requests": 63
+    },
+    "c000009": {
+      "observations": 41,
+      "packet_sha256": "ac06fdb365755db92acda23edf17967cf3bc6226c90110d1a0a93411ed8f220c",
+      "photo_jobs": 79,
+      "requests": 64
+    },
+    "c000010": {
+      "observations": 40,
+      "packet_sha256": "54d660f21abaf8e9d9b651e53dc588bdf28649373c966937a8d426cc7a025be7",
+      "photo_jobs": 79,
+      "requests": 64
+    },
+    "c000011": {
+      "observations": 51,
+      "packet_sha256": "b0771ee7d081dfb51046e83ee84a5c496d717f17402019a61739c457cfa4e60d",
+      "photo_jobs": 92,
+      "requests": 59
+    },
+    "c000012": {
+      "observations": 38,
+      "packet_sha256": "e91cd21fe7cb541453d1bc87161565e5f00ab8db7280eddf309470e026422e76",
+      "photo_jobs": 81,
+      "requests": 64
+    },
+    "c000013": {
+      "observations": 37,
+      "packet_sha256": "83bc067dd9050282b7f95b8611f781db0318f252851d45ad0a67ca13f9b032af",
+      "photo_jobs": 72,
+      "requests": 63
+    },
+    "c000014": {
+      "observations": 53,
+      "packet_sha256": "aef110d55cc1914e66a9e89e9df91b5c8f336b640dc45341f23a39cab4fbb2dc",
+      "photo_jobs": 88,
+      "requests": 63
+    },
+    "c000015": {
+      "observations": 66,
+      "packet_sha256": "f13bbeac2c355471bf99c53bb20c0b0dec6d73e9430ca1f004b24730d06b59c9",
+      "photo_jobs": 97,
+      "requests": 64
+    },
+    "c000016": {
+      "observations": 41,
+      "packet_sha256": "9e3b9dec3338d4b619f3e7682654d95723dcf9ffedd4ab3e222f60989d453510",
+      "photo_jobs": 65,
+      "requests": 59
+    },
+    "c000017": {
+      "observations": 36,
+      "packet_sha256": "401e65d77060ef8cca12d5c620c9caff1be2c265a2d73cc8e5ef62eece678d00",
+      "photo_jobs": 72,
+      "requests": 63
+    }
+  },
+  "input_asset": {
+    "asset_id": 550136884,
+    "asset_name": "v3-native-chunk-input-20260908-b.zip",
+    "bundle_bytes": 14006206,
+    "bundle_sha256": "287c0af249722394e8cc49ab6af4ff258c0426fa0f0ce3c99c0c386d0ab09102",
+    "files": 17,
+    "manifest_sha256": "237bc8d4b0b20132327ea132058773e43c895a40f62744a11c21b1c5e33ff28f",
+    "restored_bytes": 36714980,
+    "source_images_included": false
+  },
+  "local_input_roundtrip_verified": true,
+  "maximum_parallel_chunks": 4,
+  "measurement_contract_canonical_sha256": "0c7d748d41c9fd093ee1032ac86fb6ebd76fd0fe170c623a86d385afd0d40e0c",
+  "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+  "previous_completion_receipt": "reproducibility/v3_native_raw_chunks_20260908.json",
+  "previous_completion_receipt_canonical_sha256": "bca29a55c838c46e948a194034548e5863a89dbd112391d8300436e61921d5e3",
+  "release_id": 384499945,
+  "repository": "zuizui0223/azami",
+  "runtime_contract_canonical_sha256": "63a8293c5b9501e7b00f45a51383caba8558c69cdf227503f37118a410328622",
+  "schema_version": 1,
+  "scope": "Only c000002 through c000017 are authorized. Same source-ordered whole components and unchanged raw measurement algorithm; no trait-environment join or scientific admission.",
+  "status": "bounded_native_raw_measurement_batch_no_ecology",
+  "tag_name": "private-v3-numerical-20260908"
+}

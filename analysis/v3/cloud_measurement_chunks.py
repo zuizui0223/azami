@@ -213,6 +213,15 @@ def run_cloud(batch_path,chunk_id,out):
             and batch['measurement_contract_canonical_sha256']==canonical_digest(contract())
             and batch['runtime_contract_canonical_sha256']==canonical_digest(json.loads(RUNTIME.read_text()))
             and chunk_id in batch['chunks'],'Batch does not authorize this chunk')
+    if 'previous_completion_receipt' in batch:
+        previous_path=(ROOT/batch['previous_completion_receipt']).resolve()
+        require(previous_path.is_relative_to(ROOT),'Previous receipt must remain in the repository')
+        previous=json.loads(previous_path.read_text(encoding='utf-8'))
+        require(canonical_digest(previous)==batch['previous_completion_receipt_canonical_sha256']
+                and previous['status']=='BOUNDED_NATIVE_RAW_MEASUREMENT_AND_PROTECTED_RESUME_VERIFIED_NO_ECOLOGY'
+                and previous['plan_id']==batch['plan_id']
+                and not set(batch['chunks']) & {r['cloud']['chunk_id'] for r in previous['records']},
+                'Previous batch completion or disjoint next-wave identity differs')
     require(not out.exists(),'Preserve previous batch output')
     out.mkdir(parents=True)
     runtime_guard()

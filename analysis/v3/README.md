@@ -48,6 +48,21 @@ download failure, is restored rather than re-requested. Interrupted unverified
 partial files are retained separately and never counted as complete.
 No environmental values are read and no ecological model is fitted in this step.
 
+The [executed two-chunk receipt](../../reproducibility/v3_native_raw_chunks_20260908.json)
+now verifies 100 additional observations, 128 successful transfers, 232 heads,
+6,264 all27 slots and 5,800 bbox-condition slots. Both protected bundles were
+restored locally (1,412 files). One post-upload confirmation timed out; the failed
+job restored all 64 completed photo units on its next attempt with **zero new
+image requests**. The successful sibling job was not re-executed. The earlier
+128-observation pilot also remains reused, including its terminal transfer failure.
+The [next 16-chunk wave](native_measurement_wave_20260908_b.json) authorizes only
+the next source-ordered 711 observations and 1,000 requests, with four concurrent
+workers and the same algorithms. Pending wave counts are not completed measurements.
+For Windows verification of Linux-produced units, use a separate LF decision-file
+view only after its exact SHA-256 matches the execution report. Do not relax the
+unit hash checks, rewrite the original checkout or treat a newline mismatch as a
+scientific result.
+
 GitHub Actions remains the intended production compute platform. Images are
 temporary inputs, not Git objects or a required permanent image archive. The
 preservation requirement concerns numerical results, source links and processing

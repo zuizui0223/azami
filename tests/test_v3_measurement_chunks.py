@@ -12,11 +12,29 @@ from analysis.v3.workflow import digest
 from test_v3_reconciled_photo_schedule import fixture as source_fixture
 
 
-def test_cloud_workflow_references_existing_tests():
+@pytest.mark.parametrize('file',['ch1-v3-native-raw-chunks.yml','ch1-v3-native-raw-wave-b.yml'])
+def test_cloud_workflow_references_existing_tests(file):
     root=Path(__file__).resolve().parents[1]
-    workflow=(root/'.github/workflows/ch1-v3-native-raw-chunks.yml').read_text()
+    workflow=(root/'.github/workflows'/file).read_text()
     files=re.findall(r'tests/test_[a-z0-9_]+\.py',workflow)
     assert files and all((root/p).is_file() for p in files)
+
+
+def test_next_wave_keeps_plan_concurrency_identity_and_excludes_completed_chunks():
+    root=Path(__file__).resolve().parents[1]
+    workflow=(root/'.github/workflows/ch1-v3-native-raw-wave-b.yml').read_text()
+    assert re.search(r'^      max-parallel: 4$',workflow,re.M)
+    matrix=re.findall(r'^        chunk: \[(.+)\]$',workflow,re.M)
+    assert len(matrix)==1 and matrix[0].split(', ')==[f'c{i:06d}' for i in range(2,18)]
+    assert '      group: v3-native-11831c6ad28ccaba-${{ matrix.chunk }}' in workflow
+    assert '      cancel-in-progress: false' in workflow
+    batch=json.loads((root/'analysis/v3/native_measurement_wave_20260908_b.json').read_text())
+    previous=json.loads((root/batch['previous_completion_receipt']).read_text())
+    assert list(batch['chunks'])==matrix[0].split(', ')
+    assert batch['maximum_parallel_chunks']==4
+    assert batch['aggregate']=={key:sum(r[key] for r in batch['chunks'].values()) for key in ('observations','requests','photo_jobs')}
+    assert chunks.canonical_digest(previous)==batch['previous_completion_receipt_canonical_sha256']
+    assert all(r['cloud']['new_photo_units_executed']==0 for r in previous['records'] if r['cloud']['run_attempt']=='2')
 
 
 def test_consecutive_chunks_cover_all_components_without_splitting_or_repeating_pilot():

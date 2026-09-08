@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "status": "BOUNDED_NATIVE_RAW_MEASUREMENT_AND_PROTECTED_RESUME_VERIFIED_NO_ECOLOGY",
+  "run_id": 34202525828,
+  "commit": "3c6dda06893028281b80857fc340241de804da5e",
+  "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+  "records": [
+    {
+      "cloud": {
+        "all27_raw_slots": 2970,
+        "bbox_slots": 2750,
+        "chunk_id": "c000000",
+        "commit": "3c6dda06893028281b80857fc340241de804da5e",
+        "detected_heads": 110,
+        "ecological_fitting_authorized": false,
+        "ecological_models_executed": 0,
+        "environment_values_read": 0,
+        "limits": [
+          "This is raw image measurement, not full-native completion, independent physical accuracy or ecological admission.",
+          "Reuse includes failed downloads and no-detection outcomes; no success-conditioned retry or selection.",
+          "Source dependence components remain together in the chunk; per-photo transactions are computational checkpoints, not independent biological replicates."
+        ],
+        "new_photo_units_executed": 64,
+        "output_asset": {
+          "asset_id": 550125061,
+          "asset_name": "v3-raw-11831c6ad28ccaba-c000000.zip",
+          "bundle_bytes": 1403819,
+          "bundle_sha256": "20d0cd7f44af801ebac1a215fd62ab094fc0bcde96a255e63a61f3268e2a13fa",
+          "files": 706,
+          "manifest_sha256": "3be5b80298b53aee42f53d482021cdf52df3d6aa3eb968c373e35817b81aadaf",
+          "restored_bytes": 5410770,
+          "source_images_included": false
+        },
+        "packet_canonical_sha256": "dff7a412122b0da08466bac777176d77613c2f422c88af62ca6fbbdf992b4b39",
+        "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+        "request_slots": 64,
+        "restored_checkpoint_asset_ids": [],
+        "run_attempt": "1",
+        "run_id": "34202525828",
+        "selected_observations": 58,
+        "source_images_persisted": 0,
+        "source_photo_jobs": 81,
+        "source_photo_links": 81,
+        "status": "NATIVE_RAW_MEASUREMENT_CHUNK_PROTECTED_AND_VERIFIED_NO_ECOLOGY",
+        "units_restored_without_requests": 0
+      },
+      "local_restoration": {
+        "asset": {
+          "asset_id": 550125061,
+          "asset_name": "v3-raw-11831c6ad28ccaba-c000000.zip",
+          "bundle_bytes": 1403819,
+          "bundle_sha256": "20d0cd7f44af801ebac1a215fd62ab094fc0bcde96a255e63a61f3268e2a13fa",
+          "files": 706,
+          "manifest_sha256": "3be5b80298b53aee42f53d482021cdf52df3d6aa3eb968c373e35817b81aadaf",
+          "restored_bytes": 5410770,
+          "source_images_included": false
+        },
+        "bbox_slots": 2750,
+        "chunk_id": "c000000",
+        "detected_heads": 110,
+        "downloaded_source_bytes": 109146884,
+        "ecological_models_executed": 0,
+        "environment_values_read": 0,
+        "limits": [
+          "This verifies protected numerical restoration and transaction integrity, not independent physical accuracy or ecological inference.",
+          "These are bounded raw chunks; module qualification, full-source coverage, dependence reconciliation and ecological inference remain unfinished."
+        ],
+        "local_image_requests": 0,
+        "observations": 58,
+        "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+        "primary_measurement_eligible_head_slots_by_endpoint": {
+          "capitulum_outline_aspect_ratio": 78,
+          "capitulum_outline_circularity": 78,
+          "capitulum_outline_solidity": 78,
+          "capitulum_width_profile_cv": 78,
+          "corolla_hue_cos": 81,
+          "corolla_hue_sin": 81,
+          "corolla_lab_chroma": 81,
+          "corolla_lab_lightness": 81,
+          "corolla_purple_pixel_fraction": 81,
+          "corolla_redmagenta_pixel_fraction": 81,
+          "corolla_white_pixel_fraction": 81,
+          "corolla_yellow_pixel_fraction": 81,
+          "orientation_image_vertical_angle": 50,
+          "visible_floret_fraction": 81
+        },
+        "raw_endpoint_slots": 2970,
+        "request_elapsed_seconds_sum": 688.60118565,
+        "source_images_persisted": 0,
+        "source_links": 81,
+        "source_packet_canonical_sha256": "dff7a412122b0da08466bac777176d77613c2f422c88af62ca6fbbdf992b4b39",
+        "source_photo_jobs": 81,
+        "status": "NATIVE_RAW_CHUNK_PROTECTED_DOWNLOAD_AND_LOCAL_ALL27_INTEGRITY_VERIFIED",
+        "transfer_status_counts": {
+          "success": 64
+        },
+        "verified_photo_units": 64
+      }
+    },
+    {
+      "cloud": {
+        "all27_raw_slots": 3294,
+        "bbox_slots": 3050,
+        "chunk_id": "c000001",
+        "commit": "3c6dda06893028281b80857fc340241de804da5e",
+        "detected_heads": 122,
+        "ecological_fitting_authorized": false,
+        "ecological_models_executed": 0,
+        "environment_values_read": 0,
+        "limits": [
+          "This is raw image measurement, not full-native completion, independent physical accuracy or ecological admission.",
+          "Reuse includes failed downloads and no-detection outcomes; no success-conditioned retry or selection.",
+          "Source dependence components remain together in the chunk; per-photo transactions are computational checkpoints, not independent biological replicates."
+        ],
+        "new_photo_units_executed": 0,
+        "output_asset": {
+          "asset_id": 550120288,
+          "asset_name": "v3-raw-11831c6ad28ccaba-c000001.zip",
+          "bundle_bytes": 1423749,
+          "bundle_sha256": "befda9c98103000a409cb1cc3f78a3045a9b65ded23a13ff5b88f6d8e7ffd135",
+          "files": 706,
+          "manifest_sha256": "a0cc9ce24b8b1d78c6536ac0384e5f8d908f9c484c6a9c0ca199afb876dfa02e",
+          "restored_bytes": 5716752,
+          "source_images_included": false
+        },
+        "packet_canonical_sha256": "5fc9c4cf219e8d0a11d93b5962bd6c4ff8f361feafaac83ebe8894ea091ea7b3",
+        "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+        "request_slots": 64,
+        "restored_checkpoint_asset_ids": [
+          550120288
+        ],
+        "run_attempt": "2",
+        "run_id": "34202525828",
+        "selected_observations": 42,
+        "source_images_persisted": 0,
+        "source_photo_jobs": 71,
+        "source_photo_links": 71,
+        "status": "NATIVE_RAW_MEASUREMENT_CHUNK_PROTECTED_AND_VERIFIED_NO_ECOLOGY",
+        "units_restored_without_requests": 64
+      },
+      "local_restoration": {
+        "asset": {
+          "asset_id": 550120288,
+          "asset_name": "v3-raw-11831c6ad28ccaba-c000001.zip",
+          "bundle_bytes": 1423749,
+          "bundle_sha256": "befda9c98103000a409cb1cc3f78a3045a9b65ded23a13ff5b88f6d8e7ffd135",
+          "files": 706,
+          "manifest_sha256": "a0cc9ce24b8b1d78c6536ac0384e5f8d908f9c484c6a9c0ca199afb876dfa02e",
+          "restored_bytes": 5716752,
+          "source_images_included": false
+        },
+        "bbox_slots": 3050,
+        "chunk_id": "c000001",
+        "detected_heads": 122,
+        "downloaded_source_bytes": 101108983,
+        "ecological_models_executed": 0,
+        "environment_values_read": 0,
+        "limits": [
+          "This verifies protected numerical restoration and transaction integrity, not independent physical accuracy or ecological inference.",
+          "These are bounded raw chunks; module qualification, full-source coverage, dependence reconciliation and ecological inference remain unfinished."
+        ],
+        "local_image_requests": 0,
+        "observations": 42,
+        "plan_id": "11831c6ad28ccabae1266317d53be85fe0ed0f329f03eac33398e6d685ce1224",
+        "primary_measurement_eligible_head_slots_by_endpoint": {
+          "capitulum_outline_aspect_ratio": 81,
+          "capitulum_outline_circularity": 81,
+          "capitulum_outline_solidity": 81,
+          "capitulum_width_profile_cv": 81,
+          "corolla_hue_cos": 96,
+          "corolla_hue_sin": 96,
+          "corolla_lab_chroma": 96,
+          "corolla_lab_lightness": 96,
+          "corolla_purple_pixel_fraction": 96,
+          "corolla_redmagenta_pixel_fraction": 96,
+          "corolla_white_pixel_fraction": 96,
+          "corolla_yellow_pixel_fraction": 96,
+          "orientation_image_vertical_angle": 62,
+          "visible_floret_fraction": 96
+        },
+        "raw_endpoint_slots": 3294,
+        "request_elapsed_seconds_sum": 536.054942023,
+        "source_images_persisted": 0,
+        "source_links": 71,
+        "source_packet_canonical_sha256": "5fc9c4cf219e8d0a11d93b5962bd6c4ff8f361feafaac83ebe8894ea091ea7b3",
+        "source_photo_jobs": 71,
+        "status": "NATIVE_RAW_CHUNK_PROTECTED_DOWNLOAD_AND_LOCAL_ALL27_INTEGRITY_VERIFIED",
+        "transfer_status_counts": {
+          "success": 64
+        },
+        "verified_photo_units": 64
+      }
+    }
+  ],
+  "aggregate": {
+    "new_observations": 100,
+    "source_photo_jobs": 152,
+    "rights_or_source_blocked_jobs_not_requested": 24,
+    "image_requests_executed": 128,
+    "successful_image_transfers": 128,
+    "photos_without_detections": 25,
+    "detected_heads": 232,
+    "all27_raw_slots": 6264,
+    "bbox_slots": 5800,
+    "private_files_restored": 1412,
+    "private_bytes_restored": 11127522,
+    "original_images_persisted": 0,
+    "environment_values_read": 0,
+    "ecological_models_executed": 0
+  },
+  "recovery": {
+    "initial_run_34202248173": "Stopped before images: nonexistent test path; repaired and all cloud-entry tests passed.",
+    "run_34202525828_attempt_1": "Both chunks completed and uploaded. c000001 then hit ReadTimeout during returned-asset confirmation; completed numerical asset preserved.",
+    "run_34202525828_attempt_2": "Only failed c000001 was rerun. It restored all 64 verified units with zero new image requests. c000000's successful attempt 1 was retained.",
+    "local_decision_identity": "Windows checkout CRLF differs from Actions LF. Verification used a separate LF byte view only after its exact SHA-256 matched the cloud report; original checkout and numerical files were not edited.",
+    "cloud_decision_sha256": "e798f54a3aa805c4e0ecb42ae1e305841bee995475df993a86528febecb06799"
+  },
+  "pilot_plus_this_batch": {
+    "observations": 228,
+    "photo_jobs": 348,
+    "requested_photos": 296,
+    "successful_transfers": 295,
+    "terminal_transfer_failures": 1,
+    "detected_heads": 547,
+    "raw_endpoint_slots": 14769,
+    "bbox_slots": 13675,
+    "completed_pilot_refetched": false,
+    "remaining_planned_chunks": 7021
+  },
+  "limits": [
+    "The counts are bounded raw image execution, not full-native coverage, physical trait accuracy, measurement admission or ecological findings.",
+    "All 27 raw slots remain; the 13 held routes remain held. Existing operational eligibility is not independent biological validation.",
+    "The unpublished draft provides authenticated protected transfer, not encryption or a permanent publication archive.",
+    "No main merge, trait-environment coefficient, within/among conclusion or adaptive claim is made."
+  ]
+}
