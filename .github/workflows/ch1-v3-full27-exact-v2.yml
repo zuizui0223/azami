@@ -79,7 +79,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p work/full27_inputs work/full27_v2
-          python analysis/v3/run_full27_v2_exact_recovered.py \
+          python -m analysis.v3.run_full27_v2_exact_recovered \
             --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
             --analysis-contract analysis/ch1/v2_full27_environment_atlas_contract.json \
             --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
