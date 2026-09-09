@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "analysis_date": "2026-09-09",
+  "role": "compact receipt for the shortest-route native-primary Chapter 1 reanalysis",
+  "workflow_run": 34334322764,
+  "workflow_commit": "a53dd8cb12242ccc2d1e302455c5118acfd6b6f8",
+  "artifact": {
+    "id": 10097484190,
+    "name": "ch1-native-primary-v2-reuse-34334322764",
+    "digest": "sha256:3111819c264e9558538fbc2f425afc575178e15ead5b22838f1f065223411f26"
+  },
+  "cohort": {
+    "source": "frozen v2 46276 strict-spatial observations",
+    "primary_scope": "deterministically regenerated frozen-v2 native cohort",
+    "native_observations": 27066,
+    "native_taxa_environment": 241,
+    "historical_native_lfs_byte_identity_available": false
+  },
+  "measurement": {
+    "registered_endpoints": 27,
+    "measured_endpoints": 27,
+    "restored_historical_endpoints": [
+      "visible_floret_fraction",
+      "corolla_white_pixel_fraction",
+      "corolla_redmagenta_pixel_fraction",
+      "corolla_purple_pixel_fraction",
+      "corolla_yellow_pixel_fraction"
+    ],
+    "restored_native_observations_per_endpoint": 23881,
+    "new_image_operations": false
+  },
+  "base_atlas": {
+    "within_fdr_signals": 42,
+    "among_min5_fdr_signals": 31,
+    "among_min2_fdr_signals": 20,
+    "primary_tier": {
+      "within": {"orientation": 1, "colour": 11, "shape": 6},
+      "among_min5": {"orientation": 1, "colour": 12, "shape": 0},
+      "among_min2": {"orientation": 2, "colour": 5, "shape": 1}
+    }
+  },
+  "broad_spatial_sensitivity": {
+    "method": "existing v2 second-order spherical-coordinate basis plus residual 8-nearest-neighbour Moran I diagnostic",
+    "within_rows_entered": 42,
+    "within_rows_passed": 8,
+    "among_rows_entered": 31,
+    "among_rows_passed": 5,
+    "primary_within_passes": [
+      {
+        "unit_id": "orientation_image_vertical_angle",
+        "predictor": "chelsa_bio01",
+        "base_beta_std": 0.022676,
+        "base_q_fdr": 0.043791,
+        "spatial_beta_std": 0.029802,
+        "spatial_permutation_p": 0.004,
+        "residual_morans_i": 0.005848,
+        "residual_morans_p": 0.397
+      },
+      {
+        "unit_id": "capitulum_outline_circularity",
+        "predictor": "chelsa_rsds_mean",
+        "base_beta_std": -0.028073,
+        "base_q_fdr": 0.041671,
+        "spatial_beta_std": -0.035464,
+        "spatial_permutation_p": 0.012,
+        "residual_morans_i": 0.001089,
+        "residual_morans_p": 0.852
+      }
+    ],
+    "primary_among_passes": [
+      {
+        "unit_id": "corolla_lab_chroma",
+        "predictor": "chelsa_rsds_mean",
+        "base_beta_std": -0.301503,
+        "base_q_fdr": 0.007920,
+        "spatial_beta_std": -0.667604,
+        "spatial_permutation_p": 0.004,
+        "residual_morans_i": -0.066151,
+        "residual_morans_p": 0.090
+      },
+      {
+        "unit_id": "corolla_lab_chroma",
+        "predictor": "chelsa_npp",
+        "base_beta_std": 0.286266,
+        "base_q_fdr": 0.015557,
+        "spatial_beta_std": 0.449627,
+        "spatial_permutation_p": 0.001,
+        "residual_morans_i": -0.035631,
+        "residual_morans_p": 0.390
+      }
+    ],
+    "descriptive_among_passes": [
+      ["corolla_yellow_pixel_fraction", "chelsa_bio01"],
+      ["corolla_yellow_pixel_fraction", "chelsa_gsp"],
+      ["corolla_yellow_pixel_fraction", "chelsa_npp"]
+    ],
+    "headline_nonpass": {
+      "unit_id": "orientation_image_vertical_angle",
+      "predictor": "chelsa_bio12",
+      "base_beta_std": 0.282661,
+      "base_q_fdr": 0.017160,
+      "spatial_beta_std": 0.317696,
+      "spatial_permutation_p": 0.014,
+      "same_direction_as_base": true,
+      "residual_morans_i": -0.105742,
+      "residual_morans_p": 0.008,
+      "broad_spatial_sensitivity_pass": false,
+      "interpretation": "The coefficient remains positive after broad spherical-trend adjustment, but residual spatial structure remains detectable; do not promote this pair as spatially robust."
+    }
+  },
+  "historical_placement_sensitivity": {
+    "tree_resource": "audited GBOTB.extended.LCVP S1, S3 and 50 randomized S2 placement trees",
+    "placement_trees": 52,
+    "spatial_pairs_entered": 5,
+    "pairs_passing_all_placement_trees": 5,
+    "primary_pairs": [
+      {
+        "unit_id": "corolla_lab_chroma",
+        "predictor": "chelsa_rsds_mean",
+        "trees_p_lt_0_05": 52,
+        "pgls_beta_std_range": [-0.3015, -0.2897],
+        "p_value_range": [0.0005431964, 0.0010027605],
+        "lambda_range": [0.0, 0.04382793],
+        "direction_stable": true
+      },
+      {
+        "unit_id": "corolla_lab_chroma",
+        "predictor": "chelsa_npp",
+        "trees_p_lt_0_05": 52,
+        "pgls_beta_std_range": [0.2834, 0.2937],
+        "p_value_range": [0.0006718258, 0.0010536646],
+        "lambda_range": [0.0, 0.15267970],
+        "direction_stable": true
+      }
+    ],
+    "descriptive_pairs": [
+      "corolla_yellow_pixel_fraction x chelsa_bio01",
+      "corolla_yellow_pixel_fraction x chelsa_gsp",
+      "corolla_yellow_pixel_fraction x chelsa_npp"
+    ]
+  },
+  "interpretation": {
+    "primary_result": "In the native-only shortest-route reanalysis, visible corolla chroma retains among-taxon associations with radiation and NPP after the existing v2 broad-spatial screen and across all 52 audited historical-placement trees.",
+    "orientation_result": "The native-only orientation-BIO12 association is not spatially robust under the existing v2 sensitivity because residual Moran structure remains detectable, despite a positive spatially adjusted coefficient.",
+    "within_result": "Primary within-taxon spatial survivors are orientation x BIO1 and capitulum outline circularity x radiation; effects are small and remain cross-sectional associations.",
+    "descriptive_boundary": "Closed colour-composition fractions and other candidate/descriptive/validation endpoints are retained for reporting but are not independent primary biological discoveries."
+  },
+  "claim_boundary": [
+    "Broad-spatial sensitivity is not a full SPDE spatial-process model.",
+    "Historical-placement sensitivity uses grafted placement trees and is not a resolved Cirsium species-tree correction.",
+    "Survival through both sensitivities does not establish causation, adaptation, selection, convergence or mechanism.",
+    "No result was rescued or promoted by adding a new model family; these are the existing v2 sensitivity stages reapplied to the native-only cohort."
+  ]
+}
