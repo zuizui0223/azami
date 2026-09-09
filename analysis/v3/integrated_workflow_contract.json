@@ -9,7 +9,7 @@
     "historical_model": "analysis/v3/ecological_model_contract.json",
     "numerical_correction": "analysis/v3/ecological_model_review_addendum_20260908.json",
     "superseded": [
-      "workflow_contract.json stages: assessability now precedes ecology; optional breadth synthesis follows it",
+      "The former five-stage source/measurement/assessability/ecology/synthesis surface is simplified to source -> measurement_qc -> ecology -> output. Assessability is measurement/QC; synthesis is not a canonical stage.",
       "ecological_model_contract.json environment_mapping: focal hypothesis does not justify leaving correlated environmental covariates unadjusted",
       "ecological_model_contract.json within/among standardization and multiplicity: use a common scale and an explicit scale-contrast family",
       "ecological_model_contract.json among spatial location: average the observation basis, not the basis evaluated at a geographic centroid",
@@ -27,16 +27,10 @@
       "output": "Versioned native ecological view, exact dates, public coordinate uncertainty and dependence components; retain introduced and unresolved records in the master source."
     },
     {
-      "id": "measurement",
-      "question": "What can each image measure, with what technical uncertainty?",
-      "required": ["image_only_qualification", "versioned_colour_definition", "reconciled_stream_schedule", "durable_private_numerical_replay"],
-      "output": "All 27 raw slots and five bbox formulations retained; 14 candidate primary routes, not 14 independently calibrated botanical traits."
-    },
-    {
-      "id": "assessability",
-      "question": "Does measurement availability change the environmental and taxonomic support?",
-      "required": ["native_source_to_measurement_coverage", "model_specific_environment_diagnostics"],
-      "output": "Source-to-attempt-to-transfer-to-detection-to-endpoint/module retention, raw and source-taxon-standardized, before ecological coefficients. Hypervolume A is an optional multivariate coverage display, not the only bias diagnostic."
+      "id": "measurement_qc",
+      "question": "What can each image measure, and is the resulting module-specific analysis support usable?",
+      "required": ["image_only_qualification", "versioned_colour_definition", "reconciled_stream_schedule", "durable_private_numerical_replay", "native_source_to_measurement_coverage", "model_specific_environment_diagnostics"],
+      "output": "All 27 raw slots retained; technical QC and simple source-to-measurement retention summarized here; realized orientation, visible-colour and gross-shape cohorts are fixed before ecology."
     },
     {
       "id": "ecology",
@@ -45,10 +39,10 @@
       "output": "Frozen module geometry; taxon slopes, pooling and heterogeneity; among-taxon associations; direct matched-support scale contrasts, with effect sizes and uncertainty."
     },
     {
-      "id": "synthesis",
-      "question": "Across sufficiently supported taxa, does observed environmental breadth accompany image-phenotype breadth?",
-      "required": ["outcome_blind_common_axes", "hypervolume_sampling_and_bandwidth_validation"],
-      "output": "Secondary Hypervolume B with matched records, sample-size control and uncertainty; not another discovery screen or an independent confirmation of the primary fits."
+      "id": "output",
+      "question": "Can the canonical source, measurement/QC and ecology results be rendered without changing the scientific analysis?",
+      "required": [],
+      "output": "Figures, tables, manuscript-facing summaries and reproducibility records generated from the canonical results. Optional breadth/hypervolume work is outside the canonical path and cannot block output."
     }
   ],
   "source_and_sampling": {
@@ -101,8 +95,8 @@
     "uncertainty": "BBox and photometric perturbations measure technical sensitivity, not a calibrated biological-error distribution or absolute accuracy."
   },
   "hypervolume": {
-    "A_position": "assessability_before_ecological_fitting",
-    "B_position": "secondary_after_primary_ecology",
+    "A_position": "noncanonical_optional_qc_display",
+    "B_position": "noncanonical_optional_synthesis",
     "axes": "Shared loadings, centers and units across taxa, learned without environmental associations and with taxon/module balance. Do not fit separate taxon PCAs or erase breadth by within-taxon z-scoring.",
     "dimensions": "Four to six is a design candidate, not guaranteed support. Dimension, bandwidth, probability mass, seeds and convergence rules require an outcome-blind technical qualification receipt before fitting B.",
     "matched_support": "Use identical observation sets for paired phenotype/environment breadth; report full-source environmental support separately.",
@@ -110,12 +104,12 @@
     "different_spaces": "Trait and environmental spaces have different units; no direct cross-space overlap or centroid distance. Compare defined within-space breadth summaries across taxa.",
     "independence": "Breadth association can follow the primary linear association and shared sampling; it is a synthesis of the same evidence, not an independent adaptive test.",
     "optional": true,
-    "failure_rule": "Unsupported taxa or dimensions are not estimable for B; this does not invalidate otherwise supported primary models."
+    "failure_rule": "Unsupported taxa or dimensions are not estimable for optional synthesis; this does not invalidate otherwise supported primary models or canonical output."
   },
   "two_contributions": {
-    "methodological": "An auditable full-source image-to-distribution workflow, with retained denominators, endpoint-specific assessability and automated technical evaluation. YOLO, PCA and hypervolume individually are not claimed as new inventions.",
+    "methodological": "An auditable full-source image-to-distribution workflow, with retained denominators, endpoint-specific measurement/QC and automated technical evaluation. YOLO, PCA and hypervolume individually are not claimed as new inventions.",
     "ecological": "Estimate module-specific abiotic associations and test agreement or differences between within- and among-taxon scales, without requiring either v2 candidate to survive.",
-    "report_order": ["source and image-to-trait coverage/technical evaluation", "module covariance and measured distributions", "within/among effects and direct contrasts", "optional breadth synthesis and ecological interpretation"],
+    "report_order": ["source", "measurement/QC and module structure", "within/among ecological effects and direct contrasts", "figures/tables/manuscript output"],
     "not_a_result_yet": "Public photographs may recover spatially repeated image-phenotype distributions; whether their ecological associations differ by module or scale remains a question until v3 is executed.",
     "limits": ["image variation is not biological variance alone", "chroma is not anthocyanin concentration", "image vertical is not gravity", "association is not adaptation", "repeatability is not physical accuracy"]
   }
