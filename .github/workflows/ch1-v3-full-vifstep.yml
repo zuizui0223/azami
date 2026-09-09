@@ -5,6 +5,7 @@ on:
     branches: [analysis/ch1-v3-full-vifstep-20260909]
     paths:
       - 'analysis/v3/run_full_vifstep_sensitivity.py'
+      - 'analysis/v3/run_full_vifstep_value_verified.py'
       - '.github/workflows/ch1-v3-full-vifstep.yml'
   workflow_dispatch:
 
@@ -31,7 +32,9 @@ jobs:
           python -m pip install \
             pandas==3.0.5 numpy==2.4.6 scipy==1.17.1 statsmodels==0.14.6 \
             rasterio==1.4.4 pyproj==3.7.2 requests==2.34.2
-          python -m py_compile analysis/v3/run_full_vifstep_sensitivity.py
+          python -m py_compile \
+            analysis/v3/run_full_vifstep_sensitivity.py \
+            analysis/v3/run_full_vifstep_value_verified.py
 
       - name: Recover frozen v2 continuous source artifact
         env:
@@ -68,7 +71,7 @@ jobs:
           test -s work/recovered_display/observation_values.csv
           rm -rf work/historical work/historical.zip "$RECOVERED_DIR"
 
-      - name: Reconstruct exact full nine-predictor environment
+      - name: Reconstruct full nine-predictor environment from frozen sources
         run: |
           set -euo pipefail
           python analysis/sample_chelsa_process_environment.py \
@@ -76,13 +79,27 @@ jobs:
             --source-contract analysis/ch1/chelsa_process_environment_sources.json \
             --out-csv work/strict_spatial_chelsa_process.csv \
             --report work/chelsa_process_extraction_report.json
-          echo 'e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7  work/strict_spatial_chelsa_process.csv' | sha256sum -c -
+          ACTUAL=$(sha256sum work/strict_spatial_chelsa_process.csv | cut -d' ' -f1)
+          echo "CURRENT_RECONSTRUCTED_ENV_SHA256=$ACTUAL"
+          echo "CANONICAL_ENV_SHA256=e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+          python - <<'PY'
+          import pandas as pd
+          p='work/strict_spatial_chelsa_process.csv'
+          x=pd.read_csv(p, low_memory=False)
+          required=['chelsa_bio01','chelsa_bio04','chelsa_bio12','chelsa_bio15','chelsa_rsds_mean','chelsa_vpd_mean','chelsa_sfcwind_mean','chelsa_gsp','chelsa_npp']
+          if len(x)!=46276 or x['obs_id'].nunique()!=46276 or x['taxon_name'].nunique()!=259:
+              raise SystemExit('full environment cohort identity failed')
+          missing=[c for c in required if c not in x.columns]
+          if missing:
+              raise SystemExit(f'missing predictors: {missing}')
+          print({'rows':len(x),'taxa':x['taxon_name'].nunique(),'coverage':{c:float(x[c].notna().mean()) for c in required}})
+          PY
 
-      - name: Run full-cohort response-blind VIF-step sensitivity
+      - name: Run full-cohort VIF-step after frozen-value identity gate
         run: |
           set -euo pipefail
           mkdir -p work/full_vifstep
-          python analysis/v3/run_full_vifstep_sensitivity.py \
+          python analysis/v3/run_full_vifstep_value_verified.py \
             --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
             --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
             --environment work/strict_spatial_chelsa_process.csv \
@@ -93,15 +110,17 @@ jobs:
             --permutations 9999 \
             --seed 20260909 | tee work/full_vifstep/run.log
           test -s work/full_vifstep/full_vifstep_report.json
+          grep '^ENVIRONMENT_VALUE_IDENTITY_GATE=PASS$' work/full_vifstep/run.log
           grep '^FULL_VIFSTEP_COMPACT_JSON=' work/full_vifstep/run.log
 
       - name: Upload compact full-cohort sensitivity outputs
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ch1-full-vifstep-${{ github.run_id }}
           path: |
             work/full_vifstep/**
             work/chelsa_process_extraction_report.json
             work/recovered_display/display_composition_report.json
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
