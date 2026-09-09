@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install frozen v2 numerical runtime
-        run: python -m pip install pandas numpy scipy statsmodels rasterio pyproj requests shapely
+        run: python -m pip install pandas numpy scipy statsmodels rasterio pyproj
       - name: Recover frozen v2 continuous source artifact
         env:
           GH_TOKEN: ${{ github.token }}
@@ -33,14 +33,24 @@ jobs:
           test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
           test -f work/continuous/environment/strict_spatial_chelsa.csv
           echo '2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0  work/continuous/environment/strict_spatial_chelsa.csv' | sha256sum -c -
-      - name: Rebuild and exactly verify frozen native-status table
+      - name: Recover exact frozen native-status input from immutable v2 tag
         run: |
           set -euo pipefail
           mkdir -p work/native
-          python analysis/rebuild_frozen_native_status.py \
-            --observation work/continuous/environment/strict_spatial_chelsa.csv \
-            --out-csv work/native/observation_native_status.csv \
-            --report work/native/native_status_rebuild_report.json
+          git lfs version
+          git fetch --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
+          NATIVE_WT="$RUNNER_TEMP/azami-v2-native"
+          rm -rf "$NATIVE_WT"
+          GIT_LFS_SKIP_SMUDGE=1 git worktree add --detach "$NATIVE_WT" azami-ch1-v2-2026-08-27
+          (
+            cd "$NATIVE_WT"
+            git lfs install --local
+            git lfs pull origin \
+              --include='analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv' \
+              --exclude=''
+          )
+          cp "$NATIVE_WT/analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv" work/native/observation_native_status.csv
+          test "$(wc -c < work/native/observation_native_status.csv)" -eq 5351184
           echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
       - name: Recover the five historically omitted measured endpoints
         env:
@@ -79,7 +89,6 @@ jobs:
           path: |
             work/native_results/*.csv
             work/native_results/*.json
-            work/native/native_status_rebuild_report.json
             work/chelsa_process_extraction_report.json
             work/recovered_display/display_composition_report.json
           if-no-files-found: error
