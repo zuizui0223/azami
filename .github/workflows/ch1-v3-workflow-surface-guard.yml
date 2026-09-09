@@ -7,12 +7,18 @@ on:
       - 'analysis/v3/workflow_surface_registry.json'
       - 'analysis/v3/workflow_only_revision_scope_20260909.md'
       - 'analysis/v3/validate_workflow_surface.py'
+      - 'analysis/v3/integrated_workflow_contract.json'
+      - 'analysis/v3/integrated_preflight.py'
+      - 'analysis/v3/integrated_evidence_index.json'
   pull_request:
     paths:
       - '.github/workflows/ch1-v3-*'
       - 'analysis/v3/workflow_surface_registry.json'
       - 'analysis/v3/workflow_only_revision_scope_20260909.md'
       - 'analysis/v3/validate_workflow_surface.py'
+      - 'analysis/v3/integrated_workflow_contract.json'
+      - 'analysis/v3/integrated_preflight.py'
+      - 'analysis/v3/integrated_evidence_index.json'
   workflow_dispatch:
 
 jobs:
@@ -23,5 +29,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install minimal preflight runtime
+        run: python -m pip install numpy
       - name: Verify registered v3 workflow surface
         run: python analysis/v3/validate_workflow_surface.py
+      - name: Run canonical four-stage preflight
+        run: python -m analysis.v3.integrated_preflight
