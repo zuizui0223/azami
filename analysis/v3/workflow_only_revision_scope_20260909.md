@@ -4,15 +4,9 @@ Status: active from 2026-09-09
 
 ## Purpose
 
-The current v3 revision is restricted to **workflow improvement only**.
-It must not add a new scientific analysis, endpoint, predictor, hypothesis,
-model family, multiplicity family, ecological synthesis, or post hoc rescue.
-The scientific scope and estimands remain those already declared in
-`integrated_workflow_contract.json`.
+The current v3 revision is restricted to **workflow improvement only**. Do not add a new scientific analysis, endpoint, predictor, hypothesis, model family, multiplicity family, synthesis, or post hoc rescue.
 
-The purpose of this phase is to make the existing design easier to execute,
-audit, and explain after incorporating advisor/reviewer comments upstream in
-the source-to-inference workflow rather than as downstream manuscript defence.
+The goal is a short, reproducible route from the recovered source to the existing ecological analysis.
 
 ## Canonical path
 
@@ -23,92 +17,75 @@ There is one canonical execution order:
 3. `ecology`
 4. `output`
 
-Assessability is not a separate scientific stage. The minimum checks needed to
-know what was measured and what analysis support remains are part of
-`measurement_qc`. Hypervolume/breadth synthesis is not a canonical stage and
-cannot block the main ecological analysis or output.
+`python -m analysis.v3.integrated_preflight` is the single readiness entry point.
 
-`python -m analysis.v3.integrated_preflight` remains the single readiness
-entry point. Earlier contracts and receipts remain historical evidence unless
-the integrated contract explicitly supersedes them.
+Assessability is not a separate scientific stage. Hypervolume/breadth synthesis is not a canonical stage.
 
-## What may change in this phase
+## Minimal Measurement / QC gate
 
-Allowed changes are limited to workflow mechanics:
+Measurement/QC is complete when all of the following are true:
+
+1. the existing measurement definitions and QC route decisions remain frozen;
+2. the already-scheduled raw measurement outputs are recovered and integrated;
+3. all 27 raw endpoints remain available in the retained numerical record;
+4. the predeclared primary module representation is built on that reconciled cohort;
+5. a simple completion/missingness ledger records complete, pending and source-blocked observations plus endpoint/module missingness.
+
+Nothing else is required to enter Ecology.
+
+In particular, the following are **not canonical gates**:
+
+- a replacement/alternative chroma definition;
+- taxon-, region- or environment-specific assessability models;
+- a separate model-diagnostics research stage;
+- additional tail/repair/calibration simulation branches;
+- all-27 exploratory ecological coefficients;
+- hypervolume or breadth synthesis.
+
+Existing outputs from those activities may remain as technical or historical evidence, but they cannot block the canonical path or change endpoint admission.
+
+## Ecology gate
+
+Once Measurement/QC is complete, run only the already-declared ecological model and nuisance design on the fixed module cohorts. Do not add a second model because a result is weak, null, or difficult to interpret.
+
+## Output
+
+After the canonical ecology run, generate figures, tables, manuscript-facing summaries and reproducibility records. Output generation must not trigger new scientific analyses.
+
+## Allowed workflow changes
 
 - clarify stage ownership and ordering;
-- make prerequisites and stop conditions explicit;
 - remove duplicated execution paths;
-- route existing checks through the canonical preflight;
-- separate canonical, sensitivity, exploratory, and historical surfaces;
-- improve checkpoint/restart behaviour and artifact provenance;
-- rename ambiguous workflow surfaces without changing calculations;
+- improve checkpoint/restart and artifact recovery;
+- route status checks through the canonical preflight;
+- separate canonical, technical, exploratory and historical surfaces;
 - consolidate documentation and runbooks;
-- add integrity tests that verify the existing contract is followed.
+- add integrity tests that verify this workflow without changing calculations.
 
-## What must not change in this phase
+## Prohibited changes
 
 Do **not**:
 
-- add another ecological analysis because an existing result is weak or null;
+- add another ecological analysis to rescue a weak or null result;
 - open additional endpoints beyond already-declared routes;
-- add new environmental predictors or interactions;
-- add new response transformations or alternative model families;
+- add predictors, interactions, response transformations or model families;
 - add a new multiple-testing family;
-- extend all-27 point exploration into confirmatory inference;
-- promote a held measurement because its exploratory coefficient looks useful;
-- create further tail/repair/aggregate analysis branches to explain an existing
-  sensitivity result;
+- promote a held measurement from exploratory results;
 - turn measurement success/failure into a separate ecological research program;
+- extend tail/repair/calibration branches after the current bounded work;
 - reinterpret technical repeatability as physical trait accuracy;
 - change frozen v2 outputs.
 
-If an existing stage fails, record the failure and either repair the workflow
-mechanics or lower/withhold the affected claim. Do not create a new analysis to
-rescue it during this workflow-only phase.
-
-## Surface classification
-
-### Canonical
-
-The four stages in `integrated_workflow_contract.json` and the integrated
-preflight are the only canonical scientific workflow surface.
-
-### Sensitivity / technical audit
-
-Existing calibration, geometry, resolution, dependence, and measurement
-checks may be retained when they test a declared assumption of the canonical
-workflow. They are supporting evidence, not additional scientific questions.
-No new sensitivity family should be created unless a canonical stage cannot be
-executed correctly without it.
-
-### Exploratory
-
-The existing all-27 point-estimate exploration and other explicitly labelled
-exploratory checkpoints remain non-gating. They cannot change route admission,
-primary hypotheses, predictor choice, multiplicity, or manuscript headline
-claims in this phase.
-
-### Historical
-
-Superseded contracts, pilot receipts, repair receipts, and previous execution
-waves remain for provenance. They are not alternative active workflows.
-
 ## Stop rule
 
-A workflow issue is considered closed when all three are true:
+A workflow issue is closed when:
 
-1. the canonical stage can be executed or is explicitly blocked with a named
-   unmet prerequisite;
+1. the canonical stage can run, or is blocked by one named missing input;
 2. restart/replay preserves the same scientific inputs and calculations; and
-3. the resulting state is visible from the integrated preflight or its pinned
-   evidence index.
+3. the status is visible from the integrated preflight.
 
-Once these conditions hold, do not continue adding diagnostics for that issue
-unless they are required to correct a newly observed workflow failure.
+Once those conditions hold, stop adding diagnostics for that issue.
 
 ## Definition of progress
 
-During this phase, progress means fewer ambiguous paths and a shorter route from
-source inventory to a reproducible canonical result. It does **not** mean more
-models, more endpoints, more coefficient tables, or more exploratory findings.
+Progress means fewer gates and a shorter path from source to canonical result. It does **not** mean more models, endpoints, coefficient tables, calibration branches, or exploratory findings.
