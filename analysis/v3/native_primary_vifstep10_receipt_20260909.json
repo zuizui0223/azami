@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "analysis_date": "2026-09-09",
+  "role": "compact receipt for the user-requested VIFstep<=10 comparative reanalysis on the native-only Chapter 1 cohort",
+  "workflow": {
+    "run_id": 34338987675,
+    "run_number": 23,
+    "head_commit": "931be8fdf75489d2ac46f17aa04357bf7260f9b3",
+    "status": "success",
+    "artifact_id": 10099373224,
+    "artifact_name": "ch1-native-primary-v2-reuse-34338987675",
+    "artifact_size_bytes": 213729,
+    "artifact_digest": "sha256:bf1e345370dbb97690d395aa28afef40966584b210cf55950a1b2382c3ef0305"
+  },
+  "cohort": {
+    "source_universe": "frozen v2 strict-spatial 46276-observation universe",
+    "primary_scope": "deterministically regenerated frozen-v2 native cohort",
+    "native_observations": 27066,
+    "native_taxa_environment": 241,
+    "registered_endpoints": 27,
+    "inferential_units": 26,
+    "new_image_operations": false
+  },
+  "v2_scale_structure_reconfirmed": {
+    "within_taxon": "taxon-demeaned standardized univariate slope with taxon-clustered uncertainty; circular traits use the registered joint sine/cosine test with predictor permutations within taxon",
+    "among_taxon": "taxon-level trait medians and taxon-level environment medians; standardized univariate slope with predictor permutation across taxa; primary min5 and sensitivity min2 scopes retained",
+    "multiplicity": "Benjamini-Hochberg families remain separate for within taxon, among min5 and among min2",
+    "conclusion": "Frozen v2 explicitly separated within-taxon and among-taxon inference; this distinction is not introduced by v3."
+  },
+  "vifstep_filter": {
+    "provenance": "The frozen v2 primary atlas did not use VIF for predictor selection. This is a user-requested comparative specification applied before rerunning the same v2 marginal models.",
+    "candidate_predictors": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean",
+      "chelsa_vpd_mean",
+      "chelsa_sfcwind_mean",
+      "chelsa_gsp",
+      "chelsa_npp"
+    ],
+    "rule": "Within each scale, iteratively remove the predictor with the current maximum VIF while max(VIF)>10; stop when all retained predictors have VIF<=10. Trait outcomes do not enter selection.",
+    "within_taxon_demeaned": {
+      "dropped_predictors": ["chelsa_bio01"],
+      "retained_predictors": [
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "final_max_vif": 1.9610453947250044
+    },
+    "among_taxon_median": {
+      "dropped_predictors": ["chelsa_bio01"],
+      "retained_predictors": [
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "final_max_vif": 6.97732394799393
+    }
+  },
+  "reanalysis_results": {
+    "within_fdr_signals": 37,
+    "among_min5_fdr_signals": 27,
+    "among_min2_fdr_signals": 16,
+    "within_broad_spatial_passes": 6,
+    "among_broad_spatial_passes": 4,
+    "among_historical_pairs_entered": 4,
+    "among_historical_pairs_passing_all_52_trees": 4
+  },
+  "historical_placement_pass_pairs": [
+    {
+      "unit_id": "corolla_lab_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "interpretive_tier": "primary",
+      "successful_placement_trees": 52,
+      "trees_p_lt_0_05": 52,
+      "maximum_p_value": 0.0010027605125882,
+      "lambda_min": 0.0,
+      "lambda_max": 0.0438279299538389,
+      "direction_from_native_nine_predictor_receipt": "negative",
+      "native_nine_predictor_base_beta_std": -0.301503,
+      "native_nine_predictor_spatial_beta_std": -0.667604
+    },
+    {
+      "unit_id": "corolla_lab_chroma",
+      "predictor": "chelsa_npp",
+      "interpretive_tier": "primary",
+      "successful_placement_trees": 52,
+      "trees_p_lt_0_05": 52,
+      "maximum_p_value": 0.0010536646462183,
+      "lambda_min": 0.0,
+      "lambda_max": 0.152679696850758,
+      "direction_from_native_nine_predictor_receipt": "positive",
+      "native_nine_predictor_base_beta_std": 0.286266,
+      "native_nine_predictor_spatial_beta_std": 0.449627
+    },
+    {
+      "unit_id": "corolla_yellow_pixel_fraction",
+      "predictor": "chelsa_gsp",
+      "interpretive_tier": "descriptive_closed_composition",
+      "successful_placement_trees": 52,
+      "trees_p_lt_0_05": 52,
+      "maximum_p_value": 0.0007859473059687,
+      "lambda_min": 0.0,
+      "lambda_max": 0.1865288839819426
+    },
+    {
+      "unit_id": "corolla_yellow_pixel_fraction",
+      "predictor": "chelsa_npp",
+      "interpretive_tier": "descriptive_closed_composition",
+      "successful_placement_trees": 52,
+      "trees_p_lt_0_05": 52,
+      "maximum_p_value": 0.00001385339190949997,
+      "lambda_min": 0.0,
+      "lambda_max": 0.1817070130782152
+    }
+  ],
+  "comparison_with_native_nine_predictor_lane": {
+    "nine_predictor_counts": {
+      "within_fdr": 42,
+      "among_min5_fdr": 31,
+      "among_min2_fdr": 20,
+      "within_spatial_passes": 8,
+      "among_spatial_passes": 5,
+      "historical_passes": 5
+    },
+    "vifstep10_counts": {
+      "within_fdr": 37,
+      "among_min5_fdr": 27,
+      "among_min2_fdr": 16,
+      "within_spatial_passes": 6,
+      "among_spatial_passes": 4,
+      "historical_passes": 4
+    },
+    "historical_pair_removed_by_predictor_filter": [
+      "corolla_yellow_pixel_fraction x chelsa_bio01"
+    ],
+    "primary_among_conclusion_changed": false
+  },
+  "orientation_boundary": {
+    "orientation_bio01": "Not tested in the VIFstep<=10 lane because BIO1 is removed by the phenotype-blind VIF filter.",
+    "orientation_bio12": "BIO12 remains in the retained predictor set, but the previously observed positive association still does not pass the existing broad-spatial sensitivity because residual spatial autocorrelation remains detectable (native nine-predictor receipt Moran p=0.008). VIF filtering does not rescue it."
+  },
+  "interpretation": {
+    "primary_result": "After native-range restriction and phenotype-blind VIFstep<=10 filtering, the strongest among-taxon results surviving BH-FDR, the existing broad-spatial sensitivity and all 52 historical-placement trees remain visible corolla chroma: lower chroma with higher shortwave radiation and higher chroma with higher NPP.",
+    "descriptive_result": "Two yellow-pixel-fraction associations also pass the same gates, but the colour fractions form a closed composition and remain descriptive rather than independent primary biological discoveries.",
+    "model_boundary": "VIF is used here only to filter the family of marginal univariate tests. The downstream v2 estimators are not converted into a simultaneous multivariable regression."
+  },
+  "claim_boundary": [
+    "This VIF-filtered lane is comparative and was not the frozen v2 primary specification.",
+    "VIF filtering does not by itself make marginal environmental associations causal or independent effects.",
+    "Broad-spatial sensitivity is not a full SPDE spatial-process model.",
+    "Historical-placement sensitivity uses grafted placement trees and is not a resolved Cirsium species-tree correction.",
+    "Survival through these gates does not establish adaptation, selection, convergence or mechanism."
+  ]
+}
