@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "scope": "Chapter 1 v3 workflow-only revision",
+  "policy": {
+    "canonical_authority": "analysis/v3/integrated_workflow_contract.json",
+    "readiness_entrypoint": "python -m analysis.v3.integrated_preflight",
+    "revision_scope": "analysis/v3/workflow_only_revision_scope_20260909.md",
+    "new_scientific_analysis_allowed": false,
+    "unregistered_ch1_v3_workflow_allowed": false,
+    "exploratory_can_gate_primary": false,
+    "historical_repair_can_gate_primary": false
+  },
+  "categories": {
+    "active_pipeline_support": [
+      "ch1-v3-ecological-source-cohort.yml",
+      "ch1-v3-environment-freeze.yml",
+      "ch1-v3-input-recovery.yml",
+      "ch1-v3-measurement-freeze.yml",
+      "ch1-v3-native-raw-chunks.yml",
+      "ch1-v3-native-raw-wave-b.yml",
+      "ch1-v3-native-raw-wave-c.yml",
+      "ch1-v3-phenotype-blind-environment-design.yml",
+      "ch1-v3-protected-numerical-replay.yml"
+    ],
+    "supporting_technical_audit": [
+      "ch1-v3-crossed-bootstrap-calibration.yml",
+      "ch1-v3-final-calibration-batch1.yml",
+      "ch1-v3-final-geometry-smoke.yml",
+      "ch1-v3-resolution-size-followup.yml",
+      "ch1-v3-resolution-stream-gate.yml"
+    ],
+    "non_gating_exploratory": [
+      "ch1-v3-all27-point-exploration.yml"
+    ],
+    "historical_execution_or_repair": [
+      "ch1-v3-environment-source-pilot.yml",
+      "ch1-v3-full-family-tail-aggregate.yml",
+      "ch1-v3-full-family-tail-pilot.yml",
+      "ch1-v3-original-stream-pilot.yml",
+      "ch1-v3-smoke-repair-aggregate.yml",
+      "ch1-v3-tail-failure-diagnostic.yml",
+      "ch1-v3-tail-mechanics-repair-aggregate.yml",
+      "ch1-v3-tail-repair-aggregate.yml",
+      "ch1-v3-wave-c-reconcile.yml"
+    ],
+    "workflow_governance": [
+      "ch1-v3-workflow-surface-guard.yml"
+    ]
+  },
+  "interpretation": {
+    "active_pipeline_support": "May support execution of an already-declared canonical stage. Does not define a new scientific estimand.",
+    "supporting_technical_audit": "May test assumptions already declared by the canonical workflow. Must not create a new biological question or survivor rule.",
+    "non_gating_exploratory": "Retained for provenance and bounded exploration only. Cannot alter route admission, predictor choice, primary hypotheses or multiplicity.",
+    "historical_execution_or_repair": "Retained because it documents earlier execution, pilot or repair work. It is not an alternative active workflow and should not be extended unless needed to repair a concrete workflow failure.",
+    "workflow_governance": "Checks workflow registration and scope only; performs no scientific analysis."
+  }
+}
