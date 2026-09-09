@@ -1,0 +1,46 @@
+name: Chapter 1 v3 Wave C protected inventory reconciliation
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/reconcile_wave_c_inventory.py
+      - tests/test_v3_wave_c_reconciliation.py
+      - .github/workflows/ch1-v3-wave-c-reconcile.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install bounded reconciliation runtime
+        run: python -m pip install pytest requests==2.34.2
+      - name: Test protected-inventory reconciliation logic
+        run: python -m pytest -q tests/test_v3_wave_c_reconciliation.py
+      - name: Reconcile Wave C from protected final-asset metadata only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -m analysis.v3.reconcile_wave_c_inventory \
+            --batch analysis/v3/native_measurement_wave_20260908_c.json \
+            --out "$RUNNER_TEMP/v3-wave-c-reconcile"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v3-wave-c-protected-inventory-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/v3-wave-c-reconcile/public_report.json
+          if-no-files-found: error
+          retention-days: 30
+      # This workflow reads only protected draft asset metadata. It does not
+      # download protected numerical bundles, source images, observations,
+      # coordinates, traits or environmental values, and does not fit ecology.
