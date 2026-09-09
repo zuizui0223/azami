@@ -1,0 +1,31 @@
+{
+  "analysis_id": "geb_v2_full27_among_endpoint_cohort_vifstep_multivariable_posthoc_v1",
+  "status": "strict_posthoc_sensitivity_not_primary_replacement",
+  "vif_design": "VIFstep is recomputed inside each response-specific taxon cohort before fitting the simultaneous model. This guarantees final VIF <= threshold for every successful model cohort.",
+  "thresholds": [10, 5],
+  "inference": {
+    "linear": "simultaneous standardized OLS; Freedman-Lane residual permutation 9999; HC3 CI",
+    "circular": "simultaneous sine/cosine; paired Freedman-Lane residual permutation 9999; 1000 taxon bootstrap CI",
+    "multiplicity": "BH across all successful tested unit-predictor rows separately by among scope and VIF threshold"
+  },
+  "counts": {
+    "among_taxon_min5_vif10": {"successful_test_rows": 137, "successful_units": 20, "fdr_signals": 1, "max_final_vif": 3.746231132063748, "median_predictors_retained": 7.0},
+    "among_taxon_min5_vif5": {"successful_test_rows": 137, "successful_units": 20, "fdr_signals": 1, "max_final_vif": 3.746231132063748, "median_predictors_retained": 7.0},
+    "among_taxon_min2_vif10": {"successful_test_rows": 155, "successful_units": 21, "fdr_signals": 1, "max_final_vif": 9.49203447157024, "median_predictors_retained": 7.0},
+    "among_taxon_min2_vif5": {"successful_test_rows": 147, "successful_units": 21, "fdr_signals": 1, "max_final_vif": 3.253251943599129, "median_predictors_retained": 7.0},
+    "original_10_vif10": {"removed_by_endpoint_vifstep": 2, "tested": 8, "fdr_survivors": 1},
+    "original_10_vif5": {"removed_by_endpoint_vifstep": 2, "tested": 8, "fdr_survivors": 1}
+  },
+  "original_min5_fdr_signals": 10,
+  "claim_boundary": "Retrospective response-cohort-specific collinearity sensitivity; not a replacement for frozen marginal atlas and not causal.",
+  "input_identity": {
+    "traits_sha256": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment_sha256": "f86a3418e9b21453026bba1aaf350b061f03048949547e2092602620af98cbf6",
+    "environment_rows": 46276,
+    "environment_taxa": 259
+  },
+  "headline_result": {
+    "min5_vif10": [{"unit_id": "corolla_lab_chroma", "predictor": "chelsa_rsds_mean", "n_taxa": 143, "beta_std_adjusted": -0.467429865512, "confidence_low_95": -0.705230134214, "confidence_high_95": -0.229629596809, "p_value": 0.0003, "q_fdr_bh_global_family": 0.0411, "final_max_vif": 2.64285388697}],
+    "min5_vif5": [{"unit_id": "corolla_lab_chroma", "predictor": "chelsa_rsds_mean", "n_taxa": 143, "beta_std_adjusted": -0.467429865512, "confidence_low_95": -0.705230134214, "confidence_high_95": -0.229629596809, "p_value": 0.0003, "q_fdr_bh_global_family": 0.0411, "final_max_vif": 2.64285388697}]
+  }
+}
