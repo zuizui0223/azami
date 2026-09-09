@@ -5,6 +5,7 @@ on:
     branches: [analysis/ch1-v3-full-vifstep-20260909]
     paths:
       - 'analysis/v3/run_full27_v2_exact_recovered.py'
+      - 'analysis/v3/run_full27_v2_exact_strictjson.py'
       - '.github/workflows/ch1-v3-full27-exact-v2.yml'
   workflow_dispatch:
 
@@ -32,6 +33,7 @@ jobs:
             rasterio==1.4.4 pyproj==3.7.2 requests==2.34.2
           python -m py_compile \
             analysis/v3/run_full27_v2_exact_recovered.py \
+            analysis/v3/run_full27_v2_exact_strictjson.py \
             analysis/v3/run_full_vifstep_sensitivity.py
 
       - name: Recover frozen v2 trait universe and core environment
@@ -79,7 +81,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p work/full27_inputs work/full27_v2
-          python -m analysis.v3.run_full27_v2_exact_recovered \
+          python -m analysis.v3.run_full27_v2_exact_strictjson \
             --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
             --analysis-contract analysis/ch1/v2_full27_environment_atlas_contract.json \
             --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
@@ -92,6 +94,7 @@ jobs:
           grep '^FULL27_EXACT_V2_FLOW=PASS$' work/full27_v2/run.log
           grep '^FULL27_EXACT_V2_COMPACT_JSON=' work/full27_v2/run.log
           test -s work/full27_v2/full27_exact_v2_flow_report.json
+          python -m json.tool work/full27_v2/full27_exact_v2_flow_report.json >/dev/null
 
       - name: Upload exact-v2 full-27 outputs
         uses: actions/upload-artifact@v4
