@@ -1,20 +1,19 @@
 {
   "schema_version": 1,
-  "contract_id": "ch1_v3_integrated_workflow_20260908",
+  "contract_id": "ch1_v3_integrated_workflow_20260909_minimal",
   "status": "active_design_with_execution_requirements_unfinished",
   "study_status": "retrospective_redesign_after_v2_results_seen_not_preregistration",
   "authority": {
-    "scope": "Active ordering, analysis target and revisions below. Historical input definitions and receipts remain unchanged unless explicitly superseded here.",
+    "scope": "Minimal canonical ordering only. Historical contracts, pilots, calibration runs and receipts remain provenance unless explicitly required below.",
     "historical_source_inventory": "analysis/v3/workflow_contract.json",
     "historical_model": "analysis/v3/ecological_model_contract.json",
     "numerical_correction": "analysis/v3/ecological_model_review_addendum_20260908.json",
     "superseded": [
-      "The former five-stage source/measurement/assessability/ecology/synthesis surface is simplified to source -> measurement_qc -> ecology -> output. Assessability is measurement/QC; synthesis is not a canonical stage.",
-      "ecological_model_contract.json environment_mapping: focal hypothesis does not justify leaving correlated environmental covariates unadjusted",
-      "ecological_model_contract.json within/among standardization and multiplicity: use a common scale and an explicit scale-contrast family",
-      "ecological_model_contract.json among spatial location: average the observation basis, not the basis evaluated at a geographic centroid",
-      "ecological_model_execution_addendum_20260908.json split-after-common-FWL algorithm: use the reviewed joint design",
-      "This integrated contract's original drying/thermal formulations and 18-test family are superseded by the verified source-QC process-block selection: one model, four process blocks and 36 primary slots. Historical acquisition and candidate receipts remain unchanged."
+      "The former five-stage source/measurement/assessability/ecology/synthesis surface is simplified to source -> measurement_qc -> ecology -> output.",
+      "Assessability is reduced to simple measurement completion/missingness accounting inside measurement_qc; it is not a separate environmental analysis.",
+      "Versioned alternative colour definitions, model-specific environment diagnostics and dependence-calibration expansions are supporting technical work, not canonical gates.",
+      "Optional breadth/hypervolume synthesis is outside the canonical path.",
+      "Historical acquisition, pilot, repair and exploratory receipts remain unchanged and cannot alter primary route admission."
     ],
     "entrypoint": "python -m analysis.v3.integrated_preflight",
     "entrypoint_scope": "Integrity and readiness reporting only; cannot authorize image production or ecological fitting."
@@ -22,95 +21,136 @@
   "stages": [
     {
       "id": "source",
-      "question": "Which records and dependence relationships are present, and which support the native-range question?",
-      "required": ["reconciled_source_links", "native_authority_input_chain", "enriched_source_cohort"],
-      "output": "Versioned native ecological view, exact dates, public coordinate uncertainty and dependence components; retain introduced and unresolved records in the master source."
+      "question": "Which records support the native-range ecological question?",
+      "required": [
+        "reconciled_source_links",
+        "native_authority_input_chain",
+        "enriched_source_cohort"
+      ],
+      "output": "Frozen native source view with dates, photo links and known dependence preserved."
     },
     {
       "id": "measurement_qc",
-      "question": "What can each image measure, and is the resulting module-specific analysis support usable?",
-      "required": ["image_only_qualification", "versioned_colour_definition", "reconciled_stream_schedule", "durable_private_numerical_replay", "native_source_to_measurement_coverage", "model_specific_environment_diagnostics"],
-      "output": "All 27 raw slots retained; technical QC and simple source-to-measurement retention summarized here; realized orientation, visible-colour and gross-shape cohorts are fixed before ecology."
+      "question": "Have the frozen image measurements been recovered, integrated and reduced to fixed primary module representations with explicit missingness?",
+      "required": [
+        "image_only_qualification",
+        "reconciled_stream_schedule",
+        "durable_private_numerical_replay",
+        "native_source_to_measurement_coverage",
+        "primary_module_response_geometry"
+      ],
+      "output": "All 27 raw endpoints retained; existing QC applied; completed/pending/blocked measurements counted; orientation, visible-colour and gross-shape representations fixed before ecology."
     },
     {
       "id": "ecology",
-      "question": "Are the conditional environment associations shared across taxa and across within/among scales?",
-      "required": ["primary_module_response_geometry", "joint_covariance_aware_hierarchy", "calendar_imaging_nuisance_design", "dependence_aware_inference_simulation", "fixed_full_test_family"],
-      "output": "Frozen module geometry; taxon slopes, pooling and heterogeneity; among-taxon associations; direct matched-support scale contrasts, with effect sizes and uncertainty."
+      "question": "Using the fixed measured cohorts and existing model, what are the within-taxon, among-taxon and scale-contrast associations?",
+      "required": [
+        "joint_covariance_aware_hierarchy",
+        "calendar_imaging_nuisance_design",
+        "fixed_full_test_family"
+      ],
+      "output": "The already-declared ecological model is run once on the fixed module cohorts, with effect sizes and uncertainty. No rescue analysis is added."
     },
     {
       "id": "output",
-      "question": "Can the canonical source, measurement/QC and ecology results be rendered without changing the scientific analysis?",
+      "question": "Can the canonical results be rendered without changing the scientific analysis?",
       "required": [],
-      "output": "Figures, tables, manuscript-facing summaries and reproducibility records generated from the canonical results. Optional breadth/hypervolume work is outside the canonical path and cannot block output."
+      "output": "Figures, tables, manuscript-facing summaries and reproducibility records generated from canonical results."
     }
   ],
   "source_and_sampling": {
     "master_deletion": false,
     "primary_range": "native_only",
-    "native_limit": "Authority-backed regional membership, not verification of each individual record's origin; unresolved stays unresolved.",
+    "native_limit": "Authority-backed regional membership; unresolved records remain in the master source.",
     "analysis_unit": "observation, retaining shared-photo and known exact-content dependence across observations",
     "no_final_taxon_cap_or_thinning": true,
-    "dominance": "Partial pooling of taxon slopes plus taxon-standardized support summaries; pooling alone does not correct selective observation or informative sampling.",
-    "coverage_baseline": "The eligible native ecological source, not the mixture of native, introduced and unresolved source records.",
-    "coverage_units": "Audit each endpoint and joint module cohort separately; do not require all 14 endpoints for every primary fit.",
-    "sampling_limit": "Retention diagnoses selection conditional on recorded source observations; it cannot recover unrecorded plants, unbiased occurrence prevalence or an unobserved sampling-effort surface."
+    "coverage_baseline": "eligible native ecological source",
+    "coverage_rule": "Measurement/QC records only the counts and endpoint/module missingness needed to define the realized analysis cohorts. It does not create a separate taxon-by-region-by-environment research program.",
+    "sampling_limit": "The workflow cannot recover unrecorded plants or an unbiased occurrence-effort surface."
   },
   "environment_and_inference": {
-    "primary_modules": ["orientation", "visible_colour", "gross_shape"],
+    "primary_modules": [
+      "orientation",
+      "visible_colour",
+      "gross_shape"
+    ],
     "descriptive_module": "visible_display",
     "environment_definition": "analysis/v3/environment_model.py",
     "environment_selection_receipt": "reproducibility/v3_full_native_environment_qc_selection_20260908.json",
     "environment_selection_receipt_canonical_sha256": "1dbddaa1cfab0075e89fa3fed1b1934e7aaa5e25041678513611542bc346e2d8",
-    "retained_variables": ["pr_month", "BIO12", "BIO18", "GSP", "rsds_month", "vpd_month", "tas_month", "BIO1", "sfcWind_month"],
+    "retained_variables": [
+      "pr_month",
+      "BIO12",
+      "BIO18",
+      "GSP",
+      "rsds_month",
+      "vpd_month",
+      "tas_month",
+      "BIO1",
+      "sfcWind_month"
+    ],
     "process_blocks": {
-      "wetting_moisture": ["pr_month", "BIO12", "BIO18", "GSP"],
-      "radiation": ["rsds_month"],
-      "heat_drying": ["vpd_month", "tas_month", "BIO1"],
-      "mechanical": ["sfcWind_month"]
+      "wetting_moisture": [
+        "pr_month",
+        "BIO12",
+        "BIO18",
+        "GSP"
+      ],
+      "radiation": [
+        "rsds_month"
+      ],
+      "heat_drying": [
+        "vpd_month",
+        "tas_month",
+        "BIO1"
+      ],
+      "mechanical": [
+        "sfcWind_month"
+      ]
     },
-    "formulation_rule": "One additive conditional model includes every retained variable for every primary module. Test each process block jointly, conditional on the other three blocks and nuisance terms. Orientation is tested against all four processes; precipitation is not selected as a winner or an exclusive primary test. Blocks are not mutually independent causal mechanisms. The source-only weighted keep-style VIF10 selection is adopted without changing its rule or using trait associations.",
-    "temporal_target": "Observation-month 1981-2010 climatology plus retained annual/seasonal context within its process block; distinguish their time windows. None is event weather, actual head exposure or a developmental-stage label.",
-    "environment_missingness": "Selection and predictor transformations used the fixed complete-case 12-candidate source (317986 observations, 354 taxa). A realized module requires its retained nine predictors and declared response/nuisance support, not a new requirement for removed candidates. Report the exact resulting membership and exclusions; retain all source rows and all 15 environmental columns. No imputation, silent row deletion or outcome-driven reselection.",
-    "nuisance": "Source-date harmonics with hemisphere interactions, observation year where identifiable, endpoint-matched log head pixels and sharpness, and the eight-term spherical basis. Freeze exact coding and missingness handling before fitting.",
-    "stage_estimand": "Primary estimates describe the photographed stage mixture. A stage-restricted or stage-conditioned target is different; automated stage uncertainty is not ground truth and is not silently called controlled.",
-    "environment_diagnostics": ["raw correlation", "within-taxon correlation", "among-taxon-mean correlation", "nuisance-residualized rank", "condition number", "VIF", "per-taxon identification"],
-    "diagnostic_rule": "Use actual endpoint/module membership and weights. Singular or unsupported contrasts are not estimable; large VIF widens uncertainty, not permission for outcome-driven variable selection.",
-    "within": "Joint heterogeneous taxon slopes with shared nuisance effects and full cross-taxon sampling covariance; then covariance-aware partial pooling, retaining sparse support without inventing estimable slopes.",
-    "among": "One matched phenotype/exposure summary per taxon; average the observation-level spatial basis and nuisance terms over those same records.",
-    "common_scale": "Report raw-unit effects and use one saved transformation per response/predictor across within and among comparisons; never standardize separately within every taxon or scale when comparing slopes.",
-    "scale_contrast": "Estimate beta_among minus the within hypermean on matched eligible taxa/support with their joint resampling covariance. A significant effect on one scale and a nonsignificant effect on the other is not evidence of a difference.",
-    "primary_probability_family": "If probabilities are reported, one Holm family covers 3 modules x 4 process blocks x 3 questions (within, among, direct scale contrast) = 36 tests. Each test includes all retained coefficients of its process block across the response coordinates of that module, conditional on the full model. Non-estimable slots stay in the planned denominator without a fabricated P value. Endpoint decompositions are secondary, not extra confirmatory tests.",
-    "inference_gate": "The exact rank-aware statistic, joint null/resampling algorithm and 2-degree/5-degree dependence-preserving uncertainty implementation need simulation tests for null error, coverage and heterogeneity before data fitting. Unrestricted row permutations and independent-variance pooling are not substitutes.",
-    "secondary_only": "Endpoint decompositions, bounded measurement envelopes and influence summaries explain estimates; they do not form survivor gates or rescue a failed module.",
-    "phylogeny": "No claim that phylogenetic dependence has been removed. The legacy placement exercise is not primary control or repeated independent evidence.",
-    "functional_form": "Primary conditional association is linear over observed support. Nonlinearity and exposure interactions remain explicitly outside that primary estimand unless a bounded extension is specified and validated before inspecting its outcomes."
+    "formulation_rule": "Use the one already-frozen additive conditional environment model for every primary module; do not select predictors from v3 trait results.",
+    "temporal_target": "Observation-month 1981-2010 climatology plus retained annual/seasonal context; none is event weather or direct head exposure.",
+    "environment_missingness": "Use the frozen retained predictors and declare the realized complete model membership. No imputation, silent row deletion or outcome-driven reselection.",
+    "nuisance": "Use the already-frozen calendar, image-quality and spherical-basis nuisance design.",
+    "within": "Use the already-implemented covariance-aware partially pooled taxon model.",
+    "among": "Use one matched phenotype/exposure summary per taxon on the same eligible support.",
+    "common_scale": "Use the same saved response/predictor transformation when comparing within and among effects.",
+    "scale_contrast": "Estimate among minus within on matched eligible taxa/support.",
+    "primary_probability_family": "If probabilities are reported, retain the already-declared 3 modules x 4 process blocks x 3 questions = 36-slot family.",
+    "secondary_only": "Endpoint decompositions, calibration runs, influence summaries and exploratory all-27 results are supporting material only and cannot rescue or redefine the primary result.",
+    "phylogeny": "Legacy phylogenetic placement is not a canonical control or independent confirmation.",
+    "functional_form": "Primary association remains linear over observed support; no new nonlinear or interaction family is added in this revision."
   },
   "trait_representation": {
+    "raw_endpoints": 27,
+    "primary_module_geometry": "Use the existing frozen orientation=1, visible_colour=8 and gross_shape=4 coordinate representation.",
     "hue": "Treat sine and cosine jointly as one circular quantity.",
-    "composition": "Four colour fractions are one closed composition, using the existing joint Hellinger representation, not four independent traits.",
-    "correlation": "Retain within- and among-taxon module covariance and effective rank. Correlated endpoints are not repeated independent biological evidence.",
-    "chroma_revision": "The legacy corolla_lab_chroma changes pixel subset with dominant colour. Preserve that value; a uniformly floral-union chroma variable needs a new recipe ID and image-only qualification before use as v3 primary colour. Existing paired_colour.floral_union.lab_chroma is a candidate, not silently a qualified replacement.",
-    "background": "Use paired flower/context summaries with the same estimator and matched rows. A background association can be ecological as well as photographic; its absence does not prove floral specificity.",
-    "uncertainty": "BBox and photometric perturbations measure technical sensitivity, not a calibrated biological-error distribution or absolute accuracy."
+    "composition": "Treat the four colour fractions as one closed composition using the existing joint Hellinger representation.",
+    "correlation": "Endpoint correlation may be summarized for redundancy/QC interpretation, but it is not a data-driven endpoint-selection rule.",
+    "chroma_revision": "Continue using the registered legacy chroma in the canonical workflow. The uniform-floral candidate remains noncanonical technical work and is not a gate.",
+    "uncertainty": "BBox and photometric perturbations describe technical sensitivity, not physical trait accuracy."
   },
   "hypervolume": {
     "A_position": "noncanonical_optional_qc_display",
     "B_position": "noncanonical_optional_synthesis",
-    "axes": "Shared loadings, centers and units across taxa, learned without environmental associations and with taxon/module balance. Do not fit separate taxon PCAs or erase breadth by within-taxon z-scoring.",
-    "dimensions": "Four to six is a design candidate, not guaranteed support. Dimension, bandwidth, probability mass, seeds and convergence rules require an outcome-blind technical qualification receipt before fitting B.",
-    "matched_support": "Use identical observation sets for paired phenotype/environment breadth; report full-source environmental support separately.",
-    "sampling": "Repeated equal-size, dependence-aware resampling, accumulation/convergence checks and a sampling-null benchmark must address their common dependence on sample size. Do not discard the master data.",
-    "different_spaces": "Trait and environmental spaces have different units; no direct cross-space overlap or centroid distance. Compare defined within-space breadth summaries across taxa.",
-    "independence": "Breadth association can follow the primary linear association and shared sampling; it is a synthesis of the same evidence, not an independent adaptive test.",
     "optional": true,
-    "failure_rule": "Unsupported taxa or dimensions are not estimable for optional synthesis; this does not invalidate otherwise supported primary models or canonical output."
+    "failure_rule": "Hypervolume/breadth work cannot block ecology or output."
   },
   "two_contributions": {
-    "methodological": "An auditable full-source image-to-distribution workflow, with retained denominators, endpoint-specific measurement/QC and automated technical evaluation. YOLO, PCA and hypervolume individually are not claimed as new inventions.",
-    "ecological": "Estimate module-specific abiotic associations and test agreement or differences between within- and among-taxon scales, without requiring either v2 candidate to survive.",
-    "report_order": ["source", "measurement/QC and module structure", "within/among ecological effects and direct contrasts", "figures/tables/manuscript output"],
-    "not_a_result_yet": "Public photographs may recover spatially repeated image-phenotype distributions; whether their ecological associations differ by module or scale remains a question until v3 is executed.",
-    "limits": ["image variation is not biological variance alone", "chroma is not anthocyanin concentration", "image vertical is not gravity", "association is not adaptation", "repeatability is not physical accuracy"]
+    "methodological": "A reproducible source-to-image-measurement workflow that retains the 27-endpoint record and makes the primary module representation explicit.",
+    "ecological": "Estimate the already-declared module-specific abiotic associations across within- and among-taxon scales.",
+    "report_order": [
+      "source",
+      "measurement/QC and module structure",
+      "ecology",
+      "figures/tables/manuscript output"
+    ],
+    "limits": [
+      "image variation is not biological variance alone",
+      "chroma is not anthocyanin concentration",
+      "image vertical is not gravity",
+      "association is not adaptation",
+      "repeatability is not physical accuracy"
+    ]
   }
 }
