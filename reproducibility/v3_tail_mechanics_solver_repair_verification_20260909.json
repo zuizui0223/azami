@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "status": "TAIL_MECHANICS_SOLVER_REPAIR_REVALIDATED_64_OF_64_COMPLETE",
+  "solver_repair_commit": "cd9562fb800447b4b9853d8617ace8b2288477e7",
+  "source_mechanics_run": {
+    "run_id": 34247983094,
+    "head_sha": "cd9562fb800447b4b9853d8617ace8b2288477e7",
+    "conclusion": "success",
+    "expected_outer_reports": 32,
+    "artifact_reports": 32
+  },
+  "aggregate": {
+    "run_id": 34294207028,
+    "head_sha": "95e19949de5e70fed9c2a8b22e52173c27bfe1c0",
+    "conclusion": "success",
+    "artifact_id": 10082515120,
+    "artifact_digest": "sha256:859f9e3a06525196723bb3c8b5338da57e25788e18a495d97323c03d76f92624",
+    "report_raw_sha256": "7e45cb9efb2ee13ab9f35e36989cd25877d753c493028f6c24db707f599d5eb6",
+    "report_canonical_json_sha256": "d1610aea23ad26891ed5be314a4b0f498dc8613f4552e0adc2a56b6412964c68",
+    "recorded_outer_reports": 32,
+    "expected_grid_cases": 64,
+    "complete_grid_cases": 64,
+    "missing_outer_reports": 0,
+    "incomplete_grid_cases": 0
+  },
+  "mechanics_summary": {
+    "total_false_holm_rejections": 0,
+    "outer_reports_with_any_false_holm_on_either_grid": 0,
+    "total_true_holm_rejections": 229,
+    "total_tail_resolution_hits": 229,
+    "coefficient_interval_coverage": {
+      "covered": 5106,
+      "total": 5184,
+      "fraction": 0.9849537037037037
+    }
+  },
+  "qualification_boundary": "This verifies repaired 999-draw family mechanics and tail resolution on all 32 planned outer reports and 64 grid cases. Eight outer replicates per scenario remain too few for precise FWER or coverage calibration, and the pilot does not authorize empirical ecological fitting. Final multicoordinate calibration remains required.",
+  "replacement_failures_allowed": false,
+  "thresholds_changed": false,
+  "seed_changed": false,
+  "grid_changed": false,
+  "family_changed": false,
+  "synthetic_truth_changed": false,
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
