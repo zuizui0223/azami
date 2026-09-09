@@ -2,9 +2,9 @@
 """Rebuild the frozen v2 observation native-status table without Git LFS.
 
 The original observation-level CSV is still referenced by the immutable v2 tag,
-but its Git LFS object is no longer present on the server.  The same frozen
+but its Git LFS object is no longer present on the server. The same frozen
 analysis directory retains the exact non-LFS name-resolution and distribution
-records that generated it.  This script combines those frozen auxiliary tables
+records that generated it. This script combines those frozen auxiliary tables
 with the frozen 46,276-row strict-spatial observation table and the pinned TDWG
 level-3 geometry, then requires the reconstructed CSV to match the original
 recorded SHA-256 byte-for-byte.
@@ -54,6 +54,25 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def restore_original_resolution_dtypes(path: Path) -> pd.DataFrame:
+    """Recover the mixed int/blank object dtype used by the original live build."""
+    resolution = pd.read_csv(
+        path,
+        dtype={
+            "input_name": "string",
+            "resolution_status": "string",
+            "accepted_key": "string",
+            "accepted_name": "string",
+        },
+        keep_default_na=False,
+        low_memory=False,
+    )
+    resolution["accepted_key"] = resolution["accepted_key"].map(
+        lambda value: int(value) if str(value).strip() else ""
+    )
+    return resolution
+
+
 def main() -> int:
     args = parse_args()
     observation_sha = sha256_file(args.observation)
@@ -76,7 +95,7 @@ def main() -> int:
     if source["taxon_name"].nunique() != EXPECTED_TAXA:
         raise SystemExit("Strict-spatial source taxon count is not frozen")
 
-    resolution = pd.read_csv(args.resolution, low_memory=False)
+    resolution = restore_original_resolution_dtypes(args.resolution)
     distributions = pd.read_csv(args.distributions, low_memory=False)
     expected_names = set(source["taxon_name"].astype(str))
     observed_names = set(resolution["input_name"].astype(str))
@@ -125,6 +144,7 @@ def main() -> int:
         "n_taxa": int(classified["taxon_name"].nunique()),
         "n_resolved_taxa": resolved_taxa,
         "native_status_counts": status_counts,
+        "output_size_bytes": int(args.out_csv.stat().st_size),
         "output_sha256": output_sha,
         "expected_output_sha256": EXPECTED_OUTPUT_SHA256,
         "exact_byte_match": exact,
