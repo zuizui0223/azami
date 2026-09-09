@@ -1,0 +1,82 @@
+name: Chapter 1 native-primary v2 reuse reanalysis
+
+on:
+  push:
+    paths:
+      - 'analysis/v3/run_native_primary_from_v2.py'
+      - 'analysis/v3/recover_display_composition.py'
+      - '.github/workflows/ch1-v3-native-primary.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  native-primary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen v2 numerical runtime
+        run: python -m pip install pandas numpy scipy statsmodels rasterio pyproj
+      - name: Recover frozen v2 continuous source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/continuous
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip -d work/continuous
+          test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
+          test -f work/continuous/environment/strict_spatial_chelsa.csv
+      - name: Recover frozen native-status table
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/native
+          gh api '/repos/'${GITHUB_REPOSITORY}'/contents/analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv?ref=archive/ch1-precleanup-20260827' --jq .content | tr -d '\n' | base64 -d > work/native/observation_native_status.csv
+          echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
+      - name: Recover the five historically omitted measured endpoints
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/historical
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip > work/historical.zip
+          echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
+          test -n "$HEADS"
+          python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir work/recovered_display
+      - name: Rebuild the frozen nine-predictor environment table
+        run: |
+          python analysis/sample_chelsa_process_environment.py \
+            --environment work/continuous/environment/strict_spatial_chelsa.csv \
+            --source-contract analysis/ch1/chelsa_process_environment_sources.json \
+            --out-csv work/strict_spatial_chelsa_process.csv \
+            --report work/chelsa_process_extraction_report.json
+          echo 'e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7  work/strict_spatial_chelsa_process.csv' | sha256sum -c -
+      - name: Run native-only full-27 atlas with unchanged v2 model
+        run: |
+          python analysis/v3/run_native_primary_from_v2.py \
+            --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --analysis-contract analysis/ch1/v2_full27_environment_atlas_contract.json \
+            --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/strict_spatial_chelsa_process.csv \
+            --native-status work/native/observation_native_status.csv \
+            --recovered-display work/recovered_display/observation_values.csv \
+            --work-dir work/native_inputs \
+            --out-dir work/native_results
+      - name: Upload compact native-primary results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-native-primary-v2-reuse-${{ github.run_id }}
+          path: |
+            work/native_results/*.csv
+            work/native_results/*.json
+            work/chelsa_process_extraction_report.json
+            work/recovered_display/display_composition_report.json
+          if-no-files-found: error
+          retention-days: 30
