@@ -30,6 +30,15 @@ EXPECTED_STATUS_COUNTS = {
     "unmapped_tdwg": 2100,
     "unlisted": 1065,
 }
+TRAIT_COLUMNS = [
+    "obs_id",
+    "taxon_name",
+    "endpoint_id",
+    "module",
+    "analysis_tier",
+    "measurement_available",
+    "value",
+]
 RECOVERED = {
     "visible_floret_fraction": "corolla_visible_fraction",
     "corolla_white_pixel_fraction": "corolla_white_fraction",
@@ -62,6 +71,7 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
         low_memory=False,
     )
     native_all["obs_id"] = native_all["obs_id"].astype(str)
+    native_all["taxon_name"] = native_all["taxon_name"].astype(str)
     if len(native_all) != EXPECTED_TOTAL_ROWS or native_all["obs_id"].duplicated().any():
         raise SystemExit("Native-status table must contain 46,276 unique frozen observation IDs")
     status_counts = {
@@ -74,6 +84,7 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
     native_ids = set(native["obs_id"])
     if len(native) != EXPECTED_NATIVE_ROWS:
         raise SystemExit(f"Expected {EXPECTED_NATIVE_ROWS} native observations, found {len(native)}")
+    taxon_by_obs = native.set_index("obs_id")["taxon_name"]
 
     environment = pd.read_csv(args.environment, low_memory=False)
     environment["obs_id"] = environment["obs_id"].astype(str)
@@ -99,9 +110,22 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
     if len(environment) != EXPECTED_NATIVE_ROWS or set(environment["obs_id"]) != native_ids:
         raise SystemExit("Native environment membership differs from the frozen v2 native cohort")
 
-    traits = pd.read_csv(args.traits_long, low_memory=False)
+    traits = pd.read_csv(args.traits_long, usecols=TRAIT_COLUMNS, low_memory=False)
     traits["obs_id"] = traits["obs_id"].astype(str)
+    traits["taxon_name"] = traits["taxon_name"].astype(str)
     traits = traits[traits["obs_id"].isin(native_ids)].copy()
+    if traits.duplicated(["obs_id", "endpoint_id"]).any():
+        raise SystemExit("Historical native trait table is not unique by obs_id/endpoint_id")
+
+    endpoint_contract = pd.read_csv(
+        args.endpoint_contract, dtype=str, keep_default_na=False, low_memory=False
+    )
+    if endpoint_contract["endpoint_id"].duplicated().any():
+        raise SystemExit("Endpoint contract is not unique by endpoint_id")
+    endpoint_meta = endpoint_contract.set_index("endpoint_id")
+    missing_contract = sorted(set(RECOVERED) - set(endpoint_meta.index))
+    if missing_contract:
+        raise SystemExit(f"Recovered endpoints are absent from the endpoint contract: {missing_contract}")
 
     recovered = pd.read_csv(args.recovered_display, low_memory=False)
     recovered["obs_id"] = recovered["obs_id"].astype(str)
@@ -109,15 +133,56 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
     if recovered.index.duplicated().any():
         raise SystemExit("Recovered display table must be unique by obs_id")
 
+    appended_counts: dict[str, int] = {}
+    updated_counts: dict[str, int] = {}
     for endpoint, column in RECOVERED.items():
-        values = pd.to_numeric(recovered[column], errors="coerce")
-        mapping = values.dropna().to_dict()
+        values = pd.to_numeric(recovered[column], errors="coerce").dropna()
+        mapping = values.to_dict()
+
         mask = traits["endpoint_id"].eq(endpoint)
-        mapped = traits.loc[mask, "obs_id"].map(mapping)
-        usable = mapped.notna()
-        target = traits.loc[mask].index[usable]
-        traits.loc[target, "value"] = mapped[usable].to_numpy(float)
-        traits.loc[target, "measurement_available"] = True
+        existing_ids = set(traits.loc[mask, "obs_id"])
+        if existing_ids:
+            mapped = traits.loc[mask, "obs_id"].map(mapping)
+            usable = mapped.notna()
+            target = traits.loc[mask].index[usable]
+            traits.loc[target, "value"] = mapped[usable].to_numpy(float)
+            traits.loc[target, "measurement_available"] = True
+            updated_counts[endpoint] = int(len(target))
+        else:
+            updated_counts[endpoint] = 0
+
+        missing_ids = sorted(set(mapping) - existing_ids)
+        if missing_ids:
+            meta = endpoint_meta.loc[endpoint]
+            add = pd.DataFrame(
+                {
+                    "obs_id": missing_ids,
+                    "taxon_name": [str(taxon_by_obs.loc[obs_id]) for obs_id in missing_ids],
+                    "endpoint_id": endpoint,
+                    "module": str(meta["module"]),
+                    "analysis_tier": str(meta["analysis_tier"]),
+                    "measurement_available": True,
+                    "value": [float(mapping[obs_id]) for obs_id in missing_ids],
+                }
+            )
+            traits = pd.concat([traits, add[TRAIT_COLUMNS]], ignore_index=True, sort=False)
+        appended_counts[endpoint] = int(len(missing_ids))
+
+    if traits.duplicated(["obs_id", "endpoint_id"]).any():
+        raise SystemExit("Restored native trait table is not unique by obs_id/endpoint_id")
+
+    measured_endpoint_counts = {
+        endpoint: int(
+            pd.to_numeric(
+                traits.loc[traits["endpoint_id"].eq(endpoint), "value"],
+                errors="coerce",
+            ).notna().sum()
+        )
+        for endpoint in RECOVERED
+    }
+    zero_recovered = [endpoint for endpoint, count in measured_endpoint_counts.items() if count <= 0]
+    if zero_recovered:
+        raise SystemExit(f"Recovered endpoint rows were not materialized: {zero_recovered}")
 
     args.work_dir.mkdir(parents=True, exist_ok=True)
     trait_out = args.work_dir / "native_traits_long.csv"
@@ -137,6 +202,7 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
         "The five restored display/composition endpoints were already measured at head level and are not new image measurements.",
         "When the native-status source mode is regenerated, the original historical LFS bytes are unavailable and no byte-identity claim is made.",
         "A prefiltered native-only environment table is accepted only when its 27,066 obs_id set exactly equals the frozen native cohort.",
+        "The four colour-composition fractions form one closed composition and must not be narrated as four independent biological discoveries.",
     ]
     contract_out.write_text(json.dumps(contract, indent=2) + "\n", encoding="utf-8")
 
@@ -147,15 +213,9 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
         "native_observations": len(environment),
         "native_taxa_environment": int(environment["taxon_name"].nunique()),
         "trait_rows_native": int(len(traits)),
-        "measured_endpoint_counts": {
-            endpoint: int(
-                pd.to_numeric(
-                    traits.loc[traits["endpoint_id"].eq(endpoint), "value"],
-                    errors="coerce",
-                ).notna().sum()
-            )
-            for endpoint in RECOVERED
-        },
+        "recovered_endpoint_rows_appended": appended_counts,
+        "recovered_endpoint_rows_updated": updated_counts,
+        "measured_endpoint_counts": measured_endpoint_counts,
     }
     return trait_out, env_out, contract_out, counts
 
@@ -279,7 +339,7 @@ def main() -> int:
         ],
         "changed": [
             "primary cohort restricted to native observations",
-            "five historically omitted measured fields restored to the trait table",
+            "five historically omitted measured endpoint rows materialized from the historical head-level measurements",
         ],
     }
     (args.out_dir / "native_primary_comparison_report.json").write_text(
