@@ -6,6 +6,10 @@ Every source must meet the frozen coverage threshold; otherwise extraction fails
 rather than silently substituting a post-hoc predictor. A source may be a single
 COG or a predeclared list of monthly climatology COGs aggregated by arithmetic
 mean at each frozen observation coordinate.
+
+Remote COG samples are read in raster-block order and restored to the original
+observation order. This changes I/O order only; sampled pixels, source URLs,
+aggregation rules, and the resulting scientific values are unchanged.
 """
 from __future__ import annotations
 
@@ -19,6 +23,7 @@ import numpy as np
 import pandas as pd
 import rasterio
 from pyproj import Transformer
+from rasterio.transform import rowcol
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,6 +39,21 @@ def parse_args() -> argparse.Namespace:
         help="Optional directory containing exact URL-basename TIFF copies; scientific source URLs remain frozen.",
     )
     return p.parse_args()
+
+
+def block_sorted_order(src: rasterio.io.DatasetReader, xs: list[float], ys: list[float]) -> np.ndarray:
+    """Return point indices ordered by source raster block, without changing values."""
+    rows, cols = rowcol(src.transform, xs, ys)
+    rows = np.asarray(rows, dtype=np.int64)
+    cols = np.asarray(cols, dtype=np.int64)
+    if src.block_shapes:
+        block_height, block_width = src.block_shapes[0]
+    else:
+        block_height, block_width = 1, max(1, int(src.width))
+    block_rows = np.floor_divide(rows, int(block_height))
+    block_cols = np.floor_divide(cols, int(block_width))
+    # np.lexsort uses the last key as primary: block row -> block col -> pixel row -> pixel col.
+    return np.lexsort((cols, rows, block_cols, block_rows))
 
 
 def sample_raster(
@@ -66,15 +86,20 @@ def sample_raster(
             xs, ys = transformer.transform(lon.tolist(), lat.tolist())
             coords = list(zip(xs, ys))
             vals = np.full(len(coords), np.nan, dtype=float)
-            for start in range(0, len(coords), batch_size):
-                stop = min(start + batch_size, len(coords))
-                for offset, sample in enumerate(src.sample(coords[start:stop], indexes=1, masked=True)):
+            order = block_sorted_order(src, xs, ys)
+            for start in range(0, len(order), batch_size):
+                stop = min(start + batch_size, len(order))
+                indices = order[start:stop]
+                batch_coords = [coords[int(index)] for index in indices]
+                for position, sample in enumerate(
+                    src.sample(batch_coords, indexes=1, masked=True)
+                ):
                     v = sample[0]
                     if np.ma.is_masked(v):
                         continue
                     v = float(v)
                     if math.isfinite(v):
-                        vals[start + offset] = v
+                        vals[int(indices[position])] = v
             meta = {
                 "url": url,
                 "crs": str(src.crs),
@@ -84,6 +109,8 @@ def sample_raster(
                 "offsets": [float(x) for x in src.offsets],
                 "access_mode": access_mode,
                 "local_cache_path": str(local_path) if access_mode == "exact_url_basename_local_cache" else None,
+                "sampling_order": "raster_block_sorted_then_restored_to_input_order",
+                "block_shape": list(src.block_shapes[0]) if src.block_shapes else None,
             }
     return vals, meta
 
@@ -172,8 +199,9 @@ def main() -> int:
         "contract": contract,
         "coverage": coverage,
         "raster_metadata": metadata,
-        "selection_rule": "phenotype-blind extraction on the frozen GEB-v2 strict spatial cohort",
+        "selection_rule": "phenotype-blind extraction on the supplied frozen strict-spatial cohort or its predeclared subset",
         "aggregation_rule": "only aggregation declared before outcome inspection in the source contract is permitted",
+        "transport_note": "COG points are ordered by raster block for I/O only and restored to input row order before output.",
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, indent=2) + "\n")
