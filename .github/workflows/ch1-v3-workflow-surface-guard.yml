@@ -1,0 +1,27 @@
+name: Chapter 1 v3 workflow surface guard
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ch1-v3-*'
+      - 'analysis/v3/workflow_surface_registry.json'
+      - 'analysis/v3/workflow_only_revision_scope_20260909.md'
+      - 'analysis/v3/validate_workflow_surface.py'
+  pull_request:
+    paths:
+      - '.github/workflows/ch1-v3-*'
+      - 'analysis/v3/workflow_surface_registry.json'
+      - 'analysis/v3/workflow_only_revision_scope_20260909.md'
+      - 'analysis/v3/validate_workflow_surface.py'
+  workflow_dispatch:
+
+jobs:
+  workflow-surface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify registered v3 workflow surface
+        run: python analysis/v3/validate_workflow_surface.py
