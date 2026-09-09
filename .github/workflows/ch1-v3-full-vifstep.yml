@@ -1,0 +1,103 @@
+name: Chapter 1 full-cohort VIF-step sensitivity
+
+on:
+  push:
+    branches: [analysis/ch1-v3-full-vifstep-20260909]
+    paths:
+      - 'analysis/v3/run_full_vifstep_sensitivity.py'
+      - '.github/workflows/ch1-v3-full-vifstep.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  full-vifstep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install numerical and CHELSA runtime
+        run: |
+          python -m pip install \
+            pandas==3.0.5 numpy==2.4.6 scipy==1.17.1 statsmodels==0.14.6 \
+            rasterio==1.4.4 pyproj==3.7.2 requests==2.34.2
+          python -m py_compile analysis/v3/run_full_vifstep_sensitivity.py
+
+      - name: Recover frozen v2 continuous source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/continuous
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip -d work/continuous
+          test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
+          test -f work/continuous/environment/strict_spatial_chelsa.csv
+          echo 'd775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344  work/continuous/universe/continuous_trait_universe_observation_long.csv' | sha256sum -c -
+          echo '2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0  work/continuous/environment/strict_spatial_chelsa.csv' | sha256sum -c -
+
+      - name: Recover five historically measured but omitted fields
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/historical work/recovered_display
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip > work/historical.zip
+          echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
+          test -n "$HEADS"
+          python -m analysis.v3.recover_display_composition \
+            --heads "$HEADS" \
+            --out-dir work/recovered_display
+          test -s work/recovered_display/observation_values.csv
+          rm -rf work/historical work/historical.zip
+
+      - name: Reconstruct exact full nine-predictor environment
+        run: |
+          set -euo pipefail
+          python analysis/sample_chelsa_process_environment.py \
+            --environment work/continuous/environment/strict_spatial_chelsa.csv \
+            --source-contract analysis/ch1/chelsa_process_environment_sources.json \
+            --out-csv work/strict_spatial_chelsa_process.csv \
+            --report work/chelsa_process_extraction_report.json
+          echo 'e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7  work/strict_spatial_chelsa_process.csv' | sha256sum -c -
+
+      - name: Run full-cohort response-blind VIF-step sensitivity
+        run: |
+          set -euo pipefail
+          mkdir -p work/full_vifstep
+          python analysis/v3/run_full_vifstep_sensitivity.py \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/strict_spatial_chelsa_process.csv \
+            --recovered-display work/recovered_display/observation_values.csv \
+            --frozen-among analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_among.csv \
+            --out-dir work/full_vifstep \
+            --minimum 5 \
+            --permutations 9999 \
+            --seed 20260909 | tee work/full_vifstep/run.log
+          test -s work/full_vifstep/full_vifstep_report.json
+          grep '^FULL_VIFSTEP_COMPACT_JSON=' work/full_vifstep/run.log
+
+      - name: Upload compact full-cohort sensitivity outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-full-vifstep-${{ github.run_id }}
+          path: |
+            work/full_vifstep/**
+            work/chelsa_process_extraction_report.json
+            work/recovered_display/display_composition_report.json
+          if-no-files-found: error
+          retention-days: 30
