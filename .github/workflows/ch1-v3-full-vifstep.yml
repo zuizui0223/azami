@@ -58,11 +58,15 @@ jobs:
           unzip -q work/historical.zip -d work/historical
           HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
           test -n "$HEADS"
+          RECOVERED_DIR="$RUNNER_TEMP/ch1-full-vifstep-recovered-${GITHUB_RUN_ID}"
+          rm -rf "$RECOVERED_DIR"
           python -m analysis.v3.recover_display_composition \
             --heads "$HEADS" \
-            --out-dir work/recovered_display
+            --out-dir "$RECOVERED_DIR"
+          cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
+          cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
           test -s work/recovered_display/observation_values.csv
-          rm -rf work/historical work/historical.zip
+          rm -rf work/historical work/historical.zip "$RECOVERED_DIR"
 
       - name: Reconstruct exact full nine-predictor environment
         run: |
