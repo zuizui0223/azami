@@ -27,8 +27,9 @@ raw measurement on Actions with verified per-photo checkpoints. A
 now contains 3,559 verified photo units and 6,145 detected heads, while preserving
 the full 319,244-observation, 27-endpoint inventory. This is not full-cohort
 completion or ecological admission; the 13 held measurement routes remain held.
-All 800 previously recorded photo units are unchanged. The new derived view has
-passed local snapshot restoration; its separate cloud roundtrip is not yet done.
+All 800 previously recorded photo units are unchanged. After its local snapshot
+check, the new derived view also passed a
+[protected cloud-to-local roundtrip](reproducibility/v3_expanded_stream_view_preservation_20260909.json).
 The [Wave C inventory](reproducibility/v3_wave_c_inventory_completion_20260909.json)
 now confirms 128 protected final numerical assets, with no missing chunk to
 resume. This is asset-inventory completion, not verification of every payload

@@ -1,0 +1,31 @@
+{
+  "anonymous_release_and_asset_requests": "404",
+  "asset": {
+    "asset_id": 551926122,
+    "asset_name": "v3-raw-observation-view-20260909-a.zip",
+    "bundle_bytes": 113112895,
+    "bundle_sha256": "78e0316b6bebc1a567ff45723091a3e2b43dd4f249d9314cf064cb7fc1410f09",
+    "files": 168,
+    "manifest_sha256": "3c23e2b347f5af1044c2e090b4567c82dc727764821ec4b6d19429b98eb43099",
+    "restored_bytes": 350698483,
+    "source_images_included": false
+  },
+  "bytes_restored": 350698483,
+  "detected_heads": 6145,
+  "draft_verified": true,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "environment_values_read": 0,
+  "files_restored": 168,
+  "image_requests": 0,
+  "limit": "Recoverable partial derived view; not completed native measurement, permanent publication archiving or ecology admission.",
+  "release_id": 384499945,
+  "repository": "zuizui0223/azami",
+  "retained_observation_endpoint_slots": 8619588,
+  "source_images_included": false,
+  "source_view_database_sha256": "eac5d2e5e34d9638a5c5e282938b0cac5a7e03e385b5c2aa36e385305a4a73fe",
+  "source_view_report_canonical_sha256": "df856c17d9611816b52e4acc02ff2b9e853b07f4e402af21331df3b6abb458d2",
+  "sqlite_integrity_check": "ok",
+  "status": "EXPANDED_PARTIAL_RAW_VIEW_PROTECTED_CLOUD_AND_LOCAL_ROUNDTRIP_VERIFIED",
+  "verified_photo_units": 3559
+}

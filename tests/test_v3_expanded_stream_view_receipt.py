@@ -36,3 +36,19 @@ def test_inventory_completion_does_not_erase_cloud_failures_or_claim_full_payloa
     assert [r['chunk'] for r in report['execution']['missing_only_resumes']] == ['c000036', 'c000111']
     assert report['execution']['all_other_chunks_reexecuted'] is False
     assert report['ecological_fitting_authorized'] is False
+
+
+def test_later_cloud_replay_matches_the_exact_expanded_view_without_rewriting_its_local_checkpoint():
+    view = json.loads((ROOT / 'reproducibility/v3_partial_raw_stream_observation_views_20260909.json').read_text())
+    replay = json.loads((ROOT / 'reproducibility/v3_expanded_stream_view_preservation_20260909.json').read_text())
+    assert replay['source_view_report_canonical_sha256'] == view['local_verification']['view_report_canonical_sha256']
+    assert replay['source_view_database_sha256'] == view['database_sha256']
+    assert replay['verified_photo_units'] == view['verified_photo_units'] == 3559
+    assert replay['files_restored'] == view['local_snapshot']['files_restored'] == 168
+    assert replay['bytes_restored'] == view['local_snapshot']['bytes_restored'] == 350698483
+    for key, value in view['local_snapshot']['asset'].items():
+        assert replay['asset'][key] == value
+    assert replay['draft_verified'] is True and replay['anonymous_release_and_asset_requests'] == '404'
+    assert replay['sqlite_integrity_check'] == 'ok'
+    assert replay['retained_observation_endpoint_slots'] == 319244 * 27
+    assert replay['source_images_included'] is False and replay['ecological_fitting_authorized'] is False
