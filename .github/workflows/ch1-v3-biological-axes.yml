@@ -5,6 +5,7 @@ on:
     branches: [analysis/ch1-v3-biological-axes-20260910]
     paths:
       - 'analysis/v3/run_biological_axis_reanalysis.py'
+      - 'analysis/v3/run_biological_axis_sensitivity_chain.py'
       - 'analysis/v3/biological_trait_axis_contract_20260910.csv'
       - 'analysis/v3/BIOLOGICAL_AXIS_REANALYSIS_PLAN_20260910.md'
       - '.github/workflows/ch1-v3-biological-axes.yml'
@@ -23,14 +24,20 @@ jobs:
       OMP_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install numerical runtime
+      - name: Install numerical and historical runtime
         run: |
-          python -m pip install pandas==3.0.5 numpy==2.4.6 statsmodels==0.14.6 scipy==1.17.1
-          python -m py_compile analysis/v3/run_biological_axis_reanalysis.py
+          python -m pip install pandas==3.0.5 numpy==2.4.6 statsmodels==0.14.6 scipy==1.17.1 'biopython>=1.83,<2'
+          python -m py_compile \
+            analysis/v3/run_biological_axis_reanalysis.py \
+            analysis/v3/run_biological_axis_sensitivity_chain.py \
+            analysis/run_geb_v2_full27_spatial_sensitivity.py \
+            analysis/run_geb_v2_full27_historical_sensitivity.py
 
       - name: Recover frozen 22-endpoint trait universe
         env:
@@ -54,17 +61,64 @@ jobs:
           unzip -q work/environment.zip 'process_environment/strict_spatial_chelsa_process.csv' -d work/environment
           echo 'f86a3418e9b21453026bba1aaf350b061f03048949547e2092602620af98cbf6  work/environment/process_environment/strict_spatial_chelsa_process.csv' | sha256sum -c -
 
+      - name: Recover frozen sampling lookups
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/sampling
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8983877726/zip > work/regions.zip
+          echo '151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca  work/regions.zip' | sha256sum -c -
+          unzip -q work/regions.zip 'spatial_regions/broad_region_lookup.csv' -d work/sampling
+          cp work/sampling/spatial_regions/broad_region_lookup.csv work/sampling/broad_region_lookup.csv
+          echo '085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff  work/sampling/broad_region_lookup.csv' | sha256sum -c -
+          git fetch --no-tags --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
+          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/sampling/observation_native_status.csv
+          echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/sampling/observation_native_status.csv' | sha256sum -c -
+
+      - name: Recover frozen 52 historical placement trees
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/historical
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8227254443/zip > work/historical.zip
+          echo '499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          echo '8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92  work/historical/historical_trees/gbotb_lcvp_scenario1.tre' | sha256sum -c -
+          echo '82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af  work/historical/historical_trees/gbotb_lcvp_scenario2_randomized.trees' | sha256sum -c -
+          echo '8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92  work/historical/historical_trees/gbotb_lcvp_scenario3.tre' | sha256sum -c -
+
       - name: Run reduced biological-construct analysis
         run: |
           set -euo pipefail
           mkdir -p work/results
-          python analysis/v3/run_biological_axis_reanalysis.py \
+          python -m analysis.v3.run_biological_axis_reanalysis \
             --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
             --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
             --out-dir work/results \
             --permutations 9999 \
             --seed 20260910 | tee work/results/run.log
           test -s work/results/biological_axes_report.json
+
+      - name: Reapply v2 sampling spatial historical sequence to constructs
+        run: |
+          set -euo pipefail
+          mkdir -p work/results/sensitivity_chain
+          python -m analysis.v3.run_biological_axis_sensitivity_chain \
+            --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
+            --axis-among work/results/biological_axes_among_min5.csv \
+            --axis-within work/results/biological_axes_within.csv \
+            --regions work/sampling/broad_region_lookup.csv \
+            --native-status work/sampling/observation_native_status.csv \
+            --tree-dir work/historical/historical_trees \
+            --out-dir work/results/sensitivity_chain \
+            --spatial-permutations 999 \
+            --moran-permutations 999 \
+            --minimum-taxa-historical 30 \
+            --seed 20260910 | tee work/results/sensitivity_chain/run.log
+          test -s work/results/sensitivity_chain/biological_axis_sensitivity_chain_report.json
 
       - name: Upload biological-axis outputs
         uses: actions/upload-artifact@v4
