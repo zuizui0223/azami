@@ -4,6 +4,8 @@ from pathlib import Path
 from analysis.v3.workflow import canonical_digest, text_digest
 
 ROOT = Path(__file__).resolve().parents[1]
+HISTORICAL_CONTRACTION_IMPLEMENTATION_SHA = '14c0f6333814c5aea0b2c79c7a5b13402abf0837fa5683845fcf971fe5426c6a'
+SOLVER_REPAIR_IMPLEMENTATION_SHA = 'c506afa529f2a3ac125bbd72e0334cf7e125b774ef80ae50fb91b0f764c2a15c'
 
 
 def read(relative):
@@ -50,24 +52,25 @@ def test_scorefix_historical_report_preserves_its_versioned_implementation():
     assert text_digest(ROOT/generator['path']) == generator['sha256_text_lf']
 
 
-def test_current_contraction_reordering_preserves_model_and_simulation_design():
+def test_historical_contraction_reordering_preserves_model_and_simulation_design():
     _, reports = evidence()
     previous = reports['scorefix_simulation']
-    current = read('reproducibility/v3_joint_pooling_synthetic_contractions_20260908.json')
+    historical = read('reproducibility/v3_joint_pooling_synthetic_contractions_20260908.json')
     check = read('reproducibility/v3_pooling_contraction_equivalence_20260908.json')
-    assert current['execution_contract']['implementation_sha256_text_lf'] == text_digest(ROOT/'analysis/v3/joint_partial_pooling.py') == check['implementation_sha256_text_lf']
+    assert historical['execution_contract']['implementation_sha256_text_lf'] == HISTORICAL_CONTRACTION_IMPLEMENTATION_SHA
+    assert check['implementation_sha256_text_lf'] == HISTORICAL_CONTRACTION_IMPLEMENTATION_SHA
     assert check['reference_sha256_text_lf'] == previous['execution_contract']['implementation_sha256_text_lf']
-    assert current['execution_contract']['specification'] == previous['execution_contract']['specification']
-    assert current['execution_contract']['pooling_contract_canonical_sha256'] == canonical_digest(read('analysis/v3/joint_partial_pooling_contract.json'))
-    assert current['replicate_records'] == 360
-    assert [r['zero_rejections'] for r in current['summaries']] == [4,12,8]
-    assert current['summaries'][1]['coverage_among_estimable'] == .9
-    assert all(r['estimable_replicates']==120 and r['all_taxa_retained_in_every_estimable_replicate'] for r in current['summaries'])
+    assert historical['execution_contract']['specification'] == previous['execution_contract']['specification']
+    assert historical['execution_contract']['pooling_contract_canonical_sha256'] == canonical_digest(read('analysis/v3/joint_partial_pooling_contract.json'))
+    assert historical['replicate_records'] == 360
+    assert [r['zero_rejections'] for r in historical['summaries']] == [4,12,8]
+    assert historical['summaries'][1]['coverage_among_estimable'] == .9
+    assert all(r['estimable_replicates']==120 and r['all_taxa_retained_in_every_estimable_replicate'] for r in historical['summaries'])
     for row in check['differences']:
         assert row['hypermean_max_absolute_difference'] < 1e-7
         assert row['tau2_max_absolute_difference'] < 1e-6
         assert row['joint_prediction_covariance_max_absolute_difference'] < 1e-6
-    assert current['ecological_fitting_authorized'] is check['ecological_fitting_authorized'] is False
+    assert historical['ecological_fitting_authorized'] is check['ecological_fitting_authorized'] is False
 
 
 def test_paired_crossed_replay_keeps_one_dataset_and_every_planned_draw():
@@ -80,8 +83,28 @@ def test_paired_crossed_replay_keeps_one_dataset_and_every_planned_draw():
         assert all(value <= replay['absolute_tolerance'] for name,value in row.items() if name.endswith('max_absolute_difference'))
     execution = replay['evidence'][1]['execution_contract']
     for path,sha in execution['implementation_sha256_text_lf'].items():
-        assert sha==text_digest(ROOT/path)
+        if path == 'analysis/v3/joint_partial_pooling.py':
+            assert sha == HISTORICAL_CONTRACTION_IMPLEMENTATION_SHA
+        else:
+            assert sha == text_digest(ROOT/path)
     assert execution['resampling_contract_canonical_sha256']==canonical_digest(read('analysis/v3/dependence_resampling_contract.json'))
+
+
+def test_solver_repair_is_revalidated_separately_from_historical_receipts():
+    smoke = read('reproducibility/v3_final_geometry_smoke_solver_repair_20260909.json')
+    pinned = read('reproducibility/v3_tail_mechanics_pinned_repair_case_20260909.json')
+    assert text_digest(ROOT/'analysis/v3/joint_partial_pooling.py') == SOLVER_REPAIR_IMPLEMENTATION_SHA
+    assert pinned['repair']['solver_commit'] == 'cd9562fb800447b4b9853d8617ace8b2288477e7'
+    assert pinned['repair']['thresholds_changed'] is False
+    assert pinned['repair']['seed_changed'] is False
+    assert pinned['repair']['grid_changed'] is False
+    assert pinned['repair']['family_changed'] is False
+    assert pinned['reexecution']['replacement_draw_generated'] is False
+    assert pinned['reexecution']['all_modules_estimated'] is True
+    assert smoke['status'] == 'FINAL_GEOMETRY_SMOKE_SOLVER_REPAIR_REVALIDATED_8_OF_8_COMPLETE'
+    assert smoke['complete_grid_cases'] == smoke['recorded_grid_cases'] == 8
+    assert smoke['empirical_trait_environment_values_read'] == 0
+    assert smoke['ecological_fitting_authorized'] is False
 
 
 def test_fullscale_replay_uses_original_score_tolerance_without_losing_taxa():
