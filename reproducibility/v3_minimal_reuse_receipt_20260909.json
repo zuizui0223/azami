@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "MINIMAL_V3_UPSTREAM_PATCH_VERIFIED_FROM_PRIOR_EXECUTIONS",
+  "archive": {
+    "branch": "archive/pr92-preclean-20260909",
+    "commit": "942e91ef7efef3f7ea03dc479e56ee4ec54392b1",
+    "purpose": "Retains the pre-clean PR92 implementation, detailed receipts, calibration work and experimental branches for provenance only."
+  },
+  "source_reconciliation": {
+    "status": "ARCHIVED_SOURCE_LINKS_RECONCILED_WITH_EXPLICIT_COVERAGE_GAPS",
+    "original_metadata_rows": 1122855,
+    "merged_metadata_rows": 1122854,
+    "retained_unique_observations": 665139,
+    "retained_unique_observation_photo_links": 1122901,
+    "retained_unique_photo_ids": 1122854,
+    "links_absent_from_merged_snapshot_but_recovered": 47,
+    "raw_api_records_recovered": 640141,
+    "source_rows_removed": 0
+  },
+  "historical_processing_reuse": {
+    "status": "HISTORICAL_PROCESSING_RECOUNTED_NOT_V3_REMEASUREMENT",
+    "queued_photos": 777766,
+    "detected_photos": 637745,
+    "no_detection_photos": 139797,
+    "failed_screening_photos": 224,
+    "observations_with_detected_heads": 406582,
+    "detected_heads": 1255791,
+    "colour_usable_heads": 1053623,
+    "shape_usable_heads": 952578,
+    "orientation_usable_heads": 863191,
+    "identity_mismatches": 0,
+    "new_image_operations": false
+  },
+  "frozen_v2_primary_view": {
+    "cohort": "strict_spatial_thinned_observations",
+    "observations": 46276,
+    "taxa": 259,
+    "policy": "Remain the primary ecological analysis cohort for the minimal revision. Full-source recovery is upstream provenance, not a replacement primary cohort."
+  },
+  "historical_measurement_patch": {
+    "status": "FIVE_PREVIOUSLY_MEASURED_FIELDS_RECOVERED_TO_VERSIONED_OBSERVATION_VIEW",
+    "source_heads": 1255791,
+    "source_photos": 637745,
+    "source_observations": 406582,
+    "recovered_observation_values_per_field": 347608,
+    "fields": [
+      "visible_floret_fraction",
+      "corolla_white_pixel_fraction",
+      "corolla_redmagenta_pixel_fraction",
+      "corolla_purple_pixel_fraction",
+      "corolla_yellow_pixel_fraction"
+    ],
+    "composition_max_abs_sum_error": 4.440892098500626e-16,
+    "new_image_operations": false,
+    "frozen_v2_results_changed": false
+  },
+  "canonical_reuse": {
+    "ecology_code": [
+      "analysis/run_geb_v2_full27_environment_atlas.py",
+      "analysis/run_geb_v2_full27_spatial_sensitivity.py",
+      "analysis/run_geb_v2_full27_sampling_composition_sensitivity.py",
+      "analysis/audit_v2_environment_collinearity.py"
+    ],
+    "new_ecological_model": false,
+    "new_primary_cohort": false,
+    "new_image_remeasurement": false,
+    "hypervolume_required": false,
+    "new_calibration_required": false
+  },
+  "claim_corrections": {
+    "remove_responsiveness_variation_headline": true,
+    "within_species_variation_wording": "Use below-species-mean visible image variation; do not equate it with genetic or biological variance.",
+    "environment_effect_wording": "Treat v2 environmental coefficients as marginal associations along correlated observational gradients, not mutually adjusted causal effects."
+  }
+}
