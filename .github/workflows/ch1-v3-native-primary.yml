@@ -37,7 +37,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p work/native
-          gh api '/repos/'${GITHUB_REPOSITORY}'/contents/analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv?ref=archive/ch1-precleanup-20260827' --jq .content | tr -d '\n' | base64 -d > work/native/observation_native_status.csv
+          gh api repos/${GITHUB_REPOSITORY}/git/blobs/b98af47482fd86b1353546573492519659cda848 --jq .content | tr -d '\n' | base64 -d > work/native/observation_native_status.csv
           echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
       - name: Recover the five historically omitted measured endpoints
         env:
