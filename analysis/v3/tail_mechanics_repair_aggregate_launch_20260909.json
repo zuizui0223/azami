@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "LAUNCH_REPAIRED_TAIL_MECHANICS_AGGREGATION_AFTER_TERMINAL_SUCCESS",
+  "source_run_id": 34247983094,
+  "source_head_sha": "cd9562fb800447b4b9853d8617ace8b2288477e7",
+  "expected_artifacts": 32,
+  "expected_outer_reports": 32,
+  "expected_grid_cases": 64,
+  "required_complete_grid_cases": 64,
+  "replacement_failures_allowed": false,
+  "thresholds_changed": false,
+  "seed_changed": false,
+  "grid_changed": false,
+  "family_changed": false,
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
