@@ -32,18 +32,14 @@ jobs:
           unzip -q work/continuous.zip -d work/continuous
           test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
           test -f work/continuous/environment/strict_spatial_chelsa.csv
-      - name: Materialize frozen native-status table from Git LFS
+      - name: Materialize frozen native-status table from pinned LFS media object
         run: |
           set -euo pipefail
-          git lfs version
-          git lfs install --local
-          git fetch --depth=1 origin archive/ch1-precleanup-20260827:refs/remotes/origin/archive/ch1-precleanup-20260827
           mkdir -p work/native
-          git show origin/archive/ch1-precleanup-20260827:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/native/native.pointer
-          grep -F 'oid sha256:c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a' work/native/native.pointer
-          grep -F 'size 5351184' work/native/native.pointer
-          git lfs fetch origin archive/ch1-precleanup-20260827 --include='analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv'
-          git lfs smudge < work/native/native.pointer > work/native/observation_native_status.csv
+          curl --fail --location --retry 3 \
+            'https://media.githubusercontent.com/media/zuizui0223/azami/584e4a9863ab0c133a050f15b4bb862730db7faf/analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv' \
+            --output work/native/observation_native_status.csv
+          test "$(wc -c < work/native/observation_native_status.csv)" -eq 5351184
           echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
       - name: Recover the five historically omitted measured endpoints
         env:
