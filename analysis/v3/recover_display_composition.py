@@ -76,7 +76,14 @@ def recover(heads, out, expected_sha=HEAD_SHA, expected_rows=1255791):
             if max_error is not None and max_error > COMPOSITION_TOLERANCE:
                 raise ValueError("Observation composition does not sum to one")
             counts = {"source_heads": count, "retained_head_records": scalar("SELECT COUNT(*) FROM heads"), "source_photos": scalar("SELECT COUNT(*) FROM photo_values"), "source_observations": scalar("SELECT COUNT(*) FROM observation_values"), "colour_qc_usable_heads": scalar("SELECT COUNT(*) FROM heads WHERE colour_status='usable'"), "eligible_visible_heads": scalar("SELECT SUM(visible_eligible) FROM heads"), "eligible_composition_heads": scalar("SELECT SUM(composition_eligible) FROM heads"), "colour_qc_usable_with_invalid_composition": scalar("SELECT SUM(composition_qc_conflict) FROM heads"), "head_records_deleted": 0}
-        report = {"status": "FIVE_PREVIOUSLY_MEASURED_FIELDS_RECOVERED_TO_VERSIONED_OBSERVATION_VIEW", "historical_source_artifact": 8269246732, "source_head_sha256": expected_sha, "counts": counts, "endpoints": fields, "composition_max_abs_sum_error": max_error, "implementation_sha256_text_lf": text_digest(Path(__file__)), "aggregation_version": "v3_equal_photo_means_display_composition_v1", "new_image_operations": False, "ecological_models_executed": False, "frozen_v2_results_changed": False}
+
+            cursor = db.execute("SELECT * FROM observation_values ORDER BY obs_id")
+            with (out / "observation_values.csv").open("w", encoding="utf-8", newline="") as target:
+                writer = csv.writer(target, lineterminator="\n")
+                writer.writerow([column[0] for column in cursor.description])
+                writer.writerows(cursor)
+
+        report = {"status": "FIVE_PREVIOUSLY_MEASURED_FIELDS_RECOVERED_TO_VERSIONED_OBSERVATION_VIEW", "historical_source_artifact": 8269246732, "source_head_sha256": expected_sha, "counts": counts, "endpoints": fields, "composition_max_abs_sum_error": max_error, "observation_values_sha256": digest(out / "observation_values.csv"), "implementation_sha256_text_lf": text_digest(Path(__file__)), "aggregation_version": "v3_equal_photo_means_display_composition_v1", "new_image_operations": False, "ecological_models_executed": False, "frozen_v2_results_changed": False}
         (out / "display_composition_report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         return report
     except (Exception, KeyboardInterrupt) as error:
