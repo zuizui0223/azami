@@ -19,10 +19,14 @@ the source-to-inference workflow rather than as downstream manuscript defence.
 There is one canonical execution order:
 
 1. `source`
-2. `measurement`
-3. `assessability`
-4. `ecology`
-5. `synthesis` only if its already-declared optional qualification is met
+2. `measurement_qc`
+3. `ecology`
+4. `output`
+
+Assessability is not a separate scientific stage. The minimum checks needed to
+know what was measured and what analysis support remains are part of
+`measurement_qc`. Hypervolume/breadth synthesis is not a canonical stage and
+cannot block the main ecological analysis or output.
 
 `python -m analysis.v3.integrated_preflight` remains the single readiness
 entry point. Earlier contracts and receipts remain historical evidence unless
@@ -55,6 +59,7 @@ Do **not**:
 - promote a held measurement because its exploratory coefficient looks useful;
 - create further tail/repair/aggregate analysis branches to explain an existing
   sensitivity result;
+- turn measurement success/failure into a separate ecological research program;
 - reinterpret technical repeatability as physical trait accuracy;
 - change frozen v2 outputs.
 
@@ -66,7 +71,7 @@ rescue it during this workflow-only phase.
 
 ### Canonical
 
-The five stages in `integrated_workflow_contract.json` and the integrated
+The four stages in `integrated_workflow_contract.json` and the integrated
 preflight are the only canonical scientific workflow surface.
 
 ### Sensitivity / technical audit
