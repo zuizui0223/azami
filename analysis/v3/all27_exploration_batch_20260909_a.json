@@ -36,6 +36,7 @@
     "packages": {
       "numpy": "2.5.3",
       "opencv-python-headless": "5.0.0.93",
+      "pillow": "12.3.0",
       "pandas": "3.0.5",
       "requests": "2.34.2",
       "scipy": "1.18.1",
@@ -44,6 +45,12 @@
     "python": "3.12.14"
   },
   "schema_version": 1,
+  "technical_preflight_repair": {
+    "failed_run_id": 34312852831,
+    "failure_stage": "test_collection_before_protected_inputs_or_ecological_fits",
+    "cause": "Pillow transitive import dependency missing from the Actions installation",
+    "change": "Declare and pin the same Pillow version present in the tested local environment; input bytes and scientific implementation hashes unchanged"
+  },
   "source_asset": {
     "asset_id": 552019082,
     "asset_name": "v3-all27-point-input-20260909-a.zip",

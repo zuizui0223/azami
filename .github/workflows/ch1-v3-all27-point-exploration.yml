@@ -30,7 +30,7 @@ jobs:
         with:
           python-version: '3.12.14'
       - name: Install pinned numerical runtime
-        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 opencv-python-headless==5.0.0.93 pytest==9.1.1
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 opencv-python-headless==5.0.0.93 pillow==12.3.0 pytest==9.1.1
       - name: Verify all27 inventory and model boundary
         run: python -m pytest tests/test_v3_all27_exploration.py tests/test_v3_module_ecology.py tests/test_v3_joint_partial_pooling.py tests/test_v3_nuisance_design.py -q
       - name: Fit all27 against the pinned joint environment model
