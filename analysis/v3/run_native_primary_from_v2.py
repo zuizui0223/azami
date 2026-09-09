@@ -70,21 +70,34 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
     if status_counts != EXPECTED_STATUS_COUNTS:
         raise SystemExit(f"Native-status counts differ from frozen v2: {status_counts}")
 
-    environment = pd.read_csv(args.environment, low_memory=False)
-    environment["obs_id"] = environment["obs_id"].astype(str)
-    if len(environment) != EXPECTED_TOTAL_ROWS or environment["obs_id"].duplicated().any():
-        raise SystemExit("Environment input is not the frozen 46,276-row universe")
-    if set(environment["obs_id"]) != set(native_all["obs_id"]):
-        raise SystemExit("Native-status IDs and frozen environment IDs do not match")
-
     native = native_all[native_all["native_range_status"].eq("native")].copy()
     native_ids = set(native["obs_id"])
     if len(native) != EXPECTED_NATIVE_ROWS:
         raise SystemExit(f"Expected {EXPECTED_NATIVE_ROWS} native observations, found {len(native)}")
 
-    environment = environment[environment["obs_id"].isin(native_ids)].copy()
-    if len(environment) != EXPECTED_NATIVE_ROWS:
-        raise SystemExit("Native environment membership differs from the frozen v2 universe")
+    environment = pd.read_csv(args.environment, low_memory=False)
+    environment["obs_id"] = environment["obs_id"].astype(str)
+    if environment["obs_id"].duplicated().any():
+        raise SystemExit("Environment input must be unique by obs_id")
+
+    environment_ids = set(environment["obs_id"])
+    if len(environment) == EXPECTED_TOTAL_ROWS:
+        if environment_ids != set(native_all["obs_id"]):
+            raise SystemExit("Full environment IDs do not match the frozen 46,276-row universe")
+        environment = environment[environment["obs_id"].isin(native_ids)].copy()
+        environment_source_mode = "full_46276_then_native_filter"
+    elif len(environment) == EXPECTED_NATIVE_ROWS:
+        if environment_ids != native_ids:
+            raise SystemExit("Prefiltered environment IDs do not exactly match the frozen native cohort")
+        environment = environment.copy()
+        environment_source_mode = "prefiltered_native_27066"
+    else:
+        raise SystemExit(
+            f"Environment input must be either 46,276 full rows or 27,066 native rows; found {len(environment)}"
+        )
+
+    if len(environment) != EXPECTED_NATIVE_ROWS or set(environment["obs_id"]) != native_ids:
+        raise SystemExit("Native environment membership differs from the frozen v2 native cohort")
 
     traits = pd.read_csv(args.traits_long, low_memory=False)
     traits["obs_id"] = traits["obs_id"].astype(str)
@@ -123,12 +136,14 @@ def build_inputs(args: argparse.Namespace) -> tuple[Path, Path, Path, dict]:
         "Native-only membership is a scope change, not a new acquisition universe.",
         "The five restored display/composition endpoints were already measured at head level and are not new image measurements.",
         "When the native-status source mode is regenerated, the original historical LFS bytes are unavailable and no byte-identity claim is made.",
+        "A prefiltered native-only environment table is accepted only when its 27,066 obs_id set exactly equals the frozen native cohort.",
     ]
     contract_out.write_text(json.dumps(contract, indent=2) + "\n", encoding="utf-8")
 
     counts = {
         "native_source_mode": native_source_mode,
         "native_status_sha256": native_sha,
+        "environment_source_mode": environment_source_mode,
         "native_observations": len(environment),
         "native_taxa_environment": int(environment["taxon_name"].nunique()),
         "trait_rows_native": int(len(traits)),
