@@ -225,12 +225,13 @@ jobs:
           among = pd.read_csv(root/'v2_full27_environment_among.csv', low_memory=False)
           sw = pd.read_csv(root/'spatial/v2_full27_spatial_within.csv', low_memory=False)
           sa = pd.read_csv(root/'spatial/v2_full27_spatial_among.csv', low_memory=False)
-          hist = pd.read_csv(root/'historical/v2_full27_historical_pair_summary.csv', low_memory=False)
+          hist = pd.read_csv(root/'historical/v2_full27_historical_placement_summary.csv', low_memory=False)
           def sig(frame):
               return frame[frame.status.eq('ok') & pd.to_numeric(frame.q_fdr_bh_global_family, errors='coerce').lt(0.05)].copy()
           w_sig = sig(within)
           a5_sig = sig(among[among.scope.eq('among_taxon_min5')])
           a2_sig = sig(among[among.scope.eq('among_taxon_min2')])
+          passed_hist = hist[hist['historical_placement_sensitivity_pass'].fillna(False).astype(bool)].copy()
           report = {
               'analysis_id': 'native_vifstep10_full27_v2_reuse_v1',
               'native_observations': 27066,
@@ -242,6 +243,8 @@ jobs:
               'within_spatial_passes': int(sw.get('broad_spatial_sensitivity_pass', pd.Series(dtype=bool)).fillna(False).astype(bool).sum()),
               'among_spatial_passes': int(sa.get('broad_spatial_sensitivity_pass', pd.Series(dtype=bool)).fillna(False).astype(bool).sum()),
               'historical_pair_rows': int(len(hist)),
+              'historical_passes': int(len(passed_hist)),
+              'historical_pass_pairs': passed_hist[['unit_id','predictor','inferential_unit','n_successful_placement_trees','n_placement_trees_p_lt_0_05','maximum_p_value','lambda_min','lambda_max']].to_dict('records'),
           }
           (root/'native_vifstep10_summary.json').write_text(json.dumps(report, indent=2)+'\n')
           print(json.dumps(report, indent=2))
