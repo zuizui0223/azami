@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "workflow_id": "ch1_v3_minimal_upstream_patch_20260909",
+  "study_status": "retrospective_revision_after_v2_results_seen",
+  "purpose": "Keep the frozen v2 ecological analysis and repair only upstream provenance and historical measurement aggregation that v2 did not fully expose.",
+  "source": {
+    "artifact_id": 8066010557,
+    "artifact_run": 28659167379,
+    "artifact_name": "ch1-inat-metadata-merged-full_inventory_20260703",
+    "member": "photo_metadata_merged.csv",
+    "member_sha256": "506917aef9a9452dddcf373acfb941e9f3620ba9740ef588cbcf8725557828e4",
+    "expected_photo_rows": 1122854,
+    "expected_observations_with_photos": 665115
+  },
+  "canonical_flow": [
+    "source_provenance",
+    "historical_measurement_reuse",
+    "v2_ecology",
+    "output"
+  ],
+  "analysis_policy": {
+    "v2_primary_cohort_remains_frozen": true,
+    "new_319244_observation_primary_cohort": false,
+    "new_image_remeasurement_required": false,
+    "new_ecological_model_required": false,
+    "reuse_existing_v2_spatial_and_sampling_sensitivities": true,
+    "responsiveness_variation_claim_retained": false,
+    "within_species_wording_requires_image_hierarchy_caveat": true,
+    "environment_coefficients_are_marginal_associations": true
+  }
+}
