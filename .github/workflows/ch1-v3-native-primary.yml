@@ -6,6 +6,8 @@ on:
       - 'analysis/v3/run_native_primary_from_v2.py'
       - 'analysis/v3/recover_display_composition.py'
       - 'analysis/v3/rebuild_exact_native_status_from_frozen_aux.py'
+      - 'analysis/v3/select_native_environment_vifstep10.py'
+      - 'analysis/v3/run_v2_full27_selected_predictors.py'
       - 'analysis/sample_chelsa_process_environment.py'
       - 'analysis/run_geb_v2_full27_spatial_sensitivity.py'
       - 'analysis/run_geb_v2_full27_historical_sensitivity.py'
@@ -149,12 +151,108 @@ jobs:
             --spatial-dir work/native_results/spatial \
             --tree-dir work/historical_bundle/historical_trees \
             --out-dir work/native_results/historical
+      - name: Select scale-specific predictors by VIFstep threshold 10
+        run: |
+          mkdir -p work/vif10
+          python analysis/v3/select_native_environment_vifstep10.py \
+            --environment work/native_inputs/native_environment.csv \
+            --threshold 10 \
+            --out-json work/vif10/vifstep10_report.json \
+            --out-csv work/vif10/vifstep10_steps.csv
+          python - <<'PY'
+          import json, os
+          report = json.load(open('work/vif10/vifstep10_report.json'))
+          within = report['downstream_predictor_sets']['within_taxon']
+          among = report['downstream_predictor_sets']['among_taxon']
+          with open(os.environ['GITHUB_ENV'], 'a') as handle:
+              handle.write('VIF10_WITHIN=' + ' '.join(within) + '\n')
+              handle.write('VIF10_AMONG=' + ' '.join(among) + '\n')
+          print({'VIF10_WITHIN': within, 'VIF10_AMONG': among})
+          PY
+      - name: Refit v2 full-27 within atlas on VIFstep10 predictors
+        run: |
+          python analysis/v3/run_v2_full27_selected_predictors.py \
+            --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --analysis-contract work/native_inputs/native_analysis_contract.json \
+            --traits-long work/native_inputs/native_traits_long.csv \
+            --environment work/native_inputs/native_environment.csv \
+            --out-dir work/vif10/within_atlas \
+            --lane within_taxon \
+            --predictors $VIF10_WITHIN
+      - name: Refit v2 full-27 among atlas on VIFstep10 predictors
+        run: |
+          python analysis/v3/run_v2_full27_selected_predictors.py \
+            --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --analysis-contract work/native_inputs/native_analysis_contract.json \
+            --traits-long work/native_inputs/native_traits_long.csv \
+            --environment work/native_inputs/native_environment.csv \
+            --out-dir work/vif10/among_atlas \
+            --lane among_taxon \
+            --predictors $VIF10_AMONG
+      - name: Assemble scale-specific VIFstep10 atlas
+        run: |
+          mkdir -p work/vif10/combined
+          cp work/vif10/within_atlas/v2_full27_environment_within.csv work/vif10/combined/v2_full27_environment_within.csv
+          cp work/vif10/among_atlas/v2_full27_environment_among.csv work/vif10/combined/v2_full27_environment_among.csv
+          cp work/vif10/vifstep10_report.json work/vif10/combined/vifstep10_report.json
+          cp work/vif10/vifstep10_steps.csv work/vif10/combined/vifstep10_steps.csv
+      - name: Run existing v2 broad-spatial sensitivity on VIFstep10 results
+        run: |
+          python analysis/run_geb_v2_full27_spatial_sensitivity.py \
+            --analysis-contract work/native_inputs/native_analysis_contract.json \
+            --traits-long work/native_inputs/native_traits_long.csv \
+            --environment work/native_inputs/native_environment.csv \
+            --atlas-dir work/vif10/combined \
+            --out-dir work/vif10/combined/spatial
+      - name: Run existing v2 historical-placement sensitivity on VIFstep10 spatial survivors
+        run: |
+          python analysis/run_geb_v2_full27_historical_sensitivity.py \
+            --analysis-contract work/native_inputs/native_analysis_contract.json \
+            --traits-long work/native_inputs/native_traits_long.csv \
+            --environment work/native_inputs/native_environment.csv \
+            --spatial-dir work/vif10/combined/spatial \
+            --tree-dir work/historical_bundle/historical_trees \
+            --out-dir work/vif10/combined/historical
+      - name: Summarize VIFstep10 reanalysis
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          root = Path('work/vif10/combined')
+          vif = json.load(open(root/'vifstep10_report.json'))
+          within = pd.read_csv(root/'v2_full27_environment_within.csv', low_memory=False)
+          among = pd.read_csv(root/'v2_full27_environment_among.csv', low_memory=False)
+          sw = pd.read_csv(root/'spatial/v2_full27_spatial_within.csv', low_memory=False)
+          sa = pd.read_csv(root/'spatial/v2_full27_spatial_among.csv', low_memory=False)
+          hist = pd.read_csv(root/'historical/v2_full27_historical_pair_summary.csv', low_memory=False)
+          def sig(frame):
+              return frame[frame.status.eq('ok') & pd.to_numeric(frame.q_fdr_bh_global_family, errors='coerce').lt(0.05)].copy()
+          w_sig = sig(within)
+          a5_sig = sig(among[among.scope.eq('among_taxon_min5')])
+          a2_sig = sig(among[among.scope.eq('among_taxon_min2')])
+          report = {
+              'analysis_id': 'native_vifstep10_full27_v2_reuse_v1',
+              'native_observations': 27066,
+              'within_predictors': vif['downstream_predictor_sets']['within_taxon'],
+              'among_predictors': vif['downstream_predictor_sets']['among_taxon'],
+              'within_fdr_signals': int(len(w_sig)),
+              'among_min5_fdr_signals': int(len(a5_sig)),
+              'among_min2_fdr_signals': int(len(a2_sig)),
+              'within_spatial_passes': int(sw.get('broad_spatial_sensitivity_pass', pd.Series(dtype=bool)).fillna(False).astype(bool).sum()),
+              'among_spatial_passes': int(sa.get('broad_spatial_sensitivity_pass', pd.Series(dtype=bool)).fillna(False).astype(bool).sum()),
+              'historical_pair_rows': int(len(hist)),
+          }
+          (root/'native_vifstep10_summary.json').write_text(json.dumps(report, indent=2)+'\n')
+          print(json.dumps(report, indent=2))
+          PY
       - name: Upload compact native-primary results
         uses: actions/upload-artifact@v4
         with:
           name: ch1-native-primary-v2-reuse-${{ github.run_id }}
           path: |
             work/native_results/**
+            work/vif10/**
             work/native/native_status_exact_rebuild_report.json
             work/chelsa_process_extraction_report.json
             work/recovered_display/display_composition_report.json
