@@ -1,0 +1,246 @@
+{
+  "coefficient_slots_retained": 729,
+  "confidence_intervals_reported": 0,
+  "confirmatory_ecological_fitting_authorized": false,
+  "endpoint_results": [
+    {
+      "endpoint_id": "orientation_image_vertical_angle",
+      "measurement_hold_unchanged": false,
+      "module": "orientation",
+      "observations": 1648,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 106
+    },
+    {
+      "endpoint_id": "corolla_lab_lightness",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_lab_chroma",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_hue_sin",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_hue_cos",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "visible_floret_fraction",
+      "measurement_hold_unchanged": false,
+      "module": "visible_display",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_white_pixel_fraction",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_redmagenta_pixel_fraction",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_purple_pixel_fraction",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "corolla_yellow_pixel_fraction",
+      "measurement_hold_unchanged": false,
+      "module": "visible_colour",
+      "observations": 1805,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 112
+    },
+    {
+      "endpoint_id": "capitulum_outline_aspect_ratio",
+      "measurement_hold_unchanged": false,
+      "module": "gross_shape",
+      "observations": 1701,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 110
+    },
+    {
+      "endpoint_id": "capitulum_outline_circularity",
+      "measurement_hold_unchanged": false,
+      "module": "gross_shape",
+      "observations": 1701,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 110
+    },
+    {
+      "endpoint_id": "capitulum_outline_solidity",
+      "measurement_hold_unchanged": false,
+      "module": "gross_shape",
+      "observations": 1701,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 110
+    },
+    {
+      "endpoint_id": "capitulum_width_profile_cv",
+      "measurement_hold_unchanged": false,
+      "module": "gross_shape",
+      "observations": 1701,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 110
+    },
+    {
+      "endpoint_id": "involucre_length_width_ratio",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 570,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 70
+    },
+    {
+      "endpoint_id": "involucre_apical_taper_ratio",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 567,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 70
+    },
+    {
+      "endpoint_id": "involucre_basal_taper_ratio",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 572,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 70
+    },
+    {
+      "endpoint_id": "bract_projection_roughness",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 572,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 71
+    },
+    {
+      "endpoint_id": "bract_projection_p95",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 566,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 71
+    },
+    {
+      "endpoint_id": "bract_projection_maximum",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 565,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 71
+    },
+    {
+      "endpoint_id": "bract_spread_fraction",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 572,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 71
+    },
+    {
+      "endpoint_id": "bract_projection_peak_density",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 575,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 71
+    },
+    {
+      "endpoint_id": "bract_projection_asymmetry",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 575,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 71
+    },
+    {
+      "endpoint_id": "involucre_surface_edge_density",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 355,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 57
+    },
+    {
+      "endpoint_id": "involucre_surface_lbp_entropy",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 356,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 58
+    },
+    {
+      "endpoint_id": "involucre_surface_high_frequency_energy",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 356,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 58
+    },
+    {
+      "endpoint_id": "involucre_surface_specular_fraction",
+      "measurement_hold_unchanged": true,
+      "module": "fine_architecture_and_surface",
+      "observations": 356,
+      "status": "exploratory_point_estimated_not_qualified",
+      "taxa": 58
+    }
+  ],
+  "endpoints_attempted": 27,
+  "endpoints_estimated": 27,
+  "execution_commit": "13293563c92a8bff9eda3d54e3170067c9a8ab04",
+  "image_requests": 0,
+  "limit": "Partial checkpoint point estimates only; not a full-source result, calibrated uncertainty or measurement qualification.",
+  "matched_membership_rows": 31254,
+  "measurement_holds_unchanged": 13,
+  "p_values_reported": 0,
+  "primary_models_executed": 0,
+  "protected_output_asset": {
+    "asset_id": 552030365,
+    "asset_name": "v3-all27-point-34313157981-1.zip",
+    "bundle_bytes": 1875378,
+    "bundle_sha256": "cabe20040e7e3dc17e101aa9846c2dad7703d4ec36d99a64eec889fd149469a3",
+    "files": 31,
+    "manifest_sha256": "93d0d9c83a140ea02cc8a56786d1ffbc0e70ea29deb7ae422634df4afbdcd6c5",
+    "restored_bytes": 7091181,
+    "source_images_included": false
+  },
+  "run_attempt": "1",
+  "run_id": "34313157981",
+  "source_batch_sha256": "698f878188b14e9de0e03cb26427692d49c1209e597337510db3ad7f300c04ce",
+  "status": "ALL27_EXPLORATORY_OUTPUT_INDEPENDENTLY_RESTORED_AND_VERIFIED"
+}

@@ -63,6 +63,16 @@ composition, not independent discoveries. Differences between endpoint-specific
 cohorts also limit comparisons. Primary calibration and measurement holds remain
 unchanged; exploratory associations cannot justify retuning or admission.
 
+The [first executed checkpoint](../../reproducibility/v3_all27_exploration_checkpoint_20260909.json)
+records 27/27 point-estimated endpoints and all 729 finite coefficient slots on
+Actions run `34313157981`, execution `13293563c92a8bff9eda3d54e3170067c9a8ab04`.
+The protected output was independently restored locally; CSV/JSON coefficients,
+within/among contrasts, accepted optimizer records and all 31,254 matched
+observation-endpoint memberships agree. The [source view was also restored](../../reproducibility/v3_expanded_stream_view_preservation_20260909_b.json)
+from the unpublished draft. This completes one exploratory checkpoint, not the
+full native cohort or the primary inferential analysis. No significance or
+biological-validity conclusion follows from successful computation.
+
 ### All-27 measurement, without v2-result selection
 
 The [native chunk contract](measurement_chunk_contract.json) extends the
