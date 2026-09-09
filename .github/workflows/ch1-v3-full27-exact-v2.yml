@@ -1,0 +1,107 @@
+name: Chapter 1 exact-v2 full-27 endpoint extension
+
+on:
+  push:
+    branches: [analysis/ch1-v3-full-vifstep-20260909]
+    paths:
+      - 'analysis/v3/run_full27_v2_exact_recovered.py'
+      - '.github/workflows/ch1-v3-full27-exact-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  full27-exact-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install frozen-v2 numerical and CHELSA runtime
+        run: |
+          python -m pip install \
+            pandas==3.0.5 numpy==2.4.6 scipy==1.17.1 statsmodels==0.14.6 \
+            rasterio==1.4.4 pyproj==3.7.2 requests==2.34.2
+          python -m py_compile \
+            analysis/v3/run_full27_v2_exact_recovered.py \
+            analysis/v3/run_full_vifstep_sensitivity.py
+
+      - name: Recover frozen v2 trait universe and core environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/continuous
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip -d work/continuous
+          echo 'd775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344  work/continuous/universe/continuous_trait_universe_observation_long.csv' | sha256sum -c -
+          echo '2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0  work/continuous/environment/strict_spatial_chelsa.csv' | sha256sum -c -
+
+      - name: Recover five historically measured but omitted endpoints
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/historical work/recovered_display
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip > work/historical.zip
+          echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
+          test -n "$HEADS"
+          RECOVERED_DIR="$RUNNER_TEMP/ch1-full27-recovered-${GITHUB_RUN_ID}"
+          rm -rf "$RECOVERED_DIR"
+          python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir "$RECOVERED_DIR"
+          cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
+          cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
+          test -s work/recovered_display/observation_values.csv
+          rm -rf work/historical work/historical.zip "$RECOVERED_DIR"
+
+      - name: Reconstruct the full nine-predictor environment from frozen sources
+        run: |
+          set -euo pipefail
+          python analysis/sample_chelsa_process_environment.py \
+            --environment work/continuous/environment/strict_spatial_chelsa.csv \
+            --source-contract analysis/ch1/chelsa_process_environment_sources.json \
+            --out-csv work/strict_spatial_chelsa_process.csv \
+            --report work/chelsa_process_extraction_report.json
+          sha256sum work/strict_spatial_chelsa_process.csv
+
+      - name: Run unchanged v2 atlas with all 27 registered endpoints populated where historically measured
+        run: |
+          set -euo pipefail
+          mkdir -p work/full27_inputs work/full27_v2
+          python analysis/v3/run_full27_v2_exact_recovered.py \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --analysis-contract analysis/ch1/v2_full27_environment_atlas_contract.json \
+            --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/strict_spatial_chelsa_process.csv \
+            --recovered-display work/recovered_display/observation_values.csv \
+            --frozen-among analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_among.csv \
+            --frozen-within analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_environment_within.csv \
+            --work-dir work/full27_inputs \
+            --out-dir work/full27_v2 | tee work/full27_v2/run.log
+          grep '^FULL27_EXACT_V2_FLOW=PASS$' work/full27_v2/run.log
+          grep '^FULL27_EXACT_V2_COMPACT_JSON=' work/full27_v2/run.log
+          test -s work/full27_v2/full27_exact_v2_flow_report.json
+
+      - name: Upload exact-v2 full-27 outputs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-full27-exact-v2-${{ github.run_id }}
+          path: |
+            work/full27_v2/**
+            work/full27_inputs/**
+            work/chelsa_process_extraction_report.json
+            work/recovered_display/display_composition_report.json
+          if-no-files-found: warn
+          retention-days: 30
