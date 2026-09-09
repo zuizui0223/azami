@@ -31,16 +31,7 @@ This distinction is inherited from v2, not introduced by v3.
 
 The frozen v2 nine-predictor atlas is retained as the historical benchmark. A user-requested comparative lane applies phenotype-blind VIFstep<=10 before rerunning the same v2 marginal models.
 
-For the native cohort, VIFstep removes **BIO1 only** at both scales. The retained eight predictors are:
-
-- BIO4
-- BIO12
-- BIO15
-- shortwave radiation (`rsds`)
-- VPD
-- surface wind
-- growing-season precipitation (GSP)
-- NPP
+For the native cohort, VIFstep removes **BIO1 only** at both scales. The retained eight predictors are BIO4, BIO12, BIO15, shortwave radiation (`rsds`), VPD, surface wind, GSP and NPP.
 
 Final maximum VIF is **1.961** for within-taxon demeaned environment and **6.977** for among-taxon median environment. VIF is used only to filter the family of marginal tests; it does not convert the analysis to a simultaneous multivariable regression.
 
@@ -55,15 +46,7 @@ VIFstep<=10 native reanalysis:
 - among broad-spatial passes: **4**
 - among pairs passing all 52 historical-placement trees: **4/4**
 
-The two primary among-taxon survivors are:
-
-1. `corolla_lab_chroma x chelsa_rsds_mean` — negative association.
-2. `corolla_lab_chroma x chelsa_npp` — positive association.
-
-Two additional closed-composition descriptive rows also survive:
-
-- `corolla_yellow_pixel_fraction x chelsa_gsp`
-- `corolla_yellow_pixel_fraction x chelsa_npp`
+The two primary among-taxon survivors are `corolla_lab_chroma x chelsa_rsds_mean` (negative) and `corolla_lab_chroma x chelsa_npp` (positive). Two closed-composition descriptive rows also survive: `corolla_yellow_pixel_fraction x chelsa_gsp` and `corolla_yellow_pixel_fraction x chelsa_npp`.
 
 `orientation_image_vertical_angle x chelsa_bio12` remains in the retained predictor family but does **not** pass the existing broad-spatial sensitivity because residual Moran structure remains detectable. VIF filtering does not rescue it. `orientation x BIO1` is not tested in this lane because BIO1 is the phenotype-blind VIFstep exclusion.
 
@@ -74,15 +57,7 @@ Two additional closed-composition descriptive rows also survive:
 
 ## What v3 no longer requires
 
-The following are preserved only on `archive/pr92-preclean-20260909` and do not block the current route:
-
-- Wave B/C image remeasurement;
-- independent assessability research by taxon/region/environment;
-- alternative uniform-chroma qualification;
-- tail/repair/full-family/final calibration branches;
-- new 36-slot calibration expansions;
-- hypervolume/breadth synthesis;
-- a new 319,244-observation primary ecological cohort.
+The following are preserved only on `archive/pr92-preclean-20260909` and do not block the current route: Wave B/C image remeasurement, independent assessability research, alternative uniform-chroma qualification, tail/repair/calibration branches, hypervolume/breadth synthesis, or a new 319,244-observation primary ecological cohort.
 
 ## Boundary
 
