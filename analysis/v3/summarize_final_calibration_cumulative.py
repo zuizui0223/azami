@@ -1,10 +1,8 @@
 """Cumulatively evaluate frozen final multicoordinate calibration batches.
 
-This module closes the sequential-rule boundary that a single 25-per-scenario
-batch cannot evaluate. It consumes only completed batch aggregate reports,
-requires contiguous coverage from outer replicate 0, recomputes every
-scenario x grid precision/admission decision from cumulative counts, and never
-uses a batch-local stopping decision as evidence.
+Requires contiguous completed batches from outer 0 and their returned numerical
+arrays. Monte Carlo precision uses independent outer datasets under the explicit
+20260909 amendment. Historical count-only Wilson decisions remain descriptive.
 
 Synthetic only. No threshold, seed, grid, family, truth, or empirical ecology
 choice is made here.
@@ -16,13 +14,16 @@ import hashlib
 import json
 from pathlib import Path
 
-from .multicoordinate_calibration import precision_decision
+from .multicoordinate_calibration import precision_decision as historical_precision_decision
+from .calibration_precision import amendment, precision_decision
+from .verify_calibration_outers import verify_inventory
 from .workflow import ROOT, canonical_digest
 
 COMPLETE_BATCH_STATUS = "FINAL_MULTICOORDINATE_CALIBRATION_BATCH_COMPLETE_CONTINUE_SEQUENTIAL_RULE"
 CONTINUE_STATUS = "FINAL_MULTICOORDINATE_CALIBRATION_CUMULATIVE_CONTINUE_NEXT_FROZEN_BATCH"
 QUALIFIED_STATUS = "FINAL_MULTICOORDINATE_CALIBRATION_CUMULATIVE_ADMISSION_MET_STOP"
 MAX_FAIL_STATUS = "FINAL_MULTICOORDINATE_CALIBRATION_CUMULATIVE_MAX_REACHED_WITHOUT_FULL_QUALIFICATION_STOP_AND_DIAGNOSE"
+OUTERS_REQUIRED_STATUS = "FINAL_CALIBRATION_OUTER_REPORTS_REQUIRED_NO_QUALIFICATION"
 
 
 def _sha256(path: Path) -> str:
@@ -124,10 +125,11 @@ def _validate_batch(report: dict, *, contract: dict, contract_digest: str, path:
         "start": start,
         "stop": stop,
         "cell_rows": cell_rows,
+        "outer_manifest": manifest,
     }
 
 
-def aggregate(batch_report_paths, *, root: Path = ROOT):
+def aggregate(batch_report_paths, *, outer_report_paths=None, root: Path = ROOT):
     contract = json.loads((root / "analysis/v3/final_module_calibration_contract.json").read_text(encoding="utf-8"))
     contract_digest = canonical_digest(contract)
     rule = contract["sequential_outer_rule"]
@@ -167,6 +169,12 @@ def aggregate(batch_report_paths, *, root: Path = ROOT):
     if cumulative_outer > max_outer:
         raise ValueError("Cumulative calibration exceeds frozen maximum outer count")
 
+    precision_spec = amendment(root)
+    outer_values, outer_manifest = None, []
+    if outer_report_paths is not None:
+        expected = [r for i in required_indices for r in batches[i]["outer_manifest"]]
+        outer_values, outer_manifest = verify_inventory(outer_report_paths, expected, contract, root=root)
+
     cumulative_rows = []
     decisions = []
     for scenario in scenarios:
@@ -184,13 +192,25 @@ def aggregate(batch_report_paths, *, root: Path = ROOT):
                 coverage = row["coefficient_coverage"]
                 covered += int(coverage["covered"])
                 coefficient_total += int(coverage["total"])
-            decision = precision_decision(
+            historical = historical_precision_decision(
                 outer_with_false_family=false_outer,
                 outer_total=cumulative_outer,
                 covered_coefficients=covered,
                 coefficient_total=coefficient_total,
                 root=root,
             )
+            decision = {"precision_satisfied": False, "admission_satisfied": False,
+                        "status": "independent_outer_vectors_required"}
+            if outer_values is not None:
+                vectors = [outer_values[(scenario, i)][grid] for i in range(cumulative_outer)]
+                if (sum(r["false_family"] for r in vectors) != false_outer
+                        or sum(r["false_holm_rejections"] for r in vectors) != false_holm
+                        or sum(r["true_holm_rejections"] for r in vectors) != true_holm
+                        or sum(r["covered"] for r in vectors) != covered
+                        or sum(r["total"] for r in vectors) != coefficient_total):
+                    raise ValueError("Cumulative batch counts differ from verified independent outer data")
+                decision = precision_decision([r["false_family"] for r in vectors],
+                                              [r["coverage_fraction"] for r in vectors], root=root)
             decisions.append(decision)
             cumulative_rows.append({
                 "scenario": scenario,
@@ -205,6 +225,7 @@ def aggregate(batch_report_paths, *, root: Path = ROOT):
                     "fraction": covered / coefficient_total,
                 },
                 "cumulative_precision_decision": decision,
+                "historical_count_only_decision_not_valid_for_qualification": historical,
             })
 
     minimum_reached = cumulative_outer >= min_outer
@@ -212,7 +233,10 @@ def aggregate(batch_report_paths, *, root: Path = ROOT):
     all_admission = minimum_reached and all(row["admission_satisfied"] for row in decisions)
     synthetic_qualified = all_precision and all_admission
 
-    if synthetic_qualified:
+    if outer_values is None:
+        status = OUTERS_REQUIRED_STATUS
+        next_batch_index = None
+    elif synthetic_qualified:
         status = QUALIFIED_STATUS
         next_batch_index = None
     elif cumulative_outer >= max_outer:
@@ -248,7 +272,12 @@ def aggregate(batch_report_paths, *, root: Path = ROOT):
         "next_frozen_batch": next_outer_range,
         "scenario_grid_cumulative_summary": cumulative_rows,
         "input_batch_manifest": sorted(manifest, key=lambda row: row["batch_index"]),
-        "decision_rule": "Recompute the frozen Wilson precision/admission checks cumulatively over contiguous batches from outer 0. Stop successfully only when all 4 scenarios x 2 fixed grids satisfy both precision and admission at n>=100; otherwise continue by 25 per scenario until n=400. At n=400 any remaining failure stops without qualification.",
+        "input_outer_manifest": outer_manifest,
+        "independent_outer_arrays_verified": outer_values is not None,
+        "precision_amendment_id": precision_spec["id"],
+        "precision_amendment_canonical_sha256": canonical_digest(precision_spec),
+        "decision_rule": "Use independent outer-dataset coverage fractions and false-family indicators with 16 simultaneous, time-uniform confidence sequences. All scenarios/grids must meet unchanged precision/admission thresholds at n>=100; otherwise continue by 25 until n=400. Counts without verified outer arrays never qualify or authorize another batch.",
+        "uncertainty_method_changed_by_explicit_amendment": True,
         "batch_local_stopping_decisions_used": False,
         "thresholds_changed": False,
         "seed_changed": False,
@@ -265,9 +294,11 @@ def aggregate(batch_report_paths, *, root: Path = ROOT):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--batches", nargs="+", type=Path, required=True)
+    parser.add_argument("--outer-reports", nargs="+", type=Path,
+                        help="Returned original outer reports with sibling NPZ arrays and draw records")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    result = aggregate(args.batches)
+    result = aggregate(args.batches, outer_report_paths=args.outer_reports)
     if args.out.exists():
         raise FileExistsError(args.out)
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -278,7 +309,7 @@ def main():
         "synthetic_calibration_qualified_for_realized_design_gate": result["synthetic_calibration_qualified_for_realized_design_gate"],
         "next_frozen_batch": result["next_frozen_batch"],
     }), flush=True)
-    if result["status"] == MAX_FAIL_STATUS:
+    if result["status"] in (MAX_FAIL_STATUS, OUTERS_REQUIRED_STATUS):
         raise SystemExit(2)
 
 

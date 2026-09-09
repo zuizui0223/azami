@@ -332,6 +332,19 @@ imprecise error-rate estimates. Ecological fitting remains unauthorized pending
 adequate calibration, actual measurement/assessability qualification and matched
 model-support checks. No real trait-environment coefficients were inspected.
 
+Final calibration uses the full 1/8/4-coordinate geometry, 999 shared draws and
+all 36 family slots on both grids. Its numerical execution contract remains
+unchanged. The [Monte Carlo precision amendment](calibration_precision_amendment.json)
+replaces the original pooled-coefficient Wilson stopping rule: one generated
+dataset, not each correlated coefficient, is an independent replication.
+Simultaneous confidence sequences cover the repeated stopping checks.
+The cumulative evaluator requires every returned outer report, draw record and
+numerical array; it recomputes coverage and verifies all 36 finite tests.
+Count-only historical reports cannot authorize qualification or another batch.
+The 100-to-400 outer range and scientific thresholds are unchanged. This is an
+explicit methodological repair, not a claim that the original plan was valid.
+No live numerical job is restarted for this postprocessing change.
+
 The following sections document the source inventory and earlier implementation
 checkpoints. Their historical completion labels do not override the active
 five-stage contract or the execution boundary above.

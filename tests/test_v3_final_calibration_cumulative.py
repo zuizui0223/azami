@@ -7,6 +7,7 @@ from analysis.v3.summarize_final_calibration_cumulative import (
     CONTINUE_STATUS,
     MAX_FAIL_STATUS,
     QUALIFIED_STATUS,
+    OUTERS_REQUIRED_STATUS,
     aggregate,
 )
 from analysis.v3.workflow import ROOT, canonical_digest
@@ -17,7 +18,7 @@ def _contract():
 
 
 def _write_batch(tmp_path: Path, batch_index: int, *, false_outer: int = 0,
-                 covered: int = 1290, total: int = 1300):
+                 covered: int = 8775, total: int = 8775):
     contract = _contract()
     batch_size = contract["sequential_outer_rule"]["batch_size_per_scenario"]
     start = batch_index * batch_size
@@ -81,33 +82,29 @@ def _write_batch(tmp_path: Path, batch_index: int, *, false_outer: int = 0,
     return path, report
 
 
-def test_cumulative_rule_cannot_stop_from_batch_local_decisions_before_n100(tmp_path):
+def test_counts_alone_cannot_authorize_stopping_or_next_batch(tmp_path):
     paths = [_write_batch(tmp_path, i)[0] for i in range(3)]
     result = aggregate(paths)
-    assert result["status"] == CONTINUE_STATUS
+    assert result["status"] == OUTERS_REQUIRED_STATUS
     assert result["cumulative_outer_replicates_per_scenario"] == 75
     assert result["minimum_reached"] is False
     assert result["all_scenario_grid_precision_satisfied"] is False
     assert result["synthetic_calibration_qualified_for_realized_design_gate"] is False
     assert result["batch_local_stopping_decisions_used"] is False
-    assert result["next_frozen_batch"] == {
-        "batch_index": 3,
-        "outer_start_inclusive": 75,
-        "outer_stop_exclusive": 100,
-    }
+    assert result["next_frozen_batch"] is None
     assert result["ecological_fitting_authorized"] is False
 
 
-def test_four_contiguous_good_batches_recompute_cumulative_n100_and_qualify_only_next_gate(tmp_path):
+def test_former_count_only_qualification_is_now_explicitly_disabled(tmp_path):
     paths = [_write_batch(tmp_path, i)[0] for i in range(4)]
     result = aggregate(paths)
-    assert result["status"] == QUALIFIED_STATUS
+    assert result["status"] == OUTERS_REQUIRED_STATUS
     assert result["included_batch_indices"] == [0, 1, 2, 3]
     assert result["cumulative_outer_replicates_per_scenario"] == 100
     assert result["minimum_reached"] is True
-    assert result["all_scenario_grid_precision_satisfied"] is True
-    assert result["all_scenario_grid_admission_satisfied"] is True
-    assert result["synthetic_calibration_qualified_for_realized_design_gate"] is True
+    assert result["all_scenario_grid_precision_satisfied"] is False
+    assert result["all_scenario_grid_admission_satisfied"] is False
+    assert result["synthetic_calibration_qualified_for_realized_design_gate"] is False
     assert result["next_frozen_batch"] is None
     assert len(result["scenario_grid_cumulative_summary"]) == 8
     assert all(row["cumulative_outer_reports"] == 100 for row in result["scenario_grid_cumulative_summary"])
@@ -145,9 +142,21 @@ def test_completed_batch_must_carry_exact_outer_manifest_and_all_grid_cases(tmp_
         aggregate([broken_grid])
 
 
-def test_maximum_n400_with_failed_admission_stops_without_rescue_or_ecology(tmp_path):
+def _mock_verified_outers(monkeypatch, *, count, false_per_batch=0):
+    # Test aggregation independently of disk validation, covered in the outer
+    # verification tests. Fixed final geometry: 351 coefficients per outer.
+    values = {(s, i): {g: {"false_family": int(i % 25 < false_per_batch), "covered": 351, "total": 351,
+                          "coverage_fraction": 1., "false_holm_rejections": int(i % 25 < false_per_batch),
+                          "true_holm_rejections": int(i % 25 < 20)} for g in (2, 5)}
+              for s in _contract()["scenarios"] for i in range(count)}
+    monkeypatch.setattr("analysis.v3.summarize_final_calibration_cumulative.verify_inventory",
+                        lambda *a, **kw: (values, []))
+
+
+def test_maximum_n400_with_failed_admission_stops_without_rescue_or_ecology(tmp_path, monkeypatch):
     paths = [_write_batch(tmp_path, i, false_outer=5)[0] for i in range(16)]
-    result = aggregate(paths)
+    _mock_verified_outers(monkeypatch, count=400, false_per_batch=5)
+    result = aggregate(paths, outer_report_paths=["mock-only"])
     assert result["status"] == MAX_FAIL_STATUS
     assert result["cumulative_outer_replicates_per_scenario"] == 400
     assert result["all_scenario_grid_admission_satisfied"] is False
@@ -159,3 +168,27 @@ def test_maximum_n400_with_failed_admission_stops_without_rescue_or_ecology(tmp_
     assert result["family_changed"] is False
     assert result["synthetic_truth_changed"] is False
     assert result["ecological_fitting_authorized"] is False
+
+
+def test_verified_outers_can_qualify_only_realized_design_gate(tmp_path, monkeypatch):
+    paths = [_write_batch(tmp_path, i)[0] for i in range(16)]
+    _mock_verified_outers(monkeypatch, count=400)
+    result = aggregate(paths, outer_report_paths=["mock-only"])
+    assert result["status"] == QUALIFIED_STATUS
+    assert result["synthetic_calibration_qualified_for_realized_design_gate"] is True
+    assert result["ecological_fitting_authorized"] is False
+    assert result["next_frozen_batch"] is None
+    assert all(r["cumulative_precision_decision"]["coverage_confidence_sequence"]["independent_outer_datasets"] == 400
+               for r in result["scenario_grid_cumulative_summary"])
+
+
+def test_verified_small_batch_continues_but_count_disagreement_stops(tmp_path, monkeypatch):
+    path, report = _write_batch(tmp_path, 0)
+    _mock_verified_outers(monkeypatch, count=25)
+    result = aggregate([path], outer_report_paths=["mock-only"])
+    assert result["status"] == CONTINUE_STATUS
+    assert result["next_frozen_batch"]["outer_start_inclusive"] == 25
+    report["scenario_grid_summary"][0]["coefficient_coverage"]["covered"] -= 1
+    path.write_text(json.dumps(report), encoding="utf-8")
+    with pytest.raises(ValueError, match="batch counts differ"):
+        aggregate([path], outer_report_paths=["mock-only"])
