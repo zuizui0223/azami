@@ -57,13 +57,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p work/historical
+          set -euo pipefail
+          mkdir -p work/historical work/recovered_display
           gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip > work/historical.zip
           echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  work/historical.zip' | sha256sum -c -
           unzip -q work/historical.zip -d work/historical
           HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
           test -n "$HEADS"
-          python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir work/recovered_display
+          RECOVERED_DIR="$RUNNER_TEMP/ch1-recovered-display-${GITHUB_RUN_ID}"
+          rm -rf "$RECOVERED_DIR"
+          python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir "$RECOVERED_DIR"
+          cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
+          cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
+          test -s work/recovered_display/observation_values.csv
       - name: Rebuild the frozen nine-predictor environment table
         run: |
           python analysis/sample_chelsa_process_environment.py \
