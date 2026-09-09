@@ -73,7 +73,24 @@ jobs:
           cp work/sampling/spatial_regions/broad_region_lookup.csv work/sampling/broad_region_lookup.csv
           echo '085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff  work/sampling/broad_region_lookup.csv' | sha256sum -c -
           git fetch --no-tags --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
-          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/sampling/observation_native_status.csv
+          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/sampling/observation_native_status.raw.csv
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          src=Path('work/sampling/observation_native_status.raw.csv').read_bytes()
+          expected='c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a'
+          lf=src.replace(b'\r\n',b'\n')
+          candidates=[('raw',src),('lf',lf),('crlf',lf.replace(b'\n',b'\r\n'))]
+          for label,data in candidates:
+              digest=hashlib.sha256(data).hexdigest()
+              print(label,digest)
+              if digest==expected:
+                  Path('work/sampling/observation_native_status.csv').write_bytes(data)
+                  print('NATIVE_STATUS_TRANSPORT_NORMALIZATION='+label)
+                  break
+          else:
+              raise SystemExit('native-status content does not match frozen SHA under LF/CRLF transport normalization')
+          PY
           echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/sampling/observation_native_status.csv' | sha256sum -c -
 
       - name: Recover frozen 52 historical placement trees
