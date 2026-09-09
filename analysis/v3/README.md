@@ -16,7 +16,7 @@ contract lists exactly which model/ordering provisions it supersedes.
 | Stage | Question | Current implementation boundary |
 |---|---|---|
 | 1. Source | Which records support the native-range ecological question? | Exact 665,139-row source and 319,244-row native cohort recovered. Dates and known dependence added without membership changes; saved authority inputs reproduce the join offline. An 872-file source snapshot was restored on Actions and its returned worker packet verified locally. Historical HTTP identity is still unverified. |
-| 2. Measurement | What can each photo measure, with what uncertainty? | Actions raw chunks extend the reused 128-observation pilot. A verified partial observation view contains 800 photo units and 1,381 detected heads, with all 27 slots retained. Full-cohort streaming and a separately qualified uniform-floral chroma definition remain unfinished; the 13 held routes stay held. |
+| 2. Measurement | What can each photo measure, with what uncertainty? | Actions raw chunks extend the reused 128-observation pilot. The latest independently verified partial view contains 4,321 photo units, 7,405 detected heads and 2,507 complete-request observations, with all 27 slots retained. Full-cohort streaming and a separately qualified uniform-floral chroma definition remain unfinished; the 13 held routes stay held. |
 | 3. Assessability | Which environments and taxa lose measurement support? | `assessability` reports endpoint/module attrition against the eligible native source. `model_design_diagnostics` separates raw, within, among and nuisance-adjusted exposure diagnostics. Both are tested, not yet run on the full realized native measurement cohort. |
 | 4. Ecology | Do within- and among-taxon associations agree? | Joint Gaussian pooling retains sparse and locally aliased taxa and passes dense-reference and full-size synthetic numerical tests. Conditional intervals remain uncalibrated; matched-support scale contrasts and dependence-aware joint inference are unfinished. |
 | 5. Synthesis | Do observed environmental and phenotype breadths covary? | Optional secondary Hypervolume B; common axes, bandwidth and sample-size/convergence qualification must precede it. Its failure cannot block otherwise supported primary ecology. |
@@ -25,12 +25,43 @@ This keeps two contributions together: an auditable image-to-distribution method
 and a test of module-specific ecological associations across scales. It does not
 require any positive result or the survival of the v2 candidates. Technical
 repeatability is not physical trait accuracy, and spatial association is not
-adaptation. Full-production and ecological-fit authorization remain **false**.
+adaptation. Full-source automatic production and primary ecological-inference
+authorization remain **false**. The separate, bounded all27 point-estimate
+exploration below does not change either boundary.
 
 The frozen 9,503-row environment diagnostic is not the final model cohort.
 VIF/rank must be reported on each actual endpoint/module design, including
 within-taxon and among-taxon support. Partial pooling addresses unstable taxon
 slopes; it does not by itself repair selective photography or recording effort.
+
+### All-27 exploratory point estimates
+
+The [all27 exploration contract](all27_exploration_contract.json) opens a separate
+numerical analysis of all 27 basic-QC endpoints, including the visible-display
+coordinate and the 13 measurement-held routes. It does not replace the fixed
+primary modules, change their 36-test family, or promote held measurements.
+Every endpoint uses the same frozen nine-predictor environment model, calendar,
+spatial and endpoint-matched image-quality adjustment, and matched within/among
+estimation. No predictor is selected using these response values.
+
+The [independent input check](../../reproducibility/v3_all27_exploration_input_20260909.json)
+reconciles 67,689 observation-endpoint means against SQL aggregation of the
+verified per-image numerics. Matched model support in this partial checkpoint
+ranges from 355 to 1,805 observations per endpoint. Each endpoint has its own
+cohort; there is no all27 complete-case restriction. Pixel aliases are counted
+once per observation, and observations with pending photo requests are excluded.
+This source-ordered partial checkpoint is not representative full-cohort ecology.
+
+`all27_exploration prepare` reconstructs QC-matched size and sharpness from saved
+head numerics without image requests. `cloud_all27_exploration` runs the pinned
+prepared input on Actions and preserves the numerical results in the existing
+unpublished draft. It retains all 729 coefficient slots (27 endpoints, nine
+predictors, three scales), including failed estimates. These are point estimates
+only: no P values, confidence intervals or qualified biological findings. Hue
+coordinates and colour fractions remain parts of a circular quantity and a
+composition, not independent discoveries. Differences between endpoint-specific
+cohorts also limit comparisons. Primary calibration and measurement holds remain
+unchanged; exploratory associations cannot justify retuning or admission.
 
 ### All-27 measurement, without v2-result selection
 

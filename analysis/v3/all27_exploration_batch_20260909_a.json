@@ -1,0 +1,61 @@
+{
+  "anonymous_release_and_asset_requests": "404",
+  "branch": "revision/ch1-v3-20260907",
+  "exploratory_contract_canonical_sha256": "872db6f8b818f2ec31785e8eb2d7a483169463b8916851ee6a9203e908ab28f7",
+  "image_requests_authorized": false,
+  "implementation_sha256_text_lf": {
+    "analysis/v3/all27_exploration.py": "7f08e95d809cfff0f3c0941adbc9d320bcb3dbaa75fd9287c9d73da9147777dc",
+    "analysis/v3/all27_exploration_contract.json": "69f82902ab9f02ef1982ace0503df179bbd7bc4e5147339d51902b06bfc2fb55",
+    "analysis/v3/archived_measurement.py": "bee9c55a8867ba1c7482865a989326383876ced587529c7a9998fa3662818a40",
+    "analysis/v3/build_observation_measurements.py": "47d26a080a1279a6c3ddba55545137d60cdeb52c973dd138fdb11ff802b3cf4e",
+    "analysis/v3/cloud_all27_exploration.py": "9134a6abfddcd1bf22d72f39537df49e9f7bb101ed5229f1593fc1e79b056c22",
+    "analysis/v3/environment_matrix.py": "d5651de674c046294517db8294558e426e580ad627fc258f0a4966b85b95a8b0",
+    "analysis/v3/environment_model.py": "a5ec75d7d5a9f7160dbf515ac2a99c324e175523fae82c5915c2b82c69cdbd7e",
+    "analysis/v3/environment_production_contract.json": "2658373458b7321c2a35a3cb9eb14baf687ba8b72b8970f9fbe05c2882e6360d",
+    "analysis/v3/hierarchical_ecology.py": "7f4a37d1d64cbf00105068d2bde254da6cdcf6f413e6a420df8ef33428a5c5ae",
+    "analysis/v3/image_features.py": "e6075d14441083fb2f0769eb0448b27aa71aefc9a6b6851360c41ffd1d8be998",
+    "analysis/v3/joint_partial_pooling.py": "c506afa529f2a3ac125bbd72e0334cf7e125b774ef80ae50fb91b0f764c2a15c",
+    "analysis/v3/measurement_qualification_decision_20260908.json": "e798f54a3aa805c4e0ecb42ae1e305841bee995475df993a86528febecb06799",
+    "analysis/v3/model_design_diagnostics.py": "b95c243963757d1f112e5caca1133d9780cb39e555248d4242e3a460cda997e0",
+    "analysis/v3/module_ecology.py": "9cc8b65eabe51f4296f17344c57fcbf971e6ca9d51f33706efaeeac881f8011d",
+    "analysis/v3/nuisance_design.py": "d84488f64f2b431ed3a8286538f2c3b71e1d3918a84def636ba8063e5b769404",
+    "analysis/v3/nuisance_design_contract.json": "238a1d302c818371d516a49eed1f352f013c9af5d13d2cf3780455ce82a455fd",
+    "analysis/v3/private_replay.py": "823860e6297ef4d8618a3852f44068d2f65e30a1a5255cc9d59ef7b243dc38c8",
+    "analysis/v3/protected_artifacts.py": "81074966da9e032745d10bf5e8c50463b0d3aa954dc538f86f34f48069826f7d",
+    "analysis/v3/stream_observation_views.py": "b1ca1e769a3f71e2cf4cb82fd531316e7adf62d38d61aaa503737b87f7af23d9",
+    "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv": "cde8b8bb990d65fd2c9b2c247633eb47630e532cc69bec132c74f3b6bcfc29f1",
+    "reproducibility/v3_full_native_environment_qc_selection_20260908.json": "34c04664aee201f4e365fd416bfd04f389edaf1942d0fa48a2df6c66adec5f3c"
+  },
+  "input_local_and_cloud_roundtrip_verified": true,
+  "partial_checkpoint_complete_request_observations": 2507,
+  "preparation_report_sha256": "96a2959f15911fbc7d57204892367ac9951b3524cee3ebb36f85ed4cef3d4a7b",
+  "primary_inference_authorized": false,
+  "release_id": 384499945,
+  "repository": "zuizui0223/azami",
+  "runtime": {
+    "packages": {
+      "numpy": "2.5.3",
+      "opencv-python-headless": "5.0.0.93",
+      "pandas": "3.0.5",
+      "requests": "2.34.2",
+      "scipy": "1.18.1",
+      "shapely": "2.1.2"
+    },
+    "python": "3.12.14"
+  },
+  "schema_version": 1,
+  "source_asset": {
+    "asset_id": 552019082,
+    "asset_name": "v3-all27-point-input-20260909-a.zip",
+    "bundle_bytes": 18631804,
+    "bundle_sha256": "1979324b25775a8f868cdfe8c9547985f31952b8a56a2d0e6e85859d10234b0c",
+    "files": 3,
+    "manifest_sha256": "b844b972bcd8544750a1651e4ac6b2faeae283e71fedcfc3ca7a6aa6b09b707c",
+    "restored_bytes": 73030733,
+    "source_images_included": false
+  },
+  "source_view_database_sha256": "d818b3fcd4dc145440d315cce359387ae21440bfd0993f4d4f608ea1ce9c4a95",
+  "status": "single_partial_checkpoint_all27_point_exploration",
+  "tag_name": "private-v3-numerical-20260908",
+  "verified_photo_units": 4321
+}

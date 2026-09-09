@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "ch1_v3_all27_exploratory_point_estimates_20260909",
+  "status": "user_requested_separate_exploration_before_its_environmental_results",
+  "scope": "Attempt all 27 registered image endpoints, including visible display and the 13 measurement-held routes, in a separate exploratory numerical lane. Do not replace the fixed primary modules or change their 36-test family.",
+  "input_boundary": "A completed, independently verified partial or full original-stream observation view and its exact saved raw numerical archives; no new image requests. A partial source-ordered checkpoint is explicitly not representative full-cohort ecology.",
+  "measurement_view": "Use existing per-head endpoint QC, including paired hue and closed-composition support. Retain all raw values and original admission flags. Reconstruct endpoint-matched head size and sharpness from the same QC-eligible heads; never borrow operational quality from another endpoint. This is basic-QC exploration, not promotion of a held route.",
+  "aggregation": "Equal QC-eligible heads within a photo, then equal distinct decoded images within an observation. Require every request-candidate photo of an included observation to have a terminal record. Reuse the verified view's duplicate-pixel representatives and source dependence identities.",
+  "missingness": "Each endpoint has its own observation cohort. Require its finite response, matched positive size and nonnegative sharpness, the retained nine environmental predictors and fixed source nuisance fields. No imputation, missing-to-zero conversion, full27 complete-case restriction, taxon cap or trait-dependent predictor selection.",
+  "environment_definition": "analysis/v3/environment_model.py",
+  "nuisance_definition": "analysis/v3/nuisance_design.py",
+  "estimator": "analysis.v3.module_ecology.fit_matched_module, one response coordinate per endpoint; same joint random-slope working model, nuisance adjustment, equal-taxon among fit and matched among-minus-within contrast. Keep locally sparse taxa. Reject nonidentifiable or unconverged fits without dropping predictors or changing optimization tolerances.",
+  "response_transform": "Use registered units except square roots of the four closed colour composition fractions. Hue sine/cosine share measurement support and are reported as paired coordinates of one circular quantity. The four fractions are one composition. Endpoint coefficients are descriptive decompositions, not 27 independent biological discoveries.",
+  "planned_coefficient_slots": 729,
+  "coefficient_slot_definition": "27 endpoints x 9 retained predictors x 3 scales, including null entries for non-estimable endpoints.",
+  "uncertainty": "Point-estimate exploration only. No P values, significance flags, confidence intervals or qualified ecological claims. Spatial and image-quality covariates are included, but dependence-calibrated uncertainty and measurement-error propagation are not supplied by this lane. Preserve known source components for subsequent qualified analyses.",
+  "primary_boundary": "Primary measurement decisions, primary model definitions, live calibration, calibration thresholds and bootstrap draws are unchanged. Looking at this exploration cannot justify promoting a held endpoint, selecting a successful environmental association or retuning either lane.",
+  "output": "Private exact cohort/quality table, realized-design diagnostics, per-endpoint fit records including failures, all729 coefficient slots, execution identities and aggregate public receipt. Do not publish private rows or treat an uploaded artifact as permanent publication archiving.",
+  "exploratory_fitting_authorized": true,
+  "confirmatory_ecological_fitting_authorized": false,
+  "measurement_holds_overridden": false,
+  "source_image_requests_authorized": false
+}

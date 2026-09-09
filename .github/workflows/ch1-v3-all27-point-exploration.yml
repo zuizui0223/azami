@@ -1,0 +1,49 @@
+name: Chapter 1 v3 all27 exploratory point estimates
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - analysis/v3/all27_exploration_batch_20260909_a.json
+  workflow_dispatch:
+
+permissions:
+  contents: write # Numerical assets on the existing UNPUBLISHED draft only.
+
+concurrency:
+  group: v3-all27-partial-checkpoint-20260909-a
+  cancel-in-progress: false
+
+jobs:
+  explore:
+    if: github.repository == 'zuizui0223/azami' && github.ref == 'refs/heads/revision/ch1-v3-20260907'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '2'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - name: Install pinned numerical runtime
+        run: python -m pip install numpy==2.5.3 pandas==3.0.5 scipy==1.18.1 requests==2.34.2 shapely==2.1.2 opencv-python-headless==5.0.0.93 pytest==9.1.1
+      - name: Verify all27 inventory and model boundary
+        run: python -m pytest tests/test_v3_all27_exploration.py tests/test_v3_module_ecology.py tests/test_v3_joint_partial_pooling.py tests/test_v3_nuisance_design.py -q
+      - name: Fit all27 against the pinned joint environment model
+        run: python -m analysis.v3.cloud_all27_exploration --batch analysis/v3/all27_exploration_batch_20260909_a.json --out "${{ runner.temp }}/v3-all27-explore"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v3-all27-point-receipts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/v3-all27-explore/public_report.json
+            ${{ runner.temp }}/v3-all27-explore/public_failure.json
+            ${{ runner.temp }}/v3-all27-explore/protected_output_receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+      # Never upload private cohorts, per-taxon diagnostics or numerical coefficients
+      # as public artifacts. No image requests, endpoint promotion or main merge.

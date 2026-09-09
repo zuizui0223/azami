@@ -1,0 +1,173 @@
+{
+  "endpoint_inventory": [
+    {
+      "complete_qc_observations": 578,
+      "endpoint_id": "bract_projection_asymmetry",
+      "finite_matched_model_observations": 575,
+      "model_taxa": 71
+    },
+    {
+      "complete_qc_observations": 568,
+      "endpoint_id": "bract_projection_maximum",
+      "finite_matched_model_observations": 565,
+      "model_taxa": 71
+    },
+    {
+      "complete_qc_observations": 569,
+      "endpoint_id": "bract_projection_p95",
+      "finite_matched_model_observations": 566,
+      "model_taxa": 71
+    },
+    {
+      "complete_qc_observations": 578,
+      "endpoint_id": "bract_projection_peak_density",
+      "finite_matched_model_observations": 575,
+      "model_taxa": 71
+    },
+    {
+      "complete_qc_observations": 575,
+      "endpoint_id": "bract_projection_roughness",
+      "finite_matched_model_observations": 572,
+      "model_taxa": 71
+    },
+    {
+      "complete_qc_observations": 575,
+      "endpoint_id": "bract_spread_fraction",
+      "finite_matched_model_observations": 572,
+      "model_taxa": 71
+    },
+    {
+      "complete_qc_observations": 1709,
+      "endpoint_id": "capitulum_outline_aspect_ratio",
+      "finite_matched_model_observations": 1701,
+      "model_taxa": 110
+    },
+    {
+      "complete_qc_observations": 1709,
+      "endpoint_id": "capitulum_outline_circularity",
+      "finite_matched_model_observations": 1701,
+      "model_taxa": 110
+    },
+    {
+      "complete_qc_observations": 1709,
+      "endpoint_id": "capitulum_outline_solidity",
+      "finite_matched_model_observations": 1701,
+      "model_taxa": 110
+    },
+    {
+      "complete_qc_observations": 1709,
+      "endpoint_id": "capitulum_width_profile_cv",
+      "finite_matched_model_observations": 1701,
+      "model_taxa": 110
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_hue_cos",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_hue_sin",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_lab_chroma",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_lab_lightness",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_purple_pixel_fraction",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_redmagenta_pixel_fraction",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_white_pixel_fraction",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "corolla_yellow_pixel_fraction",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    },
+    {
+      "complete_qc_observations": 570,
+      "endpoint_id": "involucre_apical_taper_ratio",
+      "finite_matched_model_observations": 567,
+      "model_taxa": 70
+    },
+    {
+      "complete_qc_observations": 575,
+      "endpoint_id": "involucre_basal_taper_ratio",
+      "finite_matched_model_observations": 572,
+      "model_taxa": 70
+    },
+    {
+      "complete_qc_observations": 573,
+      "endpoint_id": "involucre_length_width_ratio",
+      "finite_matched_model_observations": 570,
+      "model_taxa": 70
+    },
+    {
+      "complete_qc_observations": 358,
+      "endpoint_id": "involucre_surface_edge_density",
+      "finite_matched_model_observations": 355,
+      "model_taxa": 57
+    },
+    {
+      "complete_qc_observations": 359,
+      "endpoint_id": "involucre_surface_high_frequency_energy",
+      "finite_matched_model_observations": 356,
+      "model_taxa": 58
+    },
+    {
+      "complete_qc_observations": 359,
+      "endpoint_id": "involucre_surface_lbp_entropy",
+      "finite_matched_model_observations": 356,
+      "model_taxa": 58
+    },
+    {
+      "complete_qc_observations": 359,
+      "endpoint_id": "involucre_surface_specular_fraction",
+      "finite_matched_model_observations": 356,
+      "model_taxa": 58
+    },
+    {
+      "complete_qc_observations": 1655,
+      "endpoint_id": "orientation_image_vertical_angle",
+      "finite_matched_model_observations": 1648,
+      "model_taxa": 106
+    },
+    {
+      "complete_qc_observations": 1812,
+      "endpoint_id": "visible_floret_fraction",
+      "finite_matched_model_observations": 1805,
+      "model_taxa": 112
+    }
+  ],
+  "limit": "Incomplete full-source measurement; model-support counts do not establish measurement accuracy.",
+  "local_image_requests": 0,
+  "observation_endpoint_rows_compared": 67689,
+  "prepared_report_sha256": "96a2959f15911fbc7d57204892367ac9951b3524cee3ebb36f85ed4cef3d4a7b",
+  "source_view_sha256": "d818b3fcd4dc145440d315cce359387ae21440bfd0993f4d4f608ea1ce9c4a95",
+  "status": "ALL27_INPUT_SQL_AGGREGATION_AND_MODEL_SUPPORT_INDEPENDENTLY_VERIFIED",
+  "trait_environment_models_executed": 0
+}
