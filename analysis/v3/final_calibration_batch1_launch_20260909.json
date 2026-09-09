@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "id": "ch1_v3_final_multicoordinate_calibration_batch1_launch_v1",
+  "status": "LAUNCH_FROZEN_FINAL_MULTICOORDINATE_CALIBRATION_BATCH_1_AFTER_ALL_NUMERICAL_GATES",
+  "batch_index": 0,
+  "outer_start_inclusive": 0,
+  "outer_stop_exclusive": 25,
+  "contract_canonical_sha256": "07055735f9da7c7286fe63e7abea59322354f21ae147deee96697917b86046cc",
+  "validated_code_sha": "96fde624da628b910ac2ac6ae2106b30cdd8593a",
+  "validated_integrity_run_id": 34294446688,
+  "gate_receipt_canonical_sha256": {
+    "reproducibility/v3_tail_mechanics_solver_repair_verification_20260909.json": "824d003a383cf1a9eecfd621133123310be814694f42ed0ce380df22908ec466",
+    "reproducibility/v3_final_geometry_smoke_solver_repair_20260909.json": "109bff91ad4f34b3b536f41272949e7c754c1fd6a10ad301d581f3dc55e67941"
+  },
+  "scenarios": [
+    "iid_null",
+    "crossed_spatial_null",
+    "heterogeneous_slopes",
+    "scale_difference"
+  ],
+  "bootstrap_replicates_per_outer": 999,
+  "grid_degrees": [2, 5],
+  "module_dimensions": {
+    "orientation": 1,
+    "visible_colour": 8,
+    "gross_shape": 4
+  },
+  "family_slots": 36,
+  "thresholds_changed": false,
+  "seed_changed": false,
+  "grid_changed": false,
+  "family_changed": false,
+  "empirical_trait_environment_values_read": 0,
+  "ecological_models_executed": 0,
+  "ecological_fitting_authorized": false
+}
