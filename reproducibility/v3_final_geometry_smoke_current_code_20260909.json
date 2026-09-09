@@ -1,0 +1,101 @@
+{
+  "boundary": "Computational executability and exact provenance only; neither 36-family calibration nor ecological inference.",
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "grid_cases": 8,
+  "implementation_sha256_text_lf": {
+    "analysis/v3/dependence_resampling.py": "173f21ad01593c04afd4e3f7a1410a22e8c9c75f8b1d21d8ed21833de06c211e",
+    "analysis/v3/environment_model.py": "a5ec75d7d5a9f7160dbf515ac2a99c324e175523fae82c5915c2b82c69cdbd7e",
+    "analysis/v3/joint_partial_pooling.py": "c506afa529f2a3ac125bbd72e0334cf7e125b774ef80ae50fb91b0f764c2a15c",
+    "analysis/v3/module_ecology.py": "9cc8b65eabe51f4296f17344c57fcbf971e6ca9d51f33706efaeeac881f8011d",
+    "analysis/v3/multicoordinate_calibration.py": "c139b2cc30b606b9b0769ef2301548e2afefc9a4c5cfd839685398ce93b5cab5",
+    "analysis/v3/nuisance_design.py": "d84488f64f2b431ed3a8286538f2c3b71e1d3918a84def636ba8063e5b769404",
+    "analysis/v3/run_final_geometry_smoke.py": "4429d0b5171e0589f607c93bb1ddb5be4224a068b5d8c58c300d6aba9cc3c718"
+  },
+  "independent_generated_datasets": 4,
+  "records": [
+    {
+      "artifact_path": "v3-final-geometry-smoke-crossed_spatial_null-34248192547-1",
+      "cases": [
+        {
+          "draw_records_sha256": "f6a3ae45a3ffb9fa1ed33b9d36cf5d95ece5de88c70d70080d0c80f3fbacd55a",
+          "draws_verified": 199,
+          "grid_degrees": 2
+        },
+        {
+          "draw_records_sha256": "91045980a0635531fbe5e3fc50ceb30f20946a89d0a891b0f41f7f9172d3e8db",
+          "draws_verified": 199,
+          "grid_degrees": 5
+        }
+      ],
+      "execution_contract_canonical_sha256": "1d8ad58e25f669cc19156a1bc84f82907ab8e0db40ca4c5dbf474194b7a0b127",
+      "public_report_sha256": "4bb5119d88eaa90e02faf25a98cf856acee796d22db6369825a53676332194c1",
+      "scenario": "crossed_spatial_null",
+      "seed": 2026100891
+    },
+    {
+      "artifact_path": "v3-final-geometry-smoke-heterogeneous_slopes-34248192547-2",
+      "cases": [
+        {
+          "draw_records_sha256": "c10439422e478c23d242a0ef38c878f99759f1d5715f1847e62463d437dda9d8",
+          "draws_verified": 199,
+          "grid_degrees": 2
+        },
+        {
+          "draw_records_sha256": "3629e8e3bf39a6f6b0325fe6aaaea9d8d8be553dd82c23cd785f11356fcd98db",
+          "draws_verified": 199,
+          "grid_degrees": 5
+        }
+      ],
+      "execution_contract_canonical_sha256": "73e05d3f9b9ec36b7cfcd20f53e995551660e329e1d25d1dd255e66595090446",
+      "public_report_sha256": "021ac1394492f6ad1f25ce5f7095ac5ddb5a72431f8ad46acedbe94699212dc5",
+      "scenario": "heterogeneous_slopes",
+      "seed": 2026110891
+    },
+    {
+      "artifact_path": "v3-final-geometry-smoke-iid_null-34248192547-2",
+      "cases": [
+        {
+          "draw_records_sha256": "067c8fb71f10c149de6d4aa3d21d82bd4642e9de433d61e0849a2244671df4a1",
+          "draws_verified": 199,
+          "grid_degrees": 2
+        },
+        {
+          "draw_records_sha256": "5f4083f356fa9f4c093a67642ada122b531b8126a0214a97bd46074f2bcf9ba2",
+          "draws_verified": 199,
+          "grid_degrees": 5
+        }
+      ],
+      "execution_contract_canonical_sha256": "ab057f0a501a6d1dda4c0659147b825fa082c1324096f645fea4c1d530c896a4",
+      "public_report_sha256": "510ba26a01620355733edb520055c03804a8c2eb5d9fb82b8cfe24a4706acf4e",
+      "scenario": "iid_null",
+      "seed": 2026090891
+    },
+    {
+      "artifact_path": "v3-final-geometry-smoke-scale_difference-34248192547-1",
+      "cases": [
+        {
+          "draw_records_sha256": "a65c38d46856c8c7cbe6dcc08d4c4cd67e2f43fdeea298a8e9f353de79a0670d",
+          "draws_verified": 199,
+          "grid_degrees": 2
+        },
+        {
+          "draw_records_sha256": "33e6dea39e7842f398d126fc8abf95872923929769c32f16a10544a0fdd54ced",
+          "draws_verified": 199,
+          "grid_degrees": 5
+        }
+      ],
+      "execution_contract_canonical_sha256": "8ec5e3de81243b5a55c90e5a1b02432751c9503fdab358e5a00200129f625edf",
+      "public_report_sha256": "edfa5d69f4964af4036db50fd6b9ce2dfac12e5ce05e9f7a8ef87c4f4d1c5e82",
+      "scenario": "scale_difference",
+      "seed": 2026120891
+    }
+  ],
+  "source_head_sha": "db3c2cb0afc8b4c16a970719e55e2f57153776b5",
+  "source_receipt": "reproducibility/v3_final_geometry_smoke_solver_repair_20260909.json",
+  "source_receipt_canonical_sha256": "109bff91ad4f34b3b536f41272949e7c754c1fd6a10ad301d581f3dc55e67941",
+  "source_workflow_run_id": 34248192547,
+  "status": "RETURNED_FINAL_GEOMETRY_SMOKE_CURRENT_CODE_AND_ALL_DRAW_RECORDS_VERIFIED",
+  "verified_shared_draw_records": 1592
+}
