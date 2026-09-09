@@ -2,7 +2,7 @@
 
 A GitHub Actions job failure is not a measurement failure: a completed chunk may
 already have been uploaded to the unpublished numerical draft before a return
-verification timed out.  This audit therefore uses the protected final-asset
+verification timed out. This audit therefore uses the protected final-asset
 inventory, not Actions job conclusions, to decide which chunks need resume.
 
 No protected bundle is downloaded and no observation, coordinate, trait or
@@ -12,12 +12,70 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 
-from .protected_artifacts import DraftStore, new_json, require
+import requests
 
 FINAL_DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
+REPOSITORY = "zuizui0223/azami"
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def new_json(path: Path, value: dict):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("x", encoding="utf-8") as handle:
+        json.dump(value, handle, sort_keys=True, indent=2, allow_nan=False)
+        handle.write("\n")
+
+
+def protected_asset_inventory(batch: dict) -> list[dict]:
+    """Read only authenticated draft-release metadata with anonymous denial."""
+    require(batch["repository"] == REPOSITORY, "Wave C repository differs")
+    release_id = batch["release_id"]
+    require(type(release_id) is int and release_id > 0, "Invalid Wave C release id")
+    require(batch["tag_name"].startswith("private-v3-numerical-"), "Unexpected protected tag")
+    token = os.environ.get("GH_TOKEN")
+    require(bool(token), "GitHub token required for protected inventory")
+
+    base = f"https://api.github.com/repos/{REPOSITORY}"
+    url = f"{base}/releases/{release_id}"
+    session = requests.Session()
+    anonymous = requests.Session()
+    anonymous.trust_env = False
+    session.headers.update({"Authorization": "Bearer " + token, "X-GitHub-Api-Version": "2022-11-28"})
+    try:
+        response = session.get(url, timeout=(15, 60))
+        response.raise_for_status()
+        release = response.json()
+        require(release.get("draft") is True and release.get("published_at") is None, "Protected release is published or not draft; STOP")
+        require(release.get("tag_name") == batch["tag_name"] and release.get("id") == release_id, "Protected draft identity differs")
+        public = anonymous.get(url, timeout=(15, 60), allow_redirects=False)
+        require(public.status_code == 404, "Protected draft is not anonymously denied; STOP")
+
+        assets, seen = [], set()
+        for page in range(1, 1001):
+            reply = session.get(url + "/assets", params={"per_page": 100, "page": page}, timeout=(15, 60))
+            reply.raise_for_status()
+            rows = reply.json()
+            require(isinstance(rows, list) and len(rows) <= 100, "Invalid protected asset page")
+            for row in rows:
+                require(type(row.get("id")) is int and row["id"] not in seen, "Duplicate or invalid protected asset identity")
+                seen.add(row["id"])
+                assets.append(row)
+            if len(rows) < 100:
+                break
+        else:
+            raise ValueError("Protected inventory exceeds bounded pagination; STOP")
+        return assets
+    finally:
+        session.close()
+        anonymous.close()
 
 
 def reconcile(batch: dict, assets: list[dict]) -> dict:
@@ -95,17 +153,7 @@ def reconcile(batch: dict, assets: list[dict]) -> dict:
 def run(batch_path: Path, out: Path) -> dict:
     require(not out.exists(), "Preserve previous Wave C reconciliation output")
     batch = json.loads(batch_path.read_text(encoding="utf-8"))
-    contract = {
-        "repository": batch["repository"],
-        "release_id": batch["release_id"],
-        "tag_name": batch["tag_name"],
-    }
-    store = DraftStore(contract)
-    try:
-        release = store.check()
-        report = reconcile(batch, release["assets"])
-    finally:
-        store.close()
+    report = reconcile(batch, protected_asset_inventory(batch))
     out.mkdir(parents=True)
     new_json(out / "public_report.json", report)
     return report
