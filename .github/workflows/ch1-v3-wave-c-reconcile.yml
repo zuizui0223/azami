@@ -10,7 +10,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # Draft-release metadata requires the same contents scope as the existing
+  # protected numerical transport. This audit itself performs GET requests only.
+  contents: write
 
 jobs:
   reconcile:
