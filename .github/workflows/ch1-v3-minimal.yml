@@ -1,0 +1,33 @@
+name: Chapter 1 minimal v3 reuse path
+
+on:
+  push:
+    paths:
+      - 'analysis/v3/**'
+      - 'reproducibility/v3_minimal_reuse_receipt_20260909.json'
+      - '.github/workflows/ch1-v3-minimal.yml'
+  pull_request:
+    paths:
+      - 'analysis/v3/**'
+      - 'reproducibility/v3_minimal_reuse_receipt_20260909.json'
+      - '.github/workflows/ch1-v3-minimal.yml'
+  workflow_dispatch:
+
+jobs:
+  minimal-v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile upstream patch
+        run: |
+          python -m py_compile \
+            analysis/v3/workflow.py \
+            analysis/v3/reconcile_sources.py \
+            analysis/v3/audit_processing_history.py \
+            analysis/v3/recover_display_composition.py \
+            analysis/v3/minimal_preflight.py
+      - name: Verify minimal v3 to v2 reuse path
+        run: python analysis/v3/minimal_preflight.py
