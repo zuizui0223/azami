@@ -9,10 +9,11 @@ pre-analysis gate can reconstruct every comparable frozen among-taxon marginal
 coefficient. The core gate requires a maximum coefficient discrepancy <= 1e-10;
 otherwise execution stops before VIF selection or multivariable inference.
 
-Because standardized coefficients and VIF are invariant to positive affine unit
-rescaling, this gate is suitable for diagnosing transport/scale differences but
-is not a replacement for the canonical archived input. The resulting analysis
-remains a post-hoc sensitivity and does not modify frozen v2 outputs.
+Restored endpoints that are constant at the taxon-median analysis scale are
+explicitly recorded as constant_response rather than causing the all-trait scan
+to abort. Predictors that become constant within an endpoint-specific cohort are
+removed before subset-specific VIF filtering. Neither rule uses trait outcomes to
+select among environmental predictors with variation.
 """
 from __future__ import annotations
 
@@ -20,6 +21,9 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 from analysis.v3 import run_full_vifstep_sensitivity as core
 
@@ -41,6 +45,63 @@ def file_sha(path: Path) -> str:
     return h.hexdigest()
 
 
+def has_variation(series: pd.Series) -> bool:
+    values = pd.to_numeric(series, errors="coerce").to_numpy(float)
+    return bool(len(values) > 1 and np.isfinite(values).all() and np.std(values, ddof=0) > 0)
+
+
+def robust_run_threshold(threshold, units, traits, env_taxon, global_selected,
+                         minimum, permutations, seed):
+    """Core run_threshold with explicit degenerate-endpoint bookkeeping."""
+    results = []
+    selections = []
+    for unit in units:
+        if unit["inferential_unit"] == "linear_endpoint":
+            frame = core.linear_taxon_table(traits, env_taxon, unit["members"][0], minimum)
+            response_ok = has_variation(frame["median"]) if len(frame) else False
+        else:
+            frame = core.circular_taxon_table(traits, env_taxon, unit["members"], minimum)
+            response_ok = bool(len(frame) and has_variation(frame["sine"]) and has_variation(frame["cosine"]))
+
+        if not response_ok:
+            selections.append({
+                "vif_threshold": threshold, "unit_id": unit["unit_id"], "n_taxa": len(frame),
+                "status": "constant_response", "selected_predictors": "", "max_vif": np.nan,
+            })
+            continue
+
+        selected = [p for p in global_selected if has_variation(frame[p])]
+        if len(frame) <= len(selected) + 3 or not selected:
+            selections.append({
+                "vif_threshold": threshold, "unit_id": unit["unit_id"], "n_taxa": len(frame),
+                "status": "insufficient_taxa_or_predictor_variation", "selected_predictors": ";".join(selected),
+                "max_vif": np.nan,
+            })
+            continue
+
+        while len(selected) > 1:
+            vt = core.vif_table(frame, selected)
+            if float(vt.iloc[0].vif) < threshold:
+                break
+            selected.remove(str(vt.iloc[0].predictor))
+        vt = core.vif_table(frame, selected)
+        selections.append({
+            "vif_threshold": threshold, "unit_id": unit["unit_id"], "n_taxa": len(frame),
+            "status": "ok", "selected_predictors": ";".join(selected),
+            "max_vif": float(vt.vif.max()),
+        })
+        if unit["inferential_unit"] == "linear_endpoint":
+            results.extend(core.fit_linear(frame, selected, unit, threshold, permutations, seed))
+        else:
+            results.extend(core.fit_circular(frame, selected, unit, threshold, permutations, seed))
+
+    result = pd.DataFrame(results)
+    if len(result):
+        result["q_perm_bh_posthoc_family"] = core.bh_adjust(result.p_perm)
+        result["posthoc_fdr_significant_0_05"] = result.q_perm_bh_posthoc_family.lt(.05)
+    return result, pd.DataFrame(selections)
+
+
 def main() -> int:
     environment = arg_path("--environment")
     out_dir = arg_path("--out-dir")
@@ -53,10 +114,10 @@ def main() -> int:
         "continuation_gate": "frozen_univariate_coefficient_reproduction_max_error_le_1e-10",
     }))
 
-    # The core runner otherwise rejects before reaching its stronger scientific
-    # value gate. Override only the byte sentinel for this process; all structural
-    # checks and the frozen coefficient reproduction remain active.
+    # Override only the byte sentinel for this process. Structural checks and the
+    # frozen coefficient-reproduction gate remain active inside core.main().
     core.EXPECTED_ENV_SHA = actual
+    core.run_threshold = robust_run_threshold
     status = core.main()
     if status != 0:
         return int(status)
@@ -67,9 +128,7 @@ def main() -> int:
     n = int(verification.get("n_comparable_rows", 0))
     error = float(verification.get("maximum_absolute_coefficient_error", float("inf")))
     if n < 100 or error > 1e-10:
-        raise SystemExit(
-            f"value-identity gate failed after core run: comparable={n}, max_error={error}"
-        )
+        raise SystemExit(f"value-identity gate failed after core run: comparable={n}, max_error={error}")
     payload["environment_identity"] = {
         "canonical_sha256": CANONICAL_ENV_SHA,
         "actual_sha256": actual,
@@ -79,6 +138,9 @@ def main() -> int:
         "maximum_absolute_coefficient_error": error,
         "not_a_claim_of_byte_identity": not byte_identical,
     }
+    payload["degenerate_endpoint_rule"] = (
+        "taxon-median responses with zero variance are recorded as constant_response and excluded from regression"
+    )
     report_path.write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     print("ENVIRONMENT_VALUE_IDENTITY_GATE=PASS")
     print("ENVIRONMENT_ACTUAL_SHA256=" + actual)
