@@ -32,12 +32,18 @@ jobs:
           unzip -q work/continuous.zip -d work/continuous
           test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
           test -f work/continuous/environment/strict_spatial_chelsa.csv
-      - name: Recover frozen native-status table
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Materialize frozen native-status table from Git LFS
         run: |
+          set -euo pipefail
+          git lfs version
+          git lfs install --local
+          git fetch --depth=1 origin archive/ch1-precleanup-20260827:refs/remotes/origin/archive/ch1-precleanup-20260827
           mkdir -p work/native
-          gh api repos/${GITHUB_REPOSITORY}/git/blobs/b98af47482fd86b1353546573492519659cda848 --jq .content | tr -d '\n' | base64 -d > work/native/observation_native_status.csv
+          git show origin/archive/ch1-precleanup-20260827:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/native/native.pointer
+          grep -F 'oid sha256:c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a' work/native/native.pointer
+          grep -F 'size 5351184' work/native/native.pointer
+          git lfs fetch origin archive/ch1-precleanup-20260827 --include='analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv'
+          git lfs smudge < work/native/native.pointer > work/native/observation_native_status.csv
           echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
       - name: Recover the five historically omitted measured endpoints
         env:
