@@ -99,7 +99,7 @@ jobs:
           test -f work/historical_bundle/historical_trees/gbotb_lcvp_scenario2_randomized.trees
       - name: Run one 8-predictor model per trait then spatial and 52-tree sensitivity
         run: |
-          python analysis/v3/run_full46276_multivariable_vif10.py \
+          PYTHONPATH=. python analysis/v3/run_full46276_multivariable_vif10.py \
             --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
             --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
             --environment work/full46276_chelsa_process.csv \
