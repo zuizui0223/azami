@@ -148,10 +148,11 @@ def validate(root: Path = ROOT) -> dict:
     if contract.get("status") != "active_design_with_execution_requirements_unfinished":
         raise ValueError("This preflight cannot promote a changed execution authority")
     stage_ids = [stage["id"] for stage in contract["stages"]]
-    if stage_ids != ["source", "measurement", "assessability", "ecology", "synthesis"]:
+    if stage_ids != ["source", "measurement_qc", "ecology", "output"]:
         raise ValueError("Active stage ordering changed")
     if contract["hypervolume"]["optional"] is not True:
-        raise ValueError("Secondary hypervolume must not block primary ecology")
+        raise ValueError("Noncanonical hypervolume must remain optional")
+
     loaded = {}
     checked = []
     ids = [item["id"] for item in evidence["inputs"]]
@@ -166,9 +167,11 @@ def validate(root: Path = ROOT) -> dict:
             raise ValueError(f"Pinned evidence changed: {item['path']}")
         loaded[item["id"]] = data
         checked.append({"id": item["id"], "path": item["path"], "canonical_json_sha256": actual})
+
     _check_source_recovery(loaded["source_recovery_receipt"], loaded["source_receipt"])
     _check_schedule_replay(loaded["schedule_replay_receipt"], loaded["source_recovery_receipt"])
     _check_protected_replay(loaded["protected_replay_receipt"], loaded["schedule_replay_receipt"])
+
     measurement = loaded["measurement_receipt"]
     environment = loaded["environment_receipt"]
     decision = loaded["measurement_decision"]
@@ -185,21 +188,28 @@ def validate(root: Path = ROOT) -> dict:
         raise ValueError("Measurement route counts disagree")
     if len(decision["endpoints"]) != measurement["endpoint_count"]:
         raise ValueError("Endpoint denominator disagrees")
-    active_environment=environment_definition(root)
-    active=contract['environment_and_inference']
-    if (active['retained_variables']!=active_environment['variables']
-            or active['process_blocks']!=active_environment['processes']
-            or active['environment_selection_receipt']!=active_environment['receipt']
-            or active['environment_selection_receipt_canonical_sha256']!=active_environment['receipt_canonical_sha256']
-            or 'drying' in active or 'thermal' in active):
-        raise ValueError('Integrated exposure formulation differs from the verified source-QC process model')
+
+    active_environment = environment_definition(root)
+    active = contract["environment_and_inference"]
+    if (active["retained_variables"] != active_environment["variables"]
+            or active["process_blocks"] != active_environment["processes"]
+            or active["environment_selection_receipt"] != active_environment["receipt"]
+            or active["environment_selection_receipt_canonical_sha256"] != active_environment["receipt_canonical_sha256"]
+            or "drying" in active or "thermal" in active):
+        raise ValueError("Integrated exposure formulation differs from the verified source-QC process model")
+
     requirements = evidence["requirements"]
     expected = {key for stage in contract["stages"] for key in stage["required"]}
-    if expected != set(requirements):
-        raise ValueError("Readiness index does not cover exactly the active requirements")
+    if not expected.issubset(set(requirements)):
+        raise ValueError("Readiness index is missing an active four-stage requirement")
+
+    completed_states = {"historical_evidence_recorded", "execution_evidence_recorded"}
     stage_reports = []
+    prior_complete = True
+    next_stage = None
     for stage in contract["stages"]:
         items = []
+        own_complete = True
         for key in stage["required"]:
             spec = requirements[key]
             if spec["state"] not in {"historical_evidence_recorded", "execution_evidence_recorded", "local_execution_recorded_off_device_pending", "implementation_tested_execution_pending", "not_executed"}:
@@ -215,24 +225,44 @@ def validate(root: Path = ROOT) -> dict:
                     raise ValueError("Executed evidence requirement is not bound to its verified bounded receipt")
             if spec.get("implementation") and not (root / spec["implementation"]).is_file():
                 raise ValueError(f"Indexed implementation absent: {key}")
+            if spec["state"] not in completed_states:
+                own_complete = False
             items.append({"id": key, **spec})
-        stage_reports.append({"stage": stage["id"], "optional_for_primary_ecology": stage["id"] == "synthesis", "requirements": items})
+
+        if stage["id"] == "output":
+            own_complete = prior_complete
+        stage_state = "complete" if prior_complete and own_complete else ("blocked" if not prior_complete else "incomplete")
+        if next_stage is None and stage_state != "complete":
+            next_stage = stage["id"]
+        stage_reports.append({
+            "stage": stage["id"],
+            "state": stage_state,
+            "requirements": items,
+        })
+        prior_complete = prior_complete and own_complete
+
+    if next_stage is None:
+        next_stage = "done"
+
     return {
         "schema_version": 1,
-        "status": "INTEGRATED_DESIGN_INTEGRITY_VERIFIED_EXECUTION_INCOMPLETE",
+        "status": "FOUR_STAGE_WORKFLOW_INTEGRITY_VERIFIED_EXECUTION_INCOMPLETE" if next_stage != "done" else "FOUR_STAGE_WORKFLOW_COMPLETE",
         "contract_sha256_canonical_json": canonical_digest(contract),
         "evidence_index_sha256_canonical_json": canonical_digest(evidence),
         "verified_public_evidence": checked,
         "active_environment_model": active_environment,
+        "canonical_flow": ["source", "measurement_qc", "ecology", "output"],
         "stages": stage_reports,
-        "next_source_gate": "The exact native source and protected cloud/local numerical replay are verified. The first raw chunks have executed restoration receipts; bounded later chunks remain separately authorized. The partial observation-view receipt records 800 verified photo units and 1381 heads without narrowing the full 319244-observation, 27-endpoint inventory. Continue raw acquisition/restoration, qualify versioned colour handling, and complete full-source assessability plus calendar/covariance-aware ecological inference. The source-QC process model is adopted without fitting coefficients. Historical HTTP bytes remain unavailable; no new drive or permanent original-image archive is required.",
+        "next_stage": next_stage,
+        "noncanonical_requirements_retained_for_history": sorted(set(requirements) - expected),
         "ecological_fitting_authorized": False,
         "full_original_stream_authorized": False,
-        "trait_values_read": 0, "ecological_models_executed": 0,
+        "trait_values_read": 0,
+        "ecological_models_executed": 0,
         "limits": [
             "Pinned public receipts establish their identity and agreement, not present availability or re-verification of every private numerical input.",
             "Implementation tests and design declarations are not executed full-source coverage or ecological evidence.",
-            "The optional synthesis stage is not a primary-ecology prerequisite.",
+            "Hypervolume/breadth synthesis is outside the canonical four-stage path and cannot block output.",
         ],
     }
 
