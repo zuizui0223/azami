@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "hash_convention": "canonical_json_sha256 = SHA-256 of UTF-8 JSON with sorted keys, separators comma/colon, ensure_ascii false and no NaN; raw data artifacts use exact byte SHA-256 in their own receipts.",
-  "scope": "Public evidence identity and unfinished implementation ledger, not an authorization token.",
+  "hash_convention": "canonical_json_sha256 = SHA-256 of UTF-8 JSON with sorted keys, separators comma/colon, ensure_ascii false and no NaN; raw artifacts keep exact byte hashes in their receipts.",
+  "scope": "Evidence/readiness ledger for the minimal four-stage canonical workflow. Noncanonical entries are retained for provenance only.",
   "inputs": [
     {
       "id": "source_receipt",
@@ -43,91 +43,92 @@
     "reconciled_source_links": {
       "state": "historical_evidence_recorded",
       "evidence": "reproducibility/v3_source_reconciliation_20260907.json",
-      "remaining": "The full link ledger now supplies the executed native-photo schedule below. Preserve the broader source ledger; scheduling evidence is not measured-image coverage."
+      "remaining": "Source link ledger is fixed; preserve it without turning source recovery into a new analysis."
     },
     "native_authority_input_chain": {
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "implementation": "analysis/v3/recover_native_source_authority.py",
-      "remaining": "Exact source and native-cohort bytes are recovered; 855 reacquired authority responses reproduce all three join products offline. Historical HTTP/full-join identity remains unprovable because old pins were absent. Protected cloud recovery is verified separately below; it does not establish those missing historical identities."
+      "remaining": "Exact native cohort and saved authority joins are recovered. Historical HTTP byte identity is not required for further scientific expansion."
     },
     "enriched_source_cohort": {
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_source_cohort_recovery_20260908.json",
       "implementation": "analysis/v3/enriched_source_cohort.py",
-      "remaining": "All 319244 observations now connect to the verified photo schedule with exact membership, dates and full-source known dependence preserved. Realized module support still depends on completed raw measurement and endpoint-specific assessability."
+      "remaining": "319244 native observations are connected to dates, photo schedule and known dependence."
     },
     "image_only_qualification": {
       "state": "historical_evidence_recorded",
       "evidence": "reproducibility/v3_measurement_qualification_freeze_20260908.json",
-      "remaining": "Operational 14-route qualification is not physical accuracy or an automatic admission of a changed colour definition."
-    },
-    "versioned_colour_definition": {
-      "state": "not_executed",
-      "implementation": "analysis/v3/uniform_colour_profile.py",
-      "remaining": "The candidate recipe is versioned in uniform_floral_chroma_recipe.json and a complete 2853-head x 14-condition numerical profile is recorded in reproducibility/v3_uniform_colour_technical_profile_20260908.json. This completes technical characterization, not the qualification requirement: colour-gain shifts, resolution attrition and inherited dominance-dependent QC remain. The frozen primary module response continues to use registered legacy corolla_lab_chroma; do not silently replace it with the candidate."
+      "remaining": "Existing measurement/QC route decision is frozen; do not reopen it from ecological results."
     },
     "reconciled_stream_schedule": {
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_reconciled_schedule_private_replay_20260908.json",
       "implementation": "analysis/v3/reconciled_stream_input.py",
-      "remaining": "All native source observations and links are scheduled; all six archives and target-photo versions were checked. The original/restored whole-component pilot inputs match. Native raw wave C is an explicitly bounded 128-chunk execution (c000018-c000145; 5784 selected observations, 9944 photo jobs, 8086 requests) and is still running in Actions run 34213194212. Failed cloud confirmations are not automatically missing science: reconcile protected numerical assets after the live wave closes, then resume only truly missing photo units."
+      "remaining": "All native source observations and links are scheduled. Finish/reconcile the already-authorized measurement work; do not create new scientific routes."
     },
     "durable_private_numerical_replay": {
       "state": "execution_evidence_recorded",
       "evidence": "reproducibility/v3_protected_numerical_replay_20260908.json",
       "implementation": "analysis/v3/protected_artifacts.py",
-      "remaining": "Actions run 34197391286 restored all 872 numerical/provenance files (2374321149 bytes); a protected returned worker packet was downloaded locally and exactly matched. Keep the draft unpublished. The subsequent 337-file output bundle is separately recorded in reproducibility/v3_executed_outputs_preservation_20260908.json. Future outputs also require their own protected assets and restoration checks. This closes transport/recovery, not permanent archiving or scientific validation. No external drive or permanent original-image archive is required."
+      "remaining": "Protected numerical recovery is verified. Future measurement outputs only need the same recovery discipline."
     },
     "native_source_to_measurement_coverage": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/assessability.py",
-      "remaining": "stream_observation_views already separates complete, pending and source-blocked records and uses shared head/image support for modules. Partial receipts do not establish full-source assessability. Finish the bounded raw wave, reconcile protected chunks and rebuild endpoint/module-specific source-to-measurable coverage before ecology."
+      "remaining": "After the current measurement wave is reconciled, record only the minimal completion ledger: complete/pending/source-blocked observations plus endpoint/module missingness. Do not fit taxon-, region- or environment-specific assessability models."
     },
     "primary_module_response_geometry": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/module_response.py",
       "contract": "analysis/v3/module_response_contract.json",
-      "remaining": "The frozen primary geometry is orientation=1 registered coordinate, visible_colour=8 coordinates (L*, registered legacy chroma, joint hue sine/cosine and four Hellinger-transformed closed-composition coordinates), gross_shape=4 registered coordinates. Realized support and bbox technical envelopes still require completed production measurement. No reduced outcome-driven module, composition renormalization or silent uniform-chroma substitution is allowed."
-    },
-    "model_specific_environment_diagnostics": {
-      "state": "implementation_tested_execution_pending",
-      "implementation": "analysis/v3/model_design_diagnostics.py",
-      "remaining": "Run on each realized module cohort after measurement reconciliation, using the frozen nine predictors and finalized nuisance matrix. Older 9503-row diagnostics are not substitutes. Report exact membership, nuisance rank, environmental rank/condition/VIF and per-taxon identification before interpreting coefficients."
+      "remaining": "Use the already-frozen orientation=1, visible_colour=8 and gross_shape=4 representation on the reconciled measurement cohort. Keep all 27 raw endpoints; no outcome-driven reduction."
     },
     "joint_covariance_aware_hierarchy": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/joint_partial_pooling.py",
-      "remaining": "One-stage Gaussian random-slope likelihood retains singleton and locally aliased taxa and cross-taxon prediction covariance. Dense/full-size reference tests pass. module_ecology.py implements matched within/among/difference estimates and paired cross-response covariance, but final multicoordinate dependence-aware calibration, actual support and measurement propagation remain unqualified."
+      "remaining": "Run the existing partially pooled within/among implementation once the measurement cohorts are fixed."
     },
     "calendar_imaging_nuisance_design": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/nuisance_design.py",
       "contract": "analysis/v3/nuisance_design_contract.json",
-      "remaining": "The pre-outcome nuisance matrix is now fixed and CI-tested: exact-day sin/cos, (year-2010)/10, module-matched log head minimum dimension, module-matched log1p Laplacian variance and all eight spherical basis terms. The native ecological source is northern-only, so southern interactions are retained in annotations but excluded as structurally constant. No imputation or cross-module quality borrowing. Execute and diagnose this exact matrix on each realized module cohort after measurement completion."
+      "remaining": "Use the already-frozen nuisance design on the realized cohorts; do not add or reselect nuisance terms."
+    },
+    "fixed_full_test_family": {
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/environment_model.py",
+      "remaining": "Use the already-declared one-model, 36-slot family when the canonical ecology run is executed. No new testing family is added."
+    },
+    "versioned_colour_definition": {
+      "state": "not_executed",
+      "implementation": "analysis/v3/uniform_colour_profile.py",
+      "canonical": false,
+      "remaining": "NONCANONICAL TECHNICAL WORK. The uniform-floral candidate does not block v3; canonical colour continues to use the registered legacy chroma."
+    },
+    "model_specific_environment_diagnostics": {
+      "state": "implementation_tested_execution_pending",
+      "implementation": "analysis/v3/model_design_diagnostics.py",
+      "canonical": false,
+      "remaining": "NONCANONICAL SUPPORT. Routine rank/VIF diagnostics may accompany the ecology run if needed, but they are not a separate readiness stage or discovery analysis."
     },
     "dependence_aware_inference_simulation": {
       "state": "implementation_tested_execution_pending",
       "implementation": "analysis/v3/simulate_crossed_bootstrap.py",
       "evidence": "reproducibility/v3_crossed_bootstrap_preliminary_aggregate_20260908.json",
-      "preliminary_execution_recorded": true,
-      "tail_pilot_implementation": "analysis/v3/simulate_full_family_tail_pilot.py",
-      "tail_pilot_contract": "analysis/v3/full_family_tail_pilot_contract.json",
-      "tail_pilot_state": "in_progress",
-      "remaining": "The completed 4-scenario x 40-outer x 2-grid preliminary calibration recorded all 320 cases and all 199 planned draws, with about 97.4% coefficient interval coverage and low descriptive unadjusted null rejection; by contract this cannot validate the 36-slot Holm family. Actions run 34239896034 is executing the 999-draw shared-resampling full36 family mechanics pilot. Its 0.001 minimum plus-one tail can resolve 0.05/36, but eight outer replicates per scenario and one-coordinate synthetic modules cannot establish final FWER/coverage. Preserve every failed draw and do not authorize ecology from this pilot."
-    },
-    "fixed_full_test_family": {
-      "state": "implementation_tested_execution_pending",
-      "implementation": "analysis/v3/environment_model.py",
-      "remaining": "The one-model source-QC definition, shared predictor transformations and complete36-slot Holm family with missing-slot retention are tested. The tail-resolved mechanics pilot now exercises all 36 planned slots with shared crossed draws; final multicoordinate calibration on the frozen 1/8/4 module geometry and realized-cohort nuisance/rank support remains unfinished. No ecological probability has been calculated."
+      "canonical": false,
+      "remaining": "NONCANONICAL TECHNICAL AUDIT. Preserve completed/current calibration results as QA evidence; do not extend tail/repair/calibration branches or make them a canonical gate."
     },
     "outcome_blind_common_axes": {
       "state": "not_executed",
-      "remaining": "Optional synthesis only: fit and retain common module-balanced transforms with no coefficient-guided selection."
+      "canonical": false,
+      "remaining": "NONCANONICAL OPTIONAL SYNTHESIS."
     },
     "hypervolume_sampling_and_bandwidth_validation": {
       "state": "not_executed",
-      "remaining": "Optional synthesis only: qualify dimensionality, common bandwidth/quantile, sample-size controls and convergence without examining ecological associations."
+      "canonical": false,
+      "remaining": "NONCANONICAL OPTIONAL SYNTHESIS."
     }
   }
 }
