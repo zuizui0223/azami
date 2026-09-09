@@ -121,6 +121,14 @@ def signal_summary(path: Path, scope: str | None = None) -> dict:
     }
 
 
+def _joined_column(frame: pd.DataFrame, candidates: tuple[str, ...], suffix: str) -> str:
+    for base in candidates:
+        column = base + suffix
+        if column in frame.columns:
+            return column
+    raise KeyError(f"None of {candidates} found with suffix {suffix}")
+
+
 def compare_direction(new_path: Path, old_path: Path, scope: str | None = None) -> dict:
     new = pd.read_csv(new_path, low_memory=False)
     old = pd.read_csv(old_path, low_memory=False)
@@ -133,12 +141,16 @@ def compare_direction(new_path: Path, old_path: Path, scope: str | None = None) 
     stable = []
     for row in both.to_dict("records"):
         if row["inferential_unit"] == "linear_endpoint":
-            a = float(row["beta_std_new"])
-            b = float(row["beta_std_old"])
+            a = float(row[_joined_column(both, ("beta_std", "beta_std_among"), "_new")])
+            b = float(row[_joined_column(both, ("beta_std", "beta_std_among"), "_old")])
             stable.append(bool(a != 0 and b != 0 and np.sign(a) == np.sign(b)))
         else:
-            an = np.array([float(row["beta_sine_std_new"]), float(row["beta_cosine_std_new"])])
-            ao = np.array([float(row["beta_sine_std_old"]), float(row["beta_cosine_std_old"])])
+            sin_new = _joined_column(both, ("beta_sine_std", "beta_sine_std_among"), "_new")
+            cos_new = _joined_column(both, ("beta_cosine_std", "beta_cosine_std_among"), "_new")
+            sin_old = _joined_column(both, ("beta_sine_std", "beta_sine_std_among"), "_old")
+            cos_old = _joined_column(both, ("beta_cosine_std", "beta_cosine_std_among"), "_old")
+            an = np.array([float(row[sin_new]), float(row[cos_new])])
+            ao = np.array([float(row[sin_old]), float(row[cos_old])])
             denom = float(np.linalg.norm(an) * np.linalg.norm(ao))
             stable.append(bool(denom > 0 and float(np.dot(an, ao) / denom) > 0))
     return {
