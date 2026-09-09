@@ -23,10 +23,16 @@ verifies its protected cloud restoration and returned packet. A completed
 The first two native measurement chunks are complete. The
 [next bounded wave](analysis/v3/native_measurement_wave_20260908_b.json) continues
 raw measurement on Actions with verified per-photo checkpoints. A
-[partial observation-view snapshot](reproducibility/v3_partial_raw_stream_observation_views_20260908.json)
-now contains 800 verified photo units and 1,381 detected heads, while preserving
+[expanded partial observation-view snapshot](reproducibility/v3_partial_raw_stream_observation_views_20260909.json)
+now contains 3,559 verified photo units and 6,145 detected heads, while preserving
 the full 319,244-observation, 27-endpoint inventory. This is not full-cohort
 completion or ecological admission; the 13 held measurement routes remain held.
+All 800 previously recorded photo units are unchanged. The new derived view has
+passed local snapshot restoration; its separate cloud roundtrip is not yet done.
+The [Wave C inventory](reproducibility/v3_wave_c_inventory_completion_20260909.json)
+now confirms 128 protected final numerical assets, with no missing chunk to
+resume. This is asset-inventory completion, not verification of every payload
+or completion of the full native source.
 
 The [active five-stage v3 design](analysis/v3/integrated_workflow_contract.json)
 places source and measurement assessability before within/among ecological

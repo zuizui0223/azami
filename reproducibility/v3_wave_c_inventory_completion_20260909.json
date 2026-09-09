@@ -1,0 +1,56 @@
+{
+  "actions_job_conclusion_used_for_completion": false,
+  "aggregate_request_slots": 8086,
+  "aggregate_source_observations": 5784,
+  "aggregate_source_photo_jobs": 9944,
+  "coordinates_read": 0,
+  "ecological_fitting_authorized": false,
+  "ecological_models_executed": 0,
+  "empirical_trait_environment_values_read": 0,
+  "environment_values_read": 0,
+  "inventory_basis": "authenticated unpublished-draft asset metadata; final asset name + uploaded state + positive byte size + GitHub SHA-256",
+  "limits": [
+    "A protected final asset proves a completed numerical chunk transaction was committed, not biological measurement accuracy.",
+    "This inventory audit does not restore or inspect numerical rows and does not authorize ecological inference.",
+    "Only chunks lacking a unique protected final asset may be resumed; completed chunks must not be remeasured."
+  ],
+  "missing_chunks": [],
+  "missing_final_chunks": 0,
+  "missing_with_protected_checkpoint": [],
+  "missing_without_protected_checkpoint": [],
+  "observation_identifiers_read": 0,
+  "plan_id_prefix": "11831c6ad28ccaba",
+  "planned_chunks": 128,
+  "protected_final_chunks": 128,
+  "protected_numerical_payload_downloaded": false,
+  "resume_chunks": [],
+  "schema_version": 1,
+  "source_images_downloaded": 0,
+  "source_images_persisted": 0,
+  "status": "WAVE_C_PROTECTED_FINAL_INVENTORY_COMPLETE_128_OF_128_NO_RESUME",
+  "trait_values_read": 0,
+  "execution": {
+    "run_id": 34213194212,
+    "execution_commit": "6afaa7ea1500afd47e593fc41e18933f3d9e4289",
+    "final_run_attempt": 3,
+    "overall_actions_conclusion": "failure",
+    "missing_only_resumes": [
+      {
+        "chunk": "c000036",
+        "attempt": 2,
+        "job_id": 102320721535,
+        "job_conclusion": "failure",
+        "failure_stage": "checkpoint_return_download",
+        "local_raw_payload_verified": true
+      },
+      {
+        "chunk": "c000111",
+        "attempt": 3,
+        "job_id": 102324395138,
+        "job_conclusion": "success",
+        "local_raw_payload_verified": false
+      }
+    ],
+    "all_other_chunks_reexecuted": false
+  }
+}
