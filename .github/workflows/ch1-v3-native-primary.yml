@@ -70,21 +70,48 @@ jobs:
           cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
           cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
           test -s work/recovered_display/observation_values.csv
-      - name: Rebuild the frozen nine-predictor environment table
+      - name: Build native-only frozen core environment
+        run: |
+          python - <<'PY'
+          import hashlib
+          import pandas as pd
+          core = pd.read_csv('work/continuous/environment/strict_spatial_chelsa.csv', low_memory=False)
+          status = pd.read_csv('work/native/observation_native_status.csv', usecols=['obs_id','native_range_status'], low_memory=False)
+          core['obs_id'] = core['obs_id'].astype(str)
+          status['obs_id'] = status['obs_id'].astype(str)
+          native_ids = set(status.loc[status['native_range_status'].eq('native'),'obs_id'])
+          out = core.loc[core['obs_id'].isin(native_ids)].copy()
+          if len(out) != 27066 or out['obs_id'].nunique() != 27066:
+              raise SystemExit(f'native core cohort mismatch: rows={len(out)} unique={out["obs_id"].nunique()}')
+          out.to_csv('work/native_core_environment.csv', index=False)
+          h = hashlib.sha256(open('work/native_core_environment.csv','rb').read()).hexdigest()
+          print({'native_core_rows': len(out), 'native_core_sha256': h})
+          PY
+      - name: Rebuild nine-predictor environment on native cohort only
         run: |
           python analysis/sample_chelsa_process_environment.py \
-            --environment work/continuous/environment/strict_spatial_chelsa.csv \
+            --environment work/native_core_environment.csv \
             --source-contract analysis/ch1/chelsa_process_environment_sources.json \
-            --out-csv work/strict_spatial_chelsa_process.csv \
+            --out-csv work/native_chelsa_process.csv \
             --report work/chelsa_process_extraction_report.json
-          echo 'e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7  work/strict_spatial_chelsa_process.csv' | sha256sum -c -
+          python - <<'PY'
+          import pandas as pd
+          env = pd.read_csv('work/native_chelsa_process.csv', low_memory=False)
+          expected = ['chelsa_bio01','chelsa_bio04','chelsa_bio12','chelsa_bio15','chelsa_rsds_mean','chelsa_vpd_mean','chelsa_sfcwind_mean','chelsa_gsp','chelsa_npp']
+          if len(env) != 27066 or env['obs_id'].nunique() != 27066:
+              raise SystemExit('native nine-predictor environment membership mismatch')
+          missing = [c for c in expected if c not in env.columns]
+          if missing:
+              raise SystemExit(f'missing frozen predictors: {missing}')
+          print({'native_environment_rows': len(env), 'predictors': expected})
+          PY
       - name: Run native-only full-27 atlas with unchanged v2 model
         run: |
           python analysis/v3/run_native_primary_from_v2.py \
             --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
             --analysis-contract analysis/ch1/v2_full27_environment_atlas_contract.json \
             --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
-            --environment work/strict_spatial_chelsa_process.csv \
+            --environment work/native_chelsa_process.csv \
             --native-status work/native/observation_native_status.csv \
             --recovered-display work/recovered_display/observation_values.csv \
             --work-dir work/native_inputs \
