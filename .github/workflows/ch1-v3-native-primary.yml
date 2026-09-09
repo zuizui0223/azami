@@ -5,6 +5,7 @@ on:
     paths:
       - 'analysis/v3/run_native_primary_from_v2.py'
       - 'analysis/v3/recover_display_composition.py'
+      - 'analysis/v3/rebuild_exact_native_status_from_frozen_aux.py'
       - '.github/workflows/ch1-v3-native-primary.yml'
   workflow_dispatch:
 
@@ -21,7 +22,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install frozen v2 numerical runtime
-        run: python -m pip install pandas numpy scipy statsmodels rasterio pyproj
+        run: python -m pip install pandas numpy scipy statsmodels rasterio pyproj requests shapely
       - name: Recover frozen v2 continuous source artifact
         env:
           GH_TOKEN: ${{ github.token }}
@@ -33,55 +34,21 @@ jobs:
           test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
           test -f work/continuous/environment/strict_spatial_chelsa.csv
           echo '2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0  work/continuous/environment/strict_spatial_chelsa.csv' | sha256sum -c -
-      - name: Recover exact frozen native-status input by pinned LFS OID
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Rebuild exact frozen native-status input from frozen auxiliary tables
         run: |
           set -euo pipefail
           mkdir -p work/native
-          export LFS_OID='c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a'
-          export LFS_SIZE='5351184'
-          python - <<'PY'
-          import base64, json, os, urllib.request
-          repo = os.environ['GITHUB_REPOSITORY']
-          token = os.environ['GH_TOKEN']
-          oid = os.environ['LFS_OID']
-          size = int(os.environ['LFS_SIZE'])
-          url = f'https://github.com/{repo}.git/info/lfs/objects/batch'
-          payload = json.dumps({
-              'operation': 'download',
-              'transfers': ['basic'],
-              'objects': [{'oid': oid, 'size': size}],
-          }).encode()
-          auth = base64.b64encode(f'x-access-token:{token}'.encode()).decode()
-          request = urllib.request.Request(
-              url,
-              data=payload,
-              headers={
-                  'Authorization': f'Basic {auth}',
-                  'Accept': 'application/vnd.git-lfs+json',
-                  'Content-Type': 'application/vnd.git-lfs+json',
-              },
-              method='POST',
-          )
-          with urllib.request.urlopen(request, timeout=30) as response:
-              batch = json.load(response)
-          obj = batch['objects'][0]
-          if obj.get('oid') != oid or int(obj.get('size', -1)) != size or 'error' in obj:
-              raise SystemExit(f'LFS batch did not authorize pinned object: {obj.get("error") or obj}')
-          action = obj.get('actions', {}).get('download')
-          if not action or not action.get('href'):
-              raise SystemExit('LFS batch response has no download action')
-          headers = dict(action.get('header') or {})
-          req = urllib.request.Request(action['href'], headers=headers)
-          with urllib.request.urlopen(req, timeout=120) as response, open('work/native/observation_native_status.csv', 'wb') as target:
-              while True:
-                  chunk = response.read(1024 * 1024)
-                  if not chunk:
-                      break
-                  target.write(chunk)
-          PY
-          test "$(wc -c < work/native/observation_native_status.csv)" -eq 5351184
+          git fetch --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
+          test "$(git rev-parse azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/wcvp_name_resolution.csv)" = '467bcb3e52204542aa96eea6a25f9b10539b1d3c'
+          test "$(git rev-parse azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/wcvp_distribution_records.csv)" = '690247722d2c389d367ede356178e23bec42628f'
+          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/wcvp_name_resolution.csv > work/native/wcvp_name_resolution.csv
+          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/wcvp_distribution_records.csv > work/native/wcvp_distribution_records.csv
+          python analysis/v3/rebuild_exact_native_status_from_frozen_aux.py \
+            --observation work/continuous/environment/strict_spatial_chelsa.csv \
+            --resolution work/native/wcvp_name_resolution.csv \
+            --distributions work/native/wcvp_distribution_records.csv \
+            --out-csv work/native/observation_native_status.csv \
+            --report work/native/native_status_exact_rebuild_report.json
           echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
       - name: Recover the five historically omitted measured endpoints
         env:
@@ -120,6 +87,7 @@ jobs:
           path: |
             work/native_results/*.csv
             work/native_results/*.json
+            work/native/native_status_exact_rebuild_report.json
             work/chelsa_process_extraction_report.json
             work/recovered_display/display_composition_report.json
           if-no-files-found: error
