@@ -54,6 +54,24 @@ jobs:
           python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir "$RECOVERED_DIR"
           cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
           cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
+          python - <<'PY'
+          import pandas as pd
+          path = 'work/recovered_display/observation_values.csv'
+          df = pd.read_csv(path, low_memory=False)
+          mapping = {
+              'visible_floret_fraction': 'corolla_visible_fraction',
+              'corolla_white_pixel_fraction': 'corolla_white_fraction',
+              'corolla_redmagenta_pixel_fraction': 'corolla_redmagenta_fraction',
+              'corolla_purple_pixel_fraction': 'corolla_purple_fraction',
+              'corolla_yellow_pixel_fraction': 'corolla_yellow_fraction',
+          }
+          for endpoint, source in mapping.items():
+              if source not in df.columns:
+                  raise SystemExit(f'missing recovered source column: {source}')
+              df[endpoint] = df[source]
+          df.to_csv(path, index=False)
+          print({'recovered_aliases': mapping})
+          PY
       - name: Build full 9-predictor environment on 46276 observations
         run: |
           python analysis/sample_chelsa_process_environment.py \
