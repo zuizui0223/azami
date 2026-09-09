@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "rows_compared": 234,
+  "status_mismatches": 0,
+  "beta_std": {"n_compared": 171, "missingness_mismatches": 0, "max_abs_diff": 1.6653345369377348e-16, "n_diff_gt_1e-12": 0},
+  "beta_sine_std_among": {"n_compared": 9, "missingness_mismatches": 0, "max_abs_diff": 1.1102230246251565e-16, "n_diff_gt_1e-12": 0},
+  "beta_cosine_std_among": {"n_compared": 9, "missingness_mismatches": 0, "max_abs_diff": 1.1102230246251565e-16, "n_diff_gt_1e-12": 0},
+  "effect_magnitude": {"n_compared": 9, "missingness_mismatches": 0, "max_abs_diff": 1.1102230246251565e-16, "n_diff_gt_1e-12": 0},
+  "effect_direction_degrees": {"n_compared": 9, "missingness_mismatches": 0, "max_abs_diff": 5.684341886080802e-14, "n_diff_gt_1e-12": 0},
+  "p_value": {"n_compared": 180, "missingness_mismatches": 0, "max_abs_diff": 0.0, "n_diff_gt_1e-12": 0},
+  "q_fdr_bh_global_family": {"n_compared": 180, "missingness_mismatches": 0, "max_abs_diff": 1.1102230246251565e-16, "n_diff_gt_1e-12": 0},
+  "frozen_fdr_signals": 10,
+  "rerun_fdr_signals": 10,
+  "input_identity": {
+    "traits_sha256": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment_sha256": "f86a3418e9b21453026bba1aaf350b061f03048949547e2092602620af98cbf6",
+    "environment_rows": 46276,
+    "environment_taxa": 259
+  }
+}
