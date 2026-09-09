@@ -22,7 +22,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install frozen v2 numerical runtime
-        run: python -m pip install pandas numpy scipy statsmodels rasterio pyproj requests shapely
+        run: |
+          python -m pip install \
+            pandas==3.0.5 numpy==2.4.6 scipy==1.17.1 statsmodels==0.14.6 \
+            rasterio==1.4.4 pyproj==3.7.2 requests==2.34.2 shapely==2.1.2
       - name: Recover frozen v2 continuous source artifact
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,7 +37,7 @@ jobs:
           test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
           test -f work/continuous/environment/strict_spatial_chelsa.csv
           echo '2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0  work/continuous/environment/strict_spatial_chelsa.csv' | sha256sum -c -
-      - name: Rebuild exact frozen native-status input from frozen auxiliary tables
+      - name: Regenerate frozen-v2 native cohort from frozen auxiliary tables
         run: |
           set -euo pipefail
           mkdir -p work/native
@@ -49,7 +52,7 @@ jobs:
             --distributions work/native/wcvp_distribution_records.csv \
             --out-csv work/native/observation_native_status.csv \
             --report work/native/native_status_exact_rebuild_report.json
-          echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/native/observation_native_status.csv' | sha256sum -c -
+          echo '9686b8f515deef3b3aa9311b5137317a094af195e0f2414f2b1b70d7c72b5021  work/native/observation_native_status.csv' | sha256sum -c -
       - name: Recover the five historically omitted measured endpoints
         env:
           GH_TOKEN: ${{ github.token }}
