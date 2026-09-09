@@ -6,6 +6,7 @@ on:
       - 'analysis/v3/run_native_primary_from_v2.py'
       - 'analysis/v3/recover_display_composition.py'
       - 'analysis/v3/rebuild_exact_native_status_from_frozen_aux.py'
+      - 'analysis/sample_chelsa_process_environment.py'
       - '.github/workflows/ch1-v3-native-primary.yml'
   workflow_dispatch:
 
