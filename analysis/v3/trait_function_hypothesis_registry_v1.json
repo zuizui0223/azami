@@ -1,0 +1,55 @@
+{
+  "analysis_id": "ch1_trait_function_hypothesis_atlas_v1",
+  "status": "post_outcome_hypothesis_driven_reanalysis_not_preregistered",
+  "cohort": "frozen strict_spatial_thinned_observations: 46276 observations / 259 taxa",
+  "estimand": "species-level association using taxon medians; no within-taxon plasticity claim",
+  "selection_principle": "test only environment axes with an explicit functional rationale; do not expose every endpoint to the same predictor set",
+  "multiplicity_rule": "BH-FDR separately within each biological hypothesis family",
+  "spatial_rule": "send q<0.05 rows to the existing spherical-basis spatial sensitivity; require p<0.05, residual Moran p>=0.05, and stable sign for linear endpoints",
+  "phylogeny_rule": "send spatial-pass rows to the frozen 52-tree Pagel-lambda placement sensitivity; require 52/52 successful trees, p<0.05 in all trees, and stable sign for linear endpoints",
+  "honesty_note": "Most Chapter 1 outcomes were already known before this registry was written. Only orientation x BIO12 was already frozen as a targeted candidate in the repository. Other targeted rows are literature/function-guided reorganizations and must not be described as preregistered confirmation.",
+  "source_basis": {
+    "repo_function_annotation": "analysis/ch1/capitulum_function_annotation.csv",
+    "repo_orientation_target": "analysis/ch1/literature_orientation_external_validation_contract.json",
+    "orientation_rain_literature": ["doi:10.1111/plb.13414", "doi:10.1111/plb.13197"],
+    "colour_abiotic_literature": ["doi:10.1002/ajb2.70106"],
+    "shape_wind_note": "mechanical-exposure plausibility only; direct Cirsium capitulum-shape evidence is weak, so this family is exploratory",
+    "involucre_note": "involucre is a protective enclosure, but precipitation-specific selection on these image-derived candidate metrics is not validated; exploratory only"
+  },
+  "tests": [
+    {"hypothesis_id":"H1_orientation_rain","family":"targeted_orientation_rain","unit_id":"orientation_image_vertical_angle","predictor":"chelsa_bio12","expected_direction":"positive","role":"prior_targeted","rationale":"image-referenced presentation geometry may vary along rainfall exposure; the positive BIO12 candidate was frozen before this reanalysis"},
+
+    {"hypothesis_id":"H2_colour_radiation_lightness","family":"targeted_colour_abiotic","unit_id":"corolla_lab_lightness","predictor":"chelsa_rsds_mean","expected_direction":"two_sided","role":"targeted_reanalysis","rationale":"visible floral colour may shift along radiative exposure; metric is not calibrated reflectance"},
+    {"hypothesis_id":"H2_colour_radiation_chroma","family":"targeted_colour_abiotic","unit_id":"corolla_lab_chroma","predictor":"chelsa_rsds_mean","expected_direction":"two_sided","role":"targeted_reanalysis","rationale":"visible floral chroma may shift along radiative exposure; metric is not pigment concentration"},
+    {"hypothesis_id":"H2_colour_radiation_hue","family":"targeted_colour_abiotic","unit_id":"corolla_hue","predictor":"chelsa_rsds_mean","expected_direction":"circular_two_sided","role":"targeted_reanalysis","rationale":"visible circular hue may shift along radiative exposure"},
+    {"hypothesis_id":"H3_colour_drying_lightness","family":"targeted_colour_abiotic","unit_id":"corolla_lab_lightness","predictor":"chelsa_vpd_mean","expected_direction":"two_sided","role":"targeted_reanalysis","rationale":"visible floral colour may vary along atmospheric drying stress"},
+    {"hypothesis_id":"H3_colour_drying_chroma","family":"targeted_colour_abiotic","unit_id":"corolla_lab_chroma","predictor":"chelsa_vpd_mean","expected_direction":"two_sided","role":"targeted_reanalysis","rationale":"visible floral chroma may vary along atmospheric drying stress"},
+    {"hypothesis_id":"H3_colour_drying_hue","family":"targeted_colour_abiotic","unit_id":"corolla_hue","predictor":"chelsa_vpd_mean","expected_direction":"circular_two_sided","role":"targeted_reanalysis","rationale":"visible circular hue may vary along atmospheric drying stress"},
+
+    {"hypothesis_id":"H4_shape_wind_aspect","family":"exploratory_shape_wind","unit_id":"capitulum_outline_aspect_ratio","predictor":"chelsa_sfcwind_mean","expected_direction":"two_sided","role":"exploratory","rationale":"two-dimensional head geometry may covary with mechanical exposure; no direct aerodynamic adaptation claim"},
+    {"hypothesis_id":"H4_shape_wind_circularity","family":"exploratory_shape_wind","unit_id":"capitulum_outline_circularity","predictor":"chelsa_sfcwind_mean","expected_direction":"two_sided","role":"exploratory","rationale":"two-dimensional head compactness may covary with mechanical exposure"},
+    {"hypothesis_id":"H4_shape_wind_solidity","family":"exploratory_shape_wind","unit_id":"capitulum_outline_solidity","predictor":"chelsa_sfcwind_mean","expected_direction":"two_sided","role":"exploratory","rationale":"two-dimensional outline concavity may covary with mechanical exposure"},
+    {"hypothesis_id":"H4_shape_wind_widthcv","family":"exploratory_shape_wind","unit_id":"capitulum_width_profile_cv","predictor":"chelsa_sfcwind_mean","expected_direction":"two_sided","role":"exploratory","rationale":"longitudinal outline variation may covary with mechanical exposure"},
+
+    {"hypothesis_id":"H5_involucre_precip_lw","family":"exploratory_involucre_precip","unit_id":"involucre_length_width_ratio","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate enclosure geometry may vary along rainfall exposure; botanical calibration pending"},
+    {"hypothesis_id":"H5_involucre_precip_apical","family":"exploratory_involucre_precip","unit_id":"involucre_apical_taper_ratio","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate enclosure geometry may vary along rainfall exposure; botanical calibration pending"},
+    {"hypothesis_id":"H5_involucre_precip_basal","family":"exploratory_involucre_precip","unit_id":"involucre_basal_taper_ratio","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate enclosure geometry may vary along rainfall exposure; botanical calibration pending"},
+    {"hypothesis_id":"H5_involucre_precip_roughness","family":"exploratory_involucre_precip","unit_id":"bract_projection_roughness","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate projection geometry may vary along rainfall exposure; no validated phyllary-angle claim"},
+    {"hypothesis_id":"H5_involucre_precip_p95","family":"exploratory_involucre_precip","unit_id":"bract_projection_p95","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate upper-tail projection geometry may vary along rainfall exposure"},
+    {"hypothesis_id":"H5_involucre_precip_spread","family":"exploratory_involucre_precip","unit_id":"bract_spread_fraction","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate outward-projection geometry may vary along rainfall exposure"},
+    {"hypothesis_id":"H5_involucre_precip_asymmetry","family":"exploratory_involucre_precip","unit_id":"bract_projection_asymmetry","predictor":"chelsa_bio12","expected_direction":"two_sided","role":"exploratory_candidate","rationale":"candidate bilateral projection geometry may vary along rainfall exposure; pose sensitivity limits interpretation"}
+  ],
+  "deferred_units": [
+    {"unit_id":"visible_floret_fraction","reason":"candidate metric can reflect anthesis stage and is not calibrated whole-plant display"},
+    {"unit_id":"corolla_white_pixel_fraction","reason":"closed colour composition; do not treat fractions as independent biological traits"},
+    {"unit_id":"corolla_redmagenta_pixel_fraction","reason":"closed colour composition; do not treat fractions as independent biological traits"},
+    {"unit_id":"corolla_purple_pixel_fraction","reason":"closed colour composition; do not treat fractions as independent biological traits"},
+    {"unit_id":"corolla_yellow_pixel_fraction","reason":"closed colour composition; do not treat fractions as independent biological traits"},
+    {"unit_id":"bract_projection_maximum","reason":"armature function is antagonist/defence oriented; no direct herbivory predictor is available"},
+    {"unit_id":"bract_projection_peak_density","reason":"armature function is antagonist/defence oriented; no direct herbivory predictor is available"},
+    {"unit_id":"involucre_surface_edge_density","reason":"validation-only texture proxy; cannot be interpreted as hair or gland density"},
+    {"unit_id":"involucre_surface_lbp_entropy","reason":"validation-only texture proxy; cannot be interpreted as botanical indumentum state"},
+    {"unit_id":"involucre_surface_high_frequency_energy","reason":"validation-only focus/texture-sensitive proxy"},
+    {"unit_id":"involucre_surface_specular_fraction","reason":"validation-only optical proxy; cannot be interpreted as mucilage or stickiness"}
+  ]
+}
