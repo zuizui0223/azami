@@ -1,0 +1,120 @@
+name: Chapter 1 hypothesis-driven trait environment atlas
+
+on:
+  push:
+    paths:
+      - 'analysis/v3/trait_function_hypothesis_registry_v1.json'
+      - 'analysis/v3/run_trait_function_hypothesis_atlas.py'
+      - 'analysis/v3/recover_display_composition.py'
+      - 'analysis/sample_chelsa_process_environment.py'
+      - '.github/workflows/ch1-v3-hypothesis-driven.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  hypothesis-driven:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen numerical runtime
+        run: |
+          python -m pip install \
+            pandas==3.0.5 numpy==2.4.6 scipy==1.17.1 statsmodels==0.14.6 \
+            rasterio==1.4.4 pyproj==3.7.2 requests==2.34.2 shapely==2.1.2 \
+            biopython==1.85
+      - name: Recover frozen v2 46276 source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/continuous
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip -d work/continuous
+          test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
+          test -f work/continuous/environment/strict_spatial_chelsa.csv
+          echo '2172e3570f684770d0f919ecd81265c8460574e287bc4fb057db4f719cab7bb0  work/continuous/environment/strict_spatial_chelsa.csv' | sha256sum -c -
+      - name: Recover five historically omitted endpoint values
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/historical work/recovered_display
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip > work/historical.zip
+          echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
+          test -n "$HEADS"
+          RECOVERED_DIR="$RUNNER_TEMP/ch1-hypothesis-recovered-${GITHUB_RUN_ID}"
+          python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir "$RECOVERED_DIR"
+          cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
+          cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
+          python - <<'PY'
+          import pandas as pd
+          path = 'work/recovered_display/observation_values.csv'
+          df = pd.read_csv(path, low_memory=False)
+          mapping = {
+              'visible_floret_fraction': 'corolla_visible_fraction',
+              'corolla_white_pixel_fraction': 'corolla_white_fraction',
+              'corolla_redmagenta_pixel_fraction': 'corolla_redmagenta_fraction',
+              'corolla_purple_pixel_fraction': 'corolla_purple_fraction',
+              'corolla_yellow_pixel_fraction': 'corolla_yellow_fraction',
+          }
+          for endpoint, source in mapping.items():
+              if source not in df.columns:
+                  raise SystemExit(f'missing recovered source column: {source}')
+              df[endpoint] = df[source]
+          df.to_csv(path, index=False)
+          PY
+      - name: Build frozen nine-predictor environment on 46276 observations
+        run: |
+          python analysis/sample_chelsa_process_environment.py \
+            --environment work/continuous/environment/strict_spatial_chelsa.csv \
+            --source-contract analysis/ch1/chelsa_process_environment_sources.json \
+            --out-csv work/full46276_chelsa_process.csv \
+            --report work/full46276_chelsa_process_report.json
+          python - <<'PY'
+          import pandas as pd
+          env = pd.read_csv('work/full46276_chelsa_process.csv', low_memory=False)
+          if len(env) != 46276 or env['obs_id'].nunique() != 46276:
+              raise SystemExit(f'full environment mismatch: {len(env)} rows / {env.obs_id.nunique()} unique')
+          print({'rows': len(env), 'taxa': env.taxon_name.nunique()})
+          PY
+      - name: Recover frozen 52-tree historical-placement artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/historical_bundle
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8227254443/zip > work/historical_trees.zip
+          echo '499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc  work/historical_trees.zip' | sha256sum -c -
+          unzip -q work/historical_trees.zip -d work/historical_bundle
+          test -f work/historical_bundle/historical_trees/gbotb_lcvp_scenario1.tre
+          test -f work/historical_bundle/historical_trees/gbotb_lcvp_scenario3.tre
+          test -f work/historical_bundle/historical_trees/gbotb_lcvp_scenario2_randomized.trees
+      - name: Run hypothesis-driven species-level tests then spatial and 52-tree sensitivity
+        run: |
+          PYTHONPATH=. python analysis/v3/run_trait_function_hypothesis_atlas.py \
+            --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/full46276_chelsa_process.csv \
+            --recovered-display work/recovered_display/observation_values.csv \
+            --registry analysis/v3/trait_function_hypothesis_registry_v1.json \
+            --tree-dir work/historical_bundle/historical_trees \
+            --out-dir work/hypothesis_atlas \
+            --permutations 9999 \
+            --moran-permutations 999
+      - name: Upload hypothesis-driven results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-hypothesis-driven-${{ github.run_id }}
+          path: |
+            work/hypothesis_atlas/**
+            work/full46276_chelsa_process_report.json
+            work/recovered_display/display_composition_report.json
+          if-no-files-found: error
+          retention-days: 30
