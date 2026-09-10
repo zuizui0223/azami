@@ -1,0 +1,54 @@
+{
+  "analysis_id": "ch1_capitulum_standardized_hypervolume_geometry_v1",
+  "workflow_run_id": 34432897074,
+  "workflow_conclusion": "success",
+  "artifact_id": 10135125006,
+  "artifact_name": "ch1-capitulum-hypervolume-34432897074",
+  "artifact_digest": "sha256:a64e22ea80380b5465904cdabe75b28af6df5e8df785a6c4a4ef64acb1533508",
+  "definition": "zero-centred Gaussian ellipsoid on standardized 19-endpoint correlation geometry; not raw-unit KDE hypervolume",
+  "results": {
+    "complete19_min5": {
+      "among_vs_within_ellipsoid_volume_ratio": 0.06925109536954865,
+      "bhattacharyya_coefficient": 0.2511907826159536,
+      "hellinger_distance": 0.865337632016571,
+      "axes_contracted_among": 11,
+      "axes_expanded_among": 8,
+      "generalized_eigenvalue_geometric_mean": 0.7549873014864609,
+      "strongest_contraction_lambda": 0.11757256944811839,
+      "strongest_expansion_lambda": 5.954689155468507
+    },
+    "complete19_min2": {
+      "among_vs_within_ellipsoid_volume_ratio": 0.49145318420596695,
+      "bhattacharyya_coefficient": 0.5247403687887867,
+      "hellinger_distance": 0.6893907681505558,
+      "axes_contracted_among": 9,
+      "axes_expanded_among": 10,
+      "generalized_eigenvalue_geometric_mean": 0.9279497031845148,
+      "strongest_contraction_lambda": 0.2466530162610835,
+      "strongest_expansion_lambda": 3.1450444626741283
+    }
+  },
+  "stable_expansion_axes": [
+    {
+      "description": "roughness versus maximum/p95/spread projection contrast",
+      "min5_lambda": 5.954689155468507,
+      "matched_min2_lambda": 3.1450444626741283,
+      "axis_coefficient_cosine": 0.9594557913615293,
+      "dominant_endpoints": [
+        "bract_projection_roughness",
+        "bract_projection_maximum",
+        "bract_projection_p95",
+        "bract_spread_fraction",
+        "capitulum_outline_circularity"
+      ]
+    },
+    {
+      "description": "projection roughness/p95 axis with outline and involucre contributions",
+      "min5_lambda": 2.838365972348113,
+      "matched_min2_lambda": 1.8317518619976472,
+      "axis_coefficient_cosine": 0.9585046544417727
+    }
+  ],
+  "interpretation": "The among-species standardized covariance ellipsoid is overall more compressed than the within-species ellipsoid, especially in the stricter min5 scope, but the transformation is strongly anisotropic rather than a uniform contraction. Several multivariate directions expand among species, and the strongest expanded axis is highly stable between min5 and min2 and mixes involucre/armature geometry with head outline. This supports evolutionary reorganization of capitulum covariance rather than simple scaling of within-species variability.",
+  "claim_boundary": "Volume ratios refer only to standardized correlation geometry and are sensitive to taxon-support threshold; min5 indicates stronger compression than min2. These results do not establish genetic constraint, selection, adaptive peaks, evolvability, or raw phenotypic niche volume. Generalized eigenaxes are exploratory multivariate contrasts that generate mechanistic hypotheses."
+}
