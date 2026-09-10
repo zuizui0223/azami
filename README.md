@@ -4,6 +4,68 @@ This repository retains the code and frozen machine-readable products needed to 
 
 Prepublication manuscript prose and journal-submission packages are intentionally kept outside GitHub.
 
+## Canonical Chapter 1 analysis path
+
+The current paper uses this evidence chain. Superseded categorical head-direction classifiers are historical development only and are not manuscript evidence.
+
+```text
+public photographs
+  ↓
+frozen YOLO11n visible-capitulum detector
+  artifact 8076736948
+  weight SHA-256 4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed
+  ↓
+exhaustive detector-positive image/head layer
+  workflow run 29216617585
+  artifact 8269246732
+  ↓
+category-free continuous trait reconstruction and measurement
+  workflow run 32975451732
+  artifact 9612943217
+  ↓
+within-taxon / among-taxon environmental analyses and whole-capitulum synthesis
+  workflow run 33035785120
+  artifact 9632715852
+  ↓
+v3 biological-construct reaggregation and robustness chain
+  workflow run 34418904597
+  artifact 10130210432
+  ↓
+v3 common-cohort/module upgrade
+  workflow run 34432661967
+  artifact 10135139012
+  ↓
+v3 assessability and technical-stress audit
+  workflow run 34434467062
+  artifact 10135679053
+  ↓
+v3 direct scale contrast
+  workflow run 34435743710
+  artifact 10136229131
+```
+
+The YOLO model is used to localize visible capitula. It is not the trait classifier. The current trait evidence is generated from detector-defined image regions by the frozen category-free continuous measurement implementation. In particular, the retired MobileNet `upward`/`nodding` classifier and its species-description-derived labels are not part of the current evidence chain.
+
+The v2 implementation registry is [`ch1_global/v2/ANALYSIS_MANIFEST.tsv`](ch1_global/v2/ANALYSIS_MANIFEST.tsv). The frozen Actions/artifact identities are recorded in [`reproducibility/actions_artifact_catalog.json`](reproducibility/actions_artifact_catalog.json). The current v3 synthesis and result receipts are indexed in [`analysis/v3/README.md`](analysis/v3/README.md).
+
+## Active GitHub Actions boundary
+
+The submission/reproducibility surface should contain only workflows that either reproduce a current v3 result or continuously verify the frozen public analysis.
+
+Current v3 result workflows:
+
+- `.github/workflows/ch1-v3-biological-axes.yml` — biological-construct reanalysis and full frozen-v2 robustness chain.
+- `.github/workflows/ch1-v3-scale-integration.yml` — pairwise within/among construct integration.
+- `.github/workflows/ch1-v3-construct-upgrade.yml` — exact complete-18 common-cohort, bootstrap and module-cohesion upgrade.
+- `.github/workflows/ch1-v3-assessability-measurement-stress.yml` — outcome-blind assessability and orientation technical-stress audit.
+
+Persistent public reproducibility workflows:
+
+- `.github/workflows/reproducibility-integrity.yml` — checks frozen contracts, provenance, repository layout and live entry points.
+- `.github/workflows/rebuild-frozen-figures.yml` — rebuilds and verifies the frozen v2 figure set in scratch space.
+
+One-off reviewer-defense workflows that do not feed the current v3 synthesis are intentionally removed from the active branch. Their commits and outputs remain recoverable from Git history. Earlier detector bootstrap/recovery, categorical AI/classifier, queue-building and exploratory submission workflows remain historical provenance only and are preserved through immutable tag `azami-ch1-v2-2026-08-27` and branch `archive/ch1-precleanup-20260827` rather than restored to the active submission surface.
+
 ## Third-party reproducibility status
 
 The frozen Chapter 1 v2 analysis code, contracts, frozen outputs, validation reports and figure sources are public and auditable in this repository. The complete independent-reader procedure is [`reproducibility/README.md`](reproducibility/README.md).
@@ -117,6 +179,7 @@ Separately from public distribution, the source artifacts are durably preserved 
 - `ch1_global/v2/` — image collection, screening, measurement, QC and historical-analysis implementation.
 - `analysis/` — statistical analyses, sensitivity analyses and figure-generation code.
 - `analysis/ch1/` — frozen analysis contracts and registries needed to define the estimands.
+- `analysis/v3/` — biological-construct synthesis, robustness analyses and immutable run receipts layered on the frozen v2 measurements.
 - `analysis_outputs/` — frozen machine-readable result tables and validation reports.
 - `reproducibility/figures/` — generated result figures together with source/provenance material required to rebuild them.
 - `reproducibility/contracts/` — compact trait definitions needed to reproduce measurement/analysis decisions.
