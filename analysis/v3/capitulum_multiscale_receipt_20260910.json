@@ -1,0 +1,118 @@
+{
+  "analysis_id": "ch1_capitulum_multiscale_organization_v1",
+  "workflow_run_id": 34421424269,
+  "workflow_conclusion": "success",
+  "artifact_id": 10131474734,
+  "artifact_name": "ch1-capitulum-multiscale-34421424269",
+  "artifact_digest": "sha256:9b7b6318d62719bfeb9fc72c45ca4c6b56c0b136a9222301e11c22fa2a1d9776",
+  "scientific_question": {
+    "whole_capitulum": "Treat the capitulum as an integrated multivariate phenotype without assuming one syndrome or a fixed syndrome count.",
+    "scale_comparison": "Compare trait organization within species versus among species before asking how environmental association geometry differs between those biological scales."
+  },
+  "cohort": {
+    "frozen_spatial_universe_context": 46276,
+    "historical_complete18_environment_rows": 1874,
+    "historical_complete18_environment_taxa": 124,
+    "selected_endpoint_dimensions": 19,
+    "inferential_units": 18,
+    "recovered_visible_floret_rows_added": 1874,
+    "complete19_observations": 1874,
+    "complete19_taxa": 124,
+    "selection_rule": "primary + candidate endpoint dimensions only; descriptive_only and validation_only excluded",
+    "hue_rule": "corolla_hue_sin and corolla_hue_cos are one circular inferential unit"
+  },
+  "estimands": {
+    "within_species": "taxon-centred endpoint values with inverse taxon sample-size weights so each retained taxon contributes equal total weight",
+    "among_species": "taxon medians",
+    "syndrome_assumption": "none; no clustering or fixed syndrome count imposed"
+  },
+  "structure_results": {
+    "min5": {
+      "observations": 1734,
+      "taxa": 42,
+      "within_module_contrast": 0.161075,
+      "among_module_contrast": 0.092335,
+      "within_minus_among_module_contrast": 0.068740,
+      "within_minus_among_module_contrast_ci95": [0.020121, 0.133331],
+      "association_strength_matrix_spearman": 0.381287,
+      "association_strength_matrix_label_permutation_p": 0.0001,
+      "association_strength_similarity_ci95": [0.119261, 0.392967],
+      "signed_linear_matrix_spearman": 0.426855,
+      "signed_linear_matrix_label_permutation_p": 0.0001,
+      "signed_similarity_ci95": [0.186484, 0.484918],
+      "signed_linear_pair_sign_agreement": 0.676471,
+      "signed_linear_matrix_rms_difference": 0.205207,
+      "within_effective_dimensionality": 11.445019,
+      "among_effective_dimensionality": 8.849298,
+      "within_pc1_variance_fraction": 0.186445,
+      "among_pc1_variance_fraction": 0.209234,
+      "within_pc1_to_pc3_cumulative_fraction": 0.399164,
+      "among_pc1_to_pc3_cumulative_fraction": 0.488362
+    },
+    "min2": {
+      "observations": 1825,
+      "taxa": 75,
+      "within_module_contrast": 0.153825,
+      "among_module_contrast": 0.083793,
+      "within_minus_among_module_contrast": 0.070032,
+      "within_minus_among_module_contrast_ci95": [0.017018, 0.123344],
+      "association_strength_matrix_spearman": 0.317860,
+      "association_strength_matrix_label_permutation_p": 0.0002,
+      "association_strength_similarity_ci95": [0.139757, 0.428583],
+      "signed_linear_matrix_spearman": 0.349392,
+      "signed_linear_matrix_label_permutation_p": 0.0003,
+      "signed_similarity_ci95": [0.163249, 0.486432],
+      "signed_linear_pair_sign_agreement": 0.602941,
+      "signed_linear_matrix_rms_difference": 0.147258,
+      "within_effective_dimensionality": 11.497248,
+      "among_effective_dimensionality": 10.600977,
+      "within_pc1_variance_fraction": 0.185664,
+      "among_pc1_variance_fraction": 0.182620,
+      "within_pc1_to_pc3_cumulative_fraction": 0.393917,
+      "among_pc1_to_pc3_cumulative_fraction": 0.431721
+    },
+    "interpretation": "Trait organization is significantly partially shared across scales but not identical. Measurement-module integration is consistently stronger within species than among species, with a positive paired bootstrap difference at both minimum-support thresholds. Among-species phenotype space is also somewhat more concentrated in fewer leading dimensions, especially at min5."
+  },
+  "environment_results": {
+    "blocks": [
+      "core_thermal",
+      "core_precipitation",
+      "radiative_atmospheric_drying",
+      "mechanical_exposure",
+      "growing_season_water_input",
+      "climatic_productivity"
+    ],
+    "fdr_supported_blocks_within": 0,
+    "fdr_supported_blocks_among": 0,
+    "general_pattern": "Among-species multivariate R2 exceeds within-species R2 for all six blocks at both support thresholds, but no block survives BH-FDR at either scale.",
+    "cross_scale_coefficient_cosines_min5": {
+      "core_thermal": -0.397133,
+      "core_precipitation": 0.023784,
+      "radiative_atmospheric_drying": -0.239608,
+      "mechanical_exposure": 0.309250,
+      "growing_season_water_input": -0.076235,
+      "climatic_productivity": 0.199834
+    },
+    "cross_scale_coefficient_cosines_min2": {
+      "core_thermal": -0.192464,
+      "core_precipitation": -0.021716,
+      "radiative_atmospheric_drying": -0.151653,
+      "mechanical_exposure": 0.199707,
+      "growing_season_water_input": -0.059702,
+      "climatic_productivity": -0.071288
+    },
+    "cosine_bootstrap_note": "All block-specific bootstrap 95% intervals include zero, so cross-scale environmental response-direction differences are descriptive rather than formally established in this analysis.",
+    "module_energy_examples": {
+      "core_precipitation_min5": {
+        "within": "colour 0.344; shape 0.342; involucre_architecture 0.148",
+        "among": "involucre_architecture 0.380; colour 0.277; shape 0.168"
+      },
+      "climatic_productivity_min2": {
+        "within": "involucre_architecture 0.496; orientation 0.237; shape 0.132",
+        "among": "colour 0.581; shape 0.172; involucre_architecture 0.130"
+      }
+    },
+    "interpretation": "Environmental association geometry is weakly concordant or even oppositely oriented between biological scales, but current block-level omnibus evidence does not support a confirmatory claim that environment organizes the whole phenotype differently across scales."
+  },
+  "claim_boundary": "This analysis supports scale-dependent organization of the image-derived capitulum phenotype. It does not establish one genetic or functional syndrome, adaptation, causal environmental mechanisms, or a statistically confirmed cross-scale difference in environmental organization. The environmental scale-divergence result remains a descriptive hypothesis generated by the multivariate geometry."
+}
