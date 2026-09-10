@@ -5,6 +5,7 @@ on:
     branches: [analysis/ch1-v3-biological-axes-20260910]
     paths:
       - 'analysis/v3/run_construct_scale_upgrade.py'
+      - 'analysis/v3/run_construct_scale_contrast_summary.py'
       - '.github/workflows/ch1-v3-construct-upgrade.yml'
   workflow_dispatch:
 
@@ -28,7 +29,10 @@ jobs:
       - name: Install numerical runtime
         run: |
           python -m pip install pandas==3.0.5 numpy==2.4.6 statsmodels==0.14.6 scipy==1.17.1
-          python -m py_compile analysis/v3/run_biological_axis_reanalysis.py analysis/v3/run_construct_scale_upgrade.py
+          python -m py_compile \
+            analysis/v3/run_biological_axis_reanalysis.py \
+            analysis/v3/run_construct_scale_upgrade.py \
+            analysis/v3/run_construct_scale_contrast_summary.py
 
       - name: Recover frozen v2 inputs
         env:
@@ -75,6 +79,17 @@ jobs:
             --seed 20260910 | tee work/upgrade/run.log
           test -s work/upgrade/construct_scale_upgrade_report.json
           python -m json.tool work/upgrade/construct_scale_upgrade_report.json >/dev/null
+
+      - name: Quantify direct integration scale contrast
+        run: |
+          set -euo pipefail
+          python -m analysis.v3.run_construct_scale_contrast_summary \
+            --pairwise work/upgrade/complete18_construct_pairwise.csv \
+            --bootstrap work/upgrade/complete18_taxon_bootstrap.csv \
+            --out work/upgrade/construct_scale_contrast_summary.json \
+            | tee work/upgrade/scale_contrast.log
+          test -s work/upgrade/construct_scale_contrast_summary.json
+          python -m json.tool work/upgrade/construct_scale_contrast_summary.json >/dev/null
 
       - name: Upload construct upgrade outputs
         uses: actions/upload-artifact@v4
