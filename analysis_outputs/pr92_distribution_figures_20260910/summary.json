@@ -1,0 +1,44 @@
+[
+  {
+    "group": "orientation",
+    "baseline_taxa": 33,
+    "pairs": 528,
+    "between_above_within_p95": 109,
+    "centred_above_within_p95": 13,
+    "bandwidth_rank_rho_075": 0.9846984698469846,
+    "bandwidth_rank_rho_125": 0.9901590159015901,
+    "median_overlap_by_bandwidth": {
+      "0.75": 0.8394989367176587,
+      "1.0": 0.8610895718701905,
+      "1.25": 0.8750439214045853
+    }
+  },
+  {
+    "group": "colour",
+    "baseline_taxa": 33,
+    "pairs": 528,
+    "between_above_within_p95": 466,
+    "centred_above_within_p95": 349,
+    "bandwidth_rank_rho_075": 0.9965796579657965,
+    "bandwidth_rank_rho_125": 0.9954875487548754,
+    "median_overlap_by_bandwidth": {
+      "0.75": 0.42940046057435033,
+      "1.0": 0.5070701678876988,
+      "1.25": 0.5609039291772524
+    }
+  },
+  {
+    "group": "outline",
+    "baseline_taxa": 34,
+    "pairs": 561,
+    "between_above_within_p95": 77,
+    "centred_above_within_p95": 47,
+    "bandwidth_rank_rho_075": 0.9778937893789377,
+    "bandwidth_rank_rho_125": 0.9846384638463844,
+    "median_overlap_by_bandwidth": {
+      "0.75": 0.5856752062864784,
+      "1.0": 0.6749612405588863,
+      "1.25": 0.7338654202443484
+    }
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "targeted_tests_passed": 5,
+  "checks": [
+    "Input SHA-256 matches frozen breadth-pilot contract",
+    "All numeric CSV values finite",
+    "Pair references equal the maximum of taxon-specific same-taxon p95 values",
+    "Reference flags and summary counts recomputed",
+    "Bandwidth rank correlations independently recomputed from saved CSV",
+    "Scientific CSVs and summary identical across deterministic reruns",
+    "Two PNG figures visually inspected after final render; no clipping found",
+    "Two companion SVG files parsed as valid XML; same figure objects as PNG"
+  ],
+  "claim_limit": "Descriptive finite-sample reference, not a calibrated significance test. Pairs are not independent. Image variation is not separated into biological and photographic components."
+}

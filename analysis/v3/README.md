@@ -24,9 +24,24 @@ python analysis/v3/run_distribution_overlap_pilot.py --traits continuous_trait_u
 python -m pytest tests/test_distribution_overlap_pilot.py tests/test_distribution_breadth_pilot.py -q
 ```
 
+## Full-range figure and finite-sample follow-up
+
+`build_distribution_pilot_figures.py` produces the breadth scatter and rule-selected distribution examples, plus bounded sampling and smoothing checks. The saved products are in `analysis_outputs/pr92_distribution_figures_20260910/`.
+
+Same-taxon comparisons use 30 disjoint 50+50 draws, so only taxa with at least 100 eligible observations enter. Each existing between-taxon median W2 is compared with the larger of its two taxon-specific same-taxon 95th percentiles. This is a conservative descriptive reference, not a calibrated hypothesis test or biological variance partition. The centred-distance reference is computed separately.
+
+The earlier 84% median centred share for outline is not, by itself, evidence of strong taxon differentiation: only 47/561 outline pairs exceed the centred same-taxon reference, compared with 13/528 orientation and 349/528 colour pairs. These fractions are not estimates of statistically significant pairs and pairs are not independent. Photography and measurement variation remain inseparable from phenotype variation.
+
+Bandwidth checks use an outcome-blind seeded subset of 100 pairs per core module, ten matched rarefactions, and multipliers 0.75/1/1.25. Rank correlations exceed 0.97 against the baseline multiplier, but absolute overlaps change. Do not present absolute overlap percentages as estimator-independent results. Figure examples are explicitly outcome-selected illustrations, not independent validation.
+
+```bash
+python analysis/v3/build_distribution_pilot_figures.py --traits continuous_trait_universe_observation_long.csv --environment strict_spatial_chelsa_full9.csv --breadth-dir analysis_outputs/pr92_distribution_breadth_pilot_20260910 --overlap-dir analysis_outputs/pr92_distribution_overlap_pilot_20260910 --out local_data/distribution_figures
+python -m pytest tests/test_distribution_pilot_figures.py tests/test_distribution_overlap_pilot.py tests/test_distribution_breadth_pilot.py -q
+```
+
 ## Historical native-only route
 
-The active v3 route is deliberately small. It repairs upstream provenance and aggregation, then reuses the frozen v2 ecological machinery rather than rebuilding a second analysis system.
+The earlier v3 route was deliberately small. It repaired upstream provenance and aggregation, then reused the frozen v2 ecological machinery rather than rebuilding a second analysis system.
 
 ## Current path
 

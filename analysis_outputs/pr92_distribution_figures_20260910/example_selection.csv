@@ -1,0 +1,7 @@
+group,selection_rule,taxon_a,taxon_b,density_overlap,centroid_distance,centred_w2,centred_within_reference_p95,centred_exceeds_reference
+orientation,Nearby means; largest centred distance,Cirsium neomexicanum,Cirsium oleraceum,0.8568558633175205,0.092280614222557,0.3172583531100883,0.3153695614870114,True
+orientation,Largest estimated density overlap,Cirsium edule,Cirsium japonicum,0.9256072872465868,0.1041970197690411,0.1642844881054404,0.3465474400685055,False
+colour,Nearby means; largest centred distance,Cirsium occidentale,Cirsium serrulatum,0.5469913567344589,0.4461465051927532,1.215759588342402,0.9956448980332188,True
+colour,Largest estimated density overlap,Cirsium oleraceum,Cirsium spinosissimum,0.7596359531176189,0.3639190516227701,0.7583989955081859,0.9051688408407792,False
+outline,Nearby means; largest centred distance,Cirsium esculentum,Cirsium neomexicanum,0.6389266207644204,0.3442727600268231,1.565343885570348,1.4983798896764036,True
+outline,Largest estimated density overlap,Cirsium altissimum,Cirsium carolinianum,0.7490703365547702,0.2901555524590362,0.933351707354822,1.194111351456206,False

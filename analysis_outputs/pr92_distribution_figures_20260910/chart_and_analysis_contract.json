@@ -1,0 +1,25 @@
+{
+  "renderer": "matplotlib static PNG/SVG scientific figures",
+  "scatter": {
+    "grain": "taxon per module",
+    "rows": 54,
+    "panels": 6,
+    "takeaway": "show every eligible taxon without fitted causal trend",
+    "family": "scatter"
+  },
+  "distributions": {
+    "family": "density lines and projected scatter",
+    "panels": 6,
+    "selection": ">=100 observations; bottom-quartile centroid distance then maximum centred W2, and maximum overlap",
+    "caveat": "diagnostic outcome-selected illustrations, not validation"
+  },
+  "palette": {
+    "blue": "#2878A0",
+    "gold": "#B57C18",
+    "neutral": "#252525",
+    "policy": "two-root cap",
+    "noncolour": "circle versus triangle, solid versus dashed"
+  },
+  "baseline": "30 disjoint 50+50 samples per taxon; compare prior between-taxon median W2 to larger taxon-specific same-taxon p95; not a hypothesis test",
+  "bandwidth": "100 outcome-blind seeded random pairs per core module; 10 matched repetitions at 0.75/1/1.25 bandwidth; 128 draws per taxon"
+}
