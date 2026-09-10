@@ -1,5 +1,22 @@
 # Chapter 1 v3 — shortest reuse route
 
+## Active PR92 exploration since 2026-09-10
+
+PR92 is now the full-range capitulum distribution / hypervolume exploratory branch, not a native-only primary reanalysis. Reuse the 46,276-observation v2 measurement universe, without new image acquisition or a native-range filter. PR93's construct integration analyses are a separate workstream.
+
+The first bounded pilot is `run_distribution_breadth_pilot.py`: equal-sample density breadth versus environmental/geographic breadth, followed by spatial-cell-held-out within-taxon prediction. Public aggregate outputs are in `analysis_outputs/pr92_distribution_breadth_pilot_20260910/`. This pilot uses 50 observations per taxon in 30 rarefactions; its KDE volumes describe common projections, not full biological trait space. At most three axes are retained for this pilot, with retained variance reported explicitly. Involucre and whole-capitulum projections have too few eligible taxa and too much discarded variance for whole-trait-volume inference.
+
+Breadth correlations have not been corrected for spatial/phylogenetic dependence or multiplicity. The geographically held-out prediction comparison is a descriptive screening result, not a significance test; coordinate calibration uses the full trait sample and is not a nested independent measurement validation. Do not turn positive predictive gain into proof of plasticity. Environmental breadth refers to sampled precipitation, radiation, VPD and wind exposures, not a complete ecological niche. Historical runs below are preserved, not the active specification.
+
+Run with existing numerical inputs:
+
+```bash
+python analysis/v3/run_distribution_breadth_pilot.py --traits continuous_trait_universe_observation_long.csv --environment strict_spatial_chelsa_full9.csv --out local_data/distribution_breadth_pilot
+python -m pytest tests/test_distribution_breadth_pilot.py -q
+```
+
+## Historical native-only route
+
 The active v3 route is deliberately small. It repairs upstream provenance and aggregation, then reuses the frozen v2 ecological machinery rather than rebuilding a second analysis system.
 
 ## Current path

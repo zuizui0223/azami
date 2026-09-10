@@ -1,0 +1,114 @@
+{
+  "status": "pilot_complete",
+  "cohort_observations": 46276,
+  "cohort_taxa": 259,
+  "environment_complete_observations": 46271,
+  "breadth_results": [
+    {
+      "group": "colour",
+      "predictor": "environment_breadth",
+      "taxa": 54,
+      "status": "exploratory_no_spatial_or_phylogenetic_correction",
+      "rho": -0.12643415284924717,
+      "bootstrap_low": -0.4084474414527161,
+      "bootstrap_high": 0.12834217994947078
+    },
+    {
+      "group": "colour",
+      "predictor": "geographic_breadth_km",
+      "taxa": 54,
+      "status": "exploratory_no_spatial_or_phylogenetic_correction",
+      "rho": 0.6000762340384981,
+      "bootstrap_low": 0.37759841966950936,
+      "bootstrap_high": 0.7551077681717336
+    },
+    {
+      "group": "involucre",
+      "predictor": "environment_breadth",
+      "taxa": 6,
+      "status": "descriptive_only_fewer_than_15_taxa"
+    },
+    {
+      "group": "involucre",
+      "predictor": "geographic_breadth_km",
+      "taxa": 6,
+      "status": "descriptive_only_fewer_than_15_taxa"
+    },
+    {
+      "group": "orientation",
+      "predictor": "environment_breadth",
+      "taxa": 54,
+      "status": "exploratory_no_spatial_or_phylogenetic_correction",
+      "rho": 0.42367066895368777,
+      "bootstrap_low": 0.16484448449048056,
+      "bootstrap_high": 0.6229680747702334
+    },
+    {
+      "group": "orientation",
+      "predictor": "geographic_breadth_km",
+      "taxa": 54,
+      "status": "exploratory_no_spatial_or_phylogenetic_correction",
+      "rho": 0.11858204688393366,
+      "bootstrap_low": -0.12077832456894058,
+      "bootstrap_high": 0.3816315404730326
+    },
+    {
+      "group": "outline",
+      "predictor": "environment_breadth",
+      "taxa": 54,
+      "status": "exploratory_no_spatial_or_phylogenetic_correction",
+      "rho": 0.40171526586620926,
+      "bootstrap_low": 0.1365937653145294,
+      "bootstrap_high": 0.6190461463131144
+    },
+    {
+      "group": "outline",
+      "predictor": "geographic_breadth_km",
+      "taxa": 54,
+      "status": "exploratory_no_spatial_or_phylogenetic_correction",
+      "rho": 0.15113398132266054,
+      "bootstrap_low": -0.11570027199287865,
+      "bootstrap_high": 0.4014754867559466
+    },
+    {
+      "group": "whole",
+      "predictor": "environment_breadth",
+      "taxa": 5,
+      "status": "descriptive_only_fewer_than_15_taxa"
+    },
+    {
+      "group": "whole",
+      "predictor": "geographic_breadth_km",
+      "taxa": 5,
+      "status": "descriptive_only_fewer_than_15_taxa"
+    }
+  ],
+  "predictions_evaluated": 81,
+  "prediction_positive_by_group": {
+    "colour": {
+      "taxa": 25,
+      "positive": 11,
+      "median_gain": -0.003936423008771062
+    },
+    "involucre": {
+      "taxa": 4,
+      "positive": 0,
+      "median_gain": -0.018915126852913522
+    },
+    "orientation": {
+      "taxa": 23,
+      "positive": 6,
+      "median_gain": -0.012650515926776906
+    },
+    "outline": {
+      "taxa": 25,
+      "positive": 4,
+      "median_gain": -0.013418655590017536
+    },
+    "whole": {
+      "taxa": 4,
+      "positive": 1,
+      "median_gain": -0.02127913711756635
+    }
+  }
+}

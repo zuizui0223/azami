@@ -1,0 +1,52 @@
+{
+  "status": "pilot_numerical_checks_passed_not_confirmatory_ecology",
+  "execution": "local_existing_frozen_numerical_runtime",
+  "new_image_operations": false,
+  "native_range_restriction": false,
+  "checks": {
+    "source_environment_sha256_matches_frozen_v2": true,
+    "source_observations": 46276,
+    "source_taxa": 259,
+    "source_measured_endpoints": 22,
+    "four_exposure_complete_observations": 46271,
+    "duplicate_observation_environment_keys": 0,
+    "duplicate_observation_endpoint_keys": 0,
+    "rarefaction_rows": 5190,
+    "replicates_per_eligible_taxon_module": 30,
+    "nonfinite_rarefaction_outputs": 0,
+    "all_kde_volumes_positive": true,
+    "six_breadth_correlations_independently_recomputed_from_saved_rarefactions": true,
+    "spatial_prediction_cases": 81,
+    "prediction_cases_with_rank_deficient_training_fits": 0,
+    "targeted_test_cases_passed": 2
+  },
+  "tests_cover": [
+    "density translation invariance",
+    "density volume scales as coordinate scale to the number of dimensions",
+    "great circle distance handles antimeridian and identical points",
+    "nonfinite scaling inputs fail explicitly",
+    "within-taxon prediction detects strong synthetic environmental information",
+    "insufficient prediction sample size is not admitted"
+  ],
+  "retained_variance": {
+    "orientation": 1.0,
+    "colour": 0.911159898282929,
+    "outline": 0.9692267356982751,
+    "involucre": 0.6355682142494097,
+    "whole": 0.4276622231222612
+  },
+  "limitations": [
+    "This is a 50-observation, 30-rarefaction, 512-Monte-Carlo-draw feasibility pilot, not a final density estimate.",
+    "Taxon-bootstrap intervals are pointwise and not multiplicity-corrected; phylogenetic and spatial dependence across taxa remain.",
+    "Environmental and geographic breadth describe sampled records, not independently estimated range area or niche breadth.",
+    "Geographic breadth is RMS great-circle separation, not occupied area.",
+    "Environment breadth is RMS distance across four standardized correlated exposures, not environment hypervolume.",
+    "Image resampling standardizes count but does not remove observer, spatial, photographic or measurement bias.",
+    "Shared smoothing can dominate very narrow distributions; bandwidth and density-Monte-Carlo stability are not yet evaluated.",
+    "Involucre and whole-capitulum projection volumes are descriptive only and discard substantial variance.",
+    "Five-degree cell holdout has no spatial buffer, uses one fold assignment, and does not test seasonality or independent validation.",
+    "Prediction operates in coordinates calibrated on all trait observations, not nested training-only coordinate estimation.",
+    "Negative held-out gain is retained, including severe degradation in some taxa.",
+    "Overlap and Wasserstein analyses are not yet implemented in this pilot."
+  ]
+}

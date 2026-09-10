@@ -1,0 +1,82 @@
+{
+  "status": "exploratory_pilot_not_confirmatory",
+  "sample_size": 50,
+  "replicates": 30,
+  "seed": 20260910,
+  "draws": 512,
+  "groups": {
+    "orientation": [
+      "orientation_image_vertical_angle"
+    ],
+    "colour": [
+      "corolla_lab_lightness",
+      "corolla_lab_chroma",
+      "corolla_hue_sin",
+      "corolla_hue_cos"
+    ],
+    "outline": [
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv"
+    ],
+    "involucre": [
+      "involucre_length_width_ratio",
+      "involucre_apical_taper_ratio",
+      "involucre_basal_taper_ratio",
+      "bract_projection_roughness",
+      "bract_projection_p95",
+      "bract_projection_maximum",
+      "bract_spread_fraction",
+      "bract_projection_peak_density",
+      "bract_projection_asymmetry"
+    ],
+    "whole": [
+      "orientation_image_vertical_angle",
+      "corolla_lab_lightness",
+      "corolla_lab_chroma",
+      "corolla_hue_sin",
+      "corolla_hue_cos",
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv",
+      "involucre_length_width_ratio",
+      "involucre_apical_taper_ratio",
+      "involucre_basal_taper_ratio",
+      "bract_projection_roughness",
+      "bract_projection_p95",
+      "bract_projection_maximum",
+      "bract_spread_fraction",
+      "bract_projection_peak_density",
+      "bract_projection_asymmetry"
+    ]
+  },
+  "environment": [
+    "chelsa_bio12",
+    "chelsa_rsds_mean",
+    "chelsa_vpd_mean",
+    "chelsa_sfcwind_mean"
+  ],
+  "native_filter": false,
+  "cohort": "frozen v2 spatially thinned full range",
+  "shared_pca": "equal taxon weighted; 90% target, maximum 3 axes, no whitening; report retained fraction",
+  "hue": "sin/cos share one pooled scale preserving chord geometry",
+  "bandwidth": "50**(-1/(dimension+4)); same within module for all taxa and resamples",
+  "volume": "90% probability KDE projection volume; unbounded kernels, not anatomical support",
+  "breadth": "environment RMS pairwise distance in four global standardized exposures; geography RMS great-circle distance",
+  "uncertainty": "taxon bootstrap for breadth correlation; image rarefaction is not a spatial independence correction",
+  "breadth_gate": "at least 15 eligible taxa; fewer descriptive only",
+  "prediction": ">=100 observations and >=10 occupied 5-degree cells; five held-out cell folds; compare spatial trend against same trend plus all four environments",
+  "limitations": [
+    "sampled range not complete species range",
+    "no phylogenetic correction of breadth association",
+    "KDE bandwidth sensitivity pending",
+    "no causal plasticity or adaptation claim",
+    "predictive gain is not a significance test"
+  ],
+  "sha256": {
+    "traits": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+  }
+}
