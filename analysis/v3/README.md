@@ -17,6 +17,17 @@ python analysis/v3/build_environment_first_synthesis.py --source analysis_output
 python -m pytest tests/test_environment_first_synthesis.py -q
 ```
 
+### Executed common-cohort whole-capitulum environment test
+
+`run_whole_capitulum_environment.py` evaluates all nine constructs on the same complete-18 cohort: 1,734 observations and 42 taxa. Each environmental gradient is tested separately at each scale. The omnibus statistic averages squared standardized slopes first within each construct and then equally across constructs. The same predictor permutation is shared across all response coordinates, preserving response covariance; within-taxon permutations stay inside taxa. There are 9,999 permutations per test and one new BH family of 18 tests, independent of the inherited atlas families.
+
+No omnibus test passes BH 0.05. Among-taxon radiation has raw P=0.0241 and wind P=0.0385; both have q=0.3465. These unsupported results are preserved in `analysis_outputs/whole_capitulum_environment_20260910/`. Construct contribution shares are descriptive contributions to this statistic, not independent tests, causal variance shares, or proof of coordinated change. No new spatial/phylogenetic sequence is dispatched for these unsupported rows. The restricted complete-case cohort differs from the larger construct-specific cohorts, so this does not overturn those associations or establish absence of a whole-capitulum relationship.
+
+```bash
+PYTHONPATH=. python analysis/v3/run_whole_capitulum_environment.py --traits continuous_trait_universe_observation_long.csv --environment strict_spatial_chelsa_full9.csv --out local_data/whole_environment --permutations 9999
+python -m pytest tests/test_whole_capitulum_environment.py -q
+```
+
 The following sections preserve the PR93 baseline and its provenance.
 
 ## Canonical boundary

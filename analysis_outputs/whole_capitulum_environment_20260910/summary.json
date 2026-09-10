@@ -1,0 +1,8 @@
+{
+  "observations": 1734,
+  "taxa": 42,
+  "tests": 18,
+  "fdr_supported": 0,
+  "hits": [],
+  "robustness": "not_yet_spatial_or_phylogenetic_tested"
+}

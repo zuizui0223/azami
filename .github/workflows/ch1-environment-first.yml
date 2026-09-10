@@ -4,6 +4,9 @@ on:
     paths:
       - 'analysis/v3/build_environment_first_synthesis.py'
       - 'analysis/v3/environment_first_contract.json'
+      - 'analysis/v3/run_whole_capitulum_environment.py'
+      - 'tests/test_whole_capitulum_environment.py'
+      - 'analysis_outputs/whole_capitulum_environment_20260910/**'
       - 'analysis_outputs/environment_first_20260910/**'
       - 'tests/test_environment_first_synthesis.py'
       - '.github/workflows/ch1-environment-first.yml'
@@ -18,8 +21,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install numpy pandas pytest
-      - run: python -m pytest tests/test_environment_first_synthesis.py -q
+      - run: python -m pip install numpy pandas scipy statsmodels pytest
+      - run: python -m pytest tests/test_environment_first_synthesis.py tests/test_whole_capitulum_environment.py -q
       - run: python analysis/v3/build_environment_first_synthesis.py --source analysis_outputs/environment_first_20260910/source --out replay
       - uses: actions/upload-artifact@v4
         with:

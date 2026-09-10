@@ -1,0 +1,45 @@
+{
+  "base_commit": "4deae0815880baf5db3e2795bd79369344e8bace",
+  "constructs": [
+    "presentation_angle",
+    "floral_lightness",
+    "floral_chroma",
+    "floral_hue",
+    "head_elongation",
+    "head_compactness",
+    "involucre_form",
+    "projection_prominence",
+    "projection_pattern"
+  ],
+  "predictors": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean",
+    "chelsa_vpd_mean",
+    "chelsa_sfcwind_mean",
+    "chelsa_gsp",
+    "chelsa_npp"
+  ],
+  "cohort": "exact complete18 minimum5 cohort; same observations across all constructs and complete nine environments",
+  "among": "common-cohort taxon medians of construct coordinates and environmental variables, one row per taxon",
+  "within": "taxon demeaned standardized coordinates and predictor; observation weighted as original within atlas",
+  "statistic": "mean across 9 constructs of mean squared standardized component slopes; joint constructs do not gain weight merely from more dimensions",
+  "permutation": "permute predictor once per replicate, shared across all response coordinates; unrestricted among taxa, within-taxon blocks for observations",
+  "permutations": 9999,
+  "seed": 20260910,
+  "multiplicity": "one new separate BH family of 18 omnibus tests; original PR93 families untouched",
+  "contribution": "component mean-square slope / sum across constructs; descriptive, not variance partition or separately tested effects",
+  "limits": [
+    "omnibus association may be driven by one construct, not coordinated response",
+    "new rows have not passed spatial or phylogenetic sensitivity",
+    "within permutation assumes exchangeability within taxa, not spatial independence",
+    "complete-case cohort has restricted support; not full genus",
+    "marginal correlated gradients, not causal effects"
+  ],
+  "input_sha256": {
+    "traits": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+  }
+}
