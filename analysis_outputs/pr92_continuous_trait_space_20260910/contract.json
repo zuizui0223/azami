@@ -1,0 +1,14 @@
+{
+  "question": "Where do taxon distributions occupy and overlap shared trait space?",
+  "renderer": "matplotlib 3D voxel boundary and 2D projected silhouettes",
+  "selection": "two taxa with most eligible observations per module, before inspecting geometry",
+  "sample": "one deterministic 50-observation illustration per taxon, not median of 30 volumes",
+  "region": "90 percent KDE highest-density region in frozen shared 3D coordinates; 12000 Monte Carlo calibration and independent check draws",
+  "grid": "40 cells per coordinate; common bounds within each module; approximation, not convex hull",
+  "palette": [
+    "#2878A0",
+    "#B57C18"
+  ],
+  "distinction": "circle/triangle; solid/dashed projected boundary",
+  "limits": "image phenotype, not anatomical or functional support; involucre projection retains only 63.6 percent; orientation stays 1D in previous density figure"
+}

@@ -2,6 +2,17 @@
 
 ## Active PR92 exploration since 2026-09-10
 
+### Continuous measurements to trait space
+
+The methodological emphasis is the input representation: repeated continuous image measurements, rather than assigning each image only to a trait category. Shared PCA coordinates retain graded differences and support taxon-specific density regions. PCA and hypervolume estimation are established methods, not the claimed innovation. No categorical benchmark was run, so these figures do not establish superior accuracy or predictive performance over category-based PCoA.
+
+`plot_hypervolume_space.py` renders the observation-level PCA clouds (54 eligible taxa, 50 observations each for colour and outline), signed axis coefficients, and taxon-specific 90% KDE regions. The two taxa with the most eligible observations illustrate the regions using equal sample sizes. The 3D figure also includes involucre, whose projection retains only 63.6% of variance. Projected silhouettes are not 2D 90% probability regions; these single-resample illustrations do not replace the earlier 30-resample numerical summaries. Outputs: `analysis_outputs/pr92_continuous_trait_space_20260910/`.
+
+```bash
+python analysis/v3/plot_hypervolume_space.py --traits continuous_trait_universe_observation_long.csv --environment strict_spatial_chelsa_full9.csv --out local_data/continuous_trait_space
+python -m pytest tests/test_hypervolume_space.py -q
+```
+
 PR92 is now the full-range capitulum distribution / hypervolume exploratory branch, not a native-only primary reanalysis. Reuse the 46,276-observation v2 measurement universe, without new image acquisition or a native-range filter. PR93's construct integration analyses are a separate workstream.
 
 The first bounded pilot is `run_distribution_breadth_pilot.py`: equal-sample density breadth versus environmental/geographic breadth, followed by spatial-cell-held-out within-taxon prediction. Public aggregate outputs are in `analysis_outputs/pr92_distribution_breadth_pilot_20260910/`. This pilot uses 50 observations per taxon in 30 rarefactions; its KDE volumes describe common projections, not full biological trait space. At most three axes are retained for this pilot, with retained variance reported explicitly. Involucre and whole-capitulum projections have too few eligible taxa and too much discarded variance for whole-trait-volume inference.
