@@ -1,0 +1,101 @@
+name: Chapter 1 multiscale whole-capitulum organization
+
+on:
+  push:
+    paths:
+      - 'analysis/v3/run_capitulum_multiscale_organization.py'
+      - '.github/workflows/ch1-v3-capitulum-multiscale.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  multiscale-capitulum:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical runtime
+        run: |
+          python -m pip install pandas==3.0.5 numpy==2.4.6 scipy==1.17.1
+
+      - name: Recover frozen continuous trait universe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/continuous
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip -d work/continuous
+          test -f work/continuous/universe/continuous_trait_universe_observation_long.csv
+
+      - name: Recover visible-floret observation values from historical heads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/historical work/recovered_display
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8269246732/zip > work/historical.zip
+          echo '5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          HEADS=$(find work/historical -type f -name exhaustive_continuous_head_level.csv -print -quit)
+          test -n "$HEADS"
+          RECOVERED_DIR="$RUNNER_TEMP/ch1-multiscale-recovered-${GITHUB_RUN_ID}"
+          PYTHONPATH=. python -m analysis.v3.recover_display_composition --heads "$HEADS" --out-dir "$RECOVERED_DIR"
+          cp "$RECOVERED_DIR/observation_values.csv" work/recovered_display/observation_values.csv
+          cp "$RECOVERED_DIR/display_composition_report.json" work/recovered_display/display_composition_report.json
+
+      - name: Recover frozen complete18 nine-predictor environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/environment_artifact
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9632715852/zip > work/environment.zip
+          echo '51e7a26b5bd09e030b67b9342586699abaaf46e630f45b6bb4ee7bfc9152ced6  work/environment.zip' | sha256sum -c -
+          unzip -q work/environment.zip -d work/environment_artifact
+          ENVFILE=$(find work/environment_artifact -type f -name complete18_chelsa_process.csv -print -quit)
+          test -n "$ENVFILE"
+          echo "CAPITULUM_ENV=$ENVFILE" >> "$GITHUB_ENV"
+          python - <<'PY'
+          import os, pandas as pd
+          path = os.environ['CAPITULUM_ENV'] if 'CAPITULUM_ENV' in os.environ else None
+          if path is None:
+              import glob
+              matches = glob.glob('work/environment_artifact/**/complete18_chelsa_process.csv', recursive=True)
+              path = matches[0]
+          x = pd.read_csv(path, low_memory=False)
+          if len(x) != 1874 or x['taxon_name'].nunique() != 124:
+              raise SystemExit(f'unexpected frozen complete18 environment: {len(x)} rows / {x.taxon_name.nunique()} taxa')
+          print({'environment_rows': len(x), 'environment_taxa': x.taxon_name.nunique()})
+          PY
+
+      - name: Run whole-capitulum multiscale organization analysis
+        run: |
+          mkdir -p work/results
+          PYTHONPATH=. python analysis/v3/run_capitulum_multiscale_organization.py \
+            --traits-long work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --endpoint-contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --recovered-display work/recovered_display/observation_values.csv \
+            --environment "$CAPITULUM_ENV" \
+            --block-contract analysis/ch1/capitulum_environment_blocks_contract.json \
+            --out-dir work/results \
+            --thresholds 5 2 \
+            --matrix-permutations 9999 \
+            --module-permutations 9999 \
+            --environment-permutations 9999 \
+            --structure-bootstrap 1000 \
+            --environment-bootstrap 500
+
+      - name: Upload multiscale organization results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-capitulum-multiscale-${{ github.run_id }}
+          path: |
+            work/results/**
+            work/recovered_display/display_composition_report.json
+          if-no-files-found: error
+          retention-days: 30
