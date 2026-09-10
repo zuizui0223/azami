@@ -1,0 +1,86 @@
+name: Chapter 1 v3 assessability and measurement stress
+
+on:
+  push:
+    branches: [analysis/ch1-v3-biological-axes-20260910]
+    paths:
+      - 'analysis/v3/run_assessability_selection_audit.py'
+      - 'analysis/v3/run_frozen_technical_error_stress.py'
+      - 'analysis/ch1/image_to_trait_automated_technical_audit_summary.json'
+      - '.github/workflows/ch1-v3-assessability-measurement-stress.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  assessability-measurement-stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install numerical runtime
+        run: |
+          python -m pip install pandas==3.0.5 numpy==2.4.6 scipy==1.17.1
+          python -m py_compile \
+            analysis/v3/run_biological_axis_reanalysis.py \
+            analysis/v3/run_assessability_selection_audit.py \
+            analysis/v3/run_frozen_technical_error_stress.py
+
+      - name: Recover frozen v2 inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/continuous work/environment
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip 'universe/continuous_trait_universe_observation_long.csv' -d work/continuous
+          echo 'd775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344  work/continuous/universe/continuous_trait_universe_observation_long.csv' | sha256sum -c -
+
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9633419268/zip > work/environment.zip
+          echo 'd7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4  work/environment.zip' | sha256sum -c -
+          unzip -q work/environment.zip 'process_environment/strict_spatial_chelsa_process.csv' -d work/environment
+          echo 'f86a3418e9b21453026bba1aaf350b061f03048949547e2092602620af98cbf6  work/environment/process_environment/strict_spatial_chelsa_process.csv' | sha256sum -c -
+
+      - name: Run outcome-blind assessability audit
+        run: |
+          set -euo pipefail
+          mkdir -p work/results/assessability
+          python -m analysis.v3.run_assessability_selection_audit \
+            --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
+            --out-dir work/results/assessability | tee work/results/assessability/run.log
+          test -s work/results/assessability/assessability_selection_report.json
+          python -m json.tool work/results/assessability/assessability_selection_report.json >/dev/null
+
+      - name: Run frozen-summary orientation technical stress
+        run: |
+          set -euo pipefail
+          mkdir -p work/results/technical_stress
+          python -m analysis.v3.run_frozen_technical_error_stress \
+            --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
+            --technical-audit-summary analysis/ch1/image_to_trait_automated_technical_audit_summary.json \
+            --out-dir work/results/technical_stress \
+            --replicates 2000 \
+            --seed 20260910 | tee work/results/technical_stress/run.log
+          test -s work/results/technical_stress/frozen_technical_error_stress_report.json
+          python -m json.tool work/results/technical_stress/frozen_technical_error_stress_report.json >/dev/null
+
+      - name: Upload audit outputs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-assessability-measurement-stress-${{ github.run_id }}
+          path: work/results/**
+          if-no-files-found: error
+          retention-days: 30
