@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'analysis/v3/build_environment_first_synthesis.py'
+      - 'analysis/v3/build_capitulum_organization_synthesis.py'
+      - 'tests/test_capitulum_organization_synthesis.py'
+      - 'analysis_outputs/capitulum_organization_20260910/**'
       - 'analysis/v3/environment_first_contract.json'
       - 'analysis/v3/run_whole_capitulum_environment.py'
       - 'tests/test_whole_capitulum_environment.py'
@@ -22,7 +25,8 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install numpy pandas scipy statsmodels pytest
-      - run: python -m pytest tests/test_environment_first_synthesis.py tests/test_whole_capitulum_environment.py -q
+      - run: python -m pytest tests/test_environment_first_synthesis.py tests/test_whole_capitulum_environment.py tests/test_capitulum_organization_synthesis.py -q
+      - run: PYTHONPATH=. python analysis/v3/build_capitulum_organization_synthesis.py --source analysis_outputs/capitulum_organization_20260910/source --environment-map analysis_outputs/environment_first_20260910/trait_environment_map.csv --out replay/organization
       - run: python analysis/v3/build_environment_first_synthesis.py --source analysis_outputs/environment_first_20260910/source --out replay
       - uses: actions/upload-artifact@v4
         with:

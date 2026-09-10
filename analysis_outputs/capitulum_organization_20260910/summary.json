@@ -1,0 +1,97 @@
+{
+  "analysis_type": "replay and synthesis of existing PR93 evidence, no new tests",
+  "upstream_run": 34432661967,
+  "upstream_artifact": 10135139012,
+  "environment_question": "Which biological traits covary with which gradients after declared sensitivity checks?",
+  "environment_full_chain_rows": [
+    {
+      "construct_id": "presentation_angle",
+      "predictor": "chelsa_bio12",
+      "scale": "among_taxon",
+      "beta_std": 0.3043592858977514,
+      "q_bh": 0.0036
+    },
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_npp",
+      "scale": "among_taxon",
+      "beta_std": 0.2463466831515829,
+      "q_bh": 0.0315
+    },
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "scale": "among_taxon",
+      "beta_std": -0.3453720170895292,
+      "q_bh": 0.00225
+    }
+  ],
+  "environment_interpretation": "Inherited associations, not independent replication; chroma-NPP remains exploratory, not a frozen-v2 headline",
+  "organization_question": "How strongly are traits integrated within and across biological modules?",
+  "common_cohort": {
+    "observations": 1734,
+    "taxa": 42,
+    "minimum_complete_observations_per_taxon": 5
+  },
+  "all_pairs": 36,
+  "same_module_pairs": 7,
+  "module_cohesion": {
+    "within_taxon": {
+      "mean_within_module_rv": 0.09615579645890018,
+      "mean_between_module_rv": 0.0038709680084254264,
+      "within_minus_between": 0.09228482845047475,
+      "permutation_p_one_sided": 0.0013,
+      "permutations": 9999
+    },
+    "among_taxon": {
+      "mean_within_module_rv": 0.16238070267457227,
+      "mean_between_module_rv": 0.07296988622013383,
+      "within_minus_between": 0.08941081645443845,
+      "permutation_p_one_sided": 0.0365,
+      "permutations": 9999
+    }
+  },
+  "cross_scale_alignment": {
+    "rho": 0.4391248391248392,
+    "qap_p_one_sided": 0.0041,
+    "permutations": 9999,
+    "null_mean": 0.002622347176802623,
+    "null_low95": -0.321003861003861,
+    "null_high95": 0.327168597168597
+  },
+  "cross_scale_bootstrap": {
+    "replicates": 1000,
+    "rho_median": 0.3120978120978121,
+    "rho_low95": 0.017084942084942097,
+    "rho_high95": 0.53516731016731,
+    "probability_rho_positive": 0.979
+  },
+  "exploratory_bridge": {
+    "among_taxon": {
+      "rho": 0.04298584298584299,
+      "qap_p_two_sided": 0.8475,
+      "permutations": 9999
+    },
+    "within_taxon": {
+      "rho": 0.2344916344916345,
+      "qap_p_two_sided": 0.1652,
+      "permutations": 9999
+    },
+    "interpretation": "exploratory QAP coupling between construct integration and six-block environmental-profile similarity"
+  },
+  "supplementary_omnibus": "separate question; retain unsupported results; not a test of modularity",
+  "limits": [
+    "No evolutionary reconstruction or demonstrated adaptation",
+    "Presentation is a singleton module",
+    "Magnitude-profile similarity does not test signed response alignment",
+    "Image and mathematical covariance may contribute",
+    "Cohorts differ between trait-specific environment tests and complete-case integration; the bridge uses these existing profiles, not a common-cohort environmental refit"
+  ],
+  "source_sha256": {
+    "complete18_construct_pairwise.csv": "c9967835ffefe91375eca0a1640c0a1a06448a7915ed4c64361cd5104313f185",
+    "construct_scale_upgrade_report.json": "43dda75ceff894615795c57daf0ff99d8d9920479b4dcd9899c96099f8cede13",
+    "environment_similarity_among.csv": "63f653e54d6a54cabef0a541bbbc115cf8aa60cfca7500a78f86df15bd35a81f",
+    "environment_similarity_within.csv": "91f70caea4fcead9234304be47dd520f9e399b5b2df35a79a0335663d4bf4c39"
+  },
+  "environment_map_sha256": "44ef1e81a845c3cc57801109ad486de7446be870365975bd95390230a4c9aac2"
+}

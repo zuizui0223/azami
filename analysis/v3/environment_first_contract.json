@@ -1,13 +1,18 @@
 {
   "base_pr": 93,
   "base_commit": "4deae0815880baf5db3e2795bd79369344e8bace",
-  "primary_question": "How do continuous biological traits of the capitulum covary along environmental gradients, jointly and separately?",
+  "primary_question": "Which environmental gradients are associated with each biological capitulum trait, and how are these traits integrated into a capitulum?",
+  "framing_revision": "User-directed clarification after results were available; not a new preregistration and not a change to numerical tests or multiplicity families",
+  "primary_questions": ["Trait-specific environmental associations followed by sampling, spatial and among-taxon placement sensitivity", "Within-module versus between-module phenotypic integration and its correspondence across scales"],
   "workflow": ["Reuse measured continuous traits and PR93 biological definitions", "Retain complete marginal environment atlas and original multiplicity families", "Apply inherited sampling, spatial and among-taxon phylogenetic placement sensitivity", "Integrate response patterns with existing whole-capitulum trait organization"],
   "primary_constructs": 9,
   "surface_traits": "supporting measurement analyses, not equal-status biological constructs",
   "within_among": "retain distinct estimands internally and in labelled results; environment-first presentation does not pool scales",
   "environment": "same nine gradients as PR93; marginal, not mutually adjusted effects",
-  "whole_capitulum": "shared-gradient response map plus common-cohort trait integration; no claim of coordinated response from hit counts alone",
+  "whole_capitulum": "Use all nine constructs, not just environment-significant traits, to examine phenotypic organization. Module-label permutations and cross-scale matrix alignment address this question; neither reconstructs evolutionary change",
+  "bridge": "Existing exploratory comparison of phenotypic integration with environmental-profile similarity; retain unsupported coupling",
+  "omnibus_environment": "supplementary separate question; retain all 18 unsupported tests, not a prerequisite or test of integration, independence or evolutionary modularity",
+  "adaptation_boundary": "Robust environmental associations motivate functional/adaptive hypotheses, but do not establish adaptation, selection or independence from all phylogenetic history",
   "no_changes": ["No new images", "No native restriction", "No new variance partitioning model", "No automatic promotion of v2 anchor associations", "No merging PR92 PR93 or main"],
   "first_execution": "reproducible synthesis of existing PR93 numerical artifacts, not a new independent reanalysis"
 }

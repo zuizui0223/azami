@@ -2,7 +2,7 @@
 
 ## Active environment-first extension of PR93
 
-The main question is how the constituent biological traits of a capitulum covary along environmental gradients, together or separately. Reuse PR93 at `4deae0815880baf5db3e2795bd79369344e8bace`; retain its nine non-surface constructs as the biological core. Surface measurements remain supporting diagnostics. Within- and among-taxon results remain separate estimands, but are presented under the same environmental gradients rather than as competing paper narratives.
+PR94 has two connected questions: **which environmental gradients are associated with each biological capitulum trait, and how are these traits integrated into a capitulum?** Reuse PR93 at `4deae0815880baf5db3e2795bd79369344e8bace`; retain its nine non-surface constructs as the biological core. Surface measurements remain supporting diagnostics. Within- and among-taxon results remain separate estimands, not competing paper narratives. This framing was clarified after results were available; it does not change the tests or their multiplicity families.
 
 The workflow is continuous measurement -> biological trait definition -> complete environment atlas with inherited FDR -> sampling/spatial/among-taxon placement sensitivity -> whole-capitulum synthesis. No new variance-partitioning model, native-only filter, image acquisition, or categorical-superiority test is added. Hypervolume plots can illustrate distributions but do not replace environmental tests.
 
@@ -17,7 +17,24 @@ python analysis/v3/build_environment_first_synthesis.py --source analysis_output
 python -m pytest tests/test_environment_first_synthesis.py -q
 ```
 
-### Executed common-cohort whole-capitulum environment test
+### Primary synthesis: environmental associations and capitulum organization
+
+1. Define biological traits from the measured image coordinates, retaining their measurement limits.
+2. Test each trait against each environmental gradient with inherited multiplicity, then sampling, spatial and among-taxon placement sensitivity. Surviving associations are candidates for functional/adaptive investigation, not demonstrated adaptation or evidence that all historical effects have been removed.
+3. Independently examine integration of **all nine constructs**, not only environmentally significant ones, on the common 1,734-observation / 42-taxon cohort. Compare within-module and between-module integration, and the correspondence of the relation matrix between scales.
+4. Compare integration with environmental-profile similarity as an exploratory bridge. A shared environmental association does not itself define a module.
+
+The existing PR93 module-label tests have P=0.0013 within taxa and P=0.0365 among taxa. Cross-scale matrix alignment is rho=0.4391 (QAP P=0.0041). These support partial phenotypic integration compatible with biological modules, not a reconstructed history of modular evolution. Orientation is a singleton group, so its internal cohesion cannot be tested. Shared image geometry and mathematical dependencies can also contribute to covariance.
+
+The existing exploratory integration/profile coupling is unsupported (P=0.1652 within and P=0.8475 among). Profiles summarize effect **magnitudes**, not shared signed directions. The profiles come from construct-specific environmental cohorts, whereas integration uses the complete-case cohort; this bridge is not a common-cohort environmental refit. These results neither prove independence nor establish that different modules evolved under different selection pressures.
+
+`build_capitulum_organization_synthesis.py` joins the 36 common-cohort construct pairs to the existing environmental-profile similarities and records the two questions in one evidence summary. It checks cohesion means and matrix alignment against the upstream report. It introduces no new significance tests. Aggregate source receipts and replay outputs are in `analysis_outputs/capitulum_organization_20260910/`.
+
+```bash
+PYTHONPATH=. python analysis/v3/build_capitulum_organization_synthesis.py --source analysis_outputs/capitulum_organization_20260910/source --environment-map analysis_outputs/environment_first_20260910/trait_environment_map.csv --out local_data/capitulum_organization_replay
+```
+
+### Supplementary: executed whole-capitulum environment omnibus
 
 `run_whole_capitulum_environment.py` evaluates all nine constructs on the same complete-18 cohort: 1,734 observations and 42 taxa. Each environmental gradient is tested separately at each scale. The omnibus statistic averages squared standardized slopes first within each construct and then equally across constructs. The same predictor permutation is shared across all response coordinates, preserving response covariance; within-taxon permutations stay inside taxa. There are 9,999 permutations per test and one new BH family of 18 tests, independent of the inherited atlas families.
 

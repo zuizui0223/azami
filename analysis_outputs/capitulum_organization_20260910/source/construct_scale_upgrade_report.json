@@ -1,0 +1,106 @@
+{
+  "analysis_id": "ch1_v3_construct_scale_upgrade_20260910",
+  "claim_boundary": "secondary construct-level synthesis only; frozen v2 endpoint conclusions and multiplicity families unchanged",
+  "complete18_endpoints": [
+    "bract_projection_asymmetry",
+    "bract_projection_maximum",
+    "bract_projection_p95",
+    "bract_projection_peak_density",
+    "bract_projection_roughness",
+    "bract_spread_fraction",
+    "capitulum_outline_aspect_ratio",
+    "capitulum_outline_circularity",
+    "capitulum_outline_solidity",
+    "capitulum_width_profile_cv",
+    "corolla_hue_cos",
+    "corolla_hue_sin",
+    "corolla_lab_chroma",
+    "corolla_lab_lightness",
+    "involucre_apical_taper_ratio",
+    "involucre_basal_taper_ratio",
+    "involucre_length_width_ratio",
+    "orientation_image_vertical_angle"
+  ],
+  "common_cohort": {
+    "observations": 1734,
+    "taxa": 42,
+    "minimum_complete_observations_per_taxon": 5
+  },
+  "common_cohort_matrix_alignment": {
+    "rho": 0.4391248391248392,
+    "qap_p_one_sided": 0.0041,
+    "permutations": 9999,
+    "null_mean": 0.002622347176802623,
+    "null_low95": -0.321003861003861,
+    "null_high95": 0.327168597168597
+  },
+  "taxon_bootstrap": {
+    "replicates": 1000,
+    "rho_median": 0.3120978120978121,
+    "rho_low95": 0.017084942084942097,
+    "rho_high95": 0.53516731016731,
+    "probability_rho_positive": 0.979
+  },
+  "median_within_rv": 0.002237903540808375,
+  "median_among_rv": 0.0432122597735487,
+  "relations_stronger_among": 33,
+  "module_cohesion": {
+    "within_taxon": {
+      "mean_within_module_rv": 0.09615579645890018,
+      "mean_between_module_rv": 0.0038709680084254264,
+      "within_minus_between": 0.09228482845047475,
+      "permutation_p_one_sided": 0.0013,
+      "permutations": 9999
+    },
+    "among_taxon": {
+      "mean_within_module_rv": 0.16238070267457227,
+      "mean_between_module_rv": 0.07296988622013383,
+      "within_minus_between": 0.08941081645443845,
+      "permutation_p_one_sided": 0.0365,
+      "permutations": 9999
+    }
+  },
+  "six_environment_block_signature": {
+    "blocks": {
+      "thermal": [
+        "chelsa_bio01",
+        "chelsa_bio04"
+      ],
+      "hydric": [
+        "chelsa_bio12",
+        "chelsa_bio15"
+      ],
+      "radiative_atmospheric": [
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean"
+      ],
+      "mechanical": [
+        "chelsa_sfcwind_mean"
+      ],
+      "growing_season_water": [
+        "chelsa_gsp"
+      ],
+      "resource_productivity": [
+        "chelsa_npp"
+      ]
+    },
+    "same_strongest_block_constructs": 2,
+    "constructs_compared": 9,
+    "flattened_normalized_signature_spearman": 0.10348770726129215,
+    "flattened_normalized_signature_cosine": 0.8526289767035149,
+    "interpretation": "descriptive block-level comparison; blocks reduce but do not eliminate predictor correlation"
+  },
+  "integration_environment_coupling": {
+    "among_taxon": {
+      "rho": 0.04298584298584299,
+      "qap_p_two_sided": 0.8475,
+      "permutations": 9999
+    },
+    "within_taxon": {
+      "rho": 0.2344916344916345,
+      "qap_p_two_sided": 0.1652,
+      "permutations": 9999
+    },
+    "interpretation": "exploratory QAP coupling between construct integration and six-block environmental-profile similarity"
+  }
+}
