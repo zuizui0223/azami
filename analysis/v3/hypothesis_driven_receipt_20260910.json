@@ -14,40 +14,15 @@
   "registry": {
     "registered_hypothesis_tests": 18,
     "deferred_inferential_units": 11,
-    "predictors_used": [
-      "chelsa_bio12",
-      "chelsa_rsds_mean",
-      "chelsa_sfcwind_mean",
-      "chelsa_vpd_mean"
-    ],
+    "predictors_used": ["chelsa_bio12", "chelsa_rsds_mean", "chelsa_sfcwind_mean", "chelsa_vpd_mean"],
     "multiplicity": "BH-FDR separately within each biological hypothesis family",
     "status": "post_outcome_hypothesis_driven_reanalysis_not_preregistered"
   },
   "family_summary": {
-    "targeted_orientation_rain": {
-      "registered_tests": 1,
-      "base_fdr_pass": 1,
-      "spatial_pass": 1,
-      "phylogenetic_placement_pass": 1
-    },
-    "targeted_colour_abiotic": {
-      "registered_tests": 6,
-      "base_fdr_pass": 3,
-      "spatial_pass": 1,
-      "phylogenetic_placement_pass": 1
-    },
-    "exploratory_shape_wind": {
-      "registered_tests": 4,
-      "base_fdr_pass": 2,
-      "spatial_pass": 2,
-      "phylogenetic_placement_pass": 2
-    },
-    "exploratory_involucre_precip": {
-      "registered_tests": 7,
-      "base_fdr_pass": 0,
-      "spatial_pass": 0,
-      "phylogenetic_placement_pass": 0
-    }
+    "targeted_orientation_rain": {"registered_tests": 1, "base_fdr_pass": 1, "spatial_pass": 1, "phylogenetic_placement_pass": 1},
+    "targeted_colour_abiotic": {"registered_tests": 6, "base_fdr_pass": 3, "spatial_pass": 1, "phylogenetic_placement_pass": 1},
+    "exploratory_shape_wind": {"registered_tests": 4, "base_fdr_pass": 2, "spatial_pass": 2, "phylogenetic_placement_pass": 2},
+    "exploratory_involucre_precip": {"registered_tests": 7, "base_fdr_pass": 0, "spatial_pass": 0, "phylogenetic_placement_pass": 0}
   },
   "final_phylogenetic_pass": [
     {
@@ -55,12 +30,12 @@
       "role": "prior_targeted",
       "unit_id": "orientation_image_vertical_angle",
       "predictor": "chelsa_bio12",
-      "base_beta_std": 0.3043592824143709,
+      "base_beta_std": 0.3043592858977515,
       "base_p": 0.0009,
       "base_q_family_bh": 0.0009,
-      "spatial_beta_std": 0.2847048264913428,
+      "spatial_beta_std": 0.2847053933959423,
       "spatial_p": 0.0209,
-      "residual_morans_i": -0.0679698257575847,
+      "residual_morans_i": -0.0679698434205143,
       "residual_morans_p": 0.073,
       "placement_trees": "52/52 p<0.05 and same positive direction",
       "pgls_beta_range": [0.3043592824143709, 0.3044822527626281],
@@ -73,12 +48,12 @@
       "role": "targeted_reanalysis",
       "unit_id": "corolla_lab_chroma",
       "predictor": "chelsa_rsds_mean",
-      "base_beta_std": -0.3453720131736058,
+      "base_beta_std": -0.3453720170895292,
       "base_p": 0.0001,
       "base_q_family_bh": 0.0003,
-      "spatial_beta_std": -0.740314600418385,
+      "spatial_beta_std": -0.7403152663581188,
       "spatial_p": 0.0013,
-      "residual_morans_i": -0.0484410945489841,
+      "residual_morans_i": -0.0484409204130157,
       "residual_morans_p": 0.198,
       "placement_trees": "52/52 p<0.05 and same negative direction",
       "pgls_beta_range": [-0.3453720131736058, -0.3453720131736052],
@@ -91,12 +66,12 @@
       "role": "exploratory",
       "unit_id": "capitulum_outline_circularity",
       "predictor": "chelsa_sfcwind_mean",
-      "base_beta_std": 0.206954,
+      "base_beta_std": 0.206954354991657,
       "base_p": 0.0161,
       "base_q_family_bh": 0.0322,
-      "spatial_beta_std": 0.180194,
+      "spatial_beta_std": 0.1801941418499609,
       "spatial_p": 0.0466,
-      "residual_morans_i": -0.068638,
+      "residual_morans_i": -0.0686379988831875,
       "residual_morans_p": 0.065,
       "placement_trees": "52/52 p<0.05 and same positive direction",
       "pgls_beta_range": [0.2017742777802821, 0.2218774181859373],
@@ -109,12 +84,12 @@
       "role": "exploratory",
       "unit_id": "capitulum_outline_solidity",
       "predictor": "chelsa_sfcwind_mean",
-      "base_beta_std": 0.211244,
+      "base_beta_std": 0.2112443178060467,
       "base_p": 0.014,
       "base_q_family_bh": 0.0322,
-      "spatial_beta_std": 0.255285,
+      "spatial_beta_std": 0.2552854201864758,
       "spatial_p": 0.0055,
-      "residual_morans_i": -0.055694,
+      "residual_morans_i": -0.0556943915049254,
       "residual_morans_p": 0.141,
       "placement_trees": "52/52 p<0.05 and same positive direction",
       "pgls_beta_range": [0.2112443105609314, 0.2622554732268926],
@@ -124,20 +99,8 @@
     }
   ],
   "base_signals_that_failed_spatial": [
-    {
-      "hypothesis_id": "H2_colour_radiation_hue",
-      "base_q_family_bh": 0.0003,
-      "spatial_p": 0.0121,
-      "residual_morans_p": 0.002,
-      "reason": "residual spatial autocorrelation remains"
-    },
-    {
-      "hypothesis_id": "H3_colour_drying_hue",
-      "base_q_family_bh": 0.0242,
-      "spatial_p": 0.2357,
-      "residual_morans_p": 0.001,
-      "reason": "spatial coefficient test fails and residual spatial autocorrelation remains"
-    }
+    {"hypothesis_id": "H2_colour_radiation_hue", "base_q_family_bh": 0.0003, "spatial_p": 0.0121, "residual_morans_p": 0.002, "reason": "residual spatial autocorrelation remains"},
+    {"hypothesis_id": "H3_colour_drying_hue", "base_q_family_bh": 0.0242, "spatial_p": 0.2357, "residual_morans_p": 0.001, "reason": "spatial coefficient test fails and residual spatial autocorrelation remains"}
   ],
   "claim_boundary": "Only orientation x BIO12 was already frozen as a targeted candidate before this reanalysis. Colour tests are literature/function-guided targeted reanalysis after prior Chapter 1 outcomes were known. Shape-wind and involucre-precipitation are exploratory. Associations do not establish adaptation or causality; image-derived trait interpretation limits remain binding."
 }
