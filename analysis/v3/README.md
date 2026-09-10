@@ -15,6 +15,15 @@ python analysis/v3/run_distribution_breadth_pilot.py --traits continuous_trait_u
 python -m pytest tests/test_distribution_breadth_pilot.py -q
 ```
 
+The follow-on `run_distribution_overlap_pilot.py` reuses exactly these shared bases, input hashes and 50-observation eligibility. It estimates density overlap (integral of the smaller of two KDE densities) and exact equal-weight empirical Wasserstein W2. W2 squared is separated into centroid distance squared and centred-distribution distance squared. Thirty rarefaction repetitions are summarized; their percentile ranges are not confidence intervals. Pairwise values are descriptive, not independent hypothesis tests. Overlap depends on fixed smoothing, and finite samples create positive W2 even for identical underlying populations. Neither overlap nor distance demonstrates functional equivalence or convergence.
+
+The completed local pilot and numerical checks are recorded in `analysis_outputs/pr92_distribution_overlap_pilot_20260910/`: 4,318 module-specific taxon pairs and 129,540 pair-repetitions. Full replicate arrays remain in the local run directory and can be regenerated from the script; public tables contain aggregate pair results. This is not a new independent image-validation dataset.
+
+```bash
+python analysis/v3/run_distribution_overlap_pilot.py --traits continuous_trait_universe_observation_long.csv --environment strict_spatial_chelsa_full9.csv --basis-dir analysis_outputs/pr92_distribution_breadth_pilot_20260910 --out local_data/distribution_overlap_pilot
+python -m pytest tests/test_distribution_overlap_pilot.py tests/test_distribution_breadth_pilot.py -q
+```
+
 ## Historical native-only route
 
 The active v3 route is deliberately small. It repairs upstream provenance and aggregation, then reuses the frozen v2 ecological machinery rather than rebuilding a second analysis system.

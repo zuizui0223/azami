@@ -1,0 +1,57 @@
+[
+  {
+    "group": "orientation",
+    "taxa": 54,
+    "pairs": 1431,
+    "dimensions": 1,
+    "retained_variance": 1.0,
+    "median_pair_density_overlap": 0.865198570552702,
+    "median_pair_w2": 0.34782602200009116,
+    "median_pair_centred_share": 0.46116625529329086,
+    "interpretation": "exploratory"
+  },
+  {
+    "group": "colour",
+    "taxa": 54,
+    "pairs": 1431,
+    "dimensions": 3,
+    "retained_variance": 0.911159898282929,
+    "median_pair_density_overlap": 0.5112992291839551,
+    "median_pair_w2": 1.6284415255093485,
+    "median_pair_centred_share": 0.4302978855773596,
+    "interpretation": "exploratory"
+  },
+  {
+    "group": "outline",
+    "taxa": 54,
+    "pairs": 1431,
+    "dimensions": 3,
+    "retained_variance": 0.9692267356982751,
+    "median_pair_density_overlap": 0.6813108651620693,
+    "median_pair_w2": 1.2101095058006004,
+    "median_pair_centred_share": 0.8398950682300503,
+    "interpretation": "exploratory"
+  },
+  {
+    "group": "involucre",
+    "taxa": 6,
+    "pairs": 15,
+    "dimensions": 3,
+    "retained_variance": 0.6355682142494097,
+    "median_pair_density_overlap": 0.623606426840975,
+    "median_pair_w2": 1.358645341156406,
+    "median_pair_centred_share": 0.8700069639031225,
+    "interpretation": "descriptive_projection_only"
+  },
+  {
+    "group": "whole",
+    "taxa": 5,
+    "pairs": 10,
+    "dimensions": 3,
+    "retained_variance": 0.4276622231222612,
+    "median_pair_density_overlap": 0.4608557990286256,
+    "median_pair_w2": 1.8855477595316055,
+    "median_pair_centred_share": 0.6342254044670732,
+    "interpretation": "descriptive_projection_only"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "status": "pilot_numerical_checks_passed",
+  "execution": "local",
+  "pairs": 4318,
+  "replicate_pairs": 129540,
+  "maximum_w2_squared_decomposition_error": 7.327471962526033e-15,
+  "all_saved_medians_recomputed": true,
+  "all_density_overlap_estimates_in_unit_interval": true,
+  "nonfinite_replicate_values": 0,
+  "targeted_test_cases_passed": 4,
+  "confirmatory_inference": false,
+  "limitations": [
+    "No KDE bandwidth sensitivity or same-population finite-sample distance calibration.",
+    "Rarefaction percentile ranges are not confidence intervals.",
+    "No pairwise significance tests, ecological equivalence or convergence claims.",
+    "Involucre and whole-capitulum results are sparse, incomplete projections."
+  ]
+}

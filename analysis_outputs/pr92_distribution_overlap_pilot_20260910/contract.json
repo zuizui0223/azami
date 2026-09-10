@@ -1,0 +1,26 @@
+{
+  "status": "exploratory_pilot",
+  "source_sha256": {
+    "traits": "d775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344",
+    "environment": "e242aa7ce69d12b11937c1335e84b9638799c50b42ef36b95725e77190df98e7"
+  },
+  "basis_sha256": "7ef2ab96cf740ac39b12958bf5bf06d02bfe4ffd0c90e755915a951a6452e913",
+  "sample_size": 50,
+  "replicates": 30,
+  "draws_per_taxon": 128,
+  "seed": 20260910,
+  "native_filter": false,
+  "new_images": false,
+  "overlap": "integral min(p,q), Monte Carlo from equal KDE mixture; not geometric intersection/union",
+  "wasserstein": "exact W2 assignment between equal-weight 50-point empirical distributions; not KDE distance",
+  "decomposition": "W2 squared = centroid distance squared + centred distribution W2 squared",
+  "distinctiveness": "equal-weight mean 1-overlap to other eligible taxa, conditional on sampled reference set",
+  "limitations": [
+    "shared fixed KDE bandwidth can inflate overlap",
+    "finite-sample W2 positive even for same population",
+    "rarefaction ranges are not confidence intervals",
+    "same projection limitations as first pilot",
+    "no biological equivalence or convergence inference",
+    "no tests treating pairs as independent"
+  ]
+}
