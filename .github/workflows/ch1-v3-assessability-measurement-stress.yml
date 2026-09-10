@@ -29,7 +29,7 @@ jobs:
 
       - name: Install numerical runtime
         run: |
-          python -m pip install pandas==3.0.5 numpy==2.4.6 scipy==1.17.1
+          python -m pip install pandas==3.0.5 numpy==2.4.6 scipy==1.17.1 statsmodels==0.14.6
           python -m py_compile \
             analysis/v3/run_biological_axis_reanalysis.py \
             analysis/v3/run_assessability_selection_audit.py \
