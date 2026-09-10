@@ -1,0 +1,44 @@
+{
+  "upstream_pr": 93,
+  "upstream_commit": "4deae0815880baf5db3e2795bd79369344e8bace",
+  "rows": 162,
+  "question": "Which continuous capitulum traits covary along environmental gradients, and which relationships withstand declared sensitivity analyses?",
+  "scope": "nine non-surface biological constructs; inherited q values from ten-construct 90-test families at each scale; no recalculated FDR or new tests",
+  "whole_capitulum": "compare constituent trait responses along the same gradients; shared significance alone is not syndrome evidence; use existing common-cohort integration separately",
+  "boundary": "marginal associations among correlated predictors; no independent causal effects, adaptation, pigment amount or fully resolved phylogenetic correction",
+  "status_counts": {
+    "not_fdr_supported": 141,
+    "sensitivity_not_passed": 18,
+    "full_declared_chain_pass": 3
+  },
+  "robust_rows": [
+    {
+      "construct_id": "presentation_angle",
+      "predictor": "chelsa_bio12",
+      "scale": "among_taxon",
+      "beta_std": 0.3043592858977514,
+      "q_bh": 0.0036
+    },
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_npp",
+      "scale": "among_taxon",
+      "beta_std": 0.2463466831515829,
+      "q_bh": 0.0315
+    },
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "scale": "among_taxon",
+      "beta_std": -0.3453720170895292,
+      "q_bh": 0.00225
+    }
+  ],
+  "source_sha256": {
+    "biological_axes_among_min5.csv": "34f977a571c970086b64dceb5e1e3ec059123811749431b253717c7600b9c178",
+    "biological_axes_within.csv": "bce724743e44f568a641a3cb870f389a698ea9fe8956031747b0f4e3f829a529",
+    "historical.csv": "8084a8630b5a787d5bc8cc2674f2e01e569ff04a8d7e2e8ad309093e0a4bc135",
+    "sampling.csv": "638458d77938f7776a06ba4436e1173d6995eaaae037d0b197a5f8c8f5feb533",
+    "spatial.csv": "bff309a09f56dc7bec305987d65fb46c75953e2deb22dad7bbe50dd0917ca73c"
+  }
+}
