@@ -1,0 +1,48 @@
+name: Chapter 1 capitulum hypervolume geometry
+
+on:
+  push:
+    branches: [revision/ch1-v3-20260907]
+    paths:
+      - 'analysis/v3/run_capitulum_hypervolume_geometry.py'
+      - '.github/workflows/ch1-v3-capitulum-hypervolume.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  hypervolume-geometry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numerical runtime
+        run: pip install numpy pandas
+      - name: Recover completed multiscale capitulum artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/source work/results
+          curl -L --fail \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/10131474734/zip" \
+            -o work/source/capitulum_multiscale.zip
+          unzip -q work/source/capitulum_multiscale.zip -d work/source/unpacked
+          test -f work/source/unpacked/results/capitulum_multiscale_endpoint_correlations.csv
+      - name: Run standardized hypervolume geometry
+        run: |
+          python analysis/v3/run_capitulum_hypervolume_geometry.py \
+            --correlations work/source/unpacked/results/capitulum_multiscale_endpoint_correlations.csv \
+            --contract ch1_global/v2/ontology/ch1_continuous_trait_contract.csv \
+            --out-dir work/results
+      - name: Upload hypervolume results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-capitulum-hypervolume-${{ github.run_id }}
+          path: work/results
+          retention-days: 30
