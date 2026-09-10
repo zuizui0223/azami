@@ -8,7 +8,7 @@ The workflow is continuous measurement -> biological trait definition -> complet
 
 The first executed step reorganizes the existing PR93 numerical results into 162 core rows (9 constructs x 9 predictors x 2 scales). Of these, 21 retain the original FDR support; 3 among-taxon rows pass the full declared sensitivity sequence: presentation angle–BIO12, floral chroma–radiation, and floral chroma–NPP. NPP remains exploratory, not a new frozen-v2 headline. No within-taxon core row passes the entire sampling/spatial sequence. These are inherited results, not independent replication. Correlated environmental predictors remain marginal associations.
 
-Whole-capitulum interpretation combines the gradient response map with PR93's separately established common-cohort integration; counting supported traits alone does not establish coordinated environmental response or a syndrome. A direct joint response test is not yet added.
+Whole-capitulum interpretation combines the gradient response map with PR93's separately established common-cohort integration; counting supported traits alone does not establish coordinated environmental response or a syndrome. The common-cohort omnibus extension below tests overall environmental association across constructs; none of its 18 tests passes the new FDR family.
 
 Numerical inputs were downloaded from Actions run `34418904597`, artifact `10130210432` (`ch1-v3-biological-axes-34418904597`). Public aggregate source tables and their hashes are saved with the generated outputs at `analysis_outputs/environment_first_20260910/`; no raw coordinates or reviewer replies are included. Scientific claims remain subject to the measurement and placement limitations documented below.
 
