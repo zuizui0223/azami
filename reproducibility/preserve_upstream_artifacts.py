@@ -18,11 +18,16 @@ def hash_file(path, algorithm='sha256'):
         for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
     return h.hexdigest()
 
-def preserve(draft, request, base, out):
+def preserve(draft, request, base, out, extra_only=False):
     source=json.loads(Path('reproducibility/actions_artifact_catalog.json').read_text(encoding='utf-8'))
     plan={r['artifact_id']:(r.get('verified_download_zip_sha256') or r.get('local_archive_sha256') or r.get('github_digest','').removeprefix('sha256:'),r['role'])
           for r in source['artifacts'] if r['artifact_id'] not in [9612943217,8227254443,8983877726,9632715852]}
     plan.update(EXTRA)
+    if extra_only:
+        plan={
+            8071529579:('ebcaab40fecc49a8515004a724c587717130b9531a89fa1f88f8e7c84f3953e4','pseudo_label_training_source'),
+            8069610715:('d6a706658c8735727caa25506a6d14828381457cb23c2d5e6a9b67d9352a2f39','early_grounding_dino_proposals'),
+            8077189280:('8aa211f5907dcb22fbdae287a892abeb3e84af6068f63ae8e44ae8d1c40c14b9','historical_zero_shot_CLIP_outputs_and_ontology')}
     # Large merged tables go last; preserve the acquisition/model packages first.
     order=sorted(plan,key=lambda aid:(aid==8269246732,aid))
     root=Path('work/zenodo-upstream');root.mkdir(parents=True,exist_ok=True)
@@ -82,11 +87,13 @@ def preserve(draft, request, base, out):
         report['artifacts'].append({**result,'artifact_id':aid,'role':role,'run':meta['workflow_run'],'members':members})
         (out/'upstream_progress.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
         print(f'Upstream artifact {aid}: upload and readback verified',flush=True)
-    catalog=root/'UPSTREAM_ARTIFACT_CATALOG.json'
+    catalog=root/('ML_HISTORY_ARTIFACT_CATALOG.json' if extra_only else 'UPSTREAM_ARTIFACT_CATALOG.json')
     catalog.write_text(json.dumps(report,indent=2),encoding='utf-8')
     upload(catalog)
     state=request(base);metadata=state['metadata'].copy()
-    metadata['description'] += ('<p>Upstream processing artifacts are additionally preserved: acquisition metadata and screening queue/images, '
+    metadata['description'] += ('<p>Earlier Grounding DINO pseudo-label and CLIP zero-shot artifacts are preserved separately in ML_HISTORY_ARTIFACT_CATALOG.json. '
+        'They document development history, not current continuous-trait inference. The external pretrained weights themselves are not included.</p>' if extra_only else
+        '<p>Upstream processing artifacts are additionally preserved: acquisition metadata and screening queue/images, '
         'the frozen detector package with best/last weights, dataset manifest and training diagnostics, historical trait outputs, '
         'exhaustive merged continuous measurements, and the uncompleted independent-audit materials. '
         'See UPSTREAM_ARTIFACT_CATALOG.json for exact source runs, member hashes and remaining gaps. '

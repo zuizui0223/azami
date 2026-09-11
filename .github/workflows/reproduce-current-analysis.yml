@@ -4,7 +4,7 @@ on:
     inputs:
       mode:
         type: choice
-        options: [inspect, update, upstream]
+        options: [inspect, update, upstream, ml-history]
         default: inspect
 permissions:
   contents: read
