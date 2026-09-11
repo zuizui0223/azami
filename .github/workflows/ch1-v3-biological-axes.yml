@@ -7,9 +7,8 @@ on:
       - 'analysis/v3/run_biological_axis_reanalysis.py'
       - 'analysis/v3/run_biological_axis_sensitivity_chain.py'
       - 'analysis/v3/run_construct_scale_integration.py'
+      - 'analysis/v3/run_construct_scale_integration_entrypoint.py'
       - 'analysis/v3/biological_trait_axis_contract_20260910.csv'
-      - 'analysis/v3/BIOLOGICAL_AXIS_REANALYSIS_PLAN_20260910.md'
-      - 'analysis/v3/SCALE_DEPENDENT_INTEGRATION_PLAN_20260910.md'
       - '.github/workflows/ch1-v3-biological-axes.yml'
   workflow_dispatch:
 
@@ -39,6 +38,7 @@ jobs:
             analysis/v3/run_biological_axis_reanalysis.py \
             analysis/v3/run_biological_axis_sensitivity_chain.py \
             analysis/v3/run_construct_scale_integration.py \
+            analysis/v3/run_construct_scale_integration_entrypoint.py \
             analysis/run_geb_v2_full27_spatial_sensitivity.py \
             analysis/run_geb_v2_full27_historical_sensitivity.py
 
@@ -125,7 +125,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p work/results/scale_integration
-          python -m analysis.v3.run_construct_scale_integration \
+          python -m analysis.v3.run_construct_scale_integration_entrypoint \
             --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
             --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
             --axis-among work/results/biological_axes_among_min5.csv \
