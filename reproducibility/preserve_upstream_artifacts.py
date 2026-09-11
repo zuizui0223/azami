@@ -90,6 +90,10 @@ def preserve(draft, request, base, out, extra_only=False):
     catalog=root/('ML_HISTORY_ARTIFACT_CATALOG.json' if extra_only else 'UPSTREAM_ARTIFACT_CATALOG.json')
     catalog.write_text(json.dumps(report,indent=2),encoding='utf-8')
     upload(catalog)
+    if extra_only:
+        note=root/'SOURCE_TO_ANALYSIS_README.txt'
+        note.write_bytes(Path('reproducibility/zenodo_upstream_readme.txt').read_bytes())
+        upload(note)
     state=request(base);metadata=state['metadata'].copy()
     metadata['description'] += ('<p>Earlier Grounding DINO pseudo-label and CLIP zero-shot artifacts are preserved separately in ML_HISTORY_ARTIFACT_CATALOG.json. '
         'They document development history, not current continuous-trait inference. The external pretrained weights themselves are not included.</p>' if extra_only else
