@@ -5,7 +5,7 @@ import importlib
 import pytest
 
 from reproducibility.run_current_analysis import commands, verified, native_bytes
-from reproducibility.validate_current_analysis import REFERENCE, compare, validate
+from reproducibility.validate_current_analysis import REFERENCE, compare, validate, active_scope
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -34,6 +34,10 @@ def test_verifier_fails_closed_and_detects_changed_results(tmp_path):
     with pytest.raises(AssertionError): compare({'beta':-.345},{'beta':.345})
     with pytest.raises(AssertionError): compare({'pass':False},{'pass':True})
     with pytest.raises(AssertionError): compare([1,2],[1])
+    # Retirement is limited to the two named historical fields, never estimates.
+    result=active_scope({'median_within_rv':.1,'integration_environment_coupling':{}},
+                        'upgrade/construct_scale_upgrade_report.json')
+    assert result=={'median_within_rv':.1}
 
 
 def test_legacy_paths_are_explicit_and_complete():

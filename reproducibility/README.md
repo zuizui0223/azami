@@ -4,6 +4,8 @@
 
 Use [CURRENT_ANALYSIS.md](CURRENT_ANALYSIS.md). The entry point is `python -m reproducibility.run_current_analysis`. It verifies exact frozen input identities and runs existing models without changing the source cohort, construct definitions, predictors, random seeds or test families.
 
+The [2026-09-11 local execution receipt](current_replay_execution.json) records all seven numerical stages, input verification and a [15-file current-scope numerical comparison](current_replay_validation.json). This is an actual numerical replay, distinct from tests that only inspect file presence and distinct from a new public Zenodo release.
+
 Numerical reproduction begins with frozen measurements, not mutable source photographs. Repeating image acquisition and measurement from scratch is a distinct upstream task: the model, acquisition and measurement provenance is retained under `legacy/ch1_global/v2/` and [actions_artifact_catalog.json](actions_artifact_catalog.json). The numerical package must not be described as a complete, permanent archive of every original photograph or as an independent physical-trait validation.
 
 ## Frozen v2 reproduction

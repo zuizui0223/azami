@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "reference_commit": "fe25abd46e7235c85e6da191f976e1c8a02d0406",
+  "aggregate_files_compared": 15,
+  "files": [
+    "axes/biological_axes_among_min5.csv",
+    "axes/biological_axes_report.json",
+    "axes/biological_axes_within.csv",
+    "sensitivity/biological_axis_sensitivity_chain_report.json",
+    "sensitivity/historical/biological_axis_historical_summary.csv",
+    "sensitivity/spatial/biological_axis_spatial.csv",
+    "integration/construct_scale_integration_report.json",
+    "upgrade/complete18_construct_integration_among.csv",
+    "upgrade/complete18_construct_integration_within.csv",
+    "upgrade/complete18_construct_pairwise.csv",
+    "upgrade/complete18_taxon_bootstrap.csv",
+    "upgrade/construct_scale_contrast_summary.json",
+    "upgrade/construct_scale_upgrade_report.json",
+    "assessability/assessability_selection_report.json",
+    "technical_stress/frozen_technical_error_stress_report.json"
+  ],
+  "numerical_tolerance": {
+    "relative": 1e-08,
+    "absolute": 1e-10
+  },
+  "retired_artifact_fields_not_in_current_main": {
+    "integration/construct_scale_integration_report.json": [
+      "environment_signature_alignment"
+    ],
+    "upgrade/construct_scale_upgrade_report.json": [
+      "integration_environment_coupling"
+    ]
+  },
+  "historical_wording_normalization": "Only the known upgrade claim_boundary wording is mapped to its fe25abd wording; no numerical value is normalized.",
+  "scope": "Numerical replay of existing models; not independent biological validation or public archive certification"
+}

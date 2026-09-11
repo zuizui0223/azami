@@ -13,6 +13,10 @@ python -m reproducibility.run_current_analysis --download
 
 The runner verifies ZIPs and extracted files, runs all seven existing numerical steps with unchanged seeds/counts, and compares 15 aggregate outputs with the byte-verified original references. Results and logs go under ignored `work/current/`. A successful run ends in `work/current/results/validation.json` with `status: PASS`. A missing input or discrepancy stops the run. `--prepare-only` verifies inputs without claiming numerical completion.
 
+Two fields in the older archived JSON reports were already removed from scientific main `fe25abd`: the pairwise report's `environment_signature_alignment` and the common-cohort report's `integration_environment_coupling`. The validator explicitly excludes those retired fields and reports their names; all current fields and archived CSV values are compared. The original artifact bytes are preserved, and these retired analyses are not restored or presented as current results.
+
+The upgrade report's known historical `claim_boundary` wording is mapped to its already-edited `fe25abd` wording for comparison. No other prose or numerical value is normalized. This is numerical equivalence for the current scope, not byte-for-byte identity of regenerated reports with older artifacts.
+
 The detailed commands below describe the original merged scientific revision. They remain useful for inspecting individual stages; use the single current runner above for the cleaned layout. Frozen endpoint implementations have moved to `legacy/` and are not alternative current entry points.
 
 ## Original merged scientific revision and detailed stages

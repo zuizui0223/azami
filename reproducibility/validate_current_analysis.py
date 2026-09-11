@@ -9,6 +9,26 @@ from pathlib import Path
 
 REFERENCE = Path(__file__).resolve().parent/'current_reference'
 
+# These artifact fields had already been retired from fe25abd, before cleanup.
+# Full artifact bytes remain archived. Do not restore retired analyses merely
+# to match an older report schema; validate the exact current scientific scope.
+RETIRED_ARCHIVED_FIELDS = {
+    'integration/construct_scale_integration_report.json': ['environment_signature_alignment'],
+    'upgrade/construct_scale_upgrade_report.json': ['integration_environment_coupling'],
+}
+
+
+def active_scope(payload, relative):
+    if relative not in RETIRED_ARCHIVED_FIELDS:
+        return payload
+    scoped={k:v for k,v in payload.items() if k not in RETIRED_ARCHIVED_FIELDS[relative]}
+    # A documented wording edit in scientific main, not a numerical change.
+    if relative=='upgrade/construct_scale_upgrade_report.json' and scoped.get('claim_boundary') == (
+        'secondary construct-level synthesis only; frozen v2 endpoint conclusions and multiplicity families unchanged'
+    ):
+        scoped['claim_boundary']='construct-level synthesis used by the current manuscript; frozen v2 endpoint conclusions and multiplicity families unchanged'
+    return scoped
+
 
 def compare(expected, actual, path='root'):
     if isinstance(expected, dict):
@@ -53,11 +73,13 @@ def validate(results):
         actual=results/row['path']
         if not actual.is_file():
             raise FileNotFoundError(actual)
-        compare(load(ref),load(actual),row['path'])
+        compare(active_scope(load(ref),row['path']),active_scope(load(actual),row['path']),row['path'])
         checked.append(row['path'])
     return {'status':'PASS','reference_commit':manifest['scientific_reference_commit'],
             'aggregate_files_compared':len(checked),'files':checked,
             'numerical_tolerance':{'relative':1e-8,'absolute':1e-10},
+            'retired_artifact_fields_not_in_current_main':RETIRED_ARCHIVED_FIELDS,
+            'historical_wording_normalization':'Only the known upgrade claim_boundary wording is mapped to its fe25abd wording; no numerical value is normalized.',
             'scope':'Numerical replay of existing models; not independent biological validation or public archive certification'}
 
 
