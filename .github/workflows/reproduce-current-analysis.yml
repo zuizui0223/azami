@@ -1,31 +1,33 @@
-name: Reproduce current Chapter 1 analysis
+name: Zenodo 22703215 draft maintenance (branch only)
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [inspect, update]
+        default: inspect
 permissions:
   contents: read
-  actions: read
 jobs:
-  reproduce:
+  draft:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
-    env:
-      OPENBLAS_NUM_THREADS: '1'
-      OMP_NUM_THREADS: '1'
-      GH_TOKEN: ${{ github.token }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install -r reproducibility/requirements-current.txt
-      - run: python -m reproducibility.run_current_analysis --download
-      - name: Save numerical replay evidence
+      - name: Inspect or update only the specified unpublished draft
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_MODE: ${{ inputs.mode }}
+        run: python reproducibility/maintain_zenodo_draft.py
+      - name: Save draft receipt
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: current-numerical-replay-${{ github.run_id }}
-          path: |
-            work/current/results/**
-            work/current/inputs/verified_inputs.json
+          name: zenodo-draft-receipt-${{ github.run_id }}
+          path: work/zenodo-receipt/*.json
           retention-days: 30
-          if-no-files-found: error
+          if-no-files-found: ignore
