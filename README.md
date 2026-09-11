@@ -64,20 +64,20 @@ Persistent public reproducibility workflows:
 - `.github/workflows/reproducibility-integrity.yml` — checks frozen contracts, provenance, repository layout and live entry points.
 - `.github/workflows/rebuild-frozen-figures.yml` — rebuilds and verifies the frozen v2 figure set in scratch space.
 
-One-off reviewer-defense workflows that do not feed the current v3 synthesis are intentionally removed from the active branch. Their commits and outputs remain recoverable from Git history. Earlier detector bootstrap/recovery, categorical AI/classifier, queue-building and exploratory submission workflows remain historical provenance only and are preserved through immutable tag `azami-ch1-v2-2026-08-27` and branch `archive/ch1-precleanup-20260827` rather than restored to the active submission surface.
+One-off reviewer-defense workflows that do not feed the current v3 synthesis are intentionally removed from the active main surface. Their commits and outputs remain recoverable from Git history. Earlier detector bootstrap/recovery, categorical AI/classifier, queue-building and exploratory submission workflows remain historical provenance only and are preserved through immutable tag `azami-ch1-v2-2026-08-27` and branch `archive/ch1-precleanup-20260827` rather than restored to the active submission surface.
 
 ## Quick Chapter 1 v3 reproduction
 
 Chapter 1 v3 is a higher-level synthesis layered on the frozen v2 measurements. It does **not** retrain the detector, redownload photographs, or rerun the retired categorical classifier. The v3 workflows begin from frozen v2 trait/environment artifacts and reproduce the construct-level analyses, scale comparisons and technical/selection audits.
 
-Unlike the frozen v2 public bundle below, v3 is currently the active PR #93 analysis branch rather than a separately frozen public release. For an exact reproduction of the current v3 state, use the branch and the byte-verified source artifacts listed here.
+The v3 synthesis was merged from PR #93 into `main`. For an exact reproduction of the merged v3 analysis surface, use merge commit `477fd73fc8ebcbad5603775cc0dc980c418c6268` together with the byte-verified source artifacts listed here.
 
-### 1. Check out the current v3 analysis branch
+### 1. Check out the merged v3 analysis surface
 
 ```bash
 git clone https://github.com/zuizui0223/azami.git
 cd azami
-git checkout analysis/ch1-v3-biological-axes-20260910
+git checkout 477fd73fc8ebcbad5603775cc0dc980c418c6268
 ```
 
 Use Python 3.12. The four active v3 workflows pin the numerical runtime to:
@@ -418,23 +418,3 @@ Finally run the repository integrity checks described in the runbook. The same i
 Prepared public-deposition metadata is retained in [`reproducibility/zenodo_metadata.json`](reproducibility/zenodo_metadata.json), and the author-side publication/clean-session verification procedure is [`reproducibility/PUBLIC_DATA_RELEASE.md`](reproducibility/PUBLIC_DATA_RELEASE.md).
 
 The five frozen CHELSA v2.1 process rasters may optionally be cached for a fully offline rerun. If they are not locally cached, their exact public URLs remain frozen in the source registry and the reconstructed nine-predictor environment must match the SHA-256 shown above.
-
-## Owner-side recovery status
-
-Separately from public distribution, the source artifacts are durably preserved in owner-controlled storage, and the complete pre-cleanup scientific tree remains permanently recoverable from immutable tag `azami-ch1-v2-2026-08-27` and branch `archive/ch1-precleanup-20260827`. These preservation locations are recovery infrastructure, not the public third-party distribution endpoint.
-
-## Tracked scientific material
-
-- `ch1_global/v2/` — image collection, screening, measurement, QC and historical-analysis implementation.
-- `analysis/` — statistical analyses, sensitivity analyses and figure-generation code.
-- `analysis/ch1/` — frozen analysis contracts and registries needed to define the estimands.
-- `analysis/v3/` — biological-construct synthesis, robustness analyses and immutable run receipts layered on the frozen v2 measurements.
-- `analysis_outputs/` — frozen machine-readable result tables and validation reports.
-- `reproducibility/figures/` — generated result figures together with source/provenance material required to rebuild them.
-- `reproducibility/contracts/` — compact trait definitions needed to reproduce measurement/analysis decisions.
-- `reproducibility/public_release_manifest.json` — public third-party release gate, minimum input hashes, Zenodo identity and frozen code ref.
-- `reproducibility/material_availability.json` — public/private/external material boundary.
-- `reproducibility/recovery_inventory.json` — owner recovery completeness and separate public-release status.
-- `reproducibility/durable_archive_manifest.json` — owner-side preservation identities and reassembly contract.
-- `tests/` — regression and invariant tests.
-- `src/azami_ch1/` — reusable utilities.
