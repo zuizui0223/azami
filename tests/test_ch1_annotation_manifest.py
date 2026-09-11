@@ -10,9 +10,9 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_SCRIPT = ROOT / "ch1_global" / "v2" / "00_build_annotation_manifest.py"
-PACKET_SCRIPT = ROOT / "ch1_global" / "v2" / "01_build_blinded_annotation_packets.py"
-AGREEMENT_SCRIPT = ROOT / "ch1_global" / "v2" / "02_compile_double_annotations.py"
+MANIFEST_SCRIPT = ROOT / "legacy" / "ch1_global" / "v2" / "00_build_annotation_manifest.py"
+PACKET_SCRIPT = ROOT / "legacy" / "ch1_global" / "v2" / "01_build_blinded_annotation_packets.py"
+AGREEMENT_SCRIPT = ROOT / "legacy" / "ch1_global" / "v2" / "02_compile_double_annotations.py"
 FIXTURE = ROOT / "tests" / "fixtures" / "ch1_crop_metadata_small.csv"
 
 MANIFEST_ARGS = [

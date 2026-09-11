@@ -1,0 +1,166 @@
+name: Chapter 1 v3 biological trait axes
+
+on:
+  push:
+    branches: [analysis/ch1-v3-biological-axes-20260910]
+    paths:
+      - 'analysis/v3/run_biological_axis_reanalysis.py'
+      - 'analysis/v3/run_biological_axis_sensitivity_chain.py'
+      - 'analysis/v3/run_construct_scale_integration.py'
+      - 'analysis/v3/run_construct_scale_integration_entrypoint.py'
+      - 'analysis/v3/biological_trait_axis_contract_20260910.csv'
+      - '.github/workflows/ch1-v3-biological-axes.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  biological-axes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install numerical and historical runtime
+        run: |
+          python -m pip install pandas==3.0.5 numpy==2.4.6 statsmodels==0.14.6 scipy==1.17.1 'biopython>=1.83,<2'
+          python -m py_compile \
+            analysis/v3/run_biological_axis_reanalysis.py \
+            analysis/v3/run_biological_axis_sensitivity_chain.py \
+            analysis/v3/run_construct_scale_integration.py \
+            analysis/v3/run_construct_scale_integration_entrypoint.py \
+            legacy/v2/analysis/run_geb_v2_full27_spatial_sensitivity.py \
+            legacy/v2/analysis/run_geb_v2_full27_historical_sensitivity.py
+
+      - name: Recover frozen 22-endpoint trait universe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/continuous
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/continuous.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/continuous.zip' | sha256sum -c -
+          unzip -q work/continuous.zip 'universe/continuous_trait_universe_observation_long.csv' -d work/continuous
+          echo 'd775794f2bce2dfd0c1f63c5c8e01778c518f6eeb327bf0d9944045143a02344  work/continuous/universe/continuous_trait_universe_observation_long.csv' | sha256sum -c -
+
+      - name: Recover frozen nine-predictor environment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/environment
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9633419268/zip > work/environment.zip
+          echo 'd7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4  work/environment.zip' | sha256sum -c -
+          unzip -q work/environment.zip 'process_environment/strict_spatial_chelsa_process.csv' -d work/environment
+          echo 'f86a3418e9b21453026bba1aaf350b061f03048949547e2092602620af98cbf6  work/environment/process_environment/strict_spatial_chelsa_process.csv' | sha256sum -c -
+
+      - name: Recover frozen sampling lookups
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/sampling
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8983877726/zip > work/regions.zip
+          echo '151161f926dbc92d35832a0bd71622e4f1f3018c9047a7ba8b4ad94926273dca  work/regions.zip' | sha256sum -c -
+          unzip -q work/regions.zip 'spatial_regions/broad_region_lookup.csv' -d work/sampling
+          cp work/sampling/spatial_regions/broad_region_lookup.csv work/sampling/broad_region_lookup.csv
+          echo '085c4e8d45ceb34d32c6c961675ce74a4f0a33580f6cdd8ecd2ff1800a6364ff  work/sampling/broad_region_lookup.csv' | sha256sum -c -
+          git fetch --no-tags --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
+          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/sampling/observation_native_status.raw.csv
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          src=Path('work/sampling/observation_native_status.raw.csv').read_bytes()
+          expected='c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a'
+          lf=src.replace(b'\r\n',b'\n')
+          candidates=[('raw',src),('lf',lf),('crlf',lf.replace(b'\n',b'\r\n'))]
+          for label,data in candidates:
+              digest=hashlib.sha256(data).hexdigest()
+              print(label,digest)
+              if digest==expected:
+                  Path('work/sampling/observation_native_status.csv').write_bytes(data)
+                  print('NATIVE_STATUS_TRANSPORT_NORMALIZATION='+label)
+                  break
+          else:
+              raise SystemExit('native-status content does not match frozen SHA under LF/CRLF transport normalization')
+          PY
+          echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/sampling/observation_native_status.csv' | sha256sum -c -
+
+      - name: Recover frozen 52 historical placement trees
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/historical
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/8227254443/zip > work/historical.zip
+          echo '499061e7a49f9455cf8c367fe26e313b7e0e33b2280d2354717e61a90ea8c6bc  work/historical.zip' | sha256sum -c -
+          unzip -q work/historical.zip -d work/historical
+          echo '8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92  work/historical/historical_trees/gbotb_lcvp_scenario1.tre' | sha256sum -c -
+          echo '82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af  work/historical/historical_trees/gbotb_lcvp_scenario2_randomized.trees' | sha256sum -c -
+          echo '8ef5d5ea5f4e0c2f166071244a838cae77a0fe582817d729bba0b36f6b5ccd92  work/historical/historical_trees/gbotb_lcvp_scenario3.tre' | sha256sum -c -
+
+      - name: Run reduced biological-construct analysis
+        run: |
+          set -euo pipefail
+          mkdir -p work/results
+          python -m analysis.v3.run_biological_axis_reanalysis \
+            --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
+            --out-dir work/results \
+            --permutations 9999 \
+            --seed 20260910 | tee work/results/run.log
+          test -s work/results/biological_axes_report.json
+
+      - name: Test scale-dependent construct integration
+        run: |
+          set -euo pipefail
+          mkdir -p work/results/scale_integration
+          python -m analysis.v3.run_construct_scale_integration_entrypoint \
+            --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
+            --axis-among work/results/biological_axes_among_min5.csv \
+            --axis-within work/results/biological_axes_within.csv \
+            --out-dir work/results/scale_integration \
+            --minimum-paired-observations-per-taxon 5 \
+            --minimum-taxa 20 \
+            --qap-permutations 9999 \
+            --seed 20260910 | tee work/results/scale_integration/run.log
+          test -s work/results/scale_integration/construct_scale_integration_report.json
+
+      - name: Reapply v2 sampling spatial historical sequence to constructs
+        run: |
+          set -euo pipefail
+          mkdir -p work/results/sensitivity_chain
+          python -m analysis.v3.run_biological_axis_sensitivity_chain \
+            --traits work/continuous/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/environment/process_environment/strict_spatial_chelsa_process.csv \
+            --axis-among work/results/biological_axes_among_min5.csv \
+            --axis-within work/results/biological_axes_within.csv \
+            --regions work/sampling/broad_region_lookup.csv \
+            --native-status work/sampling/observation_native_status.csv \
+            --tree-dir work/historical/historical_trees \
+            --out-dir work/results/sensitivity_chain \
+            --spatial-permutations 999 \
+            --moran-permutations 999 \
+            --minimum-taxa-historical 30 \
+            --seed 20260910 | tee work/results/sensitivity_chain/run.log
+          test -s work/results/sensitivity_chain/biological_axis_sensitivity_chain_report.json
+
+      - name: Upload biological-axis outputs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ch1-v3-biological-axes-${{ github.run_id }}
+          path: work/results/**
+          if-no-files-found: error
+          retention-days: 30

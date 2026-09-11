@@ -57,3 +57,8 @@ results/
 Thumbs.db
 .vscode/
 .idea/
+graphify-out/
+work/
+# Keep bytecode out even beneath the explicit reproducibility allowlist.
+__pycache__/
+*.py[cod]

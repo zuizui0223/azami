@@ -1,0 +1,4 @@
+construct_id,kind,predictor,n_successful_placement_trees,n_placement_trees_p_lt_0_05,minimum_p_value,maximum_p_value,lambda_min,lambda_max,direction_stable_across_trees,historical_placement_sensitivity_pass
+floral_chroma,scalar,chelsa_npp,52,52,0.002080120512982032,0.0039934135576162435,0.0,0.21219242673095112,True,True
+floral_chroma,scalar,chelsa_rsds_mean,52,52,2.3942689038286767e-05,2.3942689038287367e-05,0.0,0.0,True,True
+presentation_angle,scalar,chelsa_bio12,52,52,0.00020130529312165608,0.0002308997902819049,0.0,0.05369034944224487,True,True

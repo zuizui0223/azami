@@ -12,7 +12,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "ch1_global" / "v2" / "08_summarize_metadata_collection.py"
+SCRIPT = ROOT / "legacy" / "ch1_global" / "v2" / "08_summarize_metadata_collection.py"
 SPEC = importlib.util.spec_from_file_location("ch1_collection_qc_report", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 REPORT = importlib.util.module_from_spec(SPEC)

@@ -1,0 +1,114 @@
+{
+  "analysis_id": "ch1_v3_construct_scale_integration_20260910",
+  "source_endpoint_scope": "frozen_v2_complete18_non_surface_endpoints",
+  "constructs": [
+    "presentation_angle",
+    "floral_lightness",
+    "floral_chroma",
+    "floral_hue",
+    "head_elongation",
+    "head_compactness",
+    "involucre_form",
+    "projection_prominence",
+    "projection_pattern"
+  ],
+  "n_constructs": 9,
+  "n_pairwise_relations": 36,
+  "pairwise_cohort_rule": "same paired observations and taxa at both scales; >=5 paired observations per taxon; >=20 taxa",
+  "within_rule": "taxon-centred construct components with equal total weight per taxon",
+  "among_rule": "taxon medians on the exact same pairwise observation scope",
+  "integration_metric": "RV_coefficient",
+  "matrix_alignment": {
+    "spearman_upper_triangle": 0.37477477477477483,
+    "qap_p_value_one_sided": 0.0131,
+    "qap_permutations": 9999,
+    "qap_null_mean": 0.0019954891242019964,
+    "qap_null_low_95": -0.3178893178893179,
+    "qap_null_high_95": 0.32947232947232946
+  },
+  "median_within_taxon_rv": 0.0023519392643043865,
+  "median_among_taxon_rv": 0.03703100576378106,
+  "n_relations_stronger_among_than_within": 30,
+  "top_among_strengthening_relations": [
+    {
+      "construct_left": "floral_chroma",
+      "construct_right": "floral_hue",
+      "within_taxon_rv": 0.06257057009510024,
+      "among_taxon_rv": 0.3576950656802202,
+      "delta_among_minus_within": 0.29512449558511994
+    },
+    {
+      "construct_left": "floral_lightness",
+      "construct_right": "floral_hue",
+      "within_taxon_rv": 0.10894932612088001,
+      "among_taxon_rv": 0.39644851141318094,
+      "delta_among_minus_within": 0.2874991852923009
+    },
+    {
+      "construct_left": "floral_chroma",
+      "construct_right": "projection_prominence",
+      "within_taxon_rv": 2.1201796030208495e-05,
+      "among_taxon_rv": 0.24907700607442948,
+      "delta_among_minus_within": 0.24905580427839927
+    },
+    {
+      "construct_left": "floral_lightness",
+      "construct_right": "floral_chroma",
+      "within_taxon_rv": 0.09809472513921919,
+      "among_taxon_rv": 0.21273120086196007,
+      "delta_among_minus_within": 0.11463647572274088
+    },
+    {
+      "construct_left": "floral_lightness",
+      "construct_right": "projection_pattern",
+      "within_taxon_rv": 0.0008962946799570724,
+      "among_taxon_rv": 0.10814948729657815,
+      "delta_among_minus_within": 0.10725319261662108
+    }
+  ],
+  "top_within_strengthening_relations": [
+    {
+      "construct_left": "projection_prominence",
+      "construct_right": "projection_pattern",
+      "within_taxon_rv": 0.30379498117997195,
+      "among_taxon_rv": 0.15441245540110643,
+      "delta_among_minus_within": -0.14938252577886552
+    },
+    {
+      "construct_left": "involucre_form",
+      "construct_right": "projection_prominence",
+      "within_taxon_rv": 0.039634408253090996,
+      "among_taxon_rv": 0.01757707241391456,
+      "delta_among_minus_within": -0.022057335839176434
+    },
+    {
+      "construct_left": "floral_lightness",
+      "construct_right": "head_compactness",
+      "within_taxon_rv": 0.009923682445896014,
+      "among_taxon_rv": 0.000233875858082623,
+      "delta_among_minus_within": -0.00968980658781339
+    },
+    {
+      "construct_left": "floral_hue",
+      "construct_right": "head_compactness",
+      "within_taxon_rv": 0.002212055269640336,
+      "among_taxon_rv": 0.00014025536098748604,
+      "delta_among_minus_within": -0.00207179990865285
+    },
+    {
+      "construct_left": "head_compactness",
+      "construct_right": "projection_prominence",
+      "within_taxon_rv": 0.0017140676546036522,
+      "among_taxon_rv": 0.0006365858370739536,
+      "delta_among_minus_within": -0.0010774818175296986
+    }
+  ],
+  "environment_signature_alignment": {
+    "constructs_compared": 9,
+    "same_strongest_predictor_constructs": 0,
+    "row_normalized_signature_spearman_flattened": 0.009327009936766033,
+    "row_normalized_signature_cosine_flattened": 0.7175873778128432,
+    "interpretation": "descriptive_only_correlated_environment_predictors_no_predictor_label_null"
+  },
+  "claim_boundary": "construct-level scale-dependent integration synthesis; not functional/genetic modularity, not plasticity, and not an independent causal environmental analysis"
+}

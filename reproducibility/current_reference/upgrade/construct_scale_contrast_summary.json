@@ -1,0 +1,24 @@
+{
+  "analysis_id": "ch1_v3_construct_scale_contrast_summary_20260910",
+  "claim_boundary": "secondary direct scale contrast from the existing complete-18 taxon bootstrap; frozen v2 endpoint conclusions, multiplicity families and headline candidates unchanged",
+  "observed": {
+    "relations": 36,
+    "median_within_rv": 0.0022379035408083498,
+    "median_among_rv": 0.04321225977354865,
+    "difference_of_medians_among_minus_within": 0.0409743562327403,
+    "median_pairwise_delta_among_minus_within": 0.0314306463720116,
+    "relations_stronger_among": 33
+  },
+  "taxon_bootstrap": {
+    "replicates": 1000,
+    "difference_of_median_rv_median": 0.06592780747206464,
+    "difference_of_median_rv_low95": 0.038196843502664383,
+    "difference_of_median_rv_high95": 0.11904771743362041,
+    "probability_median_among_exceeds_within": 1.0,
+    "relations_stronger_among_median": 32.0,
+    "relations_stronger_among_low95": 29.0,
+    "relations_stronger_among_high95": 34.0,
+    "probability_majority_of_relations_stronger_among": 1.0
+  },
+  "interpretation": "This quantifies the scale contrast already visible in the common-cohort matrices. It supports stronger visible-phenotype integration among taxa if the bootstrap difference remains positive, but does not identify evolutionary, developmental, genetic or causal mechanisms for that difference."
+}

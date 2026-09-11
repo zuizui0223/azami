@@ -13,7 +13,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V2_DIR = ROOT / "ch1_global" / "v2"
+V2_DIR = ROOT / "legacy" / "ch1_global" / "v2"
 
 
 def load_module(filename: str, name: str):

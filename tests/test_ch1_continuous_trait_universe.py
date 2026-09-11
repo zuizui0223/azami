@@ -21,7 +21,7 @@ except ModuleNotFoundError:
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V2 = ROOT / "ch1_global" / "v2"
+V2 = ROOT / "legacy" / "ch1_global" / "v2"
 CONTRACT = V2 / "ontology" / "ch1_continuous_trait_contract.csv"
 
 

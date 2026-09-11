@@ -1,0 +1,31 @@
+name: Reproduce current Chapter 1 analysis
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r reproducibility/requirements-current.txt
+      - run: python -m reproducibility.run_current_analysis --download
+      - name: Save numerical replay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: current-numerical-replay-${{ github.run_id }}
+          path: |
+            work/current/results/**
+            work/current/inputs/verified_inputs.json
+          retention-days: 30
+          if-no-files-found: error

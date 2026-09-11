@@ -6,7 +6,7 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST = ROOT / "ch1_global" / "v2" / "ANALYSIS_MANIFEST.tsv"
+MANIFEST = ROOT / "legacy" / "ch1_global" / "v2" / "ANALYSIS_MANIFEST.tsv"
 CATALOG = ROOT / "reproducibility" / "actions_artifact_catalog.json"
 RECOVERY_INVENTORY = ROOT / "reproducibility" / "recovery_inventory.json"
 DURABLE_ARCHIVE = ROOT / "reproducibility" / "durable_archive_manifest.json"
@@ -36,14 +36,14 @@ def test_manifest_contains_current_reproducibility_entrypoints() -> None:
     rows = load_rows()
     by_stage = {row["stage"]: row for row in rows}
     required = {
-        "canonical_rebuild_runner": "analysis/rebuild_frozen_analysis.py",
-        "broad_region_lookup": "analysis/rebuild_frozen_broad_region_lookup.py",
-        "broad_region_assignment_builder": "analysis/build_naturalearth_broad_region_lookup.py",
-        "native_status_rebuild": "analysis/rebuild_frozen_native_status.py",
+        "canonical_rebuild_runner": "legacy/v2/analysis/rebuild_frozen_analysis.py",
+        "broad_region_lookup": "legacy/v2/analysis/rebuild_frozen_broad_region_lookup.py",
+        "broad_region_assignment_builder": "legacy/v2/analysis/build_naturalearth_broad_region_lookup.py",
+        "native_status_rebuild": "legacy/v2/analysis/rebuild_frozen_native_status.py",
         "native_status_contract": "analysis/ch1/native_range_sensitivity_contract.json",
         "frozen_python_environment": "reproducibility/frozen-numerical-rebuild-requirements.txt",
-        "full27_atlas": "analysis/run_geb_v2_full27_environment_atlas.py",
-        "full27_validation": "analysis/validate_geb_v2_full27_environment_atlas.py",
+        "full27_atlas": "legacy/v2/analysis/run_geb_v2_full27_environment_atlas.py",
+        "full27_validation": "legacy/v2/analysis/validate_geb_v2_full27_environment_atlas.py",
         "figure_rebuild": ".github/workflows/rebuild-frozen-figures.yml",
         "integrity_ci": ".github/workflows/reproducibility-integrity.yml",
         "source_artifact_catalog": "reproducibility/actions_artifact_catalog.json",

@@ -1,0 +1,14 @@
+{
+  "analysis_id": "ch1_v3_biological_construct_v2_sensitivity_chain_20260910",
+  "starting_constructs_inferential": 10,
+  "among_fdr_rows_entered_sampling": 12,
+  "within_fdr_rows_entered_sampling": 9,
+  "sampling_pairs_stable_all": 18,
+  "spatial_among_entered": 12,
+  "spatial_among_passed": 3,
+  "spatial_within_entered": 9,
+  "spatial_within_passed": 0,
+  "historical_pairs_entered": 3,
+  "historical_pairs_passed": 3,
+  "claim_boundary": "construct-level robustness layer only; frozen v2 endpoint-level conclusions remain canonical"
+}

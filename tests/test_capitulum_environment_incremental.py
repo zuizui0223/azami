@@ -18,8 +18,8 @@ def load_module(name: str, relative: str):
     return module
 
 
-INC = load_module("cap_env_incremental", "analysis/run_capitulum_environment_incremental.py")
-COHORT = load_module("cap_env_cohort", "analysis/build_capitulum_environment_cohort.py")
+INC = load_module("cap_env_incremental", "legacy/v2/analysis/run_capitulum_environment_incremental.py")
+COHORT = load_module("cap_env_cohort", "legacy/v2/analysis/build_capitulum_environment_cohort.py")
 
 
 class CapitulumEnvironmentIncrementalTests(unittest.TestCase):
