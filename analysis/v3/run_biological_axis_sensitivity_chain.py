@@ -24,8 +24,8 @@ import numpy as np
 import pandas as pd
 
 from analysis.v3 import run_biological_axis_reanalysis as bio
-import analysis.run_geb_v2_full27_spatial_sensitivity as spatial_v2
-import analysis.run_geb_v2_full27_historical_sensitivity as hist_v2
+import legacy.v2.analysis.run_geb_v2_full27_spatial_sensitivity as spatial_v2
+import legacy.v2.analysis.run_geb_v2_full27_historical_sensitivity as hist_v2
 
 
 def parse_args() -> argparse.Namespace:

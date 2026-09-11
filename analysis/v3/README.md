@@ -2,7 +2,7 @@
 
 ## Canonical boundary
 
-The frozen Chapter 1 **v2 remains the canonical endpoint-level analysis**. This directory does not replace its endpoint atlas, multiplicity families, public reproduction bundle, or two manuscript-level headline ecological conclusions.
+This directory is the current construct-level analysis surface. It starts from the frozen v2 measurements and retains the endpoint atlas as a separately labelled baseline; it does not overwrite the endpoint-level test families or historical public release. Historical implementations and entry points are under [`legacy/`](../../legacy/README.md). Start current execution from the [single numerical runbook](../../reproducibility/CURRENT_ANALYSIS.md).
 
 The v3 work asks a higher-level question using the same frozen measured endpoints:
 

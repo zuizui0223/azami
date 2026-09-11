@@ -9,8 +9,8 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "analysis" / "run_geb_v2_full27_environment_atlas.py"
-CONTRACT = ROOT / "ch1_global" / "v2" / "ontology" / "ch1_continuous_trait_contract.csv"
+SCRIPT = ROOT / "legacy" / "v2" / "analysis" / "run_geb_v2_full27_environment_atlas.py"
+CONTRACT = ROOT / "legacy" / "ch1_global" / "v2" / "ontology" / "ch1_continuous_trait_contract.csv"
 ANALYSIS_CONTRACT = ROOT / "analysis" / "ch1" / "v2_full27_environment_atlas_contract.json"
 
 

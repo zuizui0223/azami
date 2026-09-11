@@ -1,0 +1,40 @@
+{
+  "analysis_id": "ch1_v3_frozen_technical_error_stress_20260910",
+  "headline": "presentation_angle_x_annual_precipitation",
+  "endpoint": "orientation_image_vertical_angle",
+  "predictor": "chelsa_bio12",
+  "eligible_taxa": 142,
+  "available_orientation_observations_in_eligible_taxa": 37042,
+  "unperturbed_beta": 0.3043592858977514,
+  "frozen_beta_reference": 0.30435928589775146,
+  "stress_scenarios": [
+    {
+      "scenario": "mirror_p95_calibrated_random_stress",
+      "calibration_absolute_error_p95_degrees": 4.67,
+      "simulation_sigma_degrees": 2.3826968438381337,
+      "replicates": 2000,
+      "beta_median": 0.3029390086955348,
+      "beta_low95": 0.2884794021882732,
+      "beta_high95": 0.31642017265572203,
+      "sign_retention_fraction": 1.0,
+      "positive_fraction": 1.0,
+      "median_effect_ratio_to_unperturbed": 0.99533355061592,
+      "interpretation": "synthetic independent symmetric stress envelope, not an empirical error distribution"
+    },
+    {
+      "scenario": "five_percent_bbox_shift_p95_calibrated_severe_stress",
+      "calibration_absolute_error_p95_degrees": 54.1,
+      "simulation_sigma_degrees": 27.60254801962378,
+      "replicates": 2000,
+      "beta_median": 0.2548074721428658,
+      "beta_low95": 0.15497435097145096,
+      "beta_high95": 0.3518022012339899,
+      "sign_retention_fraction": 1.0,
+      "positive_fraction": 1.0,
+      "median_effect_ratio_to_unperturbed": 0.837193027941548,
+      "interpretation": "synthetic independent symmetric stress envelope, not an empirical error distribution"
+    }
+  ],
+  "colour_chroma_status": "quantitative error propagation not executed because the frozen audit preserves no numeric colour error distribution",
+  "claim_boundary": "post-hoc synthetic technical stress; does not address systematic camera roll, environment-dependent measurement error, detector-bbox selection, gravity accuracy, or biological validation; frozen v2 inference unchanged"
+}

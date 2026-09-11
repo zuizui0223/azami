@@ -1,0 +1,184 @@
+{
+  "analysis_id": "ch1_v3_biological_axis_reanalysis_20260910",
+  "starting_measured_endpoints": 22,
+  "constructs": 11,
+  "testable_among_constructs": 10,
+  "testable_within_constructs": 10,
+  "among_tests": 90,
+  "within_tests": 90,
+  "among_fdr_hits": 12,
+  "within_fdr_hits": 9,
+  "among_hits": [
+    {
+      "construct_id": "presentation_angle",
+      "predictor": "chelsa_bio12",
+      "beta_std": 0.30435928589775146,
+      "effect_magnitude": 0.30435928589775146,
+      "p_value": 0.0002,
+      "q_bh": 0.0036000000000000003
+    },
+    {
+      "construct_id": "presentation_angle",
+      "predictor": "chelsa_gsp",
+      "beta_std": 0.2580783524593076,
+      "effect_magnitude": 0.2580783524593076,
+      "p_value": 0.0018,
+      "q_bh": 0.02025
+    },
+    {
+      "construct_id": "floral_lightness",
+      "predictor": "chelsa_gsp",
+      "beta_std": -0.23871830357089918,
+      "effect_magnitude": 0.23871830357089918,
+      "p_value": 0.005,
+      "q_bh": 0.0405
+    },
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "beta_std": -0.3453720170895292,
+      "effect_magnitude": 0.3453720170895292,
+      "p_value": 0.0001,
+      "q_bh": 0.0022500000000000003
+    },
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_npp",
+      "beta_std": 0.24634668315158295,
+      "effect_magnitude": 0.24634668315158295,
+      "p_value": 0.0035,
+      "q_bh": 0.0315
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio01",
+      "beta_std": null,
+      "effect_magnitude": 0.30378754599948365,
+      "p_value": 0.0023,
+      "q_bh": 0.023
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio04",
+      "beta_std": null,
+      "effect_magnitude": 0.3347659507000929,
+      "p_value": 0.0001,
+      "q_bh": 0.0022500000000000003
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio15",
+      "beta_std": null,
+      "effect_magnitude": 0.4101906419513986,
+      "p_value": 0.0001,
+      "q_bh": 0.0022500000000000003
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_rsds_mean",
+      "beta_std": null,
+      "effect_magnitude": 0.5003711415702184,
+      "p_value": 0.0001,
+      "q_bh": 0.0022500000000000003
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_sfcwind_mean",
+      "beta_std": null,
+      "effect_magnitude": 0.29734991019371076,
+      "p_value": 0.0018,
+      "q_bh": 0.02025
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_npp",
+      "beta_std": null,
+      "effect_magnitude": 0.3155280587173959,
+      "p_value": 0.0007,
+      "q_bh": 0.0105
+    },
+    {
+      "construct_id": "projection_pattern",
+      "predictor": "chelsa_bio04",
+      "beta_std": null,
+      "effect_magnitude": 0.4745119048475088,
+      "p_value": 0.0054,
+      "q_bh": 0.0405
+    }
+  ],
+  "within_hits": [
+    {
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_vpd_mean",
+      "beta_std": -0.028961896839613473,
+      "effect_magnitude": 0.028961896839613473,
+      "p_value": 5.1445008372332915e-06,
+      "q_bh": 0.0004630050753509962
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio01",
+      "beta_std": null,
+      "effect_magnitude": 0.020729827899436174,
+      "p_value": 0.0004,
+      "q_bh": 0.0051428571428571435
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio04",
+      "beta_std": null,
+      "effect_magnitude": 0.060341858048376884,
+      "p_value": 0.0001,
+      "q_bh": 0.0015000000000000002
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio12",
+      "beta_std": null,
+      "effect_magnitude": 0.04396685250597381,
+      "p_value": 0.0001,
+      "q_bh": 0.0015000000000000002
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_bio15",
+      "beta_std": null,
+      "effect_magnitude": 0.020991388662088523,
+      "p_value": 0.0005,
+      "q_bh": 0.005625
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_rsds_mean",
+      "beta_std": null,
+      "effect_magnitude": 0.03405861696237764,
+      "p_value": 0.0001,
+      "q_bh": 0.0015000000000000002
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_sfcwind_mean",
+      "beta_std": null,
+      "effect_magnitude": 0.02337617161453895,
+      "p_value": 0.0001,
+      "q_bh": 0.0015000000000000002
+    },
+    {
+      "construct_id": "floral_hue",
+      "predictor": "chelsa_npp",
+      "beta_std": null,
+      "effect_magnitude": 0.04574242979856615,
+      "p_value": 0.0001,
+      "q_bh": 0.0015000000000000002
+    },
+    {
+      "construct_id": "head_elongation",
+      "predictor": "chelsa_bio04",
+      "beta_std": 0.013769140892595542,
+      "effect_magnitude": 0.013769140892595542,
+      "p_value": 0.0024989537134393427,
+      "q_bh": 0.02498953713439343
+    }
+  ],
+  "claim_boundary": "exploratory biological aggregation of frozen v2 measured endpoints; v2 endpoint-level family remains canonical"
+}

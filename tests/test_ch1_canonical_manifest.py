@@ -33,8 +33,8 @@ def test_analysis_contracts_and_registries_exist() -> None:
         "analysis/ch1/v2_full27_sampling_composition_sensitivity_contract.json",
         "analysis/ch1/image_to_trait_automated_technical_audit_summary.json",
         "analysis/ch1/literature_orientation_external_validation_contract.json",
-        "ch1_global/v2/ontology/ch1_continuous_trait_contract.csv",
-        "ch1_global/v2/ontology/ch1_environment_predictor_registry.json",
+        "legacy/ch1_global/v2/ontology/ch1_continuous_trait_contract.csv",
+        "legacy/ch1_global/v2/ontology/ch1_environment_predictor_registry.json",
         "reproducibility/contracts/cirsium_ch1_image_trait_dictionary.csv",
     )
     for relative in required:
@@ -69,4 +69,7 @@ def test_technical_audit_registry_points_to_reproducibility_tree() -> None:
     )
     for relative in payload["repository_files"]:
         assert not relative.startswith("manuscript/")
+        # Historical receipts retain their original paths and exact bytes.
+        mapping = json.loads((ROOT / "reproducibility/legacy_path_map.json").read_text())["moves"]
+        relative = mapping.get(relative, relative)
         assert (ROOT / relative).is_file(), relative

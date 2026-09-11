@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def load_module():
-    path = ROOT / "analysis" / "run_geb_v2_full27_sampling_composition_sensitivity.py"
+    path = ROOT / "legacy" / "v2" / "analysis" / "run_geb_v2_full27_sampling_composition_sensitivity.py"
     spec = importlib.util.spec_from_file_location("sampling_composition", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)

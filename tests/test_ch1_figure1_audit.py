@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "ch1_global" / "v2" / "79_evaluate_capitulum_detector.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "legacy" / "ch1_global" / "v2" / "79_evaluate_capitulum_detector.py"
 SPEC = importlib.util.spec_from_file_location("detector_evaluation", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

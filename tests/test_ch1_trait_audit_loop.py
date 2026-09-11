@@ -13,7 +13,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
-V2 = ROOT / "ch1_global" / "v2"
+V2 = ROOT / "legacy" / "ch1_global" / "v2"
 ONTOLOGY = V2 / "ontology" / "ch1_trait_ontology.csv"
 
 

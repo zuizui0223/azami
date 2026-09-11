@@ -20,6 +20,8 @@ def test_all_github_materials_marked_present_really_exist() -> None:
         paths = item.get("paths", [item.get("path")])
         for relative in paths:
             assert relative is not None
+            mapping = json.loads((ROOT / "reproducibility/legacy_path_map.json").read_text())["moves"]
+            relative = mapping.get(relative, relative)
             assert (ROOT / relative).exists(), relative
 
 
@@ -99,7 +101,8 @@ def test_chelsa_external_boundary_matches_frozen_source_registry() -> None:
 def test_third_party_runbook_has_no_author_local_dependency() -> None:
     assert VERIFIER.is_file()
     assert PUBLIC_RELEASE.is_file()
-    text = RUNBOOK.read_text(encoding="utf-8")
+    # These exact statements certify the historical v2 release, not current v3.
+    text = (ROOT / "legacy/v2/ORIGINAL_REPRODUCTION.md").read_text(encoding="utf-8")
     assert "independent reader, reviewer, or researcher" in text
     assert "10.5281/zenodo.22295791" in text
     assert "ready for independent third-party numerical reproduction" in text

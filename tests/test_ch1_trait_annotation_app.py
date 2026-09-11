@@ -9,7 +9,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-APP_PATH = ROOT / "ch1_global" / "v2" / "03_trait_annotation_app.py"
+APP_PATH = ROOT / "legacy" / "ch1_global" / "v2" / "03_trait_annotation_app.py"
 SPEC = importlib.util.spec_from_file_location("ch1_trait_annotation_app", APP_PATH)
 assert SPEC is not None and SPEC.loader is not None
 APP = importlib.util.module_from_spec(SPEC)

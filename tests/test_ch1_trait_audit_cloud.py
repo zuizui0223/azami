@@ -11,7 +11,7 @@ from pathlib import Path
 import pandas as pd
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "ch1_global" / "v2" / "31_trait_audit_app.py"
+SCRIPT = Path(__file__).resolve().parents[1] / "legacy" / "ch1_global" / "v2" / "31_trait_audit_app.py"
 spec = importlib.util.spec_from_file_location("trait_audit_app", SCRIPT)
 assert spec is not None and spec.loader is not None
 APP = importlib.util.module_from_spec(spec)

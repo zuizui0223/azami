@@ -1,0 +1,24 @@
+{
+  "executed_on": "2026-09-11",
+  "platform": "Windows",
+  "python": "3.12.14",
+  "scientific_reference_commit": "fe25abd46e7235c85e6da191f976e1c8a02d0406",
+  "cleanup_implementation_commit": "3cd9422",
+  "execution": "python -m reproducibility.run_current_analysis --download --prepare-only; python -m reproducibility.run_current_analysis",
+  "completed_numerical_stages": 7,
+  "input_verification": "All four ZIPs and all seven extracted inputs passed frozen SHA-256 checks; native-status normalization followed the original contract.",
+  "libraries": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "scipy": "1.17.1",
+    "statsmodels": "0.14.6",
+    "biopython": "1.88"
+  },
+  "numerical_result_comparison": "current_replay_validation.json",
+  "validation_note": "The initial strict schema comparison found two artifact fields already retired from scientific main and one previously changed prose label. After explicitly scoping those differences in the validator, all 15 aggregate files matched current numerical results. No estimate, test, seed, tolerance or model was changed to obtain agreement.",
+  "tests": "94 passed, 3 subtests passed",
+  "frozen_figure_build": "5 endpoint main figures and 7 endpoint supplementary figures rebuilt successfully in scratch space; not a claim of current manuscript layout QA",
+  "new_images_downloaded": false,
+  "new_scientific_analyses_added": false,
+  "public_current_zenodo_release_verified": false
+}

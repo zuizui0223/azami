@@ -1,0 +1,44 @@
+{
+  "analysis_id": "ch1_v3_assessability_selection_audit_20260910",
+  "response": "measurement availability only; trait values are not used as outcomes",
+  "model": "taxon-centred linear probability slope with taxon-cluster sandwich SE",
+  "observations": 46276,
+  "taxa": 259,
+  "endpoints": 22,
+  "endpoint_tests": 198,
+  "endpoint_fdr_rows": 17,
+  "constructs": 11,
+  "construct_tests": 99,
+  "construct_fdr_rows": 11,
+  "largest_absolute_endpoint_gradient_pp_per_sd": 1.0240152694618012,
+  "largest_absolute_construct_gradient_pp_per_sd": 1.0240152694618012,
+  "headline_anchors": [
+    {
+      "endpoint_id": "corolla_lab_chroma",
+      "construct_id": "floral_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "frozen_trait_beta_reference": -0.3453720170895292,
+      "endpoint_availability_fraction": 0.8753997752614746,
+      "endpoint_assessability_beta_pp_per_within_taxon_sd": 0.8730051900779735,
+      "endpoint_assessability_p": 8.177558347783915e-09,
+      "endpoint_assessability_q": 3.7309918711706497e-07,
+      "construct_assessability_beta_pp_per_within_taxon_sd": 0.8730051900779735,
+      "same_numeric_direction_as_trait_beta": false,
+      "interpretation_boundary": "availability slope and trait-value slope are different estimands; same sign does not establish selection-induced mimicry"
+    },
+    {
+      "endpoint_id": "orientation_image_vertical_angle",
+      "construct_id": "presentation_angle",
+      "predictor": "chelsa_bio12",
+      "frozen_trait_beta_reference": 0.30435928589775146,
+      "endpoint_availability_fraction": 0.80497450082116,
+      "endpoint_assessability_beta_pp_per_within_taxon_sd": 0.6884841815465101,
+      "endpoint_assessability_p": 0.012464167026777207,
+      "endpoint_assessability_q": 0.11064894145442589,
+      "construct_assessability_beta_pp_per_within_taxon_sd": 0.6884841815465101,
+      "same_numeric_direction_as_trait_beta": true,
+      "interpretation_boundary": "availability slope and trait-value slope are different estimands; same sign does not establish selection-induced mimicry"
+    }
+  ],
+  "claim_boundary": "outcome-blind post-hoc selection diagnostic; does not rule out trait-value-dependent missingness or replace frozen v2 inference"
+}
