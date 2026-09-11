@@ -30,13 +30,16 @@ The v3 work asks a higher-level question using the same frozen measured endpoint
 
 ## Result documents
 
-- `BIOLOGICAL_AXIS_REANALYSIS_PLAN_20260910.md` — construct definitions and analysis plan.
+Only result documents that support the current main manuscript or Supporting Information are retained on the active branch:
+
 - `BIOLOGICAL_AXIS_RESULT_SUMMARY_20260910.md` — 22-endpoint → biological-construct reanalysis.
 - `BIOLOGICAL_AXIS_SENSITIVITY_CHAIN_RESULT_20260910.md` — sampling → spatial/residual → historical sensitivity at construct level.
 - `SCALE_DEPENDENT_INTEGRATION_RESULT_20260910.md` — pairwise-cohort within/among integration synthesis.
 - `CONSTRUCT_SCALE_UPGRADE_RESULT_20260910.md` — exact complete-18 common cohort, bootstrap, module cohesion and six environmental blocks.
 - `DIRECT_SCALE_CONTRAST_RESULT_20260910.md` — direct uncertainty-qualified among-vs-within integration-strength contrast.
 - `ASSESSABILITY_AND_TECHNICAL_STRESS_RESULT_20260910.md` — outcome-blind availability audit and frozen-summary-calibrated orientation stress.
+
+Planning notes and post-hoc colour/Lab interpretation experiments that do not appear in the current manuscript or Supporting Information are intentionally excluded from the active branch. Their history remains recoverable from Git history.
 
 ## Interpretation boundary
 
