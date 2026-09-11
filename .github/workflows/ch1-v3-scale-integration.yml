@@ -6,7 +6,6 @@ on:
     paths:
       - 'analysis/v3/run_construct_scale_integration.py'
       - 'analysis/v3/run_construct_scale_integration_entrypoint.py'
-      - 'analysis/v3/SCALE_DEPENDENT_INTEGRATION_PLAN_20260910.md'
       - '.github/workflows/ch1-v3-scale-integration.yml'
   workflow_dispatch:
 
