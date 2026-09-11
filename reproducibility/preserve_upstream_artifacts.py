@@ -23,6 +23,10 @@ def preserve(draft, request, base, out, extra_only=False):
     plan={r['artifact_id']:(r.get('verified_download_zip_sha256') or r.get('local_archive_sha256') or r.get('github_digest','').removeprefix('sha256:'),r['role'])
           for r in source['artifacts'] if r['artifact_id'] not in [9612943217,8227254443,8983877726,9632715852]}
     plan.update(EXTRA)
+    # User scope: current manuscript dependencies only, not the whole legacy tree.
+    paper_ids={8066010557,8066675131,8068122589,8076736948,8099953404,8225059018,8269246732}
+    plan={aid:value for aid,value in plan.items() if aid in paper_ids}
+    assert not extra_only, 'Historical ML expansion excluded by current manuscript-only scope'
     if extra_only:
         plan={
             8071529579:('ebcaab40fecc49a8515004a724c587717130b9531a89fa1f88f8e7c84f3953e4','pseudo_label_training_source'),
@@ -37,7 +41,7 @@ def preserve(draft, request, base, out, extra_only=False):
                 'Full original photographic collection not permanently preserved or redownload-tested.',
                 'Model package contains dataset manifests, not all training image and label files.',
                 'External Grounding DINO / CLIP weights and revisions require a separate completeness check.',
-                'Annotation packet, private audit mapping and hidden predictions must remain non-public until blinding and image rights are reviewed.',
+                'Unused categorical ML development artifacts and incomplete private independent-audit packets are excluded from this manuscript deposit.',
                 'Artifact preservation does not establish independent detector or biological accuracy.']}
     bucket=draft['links']['bucket']
     assert bucket.startswith('https://zenodo.org/api/files/')
@@ -50,11 +54,12 @@ def preserve(draft, request, base, out, extra_only=False):
         if existing:
             assert existing[0]['checksum'].removeprefix('md5:')==md5, 'Refusing to overwrite different bytes'
         else:
-            with path.open('rb') as f:
-                req=urllib.request.Request(url,data=f,method='PUT',headers={
+            payload=path.read_bytes()
+            req=urllib.request.Request(url,data=payload,method='PUT',headers={
                     'Authorization':'Bearer '+os.environ['ZENODO_TOKEN'],
                     'Content-Type':'application/octet-stream','Content-Length':str(path.stat().st_size)})
-                with urllib.request.urlopen(req,timeout=1800) as r: uploaded=json.load(r)
+            with urllib.request.urlopen(req,timeout=1800) as r: uploaded=json.load(r)
+            del payload
             assert uploaded['checksum']=='md5:'+md5
         req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['ZENODO_TOKEN']})
         h=hashlib.sha256()
@@ -90,19 +95,18 @@ def preserve(draft, request, base, out, extra_only=False):
     catalog=root/('ML_HISTORY_ARTIFACT_CATALOG.json' if extra_only else 'UPSTREAM_ARTIFACT_CATALOG.json')
     catalog.write_text(json.dumps(report,indent=2),encoding='utf-8')
     upload(catalog)
-    if extra_only:
-        note=root/'SOURCE_TO_ANALYSIS_README.txt'
-        note.write_bytes(Path('reproducibility/zenodo_upstream_readme.txt').read_bytes())
-        upload(note)
+    note=root/'SOURCE_TO_ANALYSIS_README.txt'
+    note.write_bytes(Path('reproducibility/zenodo_upstream_readme.txt').read_bytes())
+    upload(note)
     state=request(base);metadata=state['metadata'].copy()
     metadata['description'] += ('<p>Earlier Grounding DINO pseudo-label and CLIP zero-shot artifacts are preserved separately in ML_HISTORY_ARTIFACT_CATALOG.json. '
         'They document development history, not current continuous-trait inference. The external pretrained weights themselves are not included.</p>' if extra_only else
         '<p>Upstream processing artifacts are additionally preserved: acquisition metadata and screening queue/images, '
         'the frozen detector package with best/last weights, dataset manifest and training diagnostics, historical trait outputs, '
-        'exhaustive merged continuous measurements, and the uncompleted independent-audit materials. '
+        'and exhaustive merged continuous measurements. Unused categorical ML development and incomplete private independent-audit packets are excluded. '
         'See UPSTREAM_ARTIFACT_CATALOG.json for exact source runs, member hashes and remaining gaps. '
         'This is NOT certified zero-from-scratch reproduction: full original photographs and all training inputs or external model weights have not been verified complete. '
-        'Audit mappings, hidden predictions and image-containing packages require blinding and rights review before any publication.</p>')
+        'Image-containing packages and upstream data terms require rights review before any publication.</p>')
     request(base,'PUT',{'metadata':metadata})
     final=request(base)
     assert not final['submitted'] and final['state']=='unsubmitted'

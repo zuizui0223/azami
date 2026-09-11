@@ -1,82 +1,61 @@
-Azami: source-to-analysis preservation map
+Data dependencies of the current Azami Chapter 1 manuscript
 
-The starting point is public photographs, not a finished trait table.
-This record preserves historical processing artifacts as well as current inputs
-and results. It is a draft. Upload completion is not permission to publish.
+SCOPE
+This is the manuscript's source-to-result chain, not a repository-history backup.
+Code is referenced at 52c207a64a09b243e021dc6e7b20598ab4ab7f02 on GitHub.
+Scientific reference: fe25abd46e7235c85e6da191f976e1c8a02d0406.
+Legacy location alone neither admits nor excludes a file: only its role in the
+current Main or Supporting Information determines whether it is needed.
 
-1. OBSERVATIONS AND PHOTOGRAPH SOURCE
-8066010557: full iNaturalist metadata inventory; retains original photo/source
-identifiers and source metadata. 8066675131: original screening queue.
-8068122589: original medium-image screening/QC package. This package was used in
-detector development and must NOT be treated as independent detector validation.
-The complete mutable original-image collection is not preserved by these files.
+1. PHOTOGRAPHS USED TO BUILD THE STUDY COHORT (MAIN METHODS; SI S4)
+8066010557: iNaturalist metadata inventory including photograph identifiers and
+source information. 8269246732: exhaustive detector-positive merged processing
+output underlying the measured universe and subsequent filtering/thinning.
+These are not an archive of every original photograph. Original URL availability
+and photo-specific licenses remain distinct from preserved numerical data.
 
-2. PSEUDO-LABELS AND YOLO TRAINING
-8069610715 / 8071529579: earlier Grounding DINO proposal and bootstrap dataset
-artifacts. 8076736948: recovered frozen production detector package including
-best.pt, last.pt, dataset manifests, pseudo-box proposals, training arguments,
-results and recovery provenance. best.pt SHA-256:
+2. THE ADOPTED HEAD DETECTOR (MAIN METHODS; SI S1)
+8076736948: adopted YOLO11n model, best.pt/last.pt, pseudo-box proposals, training
+and validation manifests, training settings, diagnostics and recovery provenance.
+best.pt SHA-256:
 4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed
-Training args record pretrained yolo11n.pt, 40 epochs, image size 640, batch 8,
-CPU and seed 0. The exact initial pretrained checkpoint is not preserved by the
-best.pt/last.pt files; they are trained outputs, not the initial base weights.
-The archived training manifest records 270 pseudo-labelled images: 211 training,
-59 validation. Agreement with pseudo-labels is not independent accuracy.
-The model package alone does not contain all training image/YOLO label files.
-Reconstruction from the QC image package and pseudo-box/manifest records has
-not yet been executed and verified. Do not replace that test with file presence.
+8066675131 and 8068122589: source screening queue and image/QC package needed to
+trace the adopted detector's input data. They are not independent validation.
+The model's training record has 270 pseudo-labelled images (211 training, 59
+validation); 40 epochs, image size 640, batch 8, CPU, seed 0, pretrained yolo11n.pt.
+The package records Grounding DINO proposal generation; it does not preserve a
+verified exact Grounding DINO revision or initial pretrained YOLO checkpoint.
+Retraining from the archived images/manifests has not been verified.
 
-3. HISTORICAL CATEGORICAL MACHINE LEARNING
-8077189280: CLIP zero-shot outputs, ontology, prompts and model provenance.
-8099953404: merged historical ensemble outputs and crop metadata.
-Recorded ensemble revisions:
-openai/clip-vit-base-patch32 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
-openai/clip-vit-base-patch16 57c216476eefef5ab752ec549e440a49ae4ae5f3
-Grounding DINO is identified as IDEA-Research/grounding-dino-base in the proposal
-provenance. External pretrained weights themselves are not archived here.
-The inspected Grounding DINO provenance records a model ID and transformers
-version, but not a resolved model revision; that is an explicit provenance gap.
-These categorical model outputs are historical; the current numerical analysis
-does not substitute their class scores for deterministic continuous traits.
+3. HEAD EXTRACTION, CONTINUOUS MEASUREMENTS AND TECHNICAL CHECKS
+8225059018: continuous-trait and figure measurement provenance.
+8099953404: 6,626-head source/crop records relevant to the mirror technical check
+in SI S2 and the historical figure-measurement provenance. Its accompanying old
+categorical predictions are incidental retained bytes, not current evidence.
+8269246732: full merged continuous measurement output.
+9612943217 (inside analysis-data ZIP): endpoint universe used by the paper.
+The manuscript's biological constructs derive from continuous measurements;
+retired MobileNet classes and CLIP category scores are not their inputs.
 
-4. DETECTION, CROPS AND CONTINUOUS MEASUREMENTS
-8225059018: early continuous-trait/provenance source.
-8269246732: exhaustive detector-positive merged measurement output, preserved
-as its exact original ZIP. Individual source rows and processing provenance are
-retained; it must not be described as a full archive of original photographs.
-9612943217: continuous endpoint universe subsequently used by the current paper.
+4. ENVIRONMENT, SENSITIVITIES AND WHOLE-CAPITULUM RESULTS
+The analysis-data ZIP supplies the exact nine-predictor environment, broad-region
+lookup, placement trees, native-status sensitivity table and current result
+artifacts. ARTIFACT_CATALOG.json maps source runs/commits and member checksums.
+The seven-stage GitHub runner compares 15 current reference aggregates.
+Unsupported rows remain present. Superseded report fields are explicitly marked
+as historical and are not restored as manuscript evidence.
 
-5. ENVIRONMENT AND CURRENT ECOLOGICAL ANALYSIS
-The analysis-data ZIP contains the continuous universe, environment extract,
-region lookup, placement trees, native-status input and current result artifacts.
-ARTIFACT_CATALOG.json maps these to the current seven-stage numerical workflow.
-The earlier endpoint-only baseline remains in DOI 10.5281/zenodo.22295791.
-All original artifact bytes are preserved, including unsupported results and
-historical fields. Current reference manifests distinguish active evidence.
+EXCLUDED
+Unrelated projects, abandoned branches, exploratory model development, retired
+categorical ML pipelines, earlier failed training exports, and incomplete private
+independent-audit annotation packets/mappings/predictions are not required to
+reproduce this manuscript and are excluded from this preservation pass.
 
-6. INDEPENDENT AUDIT MATERIALS: INCOMPLETE AND NON-PUBLIC
-8521924881 / 8521925441 / 8521926057: independent annotation packet, private audit
-mapping/QC and hidden predictions. These are materials for an unfinished audit,
-not completed independent precision/recall or biological validation.
-Keep the private mapping and predictions protected while blinding matters.
-Image-specific redistribution rights and audit disclosure require review before
-publishing any of these files. Saving them in the owner draft does not approve
-public release. Use a separate restricted record or omit protected items from a
-public version if needed; do not simply publish all draft files together.
-
-CODE AND REPRODUCTION STATUS
-Current code commit: 52c207a64a09b243e021dc6e7b20598ab4ab7f02
-Scientific reference: fe25abd46e7235c85e6da191f976e1c8a02d0406
-Historical acquisition/training/measurement scripts and ontology are under
-legacy/ch1_global/v2/ in that snapshot. Current analyses start in analysis/v3/.
-The source workflow commit for each artifact is recorded in its catalog.
-No retraining, fresh image acquisition or new ecological fitting is performed
-by the archive-transfer job. Zero-from-scratch reproduction is NOT yet certified.
-
-PENDING BEFORE CLAIMING COMPLETE FROM-ZERO REPRODUCTION
-- Verify recovery of training images and labels and reproduce the training setup.
-- Verify availability and licenses of exact external pretrained model revisions.
-- Verify coverage and access of the original photograph collection; URLs can die.
-- Review image, model, backbone and private audit-material distribution rights.
-- After explicit publication approval, anonymously download and verify the final
-  intended public/restricted data partition. A private readback is not that test.
+INTEGRITY AND LIMITS
+Original artifact ZIPs are preserved unchanged; hence a necessary artifact can
+contain incidental historical files. Use the stated role, not every embedded
+file, as the manuscript dependency definition. Catalogs record every member hash.
+This is a data-preservation operation, not a new analysis or accuracy evaluation.
+The full original photograph collection, initial external pretrained weights,
+and end-to-end training replay are not certified complete. Data and image rights
+must be confirmed before publication. No publication is performed by this job.
