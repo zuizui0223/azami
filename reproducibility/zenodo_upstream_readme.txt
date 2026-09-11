@@ -17,6 +17,9 @@ artifacts. 8076736948: recovered frozen production detector package including
 best.pt, last.pt, dataset manifests, pseudo-box proposals, training arguments,
 results and recovery provenance. best.pt SHA-256:
 4078e0510532852681b65ee529cd82237b649ec99b17c4ca5f1da460a62d2bed
+Training args record pretrained yolo11n.pt, 40 epochs, image size 640, batch 8,
+CPU and seed 0. The exact initial pretrained checkpoint is not preserved by the
+best.pt/last.pt files; they are trained outputs, not the initial base weights.
 The archived training manifest records 270 pseudo-labelled images: 211 training,
 59 validation. Agreement with pseudo-labels is not independent accuracy.
 The model package alone does not contain all training image/YOLO label files.
@@ -31,6 +34,8 @@ openai/clip-vit-base-patch32 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
 openai/clip-vit-base-patch16 57c216476eefef5ab752ec549e440a49ae4ae5f3
 Grounding DINO is identified as IDEA-Research/grounding-dino-base in the proposal
 provenance. External pretrained weights themselves are not archived here.
+The inspected Grounding DINO provenance records a model ID and transformers
+version, but not a resolved model revision; that is an explicit provenance gap.
 These categorical model outputs are historical; the current numerical analysis
 does not substitute their class scores for deterministic continuous traits.
 
