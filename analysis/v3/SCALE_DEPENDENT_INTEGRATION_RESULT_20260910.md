@@ -66,40 +66,11 @@ A second within-strengthened relation was involucre form — projection prominen
 
 This suggests a useful biological interpretation for future testing: taxon-level differentiation integrates visible colour dimensions much more strongly, whereas repeated observations within taxa show particularly strong local co-variation among projection/armature dimensions. The present data do not identify the developmental or selective processes producing those differences.
 
-## Environmental organization is also scale dependent
+## Relationship to the current manuscript synthesis
 
-The existing construct-level within- and among-taxon atlases were compared as nine-gradient effect-magnitude signatures. Each construct's nine-effect vector was normalized before the cross-scale comparison so differences in overall association magnitude did not dominate the result.
+The pairwise result is retained as the first construct-level whole-capitulum check. The manuscript's stronger primary synthesis then forces all nine constructs and all 36 relations onto one exact complete-18 common cohort, adds taxon-bootstrap uncertainty and module-cohesion tests, and summarizes environmental organization with the six predeclared biological predictor groups. Those common-cohort results are reported in `CONSTRUCT_SCALE_UPGRADE_RESULT_20260910.md`.
 
-- flattened normalized-signature Spearman rho = **0.00933**;
-- flattened normalized-signature cosine = **0.7176**;
-- the single strongest environmental predictor differed between within and among scales for **9/9 constructs**.
-
-The strongest predictors were:
-
-| Construct | Among-taxon strongest gradient | Within-taxon strongest gradient |
-|---|---|---|
-| presentation angle | annual precipitation (BIO12) | annual mean temperature (BIO1) |
-| floral lightness | GSP | VPD |
-| floral chroma | shortwave radiation | annual precipitation (BIO12) |
-| floral hue | shortwave radiation | temperature seasonality (BIO4) |
-| head elongation | VPD | shortwave radiation |
-| head compactness | wind | VPD |
-| involucre form | VPD | NPP |
-| projection prominence | GSP | temperature seasonality (BIO4) |
-| projection pattern | temperature seasonality (BIO4) | VPD |
-
-This environmental-signature comparison is **descriptive only**. The nine environmental predictors are correlated, so predictor-label permutations would not provide a valid confirmatory null. The useful conclusion is narrower: after normalizing the overall magnitude of association, the relative environmental profile of a construct is not preserved across within- and among-taxon scales.
-
-## How this changes the v3 scientific story
-
-The scale-dependent integration result should become a central v3 synthesis rather than remain a secondary PCA paragraph.
-
-1. Public photographs recover repeated continuous visible phenotypes rather than one taxon value.
-2. Those phenotypes form partially integrated biological constructs, but the integration geometry is **scale dependent**: within- and among-taxon matrices are only moderately aligned.
-3. The relative environmental association signatures of those constructs also reorganize across scales.
-4. Against that general reorganization, the two frozen-v2 among-taxon anchors — lower floral chroma under higher shortwave radiation and larger image-referenced presentation angle under higher annual precipitation — remain unusually robust, surviving construct aggregation and the full sampling -> spatial/residual -> 52-tree historical sensitivity chain.
-
-This ordering uses the reviewer-highlighted whole-capitulum perspective while leaving the frozen v2 headline conclusions unchanged.
+Against that broader whole-capitulum reorganization, the two frozen-v2 among-taxon anchors — lower floral chroma under higher shortwave radiation and larger image-referenced presentation angle under higher annual precipitation — remain unusually robust, surviving construct aggregation and the full sampling -> spatial/residual -> 52-tree historical sensitivity chain.
 
 ## Reproducibility
 
