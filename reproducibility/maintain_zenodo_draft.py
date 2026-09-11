@@ -28,6 +28,9 @@ assert str(draft.get('conceptrecid')) == '22295790', 'Unexpected version family'
 receipt = {k: draft.get(k) for k in ('id', 'state', 'submitted', 'conceptrecid', 'metadata', 'files')}
 (OUT / 'before.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
 print(json.dumps(receipt, indent=2))
+if os.environ.get('UPDATE_MODE') == 'upstream':
+    from reproducibility.preserve_upstream_artifacts import preserve
+    preserve(draft, request, BASE, OUT)
 if os.environ.get('UPDATE_MODE') == 'update':
     from reproducibility.build_zenodo_data_archive import build, REV
     files = build()
