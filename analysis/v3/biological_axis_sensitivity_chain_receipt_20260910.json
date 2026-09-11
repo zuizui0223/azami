@@ -1,0 +1,111 @@
+{
+  "analysis_id": "ch1_v3_biological_construct_v2_sensitivity_chain_20260910",
+  "status": "PASS",
+  "canonical_parent": "frozen Chapter 1 v2 endpoint-level analysis",
+  "constructs": {
+    "starting_inferential": 10,
+    "descriptive_only": 1
+  },
+  "entry": {
+    "among_fdr_rows": 12,
+    "within_fdr_rows": 9
+  },
+  "sampling": {
+    "selected_rows_total": 21,
+    "stable_all_declared_scenarios": 18,
+    "among_rows_stable_all": 12,
+    "headline": {
+      "floral_chroma__chelsa_rsds_mean": {
+        "stable_all": true,
+        "minimum_effect_magnitude_ratio": 0.614876
+      },
+      "presentation_angle__chelsa_bio12": {
+        "stable_all": true,
+        "minimum_effect_magnitude_ratio": 0.780783
+      }
+    }
+  },
+  "spatial": {
+    "among_entered": 12,
+    "among_passed": 3,
+    "within_entered": 9,
+    "within_passed": 0,
+    "among_passes": [
+      {
+        "construct_id": "floral_chroma",
+        "predictor": "chelsa_rsds_mean",
+        "baseline_beta": -0.3453720171,
+        "spatial_beta": -0.7124111818,
+        "spatial_permutation_p": 0.005,
+        "residual_morans_i": -0.047171,
+        "residual_morans_p": 0.188
+      },
+      {
+        "construct_id": "presentation_angle",
+        "predictor": "chelsa_bio12",
+        "baseline_beta": 0.3043592859,
+        "spatial_beta": 0.2860860885,
+        "spatial_permutation_p": 0.023,
+        "residual_morans_i": -0.066578,
+        "residual_morans_p": 0.072
+      },
+      {
+        "construct_id": "floral_chroma",
+        "predictor": "chelsa_npp",
+        "baseline_beta": 0.2463466832,
+        "spatial_beta": 0.4136986109,
+        "spatial_permutation_p": 0.001,
+        "residual_morans_i": -0.031772,
+        "residual_morans_p": 0.418,
+        "v3_only_exploratory": true
+      }
+    ]
+  },
+  "historical": {
+    "pairs_entered": 3,
+    "pairs_passed": 3,
+    "placement_trees": 52,
+    "passes": [
+      {
+        "construct_id": "floral_chroma",
+        "predictor": "chelsa_rsds_mean",
+        "trees_p_lt_0_05": 52,
+        "p_min": 0.00002394,
+        "p_max": 0.00002394,
+        "lambda_min": 0.0,
+        "lambda_max": 0.0,
+        "direction_stable": true
+      },
+      {
+        "construct_id": "presentation_angle",
+        "predictor": "chelsa_bio12",
+        "trees_p_lt_0_05": 52,
+        "p_min": 0.000201,
+        "p_max": 0.000231,
+        "lambda_min": 0.0,
+        "lambda_max": 0.053690,
+        "direction_stable": true
+      },
+      {
+        "construct_id": "floral_chroma",
+        "predictor": "chelsa_npp",
+        "trees_p_lt_0_05": 52,
+        "p_min": 0.002080,
+        "p_max": 0.003993,
+        "lambda_min": 0.0,
+        "lambda_max": 0.212192,
+        "direction_stable": true,
+        "v3_only_exploratory": true
+      }
+    ]
+  },
+  "headline_conclusion": "Both frozen-v2 headline among-taxon patterns survive the complete sampling, spatial and historical sensitivity sequence at biological-construct level.",
+  "claim_boundary": "Construct-level robustness layer only. Frozen v2 endpoint-level conclusions and multiplicity family remain canonical. The chroma-NPP pass is v3-only exploratory and is not promoted to a headline conclusion.",
+  "reproducibility": {
+    "workflow_run": 34418904597,
+    "job": 102689810335,
+    "run_head": "3cc65f71b25abfb5bd730649ec36b69a26672f7f",
+    "artifact_id": 10130210432,
+    "artifact_digest": "sha256:7568ec98b0709f6cda027b928298d58c7e6aa42af0f6c0947e1e91c3d1abbab2"
+  }
+}
