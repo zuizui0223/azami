@@ -8,6 +8,7 @@ on:
         default: inspect
 permissions:
   contents: read
+  actions: read
 jobs:
   draft:
     runs-on: ubuntu-latest
@@ -22,7 +23,7 @@ jobs:
           ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           UPDATE_MODE: ${{ inputs.mode }}
-        run: python reproducibility/maintain_zenodo_draft.py
+        run: python -m reproducibility.maintain_zenodo_draft
       - name: Save draft receipt
         if: always()
         uses: actions/upload-artifact@v4
