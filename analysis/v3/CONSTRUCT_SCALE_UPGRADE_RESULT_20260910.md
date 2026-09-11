@@ -4,7 +4,7 @@
 
 This layer strengthens the reviewer-highlighted whole-capitulum synthesis without changing the frozen v2 endpoint atlas, multiplicity families, or the two manuscript-level ecological headline candidates.
 
-It asks whether the partial within-vs-among organization remains when the v3 biological constructs are forced back onto the exact complete-18 repeated-observation cohort used by the frozen v2 whole-capitulum synthesis, and whether biologically defined modules remain internally cohesive at both scales.
+It asks whether the partial within-vs-among organization remains when the v3 biological constructs are forced back onto the exact complete-18 repeated-observation cohort used by the frozen v2 whole-capitulum synthesis, whether biologically defined modules remain internally cohesive at both scales, and whether environmental organization remains scale dependent when the nine predictors are returned to the six predeclared biological blocks used in the manuscript.
 
 ## Exact complete-18 common cohort
 
@@ -28,7 +28,7 @@ For comparison:
 - pairwise-cohort v3 construct synthesis: rho = **0.374775**, QAP P = **0.0131**;
 - common-cohort v3 construct synthesis: rho = **0.439125**, QAP P = **0.0041**.
 
-Thus the conclusion of **partial, scale-dependent whole-capitulum organization is not created by pairwise cohort differences**. It persists, and is slightly stronger, when every construct pair is forced onto the exact same complete-18 cohort.
+Thus the conclusion of **partial, scale-dependent whole-capitulum organization is not created by pairwise cohort differences**. It persists when every construct pair is forced onto the exact same complete-18 cohort.
 
 ### Taxon-bootstrap uncertainty
 
@@ -91,16 +91,7 @@ The block-level within-vs-among environmental signatures remain only weakly rank
 - cosine similarity = **0.85263**;
 - only **2/9** constructs have the same strongest biological block at the two scales.
 
-Thus coarsening the correlated predictors into predeclared biological blocks reduces the apparent disagreement compared with the raw nine-predictor comparison, but the dominant environmental organization is still usually scale-specific.
-
-## Phenotypic integration is not simply environmental-profile similarity
-
-An exploratory QAP compared each scale's construct-integration matrix with pairwise similarity of six-block environmental profiles.
-
-- among taxa: rho = **0.04299**, QAP P = **0.8475**;
-- within taxa: rho = **0.23449**, QAP P = **0.1652**.
-
-There is therefore no evidence here that constructs are integrated merely because they share similar broad environmental association profiles. This negative result helps separate the two manuscript ideas: **phenotypic organization** and **environmental sorting/covariation** are related questions, not interchangeable statistics.
+Thus coarsening the correlated predictors into predeclared biological blocks reduces the apparent disagreement, but the dominant environmental organization is still usually scale-specific. This is the environmental summary used in the current manuscript; no additional integration–environment coupling test is promoted as a manuscript result.
 
 ## Relationship to the frozen v2 positive results
 
@@ -109,7 +100,7 @@ None of these analyses changes the frozen endpoint-level positive results. In pa
 - lower floral chroma with higher shortwave radiation;
 - larger image-referenced presentation angle with higher annual precipitation.
 
-The separate construct-level robustness chain already showed that both survive biological reaggregation, sampling composition, broad/residual spatial checks and all 52 historical placement trees.
+The separate construct-level robustness chain showed that both survive biological reaggregation, sampling composition, broad/residual spatial checks and all 52 historical placement trees.
 
 The added result here is conceptual rather than a new headline association: **the same multidimensional capitulum has a partially conserved but scale-dependent internal organization, and the two frozen ecological anchors remain robust against that broader reorganization.**
 
