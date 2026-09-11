@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Strengthen the v3 whole-capitulum synthesis without redefining frozen v2 claims.
+"""Strengthen the whole-capitulum synthesis without redefining frozen v2 claims.
 
-This analysis adds four orthogonal robustness/synthesis layers to the existing
-construct analysis:
+This analysis retains only the synthesis layers used by the current manuscript:
 
 1. a complete-18 common-cohort replication in which all nine biological
    constructs, all 36 construct pairs, and both biological scales use the exact
@@ -10,8 +9,7 @@ construct analysis:
 2. taxon-bootstrap uncertainty for the within-vs-among matrix alignment;
 3. module-cohesion tests asking whether biologically related constructs are more
    internally integrated than unrelated constructs at each scale;
-4. six predeclared v2 environmental-block signatures and exploratory coupling
-   between phenotypic integration and environmental-signature similarity.
+4. six predeclared v2 environmental-block signatures.
 
 The frozen v2 endpoint atlas, multiplicity family, and two headline ecological
 candidates are not modified by this script.
@@ -269,30 +267,6 @@ def block_signatures(path: Path) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def signature_similarity_matrix(sig: pd.DataFrame) -> pd.DataFrame:
-    cols = [f"norm_{b}" for b in ENV_BLOCKS]
-    x = sig.set_index("construct_id").loc[CORE, cols].to_numpy(float)
-    sim = x @ x.T
-    return pd.DataFrame(sim, index=CORE, columns=CORE)
-
-
-def qap_matrix_coupling(left: pd.DataFrame, right: pd.DataFrame, permutations: int, rng: np.random.Generator) -> dict[str, float | int]:
-    upper = np.triu_indices(len(CORE), 1)
-    l = left.to_numpy(float)
-    r = right.to_numpy(float)
-    observed = float(spearmanr(l[upper], r[upper]).statistic)
-    sims = np.empty(permutations, dtype=float)
-    for i in range(permutations):
-        order = rng.permutation(len(CORE))
-        rp = r[np.ix_(order, order)]
-        sims[i] = float(spearmanr(l[upper], rp[upper]).statistic)
-    return {
-        "rho": observed,
-        "qap_p_two_sided": float((np.sum(np.abs(sims) >= abs(observed) - 1e-15) + 1) / (permutations + 1)),
-        "permutations": permutations,
-    }
-
-
 def main() -> int:
     args = parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
@@ -328,22 +302,15 @@ def main() -> int:
         (np.linalg.norm(sig[block_cols_a].to_numpy()) * np.linalg.norm(sig[block_cols_w].to_numpy()))
     )
 
-    env_sim_a = signature_similarity_matrix(sig_a)
-    env_sim_w = signature_similarity_matrix(sig_w)
-    coupling_among = qap_matrix_coupling(among, env_sim_a, args.permutations, np.random.default_rng(args.seed + 5))
-    coupling_within = qap_matrix_coupling(within, env_sim_w, args.permutations, np.random.default_rng(args.seed + 6))
-
     within.to_csv(args.out_dir / "complete18_construct_integration_within.csv")
     among.to_csv(args.out_dir / "complete18_construct_integration_among.csv")
     pairs.to_csv(args.out_dir / "complete18_construct_pairwise.csv", index=False)
     boot.to_csv(args.out_dir / "complete18_taxon_bootstrap.csv", index=False)
     sig.to_csv(args.out_dir / "six_block_environment_signatures.csv", index=False)
-    env_sim_a.to_csv(args.out_dir / "environment_similarity_among.csv")
-    env_sim_w.to_csv(args.out_dir / "environment_similarity_within.csv")
 
     report = {
         "analysis_id": "ch1_v3_construct_scale_upgrade_20260910",
-        "claim_boundary": "secondary construct-level synthesis only; frozen v2 endpoint conclusions and multiplicity families unchanged",
+        "claim_boundary": "construct-level synthesis used by the current manuscript; frozen v2 endpoint conclusions and multiplicity families unchanged",
         "complete18_endpoints": endpoints,
         "common_cohort": {
             "observations": n_obs,
@@ -364,13 +331,11 @@ def main() -> int:
             "flattened_normalized_signature_cosine": flat_cos,
             "interpretation": "descriptive block-level comparison; blocks reduce but do not eliminate predictor correlation",
         },
-        "integration_environment_coupling": {
-            "among_taxon": coupling_among,
-            "within_taxon": coupling_within,
-            "interpretation": "exploratory QAP coupling between construct integration and six-block environmental-profile similarity",
-        },
     }
-    (args.out_dir / "construct_scale_upgrade_report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+    (args.out_dir / "construct_scale_upgrade_report.json").write_text(
+        json.dumps(report, indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps(report, indent=2, allow_nan=False))
     return 0
 
