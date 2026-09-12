@@ -125,7 +125,16 @@ def test_archive_discovery_requires_one_exact_artifact_match(tmp_path):
 def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     receipt = json.loads((ROOT / "reproducibility/CURRENT_RELEASE_STAGING_20260912.json").read_text())
     staged = {row["github_actions_artifact_id"]: row for row in receipt["newly_staged_artifacts"]}
-    assert set(staged) == {9633419268, 10130210432, 10131007603, 10136229131, 10135679053}
+    assert set(staged) == {
+        9633419268,
+        10130210432,
+        10131007603,
+        10136229131,
+        10135679053,
+        10291656193,
+    }
+    assert staged[10291656193]["drive_file_id"] == "1UnPG1mhjdJKbXFLJDbn6l-TrFtAXgJSd"
+    assert staged[10291656193]["archive_sha256"] == "2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766"
     assert receipt["reference_file_count"] == 15
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False
