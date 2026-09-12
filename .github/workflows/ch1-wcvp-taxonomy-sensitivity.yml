@@ -44,9 +44,8 @@ jobs:
 
           git fetch --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
           git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/taxonomy/input/observation_native_status.csv
-          echo 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a  work/taxonomy/input/observation_native_status.csv' | sha256sum -c -
 
-      - name: Prepare authority-resolved grouping
+      - name: Prepare authority-resolved grouping and verify native-status identity
         run: |
           python -m analysis.v3.prepare_authority_taxonomy_sensitivity \
             --traits work/taxonomy/input/universe/continuous_trait_universe_observation_long.csv \
