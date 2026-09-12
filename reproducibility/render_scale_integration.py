@@ -146,7 +146,10 @@ def render(out_dir: Path) -> dict:
 
     fs.use(grid=False)
     fig = fs.figure(width="double", height=6.45)
-    gs = fig.add_gridspec(2, 2, left=0.10, right=0.93, bottom=0.09, top=0.95, wspace=0.34, hspace=0.38)
+    # Long construct labels need more than the generic 10% left margin at the
+    # fixed 6.27-inch manuscript width. Keep this explicit and test by rendered
+    # artifact QA rather than relying on bbox_inches='tight'.
+    gs = fig.add_gridspec(2, 2, left=0.15, right=0.92, bottom=0.09, top=0.95, wspace=0.38, hspace=0.38)
     ax_a = fig.add_subplot(gs[0, 0])
     ax_b = fig.add_subplot(gs[0, 1])
     ax_c = fig.add_subplot(gs[1, 0])
@@ -180,6 +183,7 @@ def render(out_dir: Path) -> dict:
     ax_c.set_ylabel("Among-taxon RV")
     ax_c.set_title("(c) Relation-wise scale contrast", loc="left", fontsize=fs.FONT["panel"], fontweight="bold", pad=4)
     alignment = upgrade["common_cohort_matrix_alignment"]
+    note_box = dict(facecolor="white", edgecolor="none", alpha=0.82, pad=1.4)
     ax_c.text(
         0.03,
         0.97,
@@ -189,6 +193,7 @@ def render(out_dir: Path) -> dict:
         ha="left",
         va="top",
         fontsize=fs.FONT["annot"],
+        bbox=note_box,
     )
     ax_c.legend(loc="lower right", fontsize=fs.FONT["footnote"])
 
@@ -212,6 +217,7 @@ def render(out_dir: Path) -> dict:
         ha="right",
         va="top",
         fontsize=fs.FONT["annot"],
+        bbox=note_box,
     )
     ax_d.legend(loc="upper left", fontsize=fs.FONT["footnote"])
 
@@ -228,6 +234,11 @@ def render(out_dir: Path) -> dict:
         "construct_order": list(CORE),
         "construct_modules": MODULES,
         "source_files": data["sources"],
+        "display_transforms": {
+            "matrix_colour_norm": "PowerNorm(gamma=0.45) on untransformed RV values; shared across panels a-b",
+            "relation_scatter_axes": "log-log display only; statistics use untransformed RV values",
+            "bootstrap_axis": "linear display of frozen bootstrap differences",
+        },
         "panels": {
             "a": "within-taxon 9 x 9 construct integration matrix",
             "b": "among-taxon 9 x 9 construct integration matrix on the identical cohort",
