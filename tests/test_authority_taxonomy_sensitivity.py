@@ -19,6 +19,7 @@ def test_canonical_key_is_stable_and_rejects_missing():
 
 
 def _write_inputs(tmp_path: Path, second_q: float = 0.02):
+    tmp_path.mkdir(parents=True, exist_ok=True)
     prep = tmp_path / "prep.json"
     prep.write_text(json.dumps({"analysis_id": "prep", "source_taxa_start": 259}), encoding="utf-8")
 
