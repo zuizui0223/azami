@@ -1,0 +1,41 @@
+name: Render current scale integration figure
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'reproducibility/render_scale_integration.py'
+      - 'reproducibility/current_reference/upgrade/**'
+      - 'tests/test_scale_integration_render.py'
+      - '.github/workflows/render-current-scale-integration.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install figure environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test]'
+
+      - name: Verify renderer contract
+        run: pytest -q tests/test_scale_integration_render.py
+
+      - name: Render frozen current figure
+        run: python -m reproducibility.render_scale_integration --out-dir work/scale-integration-figure
+
+      - name: Upload rendered figure and provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-scale-integration-figure
+          path: work/scale-integration-figure/
+          if-no-files-found: error
