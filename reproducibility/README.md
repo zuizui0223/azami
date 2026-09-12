@@ -50,6 +50,21 @@ python -m reproducibility.build_current_release_bundle \
 
 This hard stop is intentional: a durable staging bundle must not silently become a publication-ready claim while the final figure surface or release metadata is still unresolved.
 
+## Current scale-dependent integration figure
+
+`python -m reproducibility.render_scale_integration` renders the current construct-level cross-scale result directly from the checksum-verified current-reference files. It performs no model fitting, resampling or endpoint selection.
+
+```bash
+python -m reproducibility.render_scale_integration \
+  --out-dir work/scale-integration-figure
+```
+
+The figure uses only the exact 1,734-observation / 42-taxon common-cohort outputs: the two 9 × 9 construct-integration matrices, the 36 relation-wise contrasts, the existing 1,000 taxon-bootstrap replicates and the frozen contrast/upgrade summaries. Panels show (a) within-taxon and (b) among-taxon integration matrices on a shared scale, (c) the 36 direct relation-wise within-versus-among comparisons, and (d) the frozen bootstrap distribution of the among-minus-within median-RV contrast. The output provenance JSON records every source SHA-256 and the rendered PNG/PDF hashes.
+
+This is a visualization of the already frozen result: partial cross-scale matrix alignment (`rho = 0.439125`, QAP `P = 0.0041`) together with stronger among-taxon integration (`33/36` relations; bootstrap median-RV difference positive in `100%` of replicates). It is not a new analysis and must not be interpreted as evidence that evolution necessarily increases integration or as genetic, developmental, functional or causal modularity.
+
+The `Render current scale integration figure` workflow runs the focused renderer test, builds PNG/PDF outputs and uploads the figure plus provenance as a GitHub Actions artifact for visual QA. The generic stem `Figure_v3_scale_integration` is intentional until final manuscript figure numbering is frozen.
+
 ## Figure layout revisions
 
 `python -m reproducibility.render_layout_revisions` renders the presentation-only Figure 1 and Figure S5 revisions into `work/layout-revisions/`, using the existing matplotlib/numpy/pandas figure environment. It does not refit models or replace the frozen figures. Figure 1 separates the measurement rows from the construct summary and replaces a conflicting historical angle overlay with an image-vertical guide. The production CSV value remains 0.732009 degrees (displayed as 0.7). Figure S5 moves one long label inward without changing points or statistics. The output receipt records file hashes; it does not certify Word pagination. These are two layout revisions, not a complete current manuscript figure rebuild.
