@@ -8,6 +8,12 @@ The v3 work asks a higher-level question using the same frozen measured endpoint
 
 > How are visible capitulum traits biologically organized within taxa and among taxa, how does that organization change with scale, and do the two frozen-v2 ecological anchors remain robust inside that broader reorganization?
 
+### Submission scope freeze
+
+The current Chapter 1 target is **Global Ecology and Biogeography (GEB)**. The active scientific scope is frozen around the scale-dependent integration result and the two pre-existing ecological anchors. See [`GEB_SCOPE_FREEZE_20260912.md`](GEB_SCOPE_FREEZE_20260912.md) for the evidence hierarchy, remaining submission-readiness work, explicit stop list, and the separate evidence requirements for any higher-tier successor study.
+
+In particular, the broad **46,276-observation / 259-taxon** spatial atlas and the strict **1,734-observation / 42-taxon** complete construct cohort have different inferential roles and must not be conflated in manuscript claims.
+
 ## What v3 adds
 
 1. **Biological reaggregation** — the 22 measured v2 endpoints are reorganized into named biological constructs without using environmental outcomes to choose the grouping.
