@@ -1,0 +1,100 @@
+name: Chapter 1 WCVP taxonomy sensitivity
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'analysis/v3/prepare_authority_taxonomy_sensitivity.py'
+      - 'analysis/v3/summarize_authority_taxonomy_sensitivity.py'
+      - 'analysis/ch1/wcvp_authority_taxonomy_sensitivity_contract_20260912.json'
+      - '.github/workflows/ch1-wcvp-taxonomy-sensitivity.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  taxonomy-sensitivity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install frozen current numerical environment
+        run: python -m pip install -r reproducibility/requirements-current.txt
+
+      - name: Recover exact frozen inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/taxonomy/input
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9612943217/zip > work/taxonomy/traits.zip
+          echo '101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/taxonomy/traits.zip' | sha256sum -c -
+          unzip -q work/taxonomy/traits.zip 'universe/continuous_trait_universe_observation_long.csv' -d work/taxonomy/input
+
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9633419268/zip > work/taxonomy/environment.zip
+          echo 'd7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4  work/taxonomy/environment.zip' | sha256sum -c -
+          unzip -q work/taxonomy/environment.zip 'process_environment/strict_spatial_chelsa_process.csv' -d work/taxonomy/input
+
+          git fetch --depth=1 origin refs/tags/azami-ch1-v2-2026-08-27:refs/tags/azami-ch1-v2-2026-08-27
+          git show azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv > work/taxonomy/input/observation_native_status.csv
+
+      - name: Prepare authority-resolved grouping and verify native-status identity
+        run: |
+          python -m analysis.v3.prepare_authority_taxonomy_sensitivity \
+            --traits work/taxonomy/input/universe/continuous_trait_universe_observation_long.csv \
+            --environment work/taxonomy/input/process_environment/strict_spatial_chelsa_process.csv \
+            --native-status work/taxonomy/input/observation_native_status.csv \
+            --out-dir work/taxonomy/prepared
+
+      - name: Rerun biological constructs under accepted WCVP keys
+        run: |
+          python -m analysis.v3.run_biological_axis_reanalysis \
+            --traits work/taxonomy/prepared/traits_authority.csv \
+            --environment work/taxonomy/prepared/environment_authority.csv \
+            --out-dir work/taxonomy/axes \
+            --permutations 9999 \
+            --seed 20260910
+
+      - name: Rerun identical common-cohort scale analysis
+        run: |
+          python -m analysis.v3.run_construct_scale_upgrade \
+            --traits work/taxonomy/prepared/traits_authority.csv \
+            --environment work/taxonomy/prepared/environment_authority.csv \
+            --axis-among work/taxonomy/axes/biological_axes_among_min5.csv \
+            --axis-within work/taxonomy/axes/biological_axes_within.csv \
+            --out-dir work/taxonomy/upgrade \
+            --minimum-complete-observations-per-taxon 5 \
+            --bootstrap-replicates 1000 \
+            --permutations 9999 \
+            --seed 20260910
+
+          python -m analysis.v3.run_construct_scale_contrast_summary \
+            --pairwise work/taxonomy/upgrade/complete18_construct_pairwise.csv \
+            --bootstrap work/taxonomy/upgrade/complete18_taxon_bootstrap.csv \
+            --out work/taxonomy/upgrade/construct_scale_contrast_summary.json
+
+      - name: Evaluate predeclared taxonomy gates
+        run: |
+          python -m analysis.v3.summarize_authority_taxonomy_sensitivity \
+            --prep-report work/taxonomy/prepared/taxonomy_preparation_report.json \
+            --authority-axes work/taxonomy/axes/biological_axes_among_min5.csv \
+            --authority-upgrade work/taxonomy/upgrade/construct_scale_upgrade_report.json \
+            --authority-contrast work/taxonomy/upgrade/construct_scale_contrast_summary.json \
+            --frozen-axes reproducibility/current_reference/axes/biological_axes_among_min5.csv \
+            --out work/taxonomy/authority_taxonomy_sensitivity_summary.json
+          cat work/taxonomy/authority_taxonomy_sensitivity_summary.json
+
+      - name: Upload complete taxonomy sensitivity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-wcvp-authority-taxonomy-sensitivity
+          path: work/taxonomy/
+          if-no-files-found: error
