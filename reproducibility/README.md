@@ -20,6 +20,36 @@ The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json) records 
 
 This staging area is private and is **not** a public release. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies, replay receipts and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
 
+## Current release bundle builder
+
+`python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for the current numerical release. It does not download or publish anything. Supply a directory containing exactly one ZIP for each frozen input artifact ID (`9612943217`, `9633419268`, `8983877726`, `8227254443`) plus the frozen native-status CSV.
+
+A staging bundle can be built before the final manuscript figure surface is frozen:
+
+```bash
+python -m reproducibility.build_current_release_bundle \
+  --input-dir /path/to/verified-archives \
+  --native-status /path/to/observation_native_status.csv \
+  --out /path/to/azami_ch1_current_release_staging.zip
+```
+
+The builder verifies the four archive SHA-256 values and their required members, normalizes the native-status transport only through the same frozen LF/CRLF rule used by the numerical runner, verifies all 15 `current_reference` files, requires a clean Git worktree, snapshots that exact `HEAD` with `git archive`, copies the current replay receipts and metadata, and writes a deterministic outer ZIP plus a `.sha256` sidecar.
+
+For the public release, use `--final`. Final mode refuses to build unless both a frozen figure/provenance manifest and completed release-metadata JSON are supplied:
+
+```bash
+python -m reproducibility.build_current_release_bundle \
+  --input-dir /path/to/verified-archives \
+  --native-status /path/to/observation_native_status.csv \
+  --figure-manifest /path/to/final_figure_manifest.json \
+  --release-metadata /path/to/zenodo_release_metadata.json \
+  --expected-head <FINAL_COMMIT_SHA> \
+  --final \
+  --out /path/to/azami_ch1_current_release.zip
+```
+
+This hard stop is intentional: a durable staging bundle must not silently become a publication-ready claim while the final figure surface or release metadata is still unresolved.
+
 ## Figure layout revisions
 
 `python -m reproducibility.render_layout_revisions` renders the presentation-only Figure 1 and Figure S5 revisions into `work/layout-revisions/`, using the existing matplotlib/numpy/pandas figure environment. It does not refit models or replace the frozen figures. Figure 1 separates the measurement rows from the construct summary and replaces a conflicting historical angle overlay with an image-vertical guide. The production CSV value remains 0.732009 degrees (displayed as 0.7). Figure S5 moves one long label inward without changing points or statistics. The output receipt records file hashes; it does not certify Word pagination. These are two layout revisions, not a complete current manuscript figure rebuild.
