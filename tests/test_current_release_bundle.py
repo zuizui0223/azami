@@ -34,7 +34,7 @@ def test_release_input_contract_is_exactly_the_current_runner_contract():
         assert set(row["members"]) == set(members)
         for source, (target, member_sha) in members.items():
             assert row["members"][source] == {"bundle_path": target, "sha256": member_sha}
-    assert NATIVE_SHA == "c01eeb9ff245d7f73d824221f2dbc09892666f23ecc74a706620943f4c881692f" or NATIVE_SHA == "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+    assert NATIVE_SHA == "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
 
 
 def test_current_reference_release_surface_is_frozen_and_verified():
