@@ -132,9 +132,16 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
         10136229131,
         10135679053,
         10291656193,
+        10292140117,
     }
     assert staged[10291656193]["drive_file_id"] == "1UnPG1mhjdJKbXFLJDbn6l-TrFtAXgJSd"
     assert staged[10291656193]["archive_sha256"] == "2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766"
+    taxonomy = staged[10292140117]
+    assert taxonomy["drive_file_id"] == "1FYSiKtJDBq9m4sWxlMuRBvLirpHj90Ja"
+    assert taxonomy["archive_sha256"] == "dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5"
+    assert taxonomy["headline_taxonomy_robust"] is True
+    assert taxonomy["contains_exact_native_status"] is True
+    assert taxonomy["native_status_sha256_after_permitted_newline_normalization"] == NATIVE_SHA
     assert receipt["reference_file_count"] == 15
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False
