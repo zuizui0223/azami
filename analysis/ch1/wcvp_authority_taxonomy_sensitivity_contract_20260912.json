@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "analysis_id": "ch1_v3_wcvp_authority_taxonomy_sensitivity_20260912",
+  "status": "locked_before_authority_remapped_outcome_execution",
+  "purpose": "Test the named taxonomic-lumping/synonym threat without changing the source-assigned primary analysis.",
+  "frozen_inputs": {
+    "continuous_trait_artifact": 9612943217,
+    "continuous_trait_zip_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+    "process_environment_artifact": 9633419268,
+    "process_environment_zip_sha256": "d7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4",
+    "native_status_tag": "azami-ch1-v2-2026-08-27",
+    "native_status_path": "analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv",
+    "native_status_sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+  },
+  "authority_source": {
+    "name": "World Checklist of Vascular Plants via frozen GBIF/WCVP name-resolution audit",
+    "dataset_key": "f382f0ce-323a-4091-bb9f-add557f3a9a2",
+    "dataset_doi": "10.15468/6h8ucr",
+    "dataset_modified": "2026-06-10T05:03:50.116+00:00"
+  },
+  "selection_and_grouping_rule": "Retain an observation only when the frozen authority table has resolution_status=resolved_unique_accepted_key. Replace source taxon_name with the accepted WCVP key. Collapse source labels that share an accepted key. Do not use trait values, environmental values, effect sizes or significance for retention or grouping.",
+  "rerun_rule": "Run the existing v3 biological-axis reanalysis and complete common-cohort construct-scale upgrade unchanged, with 9999 permutations, seed 20260910 and 1000 taxon-bootstrap replicates, then run the existing direct scale-contrast summary.",
+  "predeclared_gates": {
+    "geometry": "authority-remapped matrix alignment rho > 0, one-sided QAP P < 0.05, and taxon-bootstrap rho 95% lower bound > 0",
+    "integration_strength": "authority-remapped among-minus-within median-RV bootstrap 95% lower bound > 0 and more than half of the 36 observed construct relations stronger among taxa",
+    "ecological_anchors": "floral_chroma x chelsa_rsds_mean retains a negative beta and BH q < 0.05; presentation_angle x chelsa_bio12 retains a positive beta and BH q < 0.05",
+    "headline_taxonomy_robust": "all three gates pass"
+  },
+  "non_goals": [
+    "Do not replace the canonical source-assigned primary analysis solely because of this sensitivity.",
+    "Do not interpret a pass as proof that source observations were correctly identified.",
+    "Do not infer species boundaries, ancestry, genetic lineages, adaptation or evolutionary mechanism from accepted-name resolution."
+  ]
+}
