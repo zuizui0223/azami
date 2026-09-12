@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import numpy as np
+from PIL import Image
 import pytest
 
 from reproducibility.render_scale_integration import CORE, load_inputs, render
@@ -33,3 +35,11 @@ def test_scale_integration_renderer_writes_figure_and_provenance(tmp_path: Path)
     assert result["headline_metrics"]["relations_stronger_among"] == 33
     assert result["headline_metrics"]["bootstrap_probability_among_exceeds_within"] == pytest.approx(1.0)
     assert len(result["outputs"]) == 2
+
+    # Fixed-width manuscript figures must retain a clean outer gutter. The
+    # first CI-rendered revision exposed clipped y-axis labels at the left
+    # canvas edge, so make this a regression test rather than relying on visual
+    # inspection alone. Anti-aliased near-white pixels are allowed.
+    image = np.asarray(Image.open(png).convert("RGB"))
+    assert np.all(image[:, :6, :] >= 245), "content touches/clips the left PNG canvas edge"
+    assert np.all(image[:, -6:, :] >= 245), "content touches/clips the right PNG canvas edge"
