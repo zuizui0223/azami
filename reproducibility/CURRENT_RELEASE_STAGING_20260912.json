@@ -64,6 +64,21 @@
         "Figure_v3_scale_integration_provenance.json"
       ],
       "visual_qa": "CI-rendered PNG inspected after final-width margin fix; left/right clipping regression test passed"
+    },
+    {
+      "role": "wcvp_authority_taxonomy_sensitivity",
+      "github_actions_artifact_id": 10292140117,
+      "archive_sha256": "dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5",
+      "size_bytes": 98822154,
+      "source_workflow_run": 34672948337,
+      "source_head_sha": "c2c4dfb7434b1b2bfc70afade9b55084019524d5",
+      "drive_file_id": "1FYSiKtJDBq9m4sWxlMuRBvLirpHj90Ja",
+      "drive_file_name": "artifact-10292140117-ch1-wcvp-authority-taxonomy-sensitivity.zip",
+      "headline_taxonomy_robust": true,
+      "frozen_summary": "analysis/v3/authority_taxonomy_sensitivity_summary_20260912.json",
+      "contains_exact_native_status": true,
+      "native_status_member": "input/observation_native_status.csv",
+      "native_status_sha256_after_permitted_newline_normalization": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
     }
   ],
   "already_durable_current_inputs": {
@@ -75,7 +90,7 @@
   "current_reference_manifest": "reproducibility/current_reference/manifest.json",
   "reference_file_count": 15,
   "remaining_before_public_current_release": [
-    "stage the exact native-status table used by the current runner as a durable release input",
+    "extract the exact native-status member from the durable taxonomy artifact into the final release input set and reverify NATIVE_SHA",
     "pin and package the final cleaned code revision and numerical dependencies",
     "include current replay execution and 15-file comparison receipts",
     "freeze and stage the remaining final Main/Supporting manuscript figure exports and provenance after document QA",
