@@ -49,6 +49,21 @@
       "size_bytes": 15185,
       "drive_file_id": "186WiSo0miFC4ZjIxw88jFo1XOVKk14AI",
       "drive_file_name": "artifact-10135679053-assessability-technical-stress.zip"
+    },
+    {
+      "role": "current_scale_integration_figure_ci_artifact",
+      "github_actions_artifact_id": 10291656193,
+      "archive_sha256": "2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766",
+      "size_bytes": 703970,
+      "source_head_sha": "3804c6e33c66335ae8eae4f52c53e6b7a0743f77",
+      "drive_file_id": "1UnPG1mhjdJKbXFLJDbn6l-TrFtAXgJSd",
+      "drive_file_name": "artifact-10291656193-ch1-v3-scale-integration-figure.zip",
+      "contents": [
+        "Figure_v3_scale_integration.png",
+        "Figure_v3_scale_integration.pdf",
+        "Figure_v3_scale_integration_provenance.json"
+      ],
+      "visual_qa": "CI-rendered PNG inspected after final-width margin fix; left/right clipping regression test passed"
     }
   ],
   "already_durable_current_inputs": {
@@ -63,8 +78,8 @@
     "stage the exact native-status table used by the current runner as a durable release input",
     "pin and package the final cleaned code revision and numerical dependencies",
     "include current replay execution and 15-file comparison receipts",
-    "include final manuscript figure source tables/code/provenance after figure QA",
-    "resolve and document software/data/third-party licensing in release metadata",
+    "freeze and stage the remaining final Main/Supporting manuscript figure exports and provenance after document QA",
+    "resolve and document software/data/third-party licensing in approved release metadata",
     "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
     "redownload the published package without owner credentials, verify all checksums, and complete a clean numerical replay/reference comparison"
   ],
