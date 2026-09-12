@@ -1,0 +1,71 @@
+{
+  "analysis_id": "ch1_v3_wcvp_authority_taxonomy_sensitivity_summary_20260912",
+  "gate_declared_before_outcome": true,
+  "headline_taxonomy_robust": true,
+  "taxonomy_preparation": {
+    "environment_observations_start": 46276,
+    "environment_observations_resolved": 40785,
+    "source_taxa_start": 259,
+    "source_taxa_resolved": 245,
+    "authority_taxa_after_collapse": 238,
+    "authority_taxa_with_multiple_source_labels": 7,
+    "native_status_sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+  },
+  "authority_common_cohort": {
+    "observations": 1415,
+    "taxa": 38,
+    "minimum_complete_observations_per_taxon": 5
+  },
+  "authority_geometry": {
+    "rho": 0.29317889317889323,
+    "qap_p_one_sided": 0.0385,
+    "bootstrap_rho_median": 0.26525096525096525,
+    "bootstrap_rho_low95": 0.008745173745173746,
+    "bootstrap_rho_high95": 0.4906306306306306,
+    "gate_pass": true
+  },
+  "authority_strength": {
+    "median_within_rv": 0.00259424859462085,
+    "median_among_rv": 0.04405730640618705,
+    "relations_stronger_among": 32,
+    "relations_total": 36,
+    "bootstrap_difference_median": 0.0677583171806698,
+    "bootstrap_difference_low95": 0.036904615374713866,
+    "bootstrap_difference_high95": 0.12197971591151564,
+    "bootstrap_probability_among_exceeds_within": 1.0,
+    "gate_pass": true
+  },
+  "authority_resolved_anchors": [
+    {
+      "construct": "floral_chroma",
+      "predictor": "chelsa_rsds_mean",
+      "expected_sign": -1,
+      "n_taxa": 131,
+      "beta_std": -0.3278592084118292,
+      "p_value": 0.0003,
+      "q_bh": 0.0067499999999999,
+      "sign_retained": true,
+      "bh_q_lt_0_05": true,
+      "gate_pass": true
+    },
+    {
+      "construct": "presentation_angle",
+      "predictor": "chelsa_bio12",
+      "expected_sign": 1,
+      "n_taxa": 129,
+      "beta_std": 0.3073702546578927,
+      "p_value": 0.0003,
+      "q_bh": 0.0067499999999999,
+      "sign_retained": true,
+      "bh_q_lt_0_05": true,
+      "gate_pass": true
+    }
+  ],
+  "anchor_gate_pass": true,
+  "workflow": {
+    "run": 34672948337,
+    "artifact": 10292140117,
+    "artifact_sha256": "dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5"
+  },
+  "claim_boundary": "Sensitivity to accepted-name resolution and synonym collapse only; pass does not establish observation identification accuracy, species boundaries, genetic lineages, adaptation or causal evolutionary mechanism."
+}
