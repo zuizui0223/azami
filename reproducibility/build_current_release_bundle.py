@@ -7,8 +7,8 @@ out repository with ``git archive``, verifies the 15 current reference outputs,
 and writes a self-describing ZIP plus a SHA-256 sidecar.
 
 Final release mode deliberately fails closed until a frozen final-figure
-manifest and release-metadata JSON are supplied. This prevents durable staging
-from being mistaken for a submission/publication-ready release.
+manifest and approved release-metadata contract are supplied. This prevents
+durable staging from being mistaken for a submission/publication-ready release.
 """
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ import subprocess
 import tempfile
 import zipfile
 
+from reproducibility.release_metadata_contract import validate_release_metadata
 from reproducibility.run_current_analysis import INPUTS, NATIVE_SHA, native_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -202,8 +203,12 @@ def build(
     input_receipt, normalized_native = verify_inputs(input_dir, native_status)
     references = verified_reference_rows()
     figure_rows = verify_manifest_files(figure_manifest) if figure_manifest else []
+    validated_metadata = None
     if release_metadata:
-        json.loads(release_metadata.read_text(encoding="utf-8"))
+        if final:
+            validated_metadata = validate_release_metadata(release_metadata, expected_head=str(state["head"]))
+        else:
+            validated_metadata = json.loads(release_metadata.read_text(encoding="utf-8"))
 
     with tempfile.TemporaryDirectory(prefix="azami-release-") as td:
         package = Path(td) / "azami_ch1_current_release"
@@ -250,7 +255,7 @@ def build(
         manifest = {
             "schema_version": 1,
             "bundle_kind": "final" if final else "staging",
-            "release_ready": final and not gaps,
+            "release_ready": final and not gaps and validated_metadata is not None,
             "release_gaps": gaps,
             "git": state,
             "input_receipt": input_receipt,
@@ -258,6 +263,7 @@ def build(
             "current_reference_file_count": len(references),
             "current_reference_manifest_sha256": sha256_file(REFERENCE_MANIFEST),
             "figure_file_count": len(figure_rows),
+            "release_metadata_validated": final and validated_metadata is not None,
             "scientific_outputs_changed": False,
             "public_release_performed": False,
         }
@@ -276,7 +282,7 @@ def build(
         "sha256": bundle_sha,
         "sidecar": str(sidecar),
         "git_head": state["head"],
-        "release_ready": final and not gaps,
+        "release_ready": final and not gaps and validated_metadata is not None,
         "release_gaps": gaps,
         "reference_files": len(references),
     }
@@ -288,9 +294,9 @@ def main() -> None:
     parser.add_argument("--native-status", type=Path, required=True, help="Frozen observation_native_status.csv")
     parser.add_argument("--out", type=Path, required=True, help="Output release ZIP")
     parser.add_argument("--figure-manifest", type=Path, help="JSON with files:[{path,sha256}] for the final manuscript figure/provenance surface")
-    parser.add_argument("--release-metadata", type=Path, help="Final Zenodo release metadata JSON")
+    parser.add_argument("--release-metadata", type=Path, help="Approved release metadata contract JSON")
     parser.add_argument("--expected-head", help="Optional exact git commit required for packaging")
-    parser.add_argument("--final", action="store_true", help="Fail closed unless figure manifest and release metadata are supplied")
+    parser.add_argument("--final", action="store_true", help="Fail closed unless figure manifest and approved release metadata are supplied")
     args = parser.parse_args()
     receipt = build(
         args.input_dir.resolve(),
