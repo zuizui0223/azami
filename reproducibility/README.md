@@ -14,6 +14,12 @@ The original [v2 runbook](../legacy/v2/ORIGINAL_REPRODUCTION.md) applies to immu
 
 The v2 `public_release_manifest.json`, `material_availability.json`, `recovery_inventory.json` and related receipts describe that historical release. Their readiness statements do not certify current v3 public availability. Archived source paths are resolved using the path map rather than changing recorded scientific inputs.
 
+## Current release staging
+
+The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json) records checksum-verified durable copies of the current nine-predictor environment input and the four Actions output archives underlying the 15-file current reference manifest. This removes dependence on those expiring Actions artifacts for material recovery.
+
+This staging area is private and is **not** a public release. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies, replay receipts and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
+
 ## Figure layout revisions
 
 `python -m reproducibility.render_layout_revisions` renders the presentation-only Figure 1 and Figure S5 revisions into `work/layout-revisions/`, using the existing matplotlib/numpy/pandas figure environment. It does not refit models or replace the frozen figures. Figure 1 separates the measurement rows from the construct summary and replaces a conflicting historical angle overlay with an image-vertical guide. The production CSV value remains 0.732009 degrees (displayed as 0.7). Figure S5 moves one long label inward without changing points or statistics. The output receipt records file hashes; it does not certify Word pagination. These are two layout revisions, not a complete current manuscript figure rebuild.
@@ -31,4 +37,4 @@ Run this after the current numerical replay, or pass `--axis-dir` containing its
 
 ## Permanent archive
 
-The existing Zenodo record is unchanged. A new version is needed for current inputs, code and outputs: see [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md). An audit or local reconstruction does not mean a new DOI has been published. Claim credential-free current reproduction only after the new version is downloaded anonymously, its hashes are verified, and the numerical runner passes its reference checks.
+The existing Zenodo record is unchanged. A new version is needed for current inputs, code and outputs: see [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md). An audit, local reconstruction or private durable staging does not mean a new DOI version has been published. Claim credential-free current reproduction only after the new version is downloaded anonymously, its hashes are verified, and the numerical runner passes its reference checks.
