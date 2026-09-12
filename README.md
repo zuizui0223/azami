@@ -8,8 +8,9 @@ Original software is released under the [MIT license](LICENSE); see [NOTICE.md](
 
 1. [Current numerical reproduction](reproducibility/CURRENT_ANALYSIS.md): verified inputs, one-command execution, and result validation.
 2. [Current results and interpretation](analysis/v3/README.md): biological constructs, environmental associations and whole-capitulum integration.
-3. [Reproducibility and archive status](reproducibility/README.md): what is publicly archived and what still needs a new Zenodo version.
-4. [Historical implementations](legacy/README.md): v2 and superseded entry points. Do not start the current paper analysis from these scripts.
+3. [GEB scope freeze](analysis/v3/GEB_SCOPE_FREEZE_20260912.md): frozen claim boundary, submission-readiness work, analysis stop list, and separate evidence routes for any higher-tier successor.
+4. [Reproducibility and archive status](reproducibility/README.md): what is publicly archived and what still needs a new Zenodo version.
+5. [Historical implementations](legacy/README.md): v2 and superseded entry points. Do not start the current paper analysis from these scripts.
 
 ## Current evidence chain
 
