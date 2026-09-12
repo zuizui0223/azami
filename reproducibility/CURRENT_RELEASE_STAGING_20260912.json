@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "staged_on": "2026-09-12",
+  "purpose": "Durable pre-Zenodo staging for the current Chapter 1 construct-level numerical release. This receipt records checksum-verified copies moved out of expiring GitHub Actions storage; it is not a public release receipt and does not certify current credential-free reproduction.",
+  "canonical_main_commit_at_staging_start": "fa55e9a7205e29e97ed6f8a182e4cfdb25217189",
+  "drive_folder": {
+    "id": "10-xK9nnFl9CDJcLV-UkYsh4dY82kKZyc",
+    "visibility": "not_shared"
+  },
+  "newly_staged_artifacts": [
+    {
+      "role": "nine_predictor_process_environment",
+      "github_actions_artifact_id": 9633419268,
+      "archive_sha256": "d7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4",
+      "size_bytes": 2050487,
+      "drive_file_id": "1tWzsl8C-1WEoviMuZKTFrCqomZbwKFSU",
+      "drive_file_name": "artifact-9633419268-process-environment.zip",
+      "current_runner_member": "process_environment/strict_spatial_chelsa_process.csv",
+      "current_runner_member_sha256": "f86a3418e9b21453026bba1aaf350b061f03048949547e2092602620af98cbf6"
+    },
+    {
+      "role": "biological_axes_and_sensitivity_reference_outputs",
+      "github_actions_artifact_id": 10130210432,
+      "archive_sha256": "7568ec98b0709f6cda027b928298d58c7e6aa42af0f6c0947e1e91c3d1abbab2",
+      "size_bytes": 38899,
+      "drive_file_id": "1cFlrc9PbeQ1HIRS_dWQJlj8LH7tpK-Bh",
+      "drive_file_name": "artifact-10130210432-biological-axes-sensitivity.zip"
+    },
+    {
+      "role": "construct_scale_integration_reference_outputs",
+      "github_actions_artifact_id": 10131007603,
+      "archive_sha256": "a483e116c46211023df95bef9388aa89deaef3441d85701fc93792867884514a",
+      "size_bytes": 7428,
+      "drive_file_id": "1tnaGSXLbBc3YkdOVT1hGg_EpijO7mBFG",
+      "drive_file_name": "artifact-10131007603-construct-integration.zip"
+    },
+    {
+      "role": "construct_upgrade_and_direct_scale_contrast_reference_outputs",
+      "github_actions_artifact_id": 10136229131,
+      "archive_sha256": "7b4c5703b048ff108cd794921394ae22d1423461c9aaf330b47029c5d1f4908f",
+      "size_bytes": 38097,
+      "drive_file_id": "16_Vr0zjtNExRxFSs-xGJFpAaQtJKQ2ZQ",
+      "drive_file_name": "artifact-10136229131-construct-upgrade.zip"
+    },
+    {
+      "role": "assessability_and_technical_stress_reference_outputs",
+      "github_actions_artifact_id": 10135679053,
+      "archive_sha256": "fa80f6079d676186d48665a574b5e68f906037a466a9e3101a57d87ee02f5ba7",
+      "size_bytes": 15185,
+      "drive_file_id": "186WiSo0miFC4ZjIxw88jFo1XOVKk14AI",
+      "drive_file_name": "artifact-10135679053-assessability-technical-stress.zip"
+    }
+  ],
+  "already_durable_current_inputs": {
+    "continuous_measurements_artifact": 9612943217,
+    "broad_region_lookup_artifact": 8983877726,
+    "historical_trees_artifact": 8227254443,
+    "evidence": "reproducibility/durable_archive_manifest.json"
+  },
+  "current_reference_manifest": "reproducibility/current_reference/manifest.json",
+  "reference_file_count": 15,
+  "remaining_before_public_current_release": [
+    "stage the exact native-status table used by the current runner as a durable release input",
+    "pin and package the final cleaned code revision and numerical dependencies",
+    "include current replay execution and 15-file comparison receipts",
+    "include final manuscript figure source tables/code/provenance after figure QA",
+    "resolve and document software/data/third-party licensing in release metadata",
+    "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
+    "redownload the published package without owner credentials, verify all checksums, and complete a clean numerical replay/reference comparison"
+  ],
+  "scientific_outputs_changed": false,
+  "public_release_changed": false
+}
