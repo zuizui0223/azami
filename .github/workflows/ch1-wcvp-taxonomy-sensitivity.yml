@@ -92,6 +92,7 @@ jobs:
           cat work/taxonomy/authority_taxonomy_sensitivity_summary.json
 
       - name: Upload complete taxonomy sensitivity evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ch1-wcvp-authority-taxonomy-sensitivity
