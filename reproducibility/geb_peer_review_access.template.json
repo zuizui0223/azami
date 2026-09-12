@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "NOT_READY",
+  "review_access_approved": false,
+  "provider": "TBD",
+  "anonymous_review_url": "TBD",
+  "package_sha256": "TBD",
+  "package_scope": "azami_ch1_current_construct_analysis",
+  "author_identifiers_absent": false,
+  "logged_out_access_verified": false,
+  "blinded_manuscript_statement_updated": false,
+  "stable_archive_for_peer_review": false,
+  "development_github_is_not_sufficient_archive": true,
+  "permanent_public_archive_after_review": "Zenodo current-version release after final archive validation",
+  "notes": "Do not mark READY until the anonymous review archive exists, is downloadable without owner identity/credentials where the provider permits, and has been inspected for author-identifying metadata."
+}
