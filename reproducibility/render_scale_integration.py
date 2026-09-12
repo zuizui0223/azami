@@ -146,7 +146,7 @@ def render(out_dir: Path) -> dict:
 
     fs.use(grid=False)
     fig = fs.figure(width="double", height=6.45)
-    gs = fig.add_gridspec(2, 2, left=0.10, right=0.98, bottom=0.09, top=0.95, wspace=0.34, hspace=0.42)
+    gs = fig.add_gridspec(2, 2, left=0.10, right=0.93, bottom=0.09, top=0.95, wspace=0.34, hspace=0.38)
     ax_a = fig.add_subplot(gs[0, 0])
     ax_b = fig.add_subplot(gs[0, 1])
     ax_c = fig.add_subplot(gs[1, 0])
@@ -160,8 +160,8 @@ def render(out_dir: Path) -> dict:
     norm = PowerNorm(gamma=0.45, vmin=0.0, vmax=max_rv)
     image = _matrix_panel(ax_a, within, "(a) Within taxa", norm)
     _matrix_panel(ax_b, among, "(b) Among taxa", norm)
-    cbar = fig.colorbar(image, ax=[ax_a, ax_b], orientation="horizontal", fraction=0.055, pad=0.12, aspect=35)
-    cbar.set_label("Pairwise RV integration")
+    cbar = fig.colorbar(image, ax=[ax_a, ax_b], orientation="vertical", fraction=0.035, pad=0.025, aspect=24)
+    cbar.set_label("Pairwise RV integration", rotation=270, labelpad=11)
 
     # Direct relation-by-relation scale contrast.
     x = pairwise["within_taxon_rv"].to_numpy(float)
@@ -203,17 +203,17 @@ def render(out_dir: Path) -> dict:
     ax_d.set_title("(d) Taxon-bootstrap contrast", loc="left", fontsize=fs.FONT["panel"], fontweight="bold", pad=4)
     boot = summary["taxon_bootstrap"]
     ax_d.text(
-        0.03,
+        0.97,
         0.97,
         f"median = {boot['difference_of_median_rv_median']:+.3f}\n"
         f"95% interval {boot['difference_of_median_rv_low95']:+.3f} to {boot['difference_of_median_rv_high95']:+.3f}\n"
         f"P(Δ > 0) = {boot['probability_median_among_exceeds_within']:.3f}",
         transform=ax_d.transAxes,
-        ha="left",
+        ha="right",
         va="top",
         fontsize=fs.FONT["annot"],
     )
-    ax_d.legend(loc="upper right", fontsize=fs.FONT["footnote"])
+    ax_d.legend(loc="upper left", fontsize=fs.FONT["footnote"])
 
     out_dir.mkdir(parents=True, exist_ok=True)
     written = fs.savefig(fig, STEM, width="double", outdir=out_dir)
