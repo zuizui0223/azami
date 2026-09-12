@@ -12,20 +12,34 @@ Current scientific scope remains the frozen Chapter 1 GEB scope in `analysis/v3/
 
 | Requirement | GEB requirement | Current Chapter 1 state | Gate |
 |---|---|---|---|
-| Structured abstract | Aim; Location; Time period; Major taxa studied; Methods; Results; Main conclusions; <=300 words | Synchronization patch revised to 262 words | **PASS in patch; must be verified in final DOCX** |
+| Structured abstract | Aim; Location; Time period; Major taxa studied; Methods; Results; Main conclusions; <=300 words | Synchronization patch revised to 262 words | **PASS in patch; verify final DOCX** |
 | Running title | <40 characters | `Scale-dependent capitulum integration` = 37 characters | **PASS in patch** |
-| Keywords | 6–10, alphabetical | Eight current keywords; final manuscript ordering must be checked after synchronization | **VERIFY FINAL DOCX** |
-| Main length | Research Articles typically ~5000 main-text words | Do not infer from the 2026-09-07 working draft after v3 replacement | **COUNT FINAL SYNCHRONIZED DOCX** |
-| Display pieces | Typically 6–8 tables + figures | Frozen role plan is five Main figures; retain only the Main tables needed to keep total in range | **VERIFY FINAL DOCX** |
+| Keywords | 6–10, alphabetical | Eight current keywords are alphabetically ordered in the 2026-09-07 draft | **VERIFY FINAL DOCX** |
+| Main length | Research Articles typically ~5000 main-text words | 2026-09-07 baseline = ~8,162 words; compression route frozen in `GEB_MAIN_TEXT_COMPRESSION_20260912.md` | **OPEN: synchronize/compress final DOCX** |
+| Display pieces | Typically 6–8 tables + figures | Frozen role plan = five Main figures; Main tables must be finalized so total remains in range | **VERIFY FINAL DOCX** |
 | Double-anonymous main file | No author-identifying material; separate identifying title page; remove author name from Word properties | Existing public GitHub/Zenodo identities must not be used as the blinded review link | **OPEN** |
 | Data/code during peer review | Data and code supporting results accessible during review; GitHub alone is not a stable archive | Current public v2 Zenodo is incomplete for v3 and may reveal authors | **OPEN: anonymous review archive required** |
-| Permanent archive | Stable public repository for publication | Final current-release builder and Zenodo metadata gate exist; final v3 public release not yet published | **OPEN** |
+| Permanent archive | Stable public repository for publication | Final current-release builder and approved-metadata gate exist; final v3 public release not yet published | **OPEN** |
 | Figure readability | Embedded for review; legends stand alone; panels `(a)`, `(b)`, ... | Current v3 scale-integration renderer passes fixed-width visual QA | **PARTIAL: full Main/SI surface still required** |
-| Figure legend content | Stand-alone; state organism and geographic region where applicable | New scale-integration caption must explicitly say global Cirsium dataset | **PATCH BEFORE FINAL DOCX** |
-| Supporting Information | Separate file(s); all SI objects cited; Appendix-based numbering (e.g. Fig. S1.1) | Existing historical `Figure S1`, `Table S1`, etc. notation must not be assumed compliant | **OPEN: renumber final SI** |
+| Figure legend content | Stand-alone; state organism and geographic region where applicable | Scale-integration caption patch now says global public-image dataset of Cirsium | **PASS IN PATCH; verify final captions** |
+| Supporting Information | Separate file(s); all SI objects cited; Appendix-based numbering (e.g. Fig. S1.1) | Existing historical `Figure S1`, `Table S1`, etc. notation must be remapped | **OPEN: renumber final SI** |
+| Taxonomic grouping sensitivity | Submission-readiness threat, not a journal format rule | Predeclared WCVP accepted-key/synonym-collapse sensitivity passed all geometry, strength and anchor gates | **PASS** |
 | Cover letter | Separate PDF; <250-word paragraph explaining reader interest | Not part of scientific repository | **AUTHOR/SUBMISSION TASK** |
 | Title page | Author names, affiliations, emails, acknowledgements; only one corresponding author | Deliberately absent from blinded repo surface | **AUTHOR/SUBMISSION TASK** |
 | ORCID | Required at submission | Account/author-owned | **AUTHOR/SUBMISSION TASK** |
+
+## Taxonomy gate now closed
+
+The predeclared WCVP sensitivity retained 40,785/46,276 observations. 245/259 source taxa resolved uniquely and collapsed to 238 accepted WCVP taxa. The direct common cohort was 1,415 observations / 38 accepted taxa.
+
+All predeclared gates passed:
+
+- cross-scale geometry: rho = 0.293179, QAP P = 0.0385, bootstrap rho 95% interval 0.008745–0.490631;
+- scale strength: 32/36 relations stronger among taxa; bootstrap among-minus-within median-RV difference median +0.067758, 95% +0.036905 to +0.121980, 100% positive;
+- chroma × radiation: beta = -0.327859, BH q = 0.00675 (131 taxa);
+- presentation angle × annual precipitation: beta = +0.307370, BH q = 0.00675 (129 taxa).
+
+This closes accepted-name/synonym grouping as a submission blocker. It does not establish observation-level identification accuracy or resolve species boundaries, hybrids/cytotypes, ancestry, adaptation or mechanism.
 
 ## Anonymous peer-review archive
 
@@ -52,7 +66,7 @@ For the final published manuscript, replace the review sentence with the permane
 
 ## Display-piece plan
 
-The current five-Main-figure role map is frozen in `analysis/v3/CURRENT_FIGURE_SURFACE_20260912.md`:
+The current five-Main-figure role map is frozen in `reproducibility/CURRENT_FIGURE_SURFACE_20260912.md`:
 
 1. measurement -> biological construct workflow;
 2. realized global sampling domain;
@@ -62,13 +76,24 @@ The current five-Main-figure role map is frozen in `analysis/v3/CURRENT_FIGURE_S
 
 The old standalone taxon-mean information-loss figure is Supporting Information. This preserves display space for the paper's current conceptual contribution rather than the superseded v2 hierarchy.
 
+## Main-text compression gate
+
+The 2026-09-07 working draft contains approximately **8,162 words** from Introduction through Conclusion after parsed page furniture and isolated line numbers are removed:
+
+- Introduction 1,209;
+- Methods 2,837;
+- Results 2,272;
+- Discussion 1,631;
+- Conclusion 213.
+
+`GEB_MAIN_TEXT_COMPRESSION_20260912.md` freezes the route to approximately 4,900–5,200 words by moving reviewer-defense detail to SI rather than deleting evidence. The largest immediate move is old Methods 2.8 (~616 words) plus old Results 3.8–3.10 (~758 words), retained in SI/archive with only interpretation-changing summaries in Main.
+
 ## Final pre-submission sequence
 
-1. Finish the predeclared WCVP taxonomy sensitivity and retain the outcome whether positive or adverse.
-2. Synchronize the actual blinded DOCX with the current v3 manuscript patch.
-3. Count the final structured abstract and main text; verify running title and alphabetical 6–10 keywords.
-4. Freeze all Main/SI figure and table captions, numbering and checksums; convert SI numbering to the journal's Appendix scheme.
-5. Create and independently inspect the anonymous peer-review archive/link.
-6. Remove identifying metadata from the blinded DOCX and inspect links/file properties.
-7. Supply a separate identifying title page and cover letter outside the blinded main file.
-8. Only after the final public archive is published, perform credential-free redownload, checksum verification and clean replay before making the permanent availability claim.
+1. Synchronize and compress the actual blinded DOCX using the current v3 patch and word-budget map.
+2. Count the final structured abstract and Main text; verify running title and alphabetical 6–10 keywords.
+3. Freeze all Main/SI figure and table captions, numbering and checksums; convert SI numbering to the journal's Appendix scheme.
+4. Create and independently inspect the anonymous peer-review archive/link.
+5. Remove identifying metadata from the blinded DOCX and inspect links/file properties.
+6. Supply a separate identifying title page and cover letter outside the blinded main file.
+7. Only after the final public archive is published, perform credential-free redownload, checksum verification and clean replay before making the permanent availability claim.
