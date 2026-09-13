@@ -1,0 +1,33 @@
+name: Temporary Chapter 1 SI figure pack
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ch1-si-figure-pack.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage canonical existing PNGs
+        run: |
+          set -euo pipefail
+          mkdir -p work/si-figures
+          cp reproducibility/figures/Figure_S1_v2_image_to_trait_technical_audit.png work/si-figures/Figure_S1.1.png
+          cp reproducibility/figures/Figure_S2_v2_image_to_trait_perturbation_audit.png work/si-figures/Figure_S1.2.png
+          cp reproducibility/figures/Figure_S3_v2_endpoint_measurement_support.png work/si-figures/Figure_S1.3.png
+          cp reproducibility/figures/Figure_S4_v2_sampling_composition_audit.png work/si-figures/Figure_S1.4.png
+          cp reproducibility/figures/Figure_S5_v2_spatial_diagnostic_surface.png work/si-figures/Figure_S1.5.png
+          cp reproducibility/figures/Figure_S6_v2_historical_placement_stability.png work/si-figures/Figure_S1.6.png
+          cp reproducibility/figures/Figure_S7_v2_whole_capitulum_secondary_synthesis.png work/si-figures/Figure_S1.7.png
+          cp reproducibility/figures/Figure_3_v2_taxon_mean_information_loss.png work/si-figures/Figure_S2.1.png
+          sha256sum work/si-figures/*.png > work/si-figures/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ch1-si-canonical-figure-pack
+          path: work/si-figures/
+          if-no-files-found: error
