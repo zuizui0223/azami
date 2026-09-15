@@ -3,7 +3,7 @@
 
 The output intentionally excludes Git history, public repository metadata,
 release/Zenodo metadata, workflow identifiers and the normal network download
-runner.  It contains only the analysis source needed for the current numerical
+runner. It contains only the analysis source needed for the current numerical
 surface, checksum-locked extracted inputs, a sanitized 16-file reference
 surface, a local-only eight-stage runner and an anonymous validator.
 
@@ -40,13 +40,10 @@ BANNED_TEXT = (
     "zenodo.org/records/22295791",
 )
 
-# Code supplied to reviewers.  The whole current v3 Python surface is included
-# because its size is small and this avoids hiding helper implementations, but
-# no legacy acquisition/download code or public-release machinery is included.
+# analysis/ and analysis/v3 are namespace packages in the repository, so there
+# are deliberately no __init__.py files to copy. Only the non-v3 auxiliary
+# audit input and the pinned numerical environment need explicit paths here.
 STATIC_SOURCE_PATHS = (
-    Path("analysis/__init__.py"),
-    Path("analysis/v3/__init__.py"),
-    Path("analysis/ch1/__init__.py"),
     Path("analysis/ch1/image_to_trait_automated_technical_audit_summary.json"),
     Path("reproducibility/requirements-current.txt"),
 )
@@ -154,7 +151,7 @@ def main():
         if sha(ref) != row["sha256"]: raise AssertionError(f"reference bytes changed: {row['path']}")
         actual=args.results/row["path"]
         if not actual.is_file(): raise FileNotFoundError(actual)
-        compare(active_scope(load(ref),row["path"]),active_scope(load(actual,row["path"]) if False else load(actual),row["path"]),row["path"])
+        compare(active_scope(load(ref), row["path"]), active_scope(load(actual), row["path"]), row["path"])
         checked.append(row["path"])
     report={"status":"PASS","aggregate_files_compared":len(checked),"numerical_tolerance":{"relative":1e-8,"absolute":1e-10},"scope":"anonymous numerical peer-review replay"}
     (args.results/"validation.json").write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8"); print(json.dumps(report,indent=2))
@@ -242,15 +239,17 @@ def copy_source(package: Path) -> list[str]:
 def identity_hits(root: Path) -> list[dict]:
     hits = []
     for path in sorted(p for p in root.rglob("*") if p.is_file()):
-        # Text-like analysis inputs and source only.  Zip/PDF/binary media are not
-        # present inside this review package.
         try:
-            text = path.read_text(encoding="utf-8", errors="ignore").lower()
+            with path.open("r", encoding="utf-8", errors="ignore") as handle:
+                for line_number, line in enumerate(handle, 1):
+                    low = line.lower()
+                    for token in BANNED_TEXT:
+                        if token.lower() in low:
+                            hits.append({"path": path.relative_to(root).as_posix(), "token": token, "line": line_number})
+                            if len(hits) >= 100:
+                                return hits
         except OSError:
             continue
-        for token in BANNED_TEXT:
-            if token.lower() in text:
-                hits.append({"path": path.relative_to(root).as_posix(), "token": token})
     return hits
 
 
@@ -276,8 +275,6 @@ def build(out: Path, download: bool, self_replay: bool) -> dict:
         td = Path(td); package = td / "chapter1_anonymous_review_bundle"; package.mkdir()
         prepared = td / "prepared"
         prepare(td / "archives", prepared, download=download)
-        # `prepare` already names every extracted input generically and verifies
-        # its frozen hash.  Do not copy the network-download archives themselves.
         for src in sorted(p for p in prepared.rglob("*") if p.is_file()):
             copy(src, package / "inputs" / src.relative_to(prepared))
         sources = copy_source(package)
@@ -298,7 +295,6 @@ def build(out: Path, download: bool, self_replay: bool) -> dict:
             if validation.get("status") != "PASS" or validation.get("aggregate_files_compared") != 16:
                 raise RuntimeError("anonymous self replay did not pass")
             receipt = json.loads((package / "work/review_replay_receipt.json").read_text(encoding="utf-8"))
-            # Preserve the validation receipts but not duplicate generated results.
             (package / "SELF_REPLAY_VALIDATION.json").write_text(json.dumps({
                 "status": "PASS", "aggregate_files_compared": 16,
                 "eight_stage_replay": receipt, "seconds": replay_seconds,
