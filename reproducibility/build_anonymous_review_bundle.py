@@ -91,7 +91,8 @@ commands = [
      "--out-dir", str(OUT / "technical_stress"), "--replicates", "2000", *seed],
     ["analysis.v3.run_rv_estimator_validity", *common,
      "--out-dir", str(OUT / "estimator_validity"), "--minimum-complete-observations-per-taxon", "5",
-     "--equal-n-replicates", "1000", "--null-permutations", "499", "--qap-permutations", "9999", *seed],
+     "--equal-n-replicates", "1000", "--null-permutations", "499", "--qap-permutations", "9999",
+     "--seed", "20260915"],
 ]
 receipt = {"status": "RUNNING", "stages": []}
 for i, cmd in enumerate(commands, 1):
