@@ -40,11 +40,14 @@ BANNED_TEXT = (
     "zenodo.org/records/22295791",
 )
 
-# analysis/ and analysis/v3 are namespace packages in the repository, so there
-# are deliberately no __init__.py files to copy. Only the non-v3 auxiliary
-# audit input and the pinned numerical environment need explicit paths here.
+# analysis/, analysis/v3 and legacy/v2/analysis are namespace packages in the
+# repository. Only the two legacy helpers imported by the current sensitivity
+# chain, the technical-audit input and the pinned numerical environment are
+# explicitly added outside analysis/v3/*.py.
 STATIC_SOURCE_PATHS = (
     Path("analysis/ch1/image_to_trait_automated_technical_audit_summary.json"),
+    Path("legacy/v2/analysis/run_geb_v2_full27_spatial_sensitivity.py"),
+    Path("legacy/v2/analysis/run_geb_v2_full27_historical_sensitivity.py"),
     Path("reproducibility/requirements-current.txt"),
 )
 
