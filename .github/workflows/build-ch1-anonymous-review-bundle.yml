@@ -34,7 +34,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install frozen numerical environment
-        run: python -m pip install -r reproducibility/requirements-current.txt
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt
+          python -m pip install pytest==9.1.1
 
       - name: Run focused anonymous-bundle tests
         run: pytest -q tests/test_anonymous_review_bundle.py tests/test_current_reproduction.py tests/test_current_release_bundle.py
