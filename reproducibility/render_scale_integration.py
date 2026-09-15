@@ -219,9 +219,6 @@ def render(out_dir: Path) -> dict:
     )
     ax_c.legend(loc="lower right", fontsize=fs.FONT["footnote"])
 
-    # Explicit estimator-validity panel. The raw taxon bootstrap is retained as
-    # descriptive uncertainty from the frozen estimator; the equal-n row asks
-    # whether the strength direction persists when both scales use 42 rows.
     raw_boot = summary["taxon_bootstrap"]
     rows = [
         (
@@ -239,7 +236,8 @@ def render(out_dir: Path) -> dict:
             equal_n["probability_positive_median_difference"],
         ),
     ]
-    for y_pos, (label, centre, low_ci, high_ci, probability) in enumerate(rows[::-1]):
+    display_rows = rows[::-1]
+    for y_pos, (_, centre, low_ci, high_ci, _) in enumerate(display_rows):
         xerr = np.array([[centre - low_ci], [high_ci - centre]])
         ax_d.errorbar(
             centre,
@@ -250,16 +248,14 @@ def render(out_dir: Path) -> dict:
             linewidth=1.2,
             markersize=5,
         )
-        ax_d.text(
-            high_ci + 0.004,
-            y_pos,
-            f"P(Δ>0)={probability:.3f}",
-            va="center",
-            ha="left",
-            fontsize=fs.FONT["annot"],
-        )
     ax_d.axvline(0, linestyle="--", linewidth=0.8, color=fs.C["rule"])
-    ax_d.set_yticks([0, 1], [rows[1][0], rows[0][0]])
+    ax_d.set_yticks(
+        [0, 1],
+        [
+            f"{display_rows[0][0]}\nP(Δ>0)={display_rows[0][4]:.3f}",
+            f"{display_rows[1][0]}\nP(Δ>0)={display_rows[1][4]:.3f}",
+        ],
+    )
     ax_d.set_xlabel("Δ median RV (among − within)")
     ax_d.set_title("(d) Estimator-validity contrast", loc="left", fontsize=fs.FONT["panel"], fontweight="bold", pad=4)
     ax_d.text(
