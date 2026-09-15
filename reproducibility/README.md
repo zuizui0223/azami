@@ -2,9 +2,9 @@
 
 ## Current Chapter 1 analysis
 
-Use [CURRENT_ANALYSIS.md](CURRENT_ANALYSIS.md). The entry point is `python -m reproducibility.run_current_analysis`. It verifies exact frozen input identities and runs existing models without changing the source cohort, construct definitions, predictors, random seeds or test families.
+Use [CURRENT_ANALYSIS.md](CURRENT_ANALYSIS.md). The entry point is `python -m reproducibility.run_current_analysis`. It verifies exact frozen input identities and runs existing models without changing the source cohort, construct definitions, predictors or the frozen test families. The current runner has eight numerical stages; the eighth is the explicitly post-hoc RV estimator-validity sensitivity added during submission audit.
 
-The [2026-09-11 local execution receipt](current_replay_execution.json) records all seven numerical stages, input verification and a [15-file current-scope numerical comparison](current_replay_validation.json). This is an actual numerical replay, distinct from tests that only inspect file presence and distinct from a new public Zenodo release.
+The [2026-09-11 local execution receipt](current_replay_execution.json) records the earlier seven-stage replay and its [15-file current-scope numerical comparison](current_replay_validation.json). Those receipts remain valid for the pre-estimator surface but are now historical. The current reference manifest contains 16 files and the current runner adds the estimator-validity stage; a new eight-stage replay/16-file comparison receipt is required before the final public release.
 
 Numerical reproduction begins with frozen measurements, not mutable source photographs. Repeating image acquisition and measurement from scratch is a distinct upstream task: the model, acquisition and measurement provenance is retained under `legacy/ch1_global/v2/` and [actions_artifact_catalog.json](actions_artifact_catalog.json). The numerical package must not be described as a complete, permanent archive of every original photograph or as an independent physical-trait validation.
 
@@ -16,9 +16,9 @@ The v2 `public_release_manifest.json`, `material_availability.json`, `recovery_i
 
 ## Current release staging
 
-The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json) records checksum-verified durable copies of the current nine-predictor environment input and the four Actions output archives underlying the 15-file current reference manifest. This removes dependence on those expiring Actions artifacts for material recovery.
+The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json), subsequently extended with the taxonomy and 2026-09-15 estimator-validity work, records checksum-verified durable copies of the current nine-predictor environment input and current Actions evidence required by the 16-file reference surface. The private staging area now also holds the estimator-validity artifact and the CI-rendered integration figure that exposes the equal-n sensitivity. This removes dependence on those expiring Actions artifacts for material recovery.
 
-This staging area is private and is **not** a public release. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies, replay receipts and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
+This staging area is private and is **not** a public release. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies, updated eight-stage replay receipts and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
 
 ## Current release bundle builder
 
@@ -33,7 +33,7 @@ python -m reproducibility.build_current_release_bundle \
   --out /path/to/azami_ch1_current_release_staging.zip
 ```
 
-The builder verifies the four archive SHA-256 values and their required members, normalizes the native-status transport only through the same frozen LF/CRLF rule used by the numerical runner, verifies all 15 `current_reference` files, requires a clean Git worktree, snapshots that exact `HEAD` with `git archive`, copies the current replay receipts and metadata, and writes a deterministic outer ZIP plus a `.sha256` sidecar.
+The builder verifies the four archive SHA-256 values and their required members, normalizes the native-status transport only through the same frozen LF/CRLF rule used by the numerical runner, verifies all 16 `current_reference` files, requires a clean Git worktree, snapshots that exact `HEAD` with `git archive`, copies the current replay receipts and metadata, and writes a deterministic outer ZIP plus a `.sha256` sidecar.
 
 For the public release, use `--final`. Final mode refuses to build unless both a frozen figure/provenance manifest and completed release-metadata JSON are supplied:
 
@@ -52,16 +52,18 @@ This hard stop is intentional: a durable staging bundle must not silently become
 
 ## Current scale-dependent integration figure
 
-`python -m reproducibility.render_scale_integration` renders the current construct-level cross-scale result directly from the checksum-verified current-reference files. It performs no model fitting, resampling or endpoint selection.
+`python -m reproducibility.render_scale_integration` renders the current construct-level cross-scale result directly from checksum-verified current-reference files. It performs no fitting or resampling itself; the displayed equal-n sensitivity is read from the frozen estimator-validity summary produced by `analysis.v3.run_rv_estimator_validity`.
 
 ```bash
 python -m reproducibility.render_scale_integration \
   --out-dir work/scale-integration-figure
 ```
 
-The figure uses only the exact 1,734-observation / 42-taxon common-cohort outputs: the two 9 × 9 construct-integration matrices, the 36 relation-wise contrasts, the existing 1,000 taxon-bootstrap replicates and the frozen contrast/upgrade summaries. Panels show (a) within-taxon and (b) among-taxon integration matrices on a shared scale, (c) the 36 direct relation-wise within-versus-among comparisons, and (d) the frozen bootstrap distribution of the among-minus-within median-RV contrast. The output provenance JSON records every source SHA-256 and the rendered PNG/PDF hashes.
+Panels (a) and (b) show the raw within- and among-taxon 9 × 9 integration matrices for the exact 1,734-observation / 42-taxon common cohort. Panel (c) shows all 36 raw relation-wise contrasts and explicitly separates the frozen raw count (`33/36`) from the equal-n sensitivity median (`23/36`). Panel (d) contrasts the frozen raw taxon-bootstrap strength difference with the estimator-validity calculation in which one centred observation per taxon is drawn so both scales use 42 rows.
 
-This is a visualization of the already frozen result: partial cross-scale matrix alignment (`rho = 0.439125`, QAP `P = 0.0041`) together with stronger among-taxon integration (`33/36` relations; bootstrap median-RV difference positive in `100%` of replicates). It is not a new analysis and must not be interpreted as evidence that evolution necessarily increases integration or as genetic, developmental, functional or causal modularity.
+The estimator-validity audit is post-hoc and was motivated after the raw result was known. Its equal-n result retains the qualitative scale conclusion: among-minus-within median RV has median `+0.019316`, 95% interval `+0.001884` to `+0.030352`, and is positive in `98.3%` of 1,000 replicates. The median number of relations stronger among taxa is `23/36`, and a majority of relations is stronger among taxa in `97.3%` of replicates. Pairwise permutation-null centring reduces the relation count to `19/36` but retains a larger median null-centred RV among taxa; coordinate standardization retains `34/36`, matrix alignment `rho = 0.40849` with QAP `P = 0.0067`, and module cohesion at both scales.
+
+Therefore the current supported claim is that visible-phenotype integration is **stronger overall among taxa**, not that the raw `33/36` count is estimator-invariant. The figure and its provenance preserve both the frozen raw analysis and the estimator-validity boundary. None of these results establishes that evolution increases integration or demonstrates genetic, developmental, functional or causal modularity.
 
 The `Render current scale integration figure` workflow runs the focused renderer test, builds PNG/PDF outputs and uploads the figure plus provenance as a GitHub Actions artifact for visual QA. The generic stem `Figure_v3_scale_integration` is intentional until final manuscript figure numbering is frozen.
 

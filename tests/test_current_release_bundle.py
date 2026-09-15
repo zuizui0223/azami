@@ -19,7 +19,7 @@ from reproducibility.release_metadata_contract import (
     V2_RECORD_DOI,
     validate_release_metadata,
 )
-from reproducibility.run_current_analysis import INPUTS
+from reproducibility.run_current_analysis import INPUTS, commands
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,14 +37,25 @@ def test_release_input_contract_is_exactly_the_current_runner_contract():
     assert NATIVE_SHA == "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
 
 
+def test_current_replay_has_eight_stages_and_ends_with_estimator_validity(tmp_path):
+    cmds = commands(tmp_path / "inputs", tmp_path / "results")
+    assert len(cmds) == 8
+    assert cmds[-1][0] == "analysis.v3.run_rv_estimator_validity"
+    assert "--equal-n-replicates" in cmds[-1]
+    assert cmds[-1][cmds[-1].index("--equal-n-replicates") + 1] == "1000"
+
+
 def test_current_reference_release_surface_is_frozen_and_verified():
     rows = verified_reference_rows()
-    assert len(rows) == 15
+    assert len(rows) == 16
     manifest = json.loads(REFERENCE_MANIFEST.read_text(encoding="utf-8"))
     assert manifest["files"] == rows
     for row in rows:
         path = REFERENCE / row["path"]
         assert hashlib.sha256(path.read_bytes()).hexdigest() == row["sha256"]
+    estimator = next(row for row in rows if row["path"] == "estimator_validity/rv_estimator_validity_summary.json")
+    assert estimator["artifact"] == 10382387052
+    assert estimator["archive_sha256"] == "345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e"
 
 
 def test_final_release_fails_closed_on_unfrozen_surfaces():
@@ -133,6 +144,8 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
         10135679053,
         10291656193,
         10292140117,
+        10382387052,
+        10382578412,
     }
     assert staged[10291656193]["drive_file_id"] == "1UnPG1mhjdJKbXFLJDbn6l-TrFtAXgJSd"
     assert staged[10291656193]["archive_sha256"] == "2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766"
@@ -142,6 +155,12 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert taxonomy["headline_taxonomy_robust"] is True
     assert taxonomy["contains_exact_native_status"] is True
     assert taxonomy["native_status_sha256_after_permitted_newline_normalization"] == NATIVE_SHA
-    assert receipt["reference_file_count"] == 15
+    estimator = staged[10382387052]
+    assert estimator["drive_file_id"] == "1JvjPWBG-EuouuTVgLjm6VYyjk7ui58Sd"
+    assert estimator["equal_n_strength_gate_pass"] is True
+    figure = staged[10382578412]
+    assert figure["drive_file_id"] == "19-xLleKgq2Gj3MjQtidXsb4A6E-yih_4"
+    assert figure["png_sha256"] == "a4c103fc23d1c2640ca87601bcf8d05e59826f975d943c72a24cf0c61d31452c"
+    assert receipt["reference_file_count"] == 16
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False

@@ -1,12 +1,15 @@
 {
-  "executed_on": "2026-09-11",
-  "platform": "Windows",
+  "executed_on": "2026-09-15",
+  "platform": "GitHub Actions ubuntu-24.04",
   "python": "3.12.14",
   "scientific_reference_commit": "fe25abd46e7235c85e6da191f976e1c8a02d0406",
-  "cleanup_implementation_commit": "3cd9422",
-  "execution": "python -m reproducibility.run_current_analysis --download --prepare-only; python -m reproducibility.run_current_analysis",
-  "completed_numerical_stages": 7,
-  "input_verification": "All four ZIPs and all seven extracted inputs passed frozen SHA-256 checks; native-status normalization followed the original contract.",
+  "replay_head_sha": "a15eedca318c84962eaf519dc720f4e6ed8daff7",
+  "workflow_run": 34935214080,
+  "workflow_artifact": 10382954095,
+  "workflow_artifact_sha256": "2064b63366681aa3bd708fef00d2e7ac50d20a7fad771849b793c0d2b6957a0e",
+  "execution": "python -m reproducibility.run_current_analysis --download",
+  "completed_numerical_stages": 8,
+  "input_verification": "All four frozen numerical ZIPs and their required members passed SHA-256 checks; native-status normalization followed the frozen LF/CRLF contract.",
   "libraries": {
     "numpy": "2.4.6",
     "pandas": "3.0.5",
@@ -15,10 +18,11 @@
     "biopython": "1.88"
   },
   "numerical_result_comparison": "current_replay_validation.json",
-  "validation_note": "The initial strict schema comparison found two artifact fields already retired from scientific main and one previously changed prose label. After explicitly scoping those differences in the validator, all 15 aggregate files matched current numerical results. No estimate, test, seed, tolerance or model was changed to obtain agreement.",
-  "tests": "94 passed, 3 subtests passed",
-  "frozen_figure_build": "5 endpoint main figures and 7 endpoint supplementary figures rebuilt successfully in scratch space; not a claim of current manuscript layout QA",
+  "aggregate_files_compared": 16,
+  "validation_note": "All 16 current aggregate reference files matched the eight-stage replay under the frozen numerical tolerances. The sixteenth file is the bounded post-hoc RV estimator-validity summary. No ecological outcome, cohort, construct definition or environmental test family was changed to obtain agreement.",
+  "estimator_validity_note": "The equal-n sensitivity supports only the qualitative statement that visible-phenotype integration is stronger overall among taxa; raw 33/36 remains a descriptive frozen-estimator value rather than an estimator-invariant claim.",
   "new_images_downloaded": false,
-  "new_scientific_analyses_added": false,
+  "new_ecological_discovery_search_added": false,
+  "posthoc_estimator_validity_sensitivity_added": true,
   "public_current_zenodo_release_verified": false
 }

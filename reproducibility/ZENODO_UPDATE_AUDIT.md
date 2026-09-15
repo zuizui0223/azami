@@ -14,13 +14,11 @@ Checked on 2026-09-11 against the live [record API](https://zenodo.org/api/recor
 
 The ZIP contains its manifest/readme/checksums/metadata and exactly four embedded input archives: continuous measurements `9612943217`, v2 multilevel output `9632715852`, trees `8227254443`, and region lookup `8983877726`. It does not contain the full current analysis package.
 
-## 2026-09-12 durable staging update
+## Durable staging updates
 
-The public Zenodo record has **not** been changed. However, the principal current-only artifacts that were still dependent on expiring GitHub Actions storage have now been recovered by exact artifact identity, re-verified against the frozen SHA-256 values, and copied into the existing non-public durable Drive archive.
+The public Zenodo record has **not** been changed. Current-only artifacts that would otherwise depend on expiring GitHub Actions storage have been recovered by exact artifact identity, re-verified against SHA-256 values and copied into the existing non-public durable Drive archive. The machine-readable receipt is [`CURRENT_RELEASE_STAGING_20260912.json`](CURRENT_RELEASE_STAGING_20260912.json); it has been extended as new submission-readiness analyses closed.
 
-The machine-readable receipt is [`CURRENT_RELEASE_STAGING_20260912.json`](CURRENT_RELEASE_STAGING_20260912.json).
-
-New durable copies:
+Durable copies now include:
 
 | Role | Actions artifact | Verified ZIP SHA-256 | Durable status |
 |---|---:|---|---|
@@ -29,8 +27,12 @@ New durable copies:
 | Construct-scale integration outputs | `10131007603` | `a483e116c46211023df95bef9388aa89deaef3441d85701fc93792867884514a` | copied to durable Drive archive |
 | Complete-construct upgrade + direct scale contrast | `10136229131` | `7b4c5703b048ff108cd794921394ae22d1423461c9aaf330b47029c5d1f4908f` | copied to durable Drive archive |
 | Assessability + technical-stress outputs | `10135679053` | `fa80f6079d676186d48665a574b5e68f906037a466a9e3101a57d87ee02f5ba7` | copied to durable Drive archive |
+| WCVP accepted-name sensitivity | `10292140117` | `dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5` | copied to durable Drive archive; contains exact native-status input |
+| RV estimator-validity sensitivity | `10382387052` | `345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e` | copied to durable Drive archive |
+| Pre-estimator scale-integration figure | `10291656193` | `2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766` | durable historical figure artifact |
+| Estimator-validity scale-integration figure | `10382578412` | `d538c428f3acb3eab6a203c0a0a435ce0ae51e0da9b4f23b7d42e92fcc0e3af7` | current manuscript figure candidate; visual QA passed |
 
-Together, the four current-output archives above are the source archives for the 15 checksum-verified current reference files indexed in `current_reference/manifest.json`. Continuous measurements `9612943217`, broad-region lookup `8983877726`, and the 52-tree historical input `8227254443` were already recorded in `durable_archive_manifest.json`.
+The current reference manifest now contains **16 checksum-verified files**. The six pre-estimator current-output archives plus the estimator-validity artifact supply those reference files; continuous measurements `9612943217`, broad-region lookup `8983877726`, and the 52-tree historical input `8227254443` were already recorded in `durable_archive_manifest.json`.
 
 This closes an **ephemeral-storage risk**, not the public-release gate. A private durable copy is not a Zenodo publication and must not be described as credential-free reproducibility.
 
@@ -39,20 +41,20 @@ This closes an **ephemeral-storage risk**, not the public-release gate. A privat
 | Material | Current staging status | Action for public current release |
 |---|---|---|
 | Continuous measurements | exact original artifact already durable and present in v2 release | Retain original bytes and checksum |
-| Full nine-predictor process environment, artifact `9633419268` | checksum-verified and durably staged on 2026-09-12 | Include exact staged archive; v2 multilevel output is not this input |
+| Full nine-predictor process environment, artifact `9633419268` | checksum-verified and durably staged | Include exact staged archive; v2 multilevel output is not this input |
 | Broad-region lookup and 52 placement trees | exact artifacts already durable and present in v2 release | Retain original bytes and checksums |
-| Native-status table used in sensitivity, not primary filtering | recoverable from immutable Git tag; not yet a dedicated staged release file | Include exact checksum-verified table for offline reproduction |
+| Native-status table used in sensitivity, not primary filtering | exact input is preserved inside the durable WCVP sensitivity artifact and has frozen SHA identity | Extract the exact member into the final release input set and reverify the permitted newline-normalized SHA |
 | Current code and numerical dependencies | repository code exists; no final release archive has yet been frozen | Include code archive pinned to the final cleaned main commit and `requirements-current.txt` or equivalent pinned environment |
-| Current aggregate reference outputs | all four source ZIPs for the 15-file manifest are checksum-verified and durably staged | Include the 15 checksum-verified files indexed in `current_reference/manifest.json` |
-| Current figures and provenance | current figure recipes exist, but final manuscript figure package is not yet frozen | Add final current figure source code, input map and export files after document/figure QA |
-| Full replay validation | local seven-stage replay and 15-file comparison receipts exist | Include current input-verification and comparison receipts, runtime versions and execution command |
+| Current aggregate reference outputs | 16-file manifest is checksum-verified; estimator-validity summary is included and its source artifact is durable | Include all 16 files indexed in `current_reference/manifest.json` |
+| Current figures and provenance | current Figure 3 estimator-validity candidate is checksum-verified, durably staged and visually QA'd; the complete final manuscript figure package is not yet frozen | Add final current figure source code, input map and all submitted exports after document/figure QA |
+| Full replay validation | earlier seven-stage / 15-file receipts exist, but the current runner now has eight stages and a 16-file reference surface | Produce a new eight-stage replay and 16-file comparison receipt from the final code surface |
 | License metadata | existing data record says CC BY 4.0; repository code is MIT | Identify MIT software separately; retain and verify third-party/data terms |
 
 Current numerical input identities are executable in `run_current_analysis.py`; current reference output identities are recorded in `current_reference/manifest.json`. The existing v2 release and its DOI must remain intact. Use a new version under the existing concept, or linked code/data records if different licensing requires separation; do not silently replace the v2 package.
 
 ## Remaining release gate
 
-The material-recovery problem is now narrower. The remaining work is to freeze/package the exact native-status input, final code/dependency revision, replay receipts, and final figure/provenance surface; resolve release metadata/licensing; publish the approved new version; then perform the anonymous redownload test.
+The material-recovery problem is now narrow. The remaining work is to freeze/package the final code/dependency revision, produce the updated eight-stage replay/16-file comparison receipts, freeze the complete submitted figure/provenance surface, resolve release metadata/licensing, publish the approved new version, then perform the anonymous redownload test.
 
 Before claiming current credential-free reproducibility: publish the approved new version, download it without owner credentials, verify every checksum, unpack into a clean directory, and complete the numerical run and reference comparison. Retain unsupported rows and sensitivity failures. GitHub Actions success, a private Drive copy, or local file presence alone does not close this public-archive requirement.
 

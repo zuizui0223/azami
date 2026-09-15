@@ -1,0 +1,59 @@
+{
+  "analysis_id": "ch1_v3_rv_estimator_validity_20260915",
+  "status": "posthoc_estimator_validity_sensitivity",
+  "prospective_status": "not prospective; motivated after the raw-RV result was known",
+  "common_cohort": {
+    "observations": 1734,
+    "taxa": 42,
+    "constructs": 9,
+    "relations": 36
+  },
+  "frozen_raw_result": {
+    "median_within_rv": 0.0022379035408083736,
+    "median_among_rv": 0.0432122597735487,
+    "relations_stronger_among": 33
+  },
+  "equal_n_within_resampling": {
+    "replicates": 1000,
+    "within_rows_per_replicate": 42,
+    "fixed_among_rows": 42,
+    "matched_within_median_rv_median": 0.02389668892212158,
+    "matched_within_median_rv_low95": 0.012860695634430363,
+    "matched_within_median_rv_high95": 0.041328540217921594,
+    "among_minus_within_median_rv_median": 0.01931557085142712,
+    "among_minus_within_median_rv_low95": 0.0018837195556271062,
+    "among_minus_within_median_rv_high95": 0.030351564139118336,
+    "probability_positive_median_difference": 0.983,
+    "relations_stronger_among_median": 23.0,
+    "relations_stronger_among_low95": 18.0,
+    "relations_stronger_among_high95": 27.0,
+    "probability_majority_relations_stronger_among": 0.973,
+    "overall_strength_gate_pass": true,
+    "pair_count_majority_gate_pass": true
+  },
+  "permutation_null_centering": {
+    "permutations_per_pair_per_scale": 499,
+    "median_null_centered_within_rv": -0.0010682892688526106,
+    "median_null_centered_among_rv": 0.006950475468889468,
+    "median_null_centered_among_minus_within": 0.008018764737742079,
+    "relations_stronger_among_after_null_centering": 19,
+    "relations_total": 36,
+    "role": "diagnostic only; no new significance test"
+  },
+  "joint_coordinate_standardization": {
+    "median_within_rv": 0.0022453067732613272,
+    "median_among_rv": 0.0497996390431653,
+    "relations_stronger_among": 34,
+    "relations_total": 36,
+    "matrix_alignment_rho": 0.40849420849420853,
+    "qap_p_one_sided": 0.0067,
+    "module_within_p_one_sided": 0.001,
+    "module_among_p_one_sided": 0.0369
+  },
+  "manuscript_decision": {
+    "retain_stronger_overall_among_language": true,
+    "retain_raw_33_of_36_as_bias_robust_claim": false,
+    "recommended_boundary": "If the equal-n gate passes, retain the qualitative statement that integration is stronger overall among taxa, but label raw 33/36 and raw median-RV differences as descriptive values from the frozen estimator. Report the equal-n sensitivity in Supporting Information."
+  },
+  "claim_boundary": "Estimator robustness supports only a descriptive scale contrast in visible image phenotypes. It does not establish evolutionary increase in integration, genetic/developmental modularity, or a causal mechanism."
+}

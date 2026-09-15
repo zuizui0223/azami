@@ -23,6 +23,8 @@ from legacy.v2.analysis import azami_figstyle as fs
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / "reproducibility" / "current_reference"
 UPGRADE = REFERENCE / "upgrade"
+ESTIMATOR = REFERENCE / "estimator_validity" / "rv_estimator_validity_summary.json"
+ESTIMATOR_SHA256 = "081b37b798de55cc6eb6bb2948b6737a173644fac3ea411505a617857704951e"
 STEM = "Figure_v3_scale_integration"
 
 SOURCE_PATHS = (
@@ -64,6 +66,18 @@ def source_receipt() -> list[dict]:
         if actual != expected:
             raise ValueError(f"{rel}: SHA-256 mismatch {actual}; expected {expected}")
         receipt.append({"path": rel, "sha256": actual})
+    estimator_actual = sha256(ESTIMATOR)
+    if estimator_actual != ESTIMATOR_SHA256:
+        raise ValueError(
+            f"estimator-validity summary: SHA-256 mismatch {estimator_actual}; expected {ESTIMATOR_SHA256}"
+        )
+    receipt.append({
+        "path": "estimator_validity/rv_estimator_validity_summary.json",
+        "sha256": estimator_actual,
+        "run": 34933875866,
+        "artifact": 10382387052,
+        "artifact_sha256": "345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e",
+    })
     return receipt
 
 
@@ -75,6 +89,7 @@ def load_inputs() -> dict:
     bootstrap = pd.read_csv(UPGRADE / "complete18_taxon_bootstrap.csv")
     summary = json.loads((UPGRADE / "construct_scale_contrast_summary.json").read_text(encoding="utf-8"))
     upgrade = json.loads((UPGRADE / "construct_scale_upgrade_report.json").read_text(encoding="utf-8"))
+    estimator = json.loads(ESTIMATOR.read_text(encoding="utf-8"))
 
     expected = list(CORE)
     for name, matrix in (("within", within), ("among", among)):
@@ -95,6 +110,15 @@ def load_inputs() -> dict:
         "minimum_complete_observations_per_taxon": 5,
     }:
         raise ValueError("common cohort differs from frozen 1,734-observation / 42-taxon cohort")
+    if estimator["common_cohort"] != {
+        "observations": 1734,
+        "taxa": 42,
+        "constructs": 9,
+        "relations": 36,
+    }:
+        raise ValueError("estimator-validity cohort differs from the frozen common cohort")
+    if not estimator["equal_n_within_resampling"]["overall_strength_gate_pass"]:
+        raise ValueError("estimator-validity gate does not support stronger-overall-among wording")
 
     upper = np.triu_indices(len(CORE), 1)
     within_upper = within.to_numpy(float)[upper]
@@ -114,6 +138,7 @@ def load_inputs() -> dict:
         "bootstrap": bootstrap,
         "summary": summary,
         "upgrade": upgrade,
+        "estimator": estimator,
         "sources": sources,
     }
 
@@ -127,7 +152,6 @@ def _matrix_panel(ax, matrix: pd.DataFrame, title: str, norm: PowerNorm):
     ax.set_xticks(ticks, labels, rotation=55, ha="right", rotation_mode="anchor")
     ax.set_yticks(ticks, labels)
     ax.tick_params(length=0)
-    # Module boundaries: presentation | colour | head form | involucre/armature.
     for boundary in (0.5, 3.5, 5.5):
         ax.axhline(boundary, color="white", linewidth=0.8)
         ax.axvline(boundary, color="white", linewidth=0.8)
@@ -140,15 +164,12 @@ def render(out_dir: Path) -> dict:
     within = data["within"]
     among = data["among"]
     pairwise = data["pairwise"]
-    bootstrap = data["bootstrap"]
     summary = data["summary"]
     upgrade = data["upgrade"]
+    estimator = data["estimator"]
 
     fs.use(grid=False)
     fig = fs.figure(width="double", height=6.45)
-    # Long construct labels need more than the generic 10% left margin at the
-    # fixed 6.27-inch manuscript width. Keep this explicit and test by rendered
-    # artifact QA rather than relying on bbox_inches='tight'.
     gs = fig.add_gridspec(2, 2, left=0.15, right=0.92, bottom=0.09, top=0.95, wspace=0.38, hspace=0.38)
     ax_a = fig.add_subplot(gs[0, 0])
     ax_b = fig.add_subplot(gs[0, 1])
@@ -166,7 +187,6 @@ def render(out_dir: Path) -> dict:
     cbar = fig.colorbar(image, ax=[ax_a, ax_b], orientation="vertical", fraction=0.035, pad=0.025, aspect=24)
     cbar.set_label("Pairwise RV integration", rotation=270, labelpad=11)
 
-    # Direct relation-by-relation scale contrast.
     x = pairwise["within_taxon_rv"].to_numpy(float)
     y = pairwise["among_taxon_rv"].to_numpy(float)
     positive = y > x
@@ -183,12 +203,14 @@ def render(out_dir: Path) -> dict:
     ax_c.set_ylabel("Among-taxon RV")
     ax_c.set_title("(c) Relation-wise scale contrast", loc="left", fontsize=fs.FONT["panel"], fontweight="bold", pad=4)
     alignment = upgrade["common_cohort_matrix_alignment"]
+    equal_n = estimator["equal_n_within_resampling"]
     note_box = dict(facecolor="white", edgecolor="none", alpha=0.82, pad=1.4)
     ax_c.text(
         0.03,
         0.97,
         f"ρ = {alignment['rho']:.3f}; QAP P = {alignment['qap_p_one_sided']:.4f}\n"
-        f"{summary['observed']['relations_stronger_among']}/36 relations stronger among taxa",
+        f"raw: {summary['observed']['relations_stronger_among']}/36 among > within\n"
+        f"equal-n median: {equal_n['relations_stronger_among_median']:.0f}/36",
         transform=ax_c.transAxes,
         ha="left",
         va="top",
@@ -197,39 +219,67 @@ def render(out_dir: Path) -> dict:
     )
     ax_c.legend(loc="lower right", fontsize=fs.FONT["footnote"])
 
-    # Bootstrap uncertainty in the direct among-minus-within strength contrast.
-    delta = bootstrap["delta_median_rv"].to_numpy(float)
-    ax_d.hist(delta, bins=24, edgecolor="white", linewidth=0.4)
-    observed = summary["observed"]["difference_of_medians_among_minus_within"]
+    raw_boot = summary["taxon_bootstrap"]
+    rows = [
+        (
+            "Raw taxon\nbootstrap",
+            raw_boot["difference_of_median_rv_median"],
+            raw_boot["difference_of_median_rv_low95"],
+            raw_boot["difference_of_median_rv_high95"],
+            raw_boot["probability_median_among_exceeds_within"],
+        ),
+        (
+            "Equal-n\nsensitivity",
+            equal_n["among_minus_within_median_rv_median"],
+            equal_n["among_minus_within_median_rv_low95"],
+            equal_n["among_minus_within_median_rv_high95"],
+            equal_n["probability_positive_median_difference"],
+        ),
+    ]
+    display_rows = rows[::-1]
+    for y_pos, (_, centre, low_ci, high_ci, _) in enumerate(display_rows):
+        xerr = np.array([[centre - low_ci], [high_ci - centre]])
+        ax_d.errorbar(
+            centre,
+            y_pos,
+            xerr=xerr,
+            fmt="o",
+            capsize=3,
+            linewidth=1.2,
+            markersize=5,
+        )
     ax_d.axvline(0, linestyle="--", linewidth=0.8, color=fs.C["rule"])
-    ax_d.axvline(observed, linewidth=1.2, color=fs.C["black"], label="observed")
-    ax_d.set_xlabel("Bootstrap Δ median RV (among − within)")
-    ax_d.set_ylabel("Replicates")
-    ax_d.set_title("(d) Taxon-bootstrap contrast", loc="left", fontsize=fs.FONT["panel"], fontweight="bold", pad=4)
-    boot = summary["taxon_bootstrap"]
+    ax_d.set_yticks(
+        [0, 1],
+        [
+            f"{display_rows[0][0]}\nP(Δ>0)={display_rows[0][4]:.3f}",
+            f"{display_rows[1][0]}\nP(Δ>0)={display_rows[1][4]:.3f}",
+        ],
+    )
+    ax_d.set_xlabel("Δ median RV (among − within)")
+    ax_d.set_title("(d) Estimator-validity contrast", loc="left", fontsize=fs.FONT["panel"], fontweight="bold", pad=4)
     ax_d.text(
-        0.97,
-        0.97,
-        f"median = {boot['difference_of_median_rv_median']:+.3f}\n"
-        f"95% interval {boot['difference_of_median_rv_low95']:+.3f} to {boot['difference_of_median_rv_high95']:+.3f}\n"
-        f"P(Δ > 0) = {boot['probability_median_among_exceeds_within']:.3f}",
+        0.03,
+        0.04,
+        "Equal-n: one centred observation per taxon (42 rows)",
         transform=ax_d.transAxes,
-        ha="right",
-        va="top",
-        fontsize=fs.FONT["annot"],
+        ha="left",
+        va="bottom",
+        fontsize=fs.FONT["footnote"],
         bbox=note_box,
     )
-    ax_d.legend(loc="upper left", fontsize=fs.FONT["footnote"])
+    ax_d.set_ylim(-0.55, 1.55)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     written = fs.savefig(fig, STEM, width="double", outdir=out_dir)
     plt.close(fig)
 
     provenance = {
-        "schema_version": 1,
+        "schema_version": 2,
         "figure_stem": STEM,
         "figure_role": "current Chapter 1 cross-scale integration main-figure candidate",
         "analysis_id": summary["analysis_id"],
+        "estimator_validity_analysis_id": estimator["analysis_id"],
         "common_cohort": upgrade["common_cohort"],
         "construct_order": list(CORE),
         "construct_modules": MODULES,
@@ -237,26 +287,31 @@ def render(out_dir: Path) -> dict:
         "display_transforms": {
             "matrix_colour_norm": "PowerNorm(gamma=0.45) on untransformed RV values; shared across panels a-b",
             "relation_scatter_axes": "log-log display only; statistics use untransformed RV values",
-            "bootstrap_axis": "linear display of frozen bootstrap differences",
+            "estimator_validity_axis": "linear point-interval display of frozen raw bootstrap and equal-n summary values",
         },
         "panels": {
             "a": "within-taxon 9 x 9 construct integration matrix",
             "b": "among-taxon 9 x 9 construct integration matrix on the identical cohort",
-            "c": "36 relation-wise within versus among RV values with 1:1 reference",
-            "d": "1,000 taxon-bootstrap differences in median RV, among minus within",
+            "c": "36 raw relation-wise within versus among RV values with 1:1 reference and equal-n median relation-count context",
+            "d": "raw taxon-bootstrap and equal-n estimator-validity summaries of among-minus-within median RV",
         },
         "headline_metrics": {
             "matrix_alignment_rho": upgrade["common_cohort_matrix_alignment"]["rho"],
             "matrix_alignment_qap_p": upgrade["common_cohort_matrix_alignment"]["qap_p_one_sided"],
-            "median_within_rv": summary["observed"]["median_within_rv"],
-            "median_among_rv": summary["observed"]["median_among_rv"],
-            "relations_stronger_among": summary["observed"]["relations_stronger_among"],
-            "bootstrap_probability_among_exceeds_within": boot["probability_median_among_exceeds_within"],
+            "raw_median_within_rv": summary["observed"]["median_within_rv"],
+            "raw_median_among_rv": summary["observed"]["median_among_rv"],
+            "raw_relations_stronger_among": summary["observed"]["relations_stronger_among"],
+            "equal_n_difference_median": equal_n["among_minus_within_median_rv_median"],
+            "equal_n_difference_low95": equal_n["among_minus_within_median_rv_low95"],
+            "equal_n_difference_high95": equal_n["among_minus_within_median_rv_high95"],
+            "equal_n_probability_positive": equal_n["probability_positive_median_difference"],
+            "equal_n_relations_stronger_among_median": equal_n["relations_stronger_among_median"],
         },
         "claim_boundary": (
-            "presentation-only visualization of frozen image-defined construct integration; "
-            "not evidence that evolution increases integration and not genetic, developmental, "
-            "functional or causal modularity"
+            "raw RV values remain frozen descriptive outputs; equal-n sensitivity supports only the qualitative "
+            "statement that visible-phenotype integration is stronger overall among taxa. Raw 33/36 is not "
+            "treated as an estimator-invariant count. No genetic, developmental, functional or causal modularity "
+            "is inferred."
         ),
         "outputs": [{"path": path.name, "sha256": sha256(path), "size_bytes": path.stat().st_size} for path in written],
     }

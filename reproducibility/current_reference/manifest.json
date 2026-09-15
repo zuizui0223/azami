@@ -120,6 +120,14 @@
       "artifact": 10135679053,
       "archive_sha256": "fa80f6079d676186d48665a574b5e68f906037a466a9e3101a57d87ee02f5ba7",
       "member": "technical_stress/frozen_technical_error_stress_report.json"
+    },
+    {
+      "path": "estimator_validity/rv_estimator_validity_summary.json",
+      "sha256": "081b37b798de55cc6eb6bb2948b6737a173644fac3ea411505a617857704951e",
+      "run": 34933875866,
+      "artifact": 10382387052,
+      "archive_sha256": "345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e",
+      "member": "result/rv_estimator_validity_summary.json"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "status": "PASS",
   "reference_commit": "fe25abd46e7235c85e6da191f976e1c8a02d0406",
-  "aggregate_files_compared": 15,
+  "aggregate_files_compared": 16,
   "files": [
     "axes/biological_axes_among_min5.csv",
     "axes/biological_axes_report.json",
@@ -17,7 +17,8 @@
     "upgrade/construct_scale_contrast_summary.json",
     "upgrade/construct_scale_upgrade_report.json",
     "assessability/assessability_selection_report.json",
-    "technical_stress/frozen_technical_error_stress_report.json"
+    "technical_stress/frozen_technical_error_stress_report.json",
+    "estimator_validity/rv_estimator_validity_summary.json"
   ],
   "numerical_tolerance": {
     "relative": 1e-08,
@@ -32,5 +33,8 @@
     ]
   },
   "historical_wording_normalization": "Only the known upgrade claim_boundary wording is mapped to its fe25abd wording; no numerical value is normalized.",
-  "scope": "Numerical replay of existing models; not independent biological validation or public archive certification"
+  "scope": "Numerical replay of existing models including the bounded post-hoc RV estimator-validity sensitivity; not independent biological validation or public archive certification",
+  "workflow_run": 34935214080,
+  "workflow_artifact": 10382954095,
+  "workflow_artifact_sha256": "2064b63366681aa3bd708fef00d2e7ac50d20a7fad771849b793c0d2b6957a0e"
 }

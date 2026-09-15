@@ -12,19 +12,21 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def test_current_entrypoints_import_and_counts_stay_fixed():
     cmds=commands(Path('inputs'),Path('results'))
-    assert len(cmds)==7
+    assert len(cmds)==8
     for cmd in cmds:
         assert importlib.import_module(cmd[0])
     assert cmds[0][-4:]==['--permutations','9999','--seed','20260910']
+    assert cmds[-1][0]=='analysis.v3.run_rv_estimator_validity'
+    assert cmds[-1][-2:]==['--seed','20260915']
     assert '--native-only' not in str(cmds)
 
 
 def test_reference_files_match_original_artifacts():
     manifest=json.loads((REFERENCE/'manifest.json').read_text())
-    assert len(manifest['files'])==15
+    assert len(manifest['files'])==16
     for row in manifest['files']:
         assert hashlib.sha256((REFERENCE/row['path']).read_bytes()).hexdigest()==row['sha256']
-    assert validate(REFERENCE)['aggregate_files_compared']==15
+    assert validate(REFERENCE)['aggregate_files_compared']==16
 
 
 def test_verifier_fails_closed_and_detects_changed_results(tmp_path):
@@ -34,7 +36,6 @@ def test_verifier_fails_closed_and_detects_changed_results(tmp_path):
     with pytest.raises(AssertionError): compare({'beta':-.345},{'beta':.345})
     with pytest.raises(AssertionError): compare({'pass':False},{'pass':True})
     with pytest.raises(AssertionError): compare([1,2],[1])
-    # Retirement is limited to the two named historical fields, never estimates.
     result=active_scope({'median_within_rv':.1,'integration_environment_coupling':{}},
                         'upgrade/construct_scale_upgrade_report.json')
     assert result=={'median_within_rv':.1}
