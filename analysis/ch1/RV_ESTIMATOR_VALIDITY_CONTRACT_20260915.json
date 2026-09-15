@@ -1,0 +1,35 @@
+{
+  "analysis_id": "ch1_v3_rv_estimator_validity_20260915",
+  "status": "posthoc_estimator_validity_sensitivity",
+  "motivation": "The common-cohort headline compares raw RV coefficients computed from 1734 within-taxon observations with RV coefficients computed from 42 taxon medians. Classical RV has a positive finite-sample baseline that depends on sample size and block dimensionality. This sensitivity asks whether the qualitative conclusion of stronger overall among-taxon integration survives controls for that estimator property.",
+  "prospective_status": "Not prospective. The check was motivated by manuscript audit after the raw-RV result was known. Decision rules below are frozen before the repository rerun and must not be presented as preregistration.",
+  "frozen_input_scope": {
+    "trait_artifact": 9612943217,
+    "trait_zip_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+    "environment_artifact": 9633419268,
+    "environment_zip_sha256": "d7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4",
+    "common_complete_observations": 1734,
+    "common_taxa": 42,
+    "constructs": 9,
+    "relations": 36
+  },
+  "diagnostics": {
+    "equal_n_within_resampling": {
+      "description": "Centre construct features within taxon using the full 1734-row common cohort, then draw one centred observation per taxon so the within-scale RV calculation has the same nominal row count (42) as the among-taxon median calculation. Repeat 1000 times.",
+      "replicates": 1000,
+      "primary_decision_rule": "Retain the manuscript phrase 'stronger overall among taxa' only if the 2.5th percentile of among-minus-within median RV is greater than zero and at least 0.95 of replicates have a positive median difference.",
+      "pair_count_rule": "Treat the relation-count statement as estimator-robust only if at least 0.95 of replicates have more than 18 of 36 relations stronger among taxa. Do not require recovery of the raw 33/36 count."
+    },
+    "permutation_null_centering": {
+      "description": "For each construct pair estimate the chance RV baseline separately at each scale. Among taxa, permute the right construct across the 42 taxon medians. Within taxa, permute the right construct within each taxon after taxon centring, preserving taxon sizes and equal-total-taxon weighting. Subtract the mean null RV from the observed RV.",
+      "permutations_per_pair_per_scale": 499,
+      "role": "Diagnostic only; not a replacement confirmatory estimator and not used to create new P values."
+    },
+    "joint_coordinate_standardization": {
+      "description": "Standardize every construct coordinate by the across-taxon-median standard deviation before recomputing RV. This changes only multivariate-block weighting in practice and checks whether the result depends on raw coordinate scales within joint constructs.",
+      "qap_permutations": 9999,
+      "role": "Diagnostic robustness to within-block coordinate scaling."
+    }
+  },
+  "claim_boundary": "A pass supports only the descriptive statement that among-taxon visible-phenotype integration is stronger overall in this common cohort under these estimator diagnostics. It does not establish evolutionary increase in integration, genetic/developmental modularity, or a causal mechanism."
+}
