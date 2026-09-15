@@ -63,7 +63,7 @@
         "Figure_v3_scale_integration.pdf",
         "Figure_v3_scale_integration_provenance.json"
       ],
-      "visual_qa": "CI-rendered PNG inspected after final-width margin fix; left/right clipping regression test passed"
+      "visual_qa": "Superseded as the current manuscript candidate after the estimator-validity audit; retained as durable history."
     },
     {
       "role": "wcvp_authority_taxonomy_sensitivity",
@@ -79,6 +79,37 @@
       "contains_exact_native_status": true,
       "native_status_member": "input/observation_native_status.csv",
       "native_status_sha256_after_permitted_newline_normalization": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+    },
+    {
+      "role": "rv_estimator_validity_sensitivity",
+      "github_actions_artifact_id": 10382387052,
+      "archive_sha256": "345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e",
+      "size_bytes": 71325064,
+      "source_workflow_run": 34933875866,
+      "source_head_sha": "1c3ea9db02bb0bd3a4558f4e64e6abe34bf7ebd2",
+      "drive_file_id": "1JvjPWBG-EuouuTVgLjm6VYyjk7ui58Sd",
+      "drive_file_name": "artifact-10382387052-ch1-rv-estimator-validity.zip",
+      "frozen_summary": "reproducibility/current_reference/estimator_validity/rv_estimator_validity_summary.json",
+      "equal_n_strength_gate_pass": true,
+      "claim_boundary": "Post-hoc estimator-validity sensitivity; supports stronger overall among taxa but does not promote raw 33/36 as estimator-invariant."
+    },
+    {
+      "role": "current_scale_integration_figure_estimator_validity_ci_artifact",
+      "github_actions_artifact_id": 10382578412,
+      "archive_sha256": "d538c428f3acb3eab6a203c0a0a435ce0ae51e0da9b4f23b7d42e92fcc0e3af7",
+      "size_bytes": 717545,
+      "source_workflow_run": 34934521804,
+      "source_head_sha": "ee675156c3fa24318007eaacdb7b837b48e85857",
+      "drive_file_id": "19-xLleKgq2Gj3MjQtidXsb4A6E-yih_4",
+      "drive_file_name": "artifact-10382578412-ch1-v3-scale-integration-figure-estimator-validity.zip",
+      "contents": [
+        "Figure_v3_scale_integration.png",
+        "Figure_v3_scale_integration.pdf",
+        "Figure_v3_scale_integration_provenance.json"
+      ],
+      "png_sha256": "a4c103fc23d1c2640ca87601bcf8d05e59826f975d943c72a24cf0c61d31452c",
+      "pdf_sha256": "d877d78eac23f451fde60578e85b49acf5c23bddbe6b9fec37469c4d4bf5e5fe",
+      "visual_qa": "CI-rendered PNG inspected; equal-n estimator-validity panel readable; left/right clipping regression test passed."
     }
   ],
   "already_durable_current_inputs": {
@@ -88,11 +119,11 @@
     "evidence": "reproducibility/durable_archive_manifest.json"
   },
   "current_reference_manifest": "reproducibility/current_reference/manifest.json",
-  "reference_file_count": 15,
+  "reference_file_count": 16,
   "remaining_before_public_current_release": [
     "extract the exact native-status member from the durable taxonomy artifact into the final release input set and reverify NATIVE_SHA",
     "pin and package the final cleaned code revision and numerical dependencies",
-    "include current replay execution and 15-file comparison receipts",
+    "include current replay execution and 16-file comparison receipts from the eight-stage numerical replay",
     "freeze and stage the remaining final Main/Supporting manuscript figure exports and provenance after document QA",
     "resolve and document software/data/third-party licensing in approved release metadata",
     "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
