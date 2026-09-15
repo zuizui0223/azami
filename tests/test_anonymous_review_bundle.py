@@ -8,12 +8,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_anonymous_runner_tracks_current_eight_stage_surface(tmp_path):
-    current = [row[0] for row in commands(tmp_path / 'inputs', tmp_path / 'results')]
+    current_commands = commands(tmp_path / 'inputs', tmp_path / 'results')
+    current = [row[0] for row in current_commands]
     for module in current:
         assert module in anon.RUNNER
     assert len(current) == 8
     assert 'run_rv_estimator_validity' in anon.RUNNER
     assert '--equal-n-replicates' in anon.RUNNER
+    # The first seven current stages use the 20260910 seed contract, while the
+    # post-hoc estimator-validity stage is frozen separately at 20260915.
+    assert current_commands[-1][-2:] == ['--seed', '20260915']
+    assert '"--seed", "20260915"' in anon.RUNNER
 
 
 def test_anonymous_bundle_source_surface_excludes_direct_identity_tokens():
