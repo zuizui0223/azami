@@ -6,6 +6,7 @@ on:
     paths:
       - 'reproducibility/render_scale_integration.py'
       - 'reproducibility/current_reference/upgrade/**'
+      - 'reproducibility/current_reference/estimator_validity/**'
       - 'tests/test_scale_integration_render.py'
       - '.github/workflows/render-current-scale-integration.yml'
 
