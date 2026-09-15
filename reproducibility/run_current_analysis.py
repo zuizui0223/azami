@@ -104,6 +104,9 @@ def commands(inputs: Path, out: Path) -> list[list[str]]:
         ['analysis.v3.run_frozen_technical_error_stress',*common,'--technical-audit-summary',
          str(ROOT/'analysis/ch1/image_to_trait_automated_technical_audit_summary.json'),
          '--out-dir',str(out/'technical_stress'),'--replicates','2000',*seed],
+        ['analysis.v3.run_rv_estimator_validity',*common,'--out-dir',str(out/'estimator_validity'),
+         '--minimum-complete-observations-per-taxon','5','--equal-n-replicates','1000',
+         '--null-permutations','499','--qap-permutations','9999','--seed','20260915'],
     ]
 
 
@@ -121,8 +124,10 @@ def main() -> None:
         print('Input verification PASS; numerical reproduction not yet run.')
         return
     out.mkdir(parents=True,exist_ok=True)
-    for i, cmd in enumerate(commands(inputs,out),1):
-        print(f'[{i}/7] {cmd[0]}',flush=True)
+    commands_to_run = commands(inputs,out)
+    total = len(commands_to_run)
+    for i, cmd in enumerate(commands_to_run,1):
+        print(f'[{i}/{total}] {cmd[0]}',flush=True)
         with (out/f'step-{i}.log').open('w',encoding='utf-8') as log:
             subprocess.run([sys.executable,'-m',*cmd],cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,check=True)
     subprocess.run([sys.executable,'-m','reproducibility.validate_current_analysis','--results',str(out)],cwd=ROOT,check=True)
