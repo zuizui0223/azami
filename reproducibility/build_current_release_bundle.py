@@ -3,7 +3,7 @@
 This is an offline packager. It never downloads data and never publishes to
 Zenodo. Supply the four frozen numerical input archives plus the exact native
 status CSV. The builder verifies all frozen identities, snapshots the checked-
-out repository with ``git archive``, verifies the 15 current reference outputs,
+out repository with ``git archive``, verifies the 16 current reference outputs,
 and writes a self-describing ZIP plus a SHA-256 sidecar.
 
 Final release mode deliberately fails closed until a frozen final-figure
@@ -114,8 +114,8 @@ def verify_inputs(input_dir: Path, native_status: Path) -> tuple[dict, bytes]:
 def verified_reference_rows() -> list[dict]:
     manifest = json.loads(REFERENCE_MANIFEST.read_text(encoding="utf-8"))
     rows = manifest["files"]
-    if len(rows) != 15:
-        raise ValueError(f"current reference manifest must contain 15 files; found {len(rows)}")
+    if len(rows) != 16:
+        raise ValueError(f"current reference manifest must contain 16 files; found {len(rows)}")
     for row in rows:
         path = REFERENCE / row["path"]
         require_hash(path, row["sha256"], f"current reference {row['path']}")
