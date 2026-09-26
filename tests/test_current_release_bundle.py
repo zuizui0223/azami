@@ -225,3 +225,31 @@ def test_final_figure_manifest_requires_document_pagination_qa(tmp_path):
     ]}), encoding="utf-8")
     assert figure_manifest_document_qa(manifest) is True
 
+def test_prepared_release_metadata_fills_non_author_fields_but_fails_closed():
+    path = ROOT / "reproducibility/zenodo_release_metadata.prepared.json"
+    obj = json.loads(path.read_text(encoding="utf-8"))
+    assert obj["schema_version"] == 1
+    assert obj["release_approved"] is False
+    assert obj["scientific_scope"] == SCOPE_ID
+    assert obj["title"] == "Azami Chapter 1 current numerical and figure release"
+    assert obj["archive_strategy"] == "new_version_existing_concept"
+    assert obj["preserved_v2_record"] == {
+        "record_doi": V2_RECORD_DOI,
+        "concept_doi": V2_CONCEPT_DOI,
+        "modify_existing_v2": False,
+    }
+    assert obj["licensing"]["software"] == "MIT"
+    assert "third-party" in obj["licensing"]["data_and_third_party_strategy"].lower()
+    assert "TBD" not in path.read_text(encoding="utf-8")
+    assert obj["creators"] == []
+    with pytest.raises(ValueError, match="release_approved"):
+        validate_release_metadata(path, expected_head="not-final")
+
+
+def test_document_qa_receipt_closes_si_layout_but_not_main():
+    text = (ROOT / "reproducibility/DOCUMENT_FIGURE_QA_20260927.md").read_text(encoding="utf-8")
+    assert "### Layout result: PASS" in text
+    assert "13 rendered pages" in text
+    assert "Main document QA remains **OPEN**" in text
+    assert "document_pagination_validated=true" in text
+
