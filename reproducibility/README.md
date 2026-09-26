@@ -16,7 +16,7 @@ The v2 `public_release_manifest.json`, `material_availability.json`, `recovery_i
 
 ## Current release staging
 
-The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json), subsequently extended with the taxonomy and 2026-09-15 estimator-validity work, records checksum-verified durable copies of the current nine-predictor environment input and current Actions evidence required by the 16-file reference surface. The private staging area now also holds the estimator-validity artifact and the CI-rendered integration figure that exposes the equal-n sensitivity. This removes dependence on those expiring Actions artifacts for material recovery.
+The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json), subsequently extended with the taxonomy, 2026-09-15 estimator-validity work and the completed eight-stage replay, records checksum-verified durable copies of the current nine-predictor environment input and current Actions evidence required by the 16-file reference surface. The private staging area now also holds the estimator-validity artifact, the CI-rendered integration figure that exposes the equal-n sensitivity, and the eight-stage/16-file replay artifact. This removes dependence on those expiring Actions artifacts for material recovery.
 
 This staging area is private and is **not** a public release. The eight-stage replay/16-file validation receipt is now complete and durably preserved. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
 
