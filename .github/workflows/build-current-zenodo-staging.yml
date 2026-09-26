@@ -33,9 +33,6 @@ jobs:
     timeout-minutes: 45
     env:
       GH_TOKEN: ${{ github.token }}
-      INPUT_DIR: ${{ runner.temp }}/azami-release-inputs
-      FIGURE_DIR: ${{ runner.temp }}/azami-figure-surface
-      OUT_DIR: ${{ runner.temp }}/azami-zenodo-staging
 
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +42,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Initialize staging paths
+        shell: bash
+        run: |
+          echo "INPUT_DIR=${RUNNER_TEMP}/azami-release-inputs" >> "$GITHUB_ENV"
+          echo "FIGURE_DIR=${RUNNER_TEMP}/azami-figure-surface" >> "$GITHUB_ENV"
+          echo "OUT_DIR=${RUNNER_TEMP}/azami-zenodo-staging" >> "$GITHUB_ENV"
 
       - name: Fetch frozen numerical and taxonomy archives
         shell: bash
