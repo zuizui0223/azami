@@ -164,6 +164,11 @@ def release_gaps(figure_manifest: Path | None, release_metadata: Path | None) ->
     return gaps
 
 
+def figure_manifest_document_qa(manifest_path: Path) -> bool:
+    obj = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return obj.get("document_pagination_validated") is True
+
+
 def verify_manifest_files(manifest_path: Path) -> list[dict]:
     obj = json.loads(manifest_path.read_text(encoding="utf-8"))
     rows = obj.get("files")
@@ -243,6 +248,9 @@ def build(
         raise RuntimeError(f"HEAD {state['head']} does not match expected {expected_head}")
 
     gaps = release_gaps(figure_manifest, release_metadata)
+    if figure_manifest is not None and figure_manifest.is_file():
+        if not figure_manifest_document_qa(figure_manifest):
+            gaps.append("figure_document_qa")
     if final and gaps:
         raise RuntimeError("final release blocked by: " + ", ".join(gaps))
 
