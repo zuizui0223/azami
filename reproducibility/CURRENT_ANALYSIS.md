@@ -1,5 +1,11 @@
 # Current Chapter 1 numerical reproduction
 
+## Scope boundary
+
+This runbook reproduces the **current manuscript numerical analysis**, not the complete upstream image-acquisition and detector-training workflow. It starts from frozen image-derived continuous measurements plus fixed environmental, spatial, historical and native-status inputs. It does not redownload original photographs, retrain YOLO or reconstruct the continuous measurements from raw images.
+
+The distinction between external source material, image-to-trait production, frozen numerical inputs, current analysis code and reference outputs is frozen in [UPSTREAM_DATA_BOUNDARY_20260926.md](UPSTREAM_DATA_BOUNDARY_20260926.md).
+
 ## One-command current replay
 
 From a clean checkout of the cleaned `main`, record `git rev-parse HEAD`, create a Python 3.12 environment, then run:
@@ -11,7 +17,7 @@ python -m reproducibility.run_current_analysis --download
 
 `--download` fetches only missing numerical archives through authenticated GitHub CLI (`gh`). It never fetches photographs. Without it, supply the four exact archives in `work/current/archives/`, named `artifact-ID-ROLE.zip` for roles `continuous`, `environment`, `spatial`, `historical`. The public v2 ZIP contains three of these four archives; the environment input requires the current Actions artifact until the new Zenodo version is published. Native status is recovered from the immutable tag, with only the frozen permitted newline normalization.
 
-The runner verifies ZIPs and extracted files, runs all seven existing numerical steps with unchanged seeds/counts, and compares 15 aggregate outputs with the byte-verified original references. Results and logs go under ignored `work/current/`. A successful run ends in `work/current/results/validation.json` with `status: PASS`. A missing input or discrepancy stops the run. `--prepare-only` verifies inputs without claiming numerical completion.
+The runner verifies ZIPs and extracted files, runs all **eight** current numerical stages with the frozen seeds/counts, and compares **16** aggregate outputs with the checksum-locked current reference surface. Results and logs go under ignored `work/current/`. A successful run ends in `work/current/results/validation.json` with `status: PASS`. A missing input or discrepancy stops the run. `--prepare-only` verifies inputs without claiming numerical completion.
 
 Two fields in the older archived JSON reports were already removed from scientific main `fe25abd`: the pairwise report's `environment_signature_alignment` and the common-cohort report's `integration_environment_coupling`. The validator explicitly excludes those retired fields and reports their names; all current fields and archived CSV values are compared. The original artifact bytes are preserved, and these retired analyses are not restored or presented as current results.
 
