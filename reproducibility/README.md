@@ -4,9 +4,9 @@
 
 Use [CURRENT_ANALYSIS.md](CURRENT_ANALYSIS.md). The entry point is `python -m reproducibility.run_current_analysis`. It verifies exact frozen input identities and runs existing models without changing the source cohort, construct definitions, predictors or the frozen test families. The current runner has eight numerical stages; the eighth is the explicitly post-hoc RV estimator-validity sensitivity added during submission audit.
 
-The [2026-09-11 local execution receipt](current_replay_execution.json) records the earlier seven-stage replay and its [15-file current-scope numerical comparison](current_replay_validation.json). Those receipts remain valid for the pre-estimator surface but are now historical. The current reference manifest contains 16 files and the current runner adds the estimator-validity stage; a new eight-stage replay/16-file comparison receipt is required before the final public release.
+The [2026-09-15 execution receipt](current_replay_execution.json) and [16-file numerical comparison](current_replay_validation.json) record a completed eight-stage replay with `PASS`. The current reference manifest contains 16 checksum-locked files. This closes the current replay-execution gate; it does **not** by itself publish the current v3 archive.
 
-Numerical reproduction begins with frozen measurements, not mutable source photographs. Repeating image acquisition and measurement from scratch is a distinct upstream task: the model, acquisition and measurement provenance is retained under `legacy/ch1_global/v2/` and [actions_artifact_catalog.json](actions_artifact_catalog.json). The numerical package must not be described as a complete, permanent archive of every original photograph or as an independent physical-trait validation.
+Numerical reproduction begins with frozen measurements, not mutable source photographs. Repeating image acquisition and measurement from scratch is a distinct upstream task: the model, acquisition and measurement provenance is retained under `legacy/ch1_global/v2/` and [actions_artifact_catalog.json](actions_artifact_catalog.json). The numerical package must not be described as a complete, permanent archive of every original photograph or as an independent physical-trait validation. The exact layer boundary is frozen in [UPSTREAM_DATA_BOUNDARY_20260926.md](UPSTREAM_DATA_BOUNDARY_20260926.md).
 
 ## Frozen v2 reproduction
 
@@ -18,7 +18,7 @@ The v2 `public_release_manifest.json`, `material_availability.json`, `recovery_i
 
 The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json), subsequently extended with the taxonomy and 2026-09-15 estimator-validity work, records checksum-verified durable copies of the current nine-predictor environment input and current Actions evidence required by the 16-file reference surface. The private staging area now also holds the estimator-validity artifact and the CI-rendered integration figure that exposes the equal-n sensitivity. This removes dependence on those expiring Actions artifacts for material recovery.
 
-This staging area is private and is **not** a public release. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies, updated eight-stage replay receipts and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
+This staging area is private and is **not** a public release. The eight-stage replay/16-file validation receipt is now complete and durably preserved. The remaining current-release work is tracked in [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md): freeze/package the native-status input, final code/dependencies and final figure provenance; resolve release metadata/licensing; publish a new Zenodo version; and then perform a credential-free redownload and clean replay.
 
 ## Current release bundle builder
 
