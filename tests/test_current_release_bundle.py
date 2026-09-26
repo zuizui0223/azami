@@ -14,6 +14,7 @@ from reproducibility.build_current_release_bundle import (
     input_contract,
     locate_archive,
     release_gaps,
+    verify_manifest_files,
     verified_reference_rows,
 )
 from reproducibility.release_metadata_contract import (
@@ -177,3 +178,20 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert receipt["reference_file_count"] == 16
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False
+
+def test_figure_manifest_accepts_portable_manifest_relative_files(tmp_path):
+    figures = tmp_path / "figures"
+    figures.mkdir()
+    image = figures / "Figure_1.png"
+    image.write_bytes(b"figure-bytes")
+    digest = hashlib.sha256(image.read_bytes()).hexdigest()
+    manifest = tmp_path / "final_figure_manifest.json"
+    manifest.write_text(json.dumps({
+        "files": [{"path": "figures/Figure_1.png", "sha256": digest}]
+    }), encoding="utf-8")
+    rows = verify_manifest_files(manifest)
+    assert len(rows) == 1
+    assert rows[0]["source_kind"] == "manifest_relative"
+    assert rows[0]["source_path"] == image.resolve()
+    assert rows[0]["path"] == "figures/Figure_1.png"
+
