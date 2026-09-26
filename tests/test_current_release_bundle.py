@@ -155,6 +155,7 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
         10382387052,
         10382954095,
         10382578412,
+        10903835882,
     }
     assert staged[10291656193]["drive_file_id"] == "1UnPG1mhjdJKbXFLJDbn6l-TrFtAXgJSd"
     assert staged[10291656193]["archive_sha256"] == "2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766"
@@ -176,6 +177,12 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     figure = staged[10382578412]
     assert figure["drive_file_id"] == "19-xLleKgq2Gj3MjQtidXsb4A6E-yih_4"
     assert figure["png_sha256"] == "a4c103fc23d1c2640ca87601bcf8d05e59826f975d943c72a24cf0c61d31452c"
+    full_figure_surface = staged[10903835882]
+    assert full_figure_surface["drive_file_id"] == "1AnrI_UttuQYRzTuhYRnn5Y74RT3Uu5u0"
+    assert full_figure_surface["checksum_verification"] == "PASS"
+    assert full_figure_surface["main_figure_count"] == 5
+    assert full_figure_surface["supporting_figure_count"] == 8
+    assert full_figure_surface["document_pagination_validated"] is False
     assert receipt["reference_file_count"] == 16
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False
