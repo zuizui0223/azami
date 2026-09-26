@@ -1,8 +1,9 @@
 """Build a checksum-gated Chapter 1 current-release bundle.
 
 This is an offline packager. It never downloads data and never publishes to
-Zenodo. Supply the four frozen numerical input archives plus the exact native
-status CSV. The builder verifies all frozen identities, snapshots the checked-
+Zenodo. Supply the four frozen numerical input archives plus either the exact
+native-status CSV or the checksum-verified WCVP sensitivity archive containing
+that member. The builder verifies all frozen identities, snapshots the checked-
 out repository with ``git archive``, verifies the 16 current reference outputs,
 and writes a self-describing ZIP plus a SHA-256 sidecar.
 
@@ -27,6 +28,9 @@ from reproducibility.run_current_analysis import INPUTS, NATIVE_SHA, native_byte
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / "reproducibility" / "current_reference"
 REFERENCE_MANIFEST = REFERENCE / "manifest.json"
+TAXONOMY_ARTIFACT_ID = 10292140117
+TAXONOMY_ARCHIVE_SHA256 = "dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5"
+TAXONOMY_NATIVE_MEMBER = "input/observation_native_status.csv"
 REPLAY_FILES = (
     ROOT / "reproducibility" / "CURRENT_ANALYSIS.md",
     ROOT / "reproducibility" / "requirements-current.txt",
@@ -79,7 +83,33 @@ def input_contract() -> dict[str, dict]:
     return rows
 
 
-def verify_inputs(input_dir: Path, native_status: Path) -> tuple[dict, bytes]:
+def resolve_native_status(input_dir: Path, native_status: Path | None) -> tuple[bytes, dict]:
+    if native_status is not None:
+        normalized = native_bytes(native_status.read_bytes())
+        source = {
+            "source_kind": "explicit_csv",
+            "source_name": native_status.name,
+        }
+    else:
+        archive = locate_archive(input_dir, TAXONOMY_ARTIFACT_ID)
+        require_hash(archive, TAXONOMY_ARCHIVE_SHA256, f"artifact {TAXONOMY_ARTIFACT_ID}")
+        with zipfile.ZipFile(archive) as zf:
+            normalized = native_bytes(zf.read(TAXONOMY_NATIVE_MEMBER))
+        source = {
+            "source_kind": "durable_taxonomy_artifact",
+            "artifact_id": TAXONOMY_ARTIFACT_ID,
+            "source_name": archive.name,
+            "archive_sha256": TAXONOMY_ARCHIVE_SHA256,
+            "member": TAXONOMY_NATIVE_MEMBER,
+        }
+    if sha256_bytes(normalized) != NATIVE_SHA:
+        raise ValueError("native-status normalization did not recover the frozen SHA-256")
+    source["sha256"] = NATIVE_SHA
+    source["size_bytes"] = len(normalized)
+    return normalized, source
+
+
+def verify_inputs(input_dir: Path, native_status: Path | None) -> tuple[dict, bytes]:
     receipt: dict[str, dict] = {}
     for role, row in input_contract().items():
         archive = locate_archive(input_dir, row["artifact_id"])
@@ -100,14 +130,8 @@ def verify_inputs(input_dir: Path, native_status: Path) -> tuple[dict, bytes]:
             "size_bytes": archive.stat().st_size,
         }
 
-    normalized_native = native_bytes(native_status.read_bytes())
-    if sha256_bytes(normalized_native) != NATIVE_SHA:
-        raise ValueError("native-status normalization did not recover the frozen SHA-256")
-    receipt["native_status"] = {
-        "source_name": native_status.name,
-        "sha256": NATIVE_SHA,
-        "size_bytes": len(normalized_native),
-    }
+    normalized_native, native_receipt = resolve_native_status(input_dir, native_status)
+    receipt["native_status"] = native_receipt
     return receipt, normalized_native
 
 
@@ -183,7 +207,7 @@ def deterministic_zip(source_dir: Path, out_zip: Path) -> str:
 
 def build(
     input_dir: Path,
-    native_status: Path,
+    native_status: Path | None,
     out_zip: Path,
     figure_manifest: Path | None = None,
     release_metadata: Path | None = None,
@@ -291,7 +315,15 @@ def build(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-dir", type=Path, required=True, help="Directory containing one ZIP for each frozen artifact ID")
-    parser.add_argument("--native-status", type=Path, required=True, help="Frozen observation_native_status.csv")
+    parser.add_argument(
+        "--native-status",
+        type=Path,
+        help=(
+            "Optional frozen observation_native_status.csv. If omitted, the builder extracts "
+            f"{TAXONOMY_NATIVE_MEMBER} from checksum-verified taxonomy artifact {TAXONOMY_ARTIFACT_ID} "
+            "in --input-dir."
+        ),
+    )
     parser.add_argument("--out", type=Path, required=True, help="Output release ZIP")
     parser.add_argument("--figure-manifest", type=Path, help="JSON with files:[{path,sha256}] for the final manuscript figure/provenance surface")
     parser.add_argument("--release-metadata", type=Path, help="Approved release metadata contract JSON")
@@ -300,7 +332,7 @@ def main() -> None:
     args = parser.parse_args()
     receipt = build(
         args.input_dir.resolve(),
-        args.native_status.resolve(),
+        args.native_status.resolve() if args.native_status else None,
         args.out.resolve(),
         args.figure_manifest.resolve() if args.figure_manifest else None,
         args.release_metadata.resolve() if args.release_metadata else None,
