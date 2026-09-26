@@ -127,6 +127,24 @@
       "png_sha256": "a4c103fc23d1c2640ca87601bcf8d05e59826f975d943c72a24cf0c61d31452c",
       "pdf_sha256": "d877d78eac23f451fde60578e85b49acf5c23bddbe6b9fec37469c4d4bf5e5fe",
       "visual_qa": "CI-rendered PNG inspected; equal-n estimator-validity panel readable; left/right clipping regression test passed."
+    },
+    {
+      "role": "current_geb_figure_surface",
+      "github_actions_artifact_id": 10903835882,
+      "archive_sha256": "a3c7ac2fadafc7fe121df561b28a9fe8820167e49c82602a3d7782cac0430425",
+      "size_bytes": 7784476,
+      "source_workflow_run": 36233924432,
+      "source_head_sha": "cbf313cb9da435194eb57c512bfd51c25dd7da69",
+      "drive_file_id": "1AnrI_UttuQYRzTuhYRnn5Y74RT3Uu5u0",
+      "drive_file_name": "artifact-10903835882-ch1-current-geb-figure-surface.zip",
+      "manifest_member": "final_figure_manifest.json",
+      "main_figure_count": 5,
+      "supporting_figure_count": 8,
+      "rendered_file_count": 26,
+      "provenance_file_count": 4,
+      "checksum_verification": "PASS",
+      "visual_qa": "Main 1-5 individually inspected and all eight Supporting figures inspected as a montage; no clipping or obvious layout failure. Word caption/numbering/pagination QA remains separate.",
+      "document_pagination_validated": false
     }
   ],
   "already_durable_current_inputs": {
@@ -139,7 +157,7 @@
   "reference_file_count": 16,
   "remaining_before_public_current_release": [
     "pin and package the final cleaned code revision and numerical dependencies",
-    "freeze and stage the remaining final Main/Supporting manuscript figure exports and provenance after document QA",
+    "synchronize the final Word manuscript to the frozen 5-Main + S1.1-S1.7 + S2.1 figure surface, complete caption/numbering/pagination QA, and issue a QA-promoted figure manifest",
     "resolve and document software/data/third-party licensing in approved release metadata",
     "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
     "redownload the published package without owner credentials, verify all checksums, and complete a clean numerical replay/reference comparison"
