@@ -183,6 +183,17 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert full_figure_surface["main_figure_count"] == 5
     assert full_figure_surface["supporting_figure_count"] == 8
     assert full_figure_surface["document_pagination_validated"] is False
+    zenodo = receipt["zenodo_staging_bundle"]
+    assert zenodo["status"] == "assembled_and_verified_not_public"
+    assert zenodo["source_main_commit"] == "4ba2304eba83e9a54f616d33cc85fd7ad818caf0"
+    assert zenodo["github_actions_artifact_id"] == 10905067103
+    assert zenodo["github_actions_artifact_sha256"] == "ed73deb58ce166ddd7ae7156c2b349072d1cabb32e0bf6f24df049a66da16e59"
+    assert zenodo["inner_bundle_sha256"] == "489d3ab8b68b646c8eba510e853aa524d36cff138263da30bc3ecd910140b91e"
+    assert zenodo["durable_drive_file_id"] == "1LC_VX3HtE8mmRSlYdb0BjYlYdUhRYXiv"
+    assert zenodo["reference_files"] == 16
+    assert zenodo["figure_manifest_files"] == 30
+    assert zenodo["release_ready"] is False
+    assert set(zenodo["release_gaps"]) == {"release_metadata", "figure_document_qa"}
     assert receipt["reference_file_count"] == 16
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False
