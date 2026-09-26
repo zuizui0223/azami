@@ -156,9 +156,9 @@
   "current_reference_manifest": "reproducibility/current_reference/manifest.json",
   "reference_file_count": 16,
   "remaining_before_public_current_release": [
-    "pin and package the final cleaned code revision and numerical dependencies",
-    "synchronize the final Word manuscript to the frozen 5-Main + S1.1-S1.7 + S2.1 figure surface, complete caption/numbering/pagination QA, and issue a QA-promoted figure manifest",
-    "resolve and document software/data/third-party licensing in approved release metadata",
+    "synchronize the final Word manuscript to the frozen 5-Main + S1.1-S1.7 + S2.1 figure surface, complete caption/numbering/pagination QA, and promote the figure manifest with document_pagination_validated=true",
+    "resolve and document author-owned release metadata plus software/data/third-party licensing in approved release metadata",
+    "rebuild the final release bundle at the exact final Git head and verify that release_ready=true",
     "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
     "redownload the published package without owner credentials, verify all checksums, and complete a clean numerical replay/reference comparison"
   ],
@@ -171,5 +171,41 @@
     "member": "input/observation_native_status.csv",
     "normalized_sha256": "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a",
     "builder": "reproducibility/build_current_release_bundle.py"
+  },
+  "zenodo_staging_bundle": {
+    "built_on": "2026-09-26",
+    "status": "assembled_and_verified_not_public",
+    "source_main_commit": "4ba2304eba83e9a54f616d33cc85fd7ad818caf0",
+    "workflow_run": 36238923810,
+    "github_actions_artifact_id": 10905067103,
+    "github_actions_artifact_sha256": "ed73deb58ce166ddd7ae7156c2b349072d1cabb32e0bf6f24df049a66da16e59",
+    "github_actions_artifact_size_bytes": 77711957,
+    "inner_bundle_filename": "azami_ch1_v3_zenodo_staging.zip",
+    "inner_bundle_sha256": "489d3ab8b68b646c8eba510e853aa524d36cff138263da30bc3ecd910140b91e",
+    "durable_drive_file_id": "1LC_VX3HtE8mmRSlYdb0BjYlYdUhRYXiv",
+    "durable_drive_file_name": "artifact-10905067103-ch1-v3-zenodo-staging-bundle.zip",
+    "reference_files": 16,
+    "figure_manifest_files": 30,
+    "release_ready": false,
+    "release_gaps": [
+      "release_metadata",
+      "figure_document_qa"
+    ],
+    "includes": {
+      "frozen_numerical_archives": [
+        9612943217,
+        9633419268,
+        8983877726,
+        8227254443
+      ],
+      "native_status_from_taxonomy_artifact": 10292140117,
+      "current_reference_manifest": "reproducibility/current_reference/manifest.json",
+      "replay_receipts": [
+        "reproducibility/current_replay_execution.json",
+        "reproducibility/current_replay_validation.json"
+      ],
+      "current_code_snapshot": true,
+      "current_geb_figure_surface": true
+    }
   }
 }

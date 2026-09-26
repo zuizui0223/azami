@@ -37,6 +37,26 @@ The current reference manifest now contains **16 checksum-verified files**. The 
 
 This closes an **ephemeral-storage risk**, not the public-release gate. A private durable copy is not a Zenodo publication and must not be described as credential-free reproducibility.
 
+## Assembled current v3 Zenodo staging bundle — 2026-09-26
+
+The current material surface has now been assembled end-to-end once from main commit `4ba2304eba83e9a54f616d33cc85fd7ad818caf0`.
+
+- workflow run: `36238923810`;
+- Actions artifact: `10905067103`;
+- Actions artifact SHA-256: `ed73deb58ce166ddd7ae7156c2b349072d1cabb32e0bf6f24df049a66da16e59`;
+- inner candidate archive: `azami_ch1_v3_zenodo_staging.zip`;
+- inner archive SHA-256: `489d3ab8b68b646c8eba510e853aa524d36cff138263da30bc3ecd910140b91e`;
+- durable owner copy: Drive file `1LC_VX3HtE8mmRSlYdb0BjYlYdUhRYXiv`.
+
+The staging archive contains the four frozen numerical archives, checksum-recovered native status, the current 16-file reference surface, current eight-stage replay receipts, a `git archive` snapshot of the packaged checkout, and the checksum-verified current GEB figure surface.
+
+The builder reports exactly two unresolved release gaps:
+
+1. `release_metadata`;
+2. `figure_document_qa`.
+
+Therefore the material-assembly problem is no longer open. The archive is intentionally labelled **staging**, has `release_ready=false`, and must not be uploaded as the final Zenodo version without closing those two gates and rebuilding at the exact final Git head.
+
 ## Required contents of a new version
 
 | Material | Current staging status | Action for public current release |
@@ -55,7 +75,7 @@ Current numerical input identities are executable in `run_current_analysis.py`; 
 
 ## Remaining release gate
 
-The material-recovery problem is now narrow. The native-status recovery route is checksum-gated, the direct numerical dependencies match the completed replay, the eight-stage replay/16-file comparison has passed, and the 5-Main + 8-Supporting figure surface has been rendered, checksum-verified and durably staged. The remaining figure task is document-level synchronization and pagination QA rather than figure recovery. After that, freeze the final cleaned Git revision, resolve author-owned release metadata/licensing, publish the approved new version, then perform the credential-free redownload and clean replay.
+The material-recovery and archive-assembly problems are now closed for a staging build. The native-status recovery route is checksum-gated, the direct numerical dependencies match the completed replay, the eight-stage replay/16-file comparison has passed, the 5-Main + 8-Supporting figure surface is packaged, and a full current-v3 Zenodo staging ZIP has been assembled and durably copied. The remaining work is document-level figure/pagination QA, author-owned release metadata/licensing, one final rebuild at the exact final Git head with `release_ready=true`, publication of the new Zenodo version, and the credential-free redownload/clean replay.
 
 Before claiming current credential-free reproducibility: publish the approved new version, download it without owner credentials, verify every checksum, unpack into a clean directory, and complete the numerical run and reference comparison. Retain unsupported rows and sensitivity failures. GitHub Actions success, a private Drive copy, or local file presence alone does not close this public-archive requirement.
 
