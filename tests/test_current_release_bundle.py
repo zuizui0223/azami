@@ -145,6 +145,7 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
         10291656193,
         10292140117,
         10382387052,
+        10382954095,
         10382578412,
     }
     assert staged[10291656193]["drive_file_id"] == "1UnPG1mhjdJKbXFLJDbn6l-TrFtAXgJSd"
@@ -158,6 +159,12 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     estimator = staged[10382387052]
     assert estimator["drive_file_id"] == "1JvjPWBG-EuouuTVgLjm6VYyjk7ui58Sd"
     assert estimator["equal_n_strength_gate_pass"] is True
+    replay = staged[10382954095]
+    assert replay["drive_file_id"] == "1URtYSHHM-yl3wrTAtTJRkk2FDPiT9PVl"
+    assert replay["archive_sha256"] == "2064b63366681aa3bd708fef00d2e7ac50d20a7fad771849b793c0d2b6957a0e"
+    assert replay["completed_numerical_stages"] == 8
+    assert replay["aggregate_files_compared"] == 16
+    assert replay["validation_status"] == "PASS"
     figure = staged[10382578412]
     assert figure["drive_file_id"] == "19-xLleKgq2Gj3MjQtidXsb4A6E-yih_4"
     assert figure["png_sha256"] == "a4c103fc23d1c2640ca87601bcf8d05e59826f975d943c72a24cf0c61d31452c"
