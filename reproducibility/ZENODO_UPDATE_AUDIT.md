@@ -73,9 +73,25 @@ Therefore the material-assembly problem is no longer open. The archive is intent
 
 Current numerical input identities are executable in `run_current_analysis.py`; current reference output identities are recorded in `current_reference/manifest.json`. The existing v2 release and its DOI must remain intact. Use a new version under the existing concept, or linked code/data records if different licensing requires separation; do not silently replace the v2 package.
 
+## Document QA and metadata preparation update — 2026-09-27
+
+The 13-page final Supporting Information PDF was rendered page-by-page and visually inspected. Its pagination/layout passes: no obvious clipping, duplicated page or missing full-page display was found. This closes the SI layout portion of `figure_document_qa`.
+
+A canonical final Main manuscript synchronized to the current repository freeze was not found in the accessible Library or connected Drive. Older Main files and a later synchronization patch exist, but those do not establish final Main pagination, figure placement, caption numbering or blinded metadata. The exact boundary is recorded in [DOCUMENT_FIGURE_QA_20260927.md](DOCUMENT_FIGURE_QA_20260927.md).
+
+Non-author release metadata has also been prepared in `zenodo_release_metadata.prepared.json`:
+
+- release title and description are populated;
+- the existing v2 record/concept DOI remains preserved;
+- a new version under the existing concept is staged as the default archive strategy;
+- software remains MIT;
+- third-party/data terms are explicitly kept source-specific rather than relicensed by the software license.
+
+The prepared JSON deliberately remains `release_approved=false` and is not a valid final contract. Ordered creators, any ORCID/affiliation values, explicit author approval of archive/licensing strategy, and the exact final Git commit remain author-owned/final-state fields.
+
 ## Remaining release gate
 
-The material-recovery and archive-assembly problems are now closed for a staging build. The native-status recovery route is checksum-gated, the direct numerical dependencies match the completed replay, the eight-stage replay/16-file comparison has passed, the 5-Main + 8-Supporting figure surface is packaged, and a full current-v3 Zenodo staging ZIP has been assembled and durably copied. The remaining work is document-level figure/pagination QA, author-owned release metadata/licensing, one final rebuild at the exact final Git head with `release_ready=true`, publication of the new Zenodo version, and the credential-free redownload/clean replay.
+The material-recovery and archive-assembly problems are closed for a staging build. SI pagination/layout QA is also complete and the non-author release metadata fields are prepared. The remaining pre-publication blockers are now narrower: obtain and inspect the canonical final Main manuscript against the current five-Main-figure scope, obtain explicit author approval for ordered creators/archive/licensing metadata, then rebuild at the exact final Git head with `release_ready=true`. Publication of the new Zenodo version and the credential-free redownload/clean replay follow after that.
 
 Before claiming current credential-free reproducibility: publish the approved new version, download it without owner credentials, verify every checksum, unpack into a clean directory, and complete the numerical run and reference comparison. Retain unsupported rows and sensitivity failures. GitHub Actions success, a private Drive copy, or local file presence alone does not close this public-archive requirement.
 
