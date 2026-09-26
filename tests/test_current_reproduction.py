@@ -71,3 +71,12 @@ def test_current_reproducibility_docs_match_eight_stage_boundary():
     assert "Current eight-stage replay + 16-file validation" in zenodo
     assert "10382954095" in zenodo
 
+def test_current_requirements_match_completed_replay_environment():
+    req = (ROOT / "reproducibility/requirements-current.txt").read_text(encoding="utf-8")
+    assert "numpy==2.4.6" in req
+    assert "pandas==3.0.5" in req
+    assert "scipy==1.17.1" in req
+    assert "statsmodels==0.14.6" in req
+    assert "biopython==1.88" in req
+    assert "biopython>=" not in req
+
