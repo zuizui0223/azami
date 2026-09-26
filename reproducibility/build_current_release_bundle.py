@@ -170,13 +170,35 @@ def verify_manifest_files(manifest_path: Path) -> list[dict]:
     if not isinstance(rows, list) or not rows:
         raise ValueError(f"{manifest_path}: expected non-empty files list")
     verified: list[dict] = []
+    manifest_root = manifest_path.resolve().parent
     for row in rows:
         rel = Path(row["path"])
         if rel.is_absolute() or ".." in rel.parts:
             raise ValueError(f"unsafe figure path: {rel}")
-        path = ROOT / rel
-        require_hash(path, row["sha256"], f"figure release file {rel}")
-        verified.append({"path": rel.as_posix(), "sha256": row["sha256"]})
+        # Current figure-surface manifests are portable: paths are resolved
+        # relative to the manifest itself. Historical hand-written manifests
+        # may still point at repository-relative tracked files.
+        local = (manifest_root / rel).resolve()
+        if local.is_file():
+            try:
+                local.relative_to(manifest_root)
+            except ValueError as exc:
+                raise ValueError(f"figure path escapes manifest directory: {rel}") from exc
+            source_kind = "manifest_relative"
+        else:
+            local = (ROOT / rel).resolve()
+            try:
+                local.relative_to(ROOT.resolve())
+            except ValueError as exc:
+                raise ValueError(f"figure path escapes repository: {rel}") from exc
+            source_kind = "repository_relative"
+        require_hash(local, row["sha256"], f"figure release file {rel}")
+        verified.append({
+            "path": rel.as_posix(),
+            "sha256": row["sha256"],
+            "source_path": local,
+            "source_kind": source_kind,
+        })
     return verified
 
 
@@ -274,7 +296,7 @@ def build(
         if figure_manifest:
             copy_file(figure_manifest, package / "figures" / "manifest.json")
             for row in figure_rows:
-                copy_file(ROOT / row["path"], package / "figures" / row["path"])
+                copy_file(row["source_path"], package / "figures" / row["path"])
 
         manifest = {
             "schema_version": 1,
