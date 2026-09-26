@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
+from matplotlib import font_manager
 
 ROOT = Path(__file__).resolve().parents[1]
 ENVS = ['chelsa_bio01', 'chelsa_bio04', 'chelsa_bio12', 'chelsa_bio15',
@@ -36,7 +37,15 @@ def validate(frame, constructs):
             raise ValueError('Non-finite effect or invalid q value in the input atlas')
 
 
-def render(axis_dir: Path, output: Path, font_path: Path):
+def default_font_path() -> Path:
+    path = Path(font_manager.findfont("DejaVu Sans", fallback_to_default=True))
+    if not path.is_file():
+        raise FileNotFoundError(f"Could not resolve reproducible DejaVu Sans font: {path}")
+    return path
+
+
+def render(axis_dir: Path, output: Path, font_path: Path | None = None):
+    font_path = font_path or default_font_path()
     output = output.resolve()
     frozen = ROOT / 'reproducibility/figures'
     if output == frozen or frozen in output.parents:
@@ -73,11 +82,15 @@ def render(axis_dir: Path, output: Path, font_path: Path):
     draw.text((40, 1800), 'Scalar cells: signed standardized slopes. Joint cells: non-negative vector magnitude.', font=font(31), fill='black')
     output.mkdir(parents=True, exist_ok=True)
     destination = output / 'Figure_4_construct_environment.png'
+    destination_pdf = output / 'Figure_4_construct_environment.pdf'
     image.save(destination, dpi=(330, 330))
+    image.save(destination_pdf, 'PDF', resolution=330.0)
     sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
     receipt = {'refitted': False, 'rows_per_family': 90, 'displayed_core_constructs': 9,
-               'inputs': {p.name: sha(p) for p in inputs}, 'font_sha256': sha(font_path),
-               'output_sha256': sha(destination), 'document_pagination_validated': False}
+               'inputs': {p.name: sha(p) for p in inputs}, 'font_family': 'DejaVu Sans',
+               'font_sha256': sha(font_path),
+               'outputs': {destination.name: sha(destination), destination_pdf.name: sha(destination_pdf)},
+               'document_pagination_validated': False}
     (output / 'construct_environment_receipt.json').write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
 
 
@@ -85,6 +98,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--axis-dir', type=Path, default=ROOT / 'work/current/results/axes')
     parser.add_argument('--output', type=Path, default=ROOT / 'work/layout-revisions')
-    parser.add_argument('--font', type=Path, required=True, help='Path to licensed Arial TTF used by the manuscript; not redistributed')
+    parser.add_argument('--font', type=Path, help='Optional TTF override. Default is Matplotlib-resolved DejaVu Sans for CI portability.')
     args = parser.parse_args()
     render(args.axis_dir, args.output, args.font)
