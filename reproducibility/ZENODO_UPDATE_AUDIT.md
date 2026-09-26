@@ -39,14 +39,14 @@ This closes an **ephemeral-storage risk**, not the public-release gate. A privat
 
 ## Assembled current v3 Zenodo staging bundle — 2026-09-26
 
-The current material surface has now been assembled end-to-end once from main commit `4ba2304eba83e9a54f616d33cc85fd7ad818caf0`.
+The current material surface has now been assembled end-to-end from current main commit `5c0ae2af9a92bb79295fd11d77ad5bbc25f39757`.
 
-- workflow run: `36238923810`;
-- Actions artifact: `10905067103`;
-- Actions artifact SHA-256: `ed73deb58ce166ddd7ae7156c2b349072d1cabb32e0bf6f24df049a66da16e59`;
+- workflow run: `36239203959`;
+- Actions artifact: `10905302325`;
+- Actions artifact SHA-256: `8b96fe69f7ae539d4118a29550684c7c1f473959a83659b0532ef67aee4870be`;
 - inner candidate archive: `azami_ch1_v3_zenodo_staging.zip`;
-- inner archive SHA-256: `489d3ab8b68b646c8eba510e853aa524d36cff138263da30bc3ecd910140b91e`;
-- durable owner copy: Drive file `1LC_VX3HtE8mmRSlYdb0BjYlYdUhRYXiv`.
+- inner archive SHA-256: `b9866cdd7a5a8980d93d60c39ddb7ac65d0143561e8802e556d64fc264397c5b`;
+- durable owner copy: Drive file `1texEEfD1aT0NvUKgrhNQuxYHyHqNN3P-`.
 
 The staging archive contains the four frozen numerical archives, checksum-recovered native status, the current 16-file reference surface, current eight-stage replay receipts, a `git archive` snapshot of the packaged checkout, and the checksum-verified current GEB figure surface.
 
