@@ -20,6 +20,12 @@ The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json), subsequ
 
 This staging area is private and is **not** a public release. The eight-stage replay/16-file validation receipt is complete and durably preserved. On 2026-09-26, the repository built the current-v3 Zenodo staging archive from main commit `5c0ae2af9a92bb79295fd11d77ad5bbc25f39757`; its inner archive SHA-256 is `b9866cdd7a5a8980d93d60c39ddb7ac65d0143561e8802e556d64fc264397c5b`, and the Actions wrapper is durably preserved in the owner Drive archive. The builder reports only `release_metadata` and `figure_document_qa` as unresolved release gaps. See [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md) for the exact receipt and remaining publication steps.
 
+## Document QA and prepared release metadata
+
+The current 13-page Supporting Information PDF has passed page-by-page visual layout QA. The final Main document has not yet been located in a canonical synchronized DOCX/PDF form, so the full document gate remains open. See [DOCUMENT_FIGURE_QA_20260927.md](DOCUMENT_FIGURE_QA_20260927.md).
+
+`zenodo_release_metadata.prepared.json` contains the non-author release fields already grounded by the repository and existing archive: title/description, preserved v2 DOI/concept, the proposed new-version strategy, MIT software licensing and source-specific third-party/data terms. It intentionally remains unapproved and does not pass the final metadata validator until the ordered creator list, author approvals and final Git commit are supplied.
+
 ## Current release bundle builder
 
 `python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for the current numerical release. It does not download or publish anything. Supply a directory containing exactly one ZIP for each frozen numerical input artifact ID (`9612943217`, `9633419268`, `8983877726`, `8227254443`). For native status, either pass the exact frozen CSV explicitly or place the checksum-verified WCVP sensitivity artifact `10292140117` in the same directory; the builder then extracts `input/observation_native_status.csv` and verifies the frozen SHA automatically.
