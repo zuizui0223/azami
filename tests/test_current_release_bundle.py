@@ -6,6 +6,9 @@ import pytest
 
 from reproducibility.build_current_release_bundle import (
     NATIVE_SHA,
+    TAXONOMY_ARCHIVE_SHA256,
+    TAXONOMY_ARTIFACT_ID,
+    TAXONOMY_NATIVE_MEMBER,
     REFERENCE,
     REFERENCE_MANIFEST,
     input_contract,
@@ -35,6 +38,9 @@ def test_release_input_contract_is_exactly_the_current_runner_contract():
         for source, (target, member_sha) in members.items():
             assert row["members"][source] == {"bundle_path": target, "sha256": member_sha}
     assert NATIVE_SHA == "c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a"
+    assert TAXONOMY_ARTIFACT_ID == 10292140117
+    assert TAXONOMY_ARCHIVE_SHA256 == "dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5"
+    assert TAXONOMY_NATIVE_MEMBER == "input/observation_native_status.csv"
 
 
 def test_current_replay_has_eight_stages_and_ends_with_estimator_validity(tmp_path):
