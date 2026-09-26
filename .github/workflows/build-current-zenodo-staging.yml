@@ -1,0 +1,144 @@
+name: Build current Chapter 1 Zenodo staging bundle
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'reproducibility/build_current_release_bundle.py'
+      - 'reproducibility/CURRENT_RELEASE_STAGING_20260912.json'
+      - 'reproducibility/current_reference/**'
+      - 'reproducibility/requirements-current.txt'
+      - 'reproducibility/current_replay_execution.json'
+      - 'reproducibility/current_replay_validation.json'
+      - '.github/workflows/build-current-zenodo-staging.yml'
+  pull_request:
+    paths:
+      - 'reproducibility/build_current_release_bundle.py'
+      - 'reproducibility/CURRENT_RELEASE_STAGING_20260912.json'
+      - 'reproducibility/current_reference/**'
+      - 'reproducibility/requirements-current.txt'
+      - 'reproducibility/current_replay_execution.json'
+      - 'reproducibility/current_replay_validation.json'
+      - '.github/workflows/build-current-zenodo-staging.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      INPUT_DIR: ${{ runner.temp }}/azami-release-inputs
+      FIGURE_DIR: ${{ runner.temp }}/azami-figure-surface
+      OUT_DIR: ${{ runner.temp }}/azami-zenodo-staging
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch frozen numerical and taxonomy archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$INPUT_DIR"
+          fetch_artifact () {
+            local id="$1"
+            local role="$2"
+            echo "Fetching artifact $id ($role)"
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" > "$INPUT_DIR/artifact-${id}-${role}.zip"
+          }
+          fetch_artifact 9612943217 continuous
+          fetch_artifact 9633419268 environment
+          fetch_artifact 8983877726 spatial
+          fetch_artifact 8227254443 historical
+          fetch_artifact 10292140117 taxonomy
+
+      - name: Fetch frozen current GEB figure surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$FIGURE_DIR"
+          FIGURE_ARTIFACT_ID=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          obj=json.loads(Path('reproducibility/CURRENT_RELEASE_STAGING_20260912.json').read_text())
+          row=next(x for x in obj['newly_staged_artifacts'] if x['role']=='current_geb_figure_surface')
+          print(row['github_actions_artifact_id'])
+          PY
+          )
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${FIGURE_ARTIFACT_ID}/zip" > "${RUNNER_TEMP}/figure-surface-artifact.zip"
+          unzip -q "${RUNNER_TEMP}/figure-surface-artifact.zip" -d "$FIGURE_DIR"
+          test -f "$FIGURE_DIR/final_figure_manifest.json"
+
+      - name: Build Zenodo staging bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT_DIR"
+          python -m reproducibility.build_current_release_bundle             --input-dir "$INPUT_DIR"             --figure-manifest "$FIGURE_DIR/final_figure_manifest.json"             --expected-head "$GITHUB_SHA"             --out "$OUT_DIR/azami_ch1_v3_zenodo_staging.zip"             > "$OUT_DIR/build_receipt.json"
+          cat "$OUT_DIR/build_receipt.json"
+          cat "$OUT_DIR/azami_ch1_v3_zenodo_staging.zip.sha256"
+
+      - name: Verify staging boundary and contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          root=Path(__import__('os').environ['OUT_DIR'])
+          receipt=json.loads((root/'build_receipt.json').read_text())
+          assert receipt['release_ready'] is False
+          assert set(receipt['release_gaps']) == {'release_metadata','figure_document_qa'}
+          assert receipt['reference_files'] == 16
+          z=zipfile.ZipFile(root/'azami_ch1_v3_zenodo_staging.zip')
+          names=set(z.namelist())
+          required={
+              'inputs/observation_native_status.csv',
+              'reference/manifest.json',
+              'replay/current_replay_execution.json',
+              'replay/current_replay_validation.json',
+              'figures/manifest.json',
+              'metadata/README.md',
+              'metadata/LICENSE',
+              'metadata/NOTICE.md',
+              'release_manifest.json',
+              'checksums.json',
+          }
+          missing=required-names
+          assert not missing, sorted(missing)
+          manifest=json.loads(z.read('release_manifest.json'))
+          assert manifest['bundle_kind']=='staging'
+          assert manifest['current_reference_file_count']==16
+          assert manifest['figure_file_count']==30
+          assert set(manifest['release_gaps'])=={'release_metadata','figure_document_qa'}
+          assert manifest['input_receipt']['native_status']['source_kind']=='durable_taxonomy_artifact'
+          print(json.dumps({
+              'status':'PASS',
+              'release_gaps':manifest['release_gaps'],
+              'figure_file_count':manifest['figure_file_count'],
+              'reference_files':manifest['current_reference_file_count'],
+              'git_head':manifest['git']['head'],
+          }, indent=2))
+          PY
+
+      - name: Upload Zenodo staging bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-zenodo-staging-bundle
+          path: |
+            ${{ runner.temp }}/azami-zenodo-staging/azami_ch1_v3_zenodo_staging.zip
+            ${{ runner.temp }}/azami-zenodo-staging/azami_ch1_v3_zenodo_staging.zip.sha256
+            ${{ runner.temp }}/azami-zenodo-staging/build_receipt.json
+          if-no-files-found: error
+          retention-days: 90
