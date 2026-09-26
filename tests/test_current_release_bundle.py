@@ -14,6 +14,7 @@ from reproducibility.build_current_release_bundle import (
     input_contract,
     locate_archive,
     release_gaps,
+    figure_manifest_document_qa,
     verify_manifest_files,
     verified_reference_rows,
 )
@@ -194,4 +195,15 @@ def test_figure_manifest_accepts_portable_manifest_relative_files(tmp_path):
     assert rows[0]["source_kind"] == "manifest_relative"
     assert rows[0]["source_path"] == image.resolve()
     assert rows[0]["path"] == "figures/Figure_1.png"
+
+def test_final_figure_manifest_requires_document_pagination_qa(tmp_path):
+    manifest = tmp_path / "final_figure_manifest.json"
+    manifest.write_text(json.dumps({"document_pagination_validated": False, "files": [
+        {"path": "placeholder.png", "sha256": "0" * 64}
+    ]}), encoding="utf-8")
+    assert figure_manifest_document_qa(manifest) is False
+    manifest.write_text(json.dumps({"document_pagination_validated": True, "files": [
+        {"path": "placeholder.png", "sha256": "0" * 64}
+    ]}), encoding="utf-8")
+    assert figure_manifest_document_qa(manifest) is True
 
