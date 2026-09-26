@@ -156,10 +156,10 @@
   "current_reference_manifest": "reproducibility/current_reference/manifest.json",
   "reference_file_count": 16,
   "remaining_before_public_current_release": [
-    "synchronize the final Word manuscript to the frozen 5-Main + S1.1-S1.7 + S2.1 figure surface, complete caption/numbering/pagination QA, and promote the figure manifest with document_pagination_validated=true",
-    "resolve and document author-owned release metadata plus software/data/third-party licensing in approved release metadata",
+    "obtain the canonical final Main DOCX/PDF synchronized to the current integration-centred five-Main-figure scope; complete rendered figure/caption/numbering/pagination and blinded-metadata QA; then promote document_pagination_validated=true",
+    "confirm the ordered creator list and any ORCID/affiliation values, approve archive strategy and data/third-party licensing wording, bind metadata to the exact final Git commit, and set release_approved=true",
     "rebuild the final release bundle at the exact final Git head and verify that release_ready=true",
-    "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
+    "publish a new Zenodo version under the existing concept or linked records if the approved licensing decision requires separation",
     "redownload the published package without owner credentials, verify all checksums, and complete a clean numerical replay/reference comparison"
   ],
   "scientific_outputs_changed": false,
@@ -207,5 +207,33 @@
       "current_code_snapshot": true,
       "current_geb_figure_surface": true
     }
+  },
+  "document_figure_qa": {
+    "audited_on": "2026-09-27",
+    "supporting_information": {
+      "file": "Azami_Ch1_GEB_Supplement_v3_FINAL_20260917.pdf",
+      "pages_inspected": 13,
+      "layout_status": "PASS",
+      "clipping_or_duplicate_page_detected": false
+    },
+    "main_manuscript": {
+      "canonical_final_document_found": false,
+      "status": "OPEN",
+      "reason": "Only older Main files and a later synchronization patch were accessible; no canonical final synchronized DOCX/PDF was available for rendered pagination and figure-placement QA."
+    },
+    "overall_document_pagination_validated": false,
+    "receipt": "reproducibility/DOCUMENT_FIGURE_QA_20260927.md"
+  },
+  "release_metadata_preparation": {
+    "status": "prepared_not_approved",
+    "file": "reproducibility/zenodo_release_metadata.prepared.json",
+    "non_author_fields_prepared": true,
+    "release_approved": false,
+    "remaining_author_owned_fields": [
+      "ordered creators and any chosen ORCID/affiliation values",
+      "explicit approval of archive strategy and data/third-party licensing wording",
+      "final_code_commit after document QA",
+      "release_approved=true only after final review"
+    ]
   }
 }

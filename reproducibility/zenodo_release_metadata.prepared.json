@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "release_approved": false,
+  "scientific_scope": "azami_ch1_v3_current",
+  "final_code_commit": "PENDING_FINAL_DOCUMENT_QA",
+  "title": "Azami Chapter 1 current numerical and figure release",
+  "description": "Frozen processed numerical inputs, current Chapter 1 analysis code, checksum-locked aggregate reference outputs, eight-stage replay receipts, and the checksum/provenance-verified manuscript figure surface for the current GEB-targeted analysis. Numerical reproduction begins from frozen image-derived measurements; original third-party photographs and upstream detector training are outside the minimum numerical replay.",
+  "creators": [],
+  "archive_strategy": "new_version_existing_concept",
+  "preserved_v2_record": {
+    "record_doi": "10.5281/zenodo.22295791",
+    "concept_doi": "10.5281/zenodo.22295790",
+    "modify_existing_v2": false
+  },
+  "licensing": {
+    "software": "MIT",
+    "data_and_third_party_strategy": "Keep original Azami software under MIT while preserving source-specific terms and attribution requirements for third-party photographs, CHELSA, Natural Earth, WCVP/POWO, phylogenetic backbones and other externally supplied material; the software license does not relicense third-party data."
+  },
+  "anonymous_redownload_required": true,
+  "clean_replay_required": true,
+  "preparation_status": "non_author_fields_prepared_not_approved",
+  "remaining_author_owned_fields": [
+    "ordered creators and any chosen ORCID/affiliation values",
+    "explicit approval of archive strategy and data/third-party licensing wording",
+    "final_code_commit after document QA",
+    "release_approved=true only after final review"
+  ]
+}
