@@ -119,14 +119,27 @@ Do not merge these denominators into one apparent sample size or imply that the 
 
 ## Current release status
 
-This role freeze does **not** yet satisfy the release builder's final figure-manifest gate.
+The figure-rendering and preservation part of this gate is now complete.
 
-Before `build_current_release_bundle --final` may be used:
+Workflow `Build current Chapter 1 figure surface` produced Actions artifact `10903835882` (ZIP SHA-256 `a3c7ac2fadafc7fe121df561b28a9fe8820167e49c82602a3d7782cac0430425`) from head `cbf313cb9da435194eb57c512bfd51c25dd7da69`. The same ZIP is durably preserved in the owner Drive archive as file `1AnrI_UttuQYRzTuhYRnn5Y74RT3Uu5u0`.
 
-1. render every final Main and Supporting export from its declared source;
-2. complete visual and document-pagination QA;
-3. freeze final numbering and captions;
-4. create one checksum manifest containing the exact renderer/source/provenance/export files used by the submitted manuscript;
-5. supply that manifest to the fail-closed release builder.
+The artifact contains:
 
-Until then, the existing `reproducibility/figures/` directory remains a labelled frozen v2 reference archive, not the current final manuscript figure set.
+- five Main figures;
+- Figures S1.1–S1.7;
+- Figure S2.1 (the demoted taxon-mean information-loss display);
+- PNG and PDF exports for all 13 displays;
+- four provenance/renderer receipts;
+- `final_figure_manifest.json` with SHA-256 values for all exported files.
+
+Main Figures 1–5 were visually inspected individually and the eight Supporting figures were inspected together; no clipping or obvious rendering failure was found.
+
+The remaining final figure-manifest gate is **document-level**:
+
+1. synchronize the final Word manuscript to exactly this five-Main/eight-Supporting role map;
+2. freeze final captions and Appendix numbering;
+3. render the Word files and inspect every page;
+4. confirm that no figure is clipped, duplicated, stale or cited under an old label;
+5. promote the same figure hashes in a QA-finalized manifest with document pagination validated.
+
+The tracked `reproducibility/figures/` directory remains the labelled frozen v2 reference archive. The current submission figure surface is the checksum-gated generated artifact above.

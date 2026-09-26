@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from reproducibility.render_construct_environment import ENVS, registry, validate
+from reproducibility.render_construct_environment import ENVS, default_font_path, registry, validate
 
 
 def test_complete_family_preserves_all_core_and_diagnostic_rows():
@@ -17,3 +17,9 @@ def test_complete_family_preserves_all_core_and_diagnostic_rows():
     frame.loc[0, 'q_bh'] = float('nan')
     with pytest.raises(ValueError, match='Non-finite'):
         validate(frame, constructs)
+
+def test_default_construct_figure_font_is_resolvable():
+    path = default_font_path()
+    assert path.is_file()
+    assert path.suffix.lower() in {".ttf", ".otf", ".ttc"}
+
