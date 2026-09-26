@@ -22,25 +22,23 @@ This staging area is private and is **not** a public release. The eight-stage re
 
 ## Current release bundle builder
 
-`python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for the current numerical release. It does not download or publish anything. Supply a directory containing exactly one ZIP for each frozen input artifact ID (`9612943217`, `9633419268`, `8983877726`, `8227254443`) plus the frozen native-status CSV.
+`python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for the current numerical release. It does not download or publish anything. Supply a directory containing exactly one ZIP for each frozen numerical input artifact ID (`9612943217`, `9633419268`, `8983877726`, `8227254443`). For native status, either pass the exact frozen CSV explicitly or place the checksum-verified WCVP sensitivity artifact `10292140117` in the same directory; the builder then extracts `input/observation_native_status.csv` and verifies the frozen SHA automatically.
 
 A staging bundle can be built before the final manuscript figure surface is frozen:
 
 ```bash
 python -m reproducibility.build_current_release_bundle \
   --input-dir /path/to/verified-archives \
-  --native-status /path/to/observation_native_status.csv \
   --out /path/to/azami_ch1_current_release_staging.zip
 ```
 
-The builder verifies the four archive SHA-256 values and their required members, normalizes the native-status transport only through the same frozen LF/CRLF rule used by the numerical runner, verifies all 16 `current_reference` files, requires a clean Git worktree, snapshots that exact `HEAD` with `git archive`, copies the current replay receipts and metadata, and writes a deterministic outer ZIP plus a `.sha256` sidecar.
+The builder verifies the four numerical archive SHA-256 values and their required members, verifies the taxonomy archive before extracting native status when that route is used, normalizes the native-status transport only through the same frozen LF/CRLF rule used by the numerical runner, verifies all 16 `current_reference` files, requires a clean Git worktree, snapshots that exact `HEAD` with `git archive`, copies the current replay receipts and metadata, and writes a deterministic outer ZIP plus a `.sha256` sidecar. The numerical dependency file is pinned to the exact completed replay environment, including Biopython 1.88.
 
 For the public release, use `--final`. Final mode refuses to build unless both a frozen figure/provenance manifest and completed release-metadata JSON are supplied:
 
 ```bash
 python -m reproducibility.build_current_release_bundle \
   --input-dir /path/to/verified-archives \
-  --native-status /path/to/observation_native_status.csv \
   --figure-manifest /path/to/final_figure_manifest.json \
   --release-metadata /path/to/zenodo_release_metadata.json \
   --expected-head <FINAL_COMMIT_SHA> \
