@@ -1,0 +1,78 @@
+name: Build current Chapter 1 figure surface
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'reproducibility/render_current_figure_surface.py'
+      - 'reproducibility/render_construct_environment.py'
+      - 'reproducibility/render_layout_revisions.py'
+      - 'reproducibility/render_scale_integration.py'
+      - 'reproducibility/build_current_release_bundle.py'
+      - 'reproducibility/current_reference/**'
+      - 'reproducibility/figures/**'
+      - 'legacy/v2/figures/**'
+      - 'tests/test_current_figure_surface.py'
+      - 'tests/test_construct_environment_render.py'
+      - 'tests/test_layout_revisions.py'
+      - 'tests/test_scale_integration_render.py'
+      - 'tests/test_current_release_bundle.py'
+      - '.github/workflows/build-current-figure-surface.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install figure environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[test]'
+
+      - name: Verify current figure and release contracts
+        run: |
+          pytest -q \
+            tests/test_current_figure_surface.py \
+            tests/test_construct_environment_render.py \
+            tests/test_layout_revisions.py \
+            tests/test_scale_integration_render.py \
+            tests/test_current_release_bundle.py
+
+      - name: Build current GEB figure surface
+        run: |
+          rm -rf work/current-figure-surface
+          python -m reproducibility.render_current_figure_surface \
+            --output work/current-figure-surface
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('work/current-figure-surface')
+          receipt = json.loads((root / 'figure_surface_receipt.json').read_text())
+          manifest = json.loads((root / 'final_figure_manifest.json').read_text())
+          assert receipt['status'] == 'PASS'
+          assert receipt['main_figures'] == 5
+          assert receipt['supporting_figures'] == 8
+          assert len(manifest['files']) == 30
+          for row in manifest['files']:
+              path = root / row['path']
+              assert path.is_file(), path
+              assert hashlib.sha256(path.read_bytes()).hexdigest() == row['sha256']
+          print(json.dumps(receipt, indent=2))
+          PY
+
+      - name: Upload current figure surface
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-current-geb-figure-surface
+          path: work/current-figure-surface/
+          if-no-files-found: error
+          retention-days: 90
