@@ -4,6 +4,10 @@ Current analysis and reproducible numerical evidence for the Chapter 1 study pre
 
 Original software is released under the [MIT license](LICENSE); see [NOTICE.md](NOTICE.md) for the separate treatment of images, data and third-party material.
 
+## Reproduction boundary
+
+The current statistical analysis **has executable code**. Its replay starts from frozen image-derived continuous measurements plus fixed environmental, spatial and historical auxiliary inputs; it does not start from the original photographs. Original photographs, detector training/provenance and other external source materials belong to a separate upstream layer and are not all redistributed by the minimum numerical archive. See [upstream-data and reproducibility boundary](reproducibility/UPSTREAM_DATA_BOUNDARY_20260926.md).
+
 ## Start here
 
 1. [Current numerical reproduction](reproducibility/CURRENT_ANALYSIS.md): verified inputs, one-command execution, and result validation.
@@ -51,6 +55,6 @@ The current numerical runner reuses the retained spatial and historical-placemen
 
 ## Public availability
 
-Zenodo DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791) archives the **v2** minimum numerical input package. It is not a complete archive of the current construct-level analysis. The [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) identifies the required new version. GitHub Actions artifacts expire; they are not a permanent substitute.
+Zenodo DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791) archives the **v2** minimum numerical input package. It is not a complete archive of the current construct-level analysis. The current v3 analysis code is present and the eight-stage/16-reference-file numerical replay has passed; the missing step is the **current permanent public release**, not the statistical code. The [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) identifies the required new version. GitHub Actions artifacts expire; they are not a permanent substitute.
 
 Exact historical v2 reproduction remains available at commit `584af97b050d15701f26ce1facea212d5b648d4d`. The current scientific reference is main commit `fe25abd46e7235c85e6da191f976e1c8a02d0406`; subsequent layout-only changes must preserve its numerical results.

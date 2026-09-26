@@ -18,7 +18,7 @@ Current scientific scope remains the frozen Chapter 1 GEB scope in `analysis/v3/
 | Main length | Research Articles typically ~5000 main-text words | 2026-09-07 baseline = ~8,162 words; compression route frozen in `GEB_MAIN_TEXT_COMPRESSION_20260912.md` | **OPEN: synchronize/compress final DOCX** |
 | Display pieces | Typically 6–8 tables + figures | Frozen role plan = five Main figures; Main tables must be finalized so total remains in range | **VERIFY FINAL DOCX** |
 | Double-anonymous main file | No author-identifying material; separate identifying title page; remove author name from Word properties | Existing public GitHub/Zenodo identities must not be used as the blinded review link | **OPEN** |
-| Data/code during peer review | Data and code supporting results accessible during review; GitHub alone is not a stable archive | Current public v2 Zenodo is incomplete for v3 and may reveal authors | **OPEN: anonymous review archive required** |
+| Data/code during peer review | Data and code supporting results accessible during review; GitHub alone is not a stable archive | Anonymous current numerical review bundle is built and self-replays 8 stages / 16 reference files, but it is not yet deposited behind a stable anonymous reviewer link | **OPEN: deposit bundle + logged-out anonymity/access check** |
 | Permanent archive | Stable public repository for publication | Final current-release builder and approved-metadata gate exist; final v3 public release not yet published | **OPEN** |
 | Figure readability | Embedded for review; legends stand alone; panels `(a)`, `(b)`, ... | Current v3 scale-integration renderer passes fixed-width visual QA | **PARTIAL: full Main/SI surface still required** |
 | Figure legend content | Stand-alone; state organism and geographic region where applicable | Scale-integration caption patch now says global public-image dataset of Cirsium | **PASS IN PATCH; verify final captions** |
@@ -45,14 +45,16 @@ This closes accepted-name/synonym grouping as a submission blocker. It does not 
 
 GEB requires review access to supporting data/code while operating double-anonymous peer review. The blinded manuscript therefore must **not** point reviewers to an author-identifying repository URL merely because that repository is public.
 
+As of 2026-09-15, the repository-side construction gate is closed: PR #111 added a fail-closed anonymous **numerical** review-bundle builder, its identity scan passed, and its packaged local-only replay reproduced all 16 current reference files across 8 numerical stages. This does not close the journal-access gate because the generated Actions artifact is temporary and is not itself a stable anonymous reviewer archive. The bundle also starts from frozen image-derived measurements; it is not a raw-photograph or detector-training archive. See [UPSTREAM_DATA_BOUNDARY_20260926.md](UPSTREAM_DATA_BOUNDARY_20260926.md).
+
 The journal explicitly documents Dryad's **Private for Peer Review** route, which creates a randomized private review URL. The preferred Chapter 1 submission path is therefore:
 
-1. build the checksum-gated current package from the final frozen code/figure surface;
-2. deposit the review package in an anonymous review archive (preferred: Dryad Private for Peer Review, unless an equivalent non-identifying stable review route is approved);
+1. rebuild the existing fail-closed anonymous numerical bundle from the final frozen analysis code/input surface and require its self-replay to pass;
+2. deposit that bundle in an anonymous review archive (preferred: Dryad Private for Peer Review, unless an equivalent non-identifying stable review route is approved);
 3. verify the review link in a logged-out / non-owner context;
 4. inspect the landing page and downloaded package for author names, usernames, e-mail addresses, local paths, ORCID, repository-owner identifiers and identifying metadata;
 5. put only that anonymous review link in the blinded Data and Code Availability Statement;
-6. retain the permanent public Zenodo release as the publication archive after the double-anonymous review constraint no longer applies.
+6. keep final figure/provenance packaging and the permanent public Zenodo release as separate publication-archive gates after the double-anonymous review constraint no longer applies.
 
 A GitHub URL is useful for development and audit but **does not satisfy GEB's stable-archive requirement by itself**.
 
@@ -60,7 +62,7 @@ A GitHub URL is useful for development and audit but **does not satisfy GEB's st
 
 Do not use this sentence until the anonymous review package exists and has passed the logged-out anonymity check:
 
-> Data and code supporting this study are available to reviewers through an anonymized private archival link supplied with the submission. The review package contains the frozen numerical inputs, analysis code, aggregate reference outputs, figure provenance and numerical replay receipts. A permanent public archival record will be released for publication.
+> Data and code supporting this study are available to reviewers through an anonymized private archival link supplied with the submission. The review package contains the frozen processed numerical inputs, analysis code, aggregate reference outputs and numerical replay validation needed to reproduce the manuscript's statistical analyses. Reproduction from original third-party photographs is a separate upstream workflow and is not claimed by this numerical review package. A permanent public archival record will be released for publication.
 
 For the final published manuscript, replace the review sentence with the permanent public archive DOI(s), after anonymous redownload/checksum/clean-replay validation.
 

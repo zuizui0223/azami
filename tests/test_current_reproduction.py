@@ -57,3 +57,17 @@ def test_current_runbook_does_not_inherit_v2_publication_status():
     assert 'do not certify current v3 public availability' in text
     assert 'C:\\Users' not in text
     assert (ROOT/'LICENSE').is_file()
+
+def test_current_reproducibility_docs_match_eight_stage_boundary():
+    runbook = (ROOT / "reproducibility/CURRENT_ANALYSIS.md").read_text(encoding="utf-8")
+    assert "runs all **eight** current numerical stages" in runbook
+    assert "compares **16** aggregate outputs" in runbook
+    boundary = (ROOT / "reproducibility/UPSTREAM_DATA_BOUNDARY_20260926.md").read_text(encoding="utf-8")
+    assert "Starting point of the current manuscript replay" in boundary
+    assert "current v3 runner does not redownload photographs" in boundary
+    assert "8 numerical stages" in boundary
+    assert "16 checksum-locked files" in boundary
+    zenodo = (ROOT / "reproducibility/ZENODO_UPDATE_AUDIT.md").read_text(encoding="utf-8")
+    assert "Current eight-stage replay + 16-file validation" in zenodo
+    assert "10382954095" in zenodo
+

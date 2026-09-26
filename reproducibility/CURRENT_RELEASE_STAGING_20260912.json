@@ -94,6 +94,23 @@
       "claim_boundary": "Post-hoc estimator-validity sensitivity; supports stronger overall among taxa but does not promote raw 33/36 as estimator-invariant."
     },
     {
+      "role": "current_eight_stage_replay_and_16_file_validation",
+      "github_actions_artifact_id": 10382954095,
+      "archive_sha256": "2064b63366681aa3bd708fef00d2e7ac50d20a7fad771849b793c0d2b6957a0e",
+      "size_bytes": 133901,
+      "source_workflow_run": 34935214080,
+      "source_head_sha": "a15eedca318c84962eaf519dc720f4e6ed8daff7",
+      "drive_file_id": "1URtYSHHM-yl3wrTAtTJRkk2FDPiT9PVl",
+      "drive_file_name": "artifact-10382954095-ch1-current-eight-stage-replay.zip",
+      "completed_numerical_stages": 8,
+      "aggregate_files_compared": 16,
+      "validation_status": "PASS",
+      "receipts": [
+        "reproducibility/current_replay_execution.json",
+        "reproducibility/current_replay_validation.json"
+      ]
+    },
+    {
       "role": "current_scale_integration_figure_estimator_validity_ci_artifact",
       "github_actions_artifact_id": 10382578412,
       "archive_sha256": "d538c428f3acb3eab6a203c0a0a435ce0ae51e0da9b4f23b7d42e92fcc0e3af7",
@@ -123,7 +140,6 @@
   "remaining_before_public_current_release": [
     "extract the exact native-status member from the durable taxonomy artifact into the final release input set and reverify NATIVE_SHA",
     "pin and package the final cleaned code revision and numerical dependencies",
-    "include current replay execution and 16-file comparison receipts from the eight-stage numerical replay",
     "freeze and stage the remaining final Main/Supporting manuscript figure exports and provenance after document QA",
     "resolve and document software/data/third-party licensing in approved release metadata",
     "publish a new Zenodo version under the existing concept or linked records if licensing requires separation",
