@@ -48,7 +48,7 @@ python -m pip install \
   numpy==2.4.6 \
   scipy==1.17.1 \
   statsmodels==0.14.6 \
-  'biopython>=1.83,<2'
+  biopython==1.88
 ```
 
 Biopython is required only for the full biological-axis historical-sensitivity chain; the other three v3 workflows use the first four packages.
