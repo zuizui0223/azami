@@ -194,6 +194,16 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert zenodo["figure_manifest_files"] == 30
     assert zenodo["release_ready"] is False
     assert set(zenodo["release_gaps"]) == {"release_metadata", "figure_document_qa"}
+    docqa = receipt["document_figure_qa"]
+    assert docqa["supporting_information"]["pages_inspected"] == 13
+    assert docqa["supporting_information"]["layout_status"] == "PASS"
+    assert docqa["main_manuscript"]["canonical_final_document_found"] is False
+    assert docqa["main_manuscript"]["status"] == "OPEN"
+    assert docqa["overall_document_pagination_validated"] is False
+    metaprep = receipt["release_metadata_preparation"]
+    assert metaprep["status"] == "prepared_not_approved"
+    assert metaprep["non_author_fields_prepared"] is True
+    assert metaprep["release_approved"] is False
     assert receipt["reference_file_count"] == 16
     assert receipt["scientific_outputs_changed"] is False
     assert receipt["public_release_changed"] is False
