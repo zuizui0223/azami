@@ -7,7 +7,6 @@ on:
       - main
     paths:
       - 'reproducibility/build_current_release_bundle.py'
-      - 'reproducibility/CURRENT_RELEASE_STAGING_20260912.json'
       - 'reproducibility/current_reference/**'
       - 'reproducibility/requirements-current.txt'
       - 'reproducibility/current_replay_execution.json'
@@ -16,7 +15,6 @@ on:
   pull_request:
     paths:
       - 'reproducibility/build_current_release_bundle.py'
-      - 'reproducibility/CURRENT_RELEASE_STAGING_20260912.json'
       - 'reproducibility/current_reference/**'
       - 'reproducibility/requirements-current.txt'
       - 'reproducibility/current_replay_execution.json'
