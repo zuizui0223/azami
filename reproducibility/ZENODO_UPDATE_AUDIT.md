@@ -29,6 +29,7 @@ Durable copies now include:
 | Assessability + technical-stress outputs | `10135679053` | `fa80f6079d676186d48665a574b5e68f906037a466a9e3101a57d87ee02f5ba7` | copied to durable Drive archive |
 | WCVP accepted-name sensitivity | `10292140117` | `dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5` | copied to durable Drive archive; contains exact native-status input |
 | RV estimator-validity sensitivity | `10382387052` | `345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e` | copied to durable Drive archive |
+| Current eight-stage replay + 16-file validation | `10382954095` | `2064b63366681aa3bd708fef00d2e7ac50d20a7fad771849b793c0d2b6957a0e` | copied to durable Drive archive; validation PASS |
 | Pre-estimator scale-integration figure | `10291656193` | `2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766` | durable historical figure artifact |
 | Estimator-validity scale-integration figure | `10382578412` | `d538c428f3acb3eab6a203c0a0a435ce0ae51e0da9b4f23b7d42e92fcc0e3af7` | current manuscript figure candidate; visual QA passed |
 
@@ -47,15 +48,15 @@ This closes an **ephemeral-storage risk**, not the public-release gate. A privat
 | Current code and numerical dependencies | repository code exists; no final release archive has yet been frozen | Include code archive pinned to the final cleaned main commit and `requirements-current.txt` or equivalent pinned environment |
 | Current aggregate reference outputs | 16-file manifest is checksum-verified; estimator-validity summary is included and its source artifact is durable | Include all 16 files indexed in `current_reference/manifest.json` |
 | Current figures and provenance | current Figure 3 estimator-validity candidate is checksum-verified, durably staged and visually QA'd; the complete final manuscript figure package is not yet frozen | Add final current figure source code, input map and all submitted exports after document/figure QA |
-| Full replay validation | earlier seven-stage / 15-file receipts exist, but the current runner now has eight stages and a 16-file reference surface | Produce a new eight-stage replay and 16-file comparison receipt from the final code surface |
+| Full replay validation | **complete**: the 2026-09-15 eight-stage replay matched all 16 current aggregate reference files; artifact `10382954095` is durably staged | Include `current_replay_execution.json`, `current_replay_validation.json` and the frozen replay environment in the final release; rerun after publication as the credential-free verification |
 | License metadata | existing data record says CC BY 4.0; repository code is MIT | Identify MIT software separately; retain and verify third-party/data terms |
 
 Current numerical input identities are executable in `run_current_analysis.py`; current reference output identities are recorded in `current_reference/manifest.json`. The existing v2 release and its DOI must remain intact. Use a new version under the existing concept, or linked code/data records if different licensing requires separation; do not silently replace the v2 package.
 
 ## Remaining release gate
 
-The material-recovery problem is now narrow. The remaining work is to freeze/package the final code/dependency revision, produce the updated eight-stage replay/16-file comparison receipts, freeze the complete submitted figure/provenance surface, resolve release metadata/licensing, publish the approved new version, then perform the anonymous redownload test.
+The material-recovery problem is now narrow. The eight-stage replay/16-file comparison has already passed and is durably staged. The remaining work is to freeze/package the final code/dependency revision, freeze the complete submitted figure/provenance surface, resolve release metadata/licensing, publish the approved new version, then perform the credential-free redownload and clean replay.
 
 Before claiming current credential-free reproducibility: publish the approved new version, download it without owner credentials, verify every checksum, unpack into a clean directory, and complete the numerical run and reference comparison. Retain unsupported rows and sensitivity failures. GitHub Actions success, a private Drive copy, or local file presence alone does not close this public-archive requirement.
 
-Original photographs and upstream detector training are outside the minimum numerical replay. If claiming reproduction from original photos rather than from frozen measurements, separately audit image access/licenses, model-weight availability, all upstream inputs and software versions. The present v2 minimum bundle and this staging update do not establish that stronger claim.
+Original photographs and upstream detector training are outside the minimum numerical replay. If claiming reproduction from original photos rather than from frozen measurements, separately audit image access/licenses, model-weight availability, all upstream inputs and software versions. The present v2 minimum bundle and this staging update do not establish that stronger claim. See [UPSTREAM_DATA_BOUNDARY_20260926.md](UPSTREAM_DATA_BOUNDARY_20260926.md) for the frozen distinction between source provenance, image-to-trait production and current numerical replay.
