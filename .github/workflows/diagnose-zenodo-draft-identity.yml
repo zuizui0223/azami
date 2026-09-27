@@ -1,0 +1,135 @@
+name: Diagnose Zenodo draft identity
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/diagnose-zenodo-draft-identity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ZENODO_ACCESS_TOKEN_PRIMARY: ${{ secrets.ZENODO_ACCESS_TOKEN }}
+      ZENODO_ACCESS_TOKEN_FALLBACK: ${{ secrets.ZENODO_TOKEN }}
+      V2_RECORD_ID: '22295791'
+      CONCEPT_DOI: 10.5281/zenodo.22295790
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install client
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Inspect target version chain read-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/zenodo-draft-diag"
+          python - <<'PY'
+          import json, os, pathlib
+          import requests
+
+          api="https://zenodo.org/api"
+          token=os.environ.get("ZENODO_ACCESS_TOKEN_PRIMARY") or os.environ.get("ZENODO_ACCESS_TOKEN_FALLBACK")
+          if not token:
+              raise SystemExit("Zenodo token missing")
+          headers={"Authorization":f"Bearer {token}"}
+          base_id=int(os.environ["V2_RECORD_ID"])
+          concept_doi=os.environ["CONCEPT_DOI"]
+
+          def slim(dep):
+              links=dep.get("links",{})
+              return {
+                  "id": dep.get("id"),
+                  "title": dep.get("title") or dep.get("metadata",{}).get("title"),
+                  "submitted": dep.get("submitted"),
+                  "state": dep.get("state"),
+                  "conceptrecid": dep.get("conceptrecid"),
+                  "conceptdoi": dep.get("conceptdoi") or dep.get("metadata",{}).get("conceptdoi"),
+                  "doi": dep.get("doi") or dep.get("metadata",{}).get("doi"),
+                  "link_keys": sorted(links),
+                  "latest_draft": links.get("latest_draft"),
+                  "latest": links.get("latest"),
+                  "record": links.get("record"),
+                  "html": links.get("html"),
+                  "files": [f.get("filename") for f in dep.get("files",[])],
+              }
+
+          r=requests.get(f"{api}/deposit/depositions/{base_id}",headers=headers,timeout=60)
+          r.raise_for_status()
+          parent=r.json()
+          parent_slim=slim(parent)
+
+          latest_probe=None
+          latest_draft=parent.get("links",{}).get("latest_draft")
+          if latest_draft:
+              p=requests.get(latest_draft,headers=headers,timeout=60)
+              latest_probe={
+                  "url":latest_draft,
+                  "http_status":p.status_code,
+              }
+              if p.status_code==200:
+                  latest_probe["resource"]=slim(p.json())
+              else:
+                  latest_probe["body"]=p.text[:500]
+
+          drafts_r=requests.get(
+              f"{api}/deposit/depositions",
+              headers=headers,
+              params={"status":"draft","all_versions":"true","size":100,"sort":"-mostrecent"},
+              timeout=60,
+          )
+          drafts_r.raise_for_status()
+          target=[]
+          all_safe=[]
+          for dep in drafts_r.json():
+              s=slim(dep)
+              # Never emit unrelated titles/files. Keep only target-chain resources
+              # in detail; for unrelated resources expose only opaque ID/state.
+              link_blob=" ".join(str(v) for v in (
+                  s.get("latest_draft"),s.get("latest"),s.get("record"),s.get("html")
+              ) if v)
+              target_match=(
+                  s.get("conceptdoi")==concept_doi
+                  or str(s.get("conceptrecid") or "")=="22295790"
+                  or str(base_id) in link_blob
+              )
+              if target_match:
+                  target.append(s)
+              else:
+                  all_safe.append({
+                      "id":s.get("id"),
+                      "submitted":s.get("submitted"),
+                      "state":s.get("state"),
+                      "conceptrecid":s.get("conceptrecid"),
+                  })
+
+          result={
+              "parent":parent_slim,
+              "parent_latest_draft_probe":latest_probe,
+              "target_draft_candidates":target,
+              "other_draft_count":len(all_safe),
+              "other_draft_opaque":all_safe,
+              "writes_performed":False,
+          }
+          out=pathlib.Path(os.environ["RUNNER_TEMP"])/"zenodo-draft-diag"/"result.json"
+          out.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+          print(json.dumps(result,indent=2,sort_keys=True))
+          PY
+
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: zenodo-draft-identity-diagnostic
+          path: ${{ runner.temp }}/zenodo-draft-diag/result.json
+          if-no-files-found: error
+          retention-days: 30
