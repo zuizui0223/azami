@@ -121,140 +121,66 @@ jobs:
           if parent.get("submitted") is not True and parent.get("state") != "done":
               raise RuntimeError(f"Zenodo parent deposition {base_id} is not published")
 
-          # Reuse an existing unpublished new-version draft when present.
-          # Zenodo permits only one draft per version chain; calling newversion again
-          # can return HTTP 400 "Please remove all files first." when such a draft exists.
-          latest_draft = parent.get("links", {}).get("latest_draft")
-          draft = None
-          if latest_draft:
-              probe = requests.get(latest_draft, headers=headers, timeout=60)
-              if probe.status_code == 200:
-                  draft = probe.json()
+          # Select only a real unpublished draft. Zenodo's published v2
+          # representation currently exposes links.latest_draft pointing back to
+          # the published deposition itself, so links.latest_draft alone is not
+          # sufficient evidence that a resource is a draft.
+          def find_target_drafts():
+              rr = require(
+                  requests.get(
+                      f"{api}/deposit/depositions",
+                      headers=headers,
+                      params={"status": "draft", "all_versions": "true", "size": 100, "sort": "-mostrecent"},
+                      timeout=60,
+                  ),
+                  {200},
+                  "list owned draft resources",
+              )
+              candidates = []
+              for dep in rr.json():
+                  concept = dep.get("conceptdoi") or dep.get("metadata", {}).get("conceptdoi")
+                  conceptrecid = str(dep.get("conceptrecid", ""))
+                  is_target = concept == concept_doi or conceptrecid == "22295790"
+                  is_unpublished = dep.get("submitted") is False and dep.get("state") in ("unsubmitted", "inprogress")
+                  if is_target and is_unpublished:
+                      candidates.append(dep)
+              return candidates
 
-          if draft is None:
+          candidates = find_target_drafts()
+          if not candidates:
+              # No true unpublished draft exists. Ask Zenodo to create one from
+              # the latest published version, then discover it by state rather
+              # than trusting the parent's latest_draft link.
               r = requests.post(
                   f"{api}/deposit/depositions/{base_id}/actions/newversion",
                   headers=headers,
                   timeout=60,
               )
-              if r.status_code == 201:
-                  payload = r.json()
-                  latest_draft = payload.get("links", {}).get("latest_draft")
-                  # Some Zenodo deployments return the draft resource directly.
-                  if payload.get("submitted") is False and payload.get("state") == "inprogress":
-                      draft = payload
-                  elif latest_draft:
-                      draft = require(
-                          requests.get(latest_draft, headers=headers, timeout=60),
-                          {200},
-                          "fetch newly created draft",
-                      ).json()
-              elif r.status_code == 400 and "Please remove all files first." in r.text:
-                  # A draft exists but the parent representation did not expose it.
-                  # Locate the owned draft by concept identity and reuse it.
-                  rr = require(
-                      requests.get(
-                          f"{api}/deposit/depositions",
-                          headers=headers,
-                          params={"status": "draft", "all_versions": "true", "size": 100, "sort": "-mostrecent"},
-                          timeout=60,
-                      ),
-                      {200},
-                      "list owned drafts",
-                  )
-                  candidates = []
-                  for dep in rr.json():
-                      concept = dep.get("conceptdoi") or dep.get("metadata", {}).get("conceptdoi")
-                      conceptrecid = str(dep.get("conceptrecid", ""))
-                      parent_link = dep.get("links", {}).get("latest") or dep.get("links", {}).get("record")
-                      if concept == concept_doi or conceptrecid == "22295790":
-                          candidates.append(dep)
-                      elif parent_link and str(base_id) in str(parent_link):
-                          candidates.append(dep)
-                  if not candidates:
-                      raise RuntimeError(
-                          "Zenodo reports an existing draft, but no owned draft matching the target concept could be found."
-                      )
-                  draft = sorted(candidates, key=lambda x: x.get("modified", ""))[-1]
-              else:
+              if r.status_code not in (201, 400):
                   require(r, {201}, "create new version")
+              if r.status_code == 400 and "Please remove all files first." not in r.text:
+                  require(r, {201}, "create new version")
+              candidates = find_target_drafts()
 
-          if draft is None:
-              raise RuntimeError("Could not create or recover the target Zenodo new-version draft")
+          if not candidates:
+              raise RuntimeError("No true unpublished draft found for target Zenodo concept after newversion")
+
+          draft = sorted(candidates, key=lambda x: x.get("modified", ""))[-1]
           draft_id = int(draft["id"])
-
-          def delete_draft_files(candidate):
-              locked = False
-              deposition_id = int(candidate["id"])
-              for old_file in list(candidate.get("files", [])):
-                  # Zenodo exposes links.self using the newer bucket/files API,
-                  # but the documented legacy deposition-file DELETE endpoint is
-                  # /api/deposit/depositions/:id/files/:file_id. Use that exact
-                  # endpoint because DELETE on links.self may return HTTP 405.
-                  url = f"{api}/deposit/depositions/{deposition_id}/files/{old_file['id']}"
-                  resp = requests.delete(url, headers=headers, timeout=60)
-                  if resp.status_code == 204:
-                      continue
-                  if resp.status_code == 403 and "Bucket is locked for modifications." in resp.text:
-                      locked = True
-                      break
-                  require(resp, {204}, f"delete inherited file {old_file.get('filename')}")
-              return locked
-
-          locked = delete_draft_files(draft)
-          if locked:
-              # A legacy/edit draft can expose the published record bucket, which
-              # is intentionally locked. Discard only a provably stale v2-shaped
-              # draft; never discard an unknown user-prepared draft.
-              draft_title = draft.get("title") or draft.get("metadata", {}).get("title")
-              draft_files = [x.get("filename") for x in draft.get("files", [])]
-              stale_v2_shape = (
-                  draft_title == "Azami Chapter 1 v2 reproducibility input package"
-                  and draft_files == ["azami_ch1_v2_reproduction_inputs_2026-09-04.zip"]
+          if draft.get("submitted") is not False or draft.get("state") not in ("unsubmitted", "inprogress"):
+              raise RuntimeError(
+                  f"Refusing non-draft resource {draft_id}: submitted={draft.get('submitted')}, state={draft.get('state')}"
               )
-              if not stale_v2_shape:
-                  raise RuntimeError(
-                      "Existing draft uses a locked bucket but is not the exact stale v2-shaped draft; "
-                      f"refusing destructive discard. title={draft_title!r}, files={draft_files!r}"
-                  )
-              discard_url = draft.get("links", {}).get("discard") or (
-                  f"{api}/deposit/depositions/{draft_id}/actions/discard"
-              )
+
+          # If the true unpublished draft already contains files, remove only
+          # those files through the documented deposition-file endpoint.
+          for old_file in list(draft.get("files", [])):
+              url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
               require(
-                  requests.post(discard_url, headers=headers, timeout=60),
-                  {201, 204},
-                  "discard stale locked draft",
+                  requests.delete(url, headers=headers, timeout=60),
+                  {204},
+                  f"delete existing draft file {old_file.get('filename')}",
               )
-
-              # Recreate a fresh new-version draft after discarding the stale edit.
-              r = require(
-                  requests.post(
-                      f"{api}/deposit/depositions/{base_id}/actions/newversion",
-                      headers=headers,
-                      timeout=60,
-                  ),
-                  {201},
-                  "create fresh new version after stale-draft discard",
-              )
-              payload = r.json()
-              latest_draft = payload.get("links", {}).get("latest_draft")
-              if payload.get("submitted") is False and payload.get("state") in ("inprogress", "unsubmitted"):
-                  draft = payload
-              elif latest_draft:
-                  draft = require(
-                      requests.get(latest_draft, headers=headers, timeout=60),
-                      {200},
-                      "fetch fresh new-version draft",
-                  ).json()
-              else:
-                  raise RuntimeError("Fresh newversion response exposed no usable draft")
-              draft_id = int(draft["id"])
-
-              # Current Zenodo versions should start without imported files.
-              # If files are present, they must be removable from the unlocked
-              # draft bucket; otherwise fail without publishing.
-              if delete_draft_files(draft):
-                  raise RuntimeError("Fresh new-version draft still points to a locked bucket")
 
           # Upload only the verified data-only v3 ZIP.
           with file_path.open("rb") as handle:
