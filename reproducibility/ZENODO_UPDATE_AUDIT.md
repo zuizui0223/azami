@@ -31,6 +31,28 @@ The Zenodo data package does **not** contain:
 
 Those materials remain versioned or documented in GitHub where appropriate. The Zenodo manifest pins the GitHub repository and exact code commit used with the inputs.
 
+## Verified v3 data-only staging bundle — 2026-09-27
+
+The data-only builder passed on main commit `810637d9dfdde9c4b810c2472f43f254786ce614`.
+
+- workflow run: `36287521925`;
+- Actions artifact: `10920813215`;
+- Actions wrapper SHA-256: `0afaed34da6654819bf979e676f50f877a816beac1d281fe92b6735eee5f6faa`;
+- inner archive: `azami_ch1_v3_analysis_inputs.zip`;
+- inner archive size: 59,461,974 bytes;
+- inner archive SHA-256: `c4ec876206e6f8ef0cd69d126fa31b2b71aa1b1919172aeb371f75bbabcd6d10`;
+- durable owner copy: Drive file `1Bqj_5pLAd7DQmC5OLs9x426i8XwHsgZh`.
+
+The inner archive contains exactly the five analysis inputs plus `README.txt`, `input_contract.json`, `release_manifest.json` and `checksums.json`. Inspection confirmed:
+
+- `code_included=false`;
+- `manuscript_files_included=false`;
+- `figures_included=false`;
+- `reference_outputs_included=false`;
+- `replay_receipts_included=false`.
+
+The only remaining release gap reported by the builder is `release_metadata`.
+
 ## Existing public v2 record
 
 The existing public record remains unchanged:
