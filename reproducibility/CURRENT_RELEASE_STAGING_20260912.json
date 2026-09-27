@@ -172,20 +172,25 @@
     "builder": "reproducibility/build_current_release_bundle.py"
   },
   "zenodo_staging_bundle": {
-    "built_on": "2026-09-26",
-    "status": "assembled_and_verified_not_public_pre_manuscript_exclusion_policy",
-    "source_main_commit": "5c0ae2af9a92bb79295fd11d77ad5bbc25f39757",
-    "workflow_run": 36239203959,
-    "github_actions_artifact_id": 10905302325,
-    "github_actions_artifact_sha256": "8b96fe69f7ae539d4118a29550684c7c1f473959a83659b0532ef67aee4870be",
-    "github_actions_artifact_size_bytes": 77714413,
+    "built_on": "2026-09-27",
+    "status": "assembled_and_verified_not_public",
+    "source_main_commit": "b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4",
+    "workflow_run": 36285930988,
+    "github_actions_artifact_id": 10919753688,
+    "github_actions_artifact_sha256": "a16053d5dbe50569d08494b594a4e92a6ad011ce98c588f0e06082cddfb1ad3a",
+    "github_actions_artifact_size_bytes": 77721572,
     "inner_bundle_filename": "azami_ch1_v3_zenodo_staging.zip",
-    "inner_bundle_sha256": "b9866cdd7a5a8980d93d60c39ddb7ac65d0143561e8802e556d64fc264397c5b",
-    "durable_drive_file_id": "1texEEfD1aT0NvUKgrhNQuxYHyHqNN3P-",
-    "durable_drive_file_name": "artifact-10905302325-ch1-v3-zenodo-staging-bundle.zip",
+    "inner_bundle_sha256": "dee0a37be6b38f7fa72a48053021cb1709031b93ee1bf18043b75892ca55f051",
+    "durable_drive_file_id": "1H4MXMtmSl26lb8HNrc0t-PrdcT8vxBMH",
+    "durable_drive_file_name": "artifact-10919753688-ch1-v3-zenodo-staging-bundle.zip",
     "reference_files": 16,
     "figure_manifest_files": 30,
+    "manuscript_files_included": false,
+    "document_pagination_is_submission_only": true,
     "release_ready": false,
+    "release_gaps": [
+      "release_metadata"
+    ],
     "includes": {
       "frozen_numerical_archives": [
         9612943217,
@@ -200,13 +205,9 @@
         "reproducibility/current_replay_validation.json"
       ],
       "current_code_snapshot": true,
-      "current_geb_figure_surface": true
-    },
-    "gate_definition_status": "historical_superseded",
-    "release_gaps_at_build_time": [
-      "release_metadata",
-      "figure_document_qa"
-    ]
+      "current_geb_figure_surface": true,
+      "manuscript_docx_pdf": false
+    }
   },
   "document_figure_qa": {
     "audited_on": "2026-09-27",
