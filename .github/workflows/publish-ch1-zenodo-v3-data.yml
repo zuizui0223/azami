@@ -185,10 +185,13 @@ jobs:
 
           def delete_draft_files(candidate):
               locked = False
+              deposition_id = int(candidate["id"])
               for old_file in list(candidate.get("files", [])):
-                  url = old_file.get("links", {}).get("self")
-                  if not url:
-                      url = f"{api}/deposit/depositions/{int(candidate['id'])}/files/{old_file['id']}"
+                  # Zenodo exposes links.self using the newer bucket/files API,
+                  # but the documented legacy deposition-file DELETE endpoint is
+                  # /api/deposit/depositions/:id/files/:file_id. Use that exact
+                  # endpoint because DELETE on links.self may return HTTP 405.
+                  url = f"{api}/deposit/depositions/{deposition_id}/files/{old_file['id']}"
                   resp = requests.delete(url, headers=headers, timeout=60)
                   if resp.status_code == 204:
                       continue
