@@ -156,9 +156,8 @@
   "current_reference_manifest": "reproducibility/current_reference/manifest.json",
   "reference_file_count": 16,
   "remaining_before_public_current_release": [
-    "obtain the canonical final Main DOCX/PDF synchronized to the current integration-centred five-Main-figure scope; complete rendered figure/caption/numbering/pagination and blinded-metadata QA; then promote document_pagination_validated=true",
     "confirm the ordered creator list and any ORCID/affiliation values, approve archive strategy and data/third-party licensing wording, bind metadata to the exact final Git commit, and set release_approved=true",
-    "rebuild the final release bundle at the exact final Git head and verify that release_ready=true",
+    "rebuild the final release bundle at the exact final Git head and verify release_ready=true with manuscript_files_included=false",
     "publish a new Zenodo version under the existing concept or linked records if the approved licensing decision requires separation",
     "redownload the published package without owner credentials, verify all checksums, and complete a clean numerical replay/reference comparison"
   ],
@@ -174,7 +173,7 @@
   },
   "zenodo_staging_bundle": {
     "built_on": "2026-09-26",
-    "status": "assembled_and_verified_not_public",
+    "status": "assembled_and_verified_not_public_pre_manuscript_exclusion_policy",
     "source_main_commit": "5c0ae2af9a92bb79295fd11d77ad5bbc25f39757",
     "workflow_run": 36239203959,
     "github_actions_artifact_id": 10905302325,
@@ -187,10 +186,6 @@
     "reference_files": 16,
     "figure_manifest_files": 30,
     "release_ready": false,
-    "release_gaps": [
-      "release_metadata",
-      "figure_document_qa"
-    ],
     "includes": {
       "frozen_numerical_archives": [
         9612943217,
@@ -206,7 +201,12 @@
       ],
       "current_code_snapshot": true,
       "current_geb_figure_surface": true
-    }
+    },
+    "gate_definition_status": "historical_superseded",
+    "release_gaps_at_build_time": [
+      "release_metadata",
+      "figure_document_qa"
+    ]
   },
   "document_figure_qa": {
     "audited_on": "2026-09-27",
@@ -222,7 +222,9 @@
       "reason": "Only older Main files and a later synchronization patch were accessible; no canonical final synchronized DOCX/PDF was available for rendered pagination and figure-placement QA."
     },
     "overall_document_pagination_validated": false,
-    "receipt": "reproducibility/DOCUMENT_FIGURE_QA_20260927.md"
+    "receipt": "reproducibility/DOCUMENT_FIGURE_QA_20260927.md",
+    "zenodo_release_gate": false,
+    "scope": "journal_submission_only"
   },
   "release_metadata_preparation": {
     "status": "prepared_not_approved",
@@ -232,8 +234,21 @@
     "remaining_author_owned_fields": [
       "ordered creators and any chosen ORCID/affiliation values",
       "explicit approval of archive strategy and data/third-party licensing wording",
-      "final_code_commit after document QA",
-      "release_approved=true only after final review"
+      "final_code_commit at the exact final release rebuild",
+      "release_approved=true only after final metadata review"
     ]
+  },
+  "zenodo_release_policy": {
+    "updated_on": "2026-09-27",
+    "manuscript_upload": false,
+    "manuscript_files_included": false,
+    "document_pagination_is_submission_only": true,
+    "final_figure_manifest_required": true,
+    "approved_release_metadata_required": true,
+    "current_expected_release_gaps": [
+      "release_metadata"
+    ],
+    "code_snapshot_manuscript_guard": "fail_closed",
+    "builder": "reproducibility/build_current_release_bundle.py"
   }
 }
