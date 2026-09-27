@@ -156,10 +156,8 @@
   "current_reference_manifest": "reproducibility/current_reference/manifest.json",
   "reference_file_count": 16,
   "remaining_before_public_current_release": [
-    "approve the data-only archive/licensing wording, bind metadata to the exact final GitHub commit, and set release_approved=true",
-    "build the final data-only bundle and verify release_ready=true with exactly five analysis inputs and no code/manuscript/figure/reference/replay payloads",
-    "publish a new Zenodo version under the existing concept DOI",
-    "redownload the published data archive without owner credentials, verify all checksums, and run the GitHub numerical replay against those archived inputs"
+    "publish azami_ch1_v3_analysis_inputs.zip as a new Zenodo version under concept DOI 10.5281/zenodo.22295790",
+    "redownload the published archive without owner credentials, verify SHA-256 and embedded checksums, then run the pinned GitHub replay against those downloaded inputs"
   ],
   "scientific_outputs_changed": false,
   "public_release_changed": false,
@@ -228,16 +226,14 @@
     "scope": "journal_submission_only"
   },
   "release_metadata_preparation": {
-    "status": "data_only_prepared_not_approved",
-    "file": "reproducibility/zenodo_release_metadata.prepared.json",
-    "dataset_creator_inherited_from_v2": "ZHANG, Ruiqi",
-    "non_author_fields_prepared": true,
-    "release_approved": false,
-    "remaining_author_owned_fields": [
-      "explicit approval of the data-only archive/licensing wording",
-      "final_code_commit at the exact GitHub revision used for the final data release",
-      "release_approved=true only after final metadata review"
-    ]
+    "status": "approved_final_generated_in_workflow",
+    "approval_record": "reproducibility/zenodo_data_release_approval.json",
+    "dataset_creator": "ZHANG, Ruiqi",
+    "record_license": "CC-BY-4.0",
+    "archive_strategy": "new_version_existing_concept",
+    "final_code_commit": "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f",
+    "release_approved": true,
+    "remaining_author_owned_fields": []
   },
   "zenodo_release_policy": {
     "updated_on": "2026-09-27",
@@ -285,5 +281,50 @@
       "release_metadata"
     ],
     "builder": "reproducibility/build_current_release_bundle.py"
+  },
+  "zenodo_final_candidate": {
+    "built_on": "2026-09-27",
+    "status": "release_ready_not_public",
+    "archive_role": "durable_processed_analysis_inputs",
+    "source_main_commit": "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f",
+    "workflow_run": 36288310738,
+    "github_actions_artifact_id": 10921221306,
+    "github_actions_wrapper_sha256": "941c70768664ae9df82cd18f522dda9f4fd352ad723e08ad1e9a8d9e23f0996e",
+    "github_actions_artifact_size_bytes": 59482691,
+    "inner_bundle_filename": "azami_ch1_v3_analysis_inputs.zip",
+    "inner_bundle_sha256": "be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438",
+    "durable_drive_file_id": "16pildr5nOL08HAb6ATEHepUPei5oEn0t",
+    "durable_drive_file_name": "artifact-10921221306-ch1-v3-zenodo-analysis-inputs-final.zip",
+    "release_ready": true,
+    "release_gaps": [],
+    "analysis_input_count": 5,
+    "code_included": false,
+    "manuscript_files_included": false,
+    "figures_included": false,
+    "reference_outputs_included": false,
+    "replay_receipts_included": false,
+    "original_photographs_included": false,
+    "detector_training_included": false,
+    "final_metadata": {
+      "creator": "ZHANG, Ruiqi",
+      "record_license": "CC-BY-4.0",
+      "archive_strategy": "new_version_existing_concept",
+      "concept_doi": "10.5281/zenodo.22295790",
+      "final_code_commit": "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f"
+    },
+    "exact_members": [
+      "README.txt",
+      "checksums.json",
+      "input_contract.json",
+      "inputs/artifact-8227254443-historical.zip",
+      "inputs/artifact-8983877726-spatial.zip",
+      "inputs/artifact-9612943217-continuous.zip",
+      "inputs/artifact-9633419268-environment.zip",
+      "inputs/observation_native_status.csv",
+      "release_manifest.json",
+      "zenodo_release_metadata.json"
+    ],
+    "checksum_verification": "PASS",
+    "public_upload_performed": false
   }
 }
