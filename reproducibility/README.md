@@ -28,6 +28,8 @@ The current data-only archive contains exactly five analysis inputs:
 
 The Zenodo archive intentionally does **not** contain analysis code, manuscript/SI files, figures, fitted/reference outputs, replay receipts, original photographs, or detector-training material. The archive manifest stores the GitHub repository URL and exact code commit needed to interpret the inputs.
 
+A main-branch staging build has passed at commit `810637d9dfdde9c4b810c2472f43f254786ce614`. The data ZIP SHA-256 is `c4ec876206e6f8ef0cd69d126fa31b2b71aa1b1919172aeb371f75bbabcd6d10`; its Actions wrapper is also copied to the durable owner Drive archive. The build reports only `release_metadata` as unresolved.
+
 ## Current data-only bundle builder
 
 `python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for this numerical-input archive. It verifies the exact four Actions artifact ZIP hashes and their required members, recovers the exact native-status CSV, writes a compact input contract/README/checksum manifest, and creates a deterministic ZIP.

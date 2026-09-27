@@ -173,43 +173,41 @@
   },
   "zenodo_staging_bundle": {
     "built_on": "2026-09-27",
-    "status": "superseded_by_data_only_archive_policy",
-    "source_main_commit": "b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4",
-    "workflow_run": 36285930988,
-    "github_actions_artifact_id": 10919753688,
-    "github_actions_artifact_sha256": "a16053d5dbe50569d08494b594a4e92a6ad011ce98c588f0e06082cddfb1ad3a",
-    "github_actions_artifact_size_bytes": 77721572,
-    "inner_bundle_filename": "azami_ch1_v3_zenodo_staging.zip",
-    "inner_bundle_sha256": "dee0a37be6b38f7fa72a48053021cb1709031b93ee1bf18043b75892ca55f051",
-    "durable_drive_file_id": "1H4MXMtmSl26lb8HNrc0t-PrdcT8vxBMH",
-    "durable_drive_file_name": "artifact-10919753688-ch1-v3-zenodo-staging-bundle.zip",
-    "reference_files": 16,
-    "figure_manifest_files": 30,
+    "status": "assembled_and_verified_not_public",
+    "archive_role": "durable_processed_analysis_inputs",
+    "source_main_commit": "810637d9dfdde9c4b810c2472f43f254786ce614",
+    "workflow_run": 36287521925,
+    "github_actions_artifact_id": 10920813215,
+    "github_actions_artifact_sha256": "0afaed34da6654819bf979e676f50f877a816beac1d281fe92b6735eee5f6faa",
+    "github_actions_artifact_size_bytes": 59480622,
+    "inner_bundle_filename": "azami_ch1_v3_analysis_inputs.zip",
+    "inner_bundle_sha256": "c4ec876206e6f8ef0cd69d126fa31b2b71aa1b1919172aeb371f75bbabcd6d10",
+    "inner_bundle_size_bytes": 59461974,
+    "durable_drive_file_id": "1Bqj_5pLAd7DQmC5OLs9x426i8XwHsgZh",
+    "durable_drive_file_name": "artifact-10920813215-ch1-v3-zenodo-analysis-inputs.zip",
+    "analysis_input_count": 5,
+    "code_included": false,
     "manuscript_files_included": false,
-    "document_pagination_is_submission_only": true,
+    "figures_included": false,
+    "reference_outputs_included": false,
+    "replay_receipts_included": false,
+    "original_photographs_included": false,
+    "detector_training_included": false,
     "release_ready": false,
     "release_gaps": [
       "release_metadata"
     ],
-    "includes": {
-      "frozen_numerical_archives": [
-        9612943217,
-        9633419268,
-        8983877726,
-        8227254443
-      ],
-      "native_status_from_taxonomy_artifact": 10292140117,
-      "current_reference_manifest": "reproducibility/current_reference/manifest.json",
-      "replay_receipts": [
-        "reproducibility/current_replay_execution.json",
-        "reproducibility/current_replay_validation.json"
-      ],
-      "current_code_snapshot": true,
-      "current_geb_figure_surface": true,
-      "manuscript_docx_pdf": false
-    },
-    "superseded_on": "2026-09-27",
-    "superseded_reason": "Earlier staging bundle included code/figure/reference/replay surfaces; current policy archives processed analysis inputs only."
+    "members": [
+      "inputs/artifact-9612943217-continuous.zip",
+      "inputs/artifact-9633419268-environment.zip",
+      "inputs/artifact-8983877726-spatial.zip",
+      "inputs/artifact-8227254443-historical.zip",
+      "inputs/observation_native_status.csv",
+      "input_contract.json",
+      "README.txt",
+      "release_manifest.json",
+      "checksums.json"
+    ]
   },
   "document_figure_qa": {
     "audited_on": "2026-09-27",
