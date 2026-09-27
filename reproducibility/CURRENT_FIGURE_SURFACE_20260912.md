@@ -134,12 +134,6 @@ The artifact contains:
 
 Main Figures 1–5 were visually inspected individually and the eight Supporting figures were inspected together; no clipping or obvious rendering failure was found.
 
-The remaining final figure-manifest gate is **document-level**:
+For the Zenodo data/code archive, the figure/provenance surface is complete once the exported files and hashes above verify. Word/DOCX/PDF manuscript pagination, caption placement and appendix numbering are **submission-side QA only** and do not gate the Zenodo bundle. Manuscript files are not uploaded to Zenodo.
 
-1. synchronize the final Word manuscript to exactly this five-Main/eight-Supporting role map;
-2. freeze final captions and Appendix numbering;
-3. render the Word files and inspect every page;
-4. confirm that no figure is clipped, duplicated, stale or cited under an old label;
-5. promote the same figure hashes in a QA-finalized manifest with document pagination validated.
-
-The tracked `reproducibility/figures/` directory remains the labelled frozen v2 reference archive. The current submission figure surface is the checksum-gated generated artifact above.
+The tracked `reproducibility/figures/` directory remains the labelled frozen v2 reference archive. The current release figure surface is the checksum-gated generated artifact above; its `document_pagination_validated` field may remain false without invalidating the data/code archive.

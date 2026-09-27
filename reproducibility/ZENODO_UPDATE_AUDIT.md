@@ -50,12 +50,7 @@ The current material surface has now been assembled end-to-end from current main
 
 The staging archive contains the four frozen numerical archives, checksum-recovered native status, the current 16-file reference surface, current eight-stage replay receipts, a `git archive` snapshot of the packaged checkout, and the checksum-verified current GEB figure surface.
 
-The builder reports exactly two unresolved release gaps:
-
-1. `release_metadata`;
-2. `figure_document_qa`.
-
-Therefore the material-assembly problem is no longer open. The archive is intentionally labelled **staging**, has `release_ready=false`, and must not be uploaded as the final Zenodo version without closing those two gates and rebuilding at the exact final Git head.
+That staging build was produced before the manuscript-exclusion correction and therefore reported both `release_metadata` and `figure_document_qa`. The current policy supersedes that gate definition: manuscript DOCX/PDF files are not part of the Zenodo archive, and document pagination/placement QA belongs to journal submission. After rebuilding under the current policy, the only pre-build Zenodo release gate is approved `release_metadata`.
 
 ## Required contents of a new version
 
@@ -67,7 +62,7 @@ Therefore the material-assembly problem is no longer open. The archive is intent
 | Native-status table used in sensitivity, not primary filtering | exact input is preserved inside durable WCVP sensitivity artifact `10292140117`; release builder now knows its archive SHA, member path and normalized native-status SHA | **Packaging route closed:** final builder auto-extracts and verifies the exact member when the taxonomy artifact is supplied; the resulting CSV is written into the release `inputs/` surface |
 | Current code and numerical dependencies | repository code exists; direct numerical requirements now match the completed replay environment, including Biopython 1.88; no final release archive has yet been frozen | Include a `git archive` snapshot pinned to the final cleaned main commit together with the exact `requirements-current.txt` |
 | Current aggregate reference outputs | 16-file manifest is checksum-verified; estimator-validity summary is included and its source artifact is durable | Include all 16 files indexed in `current_reference/manifest.json` |
-| Current figures and provenance | **render surface complete and durably staged**: artifact `10903835882` contains 5 Main figures, Figures S1.1–S1.7 and S2.1 as PNG/PDF plus checksum/provenance files; visual QA passed outside Word | Synchronize the Word manuscript to this surface, complete caption/numbering/pagination QA, then promote the same hashes in a QA-finalized figure manifest |
+| Current figures and provenance | **render surface complete and durably staged**: artifact `10903835882` contains 5 Main figures, Figures S1.1–S1.7 and S2.1 as PNG/PDF plus checksum/provenance files | Include the checksum-verified figure/provenance surface; manuscript DOCX/PDF files are excluded and Word pagination is not a Zenodo gate |
 | Full replay validation | **complete**: the 2026-09-15 eight-stage replay matched all 16 current aggregate reference files; artifact `10382954095` is durably staged | Include `current_replay_execution.json`, `current_replay_validation.json` and the frozen replay environment in the final release; rerun after publication as the credential-free verification |
 | License metadata | existing data record says CC BY 4.0; repository code is MIT | Identify MIT software separately; retain and verify third-party/data terms |
 
@@ -75,9 +70,9 @@ Current numerical input identities are executable in `run_current_analysis.py`; 
 
 ## Document QA and metadata preparation update — 2026-09-27
 
-The 13-page final Supporting Information PDF was rendered page-by-page and visually inspected. Its pagination/layout passes: no obvious clipping, duplicated page or missing full-page display was found. This closes the SI layout portion of `figure_document_qa`.
+The 13-page final Supporting Information PDF was rendered page-by-page and visually inspected. Its pagination/layout passes, but this is recorded only for journal submission. It is not a Zenodo release requirement and the SI PDF itself is not uploaded to Zenodo.
 
-A canonical final Main manuscript synchronized to the current repository freeze was not found in the accessible Library or connected Drive. Older Main files and a later synchronization patch exist, but those do not establish final Main pagination, figure placement, caption numbering or blinded metadata. The exact boundary is recorded in [DOCUMENT_FIGURE_QA_20260927.md](DOCUMENT_FIGURE_QA_20260927.md).
+A canonical final Main manuscript synchronized to the current repository freeze was not found in the accessible Library or connected Drive. That remains a submission-package issue only; it no longer blocks the Zenodo data/code archive. The separation is recorded in [DOCUMENT_FIGURE_QA_20260927.md](DOCUMENT_FIGURE_QA_20260927.md).
 
 Non-author release metadata has also been prepared in `zenodo_release_metadata.prepared.json`:
 
@@ -91,7 +86,7 @@ The prepared JSON deliberately remains `release_approved=false` and is not a val
 
 ## Remaining release gate
 
-The material-recovery and archive-assembly problems are closed for a staging build. SI pagination/layout QA is also complete and the non-author release metadata fields are prepared. The remaining pre-publication blockers are now narrower: obtain and inspect the canonical final Main manuscript against the current five-Main-figure scope, obtain explicit author approval for ordered creators/archive/licensing metadata, then rebuild at the exact final Git head with `release_ready=true`. Publication of the new Zenodo version and the credential-free redownload/clean replay follow after that.
+The material-recovery and archive-assembly problems are closed for a staging build, and manuscript files are explicitly outside the Zenodo release surface. The remaining pre-publication Zenodo blocker is author-approved release metadata (ordered creators plus archive/licensing approval). After that, rebuild at the exact final Git head with `release_ready=true`, publish the new Zenodo version, and perform the credential-free redownload/checksum/clean replay.
 
 Before claiming current credential-free reproducibility: publish the approved new version, download it without owner credentials, verify every checksum, unpack into a clean directory, and complete the numerical run and reference comparison. Retain unsupported rows and sensitivity failures. GitHub Actions success, a private Drive copy, or local file presence alone does not close this public-archive requirement.
 
