@@ -37,20 +37,20 @@ The current reference manifest now contains **16 checksum-verified files**. The 
 
 This closes an **ephemeral-storage risk**, not the public-release gate. A private durable copy is not a Zenodo publication and must not be described as credential-free reproducibility.
 
-## Assembled current v3 Zenodo staging bundle — 2026-09-26
+## Assembled manuscript-free current v3 Zenodo staging bundle — 2026-09-27
 
-The current material surface has now been assembled end-to-end from current main commit `5c0ae2af9a92bb79295fd11d77ad5bbc25f39757`.
+The current material surface has been rebuilt end-to-end under the manuscript-exclusion policy from main commit `b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4`.
 
-- workflow run: `36239203959`;
-- Actions artifact: `10905302325`;
-- Actions artifact SHA-256: `8b96fe69f7ae539d4118a29550684c7c1f473959a83659b0532ef67aee4870be`;
+- workflow run: `36285930988`;
+- Actions artifact: `10919753688`;
+- Actions artifact SHA-256: `a16053d5dbe50569d08494b594a4e92a6ad011ce98c588f0e06082cddfb1ad3a`;
 - inner candidate archive: `azami_ch1_v3_zenodo_staging.zip`;
-- inner archive SHA-256: `b9866cdd7a5a8980d93d60c39ddb7ac65d0143561e8802e556d64fc264397c5b`;
-- durable owner copy: Drive file `1texEEfD1aT0NvUKgrhNQuxYHyHqNN3P-`.
+- inner archive SHA-256: `dee0a37be6b38f7fa72a48053021cb1709031b93ee1bf18043b75892ca55f051`;
+- durable owner copy: Drive file `1H4MXMtmSl26lb8HNrc0t-PrdcT8vxBMH`.
 
-The staging archive contains the four frozen numerical archives, checksum-recovered native status, the current 16-file reference surface, current eight-stage replay receipts, a `git archive` snapshot of the packaged checkout, and the checksum-verified current GEB figure surface.
+The archive contains the four frozen numerical archives, checksum-recovered native status, the current 16-file reference surface, current eight-stage replay receipts, the code snapshot, and the checksum-verified figure/provenance surface. Direct inspection of the inner release manifest confirmed `manuscript_files_included=false`, `document_pagination_is_submission_only=true`, 16 reference files and 30 figure/provenance files. No forbidden DOC/DOCX/ODT/RTF or manuscript-like PDF member was present.
 
-That staging build was produced before the manuscript-exclusion correction and therefore reported both `release_metadata` and `figure_document_qa`. The current policy supersedes that gate definition: manuscript DOCX/PDF files are not part of the Zenodo archive, and document pagination/placement QA belongs to journal submission. After rebuilding under the current policy, the only pre-build Zenodo release gate is approved `release_metadata`.
+The builder now reports exactly one unresolved gate: `release_metadata`.
 
 ## Required contents of a new version
 
