@@ -185,17 +185,19 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert full_figure_surface["supporting_figure_count"] == 8
     assert full_figure_surface["document_pagination_validated"] is False
     zenodo = receipt["zenodo_staging_bundle"]
-    assert zenodo["status"] == "assembled_and_verified_not_public_pre_manuscript_exclusion_policy"
-    assert zenodo["source_main_commit"] == "5c0ae2af9a92bb79295fd11d77ad5bbc25f39757"
-    assert zenodo["github_actions_artifact_id"] == 10905302325
-    assert zenodo["github_actions_artifact_sha256"] == "8b96fe69f7ae539d4118a29550684c7c1f473959a83659b0532ef67aee4870be"
-    assert zenodo["inner_bundle_sha256"] == "b9866cdd7a5a8980d93d60c39ddb7ac65d0143561e8802e556d64fc264397c5b"
-    assert zenodo["durable_drive_file_id"] == "1texEEfD1aT0NvUKgrhNQuxYHyHqNN3P-"
+    assert zenodo["status"] == "assembled_and_verified_not_public"
+    assert zenodo["source_main_commit"] == "b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4"
+    assert zenodo["github_actions_artifact_id"] == 10919753688
+    assert zenodo["github_actions_artifact_sha256"] == "a16053d5dbe50569d08494b594a4e92a6ad011ce98c588f0e06082cddfb1ad3a"
+    assert zenodo["inner_bundle_sha256"] == "dee0a37be6b38f7fa72a48053021cb1709031b93ee1bf18043b75892ca55f051"
+    assert zenodo["durable_drive_file_id"] == "1H4MXMtmSl26lb8HNrc0t-PrdcT8vxBMH"
     assert zenodo["reference_files"] == 16
     assert zenodo["figure_manifest_files"] == 30
     assert zenodo["release_ready"] is False
-    assert zenodo["gate_definition_status"] == "historical_superseded"
-    assert set(zenodo["release_gaps_at_build_time"]) == {"release_metadata", "figure_document_qa"}
+    assert zenodo["manuscript_files_included"] is False
+    assert zenodo["document_pagination_is_submission_only"] is True
+    assert set(zenodo["release_gaps"]) == {"release_metadata"}
+    assert zenodo["includes"]["manuscript_docx_pdf"] is False
     policy = receipt["zenodo_release_policy"]
     assert policy["manuscript_upload"] is False
     assert policy["manuscript_files_included"] is False
