@@ -30,6 +30,10 @@ The Zenodo archive intentionally does **not** contain analysis code, manuscript/
 
 The final data-only candidate has now passed on main commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`. The upload ZIP `azami_ch1_v3_analysis_inputs.zip` has SHA-256 `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`, all embedded checksums verify, and the final manifest reports `release_ready=true` with no remaining repository-side release gaps. The Actions wrapper is durably copied to the owner Drive archive. The file is not yet public on Zenodo.
 
+## Publication handoff
+
+The release-ready v3 data-only candidate and exact Zenodo publication/post-publication verification instructions are frozen in [ZENODO_PUBLICATION_HANDOFF_20260927.md](ZENODO_PUBLICATION_HANDOFF_20260927.md). The upload candidate is `azami_ch1_v3_analysis_inputs.zip` with SHA-256 `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`, paired to GitHub commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`.
+
 ## Current data-only bundle builder
 
 `python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for this numerical-input archive. It verifies the exact four Actions artifact ZIP hashes and their required members, recovers the exact native-status CSV, writes a compact input contract/README/checksum manifest, and creates a deterministic ZIP.
