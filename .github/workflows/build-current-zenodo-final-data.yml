@@ -1,0 +1,184 @@
+name: Build final Chapter 1 Zenodo data bundle
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'reproducibility/zenodo_data_release_approval.json'
+      - 'reproducibility/zenodo_release_metadata.prepared.json'
+      - 'reproducibility/build_current_release_bundle.py'
+      - '.github/workflows/build-current-zenodo-final-data.yml'
+  pull_request:
+    paths:
+      - 'reproducibility/zenodo_data_release_approval.json'
+      - 'reproducibility/zenodo_release_metadata.prepared.json'
+      - 'reproducibility/build_current_release_bundle.py'
+      - 'tests/test_current_release_bundle.py'
+      - '.github/workflows/build-current-zenodo-final-data.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Initialize paths
+        shell: bash
+        run: |
+          echo "INPUT_DIR=${RUNNER_TEMP}/azami-release-inputs" >> "$GITHUB_ENV"
+          echo "OUT_DIR=${RUNNER_TEMP}/azami-zenodo-data-final" >> "$GITHUB_ENV"
+
+      - name: Verify release approval
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('reproducibility/zenodo_data_release_approval.json')
+          obj=json.loads(p.read_text())
+          assert obj['approved'] is True
+          assert obj['archive_role']=='durable_processed_analysis_inputs'
+          assert obj['creator']=='ZHANG, Ruiqi'
+          assert obj['archive_strategy']=='new_version_existing_concept'
+          boundary=obj['public_payload_boundary']
+          assert boundary['analysis_input_count']==5
+          for key in (
+              'code_included','manuscript_files_included','figures_included',
+              'reference_outputs_included','replay_receipts_included',
+              'original_photographs_included','detector_training_included'
+          ):
+              assert boundary[key] is False, (key,boundary[key])
+          assert obj['public_upload_performed'] is False
+          PY
+
+      - name: Fetch frozen numerical input archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$INPUT_DIR"
+          fetch_artifact () {
+            local id="$1"
+            local role="$2"
+            echo "Fetching artifact $id ($role)"
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" > "$INPUT_DIR/artifact-${id}-${role}.zip"
+          }
+          fetch_artifact 9612943217 continuous
+          fetch_artifact 9633419268 environment
+          fetch_artifact 8983877726 spatial
+          fetch_artifact 8227254443 historical
+          fetch_artifact 10292140117 taxonomy
+
+      - name: Generate final metadata contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT_DIR"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          prepared=json.loads(Path('reproducibility/zenodo_release_metadata.prepared.json').read_text())
+          approval=json.loads(Path('reproducibility/zenodo_data_release_approval.json').read_text())
+          assert approval['approved'] is True
+          prepared['release_approved']=True
+          prepared['final_code_commit']=os.environ['GITHUB_SHA']
+          prepared['preparation_status']='approved_final_generated'
+          prepared['remaining_author_owned_fields']=[]
+          prepared['approval_record']='reproducibility/zenodo_data_release_approval.json'
+          prepared['record_license']='CC-BY-4.0'
+          out=Path(os.environ['OUT_DIR'])/'zenodo_release_metadata.final.json'
+          out.write_text(json.dumps(prepared,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          print(out.read_text())
+          PY
+
+      - name: Build final data-only Zenodo bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m reproducibility.build_current_release_bundle \
+            --input-dir "$INPUT_DIR" \
+            --release-metadata "$OUT_DIR/zenodo_release_metadata.final.json" \
+            --expected-head "$GITHUB_SHA" \
+            --final \
+            --out "$OUT_DIR/azami_ch1_v3_analysis_inputs.zip" \
+            > "$OUT_DIR/build_receipt.json"
+          cat "$OUT_DIR/build_receipt.json"
+          cat "$OUT_DIR/azami_ch1_v3_analysis_inputs.zip.sha256"
+
+      - name: Verify final data-only release surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, zipfile, os
+          from pathlib import Path
+          root=Path(os.environ['OUT_DIR'])
+          receipt=json.loads((root/'build_receipt.json').read_text())
+          assert receipt['release_ready'] is True
+          assert receipt['release_gaps']==[]
+          assert receipt['analysis_input_count']==5
+          assert receipt['code_included'] is False
+          assert receipt['manuscript_files_included'] is False
+          assert receipt['figures_included'] is False
+          assert receipt['reference_outputs_included'] is False
+
+          z=zipfile.ZipFile(root/'azami_ch1_v3_analysis_inputs.zip')
+          names=set(z.namelist())
+          required={
+              'inputs/artifact-9612943217-continuous.zip',
+              'inputs/artifact-9633419268-environment.zip',
+              'inputs/artifact-8983877726-spatial.zip',
+              'inputs/artifact-8227254443-historical.zip',
+              'inputs/observation_native_status.csv',
+              'input_contract.json',
+              'README.txt',
+              'zenodo_release_metadata.json',
+              'release_manifest.json',
+              'checksums.json',
+          }
+          assert names == required, (sorted(names), sorted(required))
+          manifest=json.loads(z.read('release_manifest.json'))
+          assert manifest['bundle_kind']=='final'
+          assert manifest['release_ready'] is True
+          assert manifest['release_gaps']==[]
+          assert manifest['analysis_input_count']==5
+          assert manifest['github_code_commit']==os.environ['GITHUB_SHA']
+          assert manifest['code_included'] is False
+          assert manifest['manuscript_files_included'] is False
+          assert manifest['figures_included'] is False
+          assert manifest['reference_outputs_included'] is False
+          assert manifest['replay_receipts_included'] is False
+          metadata=json.loads(z.read('zenodo_release_metadata.json'))
+          assert metadata['release_approved'] is True
+          assert metadata['final_code_commit']==os.environ['GITHUB_SHA']
+          assert metadata['creators']==[{'name':'ZHANG, Ruiqi','orcid':None,'affiliation':None}]
+          assert metadata['record_license']=='CC-BY-4.0'
+          print(json.dumps({'status':'PASS','git_head':os.environ['GITHUB_SHA']},indent=2))
+          PY
+
+      - name: Upload final Zenodo data bundle candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-zenodo-analysis-inputs-final
+          path: |
+            ${{ runner.temp }}/azami-zenodo-data-final/azami_ch1_v3_analysis_inputs.zip
+            ${{ runner.temp }}/azami-zenodo-data-final/azami_ch1_v3_analysis_inputs.zip.sha256
+            ${{ runner.temp }}/azami-zenodo-data-final/zenodo_release_metadata.final.json
+            ${{ runner.temp }}/azami-zenodo-data-final/build_receipt.json
+          if-no-files-found: error
+          retention-days: 90
