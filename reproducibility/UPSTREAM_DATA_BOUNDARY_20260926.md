@@ -59,9 +59,9 @@ See `reproducibility/current_replay_execution.json` and `reproducibility/current
 
 ## Public-archive status
 
-The public Zenodo record `10.5281/zenodo.22295791` is the historical **v2 minimum numerical package**. It does not contain the complete current v3 construct-level release.
+The public Zenodo record `10.5281/zenodo.22295791` is the historical **v2 numerical-input package**. The v3 update follows the same narrow role: Zenodo preserves the exact processed numerical inputs, while GitHub preserves the executable analysis and validation surface.
 
-Current v3 materials are checksum-verified and durably staged, and the current eight-stage replay has already passed. A final current public archive still requires the final code/dependency freeze, final submitted figure/provenance manifest, approved release metadata/licensing, publication of the new Zenodo version (or linked records if licensing requires separation), and a credential-free post-publication redownload plus clean replay.
+The v3 data-only package is defined as four exact input artifact ZIPs plus the frozen native-status CSV. Code, reference outputs, replay receipts, figures and manuscripts are intentionally excluded. After publication, reproduction is verified by credential-free Zenodo redownload plus a clean replay using the pinned GitHub commit.
 
 ## Double-anonymous review boundary
 
@@ -73,7 +73,7 @@ That bundle is a **numerical review package**, not a raw-photograph archive. It 
 
 Prefer:
 
-> Numerical reproduction begins from frozen image-derived continuous measurements and fixed environmental, spatial and historical auxiliary inputs. The archived analysis code reproduces the manuscript's statistical analyses and validates them against checksum-locked aggregate reference outputs. Reproduction from original third-party photographs is a separate upstream workflow and is not claimed by the minimum numerical archive.
+> Numerical reproduction begins from frozen image-derived continuous measurements and fixed environmental, spatial and historical auxiliary inputs. Zenodo preserves those exact processed inputs; the pinned GitHub code reproduces the statistical analyses and validates them against checksum-locked aggregate reference outputs. Reproduction from original third-party photographs is a separate upstream workflow and is not claimed by the numerical input archive.
 
 Avoid:
 

@@ -134,6 +134,6 @@ The artifact contains:
 
 Main Figures 1–5 were visually inspected individually and the eight Supporting figures were inspected together; no clipping or obvious rendering failure was found.
 
-For the Zenodo data/code archive, the figure/provenance surface is complete once the exported files and hashes above verify. Word/DOCX/PDF manuscript pagination, caption placement and appendix numbering are **submission-side QA only** and do not gate the Zenodo bundle. Manuscript files are not uploaded to Zenodo.
+The figure/provenance artifact is retained in GitHub/private project storage for submission QA and historical reproducibility, but it is **not part of the Zenodo v3 data package**. Word/DOCX/PDF manuscript pagination, caption placement and appendix numbering are also submission-side QA only.
 
-The tracked `reproducibility/figures/` directory remains the labelled frozen v2 reference archive. The current release figure surface is the checksum-gated generated artifact above; its `document_pagination_validated` field may remain false without invalidating the data/code archive.
+The tracked `reproducibility/figures/` directory remains the labelled frozen v2 reference archive. The current figure surface is the checksum-gated generated artifact above and is referenced from GitHub independently of the Zenodo numerical-input DOI.

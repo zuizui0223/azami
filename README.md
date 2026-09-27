@@ -55,6 +55,6 @@ The current numerical runner reuses the retained spatial and historical-placemen
 
 ## Public availability
 
-Zenodo DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791) archives the **v2** minimum numerical input package. It is not a complete archive of the current construct-level analysis. The current v3 analysis code is present and the eight-stage/16-reference-file numerical replay has passed; the missing step is the **current permanent public release**, not the statistical code. The [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) identifies the required new version. GitHub Actions artifacts expire; they are not a permanent substitute.
+Zenodo DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791) archives the **v2** numerical input package. The planned v3 Zenodo update is likewise **data-only**: it preserves the exact processed numerical inputs that would otherwise depend on expiring GitHub Actions artifacts. Analysis code, runbooks, frozen reference outputs and figures remain versioned in GitHub. The eight-stage/16-reference-file replay has already passed; the [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) records the data-only update contract.
 
 Exact historical v2 reproduction remains available at commit `584af97b050d15701f26ce1facea212d5b648d4d`. The current scientific reference is main commit `fe25abd46e7235c85e6da191f976e1c8a02d0406`; subsequent layout-only changes must preserve its numerical results.

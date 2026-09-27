@@ -2,10 +2,16 @@
   "schema_version": 1,
   "release_approved": false,
   "scientific_scope": "azami_ch1_v3_current",
-  "final_code_commit": "PENDING_FINAL_RELEASE_REBUILD",
-  "title": "Azami Chapter 1 current numerical and figure release",
-  "description": "Frozen processed numerical inputs, current Chapter 1 analysis code, checksum-locked aggregate reference outputs, eight-stage replay receipts, and checksum/provenance-verified analysis figure exports for the current GEB-targeted analysis. Manuscript DOCX/PDF files are intentionally excluded. Numerical reproduction begins from frozen image-derived measurements; original third-party photographs and upstream detector training are outside the minimum numerical replay.",
-  "creators": [],
+  "final_code_commit": "PENDING_FINAL_DATA_RELEASE_REBUILD",
+  "title": "Azami Chapter 1 v3 numerical analysis input package",
+  "description": "SHA-locked processed numerical inputs for reproducing the current Azami Chapter 1 v3 analysis with the separately versioned GitHub code. The archive contains only analysis inputs: continuous image-derived measurements, the nine-predictor environment input, broad-region lookup, historical-placement trees, and the frozen observation native-status table. Analysis code, manuscripts, figures, fitted/reference outputs, replay receipts, original third-party photographs, and detector training material are intentionally excluded.",
+  "creators": [
+    {
+      "name": "ZHANG, Ruiqi",
+      "orcid": null,
+      "affiliation": null
+    }
+  ],
   "archive_strategy": "new_version_existing_concept",
   "preserved_v2_record": {
     "record_doi": "10.5281/zenodo.22295791",
@@ -13,16 +19,15 @@
     "modify_existing_v2": false
   },
   "licensing": {
-    "software": "MIT",
-    "data_and_third_party_strategy": "Keep original Azami software under MIT while preserving source-specific terms and attribution requirements for third-party photographs, CHELSA, Natural Earth, WCVP/POWO, phylogenetic backbones and other externally supplied material; the software license does not relicense third-party data."
+    "software": "MIT (GitHub code only; software is not included in this Zenodo dataset)",
+    "data_and_third_party_strategy": "Preserve the current dataset/archive terms and source-specific attribution or reuse conditions for derived/third-party inputs. Original photographs are not redistributed. This Zenodo deposit does not relicense third-party source material."
   },
   "anonymous_redownload_required": true,
   "clean_replay_required": true,
-  "preparation_status": "non_author_fields_prepared_not_approved",
+  "preparation_status": "data_only_metadata_prepared_not_approved",
   "remaining_author_owned_fields": [
-    "ordered creators and any chosen ORCID/affiliation values",
-    "explicit approval of archive strategy and data/third-party licensing wording",
-    "final_code_commit at the exact final release rebuild",
+    "explicit approval of the data-only archive/licensing wording",
+    "final_code_commit at the exact GitHub revision used for the final data release",
     "release_approved=true only after final metadata review"
   ]
 }

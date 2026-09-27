@@ -1,17 +1,14 @@
-"""Build a checksum-gated Chapter 1 current-release bundle.
+"""Build the Chapter 1 Zenodo **data-only** archive.
 
-This is an offline packager. It never downloads data and never publishes to
-Zenodo. Supply the four frozen numerical input archives plus either the exact
-native-status CSV or the checksum-verified WCVP sensitivity archive containing
-that member. The builder verifies all frozen identities, snapshots the checked-
-out repository with ``git archive``, verifies the 16 current reference outputs,
-and writes a self-describing ZIP plus a SHA-256 sidecar.
+Zenodo is used here as durable storage for the exact processed numerical inputs
+needed by the current analysis. Analysis code, manuscript files, figures,
+reference outputs and replay receipts remain in GitHub and are *not* copied into
+this archive.
 
-Final release mode deliberately fails closed until a frozen final-figure
-manifest and approved release-metadata contract are supplied. Manuscript
-DOCX/PDF files are not part of the Zenodo release surface: document pagination
-QA belongs to journal submission, not numerical-archive readiness. The code
-snapshot also fails closed if tracked manuscript/document files would enter it.
+The archive stores four exact GitHub Actions input ZIPs plus the exact
+observation_native_status.csv recovered from the checksum-verified taxonomy
+artifact. A small manifest/checksum/readme surface binds those bytes to the
+GitHub repository and exact code commit used to interpret them.
 """
 from __future__ import annotations
 
@@ -28,22 +25,10 @@ from reproducibility.release_metadata_contract import validate_release_metadata
 from reproducibility.run_current_analysis import INPUTS, NATIVE_SHA, native_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
-REFERENCE = ROOT / "reproducibility" / "current_reference"
-REFERENCE_MANIFEST = REFERENCE / "manifest.json"
 TAXONOMY_ARTIFACT_ID = 10292140117
 TAXONOMY_ARCHIVE_SHA256 = "dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5"
 TAXONOMY_NATIVE_MEMBER = "input/observation_native_status.csv"
-REPLAY_FILES = (
-    ROOT / "reproducibility" / "CURRENT_ANALYSIS.md",
-    ROOT / "reproducibility" / "requirements-current.txt",
-    ROOT / "reproducibility" / "run_current_analysis.py",
-    ROOT / "reproducibility" / "validate_current_analysis.py",
-    ROOT / "reproducibility" / "current_replay_execution.json",
-    ROOT / "reproducibility" / "current_replay_validation.json",
-    ROOT / "reproducibility" / "ZENODO_UPDATE_AUDIT.md",
-    ROOT / "reproducibility" / "CURRENT_RELEASE_STAGING_20260912.json",
-)
-ROOT_METADATA = (ROOT / "README.md", ROOT / "LICENSE", ROOT / "NOTICE.md")
+REPOSITORY_URL = "https://github.com/zuizui0223/azami"
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -78,7 +63,7 @@ def input_contract() -> dict[str, dict]:
             "artifact_id": artifact_id,
             "archive_sha256": archive_sha,
             "members": {
-                source: {"bundle_path": target, "sha256": member_sha}
+                source: {"analysis_path": target, "sha256": member_sha}
                 for source, (target, member_sha) in members.items()
             },
         }
@@ -88,24 +73,21 @@ def input_contract() -> dict[str, dict]:
 def resolve_native_status(input_dir: Path, native_status: Path | None) -> tuple[bytes, dict]:
     if native_status is not None:
         normalized = native_bytes(native_status.read_bytes())
-        source = {
-            "source_kind": "explicit_csv",
-            "source_name": native_status.name,
-        }
+        source = {"source_kind": "explicit_csv", "source_name": native_status.name}
     else:
         archive = locate_archive(input_dir, TAXONOMY_ARTIFACT_ID)
         require_hash(archive, TAXONOMY_ARCHIVE_SHA256, f"artifact {TAXONOMY_ARTIFACT_ID}")
         with zipfile.ZipFile(archive) as zf:
             normalized = native_bytes(zf.read(TAXONOMY_NATIVE_MEMBER))
         source = {
-            "source_kind": "durable_taxonomy_artifact",
+            "source_kind": "checksum_verified_taxonomy_artifact",
             "artifact_id": TAXONOMY_ARTIFACT_ID,
-            "source_name": archive.name,
-            "archive_sha256": TAXONOMY_ARCHIVE_SHA256,
-            "member": TAXONOMY_NATIVE_MEMBER,
+            "source_archive_sha256": TAXONOMY_ARCHIVE_SHA256,
+            "source_member": TAXONOMY_NATIVE_MEMBER,
         }
-    if sha256_bytes(normalized) != NATIVE_SHA:
-        raise ValueError("native-status normalization did not recover the frozen SHA-256")
+    actual = sha256_bytes(normalized)
+    if actual != NATIVE_SHA:
+        raise ValueError(f"native-status SHA-256 mismatch {actual}; expected {NATIVE_SHA}")
     source["sha256"] = NATIVE_SHA
     source["size_bytes"] = len(normalized)
     return normalized, source
@@ -130,22 +112,12 @@ def verify_inputs(input_dir: Path, native_status: Path | None) -> tuple[dict, by
             "source_name": archive.name,
             "archive_sha256": row["archive_sha256"],
             "size_bytes": archive.stat().st_size,
+            "members": row["members"],
         }
 
     normalized_native, native_receipt = resolve_native_status(input_dir, native_status)
     receipt["native_status"] = native_receipt
     return receipt, normalized_native
-
-
-def verified_reference_rows() -> list[dict]:
-    manifest = json.loads(REFERENCE_MANIFEST.read_text(encoding="utf-8"))
-    rows = manifest["files"]
-    if len(rows) != 16:
-        raise ValueError(f"current reference manifest must contain 16 files; found {len(rows)}")
-    for row in rows:
-        path = REFERENCE / row["path"]
-        require_hash(path, row["sha256"], f"current reference {row['path']}")
-    return rows
 
 
 def git_state() -> dict[str, str | bool]:
@@ -157,81 +129,8 @@ def git_state() -> dict[str, str | bool]:
     return {"head": head, "branch": branch, "clean": not bool(status.strip())}
 
 
-def release_gaps(figure_manifest: Path | None, release_metadata: Path | None) -> list[str]:
-    gaps: list[str] = []
-    if figure_manifest is None:
-        gaps.append("final_figure_manifest")
-    if release_metadata is None:
-        gaps.append("release_metadata")
-    return gaps
-
-
-MANUSCRIPT_DOCUMENT_SUFFIXES = {".doc", ".docx", ".odt", ".rtf"}
-MANUSCRIPT_PDF_TOKENS = (
-    "manuscript",
-    "supplement",
-    "supporting_information",
-    "supporting-information",
-    "title_page",
-    "title-page",
-    "cover_letter",
-    "cover-letter",
-)
-
-
-def is_manuscript_document_path(path: str | Path) -> bool:
-    rel = Path(path)
-    suffix = rel.suffix.lower()
-    if suffix in MANUSCRIPT_DOCUMENT_SUFFIXES:
-        return True
-    if suffix == ".pdf":
-        normalized = rel.as_posix().lower()
-        return any(token in normalized for token in MANUSCRIPT_PDF_TOKENS)
-    return False
-
-
-def tracked_manuscript_documents() -> list[str]:
-    payload = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT)
-    paths = [item.decode("utf-8") for item in payload.split(b"\0") if item]
-    return sorted(path for path in paths if is_manuscript_document_path(path))
-
-
-def verify_manifest_files(manifest_path: Path) -> list[dict]:
-    obj = json.loads(manifest_path.read_text(encoding="utf-8"))
-    rows = obj.get("files")
-    if not isinstance(rows, list) or not rows:
-        raise ValueError(f"{manifest_path}: expected non-empty files list")
-    verified: list[dict] = []
-    manifest_root = manifest_path.resolve().parent
-    for row in rows:
-        rel = Path(row["path"])
-        if rel.is_absolute() or ".." in rel.parts:
-            raise ValueError(f"unsafe figure path: {rel}")
-        # Current figure-surface manifests are portable: paths are resolved
-        # relative to the manifest itself. Historical hand-written manifests
-        # may still point at repository-relative tracked files.
-        local = (manifest_root / rel).resolve()
-        if local.is_file():
-            try:
-                local.relative_to(manifest_root)
-            except ValueError as exc:
-                raise ValueError(f"figure path escapes manifest directory: {rel}") from exc
-            source_kind = "manifest_relative"
-        else:
-            local = (ROOT / rel).resolve()
-            try:
-                local.relative_to(ROOT.resolve())
-            except ValueError as exc:
-                raise ValueError(f"figure path escapes repository: {rel}") from exc
-            source_kind = "repository_relative"
-        require_hash(local, row["sha256"], f"figure release file {rel}")
-        verified.append({
-            "path": rel.as_posix(),
-            "sha256": row["sha256"],
-            "source_path": local,
-            "source_kind": source_kind,
-        })
-    return verified
+def release_gaps(release_metadata: Path | None) -> list[str]:
+    return [] if release_metadata is not None else ["release_metadata"]
 
 
 def copy_file(src: Path, dst: Path) -> None:
@@ -263,102 +162,112 @@ def build(
     input_dir: Path,
     native_status: Path | None,
     out_zip: Path,
-    figure_manifest: Path | None = None,
     release_metadata: Path | None = None,
     final: bool = False,
     expected_head: str | None = None,
 ) -> dict:
     state = git_state()
     if not state["clean"]:
-        raise RuntimeError("release bundle requires a clean git worktree")
+        raise RuntimeError("data release bundle requires a clean git worktree")
     if expected_head and state["head"] != expected_head:
         raise RuntimeError(f"HEAD {state['head']} does not match expected {expected_head}")
 
-    gaps = release_gaps(figure_manifest, release_metadata)
+    gaps = release_gaps(release_metadata)
     if final and gaps:
-        raise RuntimeError("final release blocked by: " + ", ".join(gaps))
-
-    forbidden_manuscripts = tracked_manuscript_documents()
-    if forbidden_manuscripts:
-        raise RuntimeError(
-            "Zenodo release code snapshot refuses manuscript/document files: "
-            + ", ".join(forbidden_manuscripts)
-        )
+        raise RuntimeError("final data release blocked by: " + ", ".join(gaps))
 
     input_receipt, normalized_native = verify_inputs(input_dir, native_status)
-    references = verified_reference_rows()
-    figure_rows = verify_manifest_files(figure_manifest) if figure_manifest else []
     validated_metadata = None
     if release_metadata:
         if final:
-            validated_metadata = validate_release_metadata(release_metadata, expected_head=str(state["head"]))
+            validated_metadata = validate_release_metadata(
+                release_metadata, expected_head=str(state["head"])
+            )
         else:
             validated_metadata = json.loads(release_metadata.read_text(encoding="utf-8"))
 
-    with tempfile.TemporaryDirectory(prefix="azami-release-") as td:
-        package = Path(td) / "azami_ch1_current_release"
+    with tempfile.TemporaryDirectory(prefix="azami-data-release-") as td:
+        package = Path(td) / "azami_ch1_v3_analysis_inputs"
         package.mkdir()
 
-        # Preserve exact frozen numerical archives under canonical names.
+        # Preserve the exact four numerical input artifact ZIPs.
         for role, row in input_contract().items():
             src = locate_archive(input_dir, row["artifact_id"])
             copy_file(src, package / "inputs" / f"artifact-{row['artifact_id']}-{role}.zip")
+
         native_out = package / "inputs" / "observation_native_status.csv"
         native_out.parent.mkdir(parents=True, exist_ok=True)
         native_out.write_bytes(normalized_native)
 
-        # Snapshot all tracked code at the exact recorded commit.
-        code_zip = package / "code" / "azami-current-code.zip"
-        code_zip.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(
-            ["git", "archive", "--format=zip", "--output", str(code_zip), str(state["head"])],
-            cwd=ROOT,
-            check=True,
+        (package / "input_contract.json").write_text(
+            json.dumps(input_contract(), indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
 
-        # Current reference outputs are copied only after manifest verification.
-        copy_file(REFERENCE_MANIFEST, package / "reference" / "manifest.json")
-        for row in references:
-            copy_file(REFERENCE / row["path"], package / "reference" / row["path"])
+        readme = f"""Azami Chapter 1 v3 numerical analysis input package
 
-        for src in REPLAY_FILES:
-            if not src.is_file():
-                raise FileNotFoundError(src)
-            copy_file(src, package / "replay" / src.name)
-        for src in ROOT_METADATA:
-            if not src.is_file():
-                raise FileNotFoundError(src)
-            copy_file(src, package / "metadata" / src.name)
+Purpose
+-------
+This Zenodo archive is durable storage for the exact processed numerical inputs
+used by the current Chapter 1 analysis. It intentionally contains DATA ONLY.
+
+Not included
+------------
+- analysis code
+- manuscript or Supporting Information files
+- figures
+- fitted-model/reference outputs
+- replay receipts
+- original third-party photographs
+- detector training material
+
+Code and runbook
+----------------
+Repository: {REPOSITORY_URL}
+Pinned code commit: {state['head']}
+
+Use the repository runbook at:
+reproducibility/CURRENT_ANALYSIS.md
+
+The GitHub repository is the authority for analysis code and current reference
+outputs. This Zenodo archive exists so the numerical inputs remain available
+after GitHub Actions artifacts expire.
+
+Numerical replay starts from the processed image-derived measurements in this
+archive; it is not a raw-photo reconstruction workflow.
+"""
+        (package / "README.txt").write_text(readme, encoding="utf-8")
 
         if release_metadata:
-            copy_file(release_metadata, package / "metadata" / "zenodo_release_metadata.json")
-        if figure_manifest:
-            copy_file(figure_manifest, package / "figures" / "manifest.json")
-            for row in figure_rows:
-                copy_file(row["source_path"], package / "figures" / row["path"])
+            copy_file(release_metadata, package / "zenodo_release_metadata.json")
 
         manifest = {
-            "schema_version": 1,
+            "schema_version": 2,
             "bundle_kind": "final" if final else "staging",
+            "archive_role": "durable_processed_analysis_inputs",
             "release_ready": final and not gaps and validated_metadata is not None,
             "release_gaps": gaps,
-            "git": state,
+            "github_repository": REPOSITORY_URL,
+            "github_code_commit": state["head"],
+            "git_branch_at_build": state["branch"],
             "input_receipt": input_receipt,
             "native_status_sha256": NATIVE_SHA,
-            "current_reference_file_count": len(references),
-            "current_reference_manifest_sha256": sha256_file(REFERENCE_MANIFEST),
-            "figure_file_count": len(figure_rows),
+            "analysis_input_count": 5,
+            "code_included": False,
             "manuscript_files_included": False,
-            "document_pagination_is_submission_only": True,
+            "figures_included": False,
+            "reference_outputs_included": False,
+            "replay_receipts_included": False,
+            "original_photographs_included": False,
+            "detector_training_included": False,
             "release_metadata_validated": final and validated_metadata is not None,
-            "scientific_outputs_changed": False,
             "public_release_performed": False,
         }
         (package / "release_manifest.json").write_text(
             json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
         (package / "checksums.json").write_text(
-            json.dumps(member_inventory(package), indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            json.dumps(member_inventory(package), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
         )
         bundle_sha = deterministic_zip(package, out_zip)
 
@@ -371,33 +280,39 @@ def build(
         "git_head": state["head"],
         "release_ready": final and not gaps and validated_metadata is not None,
         "release_gaps": gaps,
-        "reference_files": len(references),
+        "analysis_input_count": 5,
+        "code_included": False,
+        "manuscript_files_included": False,
+        "figures_included": False,
+        "reference_outputs_included": False,
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input-dir", type=Path, required=True, help="Directory containing one ZIP for each frozen artifact ID")
+    parser.add_argument(
+        "--input-dir",
+        type=Path,
+        required=True,
+        help="Directory containing one ZIP for each frozen analysis-input artifact ID",
+    )
     parser.add_argument(
         "--native-status",
         type=Path,
         help=(
-            "Optional frozen observation_native_status.csv. If omitted, the builder extracts "
-            f"{TAXONOMY_NATIVE_MEMBER} from checksum-verified taxonomy artifact {TAXONOMY_ARTIFACT_ID} "
-            "in --input-dir."
+            "Optional exact observation_native_status.csv. If omitted, extract the "
+            f"checksum-verified member from artifact {TAXONOMY_ARTIFACT_ID} in --input-dir."
         ),
     )
-    parser.add_argument("--out", type=Path, required=True, help="Output release ZIP")
-    parser.add_argument("--figure-manifest", type=Path, help="JSON with files:[{path,sha256}] for the final manuscript figure/provenance surface")
+    parser.add_argument("--out", type=Path, required=True, help="Output data-only ZIP")
     parser.add_argument("--release-metadata", type=Path, help="Approved release metadata contract JSON")
-    parser.add_argument("--expected-head", help="Optional exact git commit required for packaging")
-    parser.add_argument("--final", action="store_true", help="Fail closed unless figure manifest and approved release metadata are supplied")
+    parser.add_argument("--expected-head", help="Exact GitHub code commit associated with these inputs")
+    parser.add_argument("--final", action="store_true", help="Fail unless approved release metadata is supplied")
     args = parser.parse_args()
     receipt = build(
         args.input_dir.resolve(),
         args.native_status.resolve() if args.native_status else None,
         args.out.resolve(),
-        args.figure_manifest.resolve() if args.figure_manifest else None,
         args.release_metadata.resolve() if args.release_metadata else None,
         args.final,
         args.expected_head,
