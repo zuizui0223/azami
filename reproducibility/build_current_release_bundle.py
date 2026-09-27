@@ -8,8 +8,10 @@ out repository with ``git archive``, verifies the 16 current reference outputs,
 and writes a self-describing ZIP plus a SHA-256 sidecar.
 
 Final release mode deliberately fails closed until a frozen final-figure
-manifest and approved release-metadata contract are supplied. This prevents
-durable staging from being mistaken for a submission/publication-ready release.
+manifest and approved release-metadata contract are supplied. Manuscript
+DOCX/PDF files are not part of the Zenodo release surface: document pagination
+QA belongs to journal submission, not numerical-archive readiness. The code
+snapshot also fails closed if tracked manuscript/document files would enter it.
 """
 from __future__ import annotations
 
@@ -164,9 +166,34 @@ def release_gaps(figure_manifest: Path | None, release_metadata: Path | None) ->
     return gaps
 
 
-def figure_manifest_document_qa(manifest_path: Path) -> bool:
-    obj = json.loads(manifest_path.read_text(encoding="utf-8"))
-    return obj.get("document_pagination_validated") is True
+MANUSCRIPT_DOCUMENT_SUFFIXES = {".doc", ".docx", ".odt", ".rtf"}
+MANUSCRIPT_PDF_TOKENS = (
+    "manuscript",
+    "supplement",
+    "supporting_information",
+    "supporting-information",
+    "title_page",
+    "title-page",
+    "cover_letter",
+    "cover-letter",
+)
+
+
+def is_manuscript_document_path(path: str | Path) -> bool:
+    rel = Path(path)
+    suffix = rel.suffix.lower()
+    if suffix in MANUSCRIPT_DOCUMENT_SUFFIXES:
+        return True
+    if suffix == ".pdf":
+        normalized = rel.as_posix().lower()
+        return any(token in normalized for token in MANUSCRIPT_PDF_TOKENS)
+    return False
+
+
+def tracked_manuscript_documents() -> list[str]:
+    payload = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT)
+    paths = [item.decode("utf-8") for item in payload.split(b"\0") if item]
+    return sorted(path for path in paths if is_manuscript_document_path(path))
 
 
 def verify_manifest_files(manifest_path: Path) -> list[dict]:
@@ -248,11 +275,15 @@ def build(
         raise RuntimeError(f"HEAD {state['head']} does not match expected {expected_head}")
 
     gaps = release_gaps(figure_manifest, release_metadata)
-    if figure_manifest is not None and figure_manifest.is_file():
-        if not figure_manifest_document_qa(figure_manifest):
-            gaps.append("figure_document_qa")
     if final and gaps:
         raise RuntimeError("final release blocked by: " + ", ".join(gaps))
+
+    forbidden_manuscripts = tracked_manuscript_documents()
+    if forbidden_manuscripts:
+        raise RuntimeError(
+            "Zenodo release code snapshot refuses manuscript/document files: "
+            + ", ".join(forbidden_manuscripts)
+        )
 
     input_receipt, normalized_native = verify_inputs(input_dir, native_status)
     references = verified_reference_rows()
@@ -317,6 +348,8 @@ def build(
             "current_reference_file_count": len(references),
             "current_reference_manifest_sha256": sha256_file(REFERENCE_MANIFEST),
             "figure_file_count": len(figure_rows),
+            "manuscript_files_included": False,
+            "document_pagination_is_submission_only": True,
             "release_metadata_validated": final and validated_metadata is not None,
             "scientific_outputs_changed": False,
             "public_release_performed": False,
