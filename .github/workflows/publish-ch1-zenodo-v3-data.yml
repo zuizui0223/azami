@@ -219,7 +219,7 @@ jobs:
               )
               require(
                   requests.post(discard_url, headers=headers, timeout=60),
-                  {201},
+                  {201, 204},
                   "discard stale locked draft",
               )
 
