@@ -53,6 +53,34 @@ The inner archive contains exactly the five analysis inputs plus `README.txt`, `
 
 The only remaining release gap reported by the builder is `release_metadata`.
 
+## Release-ready v3 data-only candidate — 2026-09-27
+
+The final data-only builder passed on main commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`.
+
+- workflow run: `36288310738`;
+- Actions artifact: `10921221306`;
+- wrapper SHA-256: `941c70768664ae9df82cd18f522dda9f4fd352ad723e08ad1e9a8d9e23f0996e`;
+- final upload file: `azami_ch1_v3_analysis_inputs.zip`;
+- final upload SHA-256: `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`;
+- durable owner copy: Drive file `16pildr5nOL08HAb6ATEHepUPei5oEn0t`.
+
+The inner archive was unpacked independently after CI. All embedded checksum rows matched. It contains exactly ten files: the five analysis inputs plus `README.txt`, `input_contract.json`, `checksums.json`, `release_manifest.json`, and `zenodo_release_metadata.json`.
+
+The final manifest reports:
+
+- `release_ready=true`;
+- `release_gaps=[]`;
+- `analysis_input_count=5`;
+- `code_included=false`;
+- `manuscript_files_included=false`;
+- `figures_included=false`;
+- `reference_outputs_included=false`;
+- `replay_receipts_included=false`.
+
+The generated final metadata binds the archive to GitHub commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`, creator `ZHANG, Ruiqi`, archive strategy `new_version_existing_concept`, and record license `CC-BY-4.0`.
+
+Therefore all repository-side preparation gates are closed. The archive is **release-ready but not yet public**.
+
 ## Existing public v2 record
 
 The existing public record remains unchanged:
@@ -109,17 +137,15 @@ The prepared metadata remains `release_approved=false` until the final data-only
 
 ## Remaining public-release gate
 
-Only one pre-build gate remains:
+Repository-side preparation is complete. The only remaining external step is to publish the verified file `azami_ch1_v3_analysis_inputs.zip` as a new version under concept DOI `10.5281/zenodo.22295790`.
 
-- `release_metadata`.
+After publication:
 
-After approval:
-
-1. bind metadata to the exact final GitHub commit;
-2. build the final data-only ZIP with `release_ready=true`;
-3. publish it as a new version under concept DOI `10.5281/zenodo.22295790`;
-4. download the published package without owner credentials;
-5. verify every checksum;
-6. run the GitHub replay against those downloaded inputs and confirm the 16-file reference comparison passes.
+1. download the published ZIP without owner credentials;
+2. verify outer SHA-256 `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`;
+3. verify the embedded checksum manifest;
+4. run the GitHub replay at commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f` against those downloaded inputs;
+5. confirm the 16-file reference comparison passes;
+6. record the new Zenodo record DOI and public-verification receipt.
 
 A private Drive copy or Actions artifact is durability evidence, not a public-release substitute.
