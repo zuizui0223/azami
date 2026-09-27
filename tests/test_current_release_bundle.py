@@ -208,3 +208,15 @@ def test_release_ready_data_only_candidate_is_frozen_in_receipt():
     assert receipt["release_metadata_preparation"]["release_approved"] is True
     assert receipt["release_metadata_preparation"]["remaining_author_owned_fields"] == []
 
+def test_zenodo_publication_handoff_matches_final_candidate():
+    text = (ROOT / "reproducibility/ZENODO_PUBLICATION_HANDOFF_20260927.md").read_text(
+        encoding="utf-8"
+    )
+    assert "azami_ch1_v3_analysis_inputs.zip" in text
+    assert "be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438" in text
+    assert "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f" in text
+    assert "10.5281/zenodo.22295790" in text
+    assert "code_included=false" in text
+    assert "manuscript_files_included=false" in text
+    assert "credential-free public reproduction verified" in text
+
