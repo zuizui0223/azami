@@ -183,12 +183,75 @@ jobs:
               raise RuntimeError("Could not create or recover the target Zenodo new-version draft")
           draft_id = int(draft["id"])
 
-          # New versions inherit prior files. Remove all inherited/stale files.
-          for old in list(draft.get("files", [])):
-              url = old.get("links", {}).get("self")
-              if not url:
-                  url = f"{api}/deposit/depositions/{draft_id}/files/{old['id']}"
-              require(requests.delete(url, headers=headers, timeout=60), {204}, f"delete inherited file {old.get('filename')}")
+          def delete_draft_files(candidate):
+              locked = False
+              for old_file in list(candidate.get("files", [])):
+                  url = old_file.get("links", {}).get("self")
+                  if not url:
+                      url = f"{api}/deposit/depositions/{int(candidate['id'])}/files/{old_file['id']}"
+                  resp = requests.delete(url, headers=headers, timeout=60)
+                  if resp.status_code == 204:
+                      continue
+                  if resp.status_code == 403 and "Bucket is locked for modifications." in resp.text:
+                      locked = True
+                      break
+                  require(resp, {204}, f"delete inherited file {old_file.get('filename')}")
+              return locked
+
+          locked = delete_draft_files(draft)
+          if locked:
+              # A legacy/edit draft can expose the published record bucket, which
+              # is intentionally locked. Discard only a provably stale v2-shaped
+              # draft; never discard an unknown user-prepared draft.
+              draft_title = draft.get("title") or draft.get("metadata", {}).get("title")
+              draft_files = [x.get("filename") for x in draft.get("files", [])]
+              stale_v2_shape = (
+                  draft_title == "Azami Chapter 1 v2 reproducibility input package"
+                  and draft_files == ["azami_ch1_v2_reproduction_inputs_2026-09-04.zip"]
+              )
+              if not stale_v2_shape:
+                  raise RuntimeError(
+                      "Existing draft uses a locked bucket but is not the exact stale v2-shaped draft; "
+                      f"refusing destructive discard. title={draft_title!r}, files={draft_files!r}"
+                  )
+              discard_url = draft.get("links", {}).get("discard") or (
+                  f"{api}/deposit/depositions/{draft_id}/actions/discard"
+              )
+              require(
+                  requests.post(discard_url, headers=headers, timeout=60),
+                  {201},
+                  "discard stale locked draft",
+              )
+
+              # Recreate a fresh new-version draft after discarding the stale edit.
+              r = require(
+                  requests.post(
+                      f"{api}/deposit/depositions/{base_id}/actions/newversion",
+                      headers=headers,
+                      timeout=60,
+                  ),
+                  {201},
+                  "create fresh new version after stale-draft discard",
+              )
+              payload = r.json()
+              latest_draft = payload.get("links", {}).get("latest_draft")
+              if payload.get("submitted") is False and payload.get("state") in ("inprogress", "unsubmitted"):
+                  draft = payload
+              elif latest_draft:
+                  draft = require(
+                      requests.get(latest_draft, headers=headers, timeout=60),
+                      {200},
+                      "fetch fresh new-version draft",
+                  ).json()
+              else:
+                  raise RuntimeError("Fresh newversion response exposed no usable draft")
+              draft_id = int(draft["id"])
+
+              # Current Zenodo versions should start without imported files.
+              # If files are present, they must be removable from the unlocked
+              # draft bucket; otherwise fail without publishing.
+              if delete_draft_files(draft):
+                  raise RuntimeError("Fresh new-version draft still points to a locked bucket")
 
           # Upload only the verified data-only v3 ZIP.
           with file_path.open("rb") as handle:
