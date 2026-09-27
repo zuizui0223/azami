@@ -167,19 +167,42 @@ jobs:
 
           draft = sorted(candidates, key=lambda x: x.get("modified", ""))[-1]
           draft_id = int(draft["id"])
+
+          # Collection/list responses can omit the full files array. Always
+          # refetch the individual deposition before applying the public payload
+          # boundary.
+          draft = require(
+              requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
+              {200},
+              "fetch full target draft",
+          ).json()
           if draft.get("submitted") is not False or draft.get("state") not in ("unsubmitted", "inprogress"):
               raise RuntimeError(
                   f"Refusing non-draft resource {draft_id}: submitted={draft.get('submitted')}, state={draft.get('state')}"
               )
+          concept = draft.get("conceptdoi") or draft.get("metadata", {}).get("conceptdoi")
+          if concept != concept_doi and str(draft.get("conceptrecid", "")) != "22295790":
+              raise RuntimeError(f"Draft {draft_id} is not in target concept {concept_doi}")
 
-          # If the true unpublished draft already contains files, remove only
-          # those files through the documented deposition-file endpoint.
+          # This is an unpublished draft in the explicitly authorized target
+          # concept. Replace its entire file payload with the one verified
+          # data-only ZIP.
           for old_file in list(draft.get("files", [])):
               url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
               require(
                   requests.delete(url, headers=headers, timeout=60),
                   {204},
                   f"delete existing draft file {old_file.get('filename')}",
+              )
+
+          emptied = require(
+              requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
+              {200},
+              "verify emptied target draft",
+          ).json()
+          if emptied.get("files"):
+              raise RuntimeError(
+                  f"Target draft not empty after deletion: {[f.get('filename') for f in emptied['files']]}"
               )
 
           # Upload only the verified data-only v3 ZIP.
