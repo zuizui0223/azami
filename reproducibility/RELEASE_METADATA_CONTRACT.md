@@ -14,4 +14,6 @@ Before final bundling, the authors must explicitly settle:
 
 The validator also requires the published v2 record (`10.5281/zenodo.22295791`, concept `10.5281/zenodo.22295790`) to remain unchanged and requires anonymous redownload plus clean replay after publication.
 
+Manuscript files are outside this contract. The Zenodo release contains processed numerical inputs, analysis code, checksum-locked reference outputs, replay receipts and figure/provenance exports; it does **not** contain the Main manuscript, Supporting Information, title page or cover letter. Document pagination QA is handled separately for journal submission.
+
 A final metadata contract therefore needs `release_approved=true`, no placeholder values, and `final_code_commit` equal to the checkout used by the bundle builder. This is an approval gate, not a tool for choosing author order or licensing decisions automatically.
