@@ -68,8 +68,9 @@ def test_current_reproducibility_docs_match_eight_stage_boundary():
     assert "8 numerical stages" in boundary
     assert "16 checksum-locked files" in boundary
     zenodo = (ROOT / "reproducibility/ZENODO_UPDATE_AUDIT.md").read_text(encoding="utf-8")
-    assert "Current eight-stage replay + 16-file validation" in zenodo
-    assert "10382954095" in zenodo
+    assert "Zenodo is the **durable analysis-input store**" in zenodo
+    assert "8-stage numerical replay" in zenodo
+    assert "16-file reference comparison" in zenodo
 
 def test_current_requirements_match_completed_replay_environment():
     req = (ROOT / "reproducibility/requirements-current.txt").read_text(encoding="utf-8")
