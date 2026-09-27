@@ -101,7 +101,7 @@ jobs:
           root=Path(__import__('os').environ['OUT_DIR'])
           receipt=json.loads((root/'build_receipt.json').read_text())
           assert receipt['release_ready'] is False
-          assert set(receipt['release_gaps']) == {'release_metadata','figure_document_qa'}
+          assert set(receipt['release_gaps']) == {'release_metadata'}
           assert receipt['reference_files'] == 16
           z=zipfile.ZipFile(root/'azami_ch1_v3_zenodo_staging.zip')
           names=set(z.namelist())
@@ -123,7 +123,9 @@ jobs:
           assert manifest['bundle_kind']=='staging'
           assert manifest['current_reference_file_count']==16
           assert manifest['figure_file_count']==30
-          assert set(manifest['release_gaps'])=={'release_metadata','figure_document_qa'}
+          assert set(manifest['release_gaps'])=={'release_metadata'}
+          assert manifest['manuscript_files_included'] is False
+          assert manifest['document_pagination_is_submission_only'] is True
           assert manifest['input_receipt']['native_status']['source_kind']=='durable_taxonomy_artifact'
           print(json.dumps({
               'status':'PASS',
