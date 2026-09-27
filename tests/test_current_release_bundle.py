@@ -182,3 +182,29 @@ def test_data_release_approval_is_explicit_and_data_only():
     assert "CC BY 4.0" in obj["licensing_approval"]
     assert obj["public_upload_performed"] is False
 
+def test_release_ready_data_only_candidate_is_frozen_in_receipt():
+    receipt = json.loads(
+        (ROOT / "reproducibility/CURRENT_RELEASE_STAGING_20260912.json").read_text()
+    )
+    final = receipt["zenodo_final_candidate"]
+    assert final["status"] == "release_ready_not_public"
+    assert final["source_main_commit"] == "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f"
+    assert final["workflow_run"] == 36288310738
+    assert final["github_actions_artifact_id"] == 10921221306
+    assert final["github_actions_wrapper_sha256"] == "941c70768664ae9df82cd18f522dda9f4fd352ad723e08ad1e9a8d9e23f0996e"
+    assert final["inner_bundle_sha256"] == "be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438"
+    assert final["durable_drive_file_id"] == "16pildr5nOL08HAb6ATEHepUPei5oEn0t"
+    assert final["release_ready"] is True
+    assert final["release_gaps"] == []
+    assert final["analysis_input_count"] == 5
+    assert final["code_included"] is False
+    assert final["manuscript_files_included"] is False
+    assert final["figures_included"] is False
+    assert final["reference_outputs_included"] is False
+    assert final["replay_receipts_included"] is False
+    assert final["checksum_verification"] == "PASS"
+    assert final["public_upload_performed"] is False
+    assert len(final["exact_members"]) == 10
+    assert receipt["release_metadata_preparation"]["release_approved"] is True
+    assert receipt["release_metadata_preparation"]["remaining_author_owned_fields"] == []
+
