@@ -1,93 +1,103 @@
 # Zenodo update audit
 
-Checked on 2026-09-11 against the live [record API](https://zenodo.org/api/records/22295791), the downloaded ZIP directory and its SHA-256. **A new version is required for the current construct-level analysis. The existing v2 deposition remains unchanged.**
+## Decision — 2026-09-27
 
-## Existing public record
+Zenodo is the **durable analysis-input store** for Chapter 1. It is not a mirror of the GitHub repository.
 
-- Record DOI: [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791).
-- Concept DOI: `10.5281/zenodo.22295790`.
-- Title: *Azami Chapter 1 v2 reproducibility input package*.
-- Last update reported by the API at the 2026-09-11 audit: `2026-09-04T16:04:51.328319+09:00`.
-- File: `azami_ch1_v2_reproduction_inputs_2026-09-04.zip`, 56,942,044 bytes.
-- SHA-256: `50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677` (local downloaded copy verified).
-- Published metadata license: CC BY 4.0. This is not the new code MIT license.
+The current v3 Zenodo package must contain only the exact processed numerical inputs needed by the GitHub replay:
 
-The ZIP contains its manifest/readme/checksums/metadata and exactly four embedded input archives: continuous measurements `9612943217`, v2 multilevel output `9632715852`, trees `8227254443`, and region lookup `8983877726`. It does not contain the full current analysis package.
-
-## Durable staging updates
-
-The public Zenodo record has **not** been changed. Current-only artifacts that would otherwise depend on expiring GitHub Actions storage have been recovered by exact artifact identity, re-verified against SHA-256 values and copied into the existing non-public durable Drive archive. The machine-readable receipt is [`CURRENT_RELEASE_STAGING_20260912.json`](CURRENT_RELEASE_STAGING_20260912.json); it has been extended as new submission-readiness analyses closed.
-
-Durable copies now include:
-
-| Role | Actions artifact | Verified ZIP SHA-256 | Durable status |
-|---|---:|---|---|
-| Nine-predictor process environment | `9633419268` | `d7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4` | copied to durable Drive archive |
-| Biological axes + sensitivity outputs | `10130210432` | `7568ec98b0709f6cda027b928298d58c7e6aa42af0f6c0947e1e91c3d1abbab2` | copied to durable Drive archive |
-| Construct-scale integration outputs | `10131007603` | `a483e116c46211023df95bef9388aa89deaef3441d85701fc93792867884514a` | copied to durable Drive archive |
-| Complete-construct upgrade + direct scale contrast | `10136229131` | `7b4c5703b048ff108cd794921394ae22d1423461c9aaf330b47029c5d1f4908f` | copied to durable Drive archive |
-| Assessability + technical-stress outputs | `10135679053` | `fa80f6079d676186d48665a574b5e68f906037a466a9e3101a57d87ee02f5ba7` | copied to durable Drive archive |
-| WCVP accepted-name sensitivity | `10292140117` | `dfb6eec3001e3a984662d5aba06cda5fa80e144b36ccb4af9fdf45973854edc5` | copied to durable Drive archive; contains exact native-status input |
-| RV estimator-validity sensitivity | `10382387052` | `345866a7e333f78677ad3797811e2cbe82d3e09ee061f7642df7f4c4d5ec008e` | copied to durable Drive archive |
-| Current eight-stage replay + 16-file validation | `10382954095` | `2064b63366681aa3bd708fef00d2e7ac50d20a7fad771849b793c0d2b6957a0e` | copied to durable Drive archive; validation PASS |
-| Pre-estimator scale-integration figure | `10291656193` | `2fed9448c2210af4ded7a4ccc5cbe6f543b64e8f19ba870f5200fa095290e766` | durable historical figure artifact |
-| Estimator-validity scale-integration figure | `10382578412` | `d538c428f3acb3eab6a203c0a0a435ce0ae51e0da9b4f23b7d42e92fcc0e3af7` | current manuscript figure candidate; visual QA passed |
-
-The current reference manifest now contains **16 checksum-verified files**. The six pre-estimator current-output archives plus the estimator-validity artifact supply those reference files; continuous measurements `9612943217`, broad-region lookup `8983877726`, and the 52-tree historical input `8227254443` were already recorded in `durable_archive_manifest.json`.
-
-This closes an **ephemeral-storage risk**, not the public-release gate. A private durable copy is not a Zenodo publication and must not be described as credential-free reproducibility.
-
-## Assembled manuscript-free current v3 Zenodo staging bundle — 2026-09-27
-
-The current material surface has been rebuilt end-to-end under the manuscript-exclusion policy from main commit `b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4`.
-
-- workflow run: `36285930988`;
-- Actions artifact: `10919753688`;
-- Actions artifact SHA-256: `a16053d5dbe50569d08494b594a4e92a6ad011ce98c588f0e06082cddfb1ad3a`;
-- inner candidate archive: `azami_ch1_v3_zenodo_staging.zip`;
-- inner archive SHA-256: `dee0a37be6b38f7fa72a48053021cb1709031b93ee1bf18043b75892ca55f051`;
-- durable owner copy: Drive file `1H4MXMtmSl26lb8HNrc0t-PrdcT8vxBMH`.
-
-The archive contains the four frozen numerical archives, checksum-recovered native status, the current 16-file reference surface, current eight-stage replay receipts, the code snapshot, and the checksum-verified figure/provenance surface. Direct inspection of the inner release manifest confirmed `manuscript_files_included=false`, `document_pagination_is_submission_only=true`, 16 reference files and 30 figure/provenance files. No forbidden DOC/DOCX/ODT/RTF or manuscript-like PDF member was present.
-
-The builder now reports exactly one unresolved gate: `release_metadata`.
-
-## Required contents of a new version
-
-| Material | Current staging status | Action for public current release |
+| Input | Frozen identity | Zenodo treatment |
 |---|---|---|
-| Continuous measurements | exact original artifact already durable and present in v2 release | Retain original bytes and checksum |
-| Full nine-predictor process environment, artifact `9633419268` | checksum-verified and durably staged | Include exact staged archive; v2 multilevel output is not this input |
-| Broad-region lookup and 52 placement trees | exact artifacts already durable and present in v2 release | Retain original bytes and checksums |
-| Native-status table used in sensitivity, not primary filtering | exact input is preserved inside durable WCVP sensitivity artifact `10292140117`; release builder now knows its archive SHA, member path and normalized native-status SHA | **Packaging route closed:** final builder auto-extracts and verifies the exact member when the taxonomy artifact is supplied; the resulting CSV is written into the release `inputs/` surface |
-| Current code and numerical dependencies | repository code exists; direct numerical requirements now match the completed replay environment, including Biopython 1.88; no final release archive has yet been frozen | Include a `git archive` snapshot pinned to the final cleaned main commit together with the exact `requirements-current.txt` |
-| Current aggregate reference outputs | 16-file manifest is checksum-verified; estimator-validity summary is included and its source artifact is durable | Include all 16 files indexed in `current_reference/manifest.json` |
-| Current figures and provenance | **render surface complete and durably staged**: artifact `10903835882` contains 5 Main figures, Figures S1.1–S1.7 and S2.1 as PNG/PDF plus checksum/provenance files | Include the checksum-verified figure/provenance surface; manuscript DOCX/PDF files are excluded and Word pagination is not a Zenodo gate |
-| Full replay validation | **complete**: the 2026-09-15 eight-stage replay matched all 16 current aggregate reference files; artifact `10382954095` is durably staged | Include `current_replay_execution.json`, `current_replay_validation.json` and the frozen replay environment in the final release; rerun after publication as the credential-free verification |
-| License metadata | existing data record says CC BY 4.0; repository code is MIT | Identify MIT software separately; retain and verify third-party/data terms |
+| Continuous image-derived measurements | Actions artifact `9612943217` | preserve exact artifact ZIP |
+| Nine-predictor environment | Actions artifact `9633419268` | preserve exact artifact ZIP |
+| Broad-region lookup | Actions artifact `8983877726` | preserve exact artifact ZIP |
+| Historical-placement trees | Actions artifact `8227254443` | preserve exact artifact ZIP |
+| Observation native status | exact SHA `c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a` | preserve exact normalized CSV recovered from checksum-verified artifact `10292140117` |
 
-Current numerical input identities are executable in `run_current_analysis.py`; current reference output identities are recorded in `current_reference/manifest.json`. The existing v2 release and its DOI must remain intact. Use a new version under the existing concept, or linked code/data records if different licensing requires separation; do not silently replace the v2 package.
+A small `README.txt`, `input_contract.json`, `release_manifest.json`, `checksums.json` and final Zenodo metadata are allowed because they describe and verify the data bytes.
 
-## Document QA and metadata preparation update — 2026-09-27
+## Explicit exclusions
 
-The 13-page final Supporting Information PDF was rendered page-by-page and visually inspected. Its pagination/layout passes, but this is recorded only for journal submission. It is not a Zenodo release requirement and the SI PDF itself is not uploaded to Zenodo.
+The Zenodo data package does **not** contain:
 
-A canonical final Main manuscript synchronized to the current repository freeze was not found in the accessible Library or connected Drive. That remains a submission-package issue only; it no longer blocks the Zenodo data/code archive. The separation is recorded in [DOCUMENT_FIGURE_QA_20260927.md](DOCUMENT_FIGURE_QA_20260927.md).
+- analysis code or a Git repository snapshot;
+- Main manuscript, Supporting Information, title page or cover letter;
+- figures or figure provenance exports;
+- the 16 current reference outputs;
+- replay receipts;
+- fitted-model outputs;
+- original third-party photographs;
+- detector training images, annotations or weights.
 
-Non-author release metadata has also been prepared in `zenodo_release_metadata.prepared.json`:
+Those materials remain versioned or documented in GitHub where appropriate. The Zenodo manifest pins the GitHub repository and exact code commit used with the inputs.
 
-- release title and description are populated;
-- the existing v2 record/concept DOI remains preserved;
-- a new version under the existing concept is staged as the default archive strategy;
-- software remains MIT;
-- third-party/data terms are explicitly kept source-specific rather than relicensed by the software license.
+## Existing public v2 record
 
-The prepared JSON deliberately remains `release_approved=false` and is not a valid final contract. Ordered creators, any ORCID/affiliation values, explicit author approval of archive/licensing strategy, and the exact final Git commit remain author-owned/final-state fields.
+The existing public record remains unchanged:
 
-## Remaining release gate
+- record DOI: `10.5281/zenodo.22295791`;
+- concept DOI: `10.5281/zenodo.22295790`;
+- title: *Azami Chapter 1 v2 reproducibility input package*;
+- file: `azami_ch1_v2_reproduction_inputs_2026-09-04.zip`;
+- size: 56,942,044 bytes;
+- SHA-256: `50ec15b1280d4660839ca4bf0d55c970a5f49b4d4feaabb7a073b73500253677`;
+- creator metadata: `ZHANG, Ruiqi`.
 
-The material-recovery and archive-assembly problems are closed for a staging build, and manuscript files are explicitly outside the Zenodo release surface. The remaining pre-publication Zenodo blocker is author-approved release metadata (ordered creators plus archive/licensing approval). After that, rebuild at the exact final Git head with `release_ready=true`, publish the new Zenodo version, and perform the credential-free redownload/checksum/clean replay.
+The v2 ZIP already demonstrates the intended archive role: preserve exact numerical inputs, while executable analysis history lives in GitHub.
 
-Before claiming current credential-free reproducibility: publish the approved new version, download it without owner credentials, verify every checksum, unpack into a clean directory, and complete the numerical run and reference comparison. Retain unsupported rows and sensitivity failures. GitHub Actions success, a private Drive copy, or local file presence alone does not close this public-archive requirement.
+## Why a new version is needed
 
-Original photographs and upstream detector training are outside the minimum numerical replay. If claiming reproduction from original photos rather than from frozen measurements, separately audit image access/licenses, model-weight availability, all upstream inputs and software versions. The present v2 minimum bundle and this staging update do not establish that stronger claim. See [UPSTREAM_DATA_BOUNDARY_20260926.md](UPSTREAM_DATA_BOUNDARY_20260926.md) for the frozen distinction between source provenance, image-to-trait production and current numerical replay.
+The existing v2 package does not contain the current nine-predictor environment input and does not expose the current frozen native-status CSV as a standalone replay input. The new v3 version therefore updates the **input bytes**, not the code or manuscript.
+
+The current builder `reproducibility/build_current_release_bundle.py` verifies the exact artifact identities defined by `reproducibility.run_current_analysis.INPUTS`, extracts and verifies native status, and builds a deterministic data-only ZIP.
+
+## Durable private recovery state
+
+All current-only material needed to recover the five inputs has already been copied away from expiring Actions storage and checksum recorded in `CURRENT_RELEASE_STAGING_20260912.json`. Additional result/figure artifacts may remain in the private owner archive for project durability, but they are **not part of the Zenodo v3 public package**.
+
+## Reproducibility model
+
+The public reproduction path is intentionally split:
+
+```text
+Zenodo DOI
+  └─ exact processed numerical inputs
+          +
+GitHub pinned commit
+  └─ analysis code + runbook + reference outputs
+          ↓
+8-stage numerical replay
+          ↓
+16-file reference comparison
+```
+
+This is sufficient for the supported numerical-reproduction claim. It does not claim reconstruction from original photographs.
+
+## Release metadata
+
+Prepared metadata: `reproducibility/zenodo_release_metadata.prepared.json`.
+
+The dataset creator is inherited from the existing v2 concept as `ZHANG, Ruiqi`. This is a dataset-deposition creator field and does not define manuscript authorship.
+
+Prepared title:
+
+> Azami Chapter 1 v3 numerical analysis input package
+
+The prepared metadata remains `release_approved=false` until the final data-only wording, exact GitHub code commit and licensing statement are approved.
+
+## Remaining public-release gate
+
+Only one pre-build gate remains:
+
+- `release_metadata`.
+
+After approval:
+
+1. bind metadata to the exact final GitHub commit;
+2. build the final data-only ZIP with `release_ready=true`;
+3. publish it as a new version under concept DOI `10.5281/zenodo.22295790`;
+4. download the published package without owner credentials;
+5. verify every checksum;
+6. run the GitHub replay against those downloaded inputs and confirm the 16-file reference comparison passes.
+
+A private Drive copy or Actions artifact is durability evidence, not a public-release substitute.
