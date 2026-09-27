@@ -28,7 +28,7 @@ The current data-only archive contains exactly five analysis inputs:
 
 The Zenodo archive intentionally does **not** contain analysis code, manuscript/SI files, figures, fitted/reference outputs, replay receipts, original photographs, or detector-training material. The archive manifest stores the GitHub repository URL and exact code commit needed to interpret the inputs.
 
-A main-branch staging build has passed at commit `810637d9dfdde9c4b810c2472f43f254786ce614`. The data ZIP SHA-256 is `c4ec876206e6f8ef0cd69d126fa31b2b71aa1b1919172aeb371f75bbabcd6d10`; its Actions wrapper is also copied to the durable owner Drive archive. The build reports only `release_metadata` as unresolved.
+The final data-only candidate has now passed on main commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`. The upload ZIP `azami_ch1_v3_analysis_inputs.zip` has SHA-256 `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`, all embedded checksums verify, and the final manifest reports `release_ready=true` with no remaining repository-side release gaps. The Actions wrapper is durably copied to the owner Drive archive. The file is not yet public on Zenodo.
 
 ## Current data-only bundle builder
 
