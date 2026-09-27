@@ -2,9 +2,9 @@
   "schema_version": 1,
   "release_approved": false,
   "scientific_scope": "azami_ch1_v3_current",
-  "final_code_commit": "PENDING_FINAL_DOCUMENT_QA",
+  "final_code_commit": "PENDING_FINAL_RELEASE_REBUILD",
   "title": "Azami Chapter 1 current numerical and figure release",
-  "description": "Frozen processed numerical inputs, current Chapter 1 analysis code, checksum-locked aggregate reference outputs, eight-stage replay receipts, and the checksum/provenance-verified manuscript figure surface for the current GEB-targeted analysis. Numerical reproduction begins from frozen image-derived measurements; original third-party photographs and upstream detector training are outside the minimum numerical replay.",
+  "description": "Frozen processed numerical inputs, current Chapter 1 analysis code, checksum-locked aggregate reference outputs, eight-stage replay receipts, and checksum/provenance-verified analysis figure exports for the current GEB-targeted analysis. Manuscript DOCX/PDF files are intentionally excluded. Numerical reproduction begins from frozen image-derived measurements; original third-party photographs and upstream detector training are outside the minimum numerical replay.",
   "creators": [],
   "archive_strategy": "new_version_existing_concept",
   "preserved_v2_record": {
@@ -22,7 +22,7 @@
   "remaining_author_owned_fields": [
     "ordered creators and any chosen ORCID/affiliation values",
     "explicit approval of archive strategy and data/third-party licensing wording",
-    "final_code_commit after document QA",
-    "release_approved=true only after final review"
+    "final_code_commit at the exact final release rebuild",
+    "release_approved=true only after final metadata review"
   ]
 }
