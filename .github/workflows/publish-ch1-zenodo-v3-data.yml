@@ -1,0 +1,364 @@
+name: Publish Chapter 1 Zenodo v3 data
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-ch1-zenodo-v3-data.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  publish-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ZENODO_ACCESS_TOKEN_PRIMARY: ${{ secrets.ZENODO_ACCESS_TOKEN }}
+      ZENODO_ACCESS_TOKEN_FALLBACK: ${{ secrets.ZENODO_TOKEN }}
+      FINAL_SOURCE_COMMIT: 7483ae8e20fa5df2439ad524312d3ac9a0fbf71f
+      FINAL_ARTIFACT_ID: '10921221306'
+      FINAL_WRAPPER_SHA256: 941c70768664ae9df82cd18f522dda9f4fd352ad723e08ad1e9a8d9e23f0996e
+      FINAL_ZIP_SHA256: be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438
+      FINAL_FILENAME: azami_ch1_v3_analysis_inputs.zip
+      V2_RECORD_ID: '22295791'
+      V2_RECORD_DOI: 10.5281/zenodo.22295791
+      CONCEPT_DOI: 10.5281/zenodo.22295790
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require Zenodo publish token
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${ZENODO_ACCESS_TOKEN_PRIMARY}" && -z "${ZENODO_ACCESS_TOKEN_FALLBACK}" ]]; then
+            echo "::error::Neither ZENODO_ACCESS_TOKEN nor ZENODO_TOKEN is configured in repository Actions secrets."
+            exit 78
+          fi
+          echo "Zenodo token secret is configured; proceeding with authorized publication."
+
+      - name: Fetch and verify frozen final candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/zenodo-publish"
+          cd "${RUNNER_TEMP}/zenodo-publish"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${FINAL_ARTIFACT_ID}/zip" > wrapper.zip
+          echo "${FINAL_WRAPPER_SHA256}  wrapper.zip" | sha256sum -c -
+          unzip -q wrapper.zip -d wrapper
+          test -f "wrapper/${FINAL_FILENAME}"
+          cp "wrapper/${FINAL_FILENAME}" "${FINAL_FILENAME}"
+          echo "${FINAL_ZIP_SHA256}  ${FINAL_FILENAME}" | sha256sum -c -
+
+      - name: Install publication client
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Create new version, replace file, update metadata, and publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, pathlib, time
+          import requests
+
+          api = "https://zenodo.org/api"
+          token = os.environ.get("ZENODO_ACCESS_TOKEN_PRIMARY") or os.environ.get("ZENODO_ACCESS_TOKEN_FALLBACK")
+          if not token:
+              raise SystemExit("Zenodo token missing")
+          headers = {"Authorization": f"Bearer {token}"}
+          json_headers = {**headers, "Content-Type": "application/json"}
+          base_id = int(os.environ["V2_RECORD_ID"])
+          expected_doi = os.environ["V2_RECORD_DOI"]
+          concept_doi = os.environ["CONCEPT_DOI"]
+          file_path = pathlib.Path(os.environ["RUNNER_TEMP"]) / "zenodo-publish" / os.environ["FINAL_FILENAME"]
+
+          def require(resp, ok, label):
+              if resp.status_code not in ok:
+                  raise RuntimeError(f"{label}: HTTP {resp.status_code}: {resp.text[:2000]}")
+              return resp
+
+          # Validate that the authenticated account owns the published v2 deposition.
+          r = requests.get(f"{api}/deposit/depositions/{base_id}", headers=headers, timeout=60)
+          if r.status_code != 200:
+              # Fallback: locate the owned published deposition by DOI/concept identity.
+              rr = require(
+                  requests.get(
+                      f"{api}/deposit/depositions",
+                      headers=headers,
+                      params={"status": "published", "all_versions": "true", "size": 100, "sort": "-mostrecent"},
+                      timeout=60,
+                  ),
+                  {200},
+                  "list owned depositions",
+              )
+              matches = []
+              for dep in rr.json():
+                  dep_doi = dep.get("doi") or dep.get("metadata", {}).get("doi")
+                  concept = dep.get("conceptdoi") or dep.get("metadata", {}).get("conceptdoi")
+                  if dep_doi == expected_doi or concept == concept_doi or str(dep.get("conceptrecid","")) == "22295790":
+                      matches.append(dep)
+              if not matches:
+                  raise RuntimeError(
+                      "Authenticated Zenodo account cannot access the v2 deposition and no owned matching concept was found."
+                  )
+              # Use the newest matching published deposition as the new-version parent.
+              parent = sorted(matches, key=lambda x: x.get("modified",""))[-1]
+              base_id = int(parent["id"])
+          else:
+              parent = r.json()
+
+          if parent.get("submitted") is not True and parent.get("state") != "done":
+              raise RuntimeError(f"Zenodo parent deposition {base_id} is not published")
+
+          # Create or recover the one allowed unpublished new-version draft.
+          r = require(
+              requests.post(f"{api}/deposit/depositions/{base_id}/actions/newversion", headers=headers, timeout=60),
+              {201},
+              "create new version",
+          )
+          latest_draft = r.json().get("links", {}).get("latest_draft")
+          if not latest_draft:
+              raise RuntimeError("newversion response did not expose links.latest_draft")
+
+          draft = require(requests.get(latest_draft, headers=headers, timeout=60), {200}, "fetch draft").json()
+          draft_id = int(draft["id"])
+
+          # New versions inherit prior files. Remove all inherited/stale files.
+          for old in list(draft.get("files", [])):
+              url = old.get("links", {}).get("self")
+              if not url:
+                  url = f"{api}/deposit/depositions/{draft_id}/files/{old['id']}"
+              require(requests.delete(url, headers=headers, timeout=60), {204}, f"delete inherited file {old.get('filename')}")
+
+          # Upload only the verified data-only v3 ZIP.
+          with file_path.open("rb") as handle:
+              r = require(
+                  requests.post(
+                      f"{api}/deposit/depositions/{draft_id}/files",
+                      headers=headers,
+                      data={"name": file_path.name},
+                      files={"file": (file_path.name, handle, "application/zip")},
+                      timeout=600,
+                  ),
+                  {201},
+                  "upload v3 input ZIP",
+              )
+
+          description = (
+              "SHA-locked processed numerical inputs for reproducing the current Azami Chapter 1 v3 analysis "
+              "with the separately versioned GitHub code. The archive contains only analysis inputs: continuous "
+              "image-derived measurements, the nine-predictor environment input, broad-region lookup, "
+              "historical-placement trees, and the frozen observation native-status table. Analysis code, "
+              "manuscripts, figures, fitted/reference outputs, replay receipts, original third-party photographs, "
+              "and detector training material are intentionally excluded."
+          )
+          metadata = {
+              "metadata": {
+                  "title": "Azami Chapter 1 v3 numerical analysis input package",
+                  "upload_type": "dataset",
+                  "description": description,
+                  "creators": [{"name": "ZHANG, Ruiqi"}],
+                  "version": "v3",
+                  "access_right": "open",
+                  "license": "cc-by-4.0",
+                  "keywords": [
+                      "Cirsium",
+                      "image phenomics",
+                      "reproducibility",
+                      "trait-environment association",
+                      "citizen science",
+                  ],
+                  "related_identifiers": [
+                      {
+                          "identifier": "https://github.com/zuizui0223/azami/tree/" + os.environ["FINAL_SOURCE_COMMIT"],
+                          "relation": "isSupplementTo",
+                          "scheme": "url",
+                      }
+                  ],
+                  "notes": (
+                      "Zenodo preserves the processed numerical input bytes. Analysis code, runbook, current "
+                      "reference outputs and executable history remain in the linked GitHub repository at the pinned commit."
+                  ),
+              }
+          }
+          require(
+              requests.put(
+                  f"{api}/deposit/depositions/{draft_id}",
+                  headers=json_headers,
+                  data=json.dumps(metadata),
+                  timeout=60,
+              ),
+              {200},
+              "update v3 metadata",
+          )
+
+          # Pre-publish fail-closed check.
+          draft = require(
+              requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
+              {200},
+              "refetch draft",
+          ).json()
+          files = draft.get("files", [])
+          if len(files) != 1 or files[0].get("filename") != file_path.name:
+              raise RuntimeError(f"Draft file boundary mismatch: {[f.get('filename') for f in files]}")
+          if draft.get("metadata", {}).get("title") != metadata["metadata"]["title"]:
+              raise RuntimeError("Draft title mismatch before publish")
+
+          # Irreversible action explicitly authorized by the user.
+          published = require(
+              requests.post(f"{api}/deposit/depositions/{draft_id}/actions/publish", headers=headers, timeout=120),
+              {202},
+              "publish v3",
+          ).json()
+
+          receipt = {
+              "status": "PUBLISHED",
+              "parent_deposition_id": base_id,
+              "draft_deposition_id": draft_id,
+              "record_id": published.get("record_id"),
+              "doi": published.get("doi"),
+              "doi_url": published.get("doi_url"),
+              "record_url": published.get("record_url"),
+              "concept_doi": published.get("conceptdoi") or published.get("metadata", {}).get("conceptdoi"),
+              "file": file_path.name,
+              "file_sha256": os.environ["FINAL_ZIP_SHA256"],
+              "github_code_commit": os.environ["FINAL_SOURCE_COMMIT"],
+              "published_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+          }
+          out = pathlib.Path(os.environ["RUNNER_TEMP"]) / "zenodo-publish" / "zenodo_publish_receipt.json"
+          out.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(receipt, indent=2, sort_keys=True))
+          PY
+
+      - name: Anonymous public redownload and checksum verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, pathlib, time, zipfile
+          import requests
+
+          root = pathlib.Path(os.environ["RUNNER_TEMP"]) / "zenodo-publish"
+          receipt = json.loads((root / "zenodo_publish_receipt.json").read_text())
+          record_id = receipt.get("record_id")
+          if not record_id:
+              raise RuntimeError("Published response lacks record_id")
+
+          public = None
+          for _ in range(36):
+              r = requests.get(f"https://zenodo.org/api/records/{record_id}", timeout=60)
+              if r.status_code == 200:
+                  public = r.json()
+                  break
+              time.sleep(10)
+          if public is None:
+              raise RuntimeError("Published record did not become anonymously readable within 6 minutes")
+
+          files = public.get("files", [])
+          matches = [f for f in files if f.get("key") == os.environ["FINAL_FILENAME"]]
+          if len(matches) != 1:
+              raise RuntimeError(f"Public record file mismatch: {[f.get('key') for f in files]}")
+          f = matches[0]
+          url = f.get("links", {}).get("self") or f.get("links", {}).get("download")
+          if not url:
+              raise RuntimeError("Public file has no anonymous download link")
+
+          out = root / "anonymous-redownload.zip"
+          with requests.get(url, stream=True, timeout=600) as r:
+              r.raise_for_status()
+              with out.open("wb") as handle:
+                  for chunk in r.iter_content(chunk_size=1024*1024):
+                      if chunk:
+                          handle.write(chunk)
+
+          digest = hashlib.sha256(out.read_bytes()).hexdigest()
+          if digest != os.environ["FINAL_ZIP_SHA256"]:
+              raise RuntimeError(f"Anonymous redownload SHA mismatch: {digest}")
+
+          with zipfile.ZipFile(out) as z:
+              checksum_rows = json.loads(z.read("checksums.json"))
+              for row in checksum_rows:
+                  actual = hashlib.sha256(z.read(row["path"])).hexdigest()
+                  if actual != row["sha256"]:
+                      raise RuntimeError(f"Embedded checksum mismatch: {row['path']}")
+              manifest = json.loads(z.read("release_manifest.json"))
+              if manifest["release_ready"] is not True or manifest["analysis_input_count"] != 5:
+                  raise RuntimeError("Public manifest is not the approved final data-only surface")
+              if any(manifest[k] for k in (
+                  "code_included","manuscript_files_included","figures_included",
+                  "reference_outputs_included","replay_receipts_included"
+              )):
+                  raise RuntimeError("Public manifest violated data-only boundary")
+
+          receipt["anonymous_redownload"] = {
+              "status": "PASS",
+              "sha256": digest,
+              "embedded_checksums": "PASS",
+              "record_api": f"https://zenodo.org/api/records/{record_id}",
+          }
+          (root / "zenodo_publish_receipt.json").write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+          )
+          print(json.dumps(receipt["anonymous_redownload"], indent=2))
+          PY
+
+      - name: Reproduce from anonymously downloaded Zenodo inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="${RUNNER_TEMP}/zenodo-publish"
+          PINNED="${RUNNER_TEMP}/azami-pinned"
+          git worktree add --detach "$PINNED" "$FINAL_SOURCE_COMMIT"
+          cd "$PINNED"
+          python -m pip install --disable-pip-version-check -r reproducibility/requirements-current.txt
+
+          mkdir -p "$ROOT/extracted" "$ROOT/archives" "$ROOT/replay/inputs"
+          unzip -q "$ROOT/anonymous-redownload.zip" -d "$ROOT/extracted"
+          cp "$ROOT/extracted/inputs/artifact-9612943217-continuous.zip" "$ROOT/archives/"
+          cp "$ROOT/extracted/inputs/artifact-9633419268-environment.zip" "$ROOT/archives/"
+          cp "$ROOT/extracted/inputs/artifact-8983877726-spatial.zip" "$ROOT/archives/"
+          cp "$ROOT/extracted/inputs/artifact-8227254443-historical.zip" "$ROOT/archives/"
+          cp "$ROOT/extracted/inputs/observation_native_status.csv" "$ROOT/replay/inputs/native_status.csv"
+
+          python -m reproducibility.run_current_analysis \
+            --work-dir "$ROOT/replay" \
+            --archive-dir "$ROOT/archives"
+
+          python - <<'PY'
+          import json, os, pathlib
+          root=pathlib.Path(os.environ["RUNNER_TEMP"])/"zenodo-publish"
+          receipt=json.loads((root/"zenodo_publish_receipt.json").read_text())
+          validation=json.loads((root/"replay/results/validation.json").read_text())
+          assert validation["status"]=="PASS"
+          assert validation["aggregate_files_compared"]==16
+          receipt["clean_replay"]={
+              "status":"PASS",
+              "aggregate_files_compared":16,
+              "github_code_commit":os.environ["FINAL_SOURCE_COMMIT"],
+          }
+          (root/"zenodo_publish_receipt.json").write_text(
+              json.dumps(receipt,indent=2,sort_keys=True)+"\n",encoding="utf-8"
+          )
+          print(json.dumps(receipt["clean_replay"],indent=2))
+          PY
+
+      - name: Upload publication verification receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch1-v3-zenodo-publication-receipt
+          path: |
+            ${{ runner.temp }}/zenodo-publish/zenodo_publish_receipt.json
+            ${{ runner.temp }}/zenodo-publish/replay/results/validation.json
+          if-no-files-found: error
+          retention-days: 90
