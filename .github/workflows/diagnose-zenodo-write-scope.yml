@@ -1,0 +1,140 @@
+name: Diagnose Zenodo deposit write scope
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/diagnose-zenodo-write-scope.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ZENODO_ACCESS_TOKEN_PRIMARY: ${{ secrets.ZENODO_ACCESS_TOKEN }}
+      ZENODO_ACCESS_TOKEN_FALLBACK: ${{ secrets.ZENODO_TOKEN }}
+      V2_RECORD_ID: '22295791'
+      CONCEPT_DOI: 10.5281/zenodo.22295790
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install client
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Probe deposit write permission without changing payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/zenodo-scope-probe"
+          python - <<'PY'
+          import json, os, pathlib
+          import requests
+
+          api = "https://zenodo.org/api"
+          token = os.environ.get("ZENODO_ACCESS_TOKEN_PRIMARY") or os.environ.get("ZENODO_ACCESS_TOKEN_FALLBACK")
+          if not token:
+              raise SystemExit("Zenodo token missing")
+          headers = {"Authorization": f"Bearer {token}"}
+          json_headers = {**headers, "Content-Type": "application/json"}
+          base_id = int(os.environ["V2_RECORD_ID"])
+          concept_doi = os.environ["CONCEPT_DOI"]
+
+          parent_r = requests.get(f"{api}/deposit/depositions/{base_id}", headers=headers, timeout=60)
+          if parent_r.status_code != 200:
+              raise RuntimeError(f"Cannot read parent deposition: HTTP {parent_r.status_code}")
+          parent = parent_r.json()
+
+          draft = None
+          latest_draft = parent.get("links", {}).get("latest_draft")
+          if latest_draft:
+              r = requests.get(latest_draft, headers=headers, timeout=60)
+              if r.status_code == 200:
+                  draft = r.json()
+
+          if draft is None:
+              r = requests.get(
+                  f"{api}/deposit/depositions",
+                  headers=headers,
+                  params={"status": "draft", "all_versions": "true", "size": 100, "sort": "-mostrecent"},
+                  timeout=60,
+              )
+              if r.status_code != 200:
+                  raise RuntimeError(f"Cannot list drafts: HTTP {r.status_code}")
+              candidates = []
+              for dep in r.json():
+                  concept = dep.get("conceptdoi") or dep.get("metadata", {}).get("conceptdoi")
+                  if concept == concept_doi or str(dep.get("conceptrecid", "")) == "22295790":
+                      candidates.append(dep)
+              if not candidates:
+                  raise RuntimeError("No unpublished draft for target concept is currently available")
+              draft = sorted(candidates, key=lambda x: x.get("modified", ""))[-1]
+
+          draft_id = int(draft["id"])
+          metadata = draft.get("metadata", {})
+          allowed = [
+              "title", "upload_type", "description", "creators", "version",
+              "access_right", "license", "keywords", "related_identifiers", "notes",
+              "contributors", "references", "language", "communities", "grants",
+              "subjects", "locations", "method", "imprint_publisher", "imprint_isbn",
+              "imprint_place", "partof_title", "partof_pages", "publication_date"
+          ]
+          same_metadata = {k: metadata[k] for k in allowed if k in metadata}
+          payload = {"metadata": same_metadata}
+
+          # This is an idempotent write of the draft's current user metadata.
+          # Per Zenodo docs, PUT requires deposit:write.
+          r = requests.put(
+              f"{api}/deposit/depositions/{draft_id}",
+              headers=json_headers,
+              data=json.dumps(payload),
+              timeout=60,
+          )
+          if r.status_code == 200:
+              result = {
+                  "status": "DEPOSIT_WRITE_AVAILABLE",
+                  "http_status": 200,
+                  "draft_id": draft_id,
+                  "draft_title": metadata.get("title"),
+                  "draft_files": [f.get("filename") for f in draft.get("files", [])],
+                  "note": "No-op metadata PUT succeeded; deposit:write is available.",
+              }
+          elif r.status_code == 403:
+              result = {
+                  "status": "DEPOSIT_WRITE_MISSING_OR_DENIED",
+                  "http_status": 403,
+                  "draft_id": draft_id,
+                  "draft_title": metadata.get("title"),
+                  "draft_files": [f.get("filename") for f in draft.get("files", [])],
+                  "response": r.text[:1000],
+                  "note": "No-op metadata PUT was forbidden; token cannot perform deposit:write operations.",
+              }
+          else:
+              result = {
+                  "status": "INCONCLUSIVE",
+                  "http_status": r.status_code,
+                  "draft_id": draft_id,
+                  "draft_title": metadata.get("title"),
+                  "draft_files": [f.get("filename") for f in draft.get("files", [])],
+                  "response": r.text[:1000],
+              }
+
+          out = pathlib.Path(os.environ["RUNNER_TEMP"]) / "zenodo-scope-probe" / "result.json"
+          out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(result, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload diagnostic receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: zenodo-write-scope-diagnostic
+          path: ${{ runner.temp }}/zenodo-scope-probe/result.json
+          if-no-files-found: error
+          retention-days: 30
