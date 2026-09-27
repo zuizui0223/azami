@@ -66,13 +66,11 @@ Available materials include older Main manuscript files plus a later synchroniza
 
 Therefore Main document QA remains **OPEN**.
 
-## Release-gate interpretation
+## Submission-gate interpretation
 
-The current figure artifact itself is checksum-frozen and visually QA'd. The document-level gate is narrowed to one missing object:
+The current figure artifact itself is checksum-frozen and visually QA'd. The missing canonical final Main manuscript remains a **journal-submission QA issue only**.
 
-> the canonical final Main manuscript synchronized to the current five-Main-figure role map.
-
-Do not set `document_pagination_validated=true` in the final figure manifest until that Main manuscript is rendered and inspected together with the already-passed SI.
+It is not a Zenodo release gate, and manuscript DOCX/PDF files must not be added to the Zenodo bundle. `document_pagination_validated` may remain false in the figure manifest used for the data/code archive; that field describes document placement QA rather than figure-file integrity.
 
 ## What closes the gate
 
@@ -85,4 +83,4 @@ Once the canonical final Main DOCX/PDF is supplied:
 5. confirm the blinded file does not contain author-identifying metadata or author-identifying repository links;
 6. promote the existing figure hashes without changing the figures and set `document_pagination_validated=true`.
 
-Until those steps pass, `figure_document_qa` remains the sole document-side Zenodo release gap.
+Until those steps pass, journal-submission document QA remains open. Zenodo release readiness is evaluated independently from manuscript pagination.
