@@ -121,17 +121,66 @@ jobs:
           if parent.get("submitted") is not True and parent.get("state") != "done":
               raise RuntimeError(f"Zenodo parent deposition {base_id} is not published")
 
-          # Create or recover the one allowed unpublished new-version draft.
-          r = require(
-              requests.post(f"{api}/deposit/depositions/{base_id}/actions/newversion", headers=headers, timeout=60),
-              {201},
-              "create new version",
-          )
-          latest_draft = r.json().get("links", {}).get("latest_draft")
-          if not latest_draft:
-              raise RuntimeError("newversion response did not expose links.latest_draft")
+          # Reuse an existing unpublished new-version draft when present.
+          # Zenodo permits only one draft per version chain; calling newversion again
+          # can return HTTP 400 "Please remove all files first." when such a draft exists.
+          latest_draft = parent.get("links", {}).get("latest_draft")
+          draft = None
+          if latest_draft:
+              probe = requests.get(latest_draft, headers=headers, timeout=60)
+              if probe.status_code == 200:
+                  draft = probe.json()
 
-          draft = require(requests.get(latest_draft, headers=headers, timeout=60), {200}, "fetch draft").json()
+          if draft is None:
+              r = requests.post(
+                  f"{api}/deposit/depositions/{base_id}/actions/newversion",
+                  headers=headers,
+                  timeout=60,
+              )
+              if r.status_code == 201:
+                  payload = r.json()
+                  latest_draft = payload.get("links", {}).get("latest_draft")
+                  # Some Zenodo deployments return the draft resource directly.
+                  if payload.get("submitted") is False and payload.get("state") == "inprogress":
+                      draft = payload
+                  elif latest_draft:
+                      draft = require(
+                          requests.get(latest_draft, headers=headers, timeout=60),
+                          {200},
+                          "fetch newly created draft",
+                      ).json()
+              elif r.status_code == 400 and "Please remove all files first." in r.text:
+                  # A draft exists but the parent representation did not expose it.
+                  # Locate the owned draft by concept identity and reuse it.
+                  rr = require(
+                      requests.get(
+                          f"{api}/deposit/depositions",
+                          headers=headers,
+                          params={"status": "draft", "all_versions": "true", "size": 100, "sort": "-mostrecent"},
+                          timeout=60,
+                      ),
+                      {200},
+                      "list owned drafts",
+                  )
+                  candidates = []
+                  for dep in rr.json():
+                      concept = dep.get("conceptdoi") or dep.get("metadata", {}).get("conceptdoi")
+                      conceptrecid = str(dep.get("conceptrecid", ""))
+                      parent_link = dep.get("links", {}).get("latest") or dep.get("links", {}).get("record")
+                      if concept == concept_doi or conceptrecid == "22295790":
+                          candidates.append(dep)
+                      elif parent_link and str(base_id) in str(parent_link):
+                          candidates.append(dep)
+                  if not candidates:
+                      raise RuntimeError(
+                          "Zenodo reports an existing draft, but no owned draft matching the target concept could be found."
+                      )
+                  draft = sorted(candidates, key=lambda x: x.get("modified", ""))[-1]
+              else:
+                  require(r, {201}, "create new version")
+
+          if draft is None:
+              raise RuntimeError("Could not create or recover the target Zenodo new-version draft")
           draft_id = int(draft["id"])
 
           # New versions inherit prior files. Remove all inherited/stale files.
