@@ -3,23 +3,23 @@
   "release_approved": false,
   "scientific_scope": "azami_ch1_v3_current",
   "final_code_commit": "TBD",
-  "title": "TBD",
+  "title": "Azami Chapter 1 v3 numerical analysis input package",
   "description": "TBD",
   "creators": [
     {
-      "name": "TBD",
+      "name": "ZHANG, Ruiqi",
       "orcid": null,
       "affiliation": null
     }
   ],
-  "archive_strategy": "TBD",
+  "archive_strategy": "new_version_existing_concept",
   "preserved_v2_record": {
     "record_doi": "10.5281/zenodo.22295791",
     "concept_doi": "10.5281/zenodo.22295790",
     "modify_existing_v2": false
   },
   "licensing": {
-    "software": "MIT",
+    "software": "MIT (GitHub code only; software is not included in this Zenodo dataset)",
     "data_and_third_party_strategy": "TBD"
   },
   "anonymous_redownload_required": true,
