@@ -14,7 +14,8 @@ from reproducibility.build_current_release_bundle import (
     input_contract,
     locate_archive,
     release_gaps,
-    figure_manifest_document_qa,
+    is_manuscript_document_path,
+    tracked_manuscript_documents,
     verify_manifest_files,
     verified_reference_rows,
 )
@@ -224,16 +225,22 @@ def test_figure_manifest_accepts_portable_manifest_relative_files(tmp_path):
     assert rows[0]["source_path"] == image.resolve()
     assert rows[0]["path"] == "figures/Figure_1.png"
 
-def test_final_figure_manifest_requires_document_pagination_qa(tmp_path):
+def test_document_pagination_is_not_a_zenodo_release_gate(tmp_path):
     manifest = tmp_path / "final_figure_manifest.json"
     manifest.write_text(json.dumps({"document_pagination_validated": False, "files": [
         {"path": "placeholder.png", "sha256": "0" * 64}
     ]}), encoding="utf-8")
-    assert figure_manifest_document_qa(manifest) is False
-    manifest.write_text(json.dumps({"document_pagination_validated": True, "files": [
-        {"path": "placeholder.png", "sha256": "0" * 64}
-    ]}), encoding="utf-8")
-    assert figure_manifest_document_qa(manifest) is True
+    assert release_gaps(manifest, tmp_path / "release-metadata.json") == []
+
+
+def test_manuscript_documents_are_forbidden_from_zenodo_code_snapshot():
+    assert is_manuscript_document_path("submission/Main_manuscript.docx")
+    assert is_manuscript_document_path("submission/Supporting_Information.pdf")
+    assert is_manuscript_document_path("submission/title_page.doc")
+    assert is_manuscript_document_path("submission/cover-letter.pdf")
+    assert not is_manuscript_document_path("reproducibility/Figure_1.pdf")
+    assert not is_manuscript_document_path("analysis/v3/README.md")
+    assert tracked_manuscript_documents() == []
 
 def test_prepared_release_metadata_fills_non_author_fields_but_fails_closed():
     path = ROOT / "reproducibility/zenodo_release_metadata.prepared.json"
