@@ -185,7 +185,7 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert full_figure_surface["supporting_figure_count"] == 8
     assert full_figure_surface["document_pagination_validated"] is False
     zenodo = receipt["zenodo_staging_bundle"]
-    assert zenodo["status"] == "assembled_and_verified_not_public"
+    assert zenodo["status"] == "assembled_and_verified_not_public_pre_manuscript_exclusion_policy"
     assert zenodo["source_main_commit"] == "5c0ae2af9a92bb79295fd11d77ad5bbc25f39757"
     assert zenodo["github_actions_artifact_id"] == 10905302325
     assert zenodo["github_actions_artifact_sha256"] == "8b96fe69f7ae539d4118a29550684c7c1f473959a83659b0532ef67aee4870be"
@@ -194,13 +194,22 @@ def test_staging_receipt_tracks_all_recovered_current_only_artifacts():
     assert zenodo["reference_files"] == 16
     assert zenodo["figure_manifest_files"] == 30
     assert zenodo["release_ready"] is False
-    assert set(zenodo["release_gaps"]) == {"release_metadata", "figure_document_qa"}
+    assert zenodo["gate_definition_status"] == "historical_superseded"
+    assert set(zenodo["release_gaps_at_build_time"]) == {"release_metadata", "figure_document_qa"}
+    policy = receipt["zenodo_release_policy"]
+    assert policy["manuscript_upload"] is False
+    assert policy["manuscript_files_included"] is False
+    assert policy["document_pagination_is_submission_only"] is True
+    assert set(policy["current_expected_release_gaps"]) == {"release_metadata"}
+    assert policy["code_snapshot_manuscript_guard"] == "fail_closed"
     docqa = receipt["document_figure_qa"]
     assert docqa["supporting_information"]["pages_inspected"] == 13
     assert docqa["supporting_information"]["layout_status"] == "PASS"
     assert docqa["main_manuscript"]["canonical_final_document_found"] is False
     assert docqa["main_manuscript"]["status"] == "OPEN"
     assert docqa["overall_document_pagination_validated"] is False
+    assert docqa["zenodo_release_gate"] is False
+    assert docqa["scope"] == "journal_submission_only"
     metaprep = receipt["release_metadata_preparation"]
     assert metaprep["status"] == "prepared_not_approved"
     assert metaprep["non_author_fields_prepared"] is True
@@ -263,10 +272,12 @@ def test_prepared_release_metadata_fills_non_author_fields_but_fails_closed():
         validate_release_metadata(path, expected_head="not-final")
 
 
-def test_document_qa_receipt_closes_si_layout_but_not_main():
+def test_document_qa_receipt_is_submission_only():
     text = (ROOT / "reproducibility/DOCUMENT_FIGURE_QA_20260927.md").read_text(encoding="utf-8")
     assert "### Layout result: PASS" in text
     assert "13 rendered pages" in text
     assert "Main document QA remains **OPEN**" in text
-    assert "document_pagination_validated=true" in text
+    assert "journal-submission document QA remains open" in text
+    assert "Zenodo release readiness is evaluated independently" in text
+    assert "must not be added to the Zenodo bundle" in text
 
