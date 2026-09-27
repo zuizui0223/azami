@@ -156,3 +156,29 @@ def test_staging_receipt_declares_data_only_zenodo_policy():
     assert bundle["reference_outputs_included"] is False
     assert bundle["replay_receipts_included"] is False
     assert set(bundle["release_gaps"]) == {"release_metadata"}
+
+def test_data_release_approval_is_explicit_and_data_only():
+    path = ROOT / "reproducibility/zenodo_data_release_approval.json"
+    obj = json.loads(path.read_text(encoding="utf-8"))
+    assert obj["schema_version"] == 1
+    assert obj["approved"] is True
+    assert obj["scientific_scope"] == SCOPE_ID
+    assert obj["archive_role"] == "durable_processed_analysis_inputs"
+    assert obj["creator"] == "ZHANG, Ruiqi"
+    assert obj["archive_strategy"] == "new_version_existing_concept"
+    assert obj["preserved_concept_doi"] == V2_CONCEPT_DOI
+    boundary = obj["public_payload_boundary"]
+    assert boundary["analysis_input_count"] == 5
+    for key in (
+        "code_included",
+        "manuscript_files_included",
+        "figures_included",
+        "reference_outputs_included",
+        "replay_receipts_included",
+        "original_photographs_included",
+        "detector_training_included",
+    ):
+        assert boundary[key] is False
+    assert "CC BY 4.0" in obj["licensing_approval"]
+    assert obj["public_upload_performed"] is False
+

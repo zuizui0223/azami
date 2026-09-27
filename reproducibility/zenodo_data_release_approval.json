@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "approved": true,
+  "approved_on": "2026-09-27",
+  "scientific_scope": "azami_ch1_v3_current",
+  "archive_role": "durable_processed_analysis_inputs",
+  "creator": "ZHANG, Ruiqi",
+  "archive_strategy": "new_version_existing_concept",
+  "preserved_concept_doi": "10.5281/zenodo.22295790",
+  "public_payload_boundary": {
+    "analysis_input_count": 5,
+    "code_included": false,
+    "manuscript_files_included": false,
+    "figures_included": false,
+    "reference_outputs_included": false,
+    "replay_receipts_included": false,
+    "original_photographs_included": false,
+    "detector_training_included": false
+  },
+  "licensing_approval": "Carry forward the v2 dataset-level CC BY 4.0 metadata for the deposited processed-data package while preserving source-specific third-party attribution/reuse terms; no original photographs are redistributed.",
+  "approval_basis": "User directed on 2026-09-27 that Zenodo should store analysis data only, with analysis code kept on GitHub and Zenodo serving as durable replacement for expiring GitHub Actions input artifacts.",
+  "public_upload_performed": false
+}
