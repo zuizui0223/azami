@@ -14,45 +14,45 @@ The original [v2 runbook](../legacy/v2/ORIGINAL_REPRODUCTION.md) applies to immu
 
 The v2 `public_release_manifest.json`, `material_availability.json`, `recovery_inventory.json` and related receipts describe that historical release. Their readiness statements do not certify current v3 public availability. Archived source paths are resolved using the path map rather than changing recorded scientific inputs.
 
-## Current release staging
+## Current Zenodo data staging
 
-The [2026-09-12 staging receipt](CURRENT_RELEASE_STAGING_20260912.json), subsequently extended with the taxonomy, 2026-09-15 estimator-validity work and the completed eight-stage replay, records checksum-verified durable copies of the current nine-predictor environment input and current Actions evidence required by the 16-file reference surface. The private staging area now also holds the estimator-validity artifact, the CI-rendered integration figure that exposes the equal-n sensitivity, and the eight-stage/16-file replay artifact. This removes dependence on those expiring Actions artifacts for material recovery.
+Zenodo is used only as **durable storage for processed numerical analysis inputs** that would otherwise depend on expiring GitHub Actions artifacts. GitHub remains the authority for analysis code, runbooks, current reference outputs, figures and replay receipts.
 
-This staging area is private and is **not** a public release. The eight-stage replay/16-file validation receipt is complete and durably preserved. On 2026-09-27, the repository rebuilt the current-v3 Zenodo staging archive from main commit `b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4` under the manuscript-exclusion policy. The inner archive SHA-256 is `dee0a37be6b38f7fa72a48053021cb1709031b93ee1bf18043b75892ca55f051`; its Actions wrapper is durably preserved in the owner Drive archive. Inspection confirms that no manuscript DOCX/PDF is included. The only remaining Zenodo gate is `release_metadata` before the final rebuild. See [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md) for the exact receipt and remaining publication steps.
+The current data-only archive contains exactly five analysis inputs:
 
-## Document QA and prepared release metadata
+1. continuous image-derived measurements — exact artifact `9612943217`;
+2. nine-predictor environment input — exact artifact `9633419268`;
+3. broad-region lookup — exact artifact `8983877726`;
+4. 52 historical-placement trees — exact artifact `8227254443`;
+5. frozen `observation_native_status.csv`, checksum-recovered from taxonomy artifact `10292140117`.
 
-The current 13-page Supporting Information PDF has passed page-by-page visual layout QA. Main/SI document QA is retained for journal submission only and is **not** a condition for the Zenodo release. Manuscript DOCX/PDF files are not uploaded to Zenodo. See [DOCUMENT_FIGURE_QA_20260927.md](DOCUMENT_FIGURE_QA_20260927.md).
+The Zenodo archive intentionally does **not** contain analysis code, manuscript/SI files, figures, fitted/reference outputs, replay receipts, original photographs, or detector-training material. The archive manifest stores the GitHub repository URL and exact code commit needed to interpret the inputs.
 
-`zenodo_release_metadata.prepared.json` contains the non-author release fields already grounded by the repository and existing archive: title/description, preserved v2 DOI/concept, the proposed new-version strategy, MIT software licensing and source-specific third-party/data terms. It intentionally remains unapproved and does not pass the final metadata validator until the ordered creator list, author approvals and final Git commit are supplied.
+## Current data-only bundle builder
 
-## Current release bundle builder
+`python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for this numerical-input archive. It verifies the exact four Actions artifact ZIP hashes and their required members, recovers the exact native-status CSV, writes a compact input contract/README/checksum manifest, and creates a deterministic ZIP.
 
-`python -m reproducibility.build_current_release_bundle` is the offline, fail-closed packager for the current numerical release. It does not download or publish anything. Supply a directory containing exactly one ZIP for each frozen numerical input artifact ID (`9612943217`, `9633419268`, `8983877726`, `8227254443`). For native status, either pass the exact frozen CSV explicitly or place the checksum-verified WCVP sensitivity artifact `10292140117` in the same directory; the builder then extracts `input/observation_native_status.csv` and verifies the frozen SHA automatically.
-
-A staging bundle can be built before the final manuscript figure surface is frozen:
+Staging build:
 
 ```bash
 python -m reproducibility.build_current_release_bundle \
-  --input-dir /path/to/verified-archives \
-  --out /path/to/azami_ch1_current_release_staging.zip
+  --input-dir /path/to/verified-input-artifacts \
+  --expected-head <GITHUB_CODE_COMMIT> \
+  --out /path/to/azami_ch1_v3_analysis_inputs.zip
 ```
 
-The builder verifies the four numerical archive SHA-256 values and their required members, verifies the taxonomy archive before extracting native status when that route is used, normalizes the native-status transport only through the same frozen LF/CRLF rule used by the numerical runner, verifies all 16 `current_reference` files, requires a clean Git worktree, checks that no tracked Word-processing document or manuscript-like PDF could enter the code snapshot, snapshots that exact `HEAD` with `git archive`, copies the current replay receipts and metadata, and writes a deterministic outer ZIP plus a `.sha256` sidecar. The numerical dependency file is pinned to the exact completed replay environment, including Biopython 1.88. Figure files may be supplied through the portable manifest generated by `reproducibility.render_current_figure_surface`; the release builder verifies manifest-relative hashes before copying them into the bundle.
-
-For the public release, use `--final`. Final mode refuses to build unless both a frozen figure/provenance manifest and completed release-metadata JSON are supplied:
+Final build requires only the approved release-metadata contract in addition to the verified inputs:
 
 ```bash
 python -m reproducibility.build_current_release_bundle \
-  --input-dir /path/to/verified-archives \
-  --figure-manifest /path/to/final_figure_manifest.json \
+  --input-dir /path/to/verified-input-artifacts \
   --release-metadata /path/to/zenodo_release_metadata.json \
-  --expected-head <FINAL_COMMIT_SHA> \
+  --expected-head <FINAL_GITHUB_COMMIT_SHA> \
   --final \
-  --out /path/to/azami_ch1_current_release.zip
+  --out /path/to/azami_ch1_v3_analysis_inputs.zip
 ```
 
-This hard stop is intentional: a durable staging bundle must not silently become a publication-ready claim while the final figure surface or release metadata is still unresolved.
+For numerical replay, download the Zenodo data package and use the separately versioned GitHub code at the pinned commit with [CURRENT_ANALYSIS.md](CURRENT_ANALYSIS.md). This separation is deliberate: **Zenodo preserves bytes; GitHub preserves executable analysis history.**
 
 ## Current scale-dependent integration figure
 
@@ -88,4 +88,4 @@ Run this after the current numerical replay, or pass `--axis-dir` containing its
 
 ## Permanent archive
 
-The existing Zenodo record is unchanged. A new version is needed for current inputs, code and outputs: see [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md). An audit, local reconstruction or private durable staging does not mean a new DOI version has been published. Claim credential-free current reproduction only after the new version is downloaded anonymously, its hashes are verified, and the numerical runner passes its reference checks.
+The existing Zenodo record is unchanged. A new version is needed for the current **numerical analysis inputs only**: see [ZENODO_UPDATE_AUDIT.md](ZENODO_UPDATE_AUDIT.md). Code and outputs remain on GitHub. Claim credential-free current reproduction only after the new data version is downloaded without owner credentials, its hashes are verified, and the GitHub numerical runner passes against those archived inputs.
