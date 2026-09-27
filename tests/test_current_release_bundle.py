@@ -139,3 +139,20 @@ def test_staging_receipt_declares_data_only_zenodo_policy():
     assert policy["replay_receipts_included"] is False
     assert policy["analysis_input_count"] == 5
     assert set(policy["current_expected_release_gaps"]) == {"release_metadata"}
+
+    bundle = receipt["zenodo_staging_bundle"]
+    assert bundle["status"] == "assembled_and_verified_not_public"
+    assert bundle["archive_role"] == "durable_processed_analysis_inputs"
+    assert bundle["source_main_commit"] == "810637d9dfdde9c4b810c2472f43f254786ce614"
+    assert bundle["workflow_run"] == 36287521925
+    assert bundle["github_actions_artifact_id"] == 10920813215
+    assert bundle["github_actions_artifact_sha256"] == "0afaed34da6654819bf979e676f50f877a816beac1d281fe92b6735eee5f6faa"
+    assert bundle["inner_bundle_sha256"] == "c4ec876206e6f8ef0cd69d126fa31b2b71aa1b1919172aeb371f75bbabcd6d10"
+    assert bundle["durable_drive_file_id"] == "1Bqj_5pLAd7DQmC5OLs9x426i8XwHsgZh"
+    assert bundle["analysis_input_count"] == 5
+    assert bundle["code_included"] is False
+    assert bundle["manuscript_files_included"] is False
+    assert bundle["figures_included"] is False
+    assert bundle["reference_outputs_included"] is False
+    assert bundle["replay_receipts_included"] is False
+    assert set(bundle["release_gaps"]) == {"release_metadata"}
