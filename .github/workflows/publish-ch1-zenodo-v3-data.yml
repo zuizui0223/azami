@@ -280,11 +280,25 @@ jobs:
               raise RuntimeError("Draft title mismatch before publish")
 
           # Irreversible action explicitly authorized by the user.
-          published = require(
-              requests.post(f"{api}/deposit/depositions/{draft_id}/actions/publish", headers=headers, timeout=120),
-              {202},
-              "publish v3",
-          ).json()
+          published = None
+          last_publish_response = None
+          for attempt in range(60):
+              resp = requests.post(
+                  f"{api}/deposit/depositions/{draft_id}/actions/publish",
+                  headers=headers,
+                  timeout=120,
+              )
+              last_publish_response = resp
+              if resp.status_code == 202:
+                  published = resp.json()
+                  break
+              if resp.status_code == 400 and "files have not completed their transfer" in resp.text:
+                  print(f"Zenodo transfer pending; retry {attempt + 1}/60", flush=True)
+                  time.sleep(10)
+                  continue
+              require(resp, {202}, "publish v3")
+          if published is None:
+              require(last_publish_response, {202}, "publish v3 after transfer wait")
 
           receipt = {
               "status": "PUBLISHED",
