@@ -1,0 +1,163 @@
+name: Diagnose Zenodo bucket transfer state
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/diagnose-zenodo-bucket-transfer-state.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ZENODO_ACCESS_TOKEN_PRIMARY: ${{ secrets.ZENODO_ACCESS_TOKEN }}
+      ZENODO_ACCESS_TOKEN_FALLBACK: ${{ secrets.ZENODO_TOKEN }}
+      CONCEPT_DOI: 10.5281/zenodo.22295790
+      FINAL_FILENAME: azami_ch1_v3_analysis_inputs.zip
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install client
+        run: python -m pip install --disable-pip-version-check requests
+
+      - name: Inspect target draft bucket read-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/zenodo-bucket-diag"
+          python - <<'PY'
+          import json, os, pathlib
+          import requests
+
+          api="https://zenodo.org/api"
+          token=os.environ.get("ZENODO_ACCESS_TOKEN_PRIMARY") or os.environ.get("ZENODO_ACCESS_TOKEN_FALLBACK")
+          if not token:
+              raise SystemExit("Zenodo token missing")
+          headers={"Authorization":f"Bearer {token}"}
+          concept_doi=os.environ["CONCEPT_DOI"]
+
+          def require(resp, ok, label):
+              if resp.status_code not in ok:
+                  raise RuntimeError(f"{label}: HTTP {resp.status_code}: {resp.text[:1000]}")
+              return resp
+
+          # Locate the one true unpublished draft in this concept.
+          rr=require(
+              requests.get(
+                  f"{api}/deposit/depositions",
+                  headers=headers,
+                  params={"status":"draft","all_versions":"true","size":100,"sort":"-mostrecent"},
+                  timeout=60,
+              ),
+              {200},
+              "list drafts",
+          )
+          candidates=[]
+          for dep in rr.json():
+              concept=dep.get("conceptdoi") or dep.get("metadata",{}).get("conceptdoi")
+              is_target=concept==concept_doi or str(dep.get("conceptrecid",""))=="22295790"
+              is_draft=dep.get("submitted") is False and dep.get("state") in ("unsubmitted","inprogress")
+              if is_target and is_draft:
+                  candidates.append(dep)
+          if not candidates:
+              raise RuntimeError("No true unpublished target draft found")
+          draft=sorted(candidates,key=lambda x:x.get("modified",""))[-1]
+          draft_id=int(draft["id"])
+          draft=require(
+              requests.get(f"{api}/deposit/depositions/{draft_id}",headers=headers,timeout=60),
+              {200},
+              "fetch draft",
+          ).json()
+          bucket=(draft.get("links") or {}).get("bucket")
+          if not bucket:
+              raise RuntimeError("Draft has no bucket link")
+
+          def safe_file(f):
+              links=f.get("links") or {}
+              return {
+                  "key":f.get("key") or f.get("filename"),
+                  "id":f.get("id"),
+                  "version_id":f.get("version_id"),
+                  "checksum":f.get("checksum"),
+                  "size":f.get("size") if f.get("size") is not None else f.get("filesize"),
+                  "is_head":f.get("is_head"),
+                  "delete_marker":f.get("delete_marker"),
+                  "created":f.get("created"),
+                  "updated":f.get("updated"),
+                  "has_uploads_link":bool(links.get("uploads")),
+                  "has_version_link":bool(links.get("version")),
+              }
+
+          bucket_r=require(requests.get(bucket,headers=headers,timeout=60),{200},"get bucket heads")
+          bucket_heads=bucket_r.json()
+          if isinstance(bucket_heads,dict):
+              heads=bucket_heads.get("contents") or bucket_heads.get("files") or bucket_heads.get("entries") or []
+              bucket_meta={k:bucket_heads.get(k) for k in ("id","size","locked","quota_size","max_file_size","created","updated") if k in bucket_heads}
+          else:
+              heads=bucket_heads
+              bucket_meta={}
+
+          versions_r=requests.get(bucket+"?versions",headers=headers,timeout=60)
+          versions=[]
+          if versions_r.status_code==200:
+              payload=versions_r.json()
+              if isinstance(payload,dict):
+                  versions=payload.get("contents") or payload.get("files") or payload.get("entries") or []
+              else:
+                  versions=payload
+
+          uploads_r=requests.get(bucket+"?uploads",headers=headers,timeout=60)
+          uploads_payload=None
+          if uploads_r.status_code==200:
+              uploads_payload=uploads_r.json()
+
+          per_file_uploads={}
+          for f in heads:
+              links=f.get("links") or {}
+              url=links.get("uploads")
+              key=f.get("key") or f.get("filename")
+              if url and key:
+                  ur=requests.get(url,headers=headers,timeout=60)
+                  per_file_uploads[key]={
+                      "http_status":ur.status_code,
+                      "payload":ur.json() if ur.status_code==200 else ur.text[:500],
+                  }
+
+          result={
+              "draft":{
+                  "id":draft_id,
+                  "submitted":draft.get("submitted"),
+                  "state":draft.get("state"),
+                  "title":draft.get("title") or draft.get("metadata",{}).get("title"),
+                  "modified":draft.get("modified"),
+                  "files":[safe_file(f) for f in draft.get("files",[])],
+              },
+              "bucket_meta":bucket_meta,
+              "bucket_heads":[safe_file(f) for f in heads],
+              "bucket_versions":[safe_file(f) for f in versions],
+              "bucket_uploads_http_status":uploads_r.status_code,
+              "bucket_uploads":uploads_payload,
+              "per_file_uploads":per_file_uploads,
+              "writes_performed":False,
+          }
+          out=pathlib.Path(os.environ["RUNNER_TEMP"])/"zenodo-bucket-diag"/"result.json"
+          out.write_text(json.dumps(result,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+          print(json.dumps(result,indent=2,sort_keys=True))
+          PY
+
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: zenodo-bucket-transfer-diagnostic
+          path: ${{ runner.temp }}/zenodo-bucket-diag/result.json
+          if-no-files-found: error
+          retention-days: 30
