@@ -184,74 +184,88 @@ jobs:
           if concept != concept_doi and str(draft.get("conceptrecid", "")) != "22295790":
               raise RuntimeError(f"Draft {draft_id} is not in target concept {concept_doi}")
 
-          # Zenodo's legacy multipart deposition-file endpoint left this
-          # ~59 MB ZIP in "transfer pending" for >24 h. Prefer the newer bucket
-          # Files API documented by Zenodo. Reuse an already-correct *new API*
-          # file on retries; replace legacy/stale files once.
-          existing_files = list(draft.get("files", []))
+          # Manage the draft payload from the bucket itself. A read-only
+          # diagnostic found two stale 0-byte heads dating from 2026-09-11
+          # (REPLAY_VERIFIED_SHA256SUMS.txt and
+          # Azami_Chapter1_current_52c207a_replay_verified.zip). They have no
+          # checksum/version id and are what Zenodo's publish validator reports
+          # as incomplete transfers. The intended public boundary is one file:
+          # azami_ch1_v3_analysis_inputs.zip.
           local_size = file_path.stat().st_size
           local_md5 = hashlib.md5(file_path.read_bytes()).hexdigest()
+          bucket_url = (draft.get("links") or {}).get("bucket")
+          if not bucket_url:
+              raise RuntimeError("Target Zenodo draft has no links.bucket")
 
+          def bucket_heads():
+              payload = require(
+                  requests.get(bucket_url, headers=headers, timeout=60),
+                  {200},
+                  "list Zenodo bucket heads",
+              ).json()
+              if isinstance(payload, dict):
+                  return payload.get("contents") or payload.get("files") or payload.get("entries") or []
+              return payload
+
+          heads = bucket_heads()
+          desired = []
+          stale = []
+          for item in heads:
+              key = item.get("key") or item.get("filename")
+              if key == file_path.name and not item.get("delete_marker"):
+                  desired.append(item)
+              elif key and not item.get("delete_marker"):
+                  stale.append(item)
+
+          # Remove every non-public-boundary bucket head from this unpublished
+          # draft. These are stale scratch transfers, not part of the approved
+          # Zenodo payload.
+          for item in stale:
+              key = item.get("key") or item.get("filename")
+              delete_url = (
+                  bucket_url.rstrip("/")
+                  + "/"
+                  + urllib.parse.quote(key, safe="")
+              )
+              resp = requests.delete(delete_url, headers=headers, timeout=60)
+              require(resp, {204}, f"delete stale Zenodo bucket head {key}")
+              print(f"Deleted stale Zenodo bucket head: {key}", flush=True)
+
+          # Reuse the intended v3 object only if its bytes match. Otherwise
+          # replace it via the new Files API.
           reuse_existing = False
-          if len(existing_files) == 1:
-              existing = existing_files[0]
-              existing_name = existing.get("key") or existing.get("filename")
+          if len(desired) == 1:
+              existing = desired[0]
               server_checksum = str(existing.get("checksum") or "")
               server_md5 = server_checksum.split(":", 1)[-1] if server_checksum else None
               server_size = existing.get("size")
               if server_size is None:
                   server_size = existing.get("filesize")
-              links = existing.get("links") or {}
-              is_new_files_api = bool(
-                  existing.get("key")
-                  or existing.get("version_id")
-                  or links.get("uploads")
-                  or links.get("version")
-              )
-              checksum_ok = server_md5 in (None, "", local_md5)
-              size_ok = server_size is None or int(server_size) == local_size
-              if (
-                  is_new_files_api
-                  and existing_name == file_path.name
-                  and checksum_ok
-                  and size_ok
-              ):
+              if server_md5 == local_md5 and int(server_size) == local_size:
                   reuse_existing = True
                   print(
-                      f"Reusing completed Zenodo bucket file {file_path.name}; "
+                      f"Reusing verified Zenodo bucket file {file_path.name}; "
                       f"size={local_size}, md5={local_md5}",
                       flush=True,
                   )
+          elif len(desired) > 1:
+              raise RuntimeError("Multiple live v3 objects found in Zenodo bucket")
 
           if not reuse_existing:
-              # Remove legacy or mismatching draft files. The target resource is
-              # a verified unpublished draft in the authorized concept.
-              for old_file in existing_files:
-                  old_name = old_file.get("key") or old_file.get("filename")
-                  if old_file.get("id"):
-                      url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
-                      resp = requests.delete(url, headers=headers, timeout=60)
-                  else:
-                      self_url = (old_file.get("links") or {}).get("self")
-                      if not self_url:
-                          raise RuntimeError(f"No delete URL for existing draft file {old_name!r}")
-                      resp = requests.delete(self_url, headers=headers, timeout=60)
-                  require(resp, {204}, f"delete existing draft file {old_name}")
-
-              emptied = require(
-                  requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
-                  {200},
-                  "verify emptied target draft",
-              ).json()
-              if emptied.get("files"):
-                  raise RuntimeError(
-                      "Target draft not empty after deletion: "
-                      + str([f.get("key") or f.get("filename") for f in emptied["files"]])
+              # Delete a mismatching intended object, if any.
+              for item in desired:
+                  key = item.get("key") or item.get("filename")
+                  delete_url = (
+                      bucket_url.rstrip("/")
+                      + "/"
+                      + urllib.parse.quote(key, safe="")
+                  )
+                  require(
+                      requests.delete(delete_url, headers=headers, timeout=60),
+                      {204},
+                      f"delete mismatching v3 bucket object {key}",
                   )
 
-              bucket_url = (emptied.get("links") or {}).get("bucket")
-              if not bucket_url:
-                  raise RuntimeError("Target Zenodo draft has no links.bucket for new Files API")
               upload_url = (
                   bucket_url.rstrip("/")
                   + "/"
@@ -268,7 +282,6 @@ jobs:
                       {200, 201},
                       "upload v3 input ZIP through Zenodo bucket Files API",
                   ).json()
-
               uploaded_name = uploaded.get("key") or uploaded.get("filename")
               uploaded_checksum = str(uploaded.get("checksum") or "")
               uploaded_md5 = uploaded_checksum.split(":", 1)[-1] if uploaded_checksum else None
@@ -277,11 +290,11 @@ jobs:
                   uploaded_size = uploaded.get("filesize")
               if uploaded_name != file_path.name:
                   raise RuntimeError(f"Bucket upload filename mismatch: {uploaded_name!r}")
-              if uploaded_md5 not in (None, "", local_md5):
+              if uploaded_md5 != local_md5:
                   raise RuntimeError(
                       f"Bucket upload MD5 mismatch: {uploaded_md5}; expected {local_md5}"
                   )
-              if uploaded_size is not None and int(uploaded_size) != local_size:
+              if int(uploaded_size) != local_size:
                   raise RuntimeError(
                       f"Bucket upload size mismatch: {uploaded_size}; expected {local_size}"
                   )
@@ -290,6 +303,24 @@ jobs:
                   f"size={local_size}, md5={local_md5}",
                   flush=True,
               )
+
+          final_heads = [
+              x for x in bucket_heads()
+              if not x.get("delete_marker")
+          ]
+          final_names = [x.get("key") or x.get("filename") for x in final_heads]
+          if final_names != [file_path.name]:
+              raise RuntimeError(
+                  f"Zenodo bucket boundary not clean before publish: {final_names}"
+              )
+          final_obj = final_heads[0]
+          final_checksum = str(final_obj.get("checksum") or "").split(":", 1)[-1]
+          final_size = final_obj.get("size")
+          if final_size is None:
+              final_size = final_obj.get("filesize")
+          if final_checksum != local_md5 or int(final_size) != local_size:
+              raise RuntimeError("Final Zenodo bucket object failed MD5/size check")
+          print("Zenodo bucket boundary PASS: exactly one verified v3 ZIP", flush=True)
 
           description = (
               "SHA-locked processed numerical inputs for reproducing the current Azami Chapter 1 v3 analysis "
