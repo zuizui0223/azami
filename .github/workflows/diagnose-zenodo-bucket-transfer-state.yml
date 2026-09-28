@@ -81,6 +81,20 @@ jobs:
           if not bucket:
               raise RuntimeError("Draft has no bucket link")
 
+          def safe_response(resp):
+              content_type=(resp.headers.get("content-type") or "").lower()
+              if "json" in content_type:
+                  try:
+                      return resp.json()
+                  except Exception:
+                      pass
+              text=resp.text if resp.content else ""
+              return {
+                  "content_type":content_type,
+                  "content_length":len(resp.content),
+                  "text_prefix":text[:500],
+              }
+
           def safe_file(f):
               links=f.get("links") or {}
               return {
@@ -116,9 +130,7 @@ jobs:
                   versions=payload
 
           uploads_r=requests.get(bucket+"?uploads",headers=headers,timeout=60)
-          uploads_payload=None
-          if uploads_r.status_code==200:
-              uploads_payload=uploads_r.json()
+          uploads_payload=safe_response(uploads_r)
 
           per_file_uploads={}
           for f in heads:
@@ -129,7 +141,7 @@ jobs:
                   ur=requests.get(url,headers=headers,timeout=60)
                   per_file_uploads[key]={
                       "http_status":ur.status_code,
-                      "payload":ur.json() if ur.status_code==200 else ur.text[:500],
+                      "payload":safe_response(ur),
                   }
 
           result={
