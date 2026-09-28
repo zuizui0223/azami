@@ -69,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import hashlib, json, os, pathlib, time
+          import hashlib, json, os, pathlib, time, urllib.parse
           import requests
 
           api = "https://zenodo.org/api"
@@ -184,42 +184,59 @@ jobs:
           if concept != concept_doi and str(draft.get("conceptrecid", "")) != "22295790":
               raise RuntimeError(f"Draft {draft_id} is not in target concept {concept_doi}")
 
-          # Reuse the already-uploaded verified v3 ZIP when it is present
-          # in the true draft. This avoids restarting Zenodo's asynchronous
-          # object-store transfer on every retry.
+          # Zenodo's legacy multipart deposition-file endpoint left this
+          # ~59 MB ZIP in "transfer pending" for >24 h. Prefer the newer bucket
+          # Files API documented by Zenodo. Reuse an already-correct *new API*
+          # file on retries; replace legacy/stale files once.
           existing_files = list(draft.get("files", []))
           local_size = file_path.stat().st_size
           local_md5 = hashlib.md5(file_path.read_bytes()).hexdigest()
 
           reuse_existing = False
-          if len(existing_files) == 1 and existing_files[0].get("filename") == file_path.name:
+          if len(existing_files) == 1:
               existing = existing_files[0]
+              existing_name = existing.get("key") or existing.get("filename")
               server_checksum = str(existing.get("checksum") or "")
               server_md5 = server_checksum.split(":", 1)[-1] if server_checksum else None
-              server_size = existing.get("filesize")
+              server_size = existing.get("size")
               if server_size is None:
-                  server_size = existing.get("size")
-              checksum_ok = server_md5 in (None, "", local_md5)
-              size_ok = server_size in (None, local_size) or (
-                  server_size is not None and int(server_size) == local_size
+                  server_size = existing.get("filesize")
+              links = existing.get("links") or {}
+              is_new_files_api = bool(
+                  existing.get("key")
+                  or existing.get("version_id")
+                  or links.get("uploads")
+                  or links.get("version")
               )
-              if checksum_ok and size_ok:
+              checksum_ok = server_md5 in (None, "", local_md5)
+              size_ok = server_size is None or int(server_size) == local_size
+              if (
+                  is_new_files_api
+                  and existing_name == file_path.name
+                  and checksum_ok
+                  and size_ok
+              ):
                   reuse_existing = True
                   print(
-                      f"Reusing existing Zenodo draft file {file_path.name}; "
+                      f"Reusing completed Zenodo bucket file {file_path.name}; "
                       f"size={local_size}, md5={local_md5}",
                       flush=True,
                   )
 
           if not reuse_existing:
-              # Replace any stale or mismatching draft payload.
+              # Remove legacy or mismatching draft files. The target resource is
+              # a verified unpublished draft in the authorized concept.
               for old_file in existing_files:
-                  url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
-                  require(
-                      requests.delete(url, headers=headers, timeout=60),
-                      {204},
-                      f"delete existing draft file {old_file.get('filename')}",
-                  )
+                  old_name = old_file.get("key") or old_file.get("filename")
+                  if old_file.get("id"):
+                      url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
+                      resp = requests.delete(url, headers=headers, timeout=60)
+                  else:
+                      self_url = (old_file.get("links") or {}).get("self")
+                      if not self_url:
+                          raise RuntimeError(f"No delete URL for existing draft file {old_name!r}")
+                      resp = requests.delete(self_url, headers=headers, timeout=60)
+                  require(resp, {204}, f"delete existing draft file {old_name}")
 
               emptied = require(
                   requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
@@ -228,21 +245,51 @@ jobs:
               ).json()
               if emptied.get("files"):
                   raise RuntimeError(
-                      f"Target draft not empty after deletion: {[f.get('filename') for f in emptied['files']]}"
+                      "Target draft not empty after deletion: "
+                      + str([f.get("key") or f.get("filename") for f in emptied["files"]])
                   )
 
+              bucket_url = (emptied.get("links") or {}).get("bucket")
+              if not bucket_url:
+                  raise RuntimeError("Target Zenodo draft has no links.bucket for new Files API")
+              upload_url = (
+                  bucket_url.rstrip("/")
+                  + "/"
+                  + urllib.parse.quote(file_path.name, safe="")
+              )
               with file_path.open("rb") as handle:
-                  require(
-                      requests.post(
-                          f"{api}/deposit/depositions/{draft_id}/files",
+                  uploaded = require(
+                      requests.put(
+                          upload_url,
                           headers=headers,
-                          data={"name": file_path.name},
-                          files={"file": (file_path.name, handle, "application/zip")},
+                          data=handle,
                           timeout=600,
                       ),
-                      {201},
-                      "upload v3 input ZIP",
+                      {200, 201},
+                      "upload v3 input ZIP through Zenodo bucket Files API",
+                  ).json()
+
+              uploaded_name = uploaded.get("key") or uploaded.get("filename")
+              uploaded_checksum = str(uploaded.get("checksum") or "")
+              uploaded_md5 = uploaded_checksum.split(":", 1)[-1] if uploaded_checksum else None
+              uploaded_size = uploaded.get("size")
+              if uploaded_size is None:
+                  uploaded_size = uploaded.get("filesize")
+              if uploaded_name != file_path.name:
+                  raise RuntimeError(f"Bucket upload filename mismatch: {uploaded_name!r}")
+              if uploaded_md5 not in (None, "", local_md5):
+                  raise RuntimeError(
+                      f"Bucket upload MD5 mismatch: {uploaded_md5}; expected {local_md5}"
                   )
+              if uploaded_size is not None and int(uploaded_size) != local_size:
+                  raise RuntimeError(
+                      f"Bucket upload size mismatch: {uploaded_size}; expected {local_size}"
+                  )
+              print(
+                  f"Zenodo bucket upload PASS: {uploaded_name}, "
+                  f"size={local_size}, md5={local_md5}",
+                  flush=True,
+              )
 
           description = (
               "SHA-locked processed numerical inputs for reproducing the current Azami Chapter 1 v3 analysis "
@@ -299,8 +346,9 @@ jobs:
               "refetch draft",
           ).json()
           files = draft.get("files", [])
-          if len(files) != 1 or files[0].get("filename") != file_path.name:
-              raise RuntimeError(f"Draft file boundary mismatch: {[f.get('filename') for f in files]}")
+          draft_names = [f.get("key") or f.get("filename") for f in files]
+          if len(files) != 1 or draft_names[0] != file_path.name:
+              raise RuntimeError(f"Draft file boundary mismatch: {draft_names}")
           if draft.get("metadata", {}).get("title") != metadata["metadata"]["title"]:
               raise RuntimeError("Draft title mismatch before publish")
 
