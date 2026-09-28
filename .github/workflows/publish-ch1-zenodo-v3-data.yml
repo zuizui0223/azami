@@ -69,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, os, pathlib, time
+          import hashlib, json, os, pathlib, time
           import requests
 
           api = "https://zenodo.org/api"
@@ -184,40 +184,65 @@ jobs:
           if concept != concept_doi and str(draft.get("conceptrecid", "")) != "22295790":
               raise RuntimeError(f"Draft {draft_id} is not in target concept {concept_doi}")
 
-          # This is an unpublished draft in the explicitly authorized target
-          # concept. Replace its entire file payload with the one verified
-          # data-only ZIP.
-          for old_file in list(draft.get("files", [])):
-              url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
-              require(
-                  requests.delete(url, headers=headers, timeout=60),
-                  {204},
-                  f"delete existing draft file {old_file.get('filename')}",
-              )
+          # Reuse the already-uploaded verified v3 ZIP when it is present
+          # in the true draft. This avoids restarting Zenodo's asynchronous
+          # object-store transfer on every retry.
+          existing_files = list(draft.get("files", []))
+          local_size = file_path.stat().st_size
+          local_md5 = hashlib.md5(file_path.read_bytes()).hexdigest()
 
-          emptied = require(
-              requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
-              {200},
-              "verify emptied target draft",
-          ).json()
-          if emptied.get("files"):
-              raise RuntimeError(
-                  f"Target draft not empty after deletion: {[f.get('filename') for f in emptied['files']]}"
+          reuse_existing = False
+          if len(existing_files) == 1 and existing_files[0].get("filename") == file_path.name:
+              existing = existing_files[0]
+              server_checksum = str(existing.get("checksum") or "")
+              server_md5 = server_checksum.split(":", 1)[-1] if server_checksum else None
+              server_size = existing.get("filesize")
+              if server_size is None:
+                  server_size = existing.get("size")
+              checksum_ok = server_md5 in (None, "", local_md5)
+              size_ok = server_size in (None, local_size) or (
+                  server_size is not None and int(server_size) == local_size
               )
+              if checksum_ok and size_ok:
+                  reuse_existing = True
+                  print(
+                      f"Reusing existing Zenodo draft file {file_path.name}; "
+                      f"size={local_size}, md5={local_md5}",
+                      flush=True,
+                  )
 
-          # Upload only the verified data-only v3 ZIP.
-          with file_path.open("rb") as handle:
-              r = require(
-                  requests.post(
-                      f"{api}/deposit/depositions/{draft_id}/files",
-                      headers=headers,
-                      data={"name": file_path.name},
-                      files={"file": (file_path.name, handle, "application/zip")},
-                      timeout=600,
-                  ),
-                  {201},
-                  "upload v3 input ZIP",
-              )
+          if not reuse_existing:
+              # Replace any stale or mismatching draft payload.
+              for old_file in existing_files:
+                  url = f"{api}/deposit/depositions/{draft_id}/files/{old_file['id']}"
+                  require(
+                      requests.delete(url, headers=headers, timeout=60),
+                      {204},
+                      f"delete existing draft file {old_file.get('filename')}",
+                  )
+
+              emptied = require(
+                  requests.get(f"{api}/deposit/depositions/{draft_id}", headers=headers, timeout=60),
+                  {200},
+                  "verify emptied target draft",
+              ).json()
+              if emptied.get("files"):
+                  raise RuntimeError(
+                      f"Target draft not empty after deletion: {[f.get('filename') for f in emptied['files']]}"
+                  )
+
+              with file_path.open("rb") as handle:
+                  require(
+                      requests.post(
+                          f"{api}/deposit/depositions/{draft_id}/files",
+                          headers=headers,
+                          data={"name": file_path.name},
+                          files={"file": (file_path.name, handle, "application/zip")},
+                          timeout=600,
+                      ),
+                      {201},
+                      "upload v3 input ZIP",
+                  )
 
           description = (
               "SHA-locked processed numerical inputs for reproducing the current Azami Chapter 1 v3 analysis "
