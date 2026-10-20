@@ -44,7 +44,25 @@ def fit_r2(X, Y):
     coef = lstsq(X, Y, rcond=None)[0]
     return float(np.clip(1 - np.sum((Y - X @ coef) ** 2) / np.sum(Y ** 2), 0, 1))
 
-def shapley(frame, response, include_spatial=False):
+def fit_r2_weighted(X, Y, weights):
+    """Within-taxon multivariate R2 with equal *total* weight per taxon."""
+    if X.shape[1] == 0:
+        return 0.
+    w = np.asarray(weights, float)
+    w = w / w.sum()
+    X, Y = np.asarray(X, float), np.asarray(Y, float)
+    X = X - np.average(X, weights=w, axis=0)
+    Y = Y - np.average(Y, weights=w, axis=0)
+    sx = np.sqrt(np.average(X * X, weights=w, axis=0))
+    sy = np.sqrt(np.average(Y * Y, weights=w, axis=0))
+    X = X / np.where(sx > 1e-10, sx, 1.)
+    Y = Y / np.where(sy > 1e-10, sy, 1.)
+    sw = np.sqrt(w)[:, None]
+    coef = lstsq(X * sw, Y * sw, rcond=None)[0]
+    return float(np.clip(1 - np.sum(w[:, None] * (Y - X @ coef) ** 2)
+                         / np.sum(w[:, None] * Y ** 2), 0, 1))
+
+def shapley(frame, response, include_spatial=False, weights=None):
     """Descriptive Shapley allocation of *in-sample* multivariate R2; not causal importance."""
     names = list(GROUPS)
     covars = ["latitude", "longitude"] if include_spatial else []
@@ -54,7 +72,7 @@ def shapley(frame, response, include_spatial=False):
     for k in range(1 << len(names)):
         terms = [p for i, name in enumerate(names) if k & (1 << i) for p in GROUPS[name]]
         arr = np.column_stack([base, frame[terms].to_numpy(float)]) if terms else base
-        cache[k] = fit_r2(arr, Y)
+        cache[k] = fit_r2(arr, Y) if weights is None else fit_r2_weighted(arr, Y, weights)
     contrib = {}
     for i, name in enumerate(names):
         score = 0.
@@ -174,6 +192,18 @@ def run(traits_path, env_path, outdir):
             name: shapley(among, cols, include_spatial=True)
             for name, cols in AXES.items()
         },
+    }
+    # Contrast pooled within-taxon environmental association on the very same
+    # 1,777/42 complete cohort. Demean each trait and predictor within taxon.
+    # Weight each taxon equally, not each photograph/observation equally.
+    centered = cohort.copy()
+    allcols = sorted(set(sum(AXES.values(), []) + VARS))
+    centered[allcols] = (centered[allcols] -
+                         centered.groupby("taxon_name")[allcols].transform("mean"))
+    sizes = centered.groupby("taxon_name").obs_id.transform("size").to_numpy(float)
+    blocks["within_equal_taxon_weight"] = {
+        name: shapley(centered, cols, weights=1 / sizes)
+        for name, cols in AXES.items()
     }
     result = {
         "source_env_obs": int(len(env)), "source_taxa": int(len(counts)),
