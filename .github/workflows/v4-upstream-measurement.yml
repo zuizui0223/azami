@@ -1,0 +1,56 @@
+name: V4 original-byte anatomical measurement replay
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/**'
+      - 'tests/test_v4_upstream*.py'
+      - '.github/workflows/v4-upstream-measurement.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  anatomy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image environment
+        run: python -m pip install numpy pandas pillow requests pytest
+      - name: Test upstream source and anatomical measurement semantics
+        run: python -m pytest -q tests/test_v4_upstream.py tests/test_v4_upstream_anatomy.py
+      - name: Retrieve checksum-locked original source bytes, not v3 measurements
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work
+          gh api repos/zuizui0223/azami/actions/artifacts/12241906850/zip > work/source.zip
+          python -m analysis.v4.prepare_upstream_replay --source-zip work/source.zip --out-dir work/source
+      - name: Recompute annotated anatomical pixels and geometry
+        run: |
+          python -m analysis.v4.measure_upstream_anatomy --source-dir work/source --annotations analysis/v4/upstream_anatomy_proposals.json --out-dir work/anatomy
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('work/anatomy/anatomical_measurements.json').read_text())
+          r=json.loads(Path('work/source/replay_receipt.json').read_text())
+          assert r['original_photos']==64 and r['source_colour_eligible']==63
+          assert not a['v3_phenotype_csv_used'] and not a['primary_ecology_ready']
+          assert a['n_head_records']==5
+          assert sum(x['colour']['status']=='measured_image_colour' for x in a['results'])==4
+          assert sum(x['colour']['status']=='source_colour_unassessable' for x in a['results'])==1
+          assert all(x['review_status']=='assistant_visual_proposal' for x in a['results'])
+          assert all(not x['eligible_for_primary_ecology'] for x in a['results'])
+          print('PASS original-byte replay; biological validation remains pending')
+          PY
+      - name: Preserve actual overlays, source attribution and measurements
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-anatomical-original-byte-replay
+          path: |
+            work/anatomy/
+            work/source/replay_receipt.json
+          retention-days: 30

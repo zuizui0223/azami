@@ -13,12 +13,23 @@ MAX_IMAGE_BYTES=25*1024*1024
 MAX_BATCH_BYTES=256*1024*1024
 
 def decode(path):
+    """Decode for geometry; separately flag whether colour interpretation is possible."""
     with Image.open(path) as src:
         if src.width*src.height>50_000_000:raise ValueError('Image exceeds 50MP safety limit')
-        icc=src.info.get('icc_profile'); im=ImageOps.exif_transpose(src).convert('RGB')
+        icc=src.info.get('icc_profile'); im=ImageOps.exif_transpose(src)
+        if im.mode in {'1','L','LA','I','F','I;16'}:
+            return im.convert('RGB'), 'monochrome_source_no_colour_inference'
         if icc:
-            im=ImageCms.profileToProfile(im,ImageCms.ImageCmsProfile(io.BytesIO(icc)),ImageCms.createProfile('sRGB'),outputMode='RGB')
-        return im.copy(), ('ICC_to_sRGB' if icc else 'assumed_sRGB_no_embedded_profile')
+            try:
+                profile=ImageCms.ImageCmsProfile(io.BytesIO(icc))
+                # Transform in the source mode before converting to RGB.
+                converted=ImageCms.profileToProfile(im,profile,ImageCms.createProfile('sRGB'),outputMode='RGB')
+                return converted, 'ICC_to_sRGB'
+            except (OSError,ValueError,ImageCms.PyCMSError):
+                return im.convert('RGB'), 'invalid_ICC_colour_unassessable'
+        if im.mode not in {'RGB','RGBA','P'}:
+            return im.convert('RGB'), 'unsupported_source_colour_unassessable'
+        return im.convert('RGB'), 'assumed_sRGB_no_embedded_profile'
 
 def run(manifest,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
