@@ -38,6 +38,8 @@ def execute(table, receipt_path, output, selection_path):
     if not set(predictors)<=set(selection['input']['candidates']):
         raise ValueError('Selected variable outside candidate universe')
     frame=pd.read_csv(table,low_memory=False)
+    if 'chelsa_gsp' in frame and frame.chelsa_gsp.eq(4294967295).any():
+        raise ValueError('Undecoded GSP sentinel: correct environmental input before fitting')
     if len(frame)!=receipt['native_observations'] or not frame.obs_id.is_unique:
         raise ValueError('Native population changed')
     scales={}

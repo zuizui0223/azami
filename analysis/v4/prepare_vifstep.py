@@ -18,6 +18,8 @@ def execute(table, receipt_path, output):
     if len(blocks)!=6 or len(columns)!=9 or len(set(columns))!=9:
         raise ValueError('Expected six groups and all nine stored candidates')
     frame=pd.read_csv(table,usecols=columns)
+    if frame.chelsa_gsp.eq(4294967295).any():
+        raise ValueError('Undecoded GSP sentinel: correct environmental input before selection')
     if len(frame)!=receipt['native_observations']:
         raise ValueError('Native population changed')
     mask=np.isfinite(frame).all(axis=1)

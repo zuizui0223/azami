@@ -34,3 +34,18 @@ P values must not be presented as validated ecological conclusions.
    all four modules with endpoint-specific eligibility and report changed counts.
 5. Reinspect gradients and update conclusions from corrected results, regardless
    of whether previous associations persist.
+
+## Verified decoding evidence
+
+Actions 39421799730 verified all nine cache archive checksums and exported original
+raster metadata, now stored in environment_source_metadata.json. GSP source hash
+342858ce86f8b5c4f088327e4fa68afc7ac9cb64eff46ffaa980577a0f0641b6 declares
+nodata=2147483647, uint32, scale=0.1 and offset=0; uint32-max is an additional
+invalid encoding, not its declared nodata. native_665115_pipeline.sample stored
+sample_tiles output directly without scale/offset, explaining the raw-unit archive.
+
+Recovery is implemented as a separate decoder of the exact immutable raw table.
+It masks both the declared GSP nodata and the additional invalid uint32-max,
+records their treatment, applies each verified affine transform once, and retains
+all trait values, eligibility and native observations. Analysis-specific environment
+missingness is applied later. Corrected numerical validation remains pending.
