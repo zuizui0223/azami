@@ -18,7 +18,7 @@ from scipy.stats import chi2, spearmanr
 
 RAW_UNCORRECTED_SHA256 = "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29"
 EXPECTED_SHA256 = "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
-SOURCE_CORRECTION = "PR143 / Actions run 39422378058; GSP-invalid sentinel masked"
+SOURCE_CORRECTION = "PR144 / Actions run 39428065666; GSP-invalid sentinel masked"
 EXPECTED_N = 313350
 CORE3 = (
     "orientation_image_vertical_angle",
@@ -41,7 +41,7 @@ CLIMATE = ("chelsa_bio12", "chelsa_rsds_mean")
 
 
 def verify_corrected_native_input(path: Path) -> str:
-    """Accept only the affine-decoded, checksum-locked existing PR143 source."""
+    """Accept only the affine-decoded, checksum-locked verified PR144 native source."""
     h = hashlib.sha256()
     with path.open("rb") as source:
         for block in iter(lambda: source.read(1 << 20), b""):
@@ -50,10 +50,10 @@ def verify_corrected_native_input(path: Path) -> str:
     if sha == RAW_UNCORRECTED_SHA256:
         raise ValueError(
             "Uncorrected environment input: GSP invalid sentinels and missing "
-            "CHELSA affine decoding. Supply the already-corrected PR143 output."
+            "CHELSA affine decoding. Supply the corrected PR144 input."
         )
     if sha != EXPECTED_SHA256:
-        raise ValueError("Unknown native input bytes: expected the corrected PR143 SHA256")
+        raise ValueError("Unknown native input bytes: expected the corrected native input SHA256")
     return sha
 
 
