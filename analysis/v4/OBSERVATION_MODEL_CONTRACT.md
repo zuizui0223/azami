@@ -110,3 +110,31 @@ in the same existing Action and report. New image measurement is not a dependenc
 Implementation/verification: extend `fit_module` with optional fixed adjustment
 columns, exercise same-row and geographic-basis invariants in existing numerical
 tests, then run and inspect the existing manual Action. No local model execution.
+
+## Environmental candidate audit before expanding the reference
+
+The four-climate reference is not a claim of sufficient causal adjustment.
+Evaluate six candidate dimensions: mean temperature (BIO1), precipitation
+(BIO12), radiation, VPD, temperature seasonality (BIO4), and precipitation
+seasonality (BIO15). These are already stored in the verified native input.
+VPD represents evaporative demand, not an independent synonym for temperature.
+Annual precipitation does not measure flower-level wetting. Seasonality
+describes temporal variability, not flowering-season exposure.
+
+Before fitting an expanded response model, save `environment_candidate_audit.json`
+with finite counts, endpoint-specific four-to-six-variable sample losses and
+raw, between, within and full twelve-term correlations/VIF. Species exposure
+means use the full native population, before endpoint masks. Do not average
+responses. Keep singular designs visible. VIF is a precision diagnostic, not
+a test that confounding has been removed; do not run automatic VIF or p-value
+elimination. The candidate audit uses eligibility and response missingness only.
+It neither chooses predictors nor tests phenotype associations.
+
+Wind is a distinct mechanical-exposure hypothesis; growing-season precipitation
+is an alternative water-exposure summary; NPP may be downstream of climate.
+They are recorded as deferred candidates, not silently treated as universal
+confounders. Review causal roles and exposure definitions before expanding.
+Any subsequent six-variable fit must be labelled a revised observational
+analysis, since four-variable results have already been inspected. Retain the
+four-variable reference and use matched rows to distinguish sample changes from
+adjustment changes. Never select the specification to preserve significance.
