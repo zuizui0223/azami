@@ -1,0 +1,119 @@
+"""One fixed environmental response analysis, without specification searching."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from statsmodels.stats.multitest import multipletests
+
+from analysis.v4.environment_candidate_audit import CANDIDATES, audit
+from analysis.v4.observation_models import MODULES, fit_module, reuse_inventory
+
+LABELS={'colour':'色全体','orientation':'向き','bract_projection':'総苞片の輪郭突出'}
+ENV_LABELS=dict(zip(CANDIDATES,['温度','日射','VPD','降水','温度季節性','降水季節性']))
+
+
+def execute(table, receipt_path, output):
+    receipt=json.loads(receipt_path.read_text())
+    digest=hashlib.sha256(table.read_bytes()).hexdigest()
+    if digest!=receipt['prepared_table_sha256']:
+        raise ValueError('Input checksum mismatch')
+    frame=pd.read_csv(table,low_memory=False)
+    if len(frame)!=receipt['native_observations'] or not frame.obs_id.is_unique:
+        raise ValueError('Native population changed')
+    diagnostics=audit(frame)
+    scales={}
+    for v in CANDIDATES:
+        frame[v]=frame[v].where(np.isfinite(frame[v]))
+        scales[v]={'mean':float(frame[v].mean()),'sd':float(frame[v].std(ddof=0))}
+        if not np.isfinite(scales[v]['sd']) or scales[v]['sd']<=0:
+            raise ValueError('No finite variation: '+v)
+        frame[v+'__between']=frame.groupby('accepted_key')[v].transform('mean')
+        frame[v+'__within']=frame[v]-frame[v+'__between']
+    models={}
+    for module,outcomes in MODULES.items():
+        print('Fixed environmental response: '+module,flush=True)
+        models[module]=fit_module(frame,outcomes,scales,CANDIDATES)
+        for endpoint,c in models[module]['components'].items():
+            if c['n']!=diagnostics['populations'][endpoint]['six_environment_n']:
+                raise ValueError('Endpoint-specific sample count changed')
+    tests=[models[m].get('tests',{}).get(v+s,{})
+           for m in MODULES for v in CANDIDATES for s in ('__between','__within')]
+    for test,q in zip(tests,multipletests([t.get('p',1.) for t in tests],method='holm')[1]):
+        if test.get('status')=='estimated':
+            test['holm_p_36']=float(q)
+    crosswalk=Path(__file__).with_name('trait27_functional_crosswalk_v1.json')
+    inventory=reuse_inventory(frame,receipt,json.loads(crosswalk.read_text()))
+    result={'question':'Which environmental gradients are associated with head traits, '
+                        'conditional on the other included environmental dimensions?',
+            'input_sha256':digest,'input_receipt':receipt,
+            'git_sha':os.environ.get('GITHUB_SHA'),
+            'run_id':os.environ.get('GITHUB_RUN_ID'),
+            'model_code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            'fit_code_sha256':hashlib.sha256(Path(__file__).with_name('observation_models.py').read_bytes()).hexdigest(),
+            'predictors':CANDIDATES,'scales':scales,'models':models,
+            'environment_diagnostics':diagnostics,'reuse_inventory':inventory,
+            'inference_status':'estimated' if all(t.get('status')=='estimated' for t in tests)
+                               else 'incomplete_inference',
+            'scope':'Retrospective conditional associations. No automatic predictor selection, '
+                    'causal identification, spatial correction or phylogenetic correction.'}
+    output.mkdir(parents=True,exist_ok=True)
+    (output/'environment_response.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+    rows=[]
+    for module,model in models.items():
+        for endpoint,c in model.get('components',{}).items():
+            for term,e in c.get('effects',{}).items():
+                rows.append({'module':module,'endpoint':endpoint,'term':term,
+                             'n':c['n'],'species_n':c['n_species'],**e})
+    pd.DataFrame(rows).to_csv(output/'environment_response_effects.csv',index=False)
+    pd.DataFrame(inventory).to_csv(output/'measurement_reuse_inventory.csv',index=False)
+    report(result,output)
+    return result
+
+
+def report(result,output):
+    lines=['# 頭花形質の環境勾配応答','',
+           '問い：他の環境条件を同時に考慮したとき、どの環境勾配に沿って頭花形質が変わるか。','',
+           '温度・日射・VPD・降水・温度季節性・降水季節性を固定して同時投入。'
+           '観測値を平均せず、環境を種平均と種内偏差に分け、成分ごとに種ランダム切片を推定した。'
+           '色全体は明度・彩度・円周色相の共同検定。各成分の利用可能な観測を使う。','',
+           '過去の結果を閲覧済みの改訂観測解析であり、事前登録した独立検証ではない。'
+           '36共同検定でHolm補正。成分の95%区間は点別である。','',
+           '|形質|環境|種間P（Holm）|種内P（Holm）|','|---|---|---:|---:|']
+    for module,label in LABELS.items():
+        for v in CANDIDATES:
+            cells=[]
+            for s in ('__between','__within'):
+                p=result['models'][module].get('tests',{}).get(v+s,{}).get('holm_p_36')
+                cells.append(f'{p:.4g}' if p is not None else '評価不能')
+            lines.append(f'|{label}|{ENV_LABELS[v]}|'+ '|'.join(cells)+'|')
+    lines+=['','## 各成分の変化','',
+            '全自生域母集団の環境1標準偏差当たりの変化。単独の成分検定で'
+            '色全体の関連を判定しない。色相sin/cosは共同で読む。','',
+            '|成分|観測数|種数|環境・尺度|変化［95%区間］|','|---|---:|---:|---|---|']
+    for model in result['models'].values():
+        for endpoint,c in model.get('components',{}).items():
+            for term,e in c.get('effects',{}).items():
+                lo,hi=e['raw_ci95']
+                lines.append(f"|{endpoint}|{c['n']}|{c['n_species']}|{term}|"
+                             f"{e['raw_units_per_environment_sd']:+.3g} [{lo:+.3g}, {hi:+.3g}]|")
+    lines+=['','## 環境の重なりと解釈の限界','',
+            '相関・VIF・欠測数はJSONに全成分分を保存。高いVIFを理由に結果を見て'
+            '変数を削除しない。相関が強い場合、個別係数は不安定であり、'
+            '独立した環境作用を識別できたとは限らない。','',
+            '種内の関連は可塑性の証明ではなく、種間の関連も適応の証明ではない。'
+            '空間・系統・未測定環境を調整した結論ではない。'
+            '写真の色は色素量ではなく、向きは画像基準角、総苞片は輪郭突出の代理指標である。','',
+            f"再現情報：Actions run {result['run_id']}、commit {result['git_sha']}。"]
+    (output/'environment_response_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser()
+    for name in ('table','receipt','output'):
+        p.add_argument('--'+name,type=Path,required=True)
+    a=p.parse_args()
+    execute(a.table,a.receipt,a.output)

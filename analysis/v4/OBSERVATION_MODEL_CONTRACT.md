@@ -1,5 +1,34 @@
 # Observation-level primary analysis, 2026-10-20
 
+## Current scope: fixed environmental response workflow
+
+The user's latest instruction supersedes the historical extension plan below:
+test only which environmental gradients accompany head-trait changes conditional
+on the other included environmental conditions. The manual Action now executes
+`environment_response.py`: input verification, environmental diagnostics, three
+trait-module fits, and one report. It does not execute the previous sequence of
+omission, species-removal, spatial or seasonal-comparison fits.
+
+Fix mean temperature, precipitation, radiation, VPD, temperature seasonality and
+precipitation seasonality as six biologically distinct exposure dimensions.
+Keep their shared variation visible; do not select on significance or automatically
+delete high-VIF predictors. Existing diagnostics show severe thermal/VPD overlap:
+this design does not guarantee independent attribution. A weak or imprecise
+conditional coefficient remains an acceptable outcome.
+
+Use native observation-level responses with endpoint-specific eligibility.
+Compute exposure means before trait filtering and separate within/between terms.
+Use species random intercepts and the existing stacked species-cluster joint
+tests for whole colour and bract projection. Apply one fixed 36-test Holm family.
+Report raw effect sizes per native environmental SD, pointwise intervals, counts,
+input hashes, code commit and all environmental design diagnostics.
+Do not infer adaptation, pigment identity, defence, or spatial/phylogenetic
+independence. This is a retrospective observational analysis, not preregistration.
+Earlier results and implementation remain historical evidence, not alternative
+models from which to select a favourable conclusion.
+
+## Historical design record (superseded where inconsistent above)
+
 This replaces the species/cell-mean exploratory models. The already inspected
 predictor correlations are known; these are retrospective hypothesis evaluations,
 not preregistered confirmatory tests.
