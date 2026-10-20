@@ -102,6 +102,7 @@ def fit_module(frame, outcomes, scales):
             for j,term in enumerate(TERMS) if j}
         components[outcome]['response_sd']=scale
         components[outcome]['response_mean']=center
+        components[outcome]['reference_prediction']=float(center+fit['beta'][0]*scale)
     scores=np.concatenate(influences,axis=1)
     covariance=scores.T@scores
     coefficients=np.concatenate([a['beta'] for a in fits])
@@ -118,7 +119,20 @@ def fit_module(frame, outcomes, scales):
             statistic=float((b/sd)@np.linalg.solve(corr,b/sd)/len(outcomes))
             tests[term]={'status':'estimated','F':statistic,'df1':len(outcomes),
                          'df2':denominator,'p':float(f.sf(statistic,len(outcomes),denominator))}
+    hue={}
+    if 'corolla_hue_sin' in components and 'corolla_hue_cos' in components:
+        sine,cosine=components['corolla_hue_sin'],components['corolla_hue_cos']
+        s0,c0=sine['reference_prediction'],cosine['reference_prediction']
+        if np.hypot(s0,c0)>1e-6:
+            for term in TERMS[1:]:
+                s1=s0+sine['effects'][term]['raw_units_per_environment_sd']
+                c1=c0+cosine['effects'][term]['raw_units_per_environment_sd']
+                delta=np.rad2deg(np.arctan2(s1,c1)-np.arctan2(s0,c0))
+                hue[term]={'reference_degrees':float(np.rad2deg(np.arctan2(s0,c0))%360),
+                           'change_degrees':float((delta+180)%360-180),
+                           'scope':'descriptive fixed-effect +1 native predictor SD contrast; not an independent test'}
     return {'status':'estimated','outcomes':outcomes,'components':components,'tests':tests,
+            'conditional_hue_contrasts':hue,
             'inference':'approximate stacked marginal REML species-cluster Wald F',
             'random_effects':'response-specific species intercept; no phylogenetic correction',
             'pointwise_component_intervals_not_joint_significance_tests':True}
@@ -151,6 +165,8 @@ def execute(table, receipt, output):
             print(f'Fitting {module}, exclude {drop} most represented native taxa',flush=True)
             fit=fit_module(d,outcomes,scales)
             fit['excluded_taxa_count']=drop
+            fit['excluded_taxa']=[str(frame.loc[frame.accepted_key.eq(taxon),'taxon_name'].mode().iloc[0])
+                                  for taxon in ranking[:drop]]
             result['models'][f'{module}/drop{drop}']=fit
     family=[test for name,model in result['models'].items() if name.endswith('/drop0')
             for test in model.get('tests',{}).values()]
@@ -173,7 +189,90 @@ def execute(table, receipt, output):
                 rows.append({'model':name,'outcome':outcome,'term':term,
                              'n':component['n'],'n_species':component['n_species'],**effect})
     pd.DataFrame(rows).to_csv(output/'component_effects.csv',index=False)
+    write_report(result,output)
     return result
+
+
+def write_report(result, output):
+    labels={'colour':'色全体','orientation':'向き','bract_projection':'総苞片の輪郭突出'}
+    names=dict(zip(ENV,['温度','日射','VPD','降水']))
+    lines=['# v4 観測単位解析：GEBを想定した主解析結果','',
+           '温度・日射・VPD・降水を同時に含め、各観測を保持した種ランダム切片モデル。'
+           '環境を種平均と種内偏差に分けた。色は明度・彩度・円周色相の共同検定、'
+           '総苞片は突出量と広がり割合の共同検定である。','',
+           '**この結果は環境との条件付き関連であり、適応・可塑性・防御機構の直接証明ではない。**','',
+           '## 主結果','',
+           '以下は24共同検定のHolm補正P値。成分別の有意性を拾って色全体の結論にしていない。','',
+           '|形質群|環境|種間 P（Holm）|種内 P（Holm）|',
+           '|---|---|---:|---:|']
+    for module,label in labels.items():
+        model=result['models'][module+'/drop0']
+        for v in ENV:
+            vals=[model.get('tests',{}).get(v+s,{}).get('holm_p') for s in ('__between','__within')]
+            text=[f'{x:.4g}' if x is not None else '評価不能' for x in vals]
+            lines.append(f'|{label}|{names[v]}|{text[0]}|{text[1]}|')
+    lines+=['','## 観測数と方向','',
+            '効果量は、全自生域母集団での環境1標準偏差当たり。区間は成分ごとの'
+            '点別95%区間で、共同検定の代わりではない。','',
+            '|座標|観測数|分類群数|','|---|---:|---:|']
+    for module in labels:
+        for outcome,c in result['models'][module+'/drop0']['components'].items():
+            lines.append(f"|{outcome}|{c['n']:,}|{c['n_species']}|")
+    lines+=['','### 色の全体像','',
+            'ΔL*、ΔC*と円周色相の変化を併記する。色相の度数差は、種平均環境が'
+            '母集団平均、種内偏差が0、ランダム効果が0の基準点から、1変数のみを'
+            '+1標準偏差動かした記述用予測。光源校正済み反射色や色素量ではない。'
+            '強く相関する環境を独立に動かす条件付き比較であり、自然に起きる気候変化の予測ではない。','',
+            '|環境|尺度|ΔL*［95%区間］|ΔC*［95%区間］|色相差（度、記述用）|',
+            '|---|---|---|---|---:|']
+    colour=result['models']['colour/drop0']
+    for v in ENV:
+        for suffix,label in [('__between','種間'),('__within','種内')]:
+            term=v+suffix;cells=[]
+            for outcome in ['corolla_lab_lightness','corolla_lab_chroma']:
+                e=colour['components'][outcome]['effects'][term];lo,hi=e['raw_ci95']
+                cells.append(f"{e['raw_units_per_environment_sd']:+.2f} [{lo:+.2f}, {hi:+.2f}]")
+            hue=colour.get('conditional_hue_contrasts',{}).get(term,{}).get('change_degrees')
+            h=f'{hue:+.2f}' if hue is not None else '評価不能'
+            lines.append(f'|{names[v]}|{label}|{cells[0]}|{cells[1]}|{h}|')
+    lines+=['','### 向き','',
+            '|環境|尺度|画像基準角の変化（度）［95%区間］|','|---|---|---:|']
+    orientation=result['models']['orientation/drop0']['components']['orientation_image_vertical_angle']
+    for v in ENV:
+        for suffix,label in [('__between','種間'),('__within','種内')]:
+            e=orientation['effects'][v+suffix];lo,hi=e['raw_ci95']
+            lines.append(f"|{names[v]}|{label}|{e['raw_units_per_environment_sd']:+.2f} [{lo:+.2f}, {hi:+.2f}]|")
+    lines+=['','## 特定種への依存','',
+            '除外対象は形質の結果を見ず、全自生域観測数の上位2種・5種で固定した。'
+            '下表の除外後P値は未補正の感度分析値。主結果のHolm補正Pと混同しない。','',
+            '|形質群|環境・尺度|全種（未補正P）|上位2種除外|上位5種除外|',
+            '|---|---|---:|---:|---:|']
+    for module,label in labels.items():
+        for v in ENV:
+            for suffix,level in [('__between','種間'),('__within','種内')]:
+                cells=[]
+                for drop in (0,2,5):
+                    p=result['models'][f'{module}/drop{drop}'].get('tests',{}).get(v+suffix,{}).get('p')
+                    cells.append(f'{p:.4g}' if p is not None else '評価不能')
+                lines.append(f'|{label}|{names[v]}・{level}|'+ '|'.join(cells)+'|')
+    lines+=['','上位5種：'+ '、'.join(result['models']['colour/drop5']['excluded_taxa'])+'。','',
+            '## 結論の限界とGEBへの位置づけ','',
+            '- 総苞片の指標は輪郭突出・広がりであり、解剖学的な開出角や防御効果ではない。'
+            '明確な関連がない場合も、総苞片の防御仮説そのものの否定にはならない。',
+            '- ランダム切片分散が0の境界に達した成分はresults.jsonに記録した。'
+            'その成分について種間異質性が明確に推定できたとは扱わない。',
+            '- 種内と種間は異なる尺度の条件付き傾向。種間の差を同一個体・同一種の'
+            '温暖化応答や可塑性に読み替えない。すべての種が同じ傾きを持つとも断定しない。',
+            '- 主解析は広域空間構造・系統を同時調整していない。土壌を含む追加検証も別工程。'
+            '本結果のみで投稿準備完了とはしない。',
+            '- GEBの主題は、連続的な写真形質によって種カテゴリー内の変異まで比較でき、'
+            '異なる生物学的尺度の環境関連を区別できること。解析手法の利用自体を新規性とはしない。',
+            '',
+            '[GEB Aims and Scope](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/aims.htm)',
+            '',
+            '再現情報：入力・測定可否・環境相関・コードSHAはresults.json、'
+            '全効果量はcomponent_effects.csv、全共同検定はjoint_tests.csv。']
+    (Path(output)/'conclusions_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 
 if __name__=='__main__':
