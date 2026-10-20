@@ -64,6 +64,10 @@ jobs:
                   r2=values['full_r2']-values['baseline_r2']
                   assert math.isclose(sum(values['block_shapley_r2'].values()),r2,abs_tol=1e-8)
                   assert 0<=values['baseline_r2']<=values['full_r2']<=1
+          assert a['influence_among_chroma_radiation']['all']['n_taxa']==143
+          assert abs(a['influence_among_chroma_radiation']['all']['beta_standardized']+0.3453720171)<1e-8
+          assert abs(a['influence_among_chroma_radiation']['exclude_top2']['beta_standardized']+0.350163)<1e-5
+          assert set(a['environment_blocks'])=={'among','among_spatial_latlon','within_equal_taxon_weight'}
           assert len(a['cross_scale_module_integration'])==3
           print('PASS v4 pilot contract and real-input replay',p)
           PY
