@@ -158,6 +158,24 @@
       "domain": "involucre_structure",
       "source": "aza3_field_or_macro_validated_assay_not_photo_highlights",
       "unmeasured_is_null": true
+    },
+    {
+      "id": "phyllary_whorl_position",
+      "domain": "involucre_structure",
+      "source": "annotated_outer_middle_inner_rows; original flora descriptions distinguish these",
+      "unmeasured_is_null": true
+    },
+    {
+      "id": "phyllary_apex_recurvature",
+      "domain": "involucre_structure",
+      "source": "direct_base_tip_curvature_per_identified_whorl_and_camera_pose",
+      "unmeasured_is_null": true
+    },
+    {
+      "id": "phyllary_glandular_body_coverage",
+      "domain": "involucre_structure",
+      "source": "direct_macro_per_whorl_gland_annotation; not adhesive material measurement",
+      "unmeasured_is_null": true
     }
   ],
   "aggregation_and_models": {
