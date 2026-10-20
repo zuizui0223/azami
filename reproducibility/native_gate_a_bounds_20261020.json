@@ -1,0 +1,92 @@
+{
+  "source_receipt_sha256": "246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6",
+  "native_source_observations": 313350,
+  "shared_inherited_measurement_universe": 217104,
+  "method": "sharp inclusion-exclusion limits, same inherited observation-row universe",
+  "intersections": {
+    "orientation_x_chroma": {
+      "endpoints": [
+        "orientation_image_vertical_angle",
+        "corolla_lab_chroma"
+      ],
+      "lower": 139401,
+      "upper": 170066,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    },
+    "orientation_x_outline_aspect": {
+      "endpoints": [
+        "orientation_image_vertical_angle",
+        "capitulum_outline_aspect_ratio"
+      ],
+      "lower": 129010,
+      "upper": 170066,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    },
+    "chroma_x_outline_aspect": {
+      "endpoints": [
+        "corolla_lab_chroma",
+        "capitulum_outline_aspect_ratio"
+      ],
+      "lower": 145383,
+      "upper": 176048,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    },
+    "matched_core3": {
+      "endpoints": [
+        "orientation_image_vertical_angle",
+        "corolla_lab_chroma",
+        "capitulum_outline_aspect_ratio"
+      ],
+      "lower": 98345,
+      "upper": 170066,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    },
+    "complete_colour4": {
+      "endpoints": [
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos"
+      ],
+      "lower": 94346,
+      "upper": 186390,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    },
+    "complete_outline4": {
+      "endpoints": [
+        "capitulum_outline_aspect_ratio",
+        "capitulum_outline_circularity",
+        "capitulum_outline_solidity",
+        "capitulum_width_profile_cv"
+      ],
+      "lower": 52880,
+      "upper": 176048,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    },
+    "complete_core9": {
+      "endpoints": [
+        "orientation_image_vertical_angle",
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos",
+        "capitulum_outline_aspect_ratio",
+        "capitulum_outline_circularity",
+        "capitulum_outline_solidity",
+        "capitulum_width_profile_cv"
+      ],
+      "lower": 0,
+      "upper": 170066,
+      "status": "aggregate_frechet_bound_not_exact_join"
+    }
+  },
+  "five_historical_fields": {
+    "frozen_27_endpoint_atlas_eligible_observations": 0,
+    "historical_head_measurement_rows_expected": 1255791,
+    "historical_head_source_sha256": "b3d13ba7014100d4e44bf63d7732e21361c863db949f304e513be140a5011aa8",
+    "head_to_observation_recovery_code": "PR92 analysis/v3/recover_display_composition.py",
+    "native_obs_recovery_status": "NOT_YET_VERIFIED",
+    "interpretation": "five zero atlas columns do not prove absence of legacy head-level pixels"
+  },
+  "caution": "No exact native core3/core9 intersection, regional support, photographer QC, ecological hypervolume or functional trait inference is established."
+}

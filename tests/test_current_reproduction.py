@@ -304,3 +304,113 @@ def test_native_space_gate_source_identity_is_corrected_20261020():
     assert d["native_climate_all_nine_complete_corrected"] == 312001
     assert evidence["environment_correction"]["corrected_eligible_nine_environment"] == 312001
     assert evidence["environment_correction"]["invalid_gsp_uint32_max"] == 1239
+
+
+def test_gate_a_fréchet_bounds_are_source_backed_and_not_exact_overlaps():
+    """Real source aggregates give strict inclusion-exclusion limits, not fabricated joins."""
+    from reproducibility.native_gate_a import guaranteed_bounds, load_ledger
+    path = ROOT/'reproducibility/native_first_27_endpoint_coverage_20261020.json'
+    ledger = load_ledger(path)
+    result = guaranteed_bounds(ledger)
+    assert result['shared_inherited_measurement_universe'] == 217104
+    for name, limits in {
+        'orientation_x_chroma': (139401, 170066),
+        'orientation_x_outline_aspect': (129010, 170066),
+        'chroma_x_outline_aspect': (145383, 176048),
+        'matched_core3': (98345, 170066),
+    }.items():
+        assert (result['intersections'][name]['lower'], result['intersections'][name]['upper']) == limits
+        assert result['intersections'][name]['status'] == 'aggregate_frechet_bound_not_exact_join'
+    committed = json.loads((ROOT/'reproducibility/native_gate_a_bounds_20261020.json').read_text())
+    assert committed == result
+    assert result['five_historical_fields']['native_obs_recovery_status'] == 'NOT_YET_VERIFIED'
+
+
+def test_gate_a_exact_intersection_is_different_from_marginals_and_private_keys():
+    import pandas as pd
+    import numpy as np
+    from reproducibility.native_gate_a import (
+        audit_gate_a, CORE3, CORE9, RECOVERED_FIVE,
+    )
+    fields = list(dict.fromkeys((*CORE9, *RECOVERED_FIVE)))
+    rows = []
+    for i in range(40):
+        r = {
+            'obs_id': str(i+100), 'accepted_key': str(1+i//10),
+            'latitude': -10. + i/2, 'longitude': 12. + i/3,
+            'observed_on': '2026-05-20' if i%3 else None,
+        }
+        for f in fields:
+            r[f] = float(i/5)
+            r[f+'__eligible'] = True
+        for f in RECOVERED_FIVE:
+            r[f] = np.nan
+            r[f+'__eligible'] = False
+        if i<5:
+            r[CORE3[0]+'__eligible'] = False
+        if 5 <= i < 10:
+            r[CORE3[1]+'__eligible'] = False
+        if 10 <= i < 15:
+            r[CORE3[2]+'__eligible'] = False
+        rows.append(r)
+    data = pd.DataFrame(rows)
+    agg = audit_gate_a(data)
+    assert agg['modules']['primary_core3']['n_observations_exact'] == 25
+    assert agg['modules']['complete_primary_core9']['n_observations_exact'] == 25
+    assert agg['intersections']['all_core3'] == 25
+    assert agg['intersections']['__'.join(CORE3[:2])] == 30
+    assert agg['modules']['colour']['n_observations_exact'] == 35
+    assert agg['observer_audit'] == 'NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN'
+    assert '100' not in json.dumps(agg) and 'latitude' not in json.dumps(agg)
+    shuffled = audit_gate_a(data.sample(frac=1, random_state=9).reset_index(drop=True))
+    assert agg == shuffled
+    with pytest.raises(ValueError, match="Duplicated|duplicated|observation ID"):
+        audit_gate_a(pd.concat([data.iloc[:1],data.iloc[:1]], ignore_index=True))
+    bad = data.copy()
+    bad.loc[0, CORE3[0]+'__eligible'] = 'unknown'
+    with pytest.raises(ValueError, match="eligibility"):
+        audit_gate_a(bad)
+    bad2 = data.copy()
+    bad2.loc[10, CORE3[1]] = np.nan
+    with pytest.raises(ValueError, match="nonfinite"):
+        audit_gate_a(bad2)
+    observers = pd.DataFrame({'obs_id':data.obs_id,'user_id':['user'+str(i%4) for i in range(40)]})
+    with_observers = audit_gate_a(data, observers=observers)
+    assert with_observers['modules']['primary_core3']['n_distinct_original_observers'] == 4
+    with pytest.raises(ValueError, match="Duplicate"):
+        audit_gate_a(data, observers=pd.concat([observers, observers.iloc[:1]]))
+
+
+def test_gate_a_recovered_five_requires_authenticated_head_aggregation(tmp_path):
+    import pandas as pd
+    import numpy as np
+    from reproducibility.native_gate_a import audit_recovered_five, sha256, RECOVERED_FIVE, HEAD_ARCHIVE_SHA256
+    native = pd.DataFrame({'obs_id':['10','20','30'], 'accepted_key':['a','a','b']})
+    data = pd.DataFrame({
+        'obs_id':['10','20','40'],
+        'n_visible_photos':[1,0,1],
+        'n_composition_photos':[1,0,1],
+        'corolla_visible_fraction':[.6,np.nan,.3],
+        'corolla_white_fraction':[.1,np.nan,.4],
+        'corolla_redmagenta_fraction':[.2,np.nan,.3],
+        'corolla_purple_fraction':[.4,np.nan,.2],
+        'corolla_yellow_fraction':[.3,np.nan,.1],
+    })
+    csv=tmp_path/'recovered.csv'
+    data.to_csv(csv,index=False)
+    receipt={'status':'FIVE_PREVIOUSLY_MEASURED_FIELDS_RECOVERED_TO_VERSIONED_OBSERVATION_VIEW',
+             'source_head_sha256':HEAD_ARCHIVE_SHA256, 'counts':{'source_heads':1255791,'head_records_deleted':0},
+             'new_image_operations':False, 'observation_values_sha256':sha256(csv)}
+    rp=tmp_path/'receipt.json'
+    rp.write_text(json.dumps(receipt))
+    result = audit_recovered_five(native,csv,rp)
+    assert result['historical_observations_matching_native_source'] == 2
+    assert result['native_observations_with_valid_visible_fraction'] == 1
+    assert result['native_observations_with_closed_four_colour_fractions'] == 1
+    assert result['n_native_accepted_taxa_with_recovered_colour_composition'] == 1
+    data.loc[0,'corolla_yellow_fraction'] = .9
+    data.to_csv(csv,index=False)
+    receipt['observation_values_sha256'] = sha256(csv)
+    rp.write_text(json.dumps(receipt))
+    with pytest.raises(ValueError, match="not closed"):
+        audit_recovered_five(native,csv,rp)
