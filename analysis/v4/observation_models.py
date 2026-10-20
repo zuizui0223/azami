@@ -147,7 +147,8 @@ def fit_module(frame, outcomes, scales, predictors=None, adjustments=()):
     climate_terms=[v+s for v in predictors for s in ('__between','__within')]
     terms=['intercept']+climate_terms+list(adjustments)
     # Even reduced sensitivity models retain exactly the four-predictor complete rows.
-    finite_environment=np.isfinite(frame[ENV]).all(axis=1)
+    finite_environment=np.isfinite(frame[list(dict.fromkeys(ENV+list(predictors)))]).all(axis=1)
+    finite_environment &= np.isfinite(frame[climate_terms]).all(axis=1)
     if adjustments:
         finite_environment &= np.isfinite(frame[list(adjustments)]).all(axis=1)
     labels=np.sort(frame.accepted_key.unique())

@@ -139,6 +139,13 @@ jobs:
             --table work/v4-observation/private/observations.csv.gz \
             --receipt work/v4-observation/receipt/measurement_receipt.json \
             --output work/v4-observation/output
+      - name: Compare seasonal extension on matched observations
+        run: |
+          python -m analysis.v4.seasonal_observation_models \
+            --table work/v4-observation/private/observations.csv.gz \
+            --receipt work/v4-observation/receipt/measurement_receipt.json \
+            --audit work/v4-observation/output/environment_candidate_audit.json \
+            --output work/v4-observation/output
       - name: Verify full model grid and actual observation counts
         run: |
           python - <<'PY'
@@ -157,6 +164,10 @@ jobs:
           assert a['models']['colour/drop0']['components']['corolla_hue_sin']['n']==186390
           assert a['models']['orientation/drop0']['components']['orientation_image_vertical_angle']['n']==170066
           assert a['models']['bract_projection/drop0']['components']['bract_spread_fraction']['n']==1303
+          s=json.loads(Path('work/v4-observation/output/seasonal_models.json').read_text())
+          assert len(s['models'])==15
+          assert all(m['status'] in {'estimated','not_identifiable'} for m in s['models'].values())
+          assert s['input_sha256']==a['input']['prepared_table_sha256']
           print('PASS observation-level model grid; no cross-trait complete-case filter')
           PY
       - name: Save aggregate model results only

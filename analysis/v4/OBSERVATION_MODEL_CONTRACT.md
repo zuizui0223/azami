@@ -138,3 +138,15 @@ Any subsequent six-variable fit must be labelled a revised observational
 analysis, since four-variable results have already been inspected. Retain the
 four-variable reference and use matched rows to distinguish sample changes from
 adjustment changes. Never select the specification to preserve significance.
+
+The six-dimension extension retains all six candidates, with no automatic
+deletion. Standardization and species exposure means are computed on the native
+population before selecting six-environment-complete rows. Per module fit:
+matched four-variable reference, six variables, six variables excluding the
+two/five most abundant native species, and six variables plus the same eight
+broad-space terms. Rank species on the full native population. Each specification
+has its own fixed Holm family (24 or 36 tests); failed tests count as p=1 for
+correction and remain unidentifiable, not nonsignificant estimates.
+Retain effect sizes, intervals and endpoint-specific sample counts. This extension
+does not resolve temperature/VPD attribution simply by adding seasonal terms,
+nor does it establish that these six variables form a sufficient causal set.

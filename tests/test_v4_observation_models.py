@@ -164,3 +164,19 @@ def test_fixed_adjustment_removes_known_confounding_without_averaging_rows():
     assert adjusted['components']['y1']['n']==reference['components']['y1']['n']==660
     assert len(adjusted['tests'])==8
     assert 'adjustment' not in adjusted['tests']
+
+
+def test_added_environment_uses_finite_matched_rows():
+    frame,scales=sample()
+    rng=np.random.default_rng(542)
+    name='seasonality'
+    frame[name]=rng.normal(size=len(frame))
+    frame[name+'__between']=frame.groupby('accepted_key')[name].transform('mean')
+    frame[name+'__within']=frame[name]-frame[name+'__between']
+    scales[name]={'mean':frame[name].mean(),'sd':frame[name].std(ddof=0)}
+    frame.loc[0,name]=np.nan
+    expanded=fit_module(frame,['y1'],scales,ENV+[name])
+    reference=fit_module(frame.loc[frame[name].notna()],['y1'],scales)
+    assert expanded['status']=='estimated'
+    assert expanded['components']['y1']['n']==reference['components']['y1']['n']==659
+    assert len(expanded['tests'])==10
