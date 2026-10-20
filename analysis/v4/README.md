@@ -1,21 +1,61 @@
-# Chapter 1 v4: restart from upstream photographs
+# Chapter 1 v4: one workflow from source to functional-trait inference
 
-**Current scope follows the user's 2026-10-20 correction: begin with the original metadata and photographs, not the precomputed v3 trait table.** Main and frozen v3/GEB results remain untouched. PR142 stays exploratory/Draft.
+PR142 is exploratory. The frozen v3 results are a reference, not the conclusion
+of the redesigned v4 analysis. Execution and verification belong in GitHub Actions.
 
-Start with [UPSTREAM.md](UPSTREAM.md) and [UPSTREAM_RESULT_20261020.md](UPSTREAM_RESULT_20261020.md). The earlier `functional_pilot.py` and its numerical CI remain a **processed-CSV exploratory checkpoint**, not the source of new v4 biological measurements or a final environmental ranking.
+## Inputs and reuse
 
-## Active sequence
+- Reuse the published [Zenodo v3 numerical inputs](https://doi.org/10.5281/zenodo.22703215)
+  through the existing `Reproduce current Chapter 1 analysis` Action. Its eight
+  stages and 16 reference outputs verify the inherited numerical baseline.
+- Zenodo does not contain the full 665,115-observation upstream metadata or
+  original photographs. Do not silently substitute the old 46,276-observation
+  cohort for the full source.
+- The existing `V4 all 665115 upstream native climate replay` Action restores the
+  exact original source from the repository secret `AZAMI_ORIGINAL_METADATA_URL`,
+  an owner-authorized HTTPS download URL. The SHA-256 remains fixed. The former
+  Actions artifact expired; a normal private Drive sharing link is not a direct
+  authenticated download for GitHub runners.
+- Reuse existing WCVP evidence, CHELSA raster caches and valid archived image
+  measurements. Missing or unusable measurements remain explicit. Reacquisition
+  is for missing coverage or measurements whose definition must change.
 
-1. Rebuild the pre-detector acquisition frame from SHA-verified historical metadata: `upstream.py`. It does not inherit the old 46,276-observation cohort or filter by predicted colour/orientation.
-2. Refresh photo attachment/licence/taxonomy and acquire actual original-size bytes: `run_upstream_acquisition.py`. Preserve failures, source attribution, hashes and ICC/EXIF handling.
-3. Re-localize visible heads with the SHA-locked frozen detector: `run_upstream_detection.py`. A box is not an anatomical mask or a precision/recall evaluation.
-4. Define floral tissue patches, head/peduncle landmarks and involucre masks; measure original pixels using `measure_upstream_anatomy.py` and `anatomical_geometry.py`. The committed five-head packet is **assistant_visual_proposal**, not independent human ground truth.
-5. Build new environmental cohorts only after measurement assessment. Evaluate joint environmental information, widespread-species influence and within/among covariance; phylogeny remains sensitivity.
+## Primary analysis sequence
 
-The parallel `native_scope.py`, `collect_native_sources.py` and native-first workflow are preserved. Their source-backed range rules must be joined before the native-primary ecological analysis. The public-license diagnostic photo batch is not itself a native-primary sample or a full macroecological cohort.
+1. Start with all source observations and apply native-range eligibility before
+   selecting on any measured trait. Report source, native, measured and analysed
+   counts separately. See [full-source audit](NATIVE_665115_FULLSOURCE_20261020.md).
+2. Analyse colour, orientation and phyllary opening separately. Each uses all
+   available observations for that response, without requiring the other trait
+   groups or old involucre shape descriptors. Do not average responses to species
+   or spatial-cell means as the primary analysis.
+3. For each response, jointly include temperature, radiation, VPD and rainfall;
+   inspect correlations and support before interpretation. Separate within-species
+   environmental deviations from between-species exposure and account for repeated
+   observations by species. A species random intercept alone is not this separation
+   and is not a phylogenetic correction.
+4. Evaluate species influence. Broad spatial structure and phylogenetic placement
+   are subsequent checks; soil is an additional comparison on matched records.
+5. Restrict only the supplementary whole-head integration analysis to records with
+   all three trait groups. Evaluate within- and between-species covariation separately.
+6. Report effect estimates, uncertainty, measurement coverage and failed or
+   non-evaluable hypotheses together. Environmental association tests predictions
+   of a functional hypothesis; it does not establish adaptation or a mechanism.
 
-## Original-byte replay
+## Measurement and execution limits
 
-`prepare_upstream_replay.py` verifies acquisition artifact 12241906850, not any v3 phenotype CSV. It preserves a monochrome source for geometry but prevents it from being counted as a white flower. The anatomical replay workflow remeasures five annotated examples from those exact original bytes.
+Whole colour uses the observed lightness, chroma and circular hue information;
+it is not saturation alone. The archived hue definition must be preserved rather
+than relabelled as CIELAB a*/b* or anthocyanin concentration.
 
-Code success does not establish botanical accuracy, reflectance, anthocyanin quantity, gravity direction, defence function or adaptation. No new macroecological conclusion is asserted from this diagnostic batch.
+Archived bract projection/contour descriptors are not individual phyllary opening
+angles. A defence-related opening measure needs identified anatomical reference
+points and validation. The existing original-byte anatomical Action replays five
+annotated examples; its success does not establish full-source measurement coverage.
+See [upstream measurement boundary](UPSTREAM.md).
+
+The processed-CSV `functional_pilot.py`, earlier species/cell models and local
+experimental scripts are diagnostic history, not the primary workflow above.
+The full-source classification Action currently ends at native climate extraction;
+full-source trait measurement, the redesigned models and their ecological conclusions
+are not yet completed in Actions. Do not report a green diagnostic job as completion.
