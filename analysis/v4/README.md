@@ -58,6 +58,14 @@ readiness, not a fitted v4 result.
 
 ## Primary analysis sequence
 
+Primary model specification: [observation-level model contract](OBSERVATION_MODEL_CONTRACT.md).
+The existing `V4 functional trait analysis` Action runs these models on manual
+dispatch, reusing the verified encrypted observation input. PR execution retains
+the historical pilot as a regression check. These are distinct execution modes.
+GEB is the intended journal; the scientific contribution must concern general
+macroecological patterns and what continuous within-species photographic
+variation reveals beyond species categories.
+
 1. Start with all source observations and apply native-range eligibility before
    selecting on any measured trait. Report source, native, measured and analysed
    counts separately. See [full-source audit](NATIVE_665115_FULLSOURCE_20261020.md).
