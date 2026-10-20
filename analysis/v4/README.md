@@ -1,3 +1,5 @@
+> Interpretation hold (2026-10-20): uncorrected GSP includes uint32-max sentinel values. Environment-adjusted v4 results are provisional pending input correction and replay. See analysis/v4/ENVIRONMENT_INPUT_INCIDENT.md.
+
 # Chapter 1 v4: one workflow from source to functional-trait inference
 
 PR143 contains the current v4 work. The frozen v3 results are a reference, not the conclusion

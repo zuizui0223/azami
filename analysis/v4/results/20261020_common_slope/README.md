@@ -1,3 +1,5 @@
+> Interpretation hold (2026-10-20): uncorrected GSP includes uint32-max sentinel values. Environment-adjusted v4 results are provisional pending input correction and replay. See analysis/v4/ENVIRONMENT_INPUT_INCIDENT.md.
+
 # V4 common-slope environmental response
 
 Verified Actions run: https://github.com/zuizui0223/azami/actions/runs/39418226382
