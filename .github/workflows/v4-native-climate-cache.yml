@@ -1,11 +1,7 @@
 name: V4 full native climate inputs
+# Acquisition is explicit after successful full run 39374865573.
+# Numerical PR tests must reuse the frozen cache rather than silently refreshing climate inputs.
 on:
-  pull_request:
-    paths:
-      - 'analysis/v4/native_climate_cache.py'
-      - 'analysis/v4/native_climate_cells.json'
-      - 'tests/test_v4_native_climate_cache.py'
-      - '.github/workflows/v4-native-climate-cache.yml'
   workflow_dispatch:
 permissions:
   contents: read
