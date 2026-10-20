@@ -5,6 +5,7 @@ on:
       - 'analysis/v4/**'
       - 'tests/test_v4_upstream*.py'
       - 'tests/test_v4_functional_coordinates.py'
+      - 'tests/test_v4_blinded_native_anatomy_review.py'
       - '.github/workflows/v4-upstream-measurement.yml'
   workflow_dispatch:
   workflow_call:
@@ -23,7 +24,7 @@ jobs:
       - name: Install image environment
         run: python -m pip install numpy pandas pillow requests pytest
       - name: Test upstream source and anatomical measurement semantics
-        run: python -m pytest -q tests/test_v4_upstream.py tests/test_v4_upstream_anatomy.py tests/test_v4_functional_coordinates.py
+        run: python -m pytest -q tests/test_v4_upstream.py tests/test_v4_upstream_anatomy.py tests/test_v4_functional_coordinates.py tests/test_v4_blinded_native_anatomy_review.py
       - name: Retrieve checksum-locked original source bytes, not v3 measurements
         env:
           GH_TOKEN: ${{ github.token }}
