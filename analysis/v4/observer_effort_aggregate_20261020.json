@@ -97,12 +97,12 @@
   "top_species_contributions_to_observation_pooled_color_solar": {
     "Cirsium arvense": {
       "n_color": 53152,
-      "source_record_share": 0.285289,
+      "color_analysis_observation_share": 0.285289,
       "between_beta_contribution": 0.06402
     },
     "Cirsium vulgare": {
       "n_color": 37104,
-      "source_record_share": 0.199149,
+      "color_analysis_observation_share": 0.199149,
       "between_beta_contribution": -0.027066
     }
   },
