@@ -189,3 +189,16 @@ def test_selected_design_does_not_require_excluded_environment():
     model=fit_module(frame,['y1'],scales,selected,required_environment=selected)
     assert model['components']['y1']['n']==660
     assert ENV[2]+'__within' not in model['tests']
+
+
+def test_common_slope_uses_raw_predictors_with_species_random_intercept():
+    frame,scales=sample()
+    model=fit_module(frame,['y1'],scales,ENV,required_environment=ENV,decompose=False)
+    x=np.column_stack([np.ones(len(frame))]+[
+        (frame[v]-scales[v]['mean'])/scales[v]['sd'] for v in ENV])
+    y=frame.y1.to_numpy()
+    reference=fit_response(x,(y-y.mean())/y.std(),frame.accepted_key.to_numpy())
+    effects=model['components']['y1']['effects']
+    assert set(effects)==set(ENV)
+    assert [effects[v]['standardized_beta'] for v in ENV]==pytest.approx(reference['beta'][1:])
+    assert model['components']['y1']['n']==660

@@ -142,9 +142,11 @@ def spherical_basis(latitude, longitude):
     return np.column_stack([x,y,z,x*y,x*z,y*z,x*x-y*y,3*z*z-1])
 
 
-def fit_module(frame, outcomes, scales, predictors=None, adjustments=(), required_environment=None):
+def fit_module(frame, outcomes, scales, predictors=None, adjustments=(), required_environment=None,
+               decompose=True):
     predictors=ENV if predictors is None else predictors
-    climate_terms=[v+s for v in predictors for s in ('__between','__within')]
+    suffixes=('__between','__within') if decompose else ('',)
+    climate_terms=[v+s for v in predictors for s in suffixes]
     terms=['intercept']+climate_terms+list(adjustments)
     # Even reduced sensitivity models retain exactly the four-predictor complete rows.
     required_environment=ENV if required_environment is None else required_environment
@@ -159,8 +161,8 @@ def fit_module(frame, outcomes, scales, predictors=None, adjustments=(), require
         eligible=finite_environment & frame[outcome+'__eligible'].eq(True) & np.isfinite(frame[outcome])
         d=frame.loc[eligible]
         x=np.column_stack([np.ones(len(d))]+[
-            ((d[v+s]-(scales[v]['mean'] if s=='__between' else 0))/scales[v]['sd']).to_numpy()
-            for v in predictors for s in ('__between','__within')]+[
+            ((d[v+s]-(scales[v]['mean'] if s!='__within' else 0))/scales[v]['sd']).to_numpy()
+            for v in predictors for s in suffixes]+[
                 d[a].to_numpy(float) for a in adjustments])
         y=d[outcome].to_numpy(float)
         center=float(y.mean()) if len(y) else 0.
@@ -201,7 +203,7 @@ def fit_module(frame, outcomes, scales, predictors=None, adjustments=(), require
         tests[term]=wald([i*len(terms)+j for i in range(len(outcomes))])
     joint_temperature_vpd={}
     if ENV[0] in predictors and ENV[2] in predictors:
-        for suffix in ('__between','__within'):
+        for suffix in suffixes:
             ix=[i*len(terms)+terms.index(v+suffix)
                 for i in range(len(outcomes)) for v in (ENV[0],ENV[2])]
             joint_temperature_vpd[suffix]=wald(ix)
@@ -218,6 +220,7 @@ def fit_module(frame, outcomes, scales, predictors=None, adjustments=(), require
                            'change_degrees':float((delta+180)%360-180),
                            'scope':'descriptive fixed-effect +1 native predictor SD contrast; not an independent test'}
     return {'status':'estimated','outcomes':outcomes,'components':components,'tests':tests,
+            'environment_parameterization':'within_between' if decompose else 'common_slope',
             'predictors':predictors,'joint_temperature_vpd':joint_temperature_vpd,
             'fixed_adjustments':list(adjustments),
             'conditional_hue_contrasts':hue,

@@ -168,13 +168,14 @@ jobs:
           s=json.loads((root/'environment_selection.json').read_text())
           a=json.loads((root/'environment_response.json').read_text())
           assert a['predictors']==s['selected']
-          assert a['family_size']==6*len(s['selected'])
+          assert a['family_size']==3*len(s['selected'])
+          assert a['environment_parameterization']=='common_slope'
           assert set(a['models'])=={'colour','orientation','bract_projection'}
           for model in a['models'].values():
               assert model['status'] in {'estimated','not_identifiable'}
               if model['status']=='estimated':
                   assert model['predictors']==s['selected']
-                  assert len(model['tests'])==2*len(s['selected'])
+                  assert len(model['tests'])==len(s['selected'])
           print('Selected environment set preserved:', a['inference_status'])
           PY
       - name: Save aggregate model results only

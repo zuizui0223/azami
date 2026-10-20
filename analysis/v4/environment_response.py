@@ -40,27 +40,21 @@ def execute(table, receipt_path, output, selection_path):
         scales[v]={'mean':float(frame[v].mean()),'sd':float(frame[v].std(ddof=0))}
         if not np.isfinite(scales[v]['sd']) or scales[v]['sd']<=0:
             raise ValueError('No finite variation: '+v)
-        frame[v+'__between']=frame.groupby('accepted_key')[v].transform('mean')
-        frame[v+'__within']=frame[v]-frame[v+'__between']
     diagnostics={}
     complete=np.isfinite(frame[predictors]).all(axis=1)
     for outcomes in MODULES.values():
         for endpoint in outcomes:
             rows=frame.loc[complete & frame[endpoint+'__eligible'].eq(True) & np.isfinite(frame[endpoint])]
-            diagnostics[endpoint]={'n':len(rows),'designs':{
-                level:matrix_summary(rows,columns) for level,columns in [
-                    ('between',[v+'__between' for v in predictors]),
-                    ('within',[v+'__within' for v in predictors]),
-                    ('full',[v+s for v in predictors for s in ('__between','__within')])]}}
+            diagnostics[endpoint]={'n':len(rows),'designs':{'raw':matrix_summary(rows,predictors)}}
     models={}
     for module,outcomes in MODULES.items():
         print('Fixed environmental response: '+module,flush=True)
-        models[module]=fit_module(frame,outcomes,scales,predictors,required_environment=predictors)
+        models[module]=fit_module(frame,outcomes,scales,predictors,
+                                 required_environment=predictors,decompose=False)
         for endpoint,c in models[module]['components'].items():
             if c['n']!=diagnostics[endpoint]['n']:
                 raise ValueError('Endpoint-specific sample count changed')
-    tests=[models[m].get('tests',{}).get(v+s,{})
-           for m in MODULES for v in predictors for s in ('__between','__within')]
+    tests=[models[m].get('tests',{}).get(v,{}) for m in MODULES for v in predictors]
     for test,q in zip(tests,multipletests([t.get('p',1.) for t in tests],method='holm')[1]):
         if test.get('status')=='estimated':
             test['holm_p']=float(q)
@@ -75,6 +69,7 @@ def execute(table, receipt_path, output, selection_path):
             'fit_code_sha256':hashlib.sha256(Path(__file__).with_name('observation_models.py').read_bytes()).hexdigest(),
             'selection':selection,'selection_sha256':hashlib.sha256(selection_path.read_bytes()).hexdigest(),
             'family_size':len(tests),'predictors':predictors,'scales':scales,'models':models,
+            'environment_parameterization':'common_slope',
             'environment_diagnostics':diagnostics,'reuse_inventory':inventory,
             'inference_status':'estimated' if all(t.get('status')=='estimated' for t in tests)
                                else 'incomplete_inference',
@@ -95,6 +90,8 @@ def execute(table, receipt_path, output, selection_path):
 
 
 def report(result,output):
+    if result.get('environment_parameterization')=='common_slope':
+        return report_common(result,output)
     lines=['# 頭花形質の環境勾配応答','',
            '問い：他の環境条件を同時に考慮したとき、どの環境勾配に沿って頭花形質が変わるか。','',
            '6群の全9候補から環境データのみでvifstep選定し、採択セットを固定して同時投入：'
@@ -157,6 +154,42 @@ def report(result,output):
     si+=['','全係数・診断・来歴はenvironment_response.jsonに保存。再測定はこの結果の成立条件にしない。',
          f"推定元：Actions run {result['run_id']}、commit {result['git_sha']}。"]
     (output/'environment_response_si_ja.md').write_text('\n'.join(si)+'\n',encoding='utf-8')
+
+
+def report_common(result,output):
+    for filename,modules,title in [
+        ('environment_response_ja.md',('colour','orientation'),'主解析：色と向き'),
+        ('environment_response_si_ja.md',('bract_projection',),'SI：総苞片の輪郭突出')]:
+        lines=['# '+title,'',
+               'モデル：観測ごとの形質 ～ 採択環境の同時投入 ＋ (1 | 種)。',
+               '形質も環境も種平均には集約せず、環境の種内・種間分解も行わない。'
+               '係数は種内・種間双方の情報に基づく共通傾きであり、どちらか一方の効果ではない。','',
+               '採択環境：'+'、'.join(ENV_LABELS[v] for v in result['predictors'])+'。',
+               f"主解析とSIを合わせた{result['family_size']}共同検定でHolm補正。"
+               '種ランダム切片と種クラスタに基づく区間・共同検定を使用。','',
+               '|形質|環境|共同検定P（Holm）|','|---|---|---:|']
+        for module in modules:
+            model=result['models'][module]
+            for v in result['predictors']:
+                p=model.get('tests',{}).get(v,{}).get('holm_p')
+                lines.append(f"|{LABELS[module]}|{ENV_LABELS[v]}|"
+                             +(f'{p:.4g}' if p is not None else '評価不能')+'|')
+        lines+=['','## 効果量','',
+                '環境が自生域母集団の1標準偏差増えたときの変化。区間は点別95%。'
+                '成分の有意性を色全体の共同検定の代わりにしない。','',
+                '|成分|観測数|種数|環境|変化［95%区間］|','|---|---:|---:|---|---|']
+        for module in modules:
+            for endpoint,c in result['models'][module].get('components',{}).items():
+                for term,e in c.get('effects',{}).items():
+                    lo,hi=e['raw_ci95']
+                    lines.append(f"|{endpoint}|{c['n']}|{c['n_species']}|{ENV_LABELS.get(term,term)}|"
+                                 f"{e['raw_units_per_environment_sd']:+.3g} [{lo:+.3g}, {hi:+.3g}]|")
+        lines+=['','種の違いをランダム切片で扱うことは、系統・空間や未測定交絡の調整を保証しない。'
+                'ランダム切片と説明変数の独立性などのモデル仮定の下での関連であり、'
+                '因果効果、適応、可塑性や個々の種に共通する応答の証明ではない。',
+                '総苞片は測定規模と代理指標の制約からSIとする。アントシアニン濃度・防御効果は未測定。',
+                f"推定元：Actions run {result['run_id']}、commit {result['git_sha']}。"]
+        (output/filename).write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 
 if __name__=='__main__':

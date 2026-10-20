@@ -1,5 +1,16 @@
 # V4 environmental response workflow
 
+Latest model instruction: use raw observation environmental values simultaneously
+with a species random intercept, without within/between decomposition in the main
+model. `environment_response.py` now uses `fit_module(..., decompose=False)`.
+The eight selected predictors remain unchanged; colour and orientation are main,
+bract projection is SI. One family contains 3 x 8 = 24 joint tests. Coefficients
+are common slopes informed by both within- and between-species variation, under
+the random-intercept model assumptions, and cannot be labelled within-only or
+between-only effects. The successful 39416125522 decomposed analysis remains
+archived as a different estimand; its 48-test correction is not rewritten.
+The decomposition description below documents that archived fit.
+
 Question: which environmental gradients accompany changes in capitulum traits,
 conditional on the other included environmental dimensions?
 
