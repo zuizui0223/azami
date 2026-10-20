@@ -18,6 +18,10 @@ The current statistical analysis **has executable code**. Its replay starts from
 6. [Reproducibility and archive status](reproducibility/README.md): published Zenodo inputs and their verification.
 7. [Historical implementations](legacy/README.md): v2 and superseded entry points. Do not start the current paper analysis from these scripts.
 
+## Native-only follow-up (not a replacement for frozen v3)
+
+The verified 665,115-observation original-source classification yields a 313,350-observation native-primary roster **before** any image or trait selection. Only 22 of the 27 registered V2 endpoints have historical measurements, and coverage differs sharply by endpoint; five endpoints were never measured. See [Native-first 27-endpoint handoff](reproducibility/NATIVE_FIRST_27_ENDPOINT_HANDOFF.md) for the precise cohort ledger, missingness, and safe next analytic gate. **This is a documented follow-up, not an executed native-only current-paper replay.** Upstream acquisition, image remeasurement, and V4-only Actions remain paused.
+
 ## Current evidence chain
 
 ```text
