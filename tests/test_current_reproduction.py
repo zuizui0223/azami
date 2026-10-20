@@ -568,3 +568,85 @@ def test_gate_a_no_original_observers_never_claims_sampling_gate_complete():
     assert d['observer_status'] == 'NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN'
     assert d['season_status'] == 'NOT_EVALUABLE_NO_OBSERVATION_DATE'
     assert out['observer_audit'] == 'NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN'
+
+
+def test_native_gate_b_fixed_aggregate_contract_and_module_census():
+    from reproducibility.native_gate_b_existing_rv import (
+        CONSTRUCT_GROUP, CORRECTED_INPUT_SHA256, EXPECTED_N, EXPECTED_TAXA,
+        EXPECTED_PAIR_NAMES, SOURCE_RUN, ARTIFACT_ID, MEMBER_SHA256,
+    )
+    from reproducibility.native_space_gate import EXPECTED_SHA256
+    assert (EXPECTED_N, EXPECTED_TAXA, len(CONSTRUCT_GROUP),
+            len(EXPECTED_PAIR_NAMES)) == (157654, 174, 8, 28)
+    assert (SOURCE_RUN, ARTIFACT_ID) == (39428065666, 12266812186)
+    assert CORRECTED_INPUT_SHA256 == EXPECTED_SHA256
+    assert MEMBER_SHA256 == (
+        '1545037041b62b2494934d022c7b21e7a7109f54f3582579c6557dfadf998752'
+    )
+    assert sum(group == 'colour' for group in CONSTRUCT_GROUP.values()) == 3
+    assert sum(group == 'outline' for group in CONSTRUCT_GROUP.values()) == 4
+
+
+def test_native_gate_b_grouping_distinguishes_cross_module_from_within_module():
+    import itertools
+    from reproducibility.native_gate_b_existing_rv import (
+        CONSTRUCT_GROUP, EXPECTED_N, EXPECTED_TAXA, summarize_existing_aggregate,
+    )
+    constructions = list(CONSTRUCT_GROUP)
+    items = []
+    for i, (a, b) in enumerate(itertools.combinations(constructions, 2)):
+        # Distinguish stronger among for precisely three cross-domain pairs.
+        cross = CONSTRUCT_GROUP[a] != CONSTRUCT_GROUP[b]
+        positive = cross and (a, b) in (
+            ('angle', 'chroma'), ('angle', 'hue'), ('hue', 'width_profile')
+        )
+        within, between = .05, .10 if positive else .035
+        difference = between - within
+        record = {'rv': within, 'rv_interval': {'lower': .025, 'upper': .08}}
+        alt = {'rv': between, 'rv_interval': {'lower': .015, 'upper': .13}}
+        ci = {'estimate': difference,
+              'interval': {'lower': .02, 'upper': .09} if positive else
+                          {'lower': -.05, 'upper': .01}}
+        items.append({
+            'left': a, 'right': b,
+            'estimates': {'raw/within':record, 'raw/between':alt,
+                          'raw/between_minus_within_rv':ci,
+                          'adjusted/within':record, 'adjusted/between':alt,
+                          'adjusted/between_minus_within_rv':ci},
+        })
+    example = {'common_cohort': {
+        'status':'estimated','n':EXPECTED_N,'species':EXPECTED_TAXA,
+        'pairs':items,'equal_n_diagnostic':{'raw':{'scope':'synthetic'}}
+    }}
+    out = summarize_existing_aggregate(example)
+    assert out['all_pairs']['pairs'] == 28
+    assert out['cross_module_only']['pairs'] == 19
+    assert out['cross_module_only']['adjusted_pointwise_interval_entirely_positive'] == 3
+    assert out['all_pairs']['adjusted_pointwise_interval_entirely_positive'] == 3
+    assert out['by_module_pair']['colour/outline']['pairs'] == 12
+    assert out['by_module_pair']['colour/colour']['pairs'] == 3
+    assert out['by_module_pair']['outline/outline']['pairs'] == 6
+    assert out['by_module_pair']['outline/presentation']['pairs'] == 4
+    assert out['by_module_pair']['colour/presentation']['pairs'] == 3
+    assert out['pointwise_bootstrap_95_intervals_not_multiplicity_adjusted']
+    assert all('genetic' not in str(i).lower() or 'not genetic' in str(i).lower()
+               for i in out['limitations'])
+    # A changed coefficient must fail, never become a spurious quantitative result.
+    import copy
+    altered = copy.deepcopy(example)
+    altered['common_cohort']['pairs'][0]['estimates']['adjusted/between_minus_within_rv']['estimate'] += .1
+    with pytest.raises(ValueError, match='identity broken'):
+        summarize_existing_aggregate(altered)
+    duplicate = copy.deepcopy(example)
+    duplicate['common_cohort']['pairs'][0]['left'] = duplicate['common_cohort']['pairs'][1]['left']
+    duplicate['common_cohort']['pairs'][0]['right'] = duplicate['common_cohort']['pairs'][1]['right']
+    with pytest.raises(ValueError, match='Missing, duplicated'):
+        summarize_existing_aggregate(duplicate)
+
+
+def test_native_gate_b_fails_closed_for_changed_archive_member_bytes(tmp_path):
+    from reproducibility.native_gate_b_existing_rv import verify_aggregate_file
+    f = tmp_path / 'fake.json'
+    f.write_text('{"run_id": 39428065666}')
+    with pytest.raises(ValueError, match='Wrong native integration aggregate bytes'):
+        verify_aggregate_file(f)
