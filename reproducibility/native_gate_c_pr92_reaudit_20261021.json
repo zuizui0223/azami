@@ -1,0 +1,96 @@
+{
+  "schema_version": "native_gate_c_pr92_reaudit_20261021_v1",
+  "status": "VALIDATED_HISTORICAL_NON_NATIVE_PILOT_NOT_CURRENT_NATIVE",
+  "original_commit": "6061befaf56ee545bb3b2b4a80ed220d2def1190",
+  "original_source_observations": 46276,
+  "source_native_filter": false,
+  "source_git_blobs": {
+    "pairwise_distributions_csv": "5d996a95049840cdd97c18f4ca3760ad8cc950ba",
+    "same_taxon_baselines_csv": "959ce8ffb8314ef7461b9bc6486561240fd66802",
+    "figure_summary_json": "17315a9f4aa8cf68632e555e016cf06a99b6162c",
+    "overlap_summary_json": "a9f64ccde7817e9b57e807146d13428ca4b91c83",
+    "bandwidth_check_csv": "af68d2affd5fa7917420bcef4c74779a6ef72551"
+  },
+  "historical_protocol": {
+    "n_per_taxon": 50,
+    "rarefactions": 30,
+    "same_taxon_reference": "30 nonoverlapping 50+50 draws per taxon; within-taxon 95th percentile distance",
+    "bandwidth_factors": [
+      0.75,
+      1,
+      1.25
+    ],
+    "pairwise_testing": "descriptive thresholds, not independent p values"
+  },
+  "all_between_taxon_pairs": {
+    "orientation": 1431,
+    "colour": 1431,
+    "outline": 1431,
+    "involucre": 15,
+    "whole": 10
+  },
+  "core_modules": {
+    "orientation": {
+      "between_pair_count_with_same_taxon_baseline": 528,
+      "baseline_taxa": 33,
+      "full_w2_exceedances": 109,
+      "full_exceedance_rate": 0.20643939393939395,
+      "centred_w2_exceedances": 13,
+      "centred_exceedance_rate": 0.02462121212121212,
+      "median_full_pair_overlap": 0.865198570552702,
+      "median_full_pair_w2": 0.34782602200009116,
+      "median_full_pair_centred_share": 0.46116625529329086,
+      "bandwidth_rank_rho_075": 0.9846984698469846,
+      "bandwidth_rank_rho_125": 0.9901590159015901,
+      "bandwidth_overlap_medians": [
+        0.8394989367176587,
+        0.8610895718701905,
+        0.8750439214045853
+      ]
+    },
+    "colour": {
+      "between_pair_count_with_same_taxon_baseline": 528,
+      "baseline_taxa": 33,
+      "full_w2_exceedances": 466,
+      "full_exceedance_rate": 0.8825757575757576,
+      "centred_w2_exceedances": 349,
+      "centred_exceedance_rate": 0.6609848484848485,
+      "median_full_pair_overlap": 0.5112992291839551,
+      "median_full_pair_w2": 1.6284415255093485,
+      "median_full_pair_centred_share": 0.4302978855773596,
+      "bandwidth_rank_rho_075": 0.9965796579657965,
+      "bandwidth_rank_rho_125": 0.9954875487548754,
+      "bandwidth_overlap_medians": [
+        0.42940046057435033,
+        0.5070701678876988,
+        0.5609039291772524
+      ]
+    },
+    "outline": {
+      "between_pair_count_with_same_taxon_baseline": 561,
+      "baseline_taxa": 34,
+      "full_w2_exceedances": 77,
+      "full_exceedance_rate": 0.13725490196078433,
+      "centred_w2_exceedances": 47,
+      "centred_exceedance_rate": 0.08377896613190731,
+      "median_full_pair_overlap": 0.6813108651620693,
+      "median_full_pair_w2": 1.2101095058006004,
+      "median_full_pair_centred_share": 0.8398950682300503,
+      "bandwidth_rank_rho_075": 0.9778937893789377,
+      "bandwidth_rank_rho_125": 0.9846384638463844,
+      "bandwidth_overlap_medians": [
+        0.5856752062864784,
+        0.6749612405588863,
+        0.7338654202443484
+      ]
+    }
+  },
+  "independent_reaudit": {
+    "pairwise_rows_recounted": 4318,
+    "source_baseline_rows_recounted": 100,
+    "baseline_pair_thresholds_recomputed": true,
+    "bandwidth_source_rank_correlations_rechecked_in_original_validation": true,
+    "new_native_density_fit": false
+  },
+  "claim_ceiling": "Comparison is among selected original taxa and two- or three-dimensional image-derived shared projections. Differences are not calibration-corrected morphology, functional diversity, adaptation, phylogenetic convergence, independently tested species-pair significance, or current native-only results."
+}
