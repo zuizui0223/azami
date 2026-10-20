@@ -13,6 +13,11 @@ on:
       - 'analysis/v4/select_native_environment.py'
       - 'analysis/v4/ENVIRONMENT_CONTRACT.md'
       - 'tests/test_v4_select_native_environment.py'
+      - 'analysis/v4/native_trait_models.py'
+      - 'analysis/v4/observation_models.py'
+      - 'analysis/v4/environment_gradients.py'
+      - 'analysis/v4/MODEL_CONTRACT.md'
+      - 'tests/test_v4_observation_models.py'
 permissions:
   contents: read
   actions: read
@@ -22,7 +27,7 @@ concurrency:
 jobs:
   input-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       GH_TOKEN: ${{ github.token }}
       OPENBLAS_NUM_THREADS: '1'
@@ -35,7 +40,7 @@ jobs:
       - name: Install numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Check decoding and cohort invariants
-        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py
       - name: Restore authenticated native input
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -81,6 +86,13 @@ jobs:
           python -m analysis.v4.select_native_environment \
             --table work/native-integration/decoded/observations.csv.gz \
             --receipt work/native-integration/decoded/measurement_receipt.json \
+            --output work/native-integration/output
+      - name: Fit the common environmental model on endpoint-specific observations
+        run: |
+          python -m analysis.v4.native_trait_models \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --selection work/native-integration/output/environment_selection.json \
             --output work/native-integration/output
       - name: Save aggregate evidence only
         if: always()
