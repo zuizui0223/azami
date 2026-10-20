@@ -8,6 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from analysis.v4.plot_colour_response import ENGLISH
+from analysis.v4.environment_units import UNITS
 
 ENDPOINTS = {
     "corolla_lab_lightness": "Lightness (L*)",
@@ -44,7 +45,9 @@ def plot(result, output):
                     ax.plot(curve["x"], curve["change"], color=color)
                     ax.set_xlabel(ENGLISH.get(variable, variable) +
                                   (" species mean" if j == 0 else " deviation from species mean") +
-                                  "\n[stored environmental units]")
+                                  "\n[" + (UNITS[variable][0]
+                                  if result["input_receipt"].get("environment_decoding_status")
+                                  else "stored environmental units") + "]")
                     ax.set_ylabel("Change from median")
                     if j == 1:
                         ax.text(.02, .96,

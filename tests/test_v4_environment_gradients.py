@@ -3,6 +3,7 @@ import pandas as pd
 import pytest
 
 from analysis.v4.environment_gradients import exposure_support, gradient_points
+from analysis.v4.environment_units import interval_per_increment
 
 
 def test_between_support_does_not_count_abundant_species_repeatedly():
@@ -24,3 +25,10 @@ def test_change_interval_reverses_below_reference_and_zero_is_exact():
     np.testing.assert_allclose(curve["upper"], [-1,0,3])
     with pytest.raises(ValueError):
         gradient_points({}, {}, 0)
+
+
+def test_physical_increment_undoes_only_internal_predictor_standardization():
+    effect = {"raw_units_per_environment_sd": 2, "raw_ci95": [1,3]}
+    beta, interval = interval_per_increment(effect, sd=500, increment=100)
+    assert beta == .4
+    np.testing.assert_allclose(interval,[.2,.6])

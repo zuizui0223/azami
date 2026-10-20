@@ -211,25 +211,29 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install report imports
-        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8
+        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8 pytest
+      - name: Verify physical display conversions
+        run: python -m pytest -q tests/test_v4_environment_gradients.py
       - name: Verify saved numerical output and render main and SI
         run: |
           python - <<'PY'
           import hashlib,json
           from pathlib import Path
           from analysis.v4.environment_response import report
-          source=Path('analysis/v4/results/20261020_selected_environment/environment_response.json')
-          assert hashlib.sha256(source.read_bytes()).hexdigest()=='707e3cf0041d127e085bfa47ef83a6ff89a1ad84740cd4ec6c09a893bbe1c517'
+          source=Path('analysis/v4/results/20261020_corrected_environment/environment_response.json')
+          assert hashlib.sha256(source.read_bytes()).hexdigest()=='563bead7d30ca59cd00b5c435457a654de53656f5f74e84e1d164b7dc330341a'
           result=json.loads(source.read_text())
-          assert result['family_size']==48 and result['run_id']=='39416125522'
+          assert result['family_size']==64 and result['run_id']=='39422378058'
           output=Path('work/report');output.mkdir(parents=True,exist_ok=True)
           report(result,output)
+          from analysis.v4.environment_units import write_report
+          write_report(result,output)
           assert 'bract_projection_p95|' not in (output/'environment_response_ja.md').read_text()
           assert 'bract_projection_p95|' in (output/'environment_response_si_ja.md').read_text()
           print('Verified original numerical artifact; main/SI rendering only, no refit')
           PY
-          python -m analysis.v4.plot_colour_response \
-            analysis/v4/results/20261020_selected_environment/environment_response.json work/report
+          python -m analysis.v4.plot_environment_gradients \
+            analysis/v4/results/20261020_corrected_environment/environment_response.json work/report
       - uses: actions/upload-artifact@v4
         with:
           name: v4-main-si-reports

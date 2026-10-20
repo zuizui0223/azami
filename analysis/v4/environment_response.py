@@ -112,6 +112,9 @@ def execute(table, receipt_path, output, selection_path):
     pd.DataFrame(rows).to_csv(output/'environment_response_effects.csv',index=False)
     pd.DataFrame(inventory).to_csv(output/'measurement_reuse_inventory.csv',index=False)
     report(result,output)
+    if receipt.get('environment_decoding_status'):
+        from analysis.v4.environment_units import write_report
+        write_report(result,output)
     return result
 
 
