@@ -1,0 +1,102 @@
+{
+  "schema_version": "gate_d_pr144_canonical_handoff_20261021_v1",
+  "scientific_owner": {
+    "repository": "zuizui0223/azami",
+    "pull_request": 144,
+    "head_commit_verified": "7eaa06694ae13ef604c829a4e3298db6d38cea07",
+    "state_at_verification": "open_draft",
+    "merged_into_v3": false
+  },
+  "native_source": {
+    "original_pre_detector_native_observations": 313350,
+    "accepted_taxon_keys": 306,
+    "corrected_input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5aef46ed",
+    "all_nine_environment_complete": 312001,
+    "common_nine_outputs_eligible": {
+      "observations": 157779,
+      "taxa": 242
+    },
+    "model_complete": {
+      "observations": 157654,
+      "taxa": 174
+    }
+  },
+  "environment": {
+    "contract": "analysis/v4/ENVIRONMENT_CONTRACT.md",
+    "selection_rule": "outcome-independent multilevel correlation and VIF",
+    "variables": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "discarded_redundant": "chelsa_vpd_mean",
+    "raw_sentinel_excluded": true,
+    "numerical_run": 39428065666,
+    "orientation_rain_between": {
+      "degrees_per_100mm": 0.438,
+      "ci95": [
+        0.206,
+        0.671
+      ],
+      "holm_p": 0.00531
+    },
+    "orientation_rain_within": {
+      "interval_crosses_zero": true
+    }
+  },
+  "phylogenetic_placements": {
+    "run": 39435174409,
+    "placement_scenarios": 52,
+    "tree_taxa": 194,
+    "orientation_observations": 169912,
+    "between_bio12_degrees_per_100mm_range": [
+      0.4722,
+      0.5078
+    ],
+    "within_bio12_zero_in_ci_scenarios": 52,
+    "source_tree_bundle_sha256": "be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438"
+  },
+  "multivariate_covariance": {
+    "run": 39437849165,
+    "cohort": {
+      "observations": 157561,
+      "taxa": 170
+    },
+    "coordinates": 9,
+    "raw_adjusted_placement_fits": 104,
+    "bootstrap_replicates_per_fit": 200,
+    "estimand": "PSD constrained quadratic method of moments; phylogenetic, independent species and pooled within-species covariance",
+    "fit_failures": 0,
+    "phylogenetic_boundary_fits": 104,
+    "uncertainty": "conditional Gaussian parametric bootstrap, pointwise; placement scenarios not independent"
+  },
+  "artifacts": {
+    "environment_selection": "analysis/v4/results/20261020_native_integration/environment_selection.json",
+    "integration": "analysis/v4/results/20261020_native_integration/native_integration.json",
+    "environment_spatial": "analysis/v4/results/20261020_native_integration/native_spatial.json",
+    "phylogenetic_receipt": "analysis/v4/results/20261020_native_phylogeny/receipt.json",
+    "covariance_receipt": "analysis/v4/results/20261020_native_covariance/receipt.json",
+    "covariance_report": "analysis/v4/results/20261020_native_covariance/covariance_report_ja.md"
+  },
+  "boundaries": {
+    "cross_repo_role": "PR142 consumes this as provenance and dependency link, does not refit or publish Gate D estimates",
+    "geographic_sampling": "fixed taxon×coarse-cell thinning and residual spatial diagnostics not independent generalization",
+    "unresolved": [
+      "original photographer join and selection bias",
+      "trait-specific independent phenotyping validation",
+      "environment×TPD or KDE overlap from common native cohort",
+      "strict phylogenetic identification under PSD boundary constraints"
+    ],
+    "not_claimed": [
+      "genetic covariance",
+      "adaptive causation",
+      "physical gravity-based head posture",
+      "pigment chemistry",
+      "photographic independence",
+      "same-model comparison with exploratory alternative exposure sets"
+    ],
+    "v3_frozen_8_stages_16_files_unchanged": true
+  }
+}
