@@ -1,7 +1,18 @@
 # Chapter 1 v4: one workflow from source to functional-trait inference
 
-PR142 is exploratory. The frozen v3 results are a reference, not the conclusion
+PR143 contains the current v4 work. The frozen v3 results are a reference, not the conclusion
 of the redesigned v4 analysis. Execution and verification belong in GitHub Actions.
+
+Current main modules: whole colour, orientation and four head-outline coordinates
+(aspect ratio, circularity, solidity, width-profile CV). Each outline coordinate
+has 176,048 native eligible measurements before selected-environment missingness.
+Bract contour projection remains SI (1,303 observations). Responses stay at the
+observation level; each selected environmental variable has separate within- and
+between-species coefficients plus species random intercepts. The expanded family
+contains 64 joint tests (four modules, eight exposures, two levels); this does not
+overwrite the archived 48-test and common-slope 24-test analyses.
+See [environmental rationale and limitations](ENVIRONMENT_SELECTION_RATIONALE.md)
+and [current implementation plan](../../docs/superpowers/plans/2026-10-20-v4-gradients.md).
 
 ## Goal and completion criteria
 
