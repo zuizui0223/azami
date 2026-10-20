@@ -21,6 +21,9 @@ on:
       - 'analysis/v4/native_integration.py'
       - 'analysis/v4/INTEGRATION_CONTRACT.md'
       - 'tests/test_v4_native_integration.py'
+      - 'analysis/v4/native_spatial.py'
+      - 'analysis/v4/SPACE_CONTRACT.md'
+      - 'tests/test_v4_native_spatial.py'
 permissions:
   contents: read
   actions: read
@@ -43,7 +46,7 @@ jobs:
       - name: Install numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Check decoding and cohort invariants
-        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py tests/test_v4_native_spatial.py
       - name: Restore authenticated native input
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -100,6 +103,12 @@ jobs:
       - name: Compare integration before and after environmental adjustment
         run: |
           python -m analysis.v4.native_integration \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --models work/native-integration/output/native_trait_models.json \
+            --output work/native-integration/output
+      - name: Evaluate fixed spatial concentration and residual diagnostics
+        run: |
+          python -m analysis.v4.native_spatial \
             --table work/native-integration/decoded/observations.csv.gz \
             --models work/native-integration/output/native_trait_models.json \
             --output work/native-integration/output
