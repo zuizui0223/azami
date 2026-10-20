@@ -150,6 +150,17 @@ The source remains an encrypted GitHub artifact inaccessible for local computati
 
 ### Covariation comes before hypervolume (2026-10-20)
 
+**Already measured pairwise construct examples in the frozen V3 *pairwise* cohort** ([canonical result](../analysis/v3/SCALE_DEPENDENT_INTEGRATION_RESULT_20260910.md); each pair has its own qualifying cohort):
+
+| Construct pairing | Within-taxon RV | Among-taxon RV | Difference (among − within) |
+| --- | ---: | ---: | ---: |
+| Floral chroma × floral hue | 0.0626 | 0.3577 | +0.2951 |
+| Floral chroma × visible projection prominence | 0.00002 | 0.2491 | +0.2491 |
+| Floral lightness × floral chroma | 0.0981 | 0.2127 | +0.1146 |
+| Projection prominence × projection pattern | 0.3038 | 0.1544 | −0.1494 |
+
+These are *RV association magnitudes* (not signed Pearson r, adaptation effects, or percentages). Hue is circular and partially constructed from the same colour pixels, so its association with chroma cannot be interpreted as independence of ecological function. Projection variables arise from related outlines/segmentation; technical covariance may contribute. The first three strong **among** connections and the fourth stronger **within** connection illustrate why a single hypervolume number would hide scale-dependent shape. This pairwise table is a *different cohort/estimator* from the full V3 1,734/42 exact-common-cohort contrast. In the exact-common-cohort result, **33/36** relations are stronger among taxa and the bootstrap median RV contrast is **+0.065928 [0.038197, 0.119048]**, but it must **not** be transferred unchanged to the 313,350-native source frame.
+
 **The first estimand is cross-trait covariance**, not a single volume scalar. The existing native-first manual `native_space_gate.py` now explicitly partitions the **matched three-axis core** (image orientation / flower chroma / whole-head 2D aspect) into the within-accepted-taxon covariance **W**, the among-taxon covariance **B**, and the exact equal-taxon sampling identity **T = W + B**. It reports **three named pairwise correlations at both scales**, their differences, and the share of total variance attributable to taxon means. Comparisons use one observation per taxon × 0.5-degree cell and equally weighted accepted taxa. This helps distinguish *within-taxon reorganization* from *species-assemblage turnover*, without claiming either is genetic covariance.
 
 **Existing actual native-only result (not rerun):** [original observer-balanced exploration](https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/OBSERVER_BIAS_RESULT_20261020_JA.md) found, for **164,050 matched observations / 177 accepted taxa**, an orientation × four-dimensional colour RV of **0.006793 within**, **0.037122 among** (observer × spatial-cell balanced). Its matched-n taxon-bootstrap difference was **+0.024622**, 95% interval **[−0.020787, +0.083385]** across 400 draws. This interval includes zero; an unqualified universal stronger-between interpretation is unwarranted. The full V3 manuscript instead reports stronger among integration in the **distinct 1,734-observation / 42-taxon selected cohort**. These are **different estimands, sampling frames and technical measurements**, not direct replication.
