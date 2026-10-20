@@ -1,0 +1,35 @@
+name: V4 native-first source validation
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/native_scope.py'
+      - 'analysis/v4/native_upstream_taxa.txt'
+      - 'analysis/v4/collect_native_sources.py'
+      - 'tests/test_v4_native_first.py'
+      - '.github/workflows/v4-native-first.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: v4-native-source-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native-first:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'numpy>=2,<3' 'pandas>=2.2,<4' 'shapely>=2,<3' requests pytest
+      - name: Test native-first classification rules
+        run: python -m pytest -q tests/test_v4_native_first.py
+      - name: Snapshot source evidence for every upstream taxon
+        run: python -m analysis.v4.collect_native_sources --out-dir work/v4-native-sources
+      - name: Preserve authoritative source responses and executable classifier
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-source-snapshot
+          path: work/v4-native-sources/
+          retention-days: 90
