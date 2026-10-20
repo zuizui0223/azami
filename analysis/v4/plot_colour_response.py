@@ -36,7 +36,8 @@ def plot(result,output):
                 axes[2].plot(hue,y,'o',color=color,markersize=4)
     axes[0].set_yticks(range(len(variables)),[ENGLISH.get(v,v) for v in variables])
     axes[0].invert_yaxis()
-    axes[0].legend(loc='lower left',bbox_to_anchor=(0,1.02),frameon=False)
+    handles,labels=axes[0].get_legend_handles_labels()
+    fig.legend(handles,labels,loc='upper center',bbox_to_anchor=(.5,.94),ncol=2,frameon=False)
     axes[0].set_xlabel('Darker  <-  change in L*  ->  Lighter')
     axes[1].set_xlabel('Less vivid  <-  change in C*  ->  More vivid')
     axes[2].set_xlabel('HSV hue displacement (degrees)\nDescriptive point contrast; no interval')
@@ -48,7 +49,7 @@ def plot(result,output):
              'Bars: pointwise 95% intervals, not whole-colour significance.\n'
              'Hue: fixed reference contrast (other environments at reference values), '
              'not a predicted colour swatch or pigment concentration.',fontsize=9)
-    fig.tight_layout(rect=(0,.09,1,.94))
+    fig.tight_layout(rect=(0,.09,1,.87))
     output=Path(output)
     fig.savefig(output/'colour_environment_response.png',dpi=180)
     fig.savefig(output/'colour_environment_response.pdf')
