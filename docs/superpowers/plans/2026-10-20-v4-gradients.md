@@ -12,3 +12,5 @@ Spec: user instruction 2026-10-20; this supersedes the common-slope main analysi
 - [ ] Quantify species influence; evaluate spatial and phylogenetic limitations without treating ordinary random intercepts as either correction. Publish traceable effects, uncertainty and conclusions.
 
 Completion requires actual artifacts for gradients, coverage, measurement extension and diagnostics; green CI alone is insufficient. Common-slope run 39418226382 and decomposed run 39416125522 remain separate provenance chains.
+
+Robustness implementation: fixed exclusions of the top 2 and 5 species ranked by eligible observation counts separately for each module; fixed selected exposures, full-native means and scaling. Broad-space comparison adds the existing eight spherical-coordinate terms on identical endpoint rows. These are diagnostic fits, not alternative main-model selection. Record raw effect intervals and sample counts; no significant-result rescue or new primary family.
