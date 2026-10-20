@@ -1,0 +1,438 @@
+{
+  "native_observations": 313350,
+  "with_archived_measurement_row": 217104,
+  "without_archived_measurement_row": 96246,
+  "complete_four_climate": 313244,
+  "endpoints": {
+    "orientation_image_vertical_angle": {
+      "finite": 170066,
+      "eligible": 170066,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 170066
+    },
+    "corolla_lab_lightness": {
+      "finite": 186439,
+      "eligible": 186439,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 186439
+    },
+    "corolla_lab_chroma": {
+      "finite": 186439,
+      "eligible": 186439,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 186439
+    },
+    "corolla_hue_sin": {
+      "finite": 186390,
+      "eligible": 186390,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 186390
+    },
+    "corolla_hue_cos": {
+      "finite": 186390,
+      "eligible": 186390,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 186390
+    },
+    "visible_floret_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "corolla_white_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "corolla_redmagenta_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "corolla_purple_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "corolla_yellow_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "capitulum_outline_aspect_ratio": {
+      "finite": 176048,
+      "eligible": 176048,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 176048
+    },
+    "capitulum_outline_circularity": {
+      "finite": 176048,
+      "eligible": 176048,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 176048
+    },
+    "capitulum_outline_solidity": {
+      "finite": 176048,
+      "eligible": 176048,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 176048
+    },
+    "capitulum_width_profile_cv": {
+      "finite": 176048,
+      "eligible": 176048,
+      "source": "full_archived_observation_table",
+      "eligible_with_four_climate": 176048
+    },
+    "involucre_length_width_ratio": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "involucre_apical_taper_ratio": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "involucre_basal_taper_ratio": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "bract_projection_roughness": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "bract_projection_p95": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "bract_projection_maximum": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "bract_spread_fraction": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "bract_projection_peak_density": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "bract_projection_asymmetry": {
+      "finite": 1303,
+      "eligible": 1303,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 1303
+    },
+    "involucre_surface_edge_density": {
+      "finite": 570,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "involucre_surface_lbp_entropy": {
+      "finite": 570,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "involucre_surface_high_frequency_energy": {
+      "finite": 570,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    },
+    "involucre_surface_specular_fraction": {
+      "finite": 570,
+      "eligible": 0,
+      "source": "zenodo_endpoint_table",
+      "eligible_with_four_climate": 0
+    }
+  },
+  "trait_responses_averaged": false,
+  "four_predictor_diagnostics": {
+    "all_native": {
+      "n": 313244,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_bio12"
+      ],
+      "status": "estimated",
+      "correlation": [
+        [
+          0.9999999999999999,
+          0.52894489108762,
+          0.9085031142976058,
+          0.1090838315207824
+        ],
+        [
+          0.52894489108762,
+          0.9999999999999999,
+          0.6980691488610816,
+          0.0785931954115506
+        ],
+        [
+          0.9085031142976058,
+          0.6980691488610816,
+          0.9999999999999998,
+          -0.015028179985972718
+        ],
+        [
+          0.10908383152078241,
+          0.07859319541155062,
+          -0.015028179985972718,
+          1.0
+        ]
+      ],
+      "vif": [
+        7.529607554356389,
+        2.380096113927798,
+        10.611634585916592,
+        1.1705214623870361
+      ]
+    },
+    "colour_any_coordinate": {
+      "n": 186439,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_bio12"
+      ],
+      "status": "estimated",
+      "correlation": [
+        [
+          1.0,
+          0.554379454144897,
+          0.9104535249108847,
+          0.11479219658309284
+        ],
+        [
+          0.554379454144897,
+          1.0,
+          0.7080079131878826,
+          0.12446082171093996
+        ],
+        [
+          0.9104535249108847,
+          0.7080079131878826,
+          1.0,
+          0.0071533707987932555
+        ],
+        [
+          0.11479219658309282,
+          0.12446082171093996,
+          0.007153370798793256,
+          1.0
+        ]
+      ],
+      "vif": [
+        7.27886543786877,
+        2.3941334093745827,
+        10.214681848164513,
+        1.159611735750872
+      ]
+    },
+    "image_orientation": {
+      "n": 170066,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_bio12"
+      ],
+      "status": "estimated",
+      "correlation": [
+        [
+          1.0,
+          0.5567279039868634,
+          0.9091579094396185,
+          0.11190443572511058
+        ],
+        [
+          0.5567279039868634,
+          1.0,
+          0.7083395841726656,
+          0.11935185269864391
+        ],
+        [
+          0.9091579094396186,
+          0.7083395841726657,
+          0.9999999999999998,
+          0.00109946915529795
+        ],
+        [
+          0.11190443572511058,
+          0.11935185269864391,
+          0.0010994691552979501,
+          1.0
+        ]
+      ],
+      "vif": [
+        7.127207016804508,
+        2.3718130795170924,
+        9.982286186466853,
+        1.159886487395292
+      ]
+    },
+    "legacy_bract_projection_not_opening": {
+      "n": 1303,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_bio12"
+      ],
+      "status": "estimated",
+      "correlation": [
+        [
+          0.9999999999999999,
+          0.4530864538522703,
+          0.8873779190046562,
+          0.08956735797509124
+        ],
+        [
+          0.45308645385227037,
+          1.0,
+          0.6388025088573706,
+          0.10479414159814661
+        ],
+        [
+          0.8873779190046562,
+          0.6388025088573706,
+          0.9999999999999999,
+          -0.06976411428776437
+        ],
+        [
+          0.08956735797509124,
+          0.10479414159814661,
+          -0.06976411428776436,
+          1.0
+        ]
+      ],
+      "vif": [
+        6.3782025021473325,
+        2.122323618328831,
+        8.825664544179148,
+        1.2703343280672073
+      ]
+    }
+  },
+  "all_endpoint_complete_case_required": false,
+  "phyllary_opening_angle_measured": false,
+  "unit": "inherited observation-level values; no further trait aggregation",
+  "status": "inputs_prepared_not_models_or_new_measurements",
+  "measurements_sha256": "b49a093c849928c456d6747ec51772b5a6b78debb2ae5eb5dbe2a91b08f66dd7",
+  "zenodo_traits_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+  "prepared_table_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "encrypted_table_sha256": "ee17d4d8ee6bea7fdb6d8a16874d1813da613eb539592e9bef661b386715fb71",
+  "encrypted_table_aad": "azami-v4-prepared-observations-v1",
+  "github_commit": "e6be824ffe7c37a5711c1430d0671d6e85de2bf7",
+  "raw_prepared_table_sha256": "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29",
+  "environment_decoding": {
+    "chelsa_bio01": {
+      "scale": 0.1,
+      "offset": -273.15,
+      "source_sha256": "5b2c7b9fcaa2dfaf1b49a4f943e779b9b0b9ebb35b21824b48b1c2ce1e8e629a",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_bio04": {
+      "scale": 0.1,
+      "offset": 0.0,
+      "source_sha256": "8e877c21b65a17a265982295c4f3ea3419d9753d22380a3520c33474ed4cddd2",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_bio12": {
+      "scale": 1.0,
+      "offset": 0.0,
+      "source_sha256": "918441cac0b633227d2a6dcc0ddcfb5efd40e015a426951a01cfbf9ba2f7a22c",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_bio15": {
+      "scale": 0.1,
+      "offset": 0.0,
+      "source_sha256": "0f349681b70c3502fd8027da5d266d0bf1d1e4ffd64d20fa4c1e8247f5a6b328",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_rsds_mean": {
+      "scale": 0.001,
+      "offset": 0.0,
+      "source_sha256": "cc1ad14a70a1a940be3d01d918d4c3f7e35db95b86b12af9be5487e1bbc1fc7d",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_vpd_mean": {
+      "scale": 0.1,
+      "offset": 0.0,
+      "source_sha256": "35328724237339b2f8eb80f21adb7ee38f58aebd17bd18d1c271d563a18fe8e8",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_sfcwind_mean": {
+      "scale": 0.001,
+      "offset": 0.0,
+      "source_sha256": "d4b88b69c98ef50522163727766137a91bc2ffde1b0cedcf208b5230d1835f08",
+      "declared_nodata": 65535.0,
+      "finite_before": 313240,
+      "finite_after": 313240,
+      "additional_invalid_uint32_max": 0
+    },
+    "chelsa_gsp": {
+      "scale": 0.1,
+      "offset": 0.0,
+      "source_sha256": "342858ce86f8b5c4f088327e4fa68afc7ac9cb64eff46ffaa980577a0f0641b6",
+      "declared_nodata": 2147483647.0,
+      "finite_before": 313244,
+      "finite_after": 312005,
+      "additional_invalid_uint32_max": 1239
+    },
+    "chelsa_npp": {
+      "scale": 0.1,
+      "offset": 0.0,
+      "source_sha256": "5191b779df1f01b901136b2de7fdf3d4c2c2de300d956d5e967e4fec8037c8a7",
+      "declared_nodata": 65535.0,
+      "finite_before": 313244,
+      "finite_after": 313244,
+      "additional_invalid_uint32_max": 0
+    }
+  },
+  "environment_metadata_sha256": "905dd41d987a742761d9bb5c8de23e908b730ea70691491483840b998e1ca342",
+  "complete_nine_climate": 312001,
+  "environment_decoding_status": "physical_units_gsp_invalid_encoding_masked_v1"
+}
