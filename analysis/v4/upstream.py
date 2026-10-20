@@ -58,6 +58,24 @@ def balanced_queue(x,per_taxon=2):
     a=a.sort_values(['taxon_id','cell_round','selection_hash','photo_id'])
     return a.groupby('taxon_id',sort=True).head(per_taxon).reset_index(drop=True)
 
+def srgb_pixels_to_lab(pixels):
+    """D65 sRGB JPEG pixel encoding to camera-space CIELAB; NOT reflectance.
+
+    Incoming pixel values must have been ICC-converted or explicitly marked as
+    assumed sRGB by the image decoder. No lighting or pigment calibration.
+    """
+    pix=np.asarray(pixels)
+    if pix.ndim!=2 or pix.shape[1]!=3 or pix.dtype!=np.uint8:
+        raise ValueError('Expected Nx3 uint8 encoded RGB pixels')
+    s=pix.astype(float)/255.
+    linear=np.where(s<=.04045,s/12.92,((s+.055)/1.055)**2.4)
+    xyz=linear@np.array([[.4124564,.3575761,.1804375],
+                         [.2126729,.7151522,.0721750],
+                         [.0193339,.1191920,.9503041]]).T
+    xyz=xyz/np.array([.95047,1.,1.08883]);delta=6/29
+    f=np.where(xyz>delta**3,np.cbrt(xyz),xyz/(3*delta**2)+4/29)
+    return np.column_stack([116*f[:,1]-16,500*(f[:,0]-f[:,1]),200*(f[:,1]-f[:,2])])
+
 def colour(rgb,mask):
     """All pixels in an explicit floral mask. Never select the mask by colour."""
     if mask is None:return {'status':'missing_anatomical_mask'}
@@ -65,19 +83,24 @@ def colour(rgb,mask):
     if rgb.ndim!=3 or rgb.shape[2]!=3 or mask.shape!=rgb.shape[:2]:raise ValueError('RGB/mask shape mismatch')
     if mask.sum()<10:return {'status':'insufficient_mask_pixels'}
     if rgb.dtype!=np.uint8:raise ValueError('Expected explicitly sRGB-encoded uint8 RGB')
-    s=rgb[mask].astype(float)/255.
-    linear=np.where(s<=.04045,s/12.92,((s+.055)/1.055)**2.4)
-    xyz=linear@np.array([[.4124564,.3575761,.1804375],[.2126729,.7151522,.0721750],[.0193339,.1191920,.9503041]]).T
-    xyz=xyz/np.array([.95047,1.,1.08883]);delta=6/29
-    f=np.where(xyz>delta**3,np.cbrt(xyz),xyz/(3*delta**2)+4/29)
-    lab=np.column_stack([116*f[:,1]-16,500*(f[:,0]-f[:,1]),200*(f[:,1]-f[:,2])])
-    pix=rgb[mask];C=np.hypot(lab[:,1],lab[:,2]);chromatic=C>=5
+    pix=rgb[mask];lab=srgb_pixels_to_lab(pix)
+    C=np.hypot(lab[:,1],lab[:,2]);chromatic=C>=5
     out={'status':'measured_image_colour','n_pixels':int(len(pix)),
          'rgb_median':np.median(pix,axis=0).tolist(),'low_chroma_fraction':float((~chromatic).mean()),
          'clipped_pixel_fraction':float(((pix<=1)|(pix>=254)).any(axis=1).mean()),
          'hue_degrees':None,'hue_resultant':None,'calibrated_reflectance':False}
     for key,val in [('L',lab[:,0]),('a',lab[:,1]),('b',lab[:,2]),('C',C)]:
         out['lab_'+key+'_median']=float(np.median(val));out['lab_'+key+'_q10_q90']=np.quantile(val,[.1,.9]).tolist()
+    # Continuous measures of how colours vary *within* the same floral ROI,
+    # not an arbitrary white/purple category inferred from a C* threshold.
+    centre=np.median(lab,axis=0)
+    radius=np.linalg.norm(lab-centre,axis=1)
+    out['lab_dispersion_median']=float(np.median(radius))
+    out['lab_dispersion_q90']=float(np.quantile(radius,.90))
+    out['lab_joint_median']=centre.tolist()
+    out['chromatic_fraction']=float(chromatic.mean())
+    out['neutral_threshold_C']=5.0
+    out['colour_distribution_calibrated']=False
     if chromatic.sum()>=10:
         h=np.arctan2(lab[chromatic,2],lab[chromatic,1]);v=np.array([np.cos(h).mean(),np.sin(h).mean()])
         out['hue_resultant']=float(np.linalg.norm(v))
