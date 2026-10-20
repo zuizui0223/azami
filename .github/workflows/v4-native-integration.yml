@@ -18,6 +18,9 @@ on:
       - 'analysis/v4/environment_gradients.py'
       - 'analysis/v4/MODEL_CONTRACT.md'
       - 'tests/test_v4_observation_models.py'
+      - 'analysis/v4/native_integration.py'
+      - 'analysis/v4/INTEGRATION_CONTRACT.md'
+      - 'tests/test_v4_native_integration.py'
 permissions:
   contents: read
   actions: read
@@ -40,7 +43,7 @@ jobs:
       - name: Install numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Check decoding and cohort invariants
-        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py
       - name: Restore authenticated native input
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -93,6 +96,12 @@ jobs:
             --table work/native-integration/decoded/observations.csv.gz \
             --receipt work/native-integration/decoded/measurement_receipt.json \
             --selection work/native-integration/output/environment_selection.json \
+            --output work/native-integration/output
+      - name: Compare integration before and after environmental adjustment
+        run: |
+          python -m analysis.v4.native_integration \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --models work/native-integration/output/native_trait_models.json \
             --output work/native-integration/output
       - name: Save aggregate evidence only
         if: always()
