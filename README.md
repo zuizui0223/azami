@@ -20,7 +20,29 @@ The current statistical analysis **has executable code**. Its replay starts from
 
 ## Native-only follow-up (not a replacement for frozen v3)
 
-The verified 665,115-observation original-source classification yields a 313,350-observation native-primary roster **before** any image or trait selection. Only 22 of the 27 registered V2 endpoints have historical measurements, and coverage differs sharply by endpoint; five endpoints were never measured. See [Native-first 27-endpoint handoff](reproducibility/NATIVE_FIRST_27_ENDPOINT_HANDOFF.md) for the precise cohort ledger, missingness, and safe next analytic gate. **This is a documented follow-up, not an executed native-only current-paper replay.** Upstream acquisition, image remeasurement, and V4-only Actions remain paused.
+The active native V4 consolidation is described in the
+[integrated workflow plan](docs/superpowers/plans/2026-10-20-v4-native-integration.md).
+It retains V3's within/between phenotype-integration question, with
+endpoint-specific full native observations and a shared conditional environmental
+model. Use the single **V4 native capitulum integration** Action on
+`codex/v4-native-integration-workflow`: an empty `report_run` executes numerical
+stages; a completed run ID regenerates figures and the report without refitting.
+The [environment](analysis/v4/ENVIRONMENT_CONTRACT.md),
+[model](analysis/v4/MODEL_CONTRACT.md),
+[integration](analysis/v4/INTEGRATION_CONTRACT.md) and
+[spatial](analysis/v4/SPACE_CONTRACT.md) contracts define the fixed scope and
+limits. PR143 remains closed. Frozen V3 replay and its scientific reference
+outputs are unchanged.
+
+The verified 665,115-observation original-source classification yields a
+313,350-observation native-primary roster **before** any image or trait selection.
+Only 22 of the 27 registered V2 endpoints have historical measurements; five were
+never measured. See the [current corrected input audit](analysis/v4/results/native_input_audit/README.md)
+for counts and the [earlier handoff](reproducibility/NATIVE_FIRST_27_ENDPOINT_HANDOFF.md)
+for upstream history. Earlier environment-completeness counts predate correction
+of invalid raster values. Upstream acquisition and image remeasurement remain
+paused; the bounded native integration Action is active under the user's revised
+scope. Native V4 outputs remain distinct from frozen V3 results.
 
 ## Current evidence chain
 

@@ -1,5 +1,13 @@
 # Native-first 27-endpoint handoff (2026-10-20)
 
+> Historical handoff. The user subsequently authorized the bounded
+> [native V4 integration workflow](../docs/superpowers/plans/2026-10-20-v4-native-integration.md).
+> Its numerical Action is active; acquisition and remeasurement remain paused.
+> Environment completeness and exploratory model results below predate the
+> corrected environmental decoding. Use the [corrected audit](../analysis/v4/results/native_input_audit/README.md)
+> and current contracts for the active analysis. Old model P values must not be
+> treated as current native V4 evidence.
+
 ## Decision: what is active and what remains paused
 
 Chapter 1's frozen v3/GEB outputs remain the historical reference; they are **not** automatically native-only by replaying them. The next primary cohort is selected from the **original pre-detector source, prior to any detector or trait selection**, using a fixed native-range definition. An all-upstream native classification and inherited-measurement linkage already exist in the archived PR142 evidence. **Reuse that completed result; do not reacquire WCVP, CHELSA rasters, original images, or remeasure missing pixels in this consolidation.** No new V4 Actions or competing analysis entry point is authorized by this note.
