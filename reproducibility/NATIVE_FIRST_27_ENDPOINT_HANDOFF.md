@@ -1,5 +1,11 @@
 # Native-first 27-endpoint handoff (2026-10-20)
 
+## Completed aggregate-only Gate A boundary (2026-10-20)
+
+The [machine-readable Gate A bound receipt](native_gate_a_bounds_20261020.json) uses **only** the verified original `measurement_receipt.json`: 217,104 native observations have inherited observation-level measurements, with 170,066 eligible orientation, 186,439 chroma and 176,048 outline-aspect observations from the **same** inherited table. Sharp Fréchet inclusion–exclusion gives orientation × chroma **139,401–170,066**, orientation × outline **129,010–170,066**, chroma × outline **145,383–176,048**, and **matched all-three 98,345–170,066**. These are source-backed **bounds**, **not matched-row results**; joint nine-output lower bound remains zero.
+
+A read-only [manual Gate A audit](native_gate_a.py) now verifies the exact historical prepared-table SHA and frozen source counts, performs **27 endpoint-specific QC checks**, audits the core three modules and their exact observation-level intersections, reports accepted-taxon and spatial-cell counts, and optionally joins private original observer IDs or a verified previously recovered five-field head→observation file. No new photo/raster collection, model fitting, publication of IDs/coordinates or public Actions workflow is involved. The current protected private input is **not present in the public repository**, so the actual intersection, independent spatial/observer support, and recovered-five native counts remain **not executed and not verified**.
+
 ## Canonical design (historical audit reconciled, design only)
 
 The [single refined study design](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md) is authoritative for future native-first work. The [historical PR/commit index](HISTORY_AUDIT_INDEX_20261020.json) preserves scoped audit metadata. This document retains the source/endpoint evidence receipts and archived analyses **as provenance, not competing execution instructions**. Follow Gate A matched-observation/QC checks before new measurements, Gate B covariance before Gate C density/KDE/Wasserstein and Gate D ecology. No new original images, source extraction, Actions workflow, or frozen GEB V3 claim is authorized.
