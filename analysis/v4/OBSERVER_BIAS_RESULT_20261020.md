@@ -34,6 +34,21 @@ A highly concentrated species histogram **does not itself prove** model distorti
 
 For among-taxon regressions, each species is one final unit **even under scheme 1**. Hence observation vs equal-taxon weighting makes no difference there unless the **within-taxon mean or regional balance** changes. These are different estimands from naive pooled observation regression; never compare them as one common causal effect.
 
+### Exact pooled covariance decomposition, separating observation intensity from ecology
+
+The same measured native **186,313 chroma** and **169,950 presentation** observations were decomposed *exactly*, with weighted pooled covariance = between-taxon covariance + mean within-taxon covariance. All parts below share the pooled standard-deviation denominator. This is a **descriptive algebraic identity**, not a causal partition.
+
+| Trait vs environment; weighting | Pooled beta | Between-taxon part | Within-taxon part | Largest two source taxa's total model weight |
+|---|---:|---:|---:|---:|
+| Chroma vs radiation, raw observation | **−0.05116** | **−0.04485** | −0.00632 | **48.44%** |
+| Chroma vs radiation, equal taxon | **−0.18691** | **−0.18265** | −0.00426 | **1.13%** |
+| Chroma vs radiation, equal taxon×cell×observer | **−0.18718** | **−0.18058** | −0.00660 | **1.13%** |
+| Presentation vs rain, raw observation | **+0.02940** | +0.03443 | −0.00503 | **48.67%** |
+| Presentation vs rain, equal taxon×cell×observer | **+0.09205** | +0.07475 | +0.01730 | **1.12%** |
+
+Residual check was numerically zero. The **species-level** equal-final-weight standardized coefficients (−0.3472, +0.2256) are different quantities from these contribution values.
+
+
 ## Results — solar radiation and visible chroma
 
 Primary species-level marginal coefficients: complete nine-variable native CHELSA, at least five measured observations per accepted taxon, 177 taxa / 186,313 observation records.
