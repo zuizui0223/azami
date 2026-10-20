@@ -7,7 +7,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # GitHub requires push access to read draft releases. This manual workflow
+  # only downloads the existing encrypted asset; it never publishes a release.
+  contents: write
   actions: read
 
 jobs:
