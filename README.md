@@ -10,17 +10,6 @@ The current statistical analysis **has executable code**. Its replay starts from
 
 ## Start here
 
-**PR142 / v4 development:** the [observation workflow contract](analysis/v4/OBSERVATION_MODEL_CONTRACT.md)
-defines the current native-observation environmental response analysis. It selects
-from all nine stored environmental candidates in six groups using `usdm::vifstep`
-before fitting colour, orientation and bract projection with the selected set.
-Run `v4-functional-exploration.yml` with `fit_after_selection=true` for the complete
-path; its default selection-only mode produces the environmental selection audit.
-The frozen v3 reproduction and results linked below remain a separate published
-evidence chain and should not be presented as v4 results.
-The [verified selected-environment results](analysis/v4/results/20261020_selected_environment/README.md)
-include the complete aggregate model output, selection audit and interpretation.
-
 1. [Current numerical reproduction](reproducibility/CURRENT_ANALYSIS.md): verified inputs, one-command execution, and result validation.
 2. [Current results and interpretation](analysis/v3/README.md): biological constructs, environmental associations and whole-capitulum integration.
 3. [GEB scope freeze](analysis/v3/GEB_SCOPE_FREEZE_20260912.md): frozen claim boundary, submission-readiness work, analysis stop list, and separate evidence routes for any higher-tier successor.
@@ -68,6 +57,6 @@ The current numerical runner reuses the retained spatial and historical-placemen
 
 Zenodo DOI [10.5281/zenodo.22703215](https://doi.org/10.5281/zenodo.22703215) archives the **published v3 numerical inputs**. The existing `Reproduce current Chapter 1 analysis` Action and `python -m reproducibility.run_current_analysis --download` reuse this checksum-pinned package without Zenodo credentials or expiring input artifacts. It contains measurements, the nine-predictor environment, spatial lookup, historical trees and native status. Analysis code, runbooks, reference outputs and figures remain in GitHub. The [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) records publication evidence.
 
-This archive preserves the existing analysis cohort, not the complete 665,115-observation upstream source or original photographs. Reusing it does not by itself expand v4 measurement coverage. Historical v2 inputs remain at DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791).
+This archive preserves the existing analysis cohort, not the complete 665,115-observation upstream source or original photographs. These archived numerical inputs neither include nor reprocess the original upstream source. Historical v2 inputs remain at DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791).
 
 Exact historical v2 reproduction remains available at commit `584af97b050d15701f26ce1facea212d5b648d4d`. The current scientific reference is main commit `fe25abd46e7235c85e6da191f976e1c8a02d0406`; subsequent layout-only changes must preserve its numerical results.
