@@ -24,6 +24,39 @@ MODULES = {
     'bract_projection': ['bract_projection_p95','bract_spread_fraction'],
 }
 
+def design_diagnostics(frame):
+    """Describe actual endpoint-specific eight-term designs, without changing fits."""
+    terms=TERMS[1:]
+    def inspect(d, columns):
+        a=d[columns].to_numpy(float)
+        sd=a.std(axis=0)
+        if len(a)<=len(columns) or np.any(sd<=1e-12):
+            return {'status':'not_identifiable','n':len(a),'terms':columns}
+        z=(a-a.mean(axis=0))/sd
+        c=z.T@z/len(z)
+        eigen=np.linalg.eigvalsh(c)
+        if eigen[0]<=1e-12:
+            return {'status':'singular','n':len(a),'terms':columns,
+                    'correlation':c.tolist()}
+        vif=np.diag(np.linalg.inv(c))
+        return {'status':'estimated','n':len(a),'terms':columns,
+                'correlation':c.tolist(),'vif':vif.tolist(),
+                'remaining_sd_fraction_after_other_terms':(1/np.sqrt(vif)).tolist(),
+                'standardized_condition_index':float(np.sqrt(eigen[-1]/eigen[0]))}
+    result={}
+    for outcomes in MODULES.values():
+        for outcome in outcomes:
+            mask=(frame[outcome+'__eligible'].eq(True)&np.isfinite(frame[outcome])
+                  &np.isfinite(frame[ENV+terms]).all(axis=1))
+            d=frame.loc[mask]
+            result[outcome]={level:inspect(d,columns) for level,columns in [
+                ('full_eight_terms',terms),
+                ('between_observation_weighted',[v+'__between' for v in ENV]),
+                ('within',[v+'__within' for v in ENV])]}
+    return {'scope':'unweighted design diagnostics on exact endpoint model rows; '
+                    'not REML precision, causal identification, or species-equal summaries',
+            'endpoints':result}
+
 
 def fit_response(x, y, groups):
     """Exact random-intercept REML using sums of crossproducts, not mean responses."""
@@ -150,6 +183,7 @@ def execute(table, receipt, output):
     if any(a['sd']<=0 for a in scales.values()):raise ValueError('Constant climate predictor')
     ranking=frame.accepted_key.value_counts().index
     result={'input':report,'scales':scales,'models':{},
+            'actual_design_diagnostics':design_diagnostics(frame),
             'model_code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             'primary_family':'24 joint tests: 3 modules x 4 predictors x within/between; Holm',
             'scope':'retrospective observational associations; not adaptation or measured defence',
@@ -272,6 +306,21 @@ def write_report(result, output):
             '',
             '再現情報：入力・測定可否・環境相関・コードSHAはresults.json、'
             '全効果量はcomponent_effects.csv、全共同検定はjoint_tests.csv。']
+    lines+=['','## 実際のモデル行列における環境相関','',
+            '下表は明度の解析対象行。種間は観測数による重み付きの診断である。'
+            '相関・VIFは説明変数の重なりを表し、未測定交絡の除去や原因の識別を保証しない。'
+            '全座標の診断はresults.jsonに保存した。','',
+            '|尺度|温度–VPD相関|温度VIF|日射VIF|VPD VIF|降水VIF|','|---|---:|---:|---:|---:|---:|']
+    diag=result['actual_design_diagnostics']['endpoints']['corolla_lab_lightness']
+    for key,label in [('between_observation_weighted','種間'),('within','種内')]:
+        a=diag[key]
+        if a['status']=='estimated':
+            lines.append(f"|{label}|{a['correlation'][0][2]:.3f}|"+
+                         '|'.join(f'{x:.2f}' for x in a['vif'])+'|')
+    full=diag['full_eight_terms']
+    if full['status']=='estimated':
+        lines+=['',f"8項全体の標準化条件指数：{full['standardized_condition_index']:.2f}。"
+                '8項全体でのVIFはresults.jsonを参照。']
     (Path(output)/'conclusions_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 

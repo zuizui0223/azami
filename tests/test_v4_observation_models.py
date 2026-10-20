@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import pytest
-from analysis.v4.observation_models import ENV, fit_response, fit_module
+from analysis.v4.observation_models import ENV, MODULES, fit_response, fit_module, design_diagnostics
 
 
 def test_crossproduct_fit_matches_dense_gls_without_averaging():
@@ -75,3 +75,22 @@ def test_joint_test_unchanged_by_response_units():
 def test_singular_design_is_not_promoted_to_inference():
     x=np.ones((80,3))
     assert fit_response(x,np.arange(80),np.repeat(np.arange(20),4))['status']=='not_identifiable'
+
+
+def test_actual_design_diagnostics_preserve_endpoint_missingness_and_detect_collinearity():
+    frame,scales=sample()
+    for outcomes in MODULES.values():
+        for outcome in outcomes:
+            frame[outcome]=frame.y1
+            frame[outcome+'__eligible']=True
+    first=MODULES['colour'][0]
+    frame.loc[:19,first+'__eligible']=False
+    a=design_diagnostics(frame)['endpoints']
+    assert a[first]['full_eight_terms']['n']==640
+    assert a[MODULES['orientation'][0]]['full_eight_terms']['n']==660
+    assert a[first]['full_eight_terms']['status']=='estimated'
+    frame[ENV[2]+'__between']=frame[ENV[0]+'__between']
+    b=design_diagnostics(frame)['endpoints'][first]
+    assert b['full_eight_terms']['status']=='singular'
+    assert b['between_observation_weighted']['status']=='singular'
+    assert b['within']['status']=='estimated'
