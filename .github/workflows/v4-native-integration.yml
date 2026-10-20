@@ -1,6 +1,15 @@
 name: V4 native capitulum integration
 on:
   workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-native-integration.yml'
+      - 'analysis/v4/decode_environment.py'
+      - 'analysis/v4/environment_source_metadata.json'
+      - 'analysis/v4/native_integration_audit.py'
+      - 'tests/test_v4_environment_decoding.py'
+      - 'tests/test_v4_native_integration_audit.py'
 permissions:
   contents: read
   actions: read
