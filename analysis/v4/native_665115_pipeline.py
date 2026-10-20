@@ -138,6 +138,109 @@ def sample_all(native_roster,cache_root,private_dir):
     return receipt
 
 
+def measurement_frame(roster, environment, measured, archived, contract):
+    """Left-join all native observations; each endpoint retains its own QC."""
+    for label, table in [('roster', roster), ('environment', environment), ('measurements', measured)]:
+        if table.obs_id.isna().any() or not table.obs_id.is_unique:
+            raise ValueError('Duplicate or missing observation ID: '+label)
+    if set(roster.obs_id) != set(environment.obs_id):
+        raise ValueError('Environment must cover the complete native roster')
+    frame = roster.merge(environment[['obs_id']+[v[0] for v in CLIMATE.values()]],
+                         on='obs_id', how='left', validate='one_to_one')
+    frame['archived_measurement_row'] = frame.obs_id.isin(measured.obs_id)
+    measured = measured.set_index('obs_id')
+    archived = archived.loc[archived.obs_id.isin(frame.obs_id)].copy()
+    if archived.duplicated(['obs_id','endpoint_id']).any():
+        raise ValueError('Duplicate archived endpoint identity')
+    for source in (measured.reset_index(), archived):
+        identity = source[['obs_id','taxon_name']].drop_duplicates().merge(
+            roster[['obs_id','taxon_name']], on='obs_id', suffixes=('_source',''))
+        if identity.taxon_name_source.ne(identity.taxon_name).any():
+            raise ValueError('Measurement and native source taxon labels differ')
+    counts = {}
+    for row in contract.to_dict('records'):
+        endpoint, column = row['endpoint_id'], row['observation_variable']
+        if column in measured:
+            values = frame.obs_id.map(measured[column])
+            usable = frame.obs_id.map(measured[row['measurement_variable']+'_n_usable_heads'])
+            eligible = np.isfinite(values) & usable.gt(0)
+            origin = 'full_archived_observation_table'
+        else:
+            records = archived.loc[archived.endpoint_id.eq(endpoint)].set_index('obs_id')
+            values = frame.obs_id.map(records.value)
+            flags = records.analysis_eligible.astype(str).str.lower()
+            if not flags.isin(['true','false']).all():
+                raise ValueError('Unrecognised endpoint eligibility')
+            eligible = frame.obs_id.map(flags.eq('true')).eq(True) & np.isfinite(values)
+            origin = 'zenodo_endpoint_table'
+        frame[endpoint] = values
+        frame[endpoint+'__eligible'] = eligible
+        counts[endpoint] = {'finite':int(np.isfinite(values).sum()),
+                            'eligible':int(eligible.sum()), 'source':origin}
+    main_environment = ['chelsa_bio01','chelsa_rsds_mean','chelsa_vpd_mean','chelsa_bio12']
+    climate_ok = np.isfinite(frame[main_environment]).all(axis=1)
+    # Exposure means are covariates, never averaged trait responses.
+    for name in main_environment:
+        frame[name+'__between'] = frame.groupby('accepted_key')[name].transform('mean')
+        frame[name+'__within'] = frame[name]-frame[name+'__between']
+    for endpoint in counts:
+        counts[endpoint]['eligible_with_four_climate'] = int(
+            (frame[endpoint+'__eligible'] & climate_ok).sum())
+    def predictor_summary(mask):
+        x = frame.loc[mask & climate_ok,main_environment].to_numpy(float)
+        result = {'n':len(x),'variables':main_environment}
+        if len(x)<2 or (x.std(axis=0)<=1e-12).any():
+            return dict(result,status='insufficient_variation')
+        correlation = np.corrcoef(x,rowvar=False)
+        full_rank = np.linalg.matrix_rank(correlation)==len(main_environment)
+        return dict(result,status='estimated' if full_rank else 'singular',
+                    correlation=correlation.tolist(),
+                    vif=np.diag(np.linalg.inv(correlation)).tolist() if full_rank else None)
+    predictor_diagnostics = {'all_native':predictor_summary(pd.Series(True,index=frame.index))}
+    for group, names in {
+        'colour_any_coordinate':['corolla_lab_lightness','corolla_lab_chroma','corolla_hue_sin','corolla_hue_cos'],
+        'image_orientation':['orientation_image_vertical_angle'],
+        'legacy_bract_projection_not_opening':['bract_projection_p95','bract_projection_peak_density'],
+    }.items():
+        columns = [n+'__eligible' for n in names if n in counts]
+        if columns:
+            predictor_diagnostics[group] = predictor_summary(frame[columns].any(axis=1))
+    report = {'native_observations':len(frame),
+              'with_archived_measurement_row':int(frame.archived_measurement_row.sum()),
+              'without_archived_measurement_row':int((~frame.archived_measurement_row).sum()),
+              'complete_four_climate':int(climate_ok.sum()),
+              'endpoints':counts, 'trait_responses_averaged':False,
+              'four_predictor_diagnostics':predictor_diagnostics,
+              'all_endpoint_complete_case_required':False,
+              'phyllary_opening_angle_measured':False,
+              'unit':'inherited observation-level values; no further trait aggregation',
+              'status':'inputs_prepared_not_models_or_new_measurements'}
+    return frame, report
+
+
+def join_measurements(private_dir, measurements, traits_zip):
+    from reproducibility.run_current_analysis import INPUTS
+    private_dir = Path(private_dir)
+    expected = 'b49a093c849928c456d6747ec51772b5a6b78debb2ae5eb5dbe2a91b08f66dd7'
+    if digest(measurements) != expected or digest(traits_zip) != INPUTS['continuous'][1]:
+        raise ValueError('Changed measurement input bytes')
+    roster = pd.read_csv(private_dir/'native350_roster.csv.gz',dtype={'obs_id':str})
+    environment = pd.read_csv(private_dir/'native350_chelsa_9.csv.gz',dtype={'obs_id':str})
+    measured = pd.read_csv(measurements,dtype={'obs_id':str},low_memory=False)
+    with zipfile.ZipFile(traits_zip) as z, z.open('universe/continuous_trait_universe_observation_long.csv') as f:
+        archived = pd.read_csv(f, usecols=['obs_id','taxon_name','endpoint_id','value','analysis_eligible'],
+                               dtype={'obs_id':str},low_memory=False)
+    root = Path(__file__).resolve().parents[2]
+    contract = pd.read_csv(root/'legacy/ch1_global/v2/ontology/ch1_continuous_trait_contract.csv')
+    frame, report = measurement_frame(roster,environment,measured,archived,contract)
+    target = private_dir/'native_observation_measurements.csv.gz'
+    frame.to_csv(target,index=False,compression={'method':'gzip','mtime':0})
+    report.update(measurements_sha256=expected, zenodo_traits_sha256=INPUTS['continuous'][1],
+                  prepared_table_sha256=digest(target))
+    (private_dir/'measurement_receipt.json').write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+    return report
+
+
 def main():
     p=argparse.ArgumentParser()
     sub=p.add_subparsers(dest='command',required=True)
@@ -145,10 +248,13 @@ def main():
     a.add_argument('--authority-json',type=Path,required=True);a.add_argument('--private-dir',type=Path,required=True)
     a=sub.add_parser('sample');a.add_argument('--native-roster',type=Path,required=True)
     a.add_argument('--cache-root',type=Path,required=True);a.add_argument('--private-dir',type=Path,required=True)
+    a=sub.add_parser('join');a.add_argument('--private-dir',type=Path,required=True)
+    a.add_argument('--measurements',type=Path,required=True);a.add_argument('--traits-zip',type=Path,required=True)
     args=p.parse_args()
     if args.command=='classify':
         r=classify_all(args.metadata_zip,args.authority_json,args.private_dir)
-    else:r=sample_all(args.native_roster,args.cache_root,args.private_dir)
+    elif args.command=='sample':r=sample_all(args.native_roster,args.cache_root,args.private_dir)
+    else:r=join_measurements(args.private_dir,args.measurements,args.traits_zip)
     print(json.dumps({k:v for k,v in r.items() if k not in ['range_status_counts','variables']},indent=2))
 
 if __name__=='__main__':main()

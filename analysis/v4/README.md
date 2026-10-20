@@ -3,6 +3,23 @@
 PR142 is exploratory. The frozen v3 results are a reference, not the conclusion
 of the redesigned v4 analysis. Execution and verification belong in GitHub Actions.
 
+## Goal and completion criteria
+
+The active goal is to explain what quantitative photographic traits make
+comparable beyond species categories, then evaluate environmental predictions
+about capitulum function. Reuse existing data and processing instead of adding
+parallel analysis routes. Completion requires one Actions-backed report with
+trait-specific sample sizes, jointly adjusted environmental estimates and
+uncertainty, within/between-species covariation, species influence, additional
+soil/spatial/phylogenetic checks, and explicit unsupported or non-evaluable
+functional claims. A successful data-preparation job alone does not meet the goal.
+
+Verified starting point: [run 39407663676](https://github.com/zuizui0223/azami/actions/runs/39407663676)
+reproduced 665,115 source observations, 313,350 native-eligible observations and
+313,240 complete nine-predictor records. [Zenodo replay 39405950824](https://github.com/zuizui0223/azami/actions/runs/39405950824)
+matched all 16 inherited numerical reference outputs. These establish reusable
+inputs and a historical baseline, not the redesigned v4 biological conclusions.
+
 ## Inputs and reuse
 
 - Reuse the published [Zenodo v3 numerical inputs](https://doi.org/10.5281/zenodo.22703215)

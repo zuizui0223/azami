@@ -93,6 +93,56 @@ jobs:
             --native-roster work/native-665115/private/native350_roster.csv.gz \
             --cache-root work/native-665115/cache \
             --private-dir work/native-665115/private
+      - name: Reuse full archived measurements and Zenodo endpoint inputs
+        env:
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          set -euo pipefail
+          gh release download private-v3-numerical-20260908 --repo zuizui0223/azami --pattern 'observation-measurements-111c8fb668265a62.aesgcm' --dir work/native-665115/private
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/native-665115/private/observation-measurements-111c8fb668265a62.aesgcm' | sha256sum -c -
+          python - <<'PY'
+          import os, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          from reproducibility.run_current_analysis import restore_zenodo
+          root = Path('work/native-665115/private')
+          sealed = (root/'observation-measurements-111c8fb668265a62.aesgcm').read_bytes()
+          try:
+              key = bytes.fromhex(os.environ['AZAMI_MEASUREMENTS_KEY'])
+              data = AESGCM(key).decrypt(sealed[:12], sealed[12:], b'azami-observation-measurements-v1')
+          except Exception:
+              raise SystemExit('Measurement source authentication failed; no source values exported.') from None
+          assert hashlib.sha256(data).hexdigest() == 'b49a093c849928c456d6747ec51772b5a6b78debb2ae5eb5dbe2a91b08f66dd7'
+          (root/'measurements.csv').write_bytes(data)
+          restore_zenodo(root, root)
+          PY
+          python -m analysis.v4.native_665115_pipeline join \
+            --private-dir work/native-665115/private \
+            --measurements work/native-665115/private/measurements.csv \
+            --traits-zip work/native-665115/private/artifact-9612943217-continuous.zip
+      - name: Preserve encrypted observation-level input for downstream reuse
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root = Path('work/native-665115/private')
+          report = json.loads((root/'measurement_receipt.json').read_text())
+          data = (root/'native_observation_measurements.csv.gz').read_bytes()
+          assert hashlib.sha256(data).hexdigest() == report['prepared_table_sha256']
+          nonce = os.urandom(12)
+          sealed = nonce + AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).encrypt(
+              nonce, data, b'azami-v4-prepared-observations-v1')
+          out = Path('work/native-665115/encrypted')
+          out.mkdir()
+          (out/'native-observation-measurements.csv.gz.aesgcm').write_bytes(sealed)
+          report['encrypted_table_sha256'] = hashlib.sha256(sealed).hexdigest()
+          report['encrypted_table_aad'] = 'azami-v4-prepared-observations-v1'
+          report['github_commit'] = os.environ['GITHUB_SHA']
+          (root/'measurement_receipt.json').write_text(json.dumps(report,indent=2)+'\n')
+          PY
       - name: Validate public aggregate counts and prohibit raw-row artifact export
         run: |
           python - <<'PY'
@@ -111,9 +161,9 @@ jobs:
           assert a['private_observation_rows_uploaded_to_public_CI'] is False
           assert b['private_coordinates_uploaded_to_public_CI'] is False
           out=Path('work/native-665115/public')
-          for name in ('source_receipt.json','climate_receipt.json'):
+          for name in ('source_receipt.json','climate_receipt.json','measurement_receipt.json'):
               (out/name).write_bytes((p/name).read_bytes())
-          assert {q.name for q in out.iterdir()}=={'source_receipt.json','climate_receipt.json'}
+          assert {q.name for q in out.iterdir()}=={'source_receipt.json','climate_receipt.json','measurement_receipt.json'}
           print('PASS 665115 ORIGINAL OBSERVATIONS -> 313350 NATIVE -> 313240 NINE-PREDICTOR OBSERVATIONS')
           PY
       - name: Upload aggregate receipt ONLY — never native observation IDs or coordinates
@@ -122,4 +172,11 @@ jobs:
           name: v4-all665115-native-climate-aggregate
           path: work/native-665115/public/
           retention-days: 30
+          if-no-files-found: error
+      - name: Save encrypted input — no plaintext observation export
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-observation-input-encrypted
+          path: work/native-665115/encrypted/
+          retention-days: 90
           if-no-files-found: error

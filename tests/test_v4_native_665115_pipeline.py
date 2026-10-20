@@ -2,7 +2,7 @@
 import pandas as pd
 import pytest
 from analysis.v4.native_665115_pipeline import (
-    add_explicit_non_species_placeholders, CLIMATE, ORIGINAL_SHA, AUTHORITY_SHA,
+    add_explicit_non_species_placeholders, CLIMATE, ORIGINAL_SHA, AUTHORITY_SHA, measurement_frame,
 )
 
 def test_all_species_names_queried_and_non_species_explicitly_unresolved():
@@ -28,6 +28,50 @@ def test_nine_climate_archives_and_two_source_hashes_pinned():
     assert len(CLIMATE)==9 and len({v[0] for v in CLIMATE.values()})==9
     assert all(len(v[1])==64 for v in CLIMATE.values())
     assert len(ORIGINAL_SHA)==len(AUTHORITY_SHA)==64
+
+
+def join_fixture():
+    roster = pd.DataFrame({'obs_id':['1','2','3','4'], 'taxon_name':['A']*4,
+                           'accepted_key':[7]*4})
+    env = roster.copy()
+    for name, _ in CLIMATE.values():
+        env[name] = [1., 2., 3., 4.]
+    measured = pd.DataFrame({'obs_id':['1','2'], 'taxon_name':['A','A'],
+                            'x_median':[1.,9.], 'x_n_usable_heads':[1,0]})
+    archived = pd.DataFrame({'obs_id':['3'], 'taxon_name':['A'], 'endpoint_id':['bract'],
+                             'value':[5.], 'analysis_eligible':[True]})
+    contract = pd.DataFrame({'endpoint_id':['colour','bract','unmeasured'],
+                            'observation_variable':['x_median','b_median','u_median'],
+                            'measurement_variable':['x','b','u']})
+    return roster, env, measured, archived, contract
+
+
+def test_join_preserves_native_population_partial_traits_and_raw_ineligible_values():
+    inputs = join_fixture()
+    frame, report = measurement_frame(*inputs)
+    assert list(frame.obs_id) == ['1','2','3','4']
+    assert frame.colour.iloc[1] == 9. and not frame.colour__eligible.iloc[1]
+    assert frame.bract__eligible.tolist() == [False,False,True,False]
+    assert frame.unmeasured.isna().all()
+    assert frame.chelsa_bio01__between.tolist() == [2.5]*4
+    assert report['without_archived_measurement_row'] == 2
+    assert not report['all_endpoint_complete_case_required']
+    assert report['endpoints']['bract']['eligible_with_four_climate'] == 1
+
+
+@pytest.mark.parametrize('problem', ['duplicate','taxon','missing_environment','invalid_qc'])
+def test_measurement_join_rejects_ambiguous_identity_and_eligibility(problem):
+    roster, env, measured, archived, contract = join_fixture()
+    if problem == 'duplicate':
+        measured = pd.concat([measured,measured.iloc[:1]])
+    elif problem == 'taxon':
+        archived.loc[0,'taxon_name'] = 'Other'
+    elif problem == 'missing_environment':
+        env = env.iloc[:3]
+    else:
+        archived['analysis_eligible'] = 'unknown'
+    with pytest.raises(ValueError):
+        measurement_frame(roster,env,measured,archived,contract)
 
 
 @pytest.mark.parametrize('case', ['missing', 'wrong_key', 'tampered', 'changed_bytes'])
