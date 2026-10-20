@@ -79,12 +79,16 @@
   },
   "joint_environment_plus_space": {
     "color_radiation_beta": -0.242,
-    "ci95": [
+    "presentation_rain_beta": -0.247,
+    "independent_environmental_causation_supported": false,
+    "color_radiation_ci95": [
+      -0.848,
+      0.363
+    ],
+    "presentation_rain_ci95": [
       -0.596,
       0.102
-    ],
-    "presentation_rain_beta": -0.247,
-    "independent_environmental_causation_supported": false
+    ]
   },
   "within_equal_taxon_region_observer": {
     "chroma_radiation_beta": -0.021,
