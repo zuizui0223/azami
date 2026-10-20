@@ -2,7 +2,7 @@
 
 Goal: retain V3's question about within- versus between-species capitulum
 integration, using the full native source population and conditional environmental
-relationships. User approved this direction on 2026-10-20. PR143 stays closed.
+relationships. User approved this direction on 2026-10-20. This PR is the sole active owner of the five-environment native integration and spatial/phylogenetic analysis.
 This supersedes the earlier "no new V4 execution" handoff restriction for this
 branch; it does not change frozen V3 results.
 
