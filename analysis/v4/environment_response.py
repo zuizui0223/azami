@@ -103,8 +103,11 @@ def report(result,output):
            '色全体は明度・彩度・円周色相の共同検定。各成分の利用可能な観測を使う。','',
            '過去の結果を閲覧済みの改訂観測解析であり、事前登録した独立検証ではない。'
            f"{result['family_size']}共同検定でHolm補正。成分の95%区間は点別である。",'',
+           '主解析は色全体と向き。総苞片は測定数・被覆範囲と機能的指標の制約からSIに置く。'
+           '移動を理由に48検定の補正をやり直していない。','',
            '|形質|環境|種間P（Holm）|種内P（Holm）|','|---|---|---:|---:|']
-    for module,label in LABELS.items():
+    for module in ('colour','orientation'):
+        label=LABELS[module]
         for v in result['predictors']:
             cells=[]
             for s in ('__between','__within'):
@@ -115,7 +118,8 @@ def report(result,output):
             '全自生域母集団の環境1標準偏差当たりの変化。単独の成分検定で'
             '色全体の関連を判定しない。色相sin/cosは共同で読む。','',
             '|成分|観測数|種数|環境・尺度|変化［95%区間］|','|---|---:|---:|---|---|']
-    for model in result['models'].values():
+    for module in ('colour','orientation'):
+        model=result['models'][module]
         for endpoint,c in model.get('components',{}).items():
             for term,e in c.get('effects',{}).items():
                 lo,hi=e['raw_ci95']
@@ -127,10 +131,32 @@ def report(result,output):
             '測定対象群では相関が残ることがある。相関が強い場合、個別係数は不安定であり、'
             '独立した環境作用を識別できたとは限らない。','',
             '種内の関連は可塑性の証明ではなく、種間の関連も適応の証明ではない。'
+            '種内と種間の係数差を直接検定していないため、片方だけの有意性を'
+            '尺度間の差の証拠にはしない。'
             '空間・系統・未測定環境を調整した結論ではない。'
             '写真の色は色素量ではなく、向きは画像基準角、総苞片は輪郭突出の代理指標である。','',
             f"再現情報：Actions run {result['run_id']}、commit {result['git_sha']}。"]
     (output/'environment_response_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+    si=['# SI：総苞片の輪郭突出・広がり','',
+        '既存測定1,303観測の補足解析。主解析より観測規模・対象被覆が限定されるためSIに置く。'
+        'この判断は有意性による選別ではなく、測定範囲と指標の制約に基づく。'
+        '既存の48検定Holm補正を維持する。','',
+        '輪郭突出・広がりは個々の総苞片の開出角や棘による防御効果そのものではない。'
+        '気候との関連が明確でなくても、食害者・訪花者に対する防御機能の否定にはならない。','',
+        '|環境|種間P（Holm）|種内P（Holm）|','|---|---:|---:|']
+    model=result['models']['bract_projection']
+    for v in result['predictors']:
+        values=[model.get('tests',{}).get(v+s,{}).get('holm_p') for s in ('__between','__within')]
+        si.append('|'+ENV_LABELS[v]+'|'+'|'.join(f'{p:.4g}' if p is not None else '評価不能' for p in values)+'|')
+    si+=['','|成分|観測数|種数|環境・尺度|変化［点別95%区間］|','|---|---:|---:|---|---|']
+    for endpoint,c in model.get('components',{}).items():
+        for term,e in c.get('effects',{}).items():
+            lo,hi=e['raw_ci95']
+            si.append(f"|{endpoint}|{c['n']}|{c['n_species']}|{term}|"
+                      f"{e['raw_units_per_environment_sd']:+.3g} [{lo:+.3g}, {hi:+.3g}]|")
+    si+=['','全係数・診断・来歴はenvironment_response.jsonに保存。再測定はこの結果の成立条件にしない。',
+         f"推定元：Actions run {result['run_id']}、commit {result['git_sha']}。"]
+    (output/'environment_response_si_ja.md').write_text('\n'.join(si)+'\n',encoding='utf-8')
 
 
 if __name__=='__main__':

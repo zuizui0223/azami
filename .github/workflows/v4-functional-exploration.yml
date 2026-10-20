@@ -8,6 +8,10 @@ on:
       - '.github/workflows/v4-functional-exploration.yml'
   workflow_dispatch:
     inputs:
+      report_only:
+        description: Render main and SI reports from verified saved results without refitting
+        type: boolean
+        default: false
       fit_after_selection:
         description: Fit trait modules using the vifstep-selected environment set
         type: boolean
@@ -84,7 +88,7 @@ jobs:
           path: work/v4/output/result.json
           retention-days: 30
   observation-models:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && !inputs.report_only
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -181,3 +185,33 @@ jobs:
           path: work/v4-observation/output/
           retention-days: 90
           if-no-files-found: warn
+  report-only:
+    if: github.event_name == 'workflow_dispatch' && inputs.report_only
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install report imports
+        run: python -m pip install -r reproducibility/requirements-current.txt
+      - name: Verify saved numerical output and render main and SI
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from analysis.v4.environment_response import report
+          source=Path('analysis/v4/results/20261020_selected_environment/environment_response.json')
+          assert hashlib.sha256(source.read_bytes()).hexdigest()=='707e3cf0041d127e085bfa47ef83a6ff89a1ad84740cd4ec6c09a893bbe1c517'
+          result=json.loads(source.read_text())
+          assert result['family_size']==48 and result['run_id']=='39416125522'
+          output=Path('work/report');output.mkdir(parents=True,exist_ok=True)
+          report(result,output)
+          assert 'bract_projection_p95|' not in (output/'environment_response_ja.md').read_text()
+          assert 'bract_projection_p95|' in (output/'environment_response_si_ja.md').read_text()
+          print('Verified original numerical artifact; main/SI rendering only, no refit')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-main-si-reports
+          path: work/report/
