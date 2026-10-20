@@ -91,16 +91,20 @@
     ]
   },
   "within_equal_taxon_region_observer": {
-    "chroma_radiation_beta": -0.021,
-    "ci95": [
-      -0.023,
-      0.11
+    "chroma_radiation_beta": -0.0214,
+    "presentation_precip_beta": 0.0435,
+    "chroma_radiation_ci95": [
+      -0.0558,
+      0.013
     ],
-    "presentation_precip_beta": 0.043
+    "presentation_precip_ci95": [
+      -0.0233,
+      0.1102
+    ]
   },
   "top_species_contributions_to_observation_pooled_color_solar": {
     "Cirsium arvense": {
-      "n_color": 53152,
+      "n_color": 53153,
       "color_analysis_observation_share": 0.285289,
       "between_beta_contribution": 0.06402
     },
@@ -128,6 +132,7 @@
     "Observers/taxa/regions weighting cannot correct selection of unseen plants and preferential flowering photos.",
     "Observer-removal analyses change the eligible set of species; do not compare as a fixed-cohort controlled effect.",
     "Space/climate covariates are correlated and jointly adjusted coefficients are uncertain.",
-    "All values are exploratory and not genetically or phylogenetically interpreted."
+    "All values are exploratory and not genetically or phylogenetically interpreted.",
+    "Under joint nine-environment-plus-space adjustment neither the colour-radiation nor presentation-rain partial coefficient excludes zero."
   ]
 }
