@@ -121,29 +121,26 @@ jobs:
           assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
           (root/'private/observations.csv.gz').write_bytes(data)
           PY
-      - name: Fit fixed environmental response workflow
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.3'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::usdm
+            any::jsonlite
+          cache-version: 1
+      - name: Prepare all nine environment candidates without phenotype access
         run: |
-          python -m analysis.v4.environment_response \
+          python -m analysis.v4.prepare_vifstep \
             --table work/v4-observation/private/observations.csv.gz \
             --receipt work/v4-observation/receipt/measurement_receipt.json \
-            --output work/v4-observation/output
-      - name: Verify fixed model scope and endpoint counts
+            --output work/v4-observation/private/vifstep
+      - name: Select environment variables before fitting any traits
         run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          a=json.loads(Path('work/v4-observation/output/environment_response.json').read_text())
-          assert set(a['models'])=={'colour','orientation','bract_projection'}
-          assert len(a['predictors'])==6
-          assert len(a['reuse_inventory'])==27
-          for model in a['models'].values():
-              assert model['status'] in {'estimated','not_identifiable'}
-              if model['status']=='estimated':
-                  assert len(model['tests'])==12
-                  for endpoint,c in model['components'].items():
-                      assert c['n']==a['environment_diagnostics']['populations'][endpoint]['six_environment_n']
-          print('Fixed scope verified; inference status:', a['inference_status'])
-          PY
+          Rscript analysis/v4/select_environment.R \
+            work/v4-observation/private/vifstep work/v4-observation/output
       - name: Save aggregate model results only
         if: always()
         uses: actions/upload-artifact@v4

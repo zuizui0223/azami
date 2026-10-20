@@ -2,6 +2,22 @@
 
 ## Current scope: fixed environmental response workflow
 
+**Latest user correction: selection precedes model specification.** The fixed
+six-variable interpretation below is superseded. Use all nine stored candidates
+from the six blocks in `analysis/ch1/capitulum_environment_blocks_contract.json`
+as the starting set. Run the actual `usdm::vifstep` on native observations with
+all nine environmental measurements finite, with threshold 10 (package default),
+no protected variables, and `size=nrow(x)+1` to disable random subsampling.
+Export only environmental columns to this selection stage: no phenotype values,
+trait eligibility, taxon means or significance results are used for selection.
+Save candidates, source hash, finite counts, selected variables, ordered exclusions,
+per-step VIF, final VIF, R/package versions and run/commit identifiers.
+Do not require every group to survive and do not pre-remove VPD.
+The manual Action currently stops at this selection artifact; phenotype fitting
+will consume that artifact after its integrity and selected design are checked.
+The selected variables, rather than a manually chosen five/six-variable list,
+will be shared across the three response modules.
+
 The user's latest instruction supersedes the historical extension plan below:
 test only which environmental gradients accompany head-trait changes conditional
 on the other included environmental conditions. The manual Action now executes
