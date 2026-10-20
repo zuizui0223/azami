@@ -71,7 +71,11 @@ def covariance_parts(f,scheme,response,predictor):
     ay=np.bincount(ids,weights=w*y,minlength=n)/q
     mx=np.dot(w,x);my=np.dot(w,y)
     vx=np.dot(w,(x-mx)**2);vy=np.dot(w,(y-my)**2)
-    if vx<=0 or vy<=0:raise ValueError("Constant predictor/response")
+    # Float roundoff may leave tiny positive variance for mathematically
+    # constant measurements. Reject near-degenerate contrasts explicitly.
+    tolx=1e-24*max(1.,float(np.max(np.abs(x)))**2)
+    toly=1e-24*max(1.,float(np.max(np.abs(y)))**2)
+    if vx<=tolx or vy<=toly:raise ValueError("Constant predictor/response")
     denom=np.sqrt(vx*vy)
     total=np.dot(w,(x-mx)*(y-my))
     between=np.dot(q,(ax-mx)*(ay-my))
