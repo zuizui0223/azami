@@ -123,6 +123,7 @@ def analyze(native,observer,traits,climate,outdir):
     nt=len(source);taxon_n=source.taxon.value_counts();observer_n=source.user_id.value_counts()
     n_top=max(1,round(len(observer_n)*.01))
     high_users=observer_n.head(n_top).index
+    high_ten_percent_users=observer_n.head(max(1,round(len(observer_n)*.10))).index
     groups=source.groupby(["taxon","cell","user_id"]).obs_id.transform("size")
     stats={
        "native_observations":nt,"accepted_taxa":source.taxon.nunique(),
@@ -131,6 +132,7 @@ def analyze(native,observer,traits,climate,outdir):
        "top_five_taxon_fraction":float(taxon_n.head(5).sum()/nt),
        "simpson_effective_taxa":float(1/np.sum((taxon_n/nt)**2)),
        "top_one_percent_observer_fraction":float(observer_n.head(n_top).sum()/nt),
+       "top_ten_percent_observer_fraction":float(observer_n.head(max(1,round(len(observer_n)*.10))).sum()/nt),
        "repeated_observer_taxon_cell_fraction":float((groups>1).mean()),
        "observers_in_top_one_percent":int(n_top)
     }
@@ -141,7 +143,8 @@ def analyze(native,observer,traits,climate,outdir):
            "all":original,
            "omit_top_two_taxa":original.loc[~original.taxon.isin(taxon_n.head(2).index)],
            "omit_top_five_taxa":original.loc[~original.taxon.isin(taxon_n.head(5).index)],
-           "omit_top_one_percent_observers":original.loc[~original.user_id.isin(high_users)]
+           "omit_top_one_percent_observers":original.loc[~original.user_id.isin(high_users)],
+           "omit_top_ten_percent_observers":original.loc[~original.user_id.isin(high_ten_percent_users)]
         }
         for case,sub in cases.items():
             sub=sub.reset_index(drop=True)
