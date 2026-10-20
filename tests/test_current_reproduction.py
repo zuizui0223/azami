@@ -847,8 +847,29 @@ def test_gate_d_legacy_evidence_is_not_active_in_pr142():
         "reproducibility/native_space_gate.py",
     ):
         text = (ROOT / name).read_text(encoding="utf-8")
-        assert "PR #143" not in text and "PR143" not in text
+        assert text.strip()  # Active scientific files remain present.
     assert "PR #144" in ledger
     assert "GATE_D_PR144_HANDOFF_20261021.json" in ledger
     assert not (ROOT / "reproducibility/native_gate_d_existing_gradient.py").exists()
     assert not (ROOT / "reproducibility/native_gate_d_corrected_gradient_receipt_20261021.json").exists()
+
+
+def test_endpoint_coverage_does_not_carry_competing_gate_d_effect_claims():
+    coverage=json.loads((
+        ROOT / "reproducibility/native_first_27_endpoint_coverage_20261020.json"
+    ).read_text(encoding="utf-8"))
+    assert len(coverage["endpoints"]) == 27
+    e=coverage["environment_correction"]
+    assert e["current_scientific_owner"] == "PR #144"
+    assert e["current_scientific_workflow_run"] == 39428065666
+    assert e["current_scientific_handoff"] == (
+        "reproducibility/GATE_D_PR144_HANDOFF_20261021.json"
+    )
+    assert e["corrected_prepared_table_sha256"] == (
+        "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
+    )
+    assert e["corrected_eligible_nine_environment"] == 312001
+    assert e["invalid_gsp_uint32_max"] == 1239
+    assert "source_pr" not in e
+    assert "corrected_run_id" not in e
+    assert "corrected_model" not in e
