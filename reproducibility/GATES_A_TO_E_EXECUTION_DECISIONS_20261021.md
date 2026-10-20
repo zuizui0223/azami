@@ -15,7 +15,8 @@
 
 - The archived native observer/cell-weighted exploratory analysis was **164,050 observations / 177 taxa**, with presentation × four-output colour RV **0.006793 within** and **0.037122 among**. The matched-n taxon-bootstrap among-minus-within RV was **+0.024622**, 95% interval **[−0.020787, +0.083385]**, including zero. These numbers come from the **archived, distinct** native cohort; they do not describe the **157,779/242** common-nine cohort.
 - `native_space_gate.py` already implements same-frame three-proxy `W + B = T` descriptive covariance, but not full circular-colour/outline module inference or photographer-balanced null-corrected RV. No corrected-input native execution is established in the current PR.
-- **Decision:** **METHOD/PILOT EXISTS; CORE-NINE INFERENCE NOT EXECUTED**. First lock the eligible species×cell×observer support and matched-n/null estimator. Test sign/covariance structure before estimating multivariate volume; never call photo covariance genetic modularity.
+- **Source-verified nine-output Gate B aggregate also exists:** the [run 39428065666 artifact 12266812186](https://github.com/zuizui0223/azami/actions/runs/39428065666), member SHA256 `15450370...55f`, contains **28 matched-pair RV contrasts** on the **predictor-admitted 157,654 observations / 174 taxa** (distinct from 157,779/242 measured). On this actual cohort, 24/28 environmental-adjusted among-minus-within RV point estimates are positive, but **7/28 pointwise 95% intervals** are wholly positive; **only 3/19 between-module pairs** have positive pointwise intervals, versus 4/9 within-module pairs. The intervals are not multiple-test adjusted or observer/region validated. [Re-audit and estimator boundaries](NATIVE_GATE_B_EXECUTED_AGGREGATE_REVIEW_20261021.md), [machine receipt](native_gate_b_existing_rv_receipt_20261021.json), [hash-locked inspector](native_gate_b_existing_rv.py).
+- **Decision:** **PREVIOUS CORE-NINE / 174-TAXON NUMERICAL RV RESULT VERIFIED; FINAL GATE B STILL OPEN**. First lock the eligible species×cell×observer support and matched-n/null estimator. Test sign/covariance structure before estimating multivariate volume; never call photo covariance genetic modularity.
 
 ## Gate C — density, overlap and shape of phenotypic distributions
 
@@ -41,7 +42,7 @@
 | Gate | Can reuse now | Required before declaring a *new* current-native result |
 | --- | --- | --- |
 | A | 27-endpoint source ledger, exact nine-output aggregate, corrected input contract and instrumented manual audit | Private corrected row-level and observer join; native matched QC/season/regional selection; head-field provenance |
-| B | Archived observer-balanced RV, V3 scale-aware lessons, three-proxy code | A denominators and sampling, signed scale-separated covariances plus matched-n and observer/region robustness on same core-nine input |
+| B | Archived observer-balanced RV, **real 157,654/174 common-nine RV aggregate**, V3 scale-aware lessons, three-proxy code | A denominators and sampling, signed scale-separated covariances plus matched-n and observer/region robustness on same core-nine input |
 | C | PR92 KDE/TPD/W2 algorithms | Same-frame spatial/observer support, predeclared low-dimensional modules, bandwidth and same-species finite-n nulls |
 | D | Corrected PR143 exposure/estimates and fixed BIO12/RSDS candidates | Same-sample centre/spread/covariance/overlap vs environment, spatial transfer and source-measurability sensitivities |
 | E | EAzami and aza3 independent direct evidence | Authority-backed taxon-concept crosswalk, independently measured anatomy/function and lineage correspondence |
