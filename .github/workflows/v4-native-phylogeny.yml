@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install numerical dependencies
-        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' biopython==1.85 pytest
+        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Verify exact observation-level likelihood against dense covariance
         run: python -m pytest -q tests/test_v4_native_phylogeny.py
       - name: Restore authenticated native input
