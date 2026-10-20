@@ -134,3 +134,16 @@ The main evidence ladder remains:
 **Azami**: measured *visible phenotype-space geometry* and climate correspondence → **EAzami**: whether the corresponding source-backed taxon concepts underwent independent trait-history shifts, with origin-vs-maintenance explicitly separated → **aza3**: whether linked individuals/populations show different fitness or antagonism/pollination effects and shared vs distinct genetic resources. Only the last step, with independent functional calibration, can justify upgrading a *candidate phenotypic hypervolume* into a validated **functional** hypervolume.
 
 **Stop rule:** This note does not authorize an additional Actions workflow, source download, expanded model family, new claims in the frozen GEB v3 manuscript, or a positive hypervolume result before the native-only multivariate input and QC are actually available.
+
+
+### Implemented, read-only computational feasibility gate (not yet run on private native data)
+
+[**\`reproducibility/native_space_gate.py\`**](native_space_gate.py) is a single deterministic, **manual-only** extension of the existing analysis handoff. It requires the byte-pinned previously prepared **313,350-observation native-only input**; never downloads images/raster/source, queries a taxonomy API or decrypts a source. It rejects wrong input hashes, duplicate observation IDs, missing native taxon identity, and invalid endpoint-specific QC. No new GitHub Actions workflow is introduced.
+
+It first reports the **actual matched same-observation overlap** of all three modules, using:
+- **core3 gate**: image-vertical orientation + photographic chroma + whole-head silhouette aspect ratio;
+- **full-core9 audit**: the entire nine available primary image endpoint set, with circular hue sine/cosine retained *jointly*, not treated as two biological traits.
+
+If enough taxon × 0.5-degree spatial cells pass, it generates **exploratory** taxon-balanced 20-cell rarefaction diagnostics: Rao-type RMS pairwise dispersion and a *parametric Gaussian 95% covariance-ellipsoid volume proxy*. Climate reporting is limited to **existing pre-frozen axes BIO12 and RSDS**, and descriptive (no post-hoc significance tests); climatic taxon medians use *all* native records, not a phenotype-selected source subset. Public output is aggregate JSON only, never taxon/photographer/location/observation rows. Cell discretization is not equal-area, so this diagnostic is not a final estimator of a native-only ecological hypervolume.
+
+The source remains an encrypted GitHub artifact inaccessible for local computation without the authorized private key. **Synthetic test success is not an empirical hypervolume result**. Before any ecological promotion, verify photographer/region-dependent missingness, independent colour/angle/outline validity and spatial transfer; a functionally calibrated hypervolume additionally requires experimental phenotype→functional-payoff links owned by \`aza3\`. The current frozen GEB v3 conclusions remain untouched.

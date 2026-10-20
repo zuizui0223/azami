@@ -175,3 +175,54 @@ def test_native_first_27_endpoint_ledger_matches_frozen_ontology_and_coverage():
     assert next(x for x in items if x['endpoint_id']=='corolla_lab_chroma')['n_eligible_native_taxa']==244
     assert next(x for x in items if x['endpoint_id']=='capitulum_outline_solidity')['n_eligible_native_taxa']==243
     assert next(x for x in items if x['endpoint_id']=='bract_projection_p95')['n_eligible_native_taxa']==111
+
+
+def test_native_space_gate_requires_eligible_joint_original_observations():
+    """A real native-space input must be the frozen private source; only synthetic
+    in-memory data are used here. Never promote a synthetic ellipsoid to evidence."""
+    import numpy as np
+    import pandas as pd
+    from reproducibility.native_space_gate import analyze_native_space, CORE9
+
+    rows = []
+    for taxon in range(4):
+        for j in range(32):
+            v = {
+                'obs_id': f'{taxon}-{j}', 'accepted_key': str(100+taxon),
+                'latitude': -30+taxon + j*0.6, 'longitude': 30+taxon*.15 + j*.61,
+                'chelsa_bio12': 950+taxon*160 + j*3,
+                'chelsa_rsds_mean': 120+taxon*14+j*.5,
+                'orientation_image_vertical_angle': 12+taxon*.5 + j*.11 + np.sin(j*.7)*3,
+                'corolla_lab_lightness': 52+taxon + np.cos(j*.37),
+                'corolla_lab_chroma': 20+taxon*3 + np.cos(j*.42)*6 + j*.09,
+                'corolla_hue_sin': np.sin(j*.08),
+                'corolla_hue_cos': np.cos(j*.08),
+                'capitulum_outline_aspect_ratio': 1+taxon*.1 + np.sin(j*.31)*.13,
+                'capitulum_outline_circularity': .6+np.cos(j*.19)*.03,
+                'capitulum_outline_solidity': .85+np.sin(j*.18)*.02,
+                'capitulum_width_profile_cv': .12+np.cos(j*.21)*.02,
+            }
+            for col in CORE9:
+                v[col+'__eligible'] = True
+            rows.append(v)
+    frame = pd.DataFrame(rows)
+    a=analyze_native_space(frame, rarefaction_n=20, replicates=12)
+    b=analyze_native_space(frame.sample(frac=1, random_state=17), rarefaction_n=20, replicates=12)
+    assert a == b
+    assert a['complete_core3_observations'] == len(frame)
+    assert a['complete_core9_observations'] == len(frame)
+    assert a['core3_taxa_with_enough_distinct_cells'] == 4
+    assert a['occupancy_status'] == 'descriptive_space_proxy_available'
+    assert a['rarefied_gaussian_95pct_ellipsoid_volume_proxy']['median'] > 0
+    assert 'obs_id' not in str(a) and 'latitude' not in str(a) and 'longitude' not in str(a)
+
+    # A source-generated eligibility failure must remove only the affected module.
+    frame.loc[0,'capitulum_outline_aspect_ratio__eligible'] = False
+    c=analyze_native_space(frame, rarefaction_n=20, replicates=12)
+    assert c['complete_core3_observations'] == len(frame)-1
+    assert c['complete_core9_observations'] == len(frame)-1
+    frame.loc[0,'capitulum_outline_aspect_ratio__eligible'] = 'unknown'
+    with pytest.raises(ValueError, match="eligibility"):
+        analyze_native_space(frame, rarefaction_n=20, replicates=12)
+    with pytest.raises(ValueError, match="Observation IDs"):
+        analyze_native_space(pd.concat([frame.iloc[:1],frame.iloc[:1]],ignore_index=True),rarefaction_n=6,replicates=2)
