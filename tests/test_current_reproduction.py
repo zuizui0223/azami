@@ -764,3 +764,32 @@ def test_native_gate_c_historical_source_blob_pin_and_descriptive_reference(tmp_
     bad.loc[0,'density_overlap']=1.2
     with pytest.raises(ValueError,match='Invalid KDE'):
         analyze_historical_density(bad,baselines,figures,overlap,bw)
+
+
+def test_gate_c_actual_pr92_receipt_matches_legacy_method_floors():
+    from reproducibility.native_gate_c_existing_density import (
+        HISTORICAL_COMMIT, GIT_BLOBS,
+    )
+    receipt=json.loads((
+        ROOT/'reproducibility/native_gate_c_pr92_reaudit_20261021.json'
+    ).read_text(encoding='utf-8'))
+    assert receipt['original_commit'] == HISTORICAL_COMMIT
+    assert receipt['source_git_blobs']['pairwise_distributions_csv'] == GIT_BLOBS['pairwise']
+    assert receipt['source_git_blobs']['same_taxon_baselines_csv'] == GIT_BLOBS['same_taxon']
+    assert receipt['source_native_filter'] is False
+    assert receipt['original_source_observations'] == 46276
+    assert sum(receipt['all_between_taxon_pairs'].values()) == 4318
+    m=receipt['core_modules']
+    assert [m[x]['baseline_taxa'] for x in ('orientation','colour','outline')] == [33,33,34]
+    assert [m[x]['between_pair_count_with_same_taxon_baseline']
+            for x in ('orientation','colour','outline')] == [528,528,561]
+    assert [m[x]['full_w2_exceedances'] for x in ('orientation','colour','outline')] == [109,466,77]
+    assert [m[x]['centred_w2_exceedances'] for x in ('orientation','colour','outline')] == [13,349,47]
+    for x in ('orientation','colour','outline'):
+        item=m[x]
+        assert item['full_exceedance_rate'] == (
+            item['full_w2_exceedances']/item['between_pair_count_with_same_taxon_baseline'])
+        assert item['centred_exceedance_rate'] == (
+            item['centred_w2_exceedances']/item['between_pair_count_with_same_taxon_baseline'])
+        assert len(item['bandwidth_overlap_medians']) == 3
+    assert receipt['independent_reaudit']['new_native_density_fit'] is False
