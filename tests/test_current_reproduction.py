@@ -221,6 +221,7 @@ def test_native_space_gate_requires_eligible_joint_original_observations():
     c=analyze_native_space(frame, rarefaction_n=20, replicates=12)
     assert c['complete_core3_observations'] == len(frame)-1
     assert c['complete_core9_observations'] == len(frame)-1
+    frame['capitulum_outline_aspect_ratio__eligible'] = frame['capitulum_outline_aspect_ratio__eligible'].astype(object)
     frame.loc[0,'capitulum_outline_aspect_ratio__eligible'] = 'unknown'
     with pytest.raises(ValueError, match="eligibility"):
         analyze_native_space(frame, rarefaction_n=20, replicates=12)
