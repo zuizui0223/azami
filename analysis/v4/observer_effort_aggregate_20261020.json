@@ -1,0 +1,129 @@
+{
+  "status": "exploratory_native_legacy_photograph_observer_bias",
+  "date": "2026-10-20",
+  "source": {
+    "native_observations": 313350,
+    "native_accepted_taxa": 306,
+    "native_observers": 92839,
+    "observer_top_one_percent_fraction": 0.29660762725386947,
+    "observer_top_ten_percent_fraction": 0.5995021541407372,
+    "repeat_same_taxon_cell_observer_fraction": 0.608179352162119,
+    "top_two_taxa_fraction": 0.4500207435774693,
+    "top_five_taxa_fraction": 0.6314472634434338,
+    "simpson_effective_recorded_taxa": 8.31136474333058
+  },
+  "cohorts": {
+    "color_nine_env_eligible": 186313,
+    "color_accepted_taxa": 177,
+    "presentation_nine_env_eligible": 169950,
+    "presentation_accepted_taxa": 178
+  },
+  "pooled_color_radiation": {
+    "observation": {
+      "pooled_beta": -0.05116498965510264,
+      "between_contribution": -0.04484764163279672,
+      "within_contribution": -0.00631734802230592
+    },
+    "equal_taxon": {
+      "pooled_beta": -0.18691,
+      "between_contribution": -0.18265,
+      "within_contribution": -0.00426
+    },
+    "equal_taxon_region_observer": {
+      "pooled_beta": -0.187181,
+      "between_contribution": -0.18058,
+      "within_contribution": -0.0066
+    },
+    "observation_omit_top_two_taxa": {
+      "pooled_beta": -0.22753383863512516,
+      "between_contribution": -0.22258,
+      "within_contribution": -0.00496
+    },
+    "observation_omit_top_five_taxa": {
+      "pooled_beta": -0.297331,
+      "between_contribution": -0.28914,
+      "within_contribution": -0.0082
+    }
+  },
+  "among_marginal_equal_taxon_region_observer": {
+    "chroma_vs_solar": {
+      "beta": -0.347174,
+      "ci95": [
+        -0.502,
+        -0.192
+      ],
+      "top_two_taxa_excluded_beta": -0.3501,
+      "top_five_taxa_excluded_beta": -0.3552,
+      "highest_one_percent_observers_excluded_beta": -0.397013,
+      "highest_ten_percent_observers_excluded_beta": -0.305185,
+      "leave_one_taxon_beta_range": [
+        -0.3743,
+        -0.3316
+      ]
+    },
+    "presentation_vs_rain": {
+      "beta": 0.225562,
+      "ci95": [
+        0.081,
+        0.37
+      ],
+      "top_two_taxa_excluded_beta": 0.2248,
+      "top_five_taxa_excluded_beta": 0.2255,
+      "highest_one_percent_observers_excluded_beta": 0.277536,
+      "highest_ten_percent_observers_excluded_beta": 0.326666,
+      "leave_one_taxon_beta_range": [
+        0.206993,
+        0.253394
+      ]
+    }
+  },
+  "joint_environment_plus_space": {
+    "color_radiation_beta": -0.242,
+    "ci95": [
+      -0.596,
+      0.102
+    ],
+    "presentation_rain_beta": -0.247,
+    "independent_environmental_causation_supported": false
+  },
+  "within_equal_taxon_region_observer": {
+    "chroma_radiation_beta": -0.021,
+    "ci95": [
+      -0.023,
+      0.11
+    ],
+    "presentation_precip_beta": 0.043
+  },
+  "top_species_contributions_to_observation_pooled_color_solar": {
+    "Cirsium arvense": {
+      "n_color": 53152,
+      "source_record_share": 0.285289,
+      "between_beta_contribution": 0.06402
+    },
+    "Cirsium vulgare": {
+      "n_color": 37104,
+      "source_record_share": 0.199149,
+      "between_beta_contribution": -0.027066
+    }
+  },
+  "orientation_color_integration_observer_balanced": {
+    "n_observations": 164050,
+    "n_taxa": 177,
+    "rv_within": 0.006793,
+    "rv_among": 0.037122,
+    "bootstrap_matched_n_delta_median": 0.024622,
+    "bootstrap_matched_n_interval_95": [
+      -0.020787,
+      0.083385
+    ],
+    "bootstrap_replicates": 400
+  },
+  "evidence_scope": "Legacy selected photographic traits. All native source records enumerated for effort, but no new images were measured.",
+  "caution": [
+    "Pooled covariance decomposition is an identity, not a causal or developmental effect partition.",
+    "Observers/taxa/regions weighting cannot correct selection of unseen plants and preferential flowering photos.",
+    "Observer-removal analyses change the eligible set of species; do not compare as a fixed-cohort controlled effect.",
+    "Space/climate covariates are correlated and jointly adjusted coefficients are uncertain.",
+    "All values are exploratory and not genetically or phylogenetically interpreted."
+  ]
+}
