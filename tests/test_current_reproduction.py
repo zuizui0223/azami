@@ -121,3 +121,57 @@ def test_current_requirements_match_completed_replay_environment():
     assert "biopython==1.88" in req
     assert "biopython>=" not in req
 
+
+def test_native_first_27_endpoint_ledger_matches_frozen_ontology_and_coverage():
+    """Guard the published aggregate source gate; never replace missing by zero traits."""
+    import csv
+    ledger_path = ROOT / 'reproducibility/native_first_27_endpoint_coverage_20261020.json'
+    data = json.loads(ledger_path.read_text(encoding='utf-8'))
+    with (ROOT / 'analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_endpoint_inventory.csv').open(encoding='utf-8-sig', newline='') as handle:
+        v2 = {r['endpoint_id']: r for r in csv.DictReader(handle)}
+    items = data['endpoints']
+    assert data['schema_version'] == 'native_first_27_endpoint_coverage_20261020_v2'
+    assert len(items) == len(v2) == 27
+    assert len({r['endpoint_id'] for r in items}) == 27
+    assert {r['endpoint_id'] for r in items} == set(v2)
+    d = data['denominators']
+    assert d['original_pre_detector_observations'] == 665115
+    assert d['native_primary_observations'] == 313350
+    assert d['native_wcvp_accepted_keys'] == 306
+    assert d['native_with_inherited_measurement_row'] + d['native_without_inherited_measurement_row'] == d['native_primary_observations']
+    assert d['native_climate_all_nine_complete'] <= d['native_climate_four_anchor_complete'] <= d['native_primary_observations']
+    p = data['provenance']
+    assert p['artifact_id'] == 12257893990
+    assert p['receipt_sha256'] == '246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+    assert p['existing_joint_model_run_id'] == 39416125522
+    assert p['existing_joint_model_response_sha256'] == '707e3cf0041d127e085bfa47ef83a6ff89a1ad84740cd4ec6c09a893bbe1c517'
+    statuses = {'finite': 0, 'eligible': 0, 'unexecuted': 0, 'finite_unusable': 0}
+    for row in items:
+        source = v2[row['endpoint_id']]
+        finite = row['n_finite_native']
+        eligible = row['n_eligible_native']
+        taxa = row['n_eligible_native_taxa']
+        climate = row['n_eligible_with_four_climate']
+        assert 0 <= climate <= eligible <= finite <= d['native_primary_observations']
+        assert 0 <= taxa <= d['native_wcvp_accepted_keys']
+        if eligible == 0:
+            assert taxa == 0
+        if finite:
+            statuses['finite'] += 1
+        if eligible:
+            statuses['eligible'] += 1
+        if source['measurement_status'] == 'unexecuted_no_measurement':
+            statuses['unexecuted'] += 1
+            assert finite == eligible == taxa == 0
+        if finite and not eligible:
+            statuses['finite_unusable'] += 1
+            assert row['status'] == 'technical_validation_only_not_analysis_eligible'
+    assert statuses == {'finite': 22, 'eligible': 18, 'unexecuted': 5, 'finite_unusable': 4}
+    assert data['status_summary'] == {
+        'registered_endpoints': 27, 'have_any_numeric_native': 22,
+        'currently_computationally_eligible_native': 18,
+        'finite_but_zero_eligible': 4, 'unexecuted_no_measurement': 5,
+    }
+    assert next(x for x in items if x['endpoint_id']=='corolla_lab_chroma')['n_eligible_native_taxa']==244
+    assert next(x for x in items if x['endpoint_id']=='capitulum_outline_solidity')['n_eligible_native_taxa']==243
+    assert next(x for x in items if x['endpoint_id']=='bract_projection_p95')['n_eligible_native_taxa']==111
