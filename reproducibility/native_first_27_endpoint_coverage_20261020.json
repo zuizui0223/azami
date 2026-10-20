@@ -288,27 +288,16 @@
     }
   ],
   "environment_correction": {
-    "source_pr": 143,
-    "corrected_run_id": 39422378058,
     "corrected_prepared_table_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
     "raw_prepared_table_sha256": "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29",
     "invalid_gsp_uint32_max": 1239,
     "corrected_eligible_nine_environment": 312001,
     "corrected_eligible_four_environment": 313244,
     "raw_nine_numeric_313240_superseded": true,
-    "correction_note": "Legacy denominator 313240 is numeric-only with invalid GSP; corrected nine-exposure complete is 312001. Endpoint finite/eligible counts unchanged; uncorrected joint-environment model claims withdrawn.",
-    "corrected_model": {
-      "family_size": 64,
-      "observations_by_module": {
-        "colour_L_C": 185564,
-        "colour_hue": 185515,
-        "orientation": 169263,
-        "outline": 175223,
-        "bract_SI": 1298
-      },
-      "orientation_holm_supported_joint_tests": 0,
-      "colour_and_outline_exploratory_candidates": true,
-      "spatial_or_phylogenetic_causal_validation": false
-    }
+    "correction_note": "Original numeric nine-environment count 313240 included invalid GSP sentinels; independently verified corrected native input has 312001 complete rows. Endpoint eligibility unchanged. This is input coverage, not a competing environmental-effect model.",
+    "current_scientific_owner": "PR #144",
+    "current_scientific_workflow_run": 39428065666,
+    "current_scientific_handoff": "reproducibility/GATE_D_PR144_HANDOFF_20261021.json",
+    "scope": "Source correction and availability metadata only; effect estimates belong exclusively to PR #144"
   }
 }
