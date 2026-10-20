@@ -1,17 +1,22 @@
 name: V4 native covariance decomposition
 on:
   workflow_dispatch:
+    inputs:
+      report_run:
+        description: 'Completed covariance run to render; empty executes numerical work'
+        type: string
+        default: ''
   push:
     branches: [codex/v4-native-integration-workflow]
     paths:
       - 'analysis/v4/native_covariance.py'
       - 'tests/test_v4_native_covariance.py'
-      - '.github/workflows/v4-native-covariance.yml'
 permissions:
   contents: read
   actions: read
 jobs:
   phylogeny:
+    if: ${{ !inputs.report_run }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -67,5 +72,31 @@ jobs:
         with:
           name: v4-native-covariance
           path: work/covariance-output/
+          if-no-files-found: error
+          retention-days: 90
+  report:
+    if: ${{ inputs.report_run != '' && github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: ${{ inputs.report_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8
+      - name: Retrieve completed covariance evidence
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_RUN" =~ ^[0-9]+$ ]]
+          test "$(gh run view "$SOURCE_RUN" --repo zuizui0223/azami --json conclusion --jq .conclusion)" = success
+          gh run download "$SOURCE_RUN" --repo zuizui0223/azami --name v4-native-covariance --dir work/covariance-source
+      - name: Render all components without refitting
+        run: python -m analysis.v4.render_covariance_report --source work/covariance-source --output work/covariance-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-covariance-report
+          path: work/covariance-report/
           if-no-files-found: error
           retention-days: 90
