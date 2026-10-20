@@ -1,0 +1,75 @@
+name: V4 functional pilot numerical validation
+
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/**'
+      - 'tests/test_v4_functional_pilot.py'
+      - '.github/workflows/v4-functional-exploration.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  v4-functional:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical tests
+        run: python -m pip install 'numpy>=2.0,<3' 'pandas>=2.2,<4' pytest
+      - name: Syntax and synthetic numerical invariants
+        run: |
+          python -m compileall -q analysis/v4
+          python -m pytest -q tests/test_v4_functional_pilot.py
+      - name: Download frozen v3 numerical inputs and verify SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p work/v4/inputs work/v4/output
+          gh api "repos/zuizui0223/azami/actions/artifacts/9612943217/zip" > work/v4/traits-artifact.zip
+          gh api "repos/zuizui0223/azami/actions/artifacts/9633419268/zip" > work/v4/environment-artifact.zip
+          echo "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e  work/v4/traits-artifact.zip" | sha256sum -c -
+          echo "d7c0c466f55b67695d06ae46c21a6452dbe6cfd92a52db8042caa200429e97f4  work/v4/environment-artifact.zip" | sha256sum -c -
+          unzip -p work/v4/traits-artifact.zip universe/continuous_trait_universe_observation_long.csv > work/v4/inputs/traits.csv
+          unzip -p work/v4/environment-artifact.zip process_environment/strict_spatial_chelsa_process.csv > work/v4/inputs/environment.csv
+      - name: Recompute v4 pilot from frozen numerical sources
+        run: |
+          python analysis/v4/functional_pilot.py \
+            --traits work/v4/inputs/traits.csv \
+            --environment work/v4/inputs/environment.csv \
+            --out-dir work/v4/output \
+            > work/v4/output/stdout.json
+      - name: Validate exploratory output denominators and invariants
+        run: |
+          python - <<'PY'
+          import json
+          import math
+          from pathlib import Path
+          p=Path('work/v4/output/result.json')
+          a=json.loads(p.read_text())
+          assert a['analysis_scope']=='retrospective_exploratory_not_confirmatory'
+          assert a['source_env_obs']==46276 and a['source_taxa']==259
+          assert a['complete_observations']==1777 and a['complete_taxa']==42
+          assert a['top_taxa_counts']['Cirsium vulgare']==13207
+          assert a['top_taxa_counts']['Cirsium arvense']==11795
+          assert abs(a['top2_fraction'] - 25002/46276)<1e-12
+          for key,mod in a['environment_blocks'].items():
+              for name,values in mod.items():
+                  r2=values['full_r2']-values['baseline_r2']
+                  assert math.isclose(sum(values['block_shapley_r2'].values()),r2,abs_tol=1e-8)
+                  assert 0<=values['baseline_r2']<=values['full_r2']<=1
+          assert len(a['cross_scale_module_integration'])==3
+          print('PASS v4 pilot contract and real-input replay',p)
+          PY
+      - name: Upload aggregate v4 diagnostic receipt only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-functional-exploratory-aggregate
+          path: work/v4/output/result.json
+          retention-days: 30
