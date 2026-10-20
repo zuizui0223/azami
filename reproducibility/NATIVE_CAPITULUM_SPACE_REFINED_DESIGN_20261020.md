@@ -15,7 +15,7 @@ GitHubの公開PRメタデータ140件（うち今回の設計比較対象は139
 | [#18](https://github.com/zuizui0223/azami/pull/18), [#54](https://github.com/zuizui0223/azami/pull/54), [#55](https://github.com/zuizui0223/azami/pull/55), [#69](https://github.com/zuizui0223/azami/pull/69) | 全量処理後の解析コホート、頭花→写真→観察→種の入れ子、独立検出器監査、季節・解像度・撮影者・優占種・自生域バイアス。旧種別「variation×responsiveness」負の相関は精度交絡で撤回 | **採用：** 欠測・撮影選択・層別再抽出を主設計へ。**不採用：** 撤回されたlability/四象限仮説 |
 | [#29](https://github.com/zuizui0223/azami/pull/29)–[#31](https://github.com/zuizui0223/azami/pull/31), [#33](https://github.com/zuizui0223/azami/pull/33) | 種内中心化・種ランダム効果・空間SPDE、非線形予測との役割分担、種平均のPCA、環境ニッチの中心・広がり・Bhattacharyya重複。共同TMB-SPDEは試案で、完了モデルとしては未承認 | **採用：** 空間独立性、説明と予測の区別、分布の中心と幅の分離。**保留：** 巨大な新規共同空間モデル |
 | [#70](https://github.com/zuizui0223/azami/pull/70)–[#72](https://github.com/zuizui0223/azami/pull/72) | 27項目登録・22項目に旧V2実測例。18項目の共通コホート、種内／種間の異なる構造、形質モジュール、6環境ブロック、機能候補の注釈 | **採用：** 登録形質、円環色相の一体扱い、共分散を種内と種間で比較。27列完全行の要求は禁止 |
-| [#93](https://github.com/zuizui0223/azami/pull/93) | V3の確定GEB範囲。42分類群／1,734観察の共通コホートで33/36組は種間RVが大きく、共分散の組み合わせは完全一致しない | **確定した歴史的比較対象。** これを新しい自生域限定母集団へ転記・上書きしない |
+| [#93](https://github.com/zuizui0223/azami/pull/93), [#110](https://github.com/zuizui0223/azami/pull/110) | 1,734観察／42分類群のV3共通コホートは生のRVで33/36組が種間優位。ただし**同数42行へ調整したRVの典型は23/36組**、差の中央値は**+0.019316（95%区間 +0.001884〜+0.030352、98.3%の反復で正）**。有限標本のRV基準値に敏感 | **同数抽出・帰無RV補正を必須の感度分析に採用**。生の33/36を頑健な効果や自生域の結果と誤認しない。V3の原結果は不変 |
 | [#92](https://github.com/zuizui0223/azami/pull/92) | **未マージだが実行済みの密度分布研究**。54分類群×主要3モジュール、50観察×30反復、90% KDE体積、TPD重なり、Wasserstein、同一種内基準と帯域感度。別途19座標の相関楕円体幾何を実行 | **重要な再利用対象。** KDE分布／重複／中心以外の距離を捨てない。ただし旧母集団46,276／259で、自生域限定の再現ではない |
 | [#94](https://github.com/zuizui0223/azami/pull/94) | 環境-firstと形質統合の二本柱。統合度×環境効果プロファイル類似性の探索では支持されず（種内P=0.1652、種間P=0.8475） | **採用：** 環境と共変動を直接つなぐ問い。**不採用：** 過去の弱い関連を新しい陽性結果として扱うこと |
 | [#142](https://github.com/zuizui0223/azami/pull/142) | 上流665,115観察から形質を見る前に自生域313,350を選定。旧画像測定は217,104観察に存在。27項目の適格台帳と、3画像形質の楕円体・共分散の手動プリフライトを整備 | **自生域入口と台帳を採用**。ただし暫定3変数・楕円体を最終的な機能的ハイパーボリュームと混同しない |
@@ -77,7 +77,7 @@ GitHubの公開PRメタデータ140件（うち今回の設計比較対象は139
 - 一次サンプルは同一観察3モジュールを同時測定した集合。各モジュールは試験前に固定した代表座標で扱い、入力尺度は分類群を等重みした共通基準で変換する。
 - 始点として既存の手動 `native_space_gate.py` が画像向き・彩度・輪郭長幅比という**3座標**を検査する。ただしこれは**簡易プリフライト**であり、他の色次元・輪郭次元の機能的空間を代表したことにはならない。
 - 同じ標本範囲で**種内W、種間B、全T=W+B**を分け、変数ペアの符号付き相関／共分散、RV、尺度別行列の方向・固有構造を記録する。
-- 既存V3のQAP・ブートストラップとの橋を架ける際は、**同じ測定集合・同じ重み・同じ尺度**で比較し、共通42分類群の強い種間RVを、新しい自生域177分類群以上の相関に移植しない。
+- 既存V3のQAP・ブートストラップとの橋を架ける際は、**同じ測定集合・同じ重み・同じ尺度**に加えて**同数の行への再抽出とスケール別RV帰無値補正**を行う。V3の補正前33/36という組数を頑健な件数と呼ばず、共通42分類群の比較結果を自生域177分類群以上へ移植しない。
 - 追加の帰無対照では、各単一形質の周辺分布を保ったうえで**同時出現する組み合わせ**をずらす。撮影者・分類群・地域セルの構造を壊す無差別な写真シャッフルはしない。
 - **採否指標：** 共変動の符号と強さ、標本調整区間、主要撮影者・多記録分類群の除外、同一環境条件での比較、空間的な外部妥当性。単に低P値を探さない。
 
@@ -148,7 +148,7 @@ GitHubの公開PRメタデータ140件（うち今回の設計比較対象は139
 
 - [旧PR #92：分布幅サマリー](https://github.com/zuizui0223/azami/blob/6061befaf56ee545bb3b2b4a80ed220d2def1190/analysis_outputs/pr92_distribution_breadth_pilot_20260910/summary.json)・[密度重複とW2](https://github.com/zuizui0223/azami/blob/6061befaf56ee545bb3b2b4a80ed220d2def1190/analysis_outputs/pr92_distribution_overlap_pilot_20260910/summary.json)・[PR92別の相関楕円体レシート](https://github.com/zuizui0223/azami/blob/6061befaf56ee545bb3b2b4a80ed220d2def1190/analysis/v3/capitulum_hypervolume_receipt_20260910.json)
 - [旧PR #92：頭花単位の5項目回収実装](https://github.com/zuizui0223/azami/blob/6061befaf56ee545bb3b2b4a80ed220d2def1190/analysis/v3/recover_display_composition.py)（**現在のnative-only測定済みとは数えない**）
-- [V3：形質ペア種内・種間RV](../analysis/v3/SCALE_DEPENDENT_INTEGRATION_RESULT_20260910.md)・[V3：完全共通コホート](../analysis/v3/CONSTRUCT_SCALE_UPGRADE_RESULT_20260910.md)
+- [V3：形質ペア種内・種間RV](../analysis/v3/SCALE_DEPENDENT_INTEGRATION_RESULT_20260910.md)・[V3：完全共通コホート](../analysis/v3/CONSTRUCT_SCALE_UPGRADE_RESULT_20260910.md)・[PR #110：RV推定量の標本数依存監査](../analysis/v3/RV_ESTIMATOR_VALIDITY_RESULT_20260915.md)
 - [ネイティブ27項目集計](native_first_27_endpoint_coverage_20261020.json)・[過去の自生域限定・撮影者監査](https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/OBSERVER_BIAS_RESULT_20261020_JA.md)
 - [EAzami：7分類群直接測定PCA](https://github.com/zuizui0223/EAzami/blob/main/data/evidence/fdt4_direct_functional_disparity_pilot_v1.json)・[進化的組み替えと現在環境／起源の区別](https://github.com/zuizui0223/EAzami/blob/main/docs/chapter2/V10_FUNCTIONAL_ASSEMBLY_ORIGIN_DECOUPLING_SPINE.md)
 - [aza3：同一個体の構成形質](https://github.com/zuizui0223/aza3/blob/main/docs/CIRSIUM_HEAD_CORE_VS_BRACT_TIP_SPREAD_EMPIRICAL_20261020.md)・[機能／遺伝の実測計画](https://github.com/zuizui0223/aza3/blob/main/docs/ANTO_HIGHER_ORDER_LEGO_MEASUREMENT_PLAN_V2.md)
