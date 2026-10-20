@@ -29,7 +29,8 @@ Pilot calculations:
 1. Influence of the most observed taxa: observation-weighted and equal-total-weight-per-taxon demeaned chroma/radiation coefficient; remove Cirsium vulgare, C. arvense, top two, top five.
 2. Common complete three-module cohort, at least five observations per source-assigned taxon. **Not the old complete-18 cohort.**
 3. For each module among taxa, a full joint *multivariate* model with five environmental blocks: radiation (1 predictor), thermal (2), water demand (4: rainfall/seasonality/VPD/GSP), wind (1), productivity (1). Report in-sample R², order-independent Shapley R² allocation, unique drop-one-block ΔR². Repeat with latitude and longitude in the baseline. Correlated predictors share explained variation; allocated shares are *not independent process effects*. Block size and 42-taxon overfitting matter.
-4. Within-taxon vs among-taxon three-module RV. Because raw RV baseline depends on n, compare against 300 repeats of one taxon-centred observation per taxon. This is sensitivity, not a bootstrap p-value.
+4. **Pooled within-taxon multivariate environment contrast on the same complete cohort:** demean response and environment within each source taxon; use equal total weight per taxon; report Shapley and unique conditional R² in the same five exploratory environmental blocks. These cross-sectional slopes are not plasticity, and their in-sample R² are not directly comparable as effects with species-median R².
+5. Within-taxon vs among-taxon three-module RV. Because raw RV baseline depends on n, compare against 300 repeats of one taxon-centred observation per taxon. This is sensitivity, not a bootstrap p-value.
 
 ### Observed 2026-10-20 numerical pilot
 
@@ -38,6 +39,7 @@ Pilot calculations:
 - New three-module complete cohort: **1,777 observations, 42 taxa**. The different 1,777 versus v3's 1,734 arises from different endpoint eligibility.
 - Within-taxon marginal radiation×chroma standardized β: **+0.0010** observation-weighted; **−0.0169** under equal taxon weight. Remove both dominant taxa: **−0.0058** observation-weighted. All are very small exploratory associations.
 - Among-taxon in-sample multivariate R²: **0.262** presentation, **0.253** colour, **0.252** involucre. Water-demand block has the greatest Shapley allocation across all three modules, including the linear lat/lon sensitivity. This is **not evidence that water has the largest independent causal effect**; unequal predictor count and ecological/spatial covariance are unresolved.
+- Taxon-balanced within-taxon **in-sample** five-block multivariate R²: presentation **0.0391**, colour **0.0175**, involucre **0.0326**. The strongest allocated block is water demand for presentation/involucre, but **wind** for colour; the small R² and collinearity preclude a mechanistic ranking. Both models use the exact new 1,777/42 complete cohort and different within/between estimands.
 - Presentation × colour RV within / among: **0.030 / 0.211**; matched-n median difference **+0.172**, positive in **99.3%** of resamples.
 - Presentation × involucre: **0.002 / 0.043**; matched-n difference **−0.001**, positive **47.0%**. No stable direction.
 - Colour × involucre: **0.010 / 0.107**; matched-n difference **+0.037**, positive **85.3%**. Uncertain.
