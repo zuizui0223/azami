@@ -1,5 +1,12 @@
 # Native-first 27-endpoint handoff (2026-10-20)
 
+## CRITICAL: PR143 supersedes the old 48-test native environment fit
+
+**Do not infer ecology from old uncorrected CHELSA outputs.** [PR143 environmental-encoding incident](https://github.com/zuizui0223/azami/blob/a7b870dc85475e9ad4d955269074f38e2e219c83/analysis/v4/ENVIRONMENT_INPUT_INCIDENT.md) verified **1,239 invalid GSP uint32-max rows** plus missing affine decoding. Corrected [run 39422378058](https://github.com/zuizui0223/azami/actions/runs/39422378058) retains 313,350 native observations but has only **312,001** all-nine-environment-complete rows, NOT the previously quoted 313,240 raw numerically finite rows. The previously positive between-taxon rainfall–orientation association is **superseded and NOT Holm-supported after correction**. The corrected 64-test native-only colour/outline effects remain exploratory; no spatial/phylogenetic causal effect has been confirmed.
+
+The [native_space_gate.py](native_space_gate.py) file now requires corrected prepared-input SHA256 **342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed** and explicitly rejects the old raw source. The 27-trait ledger keeps historic *measurement* eligibility but adds the corrected-climate provenance; the field named native_climate_all_nine_complete=313240 is legacy raw data and must not be used as an ecological analysis denominator. See the [refined history-to-design workflow](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md).
+
+
 **研究設計の最新版：** [過去のPRとコミットを照合した「共変動 × 分布 × 環境」洗練設計](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md)。この従来の引継ぎ文書は測定数・過去の証拠と手動プリフライトを記録する資料であり、3形質楕円体を最終的な機能的ハイパーボリュームとしない。**新たな推定は未実行。**
 
 ## Decision: what is active and what remains paused
@@ -14,10 +21,11 @@ The complete pre-consolidation branch is preserved at [archive/pr142-v4-20261020
 | --- | ---: | --- |
 | Original pre-detector metadata, 2026-07-03 | 665,115 observations; 1,122,854 photo links | Starting frame, not 665,115 trait measurements |
 | Native-primary after source-level classification | 313,350 observations; 534,186 photo links; 306 accepted WCVP keys | Before phenotype, detector, colour, and trait completeness |
-| Native with all nine stored CHELSA values | 313,240 observations | Environment availability, **not** measurement availability |
+| Legacy raw numeric all-nine (superseded) | 313,240 observations | GSP invalid-code contamination, not valid climate completeness |
+| Corrected all-nine CHELSA complete | **312,001 observations** | PR143 affine decoding and masked GSP; phenotype missingness separate |
 | Native with an inherited original measurement-table row | 217,104 observations | Join to previous image measurements, not remeasurement |
 | Native lacking any inherited original measurement-table row | 96,246 observations | Preserve as missing; do not silently drop from denominator |
-| Native inherited measurements plus all nine environmental values | 217,102 observations | Still not a 27-trait complete-case cohort |
+| Historic measurement rows plus raw all-nine numerics | 217,102 observations | Superseded numeric-only overlap; NOT corrected nine-climate analysis cohort |
 
 Audit provenance: archived [full-source master report](https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/NATIVE_MASTER665_RESULT_20261020.md), [full-source receipt](https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/NATIVE_665115_FULLSOURCE_20261020.md), original all-source replay [run 39407663676](https://github.com/zuizui0223/azami/actions/runs/39407663676).
 
@@ -62,7 +70,7 @@ The [machine-readable 27-endpoint coverage inventory](native_first_27_endpoint_c
 
 So **27 registered → 22 with finite values → 18 computationally eligible in the native-only roster**. Even among the 18, nine involucre candidates remain unsuitable for strong botanical-function claims. The four surface outputs are **not** eligible just because 570 numeric values exist. The five never-executed outputs have **no measurement**, not an observed zero state.
 
-The full native roster has **313,244** observations with the four previously selected climate predictors, versus **313,240** with all nine; these are predictor-availability denominators, independent of endpoint measurability. Per-endpoint usable counts in the receipt happen to remain unchanged on the four-predictor complete-case gate. A different selected-predictor set or model design can change them and must report its own denominators.
+The full native roster has **313,244** observations with the four previously selected climate predictors, versus **312,001** corrected-complete nine-variable observations (**313,240 was old raw numeric-only**); these are predictor-availability denominators, independent of endpoint measurability. Per-endpoint usable counts in the receipt happen to remain unchanged on the four-predictor complete-case gate. A different selected-predictor set or model design can change them and must report its own denominators.
 
 ## Next scientific analysis: bounded by existing data
 
@@ -77,9 +85,9 @@ The full native roster has **313,244** observations with the four previously sel
 The native-primary **source selection is already completed** in archived PR142 and need not be reacquired. The native-first **27-endpoint coverage ledger and independently supported ecological results are not yet complete in current main/PR142**. The current [V3 numerical replay](CURRENT_ANALYSIS.md) validates old frozen inputs and 16 reference outputs; it **does not** implement a native-only reanalysis by itself. Do not equate green staging/integrity CI with execution of this handoff. The next executable step is reuse of the archived, checksum-verified 313,350-observation native-only prepared table to generate the 27-row eligibility ledger, without downloading or remeasuring images.
 
 
-## Existing native-only joint environmental analysis — reviewed, not newly fitted
+## Superseded native-only 48-test joint environment model — history only
 
-This is a **retrospective review of already-computed native-only exploratory models**, not a new model, a replacement for the frozen GEB v3 analyses, or independent validation. The source is [existing Actions run 39416125522](https://github.com/zuizui0223/azami/actions/runs/39416125522), artifact \`12261727387\`, \`environment_response.json\` SHA-256 \`707e3cf0041d127e085bfa47ef83a6ff89a1ad84740cd4ec6c09a893bbe1c517\`. Its \`reuse_inventory\` supplies accepted taxon counts for all 27 endpoints and matches every native coverage count in the earlier \`measurement_receipt.json\`.
+This is a **historical audit of old native-only environmental models now superseded by PR143**, not current biological inference, a replacement for frozen GEB v3, or independent validation. The source is [existing Actions run 39416125522](https://github.com/zuizui0223/azami/actions/runs/39416125522), artifact \`12261727387\`, \`environment_response.json\` SHA-256 \`707e3cf0041d127e085bfa47ef83a6ff89a1ad84740cd4ec6c09a893bbe1c517\`. Its \`reuse_inventory\` supplies accepted taxon counts for all 27 endpoints and matches every native coverage count in the earlier \`measurement_receipt.json\`.
 
 The **environment-only** \`usdm::vifstep\` screen used 313,240 native rows with all nine environmental candidates, removed \`chelsa_bio01\` and retained **eight** variables: \`bio04\`, \`bio12\`, \`bio15\`, radiation, VPD, wind, growing-season precipitation and NPP. Selection is not causal identification. The fitted model analysed **within-taxon deviations and among-taxon means simultaneously** using approximate response-specific random-intercept REML with taxon-clustered joint tests. This is not a spatial model, random-slope reaction norm, or phylogenetically corrected model. The actual fitted row counts differ slightly from the source-eligible counts because model predictors are required.
 
@@ -92,7 +100,7 @@ The **environment-only** \`usdm::vifstep\` screen used 313,240 native rows with 
 
 All three fitted modules comprise **48 joint tests** (3 modules × 2 scales × 8 variables), with Holm correction over the single declared family. For colour, the supported between-taxon predictors were annual precipitation, radiation, VPD, growing-season precipitation and NPP; supported within-taxon predictors were temperature seasonality, radiation, VPD, wind and growing-season precipitation. A four-coordinate joint colour test does not prove that each coordinate is separately supported, nor does it identify a pigment or adaptive mechanism.
 
-For orientation the only Holm-supported test was **between-taxon annual precipitation**: image-referenced head angle estimate **+2.395°** per **537.774 mm** (one native-environment SD), *pointwise* 95% interval **+1.033° to +3.757°**, Holm-adjusted \`P = 0.02398\`. The within-taxon coefficient was **−0.330°** (pointwise interval **−1.609° to +0.948°**), with **no Holm support**. Thus, the detected among-taxon rain association cannot be described as an observed within-species plastic response. Four head-outline endpoints are already available in the native ledger, but this specific conditional model did **not** fit them; no inferential shape claim follows from its absence.
+In the **withdrawn, uncorrected 48-test result**, the former Holm-supported association was **between-taxon annual precipitation**: image-referenced head angle estimate **+2.395°** per **537.774 mm** (one native-environment SD), *pointwise* 95% interval **+1.033° to +3.757°**, Holm-adjusted \`P = 0.02398\`. The within-taxon coefficient was **−0.330°** (pointwise interval **−1.609° to +0.948°**), with **no Holm support**. Thus, the detected among-taxon rain association cannot be described as an observed within-species plastic response. Four head-outline endpoints are already available in the native ledger, but this specific conditional model did **not** fit them; no inferential shape claim follows from its absence.
 
 Separate exploratory 665,115-source master-frame diagnostics ([archived master report](https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/NATIVE_MASTER665_RESULT_20261020.md)) report native marginal chroma–radiation **β = −0.3252** (177 taxa) and orientation–precipitation **β = +0.2288** (178 taxa). These are **different marginal estimands and cohorts**, not direct coefficients from the jointly adjusted 244-taxon model. The separate master-frame geographic held-out skill was **negative** for its unregularized joint-environment-and-space model. Consequently **do not claim reliable regional transfer, universal causal environmental controls, or an established defence/pollination mechanism** based on this existing analysis.
 
@@ -148,7 +156,7 @@ It first reports the **actual matched same-observation overlap** of all three mo
 
 If enough taxon × 0.5-degree spatial cells pass, it generates **exploratory** taxon-balanced 20-cell rarefaction diagnostics: Rao-type RMS pairwise dispersion and a *parametric Gaussian 95% covariance-ellipsoid volume proxy*. Climate reporting is limited to **existing pre-frozen axes BIO12 and RSDS**, and descriptive (no post-hoc significance tests); climatic taxon medians use *all* native records, not a phenotype-selected source subset. Public output is aggregate JSON only, never taxon/photographer/location/observation rows. Cell discretization is not equal-area, so this diagnostic is not a final estimator of a native-only ecological hypervolume.
 
-The source remains an encrypted GitHub artifact inaccessible for local computation without the authorized private key. **Synthetic test success is not an empirical hypervolume result**. Before any ecological promotion, verify photographer/region-dependent missingness, independent colour/angle/outline validity and spatial transfer; a functionally calibrated hypervolume additionally requires experimental phenotype→functional-payoff links owned by \`aza3\`. The current frozen GEB v3 conclusions remain untouched.
+The source remains private/encrypted. The former raw file is deliberately rejected, and authorized access to the already-corrected PR143 observation-level data is required to execute the manual gate. **Synthetic test success is not an empirical hypervolume result**. Before any ecological promotion, verify photographer/region-dependent missingness, independent colour/angle/outline validity and spatial transfer; a functionally calibrated hypervolume additionally requires experimental phenotype→functional-payoff links owned by \`aza3\`. The current frozen GEB v3 conclusions remain untouched.
 
 ### Covariation comes before hypervolume (2026-10-20)
 
