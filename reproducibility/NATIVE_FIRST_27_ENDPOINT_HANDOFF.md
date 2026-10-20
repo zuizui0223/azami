@@ -44,6 +44,24 @@ Thus **22/27 endpoint definitions have at least some inherited measurements; fiv
 
 Archived native-first conditional-environment result [run 39416125522](https://github.com/zuizui0223/azami/actions/runs/39416125522) reported *response-specific* eligible rows: angle **170,064 / 244 taxa**; lightness/chroma **186,437 / 244 taxa**; circular hue **186,388 / 244 taxa**; bract contour projection/spread **1,303 / 111 taxa**. These are **inherited photo measurements**, not 313,350 newly analysed/masked heads, not all 27 measured, and not a confirmed V3 result. The corresponding [archived result note](https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/results/20261020_selected_environment/README.md) documents the exploratory joint-model limits.
 
+## Native-first 27-row aggregate receipt — verified, not an extrapolation
+
+The [machine-readable 27-endpoint coverage inventory](native_first_27_endpoint_coverage_20261020.json) was reconstructed from the **actual** aggregate `measurement_receipt.json` in [Actions run 39408603488](https://github.com/zuizui0223/azami/actions/runs/39408603488), artifact `12257893990`, receipt SHA-256 `246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6`. It reports each endpoint's **finite**, **eligible** and **eligible with four climate predictors** counts across the same 313,350 native records. No private observation IDs or raw photographs are included.
+
+| Native-primary trait measurements | Per-endpoint numeric | Per-endpoint computationally eligible | Meaning |
+| --- | ---: | ---: | --- |
+| Image vertical orientation | 170,066 | **170,066** | Image angle, not gravity |
+| Corolla L* and chroma | 186,439 each | **186,439 each** | Uncalibrated JPEG colour |
+| Hue sine/cosine | 186,390 each | **186,390 each** | One joint circular colour trait |
+| Whole-head outline (4) | 176,048 each | **176,048 each** | Viewpoint-dependent silhouette |
+| Involucre body (3) and bract contour (6) | 1,303 each | **1,303 each** | Eligible in code, but botanical landmarks **not independently validated** |
+| Involucre texture (3) and specular fraction (1) | 570 each | **0** | Values exist, but *every* native eligibility flag is false (validation-only) |
+| Visible floret fraction and four colour composition fractions | 0 | **0** | Five endpoints never executed |
+
+So **27 registered → 22 with finite values → 18 computationally eligible in the native-only roster**. Even among the 18, nine involucre candidates remain unsuitable for strong botanical-function claims. The four surface outputs are **not** eligible just because 570 numeric values exist. The five never-executed outputs have **no measurement**, not an observed zero state.
+
+The full native roster has **313,244** observations with the four previously selected climate predictors, versus **313,240** with all nine; these are predictor-availability denominators, independent of endpoint measurability. Per-endpoint usable counts in the receipt happen to remain unchanged on the four-predictor complete-case gate. A different selected-predictor set or model design can change them and must report its own denominators.
+
 ## Next scientific analysis: bounded by existing data
 
 - **One frozen native-only ledger first.** For each of the 27 IDs report original source N, native N, inherited measurement-row N, finite/eligible response N, native accepted taxa N, climate-complete N, observer/region coverage, and explicit failure/unknown categories. Preserve zero-availability endpoints in the ledger.
