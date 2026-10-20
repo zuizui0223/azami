@@ -170,5 +170,29 @@
     "original_1255791_head_row_fields_rechecked": false,
     "native_joined_five_endpoint_counts": "NOT_VERIFIED",
     "limit": "Drive file metadata only; archived content was not downloaded, reassembled, or remeasured."
+  },
+  "legacy_five_prior_native_recovery": {
+    "status": "PR92_HISTORICAL_SMALL_COHORT_EXECUTED_NOT_A_CURRENT_NATIVE313350_MEASUREMENT",
+    "source": "https://github.com/zuizui0223/azami/blob/6061befaf56ee545bb3b2b4a80ed220d2def1190/analysis/v3/native_primary_spatial_historical_receipt_20260909.json",
+    "historical_pr": 92,
+    "historical_pr_head_sha": "6061befaf56ee545bb3b2b4a80ed220d2def1190",
+    "historical_receipt_blob_sha": "92498fb6a20418918e1d5e9b79e168c13c17197c",
+    "historical_workflow_run_id": 34334322764,
+    "historical_artifact_id": 10097484190,
+    "historical_source_spatially_thinned_observations": 46276,
+    "historical_native_cohort_observations": 27066,
+    "historical_native_cohort_taxa_with_environment": 241,
+    "restored_native_observations_per_endpoint": 23881,
+    "restored_endpoints": [
+      "visible_floret_fraction",
+      "corolla_white_pixel_fraction",
+      "corolla_redmagenta_pixel_fraction",
+      "corolla_purple_pixel_fraction",
+      "corolla_yellow_pixel_fraction"
+    ],
+    "recovery_algorithm": "1,255,791 measured heads; head -> photo -> observation aggregation; no new image measurement; 4 fractions required to close to 1",
+    "new_313350_native_roster_join_status": "NOT_VERIFIED",
+    "new_313350_native_restored_observations_per_endpoint": null,
+    "caveat": "Historical restored endpoint counts cannot be copied into the newer 313350 native source. Closed fractions are compositional, not 4 independent colour functions."
   }
 }

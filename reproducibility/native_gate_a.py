@@ -258,6 +258,20 @@ def validate_existing_sampling_context(receipt: dict) -> dict:
         raise ValueError("Model-admitted taxa are not original measurement support")
     if (receipt["complete_core9"]["n"], receipt["complete_core9"]["accepted_taxa"]) != (157779,242):
         raise ValueError("Core9 measured cohort changed")
+    old = receipt["legacy_five_prior_native_recovery"]
+    if old["historical_pr"] != 92 or old["historical_pr_head_sha"] != "6061befaf56ee545bb3b2b4a80ed220d2def1190":
+        raise ValueError("Legacy five restored trait source branch changed")
+    if old["historical_receipt_blob_sha"] != "92498fb6a20418918e1d5e9b79e168c13c17197c":
+        raise ValueError("Legacy five restored trait receipt SHA changed")
+    if (old["historical_workflow_run_id"],old["historical_artifact_id"]) != (34334322764,10097484190):
+        raise ValueError("Legacy five recovery execution identity changed")
+    if (old["historical_native_cohort_observations"],old["restored_native_observations_per_endpoint"]) != (27066,23881):
+        raise ValueError("Legacy five recovered observation counts changed")
+    if len(set(old["restored_endpoints"])) != 5 or set(old["restored_endpoints"]) != set(RECOVERED_FIVE):
+        raise ValueError("Legacy five restored endpoint names changed")
+    if old["new_313350_native_roster_join_status"] != "NOT_VERIFIED" or old["new_313350_native_restored_observations_per_endpoint"] is not None:
+        raise ValueError("Do not treat old 27k native sample as new 313k native measurements")
+    coarse_ceiling = coarse_cell_retention_ceiling(receipt)
     a5 = receipt["legacy_five_archive_metadata"]
     if (a5["documented_artifact_id"],a5["parts_recorded"],
         a5["parts_with_existing_drive_metadata_found"]) != (8269246732,20,20):
@@ -278,8 +292,50 @@ def validate_existing_sampling_context(receipt: dict) -> dict:
         "core9_fitted_previous_taxa":174,
         "core9_original_observer_strata":"NOT_VERIFIED",
         "legacy_head_parts_with_metadata":20,
-        "legacy_five_native_values":"NOT_VERIFIED"
+        "legacy_five_native_values":"NOT_VERIFIED",
+        "legacy_five_restored_observations_per_endpoint_on_historical_27066_frame":23881,
+        "historical_coarse_cell_retention_ceiling":coarse_ceiling
     }
+
+
+def coarse_cell_retention_ceiling(receipt: dict) -> dict:
+    """Sharp *upper* counts from prior single-trait coarse cells, not actual support.
+
+    If all 242 complete-core9 taxa are required to have >=k distinct cells,
+    they collectively consume >=242+(k-1)*qualifying_taxa occupied taxon-cells.
+    The known 244-taxon orientation margin has 1421 occupied cells, including
+    at least one cell for each of its two taxa not in the 242-taxon core9.
+    This bound applies to that exact archived coarse grid ONLY and cannot
+    constrain a finer 0.5-degree grid or prove individual-plant independence.
+    """
+    evidence = receipt["source_sampling_context"]["individual_endpoint_coarse_spatial_support"]
+    if not evidence["not_joint_core9"] or not evidence["not_independent_plants"]:
+        raise ValueError("Invalid source spatial provenance")
+    source = evidence["endpoints"]["orientation_image_vertical_angle"]
+    n_taxa = int(receipt["complete_core9"]["accepted_taxa"])
+    source_taxa, source_cells = source["taxa"],source["one_per_taxon_cell_n"]
+    if source_taxa < n_taxa or source_cells < source_taxa:
+        raise ValueError("Impossible prior spatial source/target taxon counts")
+    # All core9 observations are also eligible orientation observations.
+    maximum_core9_cells = source_cells - (source_taxa - n_taxa)
+    available_excess = maximum_core9_cells - n_taxa
+    if available_excess < 0:
+        raise ValueError("No one-cell-per-core-taxon allocation is possible")
+    maximum = {
+        str(k): min(n_taxa, available_excess // (k-1))
+        for k in (5,10,20,50)
+    }
+    return {
+        "status":"MATHEMATICAL_UPPER_BOUNDS_NOT_ACTUAL_CELL_COVERAGE",
+        "reference":"historical one-per-accepted-taxon-per-coarse-sine-latitude-cell",
+        "source_orientation_taxon_cell_count":source_cells,
+        "source_orientation_accepted_taxa":source_taxa,
+        "matched_nine_accepted_taxa":n_taxa,
+        "upper_bound_matched_nine_taxon_cells":maximum_core9_cells,
+        "maximum_matched_nine_taxa_with_at_least_k_cells":maximum,
+        "caution":"These upper bounds apply only to the historical coarse cell grid. Different/finer grid and observer independence are NOT inferred."
+    }
+
 
 def _strict_endpoint_masks(frame: pd.DataFrame, ledger: dict | None) -> tuple[dict, dict]:
     endpoint_ids = [r["endpoint_id"] for r in ledger["endpoints"]] if ledger else list(

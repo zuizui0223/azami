@@ -469,3 +469,31 @@ def test_gate_a_historical_sampling_scope_and_head_metadata_dont_certify_core9()
     bad['source_sampling_context']['pending_exact_core9_sampling']['native_matched_observer_n'] = 92839
     with pytest.raises(ValueError, match='cannot close'):
         validate_existing_sampling_context(bad)
+
+
+
+def test_historical_native_five_restored_measurements_do_not_replace_new_ledger():
+    """PR92 executed real head-level aggregation in a different native universe."""
+    from reproducibility.native_gate_a import (
+        validate_existing_sampling_context, coarse_cell_retention_ceiling,
+    )
+    original = json.loads(
+        (ROOT/"reproducibility/native_gate_a_existing_overlap_20261020.json").read_text()
+    )
+    out = validate_existing_sampling_context(original)
+    assert out["legacy_five_restored_observations_per_endpoint_on_historical_27066_frame"] == 23881
+    assert out["legacy_five_native_values"] == "NOT_VERIFIED"
+    ceiling = coarse_cell_retention_ceiling(original)
+    assert ceiling["upper_bound_matched_nine_taxon_cells"] == 1419
+    assert ceiling["maximum_matched_nine_taxa_with_at_least_k_cells"] == {
+        "5":242,"10":130,"20":61,"50":24
+    }
+    assert ceiling["status"] == "MATHEMATICAL_UPPER_BOUNDS_NOT_ACTUAL_CELL_COVERAGE"
+    counterfeit = json.loads(json.dumps(original))
+    counterfeit["legacy_five_prior_native_recovery"]["new_313350_native_restored_observations_per_endpoint"] = 23881
+    with pytest.raises(ValueError, match="Do not treat old 27k"):
+        validate_existing_sampling_context(counterfeit)
+    counterfeit = json.loads(json.dumps(original))
+    counterfeit["source_sampling_context"]["individual_endpoint_coarse_spatial_support"]["endpoints"]["orientation_image_vertical_angle"]["taxa"] = 241
+    with pytest.raises(ValueError, match="Impossible prior spatial"):
+        coarse_cell_retention_ceiling(counterfeit)
