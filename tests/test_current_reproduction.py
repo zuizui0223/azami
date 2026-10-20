@@ -650,3 +650,31 @@ def test_native_gate_b_fails_closed_for_changed_archive_member_bytes(tmp_path):
     f.write_text('{"run_id": 39428065666}')
     with pytest.raises(ValueError, match='Wrong native integration aggregate bytes'):
         verify_aggregate_file(f)
+
+
+def test_native_gate_b_source_derived_receipt_separates_internal_from_cross_module():
+    receipt=json.loads((
+        ROOT/'reproducibility/native_gate_b_existing_rv_receipt_20261021.json'
+    ).read_text(encoding='utf-8'))
+    from reproducibility.native_gate_b_existing_rv import MEMBER_SHA256, CORRECTED_INPUT_SHA256
+    assert receipt['source']['member_sha256'] == MEMBER_SHA256
+    assert receipt['source']['corrected_prepared_table_sha256'] == CORRECTED_INPUT_SHA256
+    assert receipt['cohort']['native_measurement_9_outputs_n'] == 157779
+    assert receipt['cohort']['model_eligible_n'] == 157654
+    assert receipt['cohort']['native_measurement_9_outputs_taxa'] == 242
+    assert receipt['cohort']['model_eligible_taxa'] == 174
+    groups=receipt['analysis']['groups']
+    assert sum(g['pairs'] for g in groups.values()) == 28
+    assert sum(g['adjusted_positive_deltas'] for g in groups.values()) == 24
+    assert sum(g['adjusted_pointwise_positive'] for g in groups.values()) == 7
+    cross=[g for k,g in groups.items() if k.split('/')[0] != k.split('/')[1]]
+    assert sum(g['pairs'] for g in cross) == 19
+    assert sum(g['adjusted_positive_deltas'] for g in cross) == 16
+    assert sum(g['adjusted_pointwise_positive'] for g in cross) == 3
+    assert receipt['analysis']['pointwise_not_multiplicity_adjusted']
+    assert len(receipt['adjusted_pointwise_positive_pairs']) == 7
+    assert len({p['pair'] for p in receipt['adjusted_pointwise_positive_pairs']}) == 7
+    assert all(p['low'] < p['delta'] < p['high']
+               for p in receipt['adjusted_pointwise_positive_pairs'])
+    assert receipt['empirical_new_result'] is False
+    assert receipt['no_decrypted_native_rows_in_receipt'] is True
