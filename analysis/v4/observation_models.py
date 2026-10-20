@@ -24,6 +24,38 @@ MODULES = {
     'bract_projection': ['bract_projection_p95','bract_spread_fraction'],
 }
 
+def reuse_inventory(frame, report, crosswalk):
+    """Account for every stored endpoint without making completeness universal."""
+    endpoints=crosswalk['endpoints']
+    if len(endpoints)!=27 or {e['id'] for e in endpoints}!=set(report['endpoints']):
+        raise ValueError('The complete 27-endpoint inventory must match the prepared receipt')
+    rows=[]
+    main=set(sum(MODULES.values(),[]))
+    climate_ok=np.isfinite(frame[ENV]).all(axis=1)
+    for entry in endpoints:
+        name=entry['id']
+        finite=np.isfinite(frame[name])
+        eligible=finite & frame[name+'__eligible'].eq(True)
+        model_rows=eligible & climate_ok
+        expected=report['endpoints'][name]
+        actual={'finite':int(finite.sum()),'eligible':int(eligible.sum()),
+                'eligible_with_four_climate':int(model_rows.sum())}
+        if any(actual[key]!=expected[key] for key in actual):
+            raise ValueError('Endpoint coverage differs from input receipt: '+name)
+        values=frame.loc[eligible,name]
+        quantiles=values.quantile([.1,.5,.9]).tolist() if len(values) else [None]*3
+        use=('joint_primary_module' if name in main else
+             'secondary_phenotype_description' if actual['eligible'] else
+             'technical_validation_only' if actual['finite'] else 'unmeasured')
+        rows.append({'endpoint':name,'module':entry['biological_module'],
+                     'group':entry['mapping_group'],'declared_role':entry['v4_role'],
+                     'current_use':use,'source':expected['source'],**actual,
+                     'eligible_species':int(frame.loc[model_rows,'accepted_key'].nunique()),
+                     'eligible_q10':quantiles[0],'eligible_median':quantiles[1],
+                     'eligible_q90':quantiles[2],
+                     'not_equivalent_to':entry['not_equivalent_to']})
+    return rows
+
 def design_diagnostics(frame):
     """Describe actual endpoint-specific eight-term designs, without changing fits."""
     terms=TERMS[1:]
@@ -193,7 +225,7 @@ def execute(table, receipt, output):
     if any(a['sd']<=0 for a in scales.values()):raise ValueError('Constant climate predictor')
     ranking=frame.accepted_key.value_counts().index
     result={'input':report,'scales':scales,'models':{},
-            'workflow_status':'incomplete_new_measurement_validation_and_full_native_application',
+            'workflow_status':'existing_measurement_models_complete_additional_inference_pending',
             'measurement_basis':'inherited numerical endpoints; not newly computed Lab-pixel or individual-phyllary coordinates',
             'actual_design_diagnostics':design_diagnostics(frame),
             'model_code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
@@ -205,6 +237,10 @@ def execute(table, receipt, output):
                           'bract projection and spread fraction are not anatomical opening angles',
                           'missing measurements are not imputed or inferred to be absent traits']}
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
+    crosswalk_path=Path(__file__).with_name('trait27_functional_crosswalk_v1.json')
+    result['reuse_inventory']=reuse_inventory(frame,report,json.loads(crosswalk_path.read_text()))
+    result['crosswalk_sha256']=hashlib.sha256(crosswalk_path.read_bytes()).hexdigest()
+    pd.DataFrame(result['reuse_inventory']).to_csv(output/'measurement_reuse_inventory.csv',index=False)
     for drop in (0,2,5):
         d=frame.loc[~frame.accepted_key.isin(ranking[:drop])]
         for module,outcomes in MODULES.items():
@@ -237,6 +273,7 @@ def execute(table, receipt, output):
             for test in model.get('tests',{}).values()]
     if len(family)!=24 or any(test['status']!='estimated' for test in family):
         result['primary_status']='incomplete_inference'
+        result['workflow_status']='incomplete_existing_measurement_inference'
     else:
         for test,q in zip(family,multipletests([test['p'] for test in family],method='holm')[1]):
             test['holm_p']=float(q)
@@ -262,9 +299,10 @@ def write_report(result, output):
     labels={'colour':'色全体','orientation':'向き','bract_projection':'総苞片の輪郭突出'}
     names=dict(zip(ENV,['温度','日射','VPD','降水']))
     lines=['# v4 既存測定による観測単位の参照解析','',
-           '**新測定法による全対象解析は未完了。** 本結果は保存済み測定値を使った参照解析である。'
+           '**既存測定の再利用を主経路とする。** 本結果は保存済み測定値を使った観測単位解析である。'
            '新方式の画素L*a*b*・個別総苞片角度を大量測定した結果ではない。'
-           '方法再計算の成功、数値モデルの成功、植物学的な測定妥当性を区別する。','',
+           '再測定は追加工程であり、この解析を開始する条件ではない。'
+           '数値モデルの成功と、機能仮説全体の検証完了を区別する。','',
            '温度・日射・VPD・降水を同時に含め、各観測を保持した種ランダム切片モデル。'
            '環境を種平均と種内偏差に分けた。色は明度・彩度・円周色相の共同検定、'
            '総苞片は突出量と広がり割合の共同検定である。','',
@@ -370,6 +408,13 @@ def write_report(result, output):
     lines+=['','温度除外・VPD除外モデルは、各座標の解析対象行を固定して再推定した。'
             '省略すると他方の効果に共通の関連が混ざり得るため、有意性を理由に主モデルを'
             '置き換えない。係数・区間・共同検定はresults.jsonのattribution_sensitivityに保存した。']
+    lines+=['','## 全27項目の再利用','',
+            '主解析の共同検定、補助形質の記述、技術検証、未測定を区別する。'
+            '全項目の同時測定は要求しない。詳細はmeasurement_reuse_inventory.csv。','',
+            '|項目|利用可能な観測|4環境が揃う観測|今回の用途|','|---|---:|---:|---|']
+    for row in result['reuse_inventory']:
+        lines.append(f"|{row['endpoint']}|{row['eligible']:,}|"
+                     f"{row['eligible_with_four_climate']:,}|{row['current_use']}|")
     (Path(output)/'conclusions_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 

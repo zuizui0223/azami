@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 import pytest
+import json
+from pathlib import Path
+from analysis.v4.observation_models import reuse_inventory
 from analysis.v4.observation_models import ENV, MODULES, fit_response, fit_module, design_diagnostics
 
 
@@ -108,3 +111,34 @@ def test_omission_sensitivity_does_not_recover_missing_predictor_rows():
     assert reduced['components']['y1']['n']==644
     assert reduced['joint_temperature_vpd']=={}
     assert ENV[2]+'__between' not in reduced['tests']
+
+
+def test_inventory_keeps_unmeasured_and_ineligible_values_out_of_inference():
+    frame,_=sample()
+    crosswalk=json.loads((Path(__file__).parents[1]/'analysis/v4/trait27_functional_crosswalk_v1.json').read_text())
+    report={'endpoints':{}}
+    for entry in crosswalk['endpoints']:
+        name=entry['id']
+        frame[name]=np.nan
+        frame[name+'__eligible']=False
+        report['endpoints'][name]={'finite':0,'eligible':0,
+                                  'eligible_with_four_climate':0,'source':'fixture'}
+    main='corolla_lab_lightness'
+    secondary='capitulum_outline_aspect_ratio'
+    technical='involucre_surface_edge_density'
+    for name in (main,secondary,technical):
+        frame[name]=frame.y1
+        report['endpoints'][name]['finite']=len(frame)
+        if name!=technical:
+            frame[name+'__eligible']=True
+            report['endpoints'][name].update(eligible=len(frame),eligible_with_four_climate=len(frame))
+    rows={r['endpoint']:r for r in reuse_inventory(frame,report,crosswalk)}
+    assert len(rows)==27
+    assert rows[main]['current_use']=='joint_primary_module'
+    assert rows[secondary]['current_use']=='secondary_phenotype_description'
+    assert rows[technical]['current_use']=='technical_validation_only'
+    assert rows[technical]['eligible_median'] is None
+    assert rows['corolla_hue_sin']['current_use']=='unmeasured'
+    report['endpoints'][main]['eligible']=1
+    with pytest.raises(ValueError,match='coverage differs'):
+        reuse_inventory(frame,report,crosswalk)
