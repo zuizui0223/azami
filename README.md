@@ -1,4 +1,4 @@
-> Interpretation hold (2026-10-20): uncorrected GSP includes uint32-max sentinel values. Environment-adjusted v4 results are provisional pending input correction and replay. See analysis/v4/ENVIRONMENT_INPUT_INCIDENT.md.
+> V4 input correction (2026-10-20): use the [corrected results](analysis/v4/results/20261020_corrected_environment/README.md). Earlier GSP-containing results are superseded by the corrected replay; see the [input incident](analysis/v4/ENVIRONMENT_INPUT_INCIDENT.md). Species-influence and spatial/phylogenetic checks remain pending.
 
 # Azami capitulum phenotypes
 

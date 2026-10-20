@@ -49,3 +49,5 @@ It masks both the declared GSP nodata and the additional invalid uint32-max,
 records their treatment, applies each verified affine transform once, and retains
 all trait values, eligibility and native observations. Analysis-specific environment
 missingness is applied later. Corrected numerical validation remains pending.
+
+Correction validated in Actions 39422378058 at commit 93e8d87: 23 tests passed, 312001 complete nine-environment observations, and all four modules fitted. Corrected aggregate results are archived under results/20261020_corrected_environment/. The earlier between-species rainfall–orientation association is not supported after correction. Follow-up robustness checks remain outstanding.
