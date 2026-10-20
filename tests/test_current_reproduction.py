@@ -6,8 +6,48 @@ import pytest
 
 from reproducibility.run_current_analysis import commands, verified, native_bytes
 from reproducibility.validate_current_analysis import REFERENCE, compare, validate, active_scope
+from reproducibility import run_current_analysis as runner
 
 ROOT=Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize('corruption', [None, 'outer', 'embedded', 'native'])
+def test_zenodo_restore_checks_all_bytes_before_extraction(tmp_path, monkeypatch, corruption):
+    import io
+    import zipfile
+    archives, inputs = tmp_path / 'archives', tmp_path / 'inputs'
+    archives.mkdir()
+    inputs.mkdir()
+    original, native = b'frozen nested archive', b'native\n'
+    sha = lambda data: hashlib.sha256(data).hexdigest()
+    monkeypatch.setattr(runner, 'INPUTS', {'continuous': (123, sha(original), {})})
+    monkeypatch.setattr(runner, 'NATIVE_SHA', sha(native))
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, 'w') as z:
+        z.writestr('inputs/artifact-123-continuous.zip',
+                   b'changed' if corruption == 'embedded' else original)
+        z.writestr('inputs/observation_native_status.csv',
+                   b'changed' if corruption == 'native' else native)
+        z.writestr('../unexpected.txt', b'never extracted')
+    data = buffer.getvalue()
+    monkeypatch.setattr(runner, 'ZENODO_SHA', '0' * 64 if corruption == 'outer' else sha(data))
+    calls = []
+    def fetch(url, timeout):
+        calls.append(url)
+        return io.BytesIO(data)
+    monkeypatch.setattr(runner.urllib.request, 'urlopen', fetch)
+    if corruption:
+        with pytest.raises(ValueError):
+            runner.restore_zenodo(archives, inputs)
+        assert not list(inputs.iterdir())
+        assert not (archives / 'artifact-123-continuous.zip').exists()
+    else:
+        runner.restore_zenodo(archives, inputs)
+        runner.restore_zenodo(archives, inputs)
+        assert calls == [runner.ZENODO_URL]  # Verified cache is reusable offline.
+        assert (archives / 'artifact-123-continuous.zip').read_bytes() == original
+        assert (inputs / 'native_status.csv').read_bytes() == native
+    assert not (tmp_path / 'unexpected.txt').exists()
 
 
 def test_current_entrypoints_import_and_counts_stay_fixed():

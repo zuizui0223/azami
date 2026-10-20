@@ -15,7 +15,7 @@ The current statistical analysis **has executable code**. Its replay starts from
 3. [GEB scope freeze](analysis/v3/GEB_SCOPE_FREEZE_20260912.md): frozen claim boundary, submission-readiness work, analysis stop list, and separate evidence routes for any higher-tier successor.
 4. [Current figure surface](reproducibility/CURRENT_FIGURE_SURFACE_20260912.md): Main-figure role freeze aligned to the v3 story and the boundary between the 46,276/259 atlas and 1,734/42 integration cohort.
 5. [GEB submission audit](reproducibility/GEB_SUBMISSION_AUDIT_20260912.md): journal-format, double-anonymous review-access, abstract/display-piece and Supporting Information gates.
-6. [Reproducibility and archive status](reproducibility/README.md): what is publicly archived and what still needs a new Zenodo version.
+6. [Reproducibility and archive status](reproducibility/README.md): published Zenodo inputs and their verification.
 7. [Historical implementations](legacy/README.md): v2 and superseded entry points. Do not start the current paper analysis from these scripts.
 
 ## Current evidence chain
@@ -55,6 +55,8 @@ The current numerical runner reuses the retained spatial and historical-placemen
 
 ## Public availability
 
-Zenodo DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791) archives the **v2** numerical input package. The planned v3 Zenodo update is likewise **data-only**: it preserves the exact processed numerical inputs that would otherwise depend on expiring GitHub Actions artifacts. Analysis code, runbooks, frozen reference outputs and figures remain versioned in GitHub. The eight-stage/16-reference-file replay has already passed; the [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) records the data-only update contract.
+Zenodo DOI [10.5281/zenodo.22703215](https://doi.org/10.5281/zenodo.22703215) archives the **published v3 numerical inputs**. The existing `Reproduce current Chapter 1 analysis` Action and `python -m reproducibility.run_current_analysis --download` reuse this checksum-pinned package without Zenodo credentials or expiring input artifacts. It contains measurements, the nine-predictor environment, spatial lookup, historical trees and native status. Analysis code, runbooks, reference outputs and figures remain in GitHub. The [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) records publication evidence.
+
+This archive preserves the existing analysis cohort, not the complete 665,115-observation upstream source or original photographs. Reusing it does not by itself expand v4 measurement coverage. Historical v2 inputs remain at DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791).
 
 Exact historical v2 reproduction remains available at commit `584af97b050d15701f26ce1facea212d5b648d4d`. The current scientific reference is main commit `fe25abd46e7235c85e6da191f976e1c8a02d0406`; subsequent layout-only changes must preserve its numerical results.

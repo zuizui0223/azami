@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import urllib.request
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +30,8 @@ INPUTS = {
         'historical_trees/gbotb_lcvp_scenario2_randomized.trees': ('trees/gbotb_lcvp_scenario2_randomized.trees', '82655f79297e44a6630a599d8b0a1dc6f85e792812b8b01f2234e567a478e3af')})}
 NATIVE_SHA = 'c01eeb9ff245d7f73da1a12fa4eede904dd9770467655f20e3d85de2ac8dd84a'
 NATIVE_REF = 'azami-ch1-v2-2026-08-27:analysis_outputs/native_range_sensitivity_v1/observation_native_status.csv'
+ZENODO_URL = 'https://zenodo.org/api/records/22703215/files/azami_ch1_v3_analysis_inputs.zip/content'
+ZENODO_SHA = 'be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438'
 
 
 def verified(data: bytes, expected: str, name: str) -> bytes:
@@ -47,18 +50,42 @@ def native_bytes(data: bytes) -> bytes:
     raise ValueError('Native-status hash mismatch after permitted newline normalization')
 
 
+def restore_zenodo(archives: Path, inputs: Path) -> None:
+    """Restore only checksum-locked inputs from the published v3 record."""
+    bundle = archives / 'azami_ch1_v3_analysis_inputs.zip'
+    if bundle.exists():
+        data = verified(bundle.read_bytes(), ZENODO_SHA, bundle.name)
+    else:
+        print('Downloading published Zenodo v3 numerical inputs (22703215)', flush=True)
+        with urllib.request.urlopen(ZENODO_URL, timeout=120) as response:
+            data = verified(response.read(), ZENODO_SHA, 'Zenodo v3 bundle')
+        bundle.write_bytes(data)
+    payloads = {}
+    with zipfile.ZipFile(io.BytesIO(data)) as z:
+        for role, (artifact, digest, _) in INPUTS.items():
+            name = f'artifact-{artifact}-{role}.zip'
+            payloads[archives / name] = verified(z.read(f'inputs/{name}'), digest, name)
+        payloads[inputs / 'native_status.csv'] = native_bytes(
+            z.read('inputs/observation_native_status.csv'))
+    # Validate every required input before writing any extracted files.
+    for path, payload in payloads.items():
+        path.write_bytes(payload)
+
+
 def prepare(archives: Path, inputs: Path, download: bool) -> dict:
     archives.mkdir(parents=True, exist_ok=True)
     inputs.mkdir(parents=True, exist_ok=True)
+    missing = any(not (archives / f'artifact-{artifact}-{role}.zip').exists()
+                  for role, (artifact, _, _) in INPUTS.items())
+    if download and (missing or not (inputs / 'native_status.csv').exists()):
+        restore_zenodo(archives, inputs)
     receipt = {}
     for role, (artifact, digest, members) in INPUTS.items():
         archive = archives / f'artifact-{artifact}-{role}.zip'
         if not archive.exists():
             if not download:
                 raise FileNotFoundError(f'{archive}; supply verified archive or use --download')
-            print(f'Downloading numerical {role} artifact {artifact}', flush=True)
-            data = subprocess.check_output(['gh', 'api', f'repos/{REPOSITORY}/actions/artifacts/{artifact}/zip'])
-            archive.write_bytes(verified(data, digest, str(artifact)))
+            raise FileNotFoundError(f'Published bundle did not restore {archive}')
         data = verified(archive.read_bytes(), digest, archive.name)
         with zipfile.ZipFile(io.BytesIO(data)) as z:
             for member, (relative, sha) in members.items():
@@ -114,7 +141,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--work-dir',type=Path,default=Path('work/current'))
     parser.add_argument('--archive-dir',type=Path)
-    parser.add_argument('--download',action='store_true',help='Fetch missing numerical archives with authenticated gh; never images')
+    parser.add_argument('--download',action='store_true',help='Fetch missing numerical inputs from pinned public Zenodo v3; never images')
     parser.add_argument('--prepare-only',action='store_true')
     args = parser.parse_args()
     work = args.work_dir.resolve()

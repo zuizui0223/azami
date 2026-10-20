@@ -14,7 +14,7 @@ The original [v2 runbook](../legacy/v2/ORIGINAL_REPRODUCTION.md) applies to immu
 
 The v2 `public_release_manifest.json`, `material_availability.json`, `recovery_inventory.json` and related receipts describe that historical release. Their readiness statements do not certify current v3 public availability. Archived source paths are resolved using the path map rather than changing recorded scientific inputs.
 
-## Current Zenodo data staging
+## Published current Zenodo inputs
 
 Zenodo is used only as **durable storage for processed numerical analysis inputs** that would otherwise depend on expiring GitHub Actions artifacts. GitHub remains the authority for analysis code, runbooks, current reference outputs, figures and replay receipts.
 
@@ -28,7 +28,7 @@ The current data-only archive contains exactly five analysis inputs:
 
 The Zenodo archive intentionally does **not** contain analysis code, manuscript/SI files, figures, fitted/reference outputs, replay receipts, original photographs, or detector-training material. The archive manifest stores the GitHub repository URL and exact code commit needed to interpret the inputs.
 
-The final data-only candidate has now passed on main commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`. The upload ZIP `azami_ch1_v3_analysis_inputs.zip` has SHA-256 `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`, all embedded checksums verify, and the final manifest reports `release_ready=true` with no remaining repository-side release gaps. The Actions wrapper is durably copied to the owner Drive archive. The file is not yet public on Zenodo.
+The data-only package was published on 2026-09-28 at [10.5281/zenodo.22703215](https://doi.org/10.5281/zenodo.22703215). [Publication run 36377472986](https://github.com/zuizui0223/azami/actions/runs/36377472986) recorded anonymous re-download, embedded checksums and the 16-file replay comparison as PASS. Its receipt pins `azami_ch1_v3_analysis_inputs.zip` to SHA-256 `be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438` and code commit `7483ae8e20fa5df2439ad524312d3ac9a0fbf71f`. The current runner reuses this published input package. It stops on any checksum discrepancy.
 
 ## Publication handoff
 

@@ -1,5 +1,21 @@
 # Zenodo update audit
 
+## Publication verified — 2026-10-20
+
+The staging and handoff sections below record the historical preparation state.
+Publication completed on 2026-09-28 at DOI
+[10.5281/zenodo.22703215](https://doi.org/10.5281/zenodo.22703215).
+[Actions run 36377472986](https://github.com/zuizui0223/azami/actions/runs/36377472986),
+artifact `10951583268`, records anonymous re-download SHA-256
+`be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438`,
+embedded checksums PASS and all 16 numerical outputs PASS.
+The record and receipt were rechecked on 2026-10-20. The existing numerical
+runner now restores its inputs from this pinned public record, rather than
+expiring Actions artifacts. No new publication is required.
+
+These inputs reproduce the existing cohort; they do not contain the complete
+665,115-observation upstream source or original photographs.
+
 ## Decision — 2026-09-27
 
 Zenodo is the **durable analysis-input store** for Chapter 1. It is not a mirror of the GitHub repository.
