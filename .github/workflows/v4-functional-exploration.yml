@@ -146,6 +146,23 @@ jobs:
             --table work/v4-observation/private/observations.csv.gz \
             --receipt work/v4-observation/receipt/measurement_receipt.json \
             --output work/v4-observation/private/vifstep
+      - name: Audit immutable GSP source metadata
+        if: ${{ !inputs.fit_after_selection }}
+        run: |
+          mkdir -p work/v4-observation/output
+          gh api repos/zuizui0223/azami/actions/artifacts/12243306531/zip > work/gsp-audit.zip
+          echo "8259581896660edd7c07667b97640f71f174cab484eeadfe1292588ab8a96e8d  work/gsp-audit.zip" | sha256sum -c -
+          python - <<'PY'
+          import json, zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('work/gsp-audit.zip') as z:
+              names=[n for n in z.namelist() if n.endswith('grid.json')]
+              assert len(names)==1
+              obj=json.loads(z.read(names[0]))
+          summary={k:v for k,v in obj.items() if k not in ('tiles','cache_sha256')}
+          Path('work/v4-observation/output/gsp_source_metadata.json').write_text(json.dumps(summary,indent=2))
+          print(json.dumps(summary,indent=2))
+          PY
       - name: Select environment variables before fitting any traits
         run: |
           Rscript analysis/v4/select_environment.R \
