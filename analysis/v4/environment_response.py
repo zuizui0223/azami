@@ -40,21 +40,27 @@ def execute(table, receipt_path, output, selection_path):
         scales[v]={'mean':float(frame[v].mean()),'sd':float(frame[v].std(ddof=0))}
         if not np.isfinite(scales[v]['sd']) or scales[v]['sd']<=0:
             raise ValueError('No finite variation: '+v)
+        frame[v+'__between']=frame.groupby('accepted_key')[v].transform('mean')
+        frame[v+'__within']=frame[v]-frame[v+'__between']
     diagnostics={}
     complete=np.isfinite(frame[predictors]).all(axis=1)
     for outcomes in MODULES.values():
         for endpoint in outcomes:
             rows=frame.loc[complete & frame[endpoint+'__eligible'].eq(True) & np.isfinite(frame[endpoint])]
-            diagnostics[endpoint]={'n':len(rows),'designs':{'raw':matrix_summary(rows,predictors)}}
+            diagnostics[endpoint]={'n':len(rows),'designs':{
+                level:matrix_summary(rows,columns) for level,columns in [
+                    ('between',[v+'__between' for v in predictors]),
+                    ('within',[v+'__within' for v in predictors]),
+                    ('full',[v+s for v in predictors for s in ('__between','__within')])]}}
     models={}
     for module,outcomes in MODULES.items():
         print('Fixed environmental response: '+module,flush=True)
-        models[module]=fit_module(frame,outcomes,scales,predictors,
-                                 required_environment=predictors,decompose=False)
+        models[module]=fit_module(frame,outcomes,scales,predictors,required_environment=predictors)
         for endpoint,c in models[module]['components'].items():
             if c['n']!=diagnostics[endpoint]['n']:
                 raise ValueError('Endpoint-specific sample count changed')
-    tests=[models[m].get('tests',{}).get(v,{}) for m in MODULES for v in predictors]
+    tests=[models[m].get('tests',{}).get(v+s,{})
+           for m in MODULES for v in predictors for s in ('__between','__within')]
     for test,q in zip(tests,multipletests([t.get('p',1.) for t in tests],method='holm')[1]):
         if test.get('status')=='estimated':
             test['holm_p']=float(q)
@@ -69,7 +75,7 @@ def execute(table, receipt_path, output, selection_path):
             'fit_code_sha256':hashlib.sha256(Path(__file__).with_name('observation_models.py').read_bytes()).hexdigest(),
             'selection':selection,'selection_sha256':hashlib.sha256(selection_path.read_bytes()).hexdigest(),
             'family_size':len(tests),'predictors':predictors,'scales':scales,'models':models,
-            'environment_parameterization':'common_slope',
+            'environment_parameterization':'within_between',
             'environment_diagnostics':diagnostics,'reuse_inventory':inventory,
             'inference_status':'estimated' if all(t.get('status')=='estimated' for t in tests)
                                else 'incomplete_inference',
@@ -198,3 +204,4 @@ if __name__=='__main__':
         p.add_argument('--'+name,type=Path,required=True)
     a=p.parse_args()
     execute(a.table,a.receipt,a.output,a.selection)
+

@@ -10,7 +10,7 @@ The current statistical analysis **has executable code**. Its replay starts from
 
 ## Start here
 
-**PR142 / v4 development:** the [observation workflow contract](analysis/v4/OBSERVATION_MODEL_CONTRACT.md)
+**PR143 / v4 development:** the [observation workflow contract](analysis/v4/OBSERVATION_MODEL_CONTRACT.md)
 defines the current native-observation environmental response analysis. It selects
 from all nine stored environmental candidates in six groups using `usdm::vifstep`
 before fitting colour, orientation and bract projection with the selected set.
@@ -71,3 +71,4 @@ Zenodo DOI [10.5281/zenodo.22703215](https://doi.org/10.5281/zenodo.22703215) ar
 This archive preserves the existing analysis cohort, not the complete 665,115-observation upstream source or original photographs. Reusing it does not by itself expand v4 measurement coverage. Historical v2 inputs remain at DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791).
 
 Exact historical v2 reproduction remains available at commit `584af97b050d15701f26ce1facea212d5b648d4d`. The current scientific reference is main commit `fe25abd46e7235c85e6da191f976e1c8a02d0406`; subsequent layout-only changes must preserve its numerical results.
+

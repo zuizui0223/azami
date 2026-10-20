@@ -1,16 +1,14 @@
 # V4 environmental response workflow
 
-Latest model instruction: use raw observation environmental values simultaneously
-with a species random intercept, without within/between decomposition in the main
-model. `environment_response.py` now uses `fit_module(..., decompose=False)`.
-The eight selected predictors remain unchanged; colour and orientation are main,
-bract projection is SI. One family contains 3 x 8 = 24 joint tests. Coefficients
-are common slopes informed by both within- and between-species variation, under
-the random-intercept model assumptions, and cannot be labelled within-only or
-between-only effects. The successful 39416125522 decomposed analysis remains
-archived as a different estimand; its 48-test correction is not rewritten.
-The decomposition description below documents that archived fit.
-
+Latest model instruction (2026-10-20): retain individual trait observations and
+separate every selected environmental predictor into species means and within-species
+deviations, fitted simultaneously with species random intercepts. The main analysis
+uses within/between decomposition for both colour and orientation. Bract contour
+projection remains explicitly labelled as a proxy, pending expanded anatomical
+measurement. Eight selected predictors imply 48 joint tests across three modules
+and two levels. The common-slope run 39418226382 remains an archived comparison,
+not the current main estimand. See docs/superpowers/plans/2026-10-20-v4-gradients.md
+for outstanding gradient, environment-justification and measurement work.
 Question: which environmental gradients accompany changes in capitulum traits,
 conditional on the other included environmental dimensions?
 
@@ -93,3 +91,4 @@ been seen, so this is retrospective analysis, not preregistered confirmation.
 No omission-model search, additional spatial/soil/phylogenetic models or whole-head
 integration are part of this narrowed execution path. Historical code/results
 remain available in Git and prior artifacts and are not selected for significance.
+

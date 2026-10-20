@@ -1,0 +1,2785 @@
+{
+  "question": "Which environmental gradients are associated with head traits, conditional on the other included environmental dimensions?",
+  "input_sha256": "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29",
+  "input_receipt": {
+    "native_observations": 313350,
+    "with_archived_measurement_row": 217104,
+    "without_archived_measurement_row": 96246,
+    "complete_four_climate": 313244,
+    "endpoints": {
+      "orientation_image_vertical_angle": {
+        "finite": 170066,
+        "eligible": 170066,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 170066
+      },
+      "corolla_lab_lightness": {
+        "finite": 186439,
+        "eligible": 186439,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 186439
+      },
+      "corolla_lab_chroma": {
+        "finite": 186439,
+        "eligible": 186439,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 186439
+      },
+      "corolla_hue_sin": {
+        "finite": 186390,
+        "eligible": 186390,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 186390
+      },
+      "corolla_hue_cos": {
+        "finite": 186390,
+        "eligible": 186390,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 186390
+      },
+      "visible_floret_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "corolla_white_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "corolla_redmagenta_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "corolla_purple_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "corolla_yellow_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "capitulum_outline_aspect_ratio": {
+        "finite": 176048,
+        "eligible": 176048,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 176048
+      },
+      "capitulum_outline_circularity": {
+        "finite": 176048,
+        "eligible": 176048,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 176048
+      },
+      "capitulum_outline_solidity": {
+        "finite": 176048,
+        "eligible": 176048,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 176048
+      },
+      "capitulum_width_profile_cv": {
+        "finite": 176048,
+        "eligible": 176048,
+        "source": "full_archived_observation_table",
+        "eligible_with_four_climate": 176048
+      },
+      "involucre_length_width_ratio": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "involucre_apical_taper_ratio": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "involucre_basal_taper_ratio": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "bract_projection_roughness": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "bract_projection_p95": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "bract_projection_maximum": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "bract_spread_fraction": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "bract_projection_peak_density": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "bract_projection_asymmetry": {
+        "finite": 1303,
+        "eligible": 1303,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 1303
+      },
+      "involucre_surface_edge_density": {
+        "finite": 570,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "involucre_surface_lbp_entropy": {
+        "finite": 570,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "involucre_surface_high_frequency_energy": {
+        "finite": 570,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      },
+      "involucre_surface_specular_fraction": {
+        "finite": 570,
+        "eligible": 0,
+        "source": "zenodo_endpoint_table",
+        "eligible_with_four_climate": 0
+      }
+    },
+    "trait_responses_averaged": false,
+    "four_predictor_diagnostics": {
+      "all_native": {
+        "n": 313244,
+        "variables": [
+          "chelsa_bio01",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_bio12"
+        ],
+        "status": "estimated",
+        "correlation": [
+          [
+            0.9999999999999999,
+            0.52894489108762,
+            0.9085031142976058,
+            0.1090838315207824
+          ],
+          [
+            0.52894489108762,
+            0.9999999999999999,
+            0.6980691488610816,
+            0.0785931954115506
+          ],
+          [
+            0.9085031142976058,
+            0.6980691488610816,
+            0.9999999999999998,
+            -0.015028179985972718
+          ],
+          [
+            0.10908383152078241,
+            0.07859319541155062,
+            -0.015028179985972718,
+            1.0
+          ]
+        ],
+        "vif": [
+          7.529607554356389,
+          2.380096113927798,
+          10.611634585916592,
+          1.1705214623870361
+        ]
+      },
+      "colour_any_coordinate": {
+        "n": 186439,
+        "variables": [
+          "chelsa_bio01",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_bio12"
+        ],
+        "status": "estimated",
+        "correlation": [
+          [
+            1.0,
+            0.554379454144897,
+            0.9104535249108847,
+            0.11479219658309284
+          ],
+          [
+            0.554379454144897,
+            1.0,
+            0.7080079131878826,
+            0.12446082171093996
+          ],
+          [
+            0.9104535249108847,
+            0.7080079131878826,
+            1.0,
+            0.0071533707987932555
+          ],
+          [
+            0.11479219658309282,
+            0.12446082171093996,
+            0.007153370798793256,
+            1.0
+          ]
+        ],
+        "vif": [
+          7.27886543786877,
+          2.3941334093745827,
+          10.214681848164513,
+          1.159611735750872
+        ]
+      },
+      "image_orientation": {
+        "n": 170066,
+        "variables": [
+          "chelsa_bio01",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_bio12"
+        ],
+        "status": "estimated",
+        "correlation": [
+          [
+            1.0,
+            0.5567279039868634,
+            0.9091579094396185,
+            0.11190443572511058
+          ],
+          [
+            0.5567279039868634,
+            1.0,
+            0.7083395841726656,
+            0.11935185269864391
+          ],
+          [
+            0.9091579094396186,
+            0.7083395841726657,
+            0.9999999999999998,
+            0.00109946915529795
+          ],
+          [
+            0.11190443572511058,
+            0.11935185269864391,
+            0.0010994691552979501,
+            1.0
+          ]
+        ],
+        "vif": [
+          7.127207016804508,
+          2.3718130795170924,
+          9.982286186466853,
+          1.159886487395292
+        ]
+      },
+      "legacy_bract_projection_not_opening": {
+        "n": 1303,
+        "variables": [
+          "chelsa_bio01",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_bio12"
+        ],
+        "status": "estimated",
+        "correlation": [
+          [
+            0.9999999999999999,
+            0.4530864538522703,
+            0.8873779190046562,
+            0.08956735797509124
+          ],
+          [
+            0.45308645385227037,
+            1.0,
+            0.6388025088573706,
+            0.10479414159814661
+          ],
+          [
+            0.8873779190046562,
+            0.6388025088573706,
+            0.9999999999999999,
+            -0.06976411428776437
+          ],
+          [
+            0.08956735797509124,
+            0.10479414159814661,
+            -0.06976411428776436,
+            1.0
+          ]
+        ],
+        "vif": [
+          6.3782025021473325,
+          2.122323618328831,
+          8.825664544179148,
+          1.2703343280672073
+        ]
+      }
+    },
+    "all_endpoint_complete_case_required": false,
+    "phyllary_opening_angle_measured": false,
+    "unit": "inherited observation-level values; no further trait aggregation",
+    "status": "inputs_prepared_not_models_or_new_measurements",
+    "measurements_sha256": "b49a093c849928c456d6747ec51772b5a6b78debb2ae5eb5dbe2a91b08f66dd7",
+    "zenodo_traits_sha256": "101e996b638996a0c5ae79d358bf51293c3585f0e84c4a961b91dcbedf96211e",
+    "prepared_table_sha256": "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29",
+    "encrypted_table_sha256": "ee17d4d8ee6bea7fdb6d8a16874d1813da613eb539592e9bef661b386715fb71",
+    "encrypted_table_aad": "azami-v4-prepared-observations-v1",
+    "github_commit": "e6be824ffe7c37a5711c1430d0671d6e85de2bf7"
+  },
+  "git_sha": "d0a588b8c6905fc47ecb7b81405d8c9c48aace9a",
+  "run_id": "39418226382",
+  "model_code_sha256": "d3c5b857be39b83691bf266e50b609f3fb7dd10acb7dcbdcf0951db7fc4d80a6",
+  "fit_code_sha256": "a243aa337262200b70d245d51c72da49a24238a61c9154b33f949c054c32c5aa",
+  "selection": {
+    "status": "selected_before_trait_models",
+    "input": {
+      "input_sha256": "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29",
+      "group_definition_sha256": "d4390c5cd5889a9096f80c1c2b0cf6297ce019aaf72304ccead2807eefaacfed",
+      "groups": [
+        {
+          "block_id": "core_thermal",
+          "tier": "frozen_core",
+          "predictors": [
+            "chelsa_bio01",
+            "chelsa_bio04"
+          ],
+          "construct": "mean thermal regime and temperature seasonality"
+        },
+        {
+          "block_id": "core_precipitation",
+          "tier": "frozen_core",
+          "predictors": [
+            "chelsa_bio12",
+            "chelsa_bio15"
+          ],
+          "construct": "annual precipitation amount and precipitation seasonality"
+        },
+        {
+          "block_id": "radiative_atmospheric_drying",
+          "tier": "process_extension",
+          "predictors": [
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean"
+          ],
+          "construct": "surface shortwave energy and atmospheric drying power"
+        },
+        {
+          "block_id": "mechanical_exposure",
+          "tier": "process_extension",
+          "predictors": "chelsa_sfcwind_mean",
+          "construct": "mean near-surface wind exposure"
+        },
+        {
+          "block_id": "growing_season_water_input",
+          "tier": "process_extension",
+          "predictors": "chelsa_gsp",
+          "construct": "precipitation accumulated during the climatic growing season"
+        },
+        {
+          "block_id": "climatic_productivity",
+          "tier": "process_extension",
+          "predictors": "chelsa_npp",
+          "construct": "modelled potential net primary productivity"
+        }
+      ],
+      "candidates": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "native_n": 313350,
+      "selection_n": 313240,
+      "missing_any_candidate_n": 110,
+      "finite_counts": {
+        "chelsa_bio01": 313244,
+        "chelsa_bio04": 313244,
+        "chelsa_bio12": 313244,
+        "chelsa_bio15": 313244,
+        "chelsa_rsds_mean": 313244,
+        "chelsa_vpd_mean": 313244,
+        "chelsa_sfcwind_mean": 313240,
+        "chelsa_gsp": 313244,
+        "chelsa_npp": 313244
+      },
+      "threshold": 10,
+      "keep": [],
+      "sampling": "all complete native observation rows",
+      "scope": "Environment-only selection; no trait values or eligibility used",
+      "environment_csv_sha256": "f8468222e0fda2c265be17ef4fc9e7bc33762197bd41d6300cb6f3b751178989"
+    },
+    "selected": [
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean",
+      "chelsa_vpd_mean",
+      "chelsa_sfcwind_mean",
+      "chelsa_gsp",
+      "chelsa_npp"
+    ],
+    "excluded_in_order": "chelsa_bio01",
+    "removal_trace": [
+      {
+        "removed": "chelsa_bio01",
+        "vif": [
+          {
+            "Variables": "chelsa_bio01",
+            "VIF": 35.37622496491904
+          },
+          {
+            "Variables": "chelsa_bio04",
+            "VIF": 3.722989495716273
+          },
+          {
+            "Variables": "chelsa_bio12",
+            "VIF": 1.8348405386729494
+          },
+          {
+            "Variables": "chelsa_bio15",
+            "VIF": 1.8534657466892615
+          },
+          {
+            "Variables": "chelsa_rsds_mean",
+            "VIF": 4.058013613272377
+          },
+          {
+            "Variables": "chelsa_vpd_mean",
+            "VIF": 29.153766961288618
+          },
+          {
+            "Variables": "chelsa_sfcwind_mean",
+            "VIF": 1.163995848656195
+          },
+          {
+            "Variables": "chelsa_gsp",
+            "VIF": 1.101687989309546
+          },
+          {
+            "Variables": "chelsa_npp",
+            "VIF": 4.138529456890146
+          }
+        ]
+      }
+    ],
+    "final_vif": [
+      {
+        "Variables": "chelsa_bio04",
+        "VIF": 1.3914332721287261
+      },
+      {
+        "Variables": "chelsa_bio12",
+        "VIF": 1.694465787292758
+      },
+      {
+        "Variables": "chelsa_bio15",
+        "VIF": 1.8476505664737581
+      },
+      {
+        "Variables": "chelsa_rsds_mean",
+        "VIF": 3.4318365801519612
+      },
+      {
+        "Variables": "chelsa_vpd_mean",
+        "VIF": 3.1404911952533294
+      },
+      {
+        "Variables": "chelsa_sfcwind_mean",
+        "VIF": 1.1334674451693239
+      },
+      {
+        "Variables": "chelsa_gsp",
+        "VIF": 1.0965637344816792
+      },
+      {
+        "Variables": "chelsa_npp",
+        "VIF": 2.4038087684974854
+      }
+    ],
+    "correlation": {
+      "columns": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "values": [
+        [
+          1,
+          -0.4711208628892201,
+          0.10909016220456319,
+          0.1315694848968853,
+          0.5289429164557068,
+          0.9085035490352007,
+          -0.199359694539394,
+          -0.11024487894170676,
+          0.6479201033325642
+        ],
+        [
+          -0.4711208628892201,
+          1,
+          -0.3557168549790569,
+          -0.13011253268815628,
+          -0.18597006697280002,
+          -0.19179953116652038,
+          -0.019407511475699087,
+          -0.02536011191287569,
+          -0.4498637646258455
+        ],
+        [
+          0.10909016220456319,
+          -0.3557168549790569,
+          1,
+          0.011242165598563461,
+          0.07859878055940436,
+          -0.015024648190017774,
+          -0.03439050734239565,
+          0.19189751020414317,
+          0.47663047610295
+        ],
+        [
+          0.1315694848968853,
+          -0.13011253268815628,
+          0.011242165598563461,
+          1,
+          0.5986868043861617,
+          0.25373464750750935,
+          -0.23963189165793997,
+          0.04290095571486002,
+          -0.14792848849457105
+        ],
+        [
+          0.5289429164557068,
+          -0.18597006697280002,
+          0.07859878055940436,
+          0.5986868043861617,
+          1,
+          0.6980692590704213,
+          -0.21532303005618908,
+          0.00527718206419867,
+          0.09936376458374051
+        ],
+        [
+          0.9085035490352007,
+          -0.19179953116652038,
+          -0.015024648190017774,
+          0.25373464750750935,
+          0.6980692590704213,
+          1,
+          -0.2105336952016634,
+          -0.08012185949258875,
+          0.4054341537824034
+        ],
+        [
+          -0.199359694539394,
+          -0.019407511475699087,
+          -0.03439050734239565,
+          -0.23963189165793997,
+          -0.21532303005618908,
+          -0.2105336952016634,
+          1,
+          0.1001642109046728,
+          -0.1224271775243208
+        ],
+        [
+          -0.11024487894170676,
+          -0.02536011191287569,
+          0.19189751020414317,
+          0.04290095571486002,
+          0.00527718206419867,
+          -0.08012185949258875,
+          0.1001642109046728,
+          1,
+          -0.08910559802087957
+        ],
+        [
+          0.6479201033325642,
+          -0.4498637646258455,
+          0.47663047610295,
+          -0.14792848849457105,
+          0.09936376458374051,
+          0.4054341537824034,
+          -0.1224271775243208,
+          -0.08910559802087957,
+          1
+        ]
+      ]
+    },
+    "usdm_version": "2.1.7",
+    "r_version": "R version 4.4.3 (2025-02-28)",
+    "git_sha": "d0a588b8c6905fc47ecb7b81405d8c9c48aace9a",
+    "run_id": "39418226382",
+    "interpretation": "VIF selection reduces predictor redundancy; not causal confounding control. Groups need not all survive."
+  },
+  "selection_sha256": "4f0ab3b60a118563f20e9745b045934977d61788a707008dc6d687a5a16bf203",
+  "family_size": 24,
+  "predictors": [
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean",
+    "chelsa_vpd_mean",
+    "chelsa_sfcwind_mean",
+    "chelsa_gsp",
+    "chelsa_npp"
+  ],
+  "scales": {
+    "chelsa_bio04": {
+      "mean": 7042.126789339939,
+      "sd": 2294.6292917200467
+    },
+    "chelsa_bio12": {
+      "mean": 932.6651907139483,
+      "sd": 537.7738165643591
+    },
+    "chelsa_bio15": {
+      "mean": 354.5996890602853,
+      "sd": 213.77326445084415
+    },
+    "chelsa_rsds_mean": {
+      "mean": 13725.066641340298,
+      "sd": 3640.4759344933223
+    },
+    "chelsa_vpd_mean": {
+      "mean": 6072.986818582319,
+      "sd": 2559.9919161224107
+    },
+    "chelsa_sfcwind_mean": {
+      "mean": 3357.048113267782,
+      "sd": 1160.2546815792489
+    },
+    "chelsa_gsp": {
+      "mean": 16995913.85646333,
+      "sd": 269583154.7477393
+    },
+    "chelsa_npp": {
+      "mean": 11283.018225408947,
+      "sd": 3350.0591778694306
+    }
+  },
+  "models": {
+    "colour": {
+      "status": "estimated",
+      "outcomes": [
+        "corolla_lab_lightness",
+        "corolla_lab_chroma",
+        "corolla_hue_sin",
+        "corolla_hue_cos"
+      ],
+      "components": {
+        "corolla_lab_lightness": {
+          "status": "estimated",
+          "n": 186437,
+          "n_species": 244,
+          "variance_ratio": 0.34183831074422394,
+          "residual_variance": 0.8538798680868946,
+          "variance_boundary": false,
+          "objective": -28739.118520201104,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": -0.019914438533154236,
+              "raw_units_per_environment_sd": -0.21260482372577888,
+              "raw_ci95": [
+                -0.7311319411552892,
+                0.30592229370373153
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": -0.009866745269165873,
+              "raw_units_per_environment_sd": -0.10533651929005286,
+              "raw_ci95": [
+                -0.5043255433110758,
+                0.2936525047309701
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": -0.03722042208789652,
+              "raw_units_per_environment_sd": -0.3973620076620334,
+              "raw_ci95": [
+                -0.8561714683405381,
+                0.06144745301647136
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": -0.061713496092697086,
+              "raw_units_per_environment_sd": -0.6588479477563883,
+              "raw_ci95": [
+                -1.791759116841685,
+                0.4740632213289085
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": 0.16423317270042362,
+              "raw_units_per_environment_sd": 1.7533391500728652,
+              "raw_ci95": [
+                0.35949373533496387,
+                3.1471845648107664
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": 0.008353760442342116,
+              "raw_units_per_environment_sd": 0.08918402411068241,
+              "raw_ci95": [
+                -0.3589622488269355,
+                0.5373302970483003
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": -0.0010581993794116496,
+              "raw_units_per_environment_sd": -0.011297245069299385,
+              "raw_ci95": [
+                -0.08351234436682933,
+                0.06091785422823056
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": -0.02350396722972846,
+              "raw_units_per_environment_sd": -0.25092632169436424,
+              "raw_ci95": [
+                -1.229259013008316,
+                0.7274063696195877
+              ]
+            }
+          },
+          "response_sd": 10.675913527354895,
+          "response_mean": 68.48465741962771,
+          "reference_prediction": 66.90242493738315
+        },
+        "corolla_lab_chroma": {
+          "status": "estimated",
+          "n": 186437,
+          "n_species": 244,
+          "variance_ratio": 0.2226021362076832,
+          "residual_variance": 0.8523425516331455,
+          "variance_boundary": false,
+          "objective": -29150.29170939985,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": -0.04771869836175421,
+              "raw_units_per_environment_sd": -0.6525616260956221,
+              "raw_ci95": [
+                -1.474841165062588,
+                0.16971791287134377
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": 0.006261902822749942,
+              "raw_units_per_environment_sd": 0.08563262680571262,
+              "raw_ci95": [
+                -0.28041630786915694,
+                0.4516815614805822
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": 0.052811499695355736,
+              "raw_units_per_environment_sd": 0.7222065836014328,
+              "raw_ci95": [
+                0.22689415812681876,
+                1.2175190090760468
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": -0.028562671338065285,
+              "raw_units_per_environment_sd": -0.3905995740433166,
+              "raw_ci95": [
+                -1.2444189863794115,
+                0.4632198382927785
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": -0.0882944996433305,
+              "raw_units_per_environment_sd": -1.2074428733523606,
+              "raw_ci95": [
+                -1.7334495375716121,
+                -0.6814362091331088
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": 0.012398056603696193,
+              "raw_units_per_environment_sd": 0.16954561326043965,
+              "raw_ci95": [
+                -0.16003485018858404,
+                0.49912607670946335
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": -0.009393133132267431,
+              "raw_units_per_environment_sd": -0.12845275418991473,
+              "raw_ci95": [
+                -0.1789078554683535,
+                -0.07799765291147591
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": 0.06112517181739011,
+              "raw_units_per_environment_sd": 0.835897517869011,
+              "raw_ci95": [
+                -0.4410233225305198,
+                2.112818358268542
+              ]
+            }
+          },
+          "response_sd": 13.675176576455826,
+          "response_mean": 26.351285835816697,
+          "reference_prediction": 24.48466979435939
+        },
+        "corolla_hue_sin": {
+          "status": "estimated",
+          "n": 186388,
+          "n_species": 244,
+          "variance_ratio": 0.4667725308516868,
+          "residual_variance": 0.8052623566568018,
+          "variance_boundary": false,
+          "objective": -39599.508532652115,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": 0.1220120765654169,
+              "raw_units_per_environment_sd": 0.08369809655688004,
+              "raw_ci95": [
+                0.041015652628663433,
+                0.12638054048509664
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": -0.027652365496962306,
+              "raw_units_per_environment_sd": -0.018969026858173293,
+              "raw_ci95": [
+                -0.043330430011312225,
+                0.005392376294965642
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": -0.04905315004686232,
+              "raw_units_per_environment_sd": -0.03364958129239081,
+              "raw_ci95": [
+                -0.12005558147446023,
+                0.05275641888967863
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": -0.058862791362234185,
+              "raw_units_per_environment_sd": -0.0403788193245142,
+              "raw_ci95": [
+                -0.0965781032483006,
+                0.01582046459927221
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": 0.05417230928245796,
+              "raw_units_per_environment_sd": 0.037161232729297604,
+              "raw_ci95": [
+                -0.012795709971393782,
+                0.08711817542998898
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": 0.01724149587595436,
+              "raw_units_per_environment_sd": 0.011827356989838363,
+              "raw_ci95": [
+                -0.006956911907563104,
+                0.03061162588723983
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": 0.0015761363154027657,
+              "raw_units_per_environment_sd": 0.0010812012484899965,
+              "raw_ci95": [
+                -0.003042185114672322,
+                0.005204587611652317
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": 0.03740977808159968,
+              "raw_units_per_environment_sd": 0.0256624369175983,
+              "raw_ci95": [
+                -0.00376451903880575,
+                0.055089392874002344
+              ]
+            }
+          },
+          "response_sd": 0.6859820676193903,
+          "response_mean": 0.0811140880114665,
+          "reference_prediction": 0.21963838547331876
+        },
+        "corolla_hue_cos": {
+          "status": "estimated",
+          "n": 186388,
+          "n_species": 244,
+          "variance_ratio": 0.09392565561626913,
+          "residual_variance": 0.9372846364535423,
+          "variance_boundary": false,
+          "objective": -11570.7556078253,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": 0.01875901083369633,
+              "raw_units_per_environment_sd": 0.006869678102194842,
+              "raw_ci95": [
+                -0.0055554164148422895,
+                0.019294772619231973
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": 0.0035775487591195978,
+              "raw_units_per_environment_sd": 0.0013101228304592636,
+              "raw_ci95": [
+                -0.00787312050897638,
+                0.010493366169894906
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": -0.0013914315277433343,
+              "raw_units_per_environment_sd": -0.0005095517445766316,
+              "raw_ci95": [
+                -0.015047793438872354,
+                0.014028689949719092
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": 0.09560967967718446,
+              "raw_units_per_environment_sd": 0.03501291878654979,
+              "raw_ci95": [
+                0.016122764473171243,
+                0.05390307309992834
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": -0.06552381528497159,
+              "raw_units_per_environment_sd": -0.02399526942150257,
+              "raw_ci95": [
+                -0.04695808063554022,
+                -0.0010324582074649252
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": 0.023984291150635422,
+              "raw_units_per_environment_sd": 0.008783211501654644,
+              "raw_ci95": [
+                0.0016903386486665521,
+                0.015876084354642737
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": 0.0037242428105558976,
+              "raw_units_per_environment_sd": 0.0013638431956644488,
+              "raw_ci95": [
+                -0.00024802173197969974,
+                0.0029757081233085974
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": 0.008055464980689911,
+              "raw_units_per_environment_sd": 0.002949966385297877,
+              "raw_ci95": [
+                -0.01494487297128619,
+                0.020844805741881942
+              ]
+            }
+          },
+          "response_sd": 0.36620684123999836,
+          "response_mean": 0.5726884523215071,
+          "reference_prediction": 0.601230198521271
+        }
+      },
+      "tests": {
+        "chelsa_bio04": {
+          "status": "estimated",
+          "F": 7.592820798923627,
+          "df1": 4,
+          "df2": 243,
+          "p": 8.85135917382478e-06,
+          "holm_p": 0.00018587854265032037
+        },
+        "chelsa_bio12": {
+          "status": "estimated",
+          "F": 0.8127266181130541,
+          "df1": 4,
+          "df2": 243,
+          "p": 0.5180778572370682,
+          "holm_p": 1.0
+        },
+        "chelsa_bio15": {
+          "status": "estimated",
+          "F": 2.8819942044685303,
+          "df1": 4,
+          "df2": 243,
+          "p": 0.02330262593621087,
+          "holm_p": 0.3029341371707413
+        },
+        "chelsa_rsds_mean": {
+          "status": "estimated",
+          "F": 7.7979665867933505,
+          "df1": 4,
+          "df2": 243,
+          "p": 6.286831010858213e-06,
+          "holm_p": 0.00014300640999953746
+        },
+        "chelsa_vpd_mean": {
+          "status": "estimated",
+          "F": 6.079112896025423,
+          "df1": 4,
+          "df2": 243,
+          "p": 0.00011184315685398703,
+          "holm_p": 0.0022368631370797403
+        },
+        "chelsa_sfcwind_mean": {
+          "status": "estimated",
+          "F": 17.025419069758918,
+          "df1": 4,
+          "df2": 243,
+          "p": 2.537391940365222e-12,
+          "holm_p": 6.089740656876532e-11
+        },
+        "chelsa_gsp": {
+          "status": "estimated",
+          "F": 7.804604541835716,
+          "df1": 4,
+          "df2": 243,
+          "p": 6.217669999979889e-06,
+          "holm_p": 0.00014300640999953746
+        },
+        "chelsa_npp": {
+          "status": "estimated",
+          "F": 3.096041435275729,
+          "df1": 4,
+          "df2": 243,
+          "p": 0.01642210643695914,
+          "holm_p": 0.22990949011742798
+        }
+      },
+      "environment_parameterization": "common_slope",
+      "predictors": [
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "joint_temperature_vpd": {},
+      "fixed_adjustments": [],
+      "conditional_hue_contrasts": {
+        "chelsa_bio04": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": 6.443243041592126,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_bio12": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": -1.648240792884991,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_bio15": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": -2.864984581841071,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_rsds_mean": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": -4.332983772510715,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_vpd_mean": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": 3.9152654380752665,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_sfcwind_mean": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": 0.710928946456761,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_gsp": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": 0.04888812897235084,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        },
+        "chelsa_npp": {
+          "reference_degrees": 20.06800484888499,
+          "change_degrees": 2.029446829982618,
+          "scope": "descriptive fixed-effect +1 native predictor SD contrast; not an independent test"
+        }
+      },
+      "inference": "approximate stacked marginal REML species-cluster Wald F",
+      "random_effects": "response-specific species intercept; no phylogenetic correction",
+      "pointwise_component_intervals_not_joint_significance_tests": true
+    },
+    "orientation": {
+      "status": "estimated",
+      "outcomes": [
+        "orientation_image_vertical_angle"
+      ],
+      "components": {
+        "orientation_image_vertical_angle": {
+          "status": "estimated",
+          "n": 170064,
+          "n_species": 244,
+          "variance_ratio": 0.07915064240861067,
+          "residual_variance": 0.9687074796320645,
+          "variance_boundary": false,
+          "objective": -4939.610280315037,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": 0.0018344289323000017,
+              "raw_units_per_environment_sd": 0.07921403225538123,
+              "raw_ci95": [
+                -0.34175218013944636,
+                0.5001802446502088
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": -0.0024592329699483595,
+              "raw_units_per_environment_sd": -0.10619422555701814,
+              "raw_ci95": [
+                -1.3577960424731934,
+                1.1454075913591573
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": -0.009057468685626074,
+              "raw_units_per_environment_sd": -0.39111824065907896,
+              "raw_ci95": [
+                -1.0754128556976084,
+                0.29317637437945027
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": -0.03984036192072409,
+              "raw_units_per_environment_sd": -1.720380473010433,
+              "raw_ci95": [
+                -2.9338552279687296,
+                -0.5069057180521368
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": 0.06122814742678572,
+              "raw_units_per_environment_sd": 2.6439445866793894,
+              "raw_ci95": [
+                0.9081349658111676,
+                4.379754207547611
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": -0.0026042706399323056,
+              "raw_units_per_environment_sd": -0.11245722025038506,
+              "raw_ci95": [
+                -0.5509739771755677,
+                0.32605953667479753
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": 0.0015390598079951718,
+              "raw_units_per_environment_sd": 0.06645944747536965,
+              "raw_ci95": [
+                -0.14791292324794753,
+                0.28083181819868686
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": -0.0026600074737693066,
+              "raw_units_per_environment_sd": -0.11486403976551413,
+              "raw_ci95": [
+                -1.017083131756094,
+                0.7873550522250656
+              ]
+            }
+          },
+          "response_sd": 43.18184850915043,
+          "response_mean": 71.01484035463716,
+          "reference_prediction": 73.89458648111312
+        }
+      },
+      "tests": {
+        "chelsa_bio04": {
+          "status": "estimated",
+          "F": 0.13738608178322992,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.7112164549100325,
+          "holm_p": 1.0
+        },
+        "chelsa_bio12": {
+          "status": "estimated",
+          "F": 0.02793202422700981,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.8674077264641799,
+          "holm_p": 1.0
+        },
+        "chelsa_bio15": {
+          "status": "estimated",
+          "F": 1.267543499525849,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.2613387104719326,
+          "holm_p": 1.0
+        },
+        "chelsa_rsds_mean": {
+          "status": "estimated",
+          "F": 7.798669096368334,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.005644584468387665,
+          "holm_p": 0.09595793596259031
+        },
+        "chelsa_vpd_mean": {
+          "status": "estimated",
+          "F": 9.001885629831817,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.0029777655456941056,
+          "holm_p": 0.0535997798224939
+        },
+        "chelsa_sfcwind_mean": {
+          "status": "estimated",
+          "F": 0.2551733276172507,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.6139135383696017,
+          "holm_p": 1.0
+        },
+        "chelsa_gsp": {
+          "status": "estimated",
+          "F": 0.372914102043492,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.541990837845706,
+          "holm_p": 1.0
+        },
+        "chelsa_npp": {
+          "status": "estimated",
+          "F": 0.06288935236249621,
+          "df1": 1,
+          "df2": 243,
+          "p": 0.802198055147982,
+          "holm_p": 1.0
+        }
+      },
+      "environment_parameterization": "common_slope",
+      "predictors": [
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "joint_temperature_vpd": {},
+      "fixed_adjustments": [],
+      "conditional_hue_contrasts": {},
+      "inference": "approximate stacked marginal REML species-cluster Wald F",
+      "random_effects": "response-specific species intercept; no phylogenetic correction",
+      "pointwise_component_intervals_not_joint_significance_tests": true
+    },
+    "bract_projection": {
+      "status": "estimated",
+      "outcomes": [
+        "bract_projection_p95",
+        "bract_spread_fraction"
+      ],
+      "components": {
+        "bract_projection_p95": {
+          "status": "estimated",
+          "n": 1303,
+          "n_species": 111,
+          "variance_ratio": 0.023759494996995645,
+          "residual_variance": 0.9626147696834457,
+          "variance_boundary": false,
+          "objective": 27.98522107451453,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": 0.07971771864631971,
+              "raw_units_per_environment_sd": 0.00872555058350331,
+              "raw_ci95": [
+                0.0023741976436721605,
+                0.01507690352333446
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": -0.028586387468639517,
+              "raw_units_per_environment_sd": -0.0031289401414494023,
+              "raw_ci95": [
+                -0.009005590257152923,
+                0.0027477099742541184
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": 0.04331127086580057,
+              "raw_units_per_environment_sd": 0.004740661062467611,
+              "raw_ci95": [
+                -0.0007208538398155227,
+                0.010202175964750745
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": -0.05820299000246861,
+              "raw_units_per_environment_sd": -0.006370643089158738,
+              "raw_ci95": [
+                -0.017428658175523557,
+                0.004687371997206082
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": -0.05905977230298108,
+              "raw_units_per_environment_sd": -0.0064644227084092575,
+              "raw_ci95": [
+                -0.015787285602673663,
+                0.002858440185855147
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": 0.0365926695790091,
+              "raw_units_per_environment_sd": 0.004005272539391809,
+              "raw_ci95": [
+                -0.0019682160806215026,
+                0.00997876115940512
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": -0.017361824278859118,
+              "raw_units_per_environment_sd": -0.0019003488627063834,
+              "raw_ci95": [
+                -0.0032063302027579804,
+                -0.0005943675226547861
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": 0.12574589127817243,
+              "raw_units_per_environment_sd": 0.01376359175409061,
+              "raw_ci95": [
+                0.0059450145164319755,
+                0.021582168991749244
+              ]
+            }
+          },
+          "response_sd": 0.10945559822422413,
+          "response_mean": 0.2163821139488856,
+          "reference_prediction": 0.21220221378709342
+        },
+        "bract_spread_fraction": {
+          "status": "estimated",
+          "n": 1303,
+          "n_species": 111,
+          "variance_ratio": 0.0,
+          "residual_variance": 0.9961647971351608,
+          "variance_boundary": true,
+          "objective": 56.390044211946616,
+          "effects": {
+            "chelsa_bio04": {
+              "standardized_beta": 0.02556526365776959,
+              "raw_units_per_environment_sd": 0.00245808768245544,
+              "raw_ci95": [
+                -0.004105792132860119,
+                0.009021967497771
+              ]
+            },
+            "chelsa_bio12": {
+              "standardized_beta": -0.03134330143881833,
+              "raw_units_per_environment_sd": -0.003013643208441249,
+              "raw_ci95": [
+                -0.010544652545194183,
+                0.004517366128311684
+              ]
+            },
+            "chelsa_bio15": {
+              "standardized_beta": 0.03566127567192913,
+              "raw_units_per_environment_sd": 0.0034288143335136838,
+              "raw_ci95": [
+                -0.002969428141074261,
+                0.009827056808101628
+              ]
+            },
+            "chelsa_rsds_mean": {
+              "standardized_beta": -0.04064201667546368,
+              "raw_units_per_environment_sd": -0.003907710161625677,
+              "raw_ci95": [
+                -0.01273671202739866,
+                0.004921291704147305
+              ]
+            },
+            "chelsa_vpd_mean": {
+              "standardized_beta": -0.10728844511690691,
+              "raw_units_per_environment_sd": -0.010315731882996495,
+              "raw_ci95": [
+                -0.021559592067407908,
+                0.0009281283014149179
+              ]
+            },
+            "chelsa_sfcwind_mean": {
+              "standardized_beta": 0.0010578557032861014,
+              "raw_units_per_environment_sd": 0.00010171231202118033,
+              "raw_ci95": [
+                -0.004342366246025164,
+                0.004545790870067524
+              ]
+            },
+            "chelsa_gsp": {
+              "standardized_beta": -0.023171454523389718,
+              "raw_units_per_environment_sd": -0.002227924096969389,
+              "raw_ci95": [
+                -0.0042959603688852805,
+                -0.0001598878250534978
+              ]
+            },
+            "chelsa_npp": {
+              "standardized_beta": 0.06631123926084982,
+              "raw_units_per_environment_sd": 0.006375793444473757,
+              "raw_ci95": [
+                -0.0016288605742917463,
+                0.014380447463239259
+              ]
+            }
+          },
+          "response_sd": 0.09614951425343105,
+          "response_mean": 0.34567165449146897,
+          "reference_prediction": 0.34291731135902415
+        }
+      },
+      "tests": {
+        "chelsa_bio04": {
+          "status": "estimated",
+          "F": 4.491361680502892,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.013334689294218539,
+          "holm_p": 0.20002033941327807
+        },
+        "chelsa_bio12": {
+          "status": "estimated",
+          "F": 0.6389071020301107,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.5298164449268263,
+          "holm_p": 1.0
+        },
+        "chelsa_bio15": {
+          "status": "estimated",
+          "F": 1.6006804689411556,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.20642250245152755,
+          "holm_p": 1.0
+        },
+        "chelsa_rsds_mean": {
+          "status": "estimated",
+          "F": 0.7174169665477187,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.4902801644359776,
+          "holm_p": 1.0
+        },
+        "chelsa_vpd_mean": {
+          "status": "estimated",
+          "F": 1.8515998208353404,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.1618452477556363,
+          "holm_p": 1.0
+        },
+        "chelsa_sfcwind_mean": {
+          "status": "estimated",
+          "F": 0.8934087703220863,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.41220675251700517,
+          "holm_p": 1.0
+        },
+        "chelsa_gsp": {
+          "status": "estimated",
+          "F": 4.683239510498277,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.011170345009117509,
+          "holm_p": 0.17872552014588014
+        },
+        "chelsa_npp": {
+          "status": "estimated",
+          "F": 6.36519440769443,
+          "df1": 2,
+          "df2": 110,
+          "p": 0.002422320636300207,
+          "holm_p": 0.046024092089703934
+        }
+      },
+      "environment_parameterization": "common_slope",
+      "predictors": [
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "joint_temperature_vpd": {},
+      "fixed_adjustments": [],
+      "conditional_hue_contrasts": {},
+      "inference": "approximate stacked marginal REML species-cluster Wald F",
+      "random_effects": "response-specific species intercept; no phylogenetic correction",
+      "pointwise_component_intervals_not_joint_significance_tests": true
+    }
+  },
+  "environment_parameterization": "common_slope",
+  "environment_diagnostics": {
+    "corolla_lab_lightness": {
+      "n": 186437,
+      "designs": {
+        "raw": {
+          "n": 186437,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              1.0000000000000002,
+              -0.3553087263144245,
+              -0.12383691453042699,
+              -0.2245364861874276,
+              -0.2268919976990125,
+              -0.058483665501759804,
+              -0.028693670860640112,
+              -0.46963033715410213
+            ],
+            [
+              -0.3553087263144245,
+              0.9999999999999999,
+              -0.001301535535740776,
+              0.12445847552401171,
+              0.007151294620743754,
+              -0.019524758599506017,
+              0.2173127141366199,
+              0.45189617660537934
+            ],
+            [
+              -0.12383691453042699,
+              -0.001301535535740776,
+              1.0000000000000007,
+              0.6033808216841056,
+              0.25816532948218907,
+              -0.23609442130489472,
+              0.053244230970396544,
+              -0.13733494491677656
+            ],
+            [
+              -0.2245364861874276,
+              0.12445847552401171,
+              0.6033808216841056,
+              1.0000000000000009,
+              0.7080070798237952,
+              -0.24157301603789996,
+              0.009770116643727109,
+              0.16539633819115818
+            ],
+            [
+              -0.2268919976990125,
+              0.007151294620743754,
+              0.25816532948218907,
+              0.7080070798237952,
+              0.9999999999999997,
+              -0.24397478936032768,
+              -0.08318757926855788,
+              0.4553914311311567
+            ],
+            [
+              -0.058483665501759804,
+              -0.019524758599506017,
+              -0.23609442130489472,
+              -0.24157301603789996,
+              -0.24397478936032768,
+              1.0000000000000013,
+              0.10074416107845115,
+              -0.12369579425076976
+            ],
+            [
+              -0.028693670860640112,
+              0.2173127141366199,
+              0.053244230970396544,
+              0.009770116643727109,
+              -0.08318757926855788,
+              0.10074416107845115,
+              0.9999999999999997,
+              -0.0964643941804365
+            ],
+            [
+              -0.46963033715410213,
+              0.45189617660537934,
+              -0.13733494491677656,
+              0.16539633819115818,
+              0.4553914311311567,
+              -0.12369579425076976,
+              -0.0964643941804365,
+              0.9999999999999992
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.4478930951570754,
+            1.6898686029326868,
+            1.89293378653315,
+            3.6367866052467877,
+            3.3393363437737715,
+            1.1592442654783428,
+            1.1172990771362683,
+            2.448948172067542
+          ],
+          "condition_index": 4.274898686475267
+        }
+      }
+    },
+    "corolla_lab_chroma": {
+      "n": 186437,
+      "designs": {
+        "raw": {
+          "n": 186437,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              1.0000000000000002,
+              -0.3553087263144245,
+              -0.12383691453042699,
+              -0.2245364861874276,
+              -0.2268919976990125,
+              -0.058483665501759804,
+              -0.028693670860640112,
+              -0.46963033715410213
+            ],
+            [
+              -0.3553087263144245,
+              0.9999999999999999,
+              -0.001301535535740776,
+              0.12445847552401171,
+              0.007151294620743754,
+              -0.019524758599506017,
+              0.2173127141366199,
+              0.45189617660537934
+            ],
+            [
+              -0.12383691453042699,
+              -0.001301535535740776,
+              1.0000000000000007,
+              0.6033808216841056,
+              0.25816532948218907,
+              -0.23609442130489472,
+              0.053244230970396544,
+              -0.13733494491677656
+            ],
+            [
+              -0.2245364861874276,
+              0.12445847552401171,
+              0.6033808216841056,
+              1.0000000000000009,
+              0.7080070798237952,
+              -0.24157301603789996,
+              0.009770116643727109,
+              0.16539633819115818
+            ],
+            [
+              -0.2268919976990125,
+              0.007151294620743754,
+              0.25816532948218907,
+              0.7080070798237952,
+              0.9999999999999997,
+              -0.24397478936032768,
+              -0.08318757926855788,
+              0.4553914311311567
+            ],
+            [
+              -0.058483665501759804,
+              -0.019524758599506017,
+              -0.23609442130489472,
+              -0.24157301603789996,
+              -0.24397478936032768,
+              1.0000000000000013,
+              0.10074416107845115,
+              -0.12369579425076976
+            ],
+            [
+              -0.028693670860640112,
+              0.2173127141366199,
+              0.053244230970396544,
+              0.009770116643727109,
+              -0.08318757926855788,
+              0.10074416107845115,
+              0.9999999999999997,
+              -0.0964643941804365
+            ],
+            [
+              -0.46963033715410213,
+              0.45189617660537934,
+              -0.13733494491677656,
+              0.16539633819115818,
+              0.4553914311311567,
+              -0.12369579425076976,
+              -0.0964643941804365,
+              0.9999999999999992
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.4478930951570754,
+            1.6898686029326868,
+            1.89293378653315,
+            3.6367866052467877,
+            3.3393363437737715,
+            1.1592442654783428,
+            1.1172990771362683,
+            2.448948172067542
+          ],
+          "condition_index": 4.274898686475267
+        }
+      }
+    },
+    "corolla_hue_sin": {
+      "n": 186388,
+      "designs": {
+        "raw": {
+          "n": 186388,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              1.0000000000000007,
+              -0.35530457507256175,
+              -0.12384033037933548,
+              -0.2245128320844637,
+              -0.2268413913134912,
+              -0.05855712351439561,
+              -0.02869372347557459,
+              -0.4695768186811423
+            ],
+            [
+              -0.35530457507256175,
+              1.000000000000002,
+              -0.0013251209943135151,
+              0.12443967708200127,
+              0.007150613211891183,
+              -0.01956971906589491,
+              0.21733193395890277,
+              0.4519564882941222
+            ],
+            [
+              -0.12384033037933548,
+              -0.0013251209943135151,
+              1.0,
+              0.6033794225370114,
+              0.25810733434141037,
+              -0.23604372622513586,
+              0.05325298582331017,
+              -0.13744466908803582
+            ],
+            [
+              -0.2245128320844637,
+              0.12443967708200127,
+              0.6033794225370114,
+              1.0000000000000009,
+              0.7080074686823511,
+              -0.24156910155870742,
+              0.00976836078930396,
+              0.165353636577483
+            ],
+            [
+              -0.2268413913134912,
+              0.007150613211891183,
+              0.25810733434141037,
+              0.7080074686823511,
+              1.0000000000000013,
+              -0.24393718786299187,
+              -0.08319998125724046,
+              0.45534267336870243
+            ],
+            [
+              -0.05855712351439561,
+              -0.01956971906589491,
+              -0.23604372622513586,
+              -0.24156910155870742,
+              -0.24393718786299187,
+              1.0000000000000002,
+              0.10075935892429966,
+              -0.12360578123480778
+            ],
+            [
+              -0.02869372347557459,
+              0.21733193395890277,
+              0.05325298582331017,
+              0.00976836078930396,
+              -0.08319998125724046,
+              0.10075935892429966,
+              0.9999999999999997,
+              -0.0964832694164954
+            ],
+            [
+              -0.4695768186811423,
+              0.4519564882941222,
+              -0.13744466908803582,
+              0.165353636577483,
+              0.45534267336870243,
+              -0.12360578123480778,
+              -0.0964832694164954,
+              1.0000000000000007
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.4478391575284992,
+            1.6900455616788141,
+            1.893088975374267,
+            3.6370269265432107,
+            3.3393257400020238,
+            1.1592165943623296,
+            1.1173472461226508,
+            2.448999972402644
+          ],
+          "condition_index": 4.274838956158094
+        }
+      }
+    },
+    "corolla_hue_cos": {
+      "n": 186388,
+      "designs": {
+        "raw": {
+          "n": 186388,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              1.0000000000000007,
+              -0.35530457507256175,
+              -0.12384033037933548,
+              -0.2245128320844637,
+              -0.2268413913134912,
+              -0.05855712351439561,
+              -0.02869372347557459,
+              -0.4695768186811423
+            ],
+            [
+              -0.35530457507256175,
+              1.000000000000002,
+              -0.0013251209943135151,
+              0.12443967708200127,
+              0.007150613211891183,
+              -0.01956971906589491,
+              0.21733193395890277,
+              0.4519564882941222
+            ],
+            [
+              -0.12384033037933548,
+              -0.0013251209943135151,
+              1.0,
+              0.6033794225370114,
+              0.25810733434141037,
+              -0.23604372622513586,
+              0.05325298582331017,
+              -0.13744466908803582
+            ],
+            [
+              -0.2245128320844637,
+              0.12443967708200127,
+              0.6033794225370114,
+              1.0000000000000009,
+              0.7080074686823511,
+              -0.24156910155870742,
+              0.00976836078930396,
+              0.165353636577483
+            ],
+            [
+              -0.2268413913134912,
+              0.007150613211891183,
+              0.25810733434141037,
+              0.7080074686823511,
+              1.0000000000000013,
+              -0.24393718786299187,
+              -0.08319998125724046,
+              0.45534267336870243
+            ],
+            [
+              -0.05855712351439561,
+              -0.01956971906589491,
+              -0.23604372622513586,
+              -0.24156910155870742,
+              -0.24393718786299187,
+              1.0000000000000002,
+              0.10075935892429966,
+              -0.12360578123480778
+            ],
+            [
+              -0.02869372347557459,
+              0.21733193395890277,
+              0.05325298582331017,
+              0.00976836078930396,
+              -0.08319998125724046,
+              0.10075935892429966,
+              0.9999999999999997,
+              -0.0964832694164954
+            ],
+            [
+              -0.4695768186811423,
+              0.4519564882941222,
+              -0.13744466908803582,
+              0.165353636577483,
+              0.45534267336870243,
+              -0.12360578123480778,
+              -0.0964832694164954,
+              1.0000000000000007
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.4478391575284992,
+            1.6900455616788141,
+            1.893088975374267,
+            3.6370269265432107,
+            3.3393257400020238,
+            1.1592165943623296,
+            1.1173472461226508,
+            2.448999972402644
+          ],
+          "condition_index": 4.274838956158094
+        }
+      }
+    },
+    "orientation_image_vertical_angle": {
+      "n": 170064,
+      "designs": {
+        "raw": {
+          "n": 170064,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              0.9999999999999997,
+              -0.35574991078886853,
+              -0.13538615253047662,
+              -0.2350178518231164,
+              -0.23055166114365522,
+              -0.05527245269014306,
+              -0.030607217062849135,
+              -0.4703692535754918
+            ],
+            [
+              -0.35574991078886853,
+              1.0,
+              0.0002154681326703399,
+              0.1193493247097004,
+              0.0010972347064050598,
+              -0.020071610025178908,
+              0.2211273984510872,
+              0.45454344299326693
+            ],
+            [
+              -0.13538615253047662,
+              0.0002154681326703399,
+              1.0,
+              0.6116033730887577,
+              0.2657845879343299,
+              -0.2413052579459657,
+              0.053628963014871425,
+              -0.1339641932320687
+            ],
+            [
+              -0.2350178518231164,
+              0.1193493247097004,
+              0.6116033730887577,
+              0.9999999999999994,
+              0.708338694889845,
+              -0.24805112697526227,
+              0.008862136371405791,
+              0.16029348635030882
+            ],
+            [
+              -0.23055166114365522,
+              0.0010972347064050598,
+              0.2657845879343299,
+              0.708338694889845,
+              1.000000000000001,
+              -0.24268108495743732,
+              -0.08317614847105007,
+              0.44471303979854615
+            ],
+            [
+              -0.05527245269014306,
+              -0.020071610025178908,
+              -0.2413052579459657,
+              -0.24805112697526227,
+              -0.24268108495743732,
+              0.9999999999999993,
+              0.09727966154260402,
+              -0.11901127936952638
+            ],
+            [
+              -0.030607217062849135,
+              0.2211273984510872,
+              0.053628963014871425,
+              0.008862136371405791,
+              -0.08317614847105007,
+              0.09727966154260402,
+              1.0000000000000007,
+              -0.09540942159461992
+            ],
+            [
+              -0.4703692535754918,
+              0.45454344299326693,
+              -0.1339641932320687,
+              0.16029348635030882,
+              0.44471303979854615,
+              -0.11901127936952638,
+              -0.09540942159461992,
+              0.9999999999999997
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.4575907298931954,
+            1.6964252709752494,
+            1.9195889624769233,
+            3.6706082226358703,
+            3.2971756806084813,
+            1.1595485176422173,
+            1.120076747206132,
+            2.424455021242564
+          ],
+          "condition_index": 4.274633140237261
+        }
+      }
+    },
+    "bract_projection_p95": {
+      "n": 1303,
+      "designs": {
+        "raw": {
+          "n": 1303,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              0.9999999999999998,
+              -0.4310240209097185,
+              -0.07954415370449869,
+              -0.25037397833158775,
+              -0.24373257759972786,
+              0.042603473081956895,
+              -0.0411660694447176,
+              -0.5597355530298918
+            ],
+            [
+              -0.4310240209097185,
+              0.9999999999999997,
+              0.011718741628786429,
+              0.10479414159814647,
+              -0.06976411428776427,
+              -0.006381419660160749,
+              0.23023325215950075,
+              0.4450833892511642
+            ],
+            [
+              -0.07954415370449869,
+              0.011718741628786429,
+              0.9999999999999997,
+              0.5021512008906296,
+              0.2701139359300848,
+              -0.15078568151329252,
+              0.02511501983282978,
+              -0.06636709118566021
+            ],
+            [
+              -0.25037397833158775,
+              0.10479414159814647,
+              0.5021512008906296,
+              1.0,
+              0.6388025088573704,
+              -0.17032783758130404,
+              0.0024015948917674793,
+              0.11288585895400893
+            ],
+            [
+              -0.24373257759972786,
+              -0.06976411428776427,
+              0.2701139359300848,
+              0.6388025088573704,
+              1.0,
+              -0.21607212215519173,
+              -0.08487081285886473,
+              0.4000033434662245
+            ],
+            [
+              0.042603473081956895,
+              -0.006381419660160749,
+              -0.15078568151329252,
+              -0.17032783758130404,
+              -0.21607212215519173,
+              0.9999999999999998,
+              0.10725258855376166,
+              -0.23842691390863374
+            ],
+            [
+              -0.0411660694447176,
+              0.23023325215950075,
+              0.02511501983282978,
+              0.0024015948917674793,
+              -0.08487081285886473,
+              0.10725258855376166,
+              0.9999999999999994,
+              -0.08852029852810488
+            ],
+            [
+              -0.5597355530298918,
+              0.4450833892511642,
+              -0.06636709118566021,
+              0.11288585895400893,
+              0.4000033434662245,
+              -0.23842691390863374,
+              -0.08852029852810488,
+              0.9999999999999998
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.6672666504411622,
+            1.783300184432481,
+            1.386862198814552,
+            2.4960008063096852,
+            2.6247673726808056,
+            1.1394174444495084,
+            1.1194234807929488,
+            2.5377407954681717
+          ],
+          "condition_index": 3.807479711976693
+        }
+      }
+    },
+    "bract_spread_fraction": {
+      "n": 1303,
+      "designs": {
+        "raw": {
+          "n": 1303,
+          "columns": [
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean",
+            "chelsa_vpd_mean",
+            "chelsa_sfcwind_mean",
+            "chelsa_gsp",
+            "chelsa_npp"
+          ],
+          "correlation": [
+            [
+              0.9999999999999998,
+              -0.4310240209097185,
+              -0.07954415370449869,
+              -0.25037397833158775,
+              -0.24373257759972786,
+              0.042603473081956895,
+              -0.0411660694447176,
+              -0.5597355530298918
+            ],
+            [
+              -0.4310240209097185,
+              0.9999999999999997,
+              0.011718741628786429,
+              0.10479414159814647,
+              -0.06976411428776427,
+              -0.006381419660160749,
+              0.23023325215950075,
+              0.4450833892511642
+            ],
+            [
+              -0.07954415370449869,
+              0.011718741628786429,
+              0.9999999999999997,
+              0.5021512008906296,
+              0.2701139359300848,
+              -0.15078568151329252,
+              0.02511501983282978,
+              -0.06636709118566021
+            ],
+            [
+              -0.25037397833158775,
+              0.10479414159814647,
+              0.5021512008906296,
+              1.0,
+              0.6388025088573704,
+              -0.17032783758130404,
+              0.0024015948917674793,
+              0.11288585895400893
+            ],
+            [
+              -0.24373257759972786,
+              -0.06976411428776427,
+              0.2701139359300848,
+              0.6388025088573704,
+              1.0,
+              -0.21607212215519173,
+              -0.08487081285886473,
+              0.4000033434662245
+            ],
+            [
+              0.042603473081956895,
+              -0.006381419660160749,
+              -0.15078568151329252,
+              -0.17032783758130404,
+              -0.21607212215519173,
+              0.9999999999999998,
+              0.10725258855376166,
+              -0.23842691390863374
+            ],
+            [
+              -0.0411660694447176,
+              0.23023325215950075,
+              0.02511501983282978,
+              0.0024015948917674793,
+              -0.08487081285886473,
+              0.10725258855376166,
+              0.9999999999999994,
+              -0.08852029852810488
+            ],
+            [
+              -0.5597355530298918,
+              0.4450833892511642,
+              -0.06636709118566021,
+              0.11288585895400893,
+              0.4000033434662245,
+              -0.23842691390863374,
+              -0.08852029852810488,
+              0.9999999999999998
+            ]
+          ],
+          "status": "estimated",
+          "vif": [
+            1.6672666504411622,
+            1.783300184432481,
+            1.386862198814552,
+            2.4960008063096852,
+            2.6247673726808056,
+            1.1394174444495084,
+            1.1194234807929488,
+            2.5377407954681717
+          ],
+          "condition_index": 3.807479711976693
+        }
+      }
+    }
+  },
+  "reuse_inventory": [
+    {
+      "endpoint": "orientation_image_vertical_angle",
+      "module": "presentation",
+      "group": "presentation",
+      "declared_role": "primary_image_geometry",
+      "current_use": "joint_primary_module",
+      "source": "full_archived_observation_table",
+      "finite": 170066,
+      "eligible": 170066,
+      "eligible_with_four_climate": 170066,
+      "eligible_species": 244,
+      "eligible_q10": 15.64976784767569,
+      "eligible_median": 68.0480636651273,
+      "eligible_q90": 132.74267489057019,
+      "not_equivalent_to": "Direct gravity-referenced inclinometer angle or peduncle deflection"
+    },
+    {
+      "endpoint": "corolla_lab_lightness",
+      "module": "visible_floret_colour",
+      "group": "flower_colour",
+      "declared_role": "joint_colour_coordinates",
+      "current_use": "joint_primary_module",
+      "source": "full_archived_observation_table",
+      "finite": 186439,
+      "eligible": 186439,
+      "eligible_with_four_climate": 186439,
+      "eligible_species": 244,
+      "eligible_q10": 54.11764717102051,
+      "eligible_median": 69.60784339904785,
+      "eligible_q90": 81.09804077148551,
+      "not_equivalent_to": "Spectrally calibrated reflectance or pigment concentration"
+    },
+    {
+      "endpoint": "corolla_lab_chroma",
+      "module": "visible_floret_colour",
+      "group": "flower_colour",
+      "declared_role": "joint_colour_coordinates",
+      "current_use": "joint_primary_module",
+      "source": "full_archived_observation_table",
+      "finite": 186439,
+      "eligible": 186439,
+      "eligible_with_four_climate": 186439,
+      "eligible_species": 244,
+      "eligible_q10": 11.045360565185549,
+      "eligible_median": 23.70653915405273,
+      "eligible_q90": 45.52888488769531,
+      "not_equivalent_to": "Calibrated saturation or anthocyanin concentration"
+    },
+    {
+      "endpoint": "corolla_hue_sin",
+      "module": "visible_floret_colour",
+      "group": "flower_colour",
+      "declared_role": "joint_colour_coordinates",
+      "current_use": "joint_primary_module",
+      "source": "full_archived_observation_table",
+      "finite": 186390,
+      "eligible": 186390,
+      "eligible_with_four_climate": 186390,
+      "eligible_species": 244,
+      "eligible_q10": -0.899100188911493,
+      "eligible_median": 0.16037269389950531,
+      "eligible_q90": 0.907959787641848,
+      "not_equivalent_to": "Independent biological colour trait"
+    },
+    {
+      "endpoint": "corolla_hue_cos",
+      "module": "visible_floret_colour",
+      "group": "flower_colour",
+      "declared_role": "joint_colour_coordinates",
+      "current_use": "joint_primary_module",
+      "source": "full_archived_observation_table",
+      "finite": 186390,
+      "eligible": 186390,
+      "eligible_with_four_climate": 186390,
+      "eligible_species": 244,
+      "eligible_q10": 0.14729103764661927,
+      "eligible_median": 0.6453681322113192,
+      "eligible_q90": 0.9530582512634389,
+      "not_equivalent_to": "Independent biological colour trait"
+    },
+    {
+      "endpoint": "visible_floret_fraction",
+      "module": "display_context",
+      "group": "floral_display",
+      "declared_role": "stage_and_visibility_context",
+      "current_use": "unmeasured",
+      "source": "zenodo_endpoint_table",
+      "finite": 0,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Anthesis stage or whole-plant floral display without stage calibration"
+    },
+    {
+      "endpoint": "corolla_white_pixel_fraction",
+      "module": "visible_floret_colour",
+      "group": "colour_composition",
+      "declared_role": "descriptive_composition_secondary",
+      "current_use": "unmeasured",
+      "source": "zenodo_endpoint_table",
+      "finite": 0,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Whole-head colour category"
+    },
+    {
+      "endpoint": "corolla_redmagenta_pixel_fraction",
+      "module": "visible_floret_colour",
+      "group": "colour_composition",
+      "declared_role": "descriptive_composition_secondary",
+      "current_use": "unmeasured",
+      "source": "zenodo_endpoint_table",
+      "finite": 0,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Whole-head colour category"
+    },
+    {
+      "endpoint": "corolla_purple_pixel_fraction",
+      "module": "visible_floret_colour",
+      "group": "colour_composition",
+      "declared_role": "descriptive_composition_secondary",
+      "current_use": "unmeasured",
+      "source": "zenodo_endpoint_table",
+      "finite": 0,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Whole-head colour category"
+    },
+    {
+      "endpoint": "corolla_yellow_pixel_fraction",
+      "module": "visible_floret_colour",
+      "group": "colour_composition",
+      "declared_role": "descriptive_composition_secondary",
+      "current_use": "unmeasured",
+      "source": "zenodo_endpoint_table",
+      "finite": 0,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Whole-head colour category"
+    },
+    {
+      "endpoint": "capitulum_outline_aspect_ratio",
+      "module": "whole_head_geometry",
+      "group": "whole_head_shape",
+      "declared_role": "context_and_secondary_trait_block",
+      "current_use": "secondary_phenotype_description",
+      "source": "full_archived_observation_table",
+      "finite": 176048,
+      "eligible": 176048,
+      "eligible_with_four_climate": 176048,
+      "eligible_species": 243,
+      "eligible_q10": 0.8815587604376394,
+      "eligible_median": 1.0116279069767442,
+      "eligible_q90": 1.197866589280637,
+      "not_equivalent_to": "Absolute head dimensions or a category such as globose"
+    },
+    {
+      "endpoint": "capitulum_outline_circularity",
+      "module": "whole_head_geometry",
+      "group": "whole_head_shape",
+      "declared_role": "context_and_secondary_trait_block",
+      "current_use": "secondary_phenotype_description",
+      "source": "full_archived_observation_table",
+      "finite": 176048,
+      "eligible": 176048,
+      "eligible_with_four_climate": 176048,
+      "eligible_species": 243,
+      "eligible_q10": 0.21537399601848578,
+      "eligible_median": 0.3245171633518166,
+      "eligible_q90": 0.4782330072744547,
+      "not_equivalent_to": "Three-dimensional sphericity"
+    },
+    {
+      "endpoint": "capitulum_outline_solidity",
+      "module": "whole_head_geometry",
+      "group": "whole_head_shape",
+      "declared_role": "context_and_secondary_trait_block",
+      "current_use": "secondary_phenotype_description",
+      "source": "full_archived_observation_table",
+      "finite": 176048,
+      "eligible": 176048,
+      "eligible_with_four_climate": 176048,
+      "eligible_species": 243,
+      "eligible_q10": 0.7066052911198352,
+      "eligible_median": 0.7878038739457598,
+      "eligible_q90": 0.8726536617671414,
+      "not_equivalent_to": "Bract number or armature identity"
+    },
+    {
+      "endpoint": "capitulum_width_profile_cv",
+      "module": "whole_head_geometry",
+      "group": "whole_head_shape",
+      "declared_role": "context_and_secondary_trait_block",
+      "current_use": "secondary_phenotype_description",
+      "source": "full_archived_observation_table",
+      "finite": 176048,
+      "eligible": 176048,
+      "eligible_with_four_climate": 176048,
+      "eligible_species": 243,
+      "eligible_q10": 0.2940116710069464,
+      "eligible_median": 0.39014606717686545,
+      "eligible_q90": 0.4728574390924558,
+      "not_equivalent_to": "A botanical outline category independent of viewpoint"
+    },
+    {
+      "endpoint": "involucre_length_width_ratio",
+      "module": "involucre_structure",
+      "group": "involucre_body",
+      "declared_role": "candidate_organ_geometry",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.7323638723584147,
+      "eligible_median": 1.049800850413732,
+      "eligible_q90": 1.6481216913599501,
+      "not_equivalent_to": "Absolute involucre size"
+    },
+    {
+      "endpoint": "involucre_apical_taper_ratio",
+      "module": "involucre_structure",
+      "group": "involucre_body",
+      "declared_role": "candidate_organ_geometry",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.6781139359424527,
+      "eligible_median": 0.9973045877636824,
+      "eligible_q90": 1.421775983930591,
+      "not_equivalent_to": "Urceolate category without viewpoint calibration"
+    },
+    {
+      "endpoint": "involucre_basal_taper_ratio",
+      "module": "involucre_structure",
+      "group": "involucre_body",
+      "declared_role": "candidate_organ_geometry",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.543251810144162,
+      "eligible_median": 0.8286343411969457,
+      "eligible_q90": 1.2187045257263276,
+      "not_equivalent_to": "A botanical base-shape category independent of viewpoint"
+    },
+    {
+      "endpoint": "bract_projection_roughness",
+      "module": "involucre_structure",
+      "group": "phyllary_contour_proxies",
+      "declared_role": "candidate_contour_proxies_not_true_phyllary_anatomy",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.0656718715781941,
+      "eligible_median": 0.1245693834277911,
+      "eligible_q90": 0.21700970817519002,
+      "not_equivalent_to": "Mean phyllary angle or spine length"
+    },
+    {
+      "endpoint": "bract_projection_p95",
+      "module": "involucre_structure",
+      "group": "phyllary_contour_proxies",
+      "declared_role": "candidate_contour_proxies_not_true_phyllary_anatomy",
+      "current_use": "joint_primary_module",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.10147949838718984,
+      "eligible_median": 0.1962689312664545,
+      "eligible_q90": 0.3564034535485488,
+      "not_equivalent_to": "Maximum botanical spine length"
+    },
+    {
+      "endpoint": "bract_projection_maximum",
+      "module": "involucre_structure",
+      "group": "phyllary_contour_proxies",
+      "declared_role": "candidate_contour_proxies_not_true_phyllary_anatomy",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.13784589727469118,
+      "eligible_median": 0.2849891529846394,
+      "eligible_q90": 0.5343499636584036,
+      "not_equivalent_to": "A uniquely identified spine or free phyllary-tip length"
+    },
+    {
+      "endpoint": "bract_spread_fraction",
+      "module": "involucre_structure",
+      "group": "phyllary_contour_proxies",
+      "declared_role": "candidate_contour_proxies_not_true_phyllary_anatomy",
+      "current_use": "joint_primary_module",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.21793842034805894,
+      "eligible_median": 0.3461538461538461,
+      "eligible_q90": 0.4666666666666667,
+      "not_equivalent_to": "Fraction of botanically spreading or recurved phyllaries"
+    },
+    {
+      "endpoint": "bract_projection_peak_density",
+      "module": "involucre_structure",
+      "group": "phyllary_contour_proxies",
+      "declared_role": "candidate_contour_proxies_not_true_phyllary_anatomy",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.0555555555555555,
+      "eligible_median": 0.08,
+      "eligible_q90": 0.1111111111111111,
+      "not_equivalent_to": "Total phyllary or spine count"
+    },
+    {
+      "endpoint": "bract_projection_asymmetry",
+      "module": "involucre_structure",
+      "group": "phyllary_contour_proxies",
+      "declared_role": "candidate_contour_proxies_not_true_phyllary_anatomy",
+      "current_use": "secondary_phenotype_description",
+      "source": "zenodo_endpoint_table",
+      "finite": 1303,
+      "eligible": 1303,
+      "eligible_with_four_climate": 1303,
+      "eligible_species": 111,
+      "eligible_q10": 0.00396495210288738,
+      "eligible_median": 0.0223778584145201,
+      "eligible_q90": 0.06566348511761741,
+      "not_equivalent_to": "Developmental asymmetry without pose control"
+    },
+    {
+      "endpoint": "involucre_surface_edge_density",
+      "module": "involucre_structure",
+      "group": "involucre_surface_texture",
+      "declared_role": "technical_validation_only",
+      "current_use": "technical_validation_only",
+      "source": "zenodo_endpoint_table",
+      "finite": 570,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Hair density or gland density without reference annotation"
+    },
+    {
+      "endpoint": "involucre_surface_lbp_entropy",
+      "module": "involucre_structure",
+      "group": "involucre_surface_texture",
+      "declared_role": "technical_validation_only",
+      "current_use": "technical_validation_only",
+      "source": "zenodo_endpoint_table",
+      "finite": 570,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Specific webby tomentose or glandular indumentum state"
+    },
+    {
+      "endpoint": "involucre_surface_high_frequency_energy",
+      "module": "involucre_structure",
+      "group": "involucre_surface_texture",
+      "declared_role": "technical_validation_only",
+      "current_use": "technical_validation_only",
+      "source": "zenodo_endpoint_table",
+      "finite": 570,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Hair abundance independent of lighting and focus"
+    },
+    {
+      "endpoint": "involucre_surface_specular_fraction",
+      "module": "involucre_structure",
+      "group": "involucre_specularity",
+      "declared_role": "technical_validation_only_not_stickiness",
+      "current_use": "technical_validation_only",
+      "source": "zenodo_endpoint_table",
+      "finite": 570,
+      "eligible": 0,
+      "eligible_with_four_climate": 0,
+      "eligible_species": 0,
+      "eligible_q10": null,
+      "eligible_median": null,
+      "eligible_q90": null,
+      "not_equivalent_to": "Mucilage presence stickiness or secretion amount without targeted validation"
+    }
+  ],
+  "inference_status": "estimated",
+  "scope": "Retrospective conditional associations after environment-only vifstep selection. No causal identification, spatial correction or phylogenetic correction."
+}

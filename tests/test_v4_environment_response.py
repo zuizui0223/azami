@@ -44,9 +44,10 @@ def test_fixed_workflow_keeps_response_specific_missingness(tmp_path):
     assert result['inference_status']=='estimated'
     assert set(result['models'])==set(MODULES)
     assert result['predictors']==selected
-    assert result['environment_parameterization']=='common_slope'
-    assert sum(len(m['tests']) for m in result['models'].values())==15
+    assert result['environment_parameterization']=='within_between'
+    assert sum(len(m['tests']) for m in result['models'].values())==30
     assert result['models']['orientation']['components']['orientation_image_vertical_angle']['n']==349
     assert result['models']['colour']['components']['corolla_lab_lightness']['n']==350
     assert result['models']['bract_projection']['components']['bract_projection_p95']['n']==350
     assert (tmp_path/'output/environment_response_ja.md').exists()
+
