@@ -74,6 +74,12 @@ Primary model specification: [observation-level model contract](OBSERVATION_MODE
 The existing `V4 functional trait analysis` Action runs these models on manual
 dispatch, reusing the verified encrypted observation input. PR execution retains
 the historical pilot as a regression check. These are distinct execution modes.
+Manual execution first calls the existing original-photo method workflow, then
+audits inherited coverage and fits the archived-endpoint reference models.
+The new measurement coordinates are not silently substituted into inherited
+columns. A green demonstration replay does not certify botanical validity or
+native-wide completion; the numerical report explicitly retains incomplete
+new-measurement status until validated annotations and full-source execution exist.
 GEB is the intended journal; the scientific contribution must concern general
 macroecological patterns and what continuous within-species photographic
 variation reveals beyond species categories.

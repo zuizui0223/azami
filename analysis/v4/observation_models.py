@@ -193,6 +193,8 @@ def execute(table, receipt, output):
     if any(a['sd']<=0 for a in scales.values()):raise ValueError('Constant climate predictor')
     ranking=frame.accepted_key.value_counts().index
     result={'input':report,'scales':scales,'models':{},
+            'workflow_status':'incomplete_new_measurement_validation_and_full_native_application',
+            'measurement_basis':'inherited numerical endpoints; not newly computed Lab-pixel or individual-phyllary coordinates',
             'actual_design_diagnostics':design_diagnostics(frame),
             'model_code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             'primary_family':'24 joint tests: 3 modules x 4 predictors x within/between; Holm',
@@ -259,7 +261,10 @@ def execute(table, receipt, output):
 def write_report(result, output):
     labels={'colour':'色全体','orientation':'向き','bract_projection':'総苞片の輪郭突出'}
     names=dict(zip(ENV,['温度','日射','VPD','降水']))
-    lines=['# v4 観測単位解析：GEBを想定した主解析結果','',
+    lines=['# v4 既存測定による観測単位の参照解析','',
+           '**新測定法による全対象解析は未完了。** 本結果は保存済み測定値を使った参照解析である。'
+           '新方式の画素L*a*b*・個別総苞片角度を大量測定した結果ではない。'
+           '方法再計算の成功、数値モデルの成功、植物学的な測定妥当性を区別する。','',
            '温度・日射・VPD・降水を同時に含め、各観測を保持した種ランダム切片モデル。'
            '環境を種平均と種内偏差に分けた。色は明度・彩度・円周色相の共同検定、'
            '総苞片は突出量と広がり割合の共同検定である。','',

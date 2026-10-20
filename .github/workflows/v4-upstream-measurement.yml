@@ -7,6 +7,7 @@ on:
       - 'tests/test_v4_functional_coordinates.py'
       - '.github/workflows/v4-upstream-measurement.yml'
   workflow_dispatch:
+  workflow_call:
 permissions:
   contents: read
   actions: read
