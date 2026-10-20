@@ -41,6 +41,8 @@ def summarize_heads(heads, native_ids):
 def execute(table, work, output):
     work=Path(work)
     archives,inputs=work/'archives',work/'inputs'
+    archives.mkdir(parents=True,exist_ok=True)
+    inputs.mkdir(parents=True,exist_ok=True)
     restore_zenodo(archives,inputs)
     artifact,expected,_=INPUTS['continuous']
     raw=(archives/f'artifact-{artifact}-continuous.zip').read_bytes()
