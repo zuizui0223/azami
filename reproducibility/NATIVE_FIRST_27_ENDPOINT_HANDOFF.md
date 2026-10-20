@@ -26,7 +26,7 @@ The saved native measurement frame has no original \`user_id\`/\`photographer_id
 
 ## Canonical design (historical audit reconciled, design only)
 
-The [single refined study design](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md) is authoritative for future native-first work. The [historical PR/commit index](HISTORY_AUDIT_INDEX_20261020.json) preserves scoped audit metadata. This document retains the source/endpoint evidence receipts and archived analyses **as provenance, not competing execution instructions**. Follow Gate A matched-observation/QC checks before new measurements, Gate B covariance before Gate C density/KDE/Wasserstein and Gate D ecology. No new original images, source extraction, Actions workflow, or frozen GEB V3 claim is authorized.
+The [single refined study design](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md) is authoritative for future native-first work. The [historical PR/commit index](HISTORY_AUDIT_INDEX_20261020.json) preserves scoped audit metadata. This document retains the source/endpoint evidence receipts and archived analyses **as provenance, not competing execution instructions**. Follow Gate A matched-observation/QC checks before new measurements and Gate B covariance before Gate C density/KDE/Wasserstein. All Gate D environmental and phylogenetic numerical inference is owned by [PR #144](https://github.com/zuizui0223/azami/pull/144) and its [source contract](GATE_D_PR144_HANDOFF_20261021.json); this handoff cannot supersede it. No new original images, source extraction, Actions workflow, or frozen GEB V3 claim is authorized in this PR.
 
 ## Decision: what is active and what remains paused
 
