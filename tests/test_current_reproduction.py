@@ -793,3 +793,51 @@ def test_gate_c_actual_pr92_receipt_matches_legacy_method_floors():
             item['centred_w2_exceedances']/item['between_pair_count_with_same_taxon_baseline'])
         assert len(item['bandwidth_overlap_medians']) == 3
     assert receipt['independent_reaudit']['new_native_density_fit'] is False
+
+
+def test_corrected_gate_d_requires_holm_family_and_no_false_rain_angle_result():
+    import copy
+    from reproducibility.native_gate_d_existing_gradient import (
+        CORRECTED_INPUT_SHA256, ORIGINAL_RUN, ORIGINAL_ARTIFACT,
+        CLIMATE, MODELS, EXPECTED_JOINT_FAMILY, summarize_existing_gradients,
+    )
+    from reproducibility.native_space_gate import EXPECTED_SHA256
+    assert CORRECTED_INPUT_SHA256 == EXPECTED_SHA256
+    assert (ORIGINAL_RUN, ORIGINAL_ARTIFACT, EXPECTED_JOINT_FAMILY) == (
+        39422378058, 12263957798, 64
+    )
+    keys=[name+'__'+scale for name in CLIMATE for scale in ('within','between')]
+    entry={'status':'estimated','p':.8,'holm_p':1.0}
+    data={
+        'input_sha256':CORRECTED_INPUT_SHA256,
+        'family_size':64,
+        'inference_status':'estimated',
+        'predictors':list(CLIMATE),
+        'models':{name:{'tests':{k:dict(entry) for k in keys}} for name in MODELS},
+    }
+    data['models']['colour']['tests']['chelsa_rsds_mean__between']={
+        'status':'estimated','p':.0001,'holm_p':.005
+    }
+    data['models']['head_outline']['tests']['chelsa_bio04__within']={
+        'status':'estimated','p':.0001,'holm_p':.006
+    }
+    out=summarize_existing_gradients(data)
+    assert out['total_supported']==2
+    assert out['scale_specific_supported_counts']['colour']=={'within':0,'between':1}
+    assert out['scale_specific_supported_counts']['head_outline']=={'within':1,'between':0}
+    assert out['scale_specific_supported_counts']['orientation']=={'within':0,'between':0}
+    assert out['status'].endswith('NOT_NEW_GATE_D')
+    bad=copy.deepcopy(data);bad['family_size']=63
+    with pytest.raises(ValueError,match='Holm family'):
+        summarize_existing_gradients(bad)
+    bad=copy.deepcopy(data);bad['models']['orientation']['tests']['chelsa_bio12__between']={
+        'status':'estimated','p':.0002,'holm_p':.02
+    }
+    with pytest.raises(ValueError,match='rain and angle'):
+        summarize_existing_gradients(bad)
+    bad=copy.deepcopy(data);bad['models']['colour']['tests']['chelsa_gsp__within']['holm_p']=-1
+    with pytest.raises(ValueError,match='Invalid adjusted'):
+        summarize_existing_gradients(bad)
+    bad=copy.deepcopy(data);bad['input_sha256']='old-sentinel-file'
+    with pytest.raises(ValueError,match='Not source-corrected'):
+        summarize_existing_gradients(bad)
