@@ -678,3 +678,89 @@ def test_native_gate_b_source_derived_receipt_separates_internal_from_cross_modu
                for p in receipt['adjusted_pointwise_positive_pairs'])
     assert receipt['empirical_new_result'] is False
     assert receipt['no_decrypted_native_rows_in_receipt'] is True
+
+
+def test_native_gate_c_historical_source_blob_pin_and_descriptive_reference(tmp_path):
+    import hashlib
+    import itertools
+    import numpy as np
+    import pandas as pd
+    from reproducibility.native_gate_c_existing_density import (
+        validate_blob, analyze_historical_density, CORE_GROUPS,
+    )
+    source = tmp_path / 'small.dat'
+    source.write_bytes(b'source-pinned gate c')
+    data = source.read_bytes()
+    expected = hashlib.sha1(b'blob '+str(len(data)).encode()+b'\\0'+data).hexdigest()
+    validate_blob(source, expected)
+    source.write_bytes(b'source-pinned gate c tampered')
+    with pytest.raises(ValueError, match='Git blob hash changed'):
+        validate_blob(source, expected)
+
+    rows, within, bandwidth, figures, overlap = [], [], [], [], []
+    group_sizes = {
+        'orientation': 54, 'colour': 54, 'outline': 54,
+        'involucre': 6, 'whole': 5
+    }
+    for group, ntaxa in group_sizes.items():
+        taxa=['t%02d'%i for i in range(ntaxa)]
+        all_pairs=list(itertools.combinations(taxa,2))
+        for idx, (a,b) in enumerate(all_pairs):
+            rows.append({
+                'group':group,'taxon_a':a,'taxon_b':b,
+                'density_overlap':.55 + .0001*idx,
+                'wasserstein_w2':.6 + .00001*idx,
+                'centroid_distance':.3,
+                'centred_w2':.4,
+                'centred_share_w2_squared':.44,
+            })
+        values=np.array([.55 + .0001*idx for idx in range(len(all_pairs))])
+        overlap.append({
+            'group':group,'pairs':len(all_pairs),
+            'median_pair_density_overlap':float(np.median(values)),
+            'median_pair_w2':float(np.median([.6+.00001*j for j in range(len(all_pairs))])),
+            'median_pair_centred_share':.44,
+        })
+        if group not in CORE_GROUPS:
+            continue
+        eligible=CORE_GROUPS[group]
+        for taxon in taxa[:eligible]:
+            within.append({
+                'group':group,'taxon_name':taxon,
+                'same_taxon_w2_p95':.45,
+                'centred_same_taxon_w2_p95':.35,
+            })
+        for idx,(a,b) in enumerate(all_pairs[:100]):
+            base=.45 + idx*.0001
+            for h in (.75,1.,1.25):
+                bandwidth.append({'group':group,'taxon_a':a,'taxon_b':b,
+                                  'factor':h,'density_overlap':base+(h-1)*.01})
+        figures.append({
+            'group':group,'pairs':eligible*(eligible-1)//2,
+            'between_above_within_p95':eligible*(eligible-1)//2,
+            'centred_above_within_p95':eligible*(eligible-1)//2,
+            'bandwidth_rank_rho_075':1.0, 'bandwidth_rank_rho_125':1.0,
+            'median_overlap_by_bandwidth':{
+                str(h):float(np.median([.45+k*.0001+(h-1)*.01 for k in range(100)]))
+                for h in (.75,1.,1.25)
+            }
+        })
+    pairs=pd.DataFrame(rows); baselines=pd.DataFrame(within)
+    bw=pd.DataFrame(bandwidth)
+    result=analyze_historical_density(pairs,baselines,figures,overlap,bw)
+    assert result['total_original_between_taxon_pairs'] == 4318
+    assert set(result['modules']) == set(CORE_GROUPS)
+    assert result['modules']['orientation']['pairs_with_same_taxon_reference'] == 528
+    assert result['modules']['outline']['pairs_with_same_taxon_reference'] == 561
+    assert result['modules']['colour']['centred_w2_exceedance_fraction'] == 1.
+    assert result['previous_source_native_filter'] is False
+    assert result['status'].endswith('NOT_CURRENT_NATIVE')
+    # Distort the stored reference: a strict replay must fail.
+    wrong=[dict(row) for row in figures]
+    wrong[0]['between_above_within_p95'] -= 1
+    with pytest.raises(ValueError, match='baseline flags/counts'):
+        analyze_historical_density(pairs,baselines,wrong,overlap,bw)
+    bad=pairs.copy()
+    bad.loc[0,'density_overlap']=1.2
+    with pytest.raises(ValueError,match='Invalid KDE'):
+        analyze_historical_density(bad,baselines,figures,overlap,bw)
