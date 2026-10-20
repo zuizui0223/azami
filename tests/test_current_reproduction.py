@@ -438,5 +438,5 @@ def test_existing_native_gate_a_trait_overlap_receipt_is_verified():
         validate_existing_overlap_receipt(ledger, tampered)
     tampered2 = json.loads(json.dumps(receipt))
     tampered2['module_census']['outline']['n'] += 2
-    with pytest.raises(ValueError, match="Module marginal"):
+    with pytest.raises(ValueError, match="module marginal"):
         validate_existing_overlap_receipt(ledger, tampered2)
