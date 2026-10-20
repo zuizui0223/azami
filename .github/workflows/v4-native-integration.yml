@@ -138,7 +138,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install renderer environment
-        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8
+        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8 pytest
+      - name: Verify report provenance guards
+        run: python -m pytest -q tests/test_v4_native_report.py
       - name: Verify and retrieve completed aggregate evidence
         run: |
           set -euo pipefail

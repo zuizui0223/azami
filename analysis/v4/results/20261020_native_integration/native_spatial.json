@@ -1,0 +1,3145 @@
+{
+  "run_id": "39428065666",
+  "git_sha": "e5db09e102d6d5bf48038ee8469008bee033a69b",
+  "input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "endpoints": {
+    "orientation_image_vertical_angle": {
+      "main_n": 170066,
+      "balanced_n": 1421,
+      "main_species": 244,
+      "balanced_species": 244,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": -0.028821764231456482,
+          "raw_units_per_environment_sd": -1.244570352094485,
+          "raw_ci95": [
+            -3.1505030719743687,
+            0.6613623677853987
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": 0.06918810269221,
+          "raw_units_per_environment_sd": 2.9876540740837823,
+          "raw_ci95": [
+            1.1751400398935186,
+            4.800168108274046
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.003563936802661545,
+          "raw_units_per_environment_sd": -0.15389655004151093,
+          "raw_ci95": [
+            -2.798732637394478,
+            2.490939537311456
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.024907610645969455,
+          "raw_units_per_environment_sd": 1.075550875461451,
+          "raw_ci95": [
+            0.48346666081365475,
+            1.667635090109247
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": 0.05457230982148653,
+          "raw_units_per_environment_sd": 2.356520520524173,
+          "raw_ci95": [
+            1.1067725228885579,
+            3.6062685181597876
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": -0.00551679630372569,
+          "raw_units_per_environment_sd": -0.23822417888866568,
+          "raw_ci95": [
+            -1.1769125223360473,
+            0.7004641645587156
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": 0.039014513061008255,
+          "raw_units_per_environment_sd": 1.6847097168374894,
+          "raw_ci95": [
+            -0.569233656716115,
+            3.9386530903910932
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": -0.00759372878398092,
+          "raw_units_per_environment_sd": -0.32790947946462906,
+          "raw_ci95": [
+            -1.125976584305822,
+            0.47015762537656397
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": 0.009404890833097404,
+          "raw_units_per_environment_sd": 0.4061183833702718,
+          "raw_ci95": [
+            -2.5734315313749003,
+            3.385668298115444
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.036400514168543334,
+          "raw_units_per_environment_sd": -1.571833020746174,
+          "raw_ci95": [
+            -2.88138202943219,
+            -0.26228401206015783
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 355,
+        "I": 0.0024874857330067198,
+        "permutation_p": 0.841,
+        "permutations": 999,
+        "cell_mean_residual_sd": 16.741791190212137,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "orientation_image_vertical_angle"
+        ],
+        "components": {
+          "orientation_image_vertical_angle": {
+            "status": "estimated",
+            "n": 1421,
+            "n_species": 244,
+            "variance_ratio": 0.035341784646439174,
+            "residual_variance": 0.9586884721770014,
+            "variance_boundary": false,
+            "objective": 48.30175469682483,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": -0.043381908990505404,
+                "raw_units_per_environment_sd": -1.8201830047240715,
+                "raw_ci95": [
+                  -5.5741868275555,
+                  1.9338208181073562
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": 0.08418954617661445,
+                "raw_units_per_environment_sd": 3.532356797845027,
+                "raw_ci95": [
+                  0.02819274013690466,
+                  7.0365208555531495
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.015853387794353493,
+                "raw_units_per_environment_sd": -0.6651636062603359,
+                "raw_ci95": [
+                  -4.7516231232781045,
+                  3.4212959107574323
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 0.06261343129029086,
+                "raw_units_per_environment_sd": 2.6270836427919506,
+                "raw_ci95": [
+                  -1.2854725719219775,
+                  6.539639857505879
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": 0.07391041257309071,
+                "raw_units_per_environment_sd": 3.101073234631687,
+                "raw_ci95": [
+                  0.9190478560879417,
+                  5.283098613175431
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": 0.021729193960378423,
+                "raw_units_per_environment_sd": 0.9116959228716729,
+                "raw_ci95": [
+                  -1.691815999413154,
+                  3.5152078451565
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": 0.09074903472297896,
+                "raw_units_per_environment_sd": 3.8075745060926742,
+                "raw_ci95": [
+                  0.8575757494554073,
+                  6.75757326272994
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": -0.06340245628366202,
+                "raw_units_per_environment_sd": -2.6601889144744635,
+                "raw_ci95": [
+                  -4.969517245140779,
+                  -0.3508605838081471
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": -0.06176068885109744,
+                "raw_units_per_environment_sd": -2.5913049661189964,
+                "raw_ci95": [
+                  -7.137749083836768,
+                  1.9551391515987753
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": 0.04492458331483394,
+                "raw_units_per_environment_sd": 1.8849092846944053,
+                "raw_ci95": [
+                  -1.3338188191750633,
+                  5.103637388563874
+                ]
+              }
+            },
+            "response_sd": 41.957190153214285,
+            "response_mean": 69.63868011213667,
+            "reference_prediction": 67.75221076028629
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 0.9121655469239425,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.3404896241545131
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 3.9426955556749514,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.04819928428005953
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.10280057229803521,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.7487699264003695
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 1.7492810666043441,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.18721052724489556
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 7.8367758674828725,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0055305080030287525
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.4757884109024688,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.49099440442073056
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 6.463773511388012,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.011631332739744139
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 5.148569355805766,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.02414298916816745
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 1.2604520116440714,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.2626735825929159
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 1.330593198328537,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.24983302590872736
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "corolla_lab_lightness": {
+      "main_n": 186439,
+      "balanced_n": 1437,
+      "main_species": 244,
+      "balanced_species": 244,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": 0.02047909858706543,
+          "raw_units_per_environment_sd": 0.2186325608858857,
+          "raw_ci95": [
+            -0.6777299318868577,
+            1.114995053658629
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": 0.17426729590182846,
+          "raw_units_per_environment_sd": 1.8604581163420641,
+          "raw_ci95": [
+            0.6861455450681035,
+            3.0347706876160245
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": 0.04518298730657969,
+          "raw_units_per_environment_sd": 0.48236850764277367,
+          "raw_ci95": [
+            -0.5622960713386413,
+            1.5270330866241888
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.03749377810005991,
+          "raw_units_per_environment_sd": 0.4002793720852869,
+          "raw_ci95": [
+            0.014731794934553,
+            0.7858269492360209
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.0397564608740844,
+          "raw_units_per_environment_sd": -0.4244355197425771,
+          "raw_ci95": [
+            -1.0456349462323722,
+            0.19676390674721803
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": -0.012481315462702407,
+          "raw_units_per_environment_sd": -0.1332491247714756,
+          "raw_ci95": [
+            -0.687088850114767,
+            0.4205906005718158
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": -0.14191532716499397,
+          "raw_units_per_environment_sd": -1.515072124641157,
+          "raw_ci95": [
+            -2.2669986886707445,
+            -0.7631455606115692
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": -0.02375567746538261,
+          "raw_units_per_environment_sd": -0.2536129496986797,
+          "raw_ci95": [
+            -0.8165542501297036,
+            0.30932835073234427
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": 0.17226866870441404,
+          "raw_units_per_environment_sd": 1.83912099642103,
+          "raw_ci95": [
+            0.5731210099399178,
+            3.105120982902142
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.06084264059237709,
+          "raw_units_per_environment_sd": -0.6495492107339425,
+          "raw_ci95": [
+            -1.9377356764064357,
+            0.6386372549385511
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 356,
+        "I": 0.030253641674820586,
+        "permutation_p": 0.16,
+        "permutations": 999,
+        "cell_mean_residual_sd": 4.460919772611095,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "corolla_lab_lightness"
+        ],
+        "components": {
+          "corolla_lab_lightness": {
+            "status": "estimated",
+            "n": 1437,
+            "n_species": 244,
+            "variance_ratio": 0.21837424637483174,
+            "residual_variance": 0.8171510812870318,
+            "variance_boundary": false,
+            "objective": -80.86058622671831,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": 0.05832057751553981,
+                "raw_units_per_environment_sd": 0.6378629175566207,
+                "raw_ci95": [
+                  -0.49944274252958587,
+                  1.7751685776428274
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": 0.1766988392487385,
+                "raw_units_per_environment_sd": 1.9325878092005624,
+                "raw_ci95": [
+                  0.8489658593577887,
+                  3.0162097590433357
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": 0.07386218913607787,
+                "raw_units_per_environment_sd": 0.8078443915769492,
+                "raw_ci95": [
+                  -0.4537821595995365,
+                  2.0694709427534352
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 0.05445858475809122,
+                "raw_units_per_environment_sd": 0.5956235901564024,
+                "raw_ci95": [
+                  -0.004543021573860823,
+                  1.1957902018866655
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.024142047287134975,
+                "raw_units_per_environment_sd": -0.2640460258518289,
+                "raw_ci95": [
+                  -0.8796814479347065,
+                  0.3515893962310488
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": -0.016688812169106827,
+                "raw_units_per_environment_sd": -0.18252861810060875,
+                "raw_ci95": [
+                  -0.9612813032077209,
+                  0.5962240670065034
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.12641032063532423,
+                "raw_units_per_environment_sd": -1.382573001925965,
+                "raw_ci95": [
+                  -2.307453474260657,
+                  -0.45769252959127277
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": -0.08263559869865414,
+                "raw_units_per_environment_sd": -0.9038007908257891,
+                "raw_ci95": [
+                  -1.9388916698863519,
+                  0.13129008823477353
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": 0.15278263521472352,
+                "raw_units_per_environment_sd": 1.6710118726805343,
+                "raw_ci95": [
+                  0.08031250506087984,
+                  3.2617112403001887
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.07478250213534852,
+                "raw_units_per_environment_sd": -0.8179100246654358,
+                "raw_ci95": [
+                  -1.7751707287618717,
+                  0.13935067943099996
+                ]
+              }
+            },
+            "response_sd": 10.937184519248955,
+            "response_mean": 66.54911517765096,
+            "reference_prediction": 66.47492573949218
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 1.2204873562228413,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.27035770378829377
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 12.341156510104812,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0005282072192857667
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 1.590840957759027,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.20841551982959633
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 3.8214932189455326,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.051745692735507165
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.7137482332623651,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.3990333100030734
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.21315513193034494,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.6447186358349009
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 8.670375365914499,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0035479199737696704
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 2.9581585426187997,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.08671838593025624
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 4.2816960090846194,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.039582306245654855
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 2.832589072042073,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0936536328266301
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "corolla_lab_chroma": {
+      "main_n": 186439,
+      "balanced_n": 1437,
+      "main_species": 244,
+      "balanced_species": 244,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": 0.09873079320200413,
+          "raw_units_per_environment_sd": 1.3501552945252433,
+          "raw_ci95": [
+            0.3721055935118114,
+            2.3282049955386754
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": -0.0719311594819604,
+          "raw_units_per_environment_sd": -0.9836671282201052,
+          "raw_ci95": [
+            -1.559616071886773,
+            -0.4077181845534372
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.059298761698732445,
+          "raw_units_per_environment_sd": -0.8109175918654439,
+          "raw_ci95": [
+            -1.8815106183572292,
+            0.2596754346263414
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": -0.08872734712462653,
+          "raw_units_per_environment_sd": -1.213356984222648,
+          "raw_ci95": [
+            -1.7826702106243273,
+            -0.6440437578209683
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.06796912918982198,
+          "raw_units_per_environment_sd": -0.9294858945592427,
+          "raw_ci95": [
+            -1.378014317691776,
+            -0.4809574714267094
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.026965438126821357,
+          "raw_units_per_environment_sd": 0.3687555612120989,
+          "raw_ci95": [
+            -0.4167476693722731,
+            1.1542587917964708
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": 0.07485084414094036,
+          "raw_units_per_environment_sd": 1.0235941618518567,
+          "raw_ci95": [
+            0.09537076123539301,
+            1.9518175624683203
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": 0.04396316786323441,
+          "raw_units_per_environment_sd": 0.6012015292250593,
+          "raw_ci95": [
+            0.1520583811099548,
+            1.0503446773401637
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": -0.37302400227816335,
+          "raw_units_per_environment_sd": -5.101147426521792,
+          "raw_ci95": [
+            -6.492090037900307,
+            -3.7102048151432787
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.04467944388302129,
+          "raw_units_per_environment_sd": -0.610996688659037,
+          "raw_ci95": [
+            -1.6618069666562545,
+            0.43981358933818054
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 356,
+        "I": 0.041664733635528896,
+        "permutation_p": 0.079,
+        "permutations": 999,
+        "cell_mean_residual_sd": 5.087917378836382,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "corolla_lab_chroma"
+        ],
+        "components": {
+          "corolla_lab_chroma": {
+            "status": "estimated",
+            "n": 1437,
+            "n_species": 244,
+            "variance_ratio": 0.12986535414267017,
+            "residual_variance": 0.8030738515314066,
+            "variance_boundary": false,
+            "objective": -145.64358967551254,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": 0.04183156337138129,
+                "raw_units_per_environment_sd": 0.5433923161618116,
+                "raw_ci95": [
+                  -0.661070978172595,
+                  1.7478556104962184
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.07477309196810149,
+                "raw_units_per_environment_sd": -0.9713030151515747,
+                "raw_ci95": [
+                  -1.8196035051068444,
+                  -0.1230025251963048
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.1317968853282067,
+                "raw_units_per_environment_sd": -1.712042510713414,
+                "raw_ci95": [
+                  -3.1394640247122934,
+                  -0.28462099671453484
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": -0.11912576307814778,
+                "raw_units_per_environment_sd": -1.5474445393992566,
+                "raw_ci95": [
+                  -2.442762475911069,
+                  -0.6521266028874446
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.09120199347571091,
+                "raw_units_per_environment_sd": -1.1847145666864076,
+                "raw_ci95": [
+                  -1.7413765865647477,
+                  -0.6280525468080673
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": 0.05814657054736587,
+                "raw_units_per_environment_sd": 0.7553243794903378,
+                "raw_ci95": [
+                  -0.09711628260501143,
+                  1.607765041585687
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": 0.05034021015562808,
+                "raw_units_per_environment_sd": 0.6539197005305671,
+                "raw_ci95": [
+                  -0.5193605688198242,
+                  1.8271999698809585
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": 0.10762180487040746,
+                "raw_units_per_environment_sd": 1.3980080375875799,
+                "raw_ci95": [
+                  0.8014990786053866,
+                  1.994516996569773
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": -0.3676295196987822,
+                "raw_units_per_environment_sd": -4.775510167407335,
+                "raw_ci95": [
+                  -6.472633119091722,
+                  -3.0783872157229477
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.16421479557769209,
+                "raw_units_per_environment_sd": -2.1331514035176737,
+                "raw_ci95": [
+                  -3.022675700118053,
+                  -1.243627106917295
+                ]
+              }
+            },
+            "response_sd": 12.990007362086038,
+            "response_mean": 26.33212316857499,
+            "reference_prediction": 28.59327996524624
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 0.7897194286350789,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.37506379738083273
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 5.086780688325923,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.024999212014521804
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 5.581585578486013,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.01893914464374906
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 11.590671335143917,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0007752596726155951
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 17.574268214452733,
+            "df1": 1,
+            "df2": 243,
+            "p": 3.871927641711035e-05
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 3.046292950350064,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0821856566747248
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 1.2052531743719814,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.273360892875942
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 21.311713584634752,
+            "df1": 1,
+            "df2": 243,
+            "p": 6.326618956210681e-06
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 30.72174712844646,
+            "df1": 1,
+            "df2": 243,
+            "p": 7.738539122506347e-08
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 22.31314092000894,
+            "df1": 1,
+            "df2": 243,
+            "p": 3.91946820750428e-06
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "corolla_hue_sin": {
+      "main_n": 186390,
+      "balanced_n": 1437,
+      "main_species": 244,
+      "balanced_species": 244,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": -0.29231815654888244,
+          "raw_units_per_environment_sd": -0.20052442699898487,
+          "raw_ci95": [
+            -0.25908519150853576,
+            -0.141963662489434
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": 0.10826212932205685,
+          "raw_units_per_environment_sd": 0.07426566212750853,
+          "raw_ci95": [
+            0.0184636000054251,
+            0.13006772424959195
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.10291283824132837,
+          "raw_units_per_environment_sd": -0.07059615510311511,
+          "raw_ci95": [
+            -0.13414543305851442,
+            -0.00704687714771579
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.14528752760836416,
+          "raw_units_per_environment_sd": 0.09966434712000034,
+          "raw_ci95": [
+            0.05339513711841383,
+            0.14593355712158684
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.04109644291307467,
+          "raw_units_per_environment_sd": -0.028191340435819726,
+          "raw_ci95": [
+            -0.059825599052965396,
+            0.0034429181813259366
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": -0.005997280727252027,
+          "raw_units_per_environment_sd": -0.004114015001949306,
+          "raw_ci95": [
+            -0.02419992946033589,
+            0.01597189945643728
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": -0.07278335001479615,
+          "raw_units_per_environment_sd": -0.049927926917337946,
+          "raw_ci95": [
+            -0.1021805687306727,
+            0.002324714895996815
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": -0.0474701887910283,
+          "raw_units_per_environment_sd": -0.032563603024989646,
+          "raw_ci95": [
+            -0.12226493219134218,
+            0.05713772614136291
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": 0.23209033949541724,
+          "raw_units_per_environment_sd": 0.15920934535428308,
+          "raw_ci95": [
+            0.07547215102945065,
+            0.2429465396791155
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.08891840247502653,
+          "raw_units_per_environment_sd": -0.060996251195871806,
+          "raw_ci95": [
+            -0.11043231561330132,
+            -0.011560186778442286
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 356,
+        "I": 0.025186591514627064,
+        "permutation_p": 0.25,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.27672646956299707,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "corolla_hue_sin"
+        ],
+        "components": {
+          "corolla_hue_sin": {
+            "status": "estimated",
+            "n": 1437,
+            "n_species": 244,
+            "variance_ratio": 0.3019286209644071,
+            "residual_variance": 0.7500518990546896,
+            "variance_boundary": false,
+            "objective": -172.04884094608093,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": -0.2671921039469143,
+                "raw_units_per_environment_sd": -0.17647003218402174,
+                "raw_ci95": [
+                  -0.24478287156786735,
+                  -0.10815719280017613
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": 0.10609749227482834,
+                "raw_units_per_environment_sd": 0.07007328285458184,
+                "raw_ci95": [
+                  0.010484845477025377,
+                  0.1296617202321383
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.06273470660842001,
+                "raw_units_per_environment_sd": -0.04143384303168849,
+                "raw_ci95": [
+                  -0.12026040992897806,
+                  0.03739272386560109
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 0.110345006355202,
+                "raw_units_per_environment_sd": 0.07287860133290988,
+                "raw_ci95": [
+                  0.04523116766078455,
+                  0.10052603500503522
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.05232909280250296,
+                "raw_units_per_environment_sd": -0.03456133828285986,
+                "raw_ci95": [
+                  -0.06963401056495654,
+                  0.0005113339992368323
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": -0.0599804785514339,
+                "raw_units_per_environment_sd": -0.03961478211379909,
+                "raw_ci95": [
+                  -0.08053127850006639,
+                  0.0013017142724682047
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.03557334199968804,
+                "raw_units_per_environment_sd": -0.023494814086367614,
+                "raw_ci95": [
+                  -0.09459866334802143,
+                  0.047609035175286196
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": -0.02890107360317637,
+                "raw_units_per_environment_sd": -0.019088039330378632,
+                "raw_ci95": [
+                  -0.06936786080641176,
+                  0.031191782145654504
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": 0.1750649649222652,
+                "raw_units_per_environment_sd": 0.11562362636384173,
+                "raw_ci95": [
+                  0.00949536176413663,
+                  0.22175189096354683
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.021991758874502717,
+                "raw_units_per_environment_sd": -0.01452470465645869,
+                "raw_ci95": [
+                  -0.06120197122591224,
+                  0.03215256191299485
+                ]
+              }
+            },
+            "response_sd": 0.660461254570168,
+            "response_mean": 0.08093682296735497,
+            "reference_prediction": 0.03365318898122721
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 25.892276236091096,
+            "df1": 1,
+            "df2": 243,
+            "p": 7.227652576619527e-07
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 5.36554585107748,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.021371045064196497
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 1.0720083890588208,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.3015214947631762
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 26.960217059579268,
+            "df1": 1,
+            "df2": 243,
+            "p": 4.390236323532346e-07
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 3.767700415414302,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.053407740438441625
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 3.6370614734680182,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.05768580607762089
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.42363396925970803,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.5157442818106149
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 0.5592012893440674,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.45530529365256694
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 4.6053646468360006,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.03286295274847663
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.375696167467288,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.5404888456933934
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "corolla_hue_cos": {
+      "main_n": 186390,
+      "balanced_n": 1437,
+      "main_species": 244,
+      "balanced_species": 244,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": -0.02731981358754111,
+          "raw_units_per_environment_sd": -0.010004697423931865,
+          "raw_ci95": [
+            -0.029299382653801654,
+            0.009289987805937924
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": -0.0803021348463736,
+          "raw_units_per_environment_sd": -0.029407175823488188,
+          "raw_ci95": [
+            -0.047094631764393075,
+            -0.011719719882583303
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.04100822417110637,
+          "raw_units_per_environment_sd": -0.015017484413282727,
+          "raw_ci95": [
+            -0.036948627814052844,
+            0.006913658987487393
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": -0.01322174078750726,
+          "raw_units_per_environment_sd": -0.00484188940648531,
+          "raw_ci95": [
+            -0.014224233384631612,
+            0.004540454571660992
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.008282469319075007,
+          "raw_units_per_environment_sd": -0.0030330953465265743,
+          "raw_ci95": [
+            -0.018119812585702742,
+            0.01205362189264959
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.004363564894912718,
+          "raw_units_per_environment_sd": 0.0015979664840466434,
+          "raw_ci95": [
+            -0.009250942483009256,
+            0.012446875451102544
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": 0.0505773055490936,
+          "raw_units_per_environment_sd": 0.018521745652290682,
+          "raw_ci95": [
+            0.0019068125787495603,
+            0.03513667872583181
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": -0.010028824994617009,
+          "raw_units_per_environment_sd": -0.0036726224089049086,
+          "raw_ci95": [
+            -0.020644444325946157,
+            0.013299199508136338
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": 0.09344006820821622,
+          "raw_units_per_environment_sd": 0.03421837439334072,
+          "raw_ci95": [
+            0.00883086063042633,
+            0.05960588815625511
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": 0.08141159900879259,
+          "raw_units_per_environment_sd": 0.02981346897816623,
+          "raw_ci95": [
+            0.008813832531883094,
+            0.05081310542444936
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 356,
+        "I": 0.02450239763702914,
+        "permutation_p": 0.26,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.11875177332593491,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "corolla_hue_cos"
+        ],
+        "components": {
+          "corolla_hue_cos": {
+            "status": "estimated",
+            "n": 1437,
+            "n_species": 244,
+            "variance_ratio": 0.08251176545802932,
+            "residual_variance": 0.9213124984531653,
+            "variance_boundary": false,
+            "objective": 23.905103618421435,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": -0.04853575811348662,
+                "raw_units_per_environment_sd": -0.015763946847800765,
+                "raw_ci95": [
+                  -0.04723013639997976,
+                  0.01570224270437822
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.06108563360932629,
+                "raw_units_per_environment_sd": -0.019840025556623102,
+                "raw_ci95": [
+                  -0.03824935515418462,
+                  -0.0014306959590615858
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.044833449680674986,
+                "raw_units_per_environment_sd": -0.014561472721146712,
+                "raw_ci95": [
+                  -0.04549753707967849,
+                  0.01637459163738507
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 0.009902512258115507,
+                "raw_units_per_environment_sd": 0.0032162406226689216,
+                "raw_ci95": [
+                  -0.021465041081221766,
+                  0.027897522326559607
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.013165654018710494,
+                "raw_units_per_environment_sd": -0.004276077643254468,
+                "raw_ci95": [
+                  -0.027920157358219806,
+                  0.019368002071710872
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": -0.010553407896694646,
+                "raw_units_per_environment_sd": -0.003427645258113892,
+                "raw_ci95": [
+                  -0.021532206104864803,
+                  0.014676915588637015
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": 0.002456913965785262,
+                "raw_units_per_environment_sd": 0.0007979819966074905,
+                "raw_ci95": [
+                  -0.025093175875823277,
+                  0.02668913986903826
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": 0.008386285062822043,
+                "raw_units_per_environment_sd": 0.0027237846305340294,
+                "raw_ci95": [
+                  -0.02083766713386052,
+                  0.026285236394928583
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": 0.17022973164734564,
+                "raw_units_per_environment_sd": 0.05528897756844727,
+                "raw_ci95": [
+                  0.022735522017298188,
+                  0.08784243311959636
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": 0.026409717832590038,
+                "raw_units_per_environment_sd": 0.008577622032912725,
+                "raw_ci95": [
+                  -0.028831772022322514,
+                  0.04598701608814796
+                ]
+              }
+            },
+            "response_sd": 0.32479037024499346,
+            "response_mean": 0.6222589880306575,
+            "reference_prediction": 0.6074579353656911
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 0.9738108082086424,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.32471316089903696
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 4.506521875788143,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.03477722462414793
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.8596337393006223,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.35476116353817133
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 0.06588622481491788,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.79764059191291
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.12690516867291168,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.7219717951817082
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.13907488939395324,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.7095275218941912
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.0036856680391340194,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.9516403044677018
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 0.05185306265968709,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.8200610974155476
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 11.192211331473072,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.0009514666229871993
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.20398838481132792,
+            "df1": 1,
+            "df2": 243,
+            "p": 0.6519234596788893
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "capitulum_outline_aspect_ratio": {
+      "main_n": 176048,
+      "balanced_n": 1421,
+      "main_species": 243,
+      "balanced_species": 243,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": 0.015824452935653148,
+          "raw_units_per_environment_sd": 0.002328724785709659,
+          "raw_ci95": [
+            -0.005527994705377077,
+            0.010185444276796395
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": 0.00976986523401977,
+          "raw_units_per_environment_sd": 0.0014377323131496858,
+          "raw_ci95": [
+            -0.0017981325518131104,
+            0.004673597178112481
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": 0.0014994113726200043,
+          "raw_units_per_environment_sd": 0.00022065321572843527,
+          "raw_ci95": [
+            -0.006098343562138212,
+            0.006539649993595082
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.03753480150976539,
+          "raw_units_per_environment_sd": 0.005523617338173419,
+          "raw_ci95": [
+            0.004329831598128515,
+            0.006717403078218324
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.012275055858196533,
+          "raw_units_per_environment_sd": -0.0018063958949600788,
+          "raw_ci95": [
+            -0.0053911481301581535,
+            0.0017783563402379958
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.011872490875406216,
+          "raw_units_per_environment_sd": 0.0017471544755508523,
+          "raw_ci95": [
+            -5.590180247849279e-05,
+            0.003550210753580197
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": -0.02473719764816681,
+          "raw_units_per_environment_sd": -0.003640323335443448,
+          "raw_ci95": [
+            -0.011034920751081399,
+            0.0037542740801945022
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": 0.0168279961195484,
+          "raw_units_per_environment_sd": 0.00247640609231594,
+          "raw_ci95": [
+            -0.00021726414697019212,
+            0.005170076331602072
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": 0.000842194612159248,
+          "raw_units_per_environment_sd": 0.00012393726820771292,
+          "raw_ci95": [
+            -0.00834015099832569,
+            0.008588025534741119
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.029230291825769462,
+          "raw_units_per_environment_sd": -0.004301526589575354,
+          "raw_ci95": [
+            -0.009005417779688914,
+            0.0004023646005382062
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 354,
+        "I": -0.03553840603705014,
+        "permutation_p": 0.173,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.06358019669192151,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "capitulum_outline_aspect_ratio"
+        ],
+        "components": {
+          "capitulum_outline_aspect_ratio": {
+            "status": "estimated",
+            "n": 1421,
+            "n_species": 243,
+            "variance_ratio": 0.03150973410681662,
+            "residual_variance": 0.9736913090632595,
+            "variance_boundary": false,
+            "objective": 67.3210677316295,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": -0.018726469012466194,
+                "raw_units_per_environment_sd": -0.0025164898315160372,
+                "raw_ci95": [
+                  -0.014210082849462607,
+                  0.009177103186430533
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.04689004144600392,
+                "raw_units_per_environment_sd": -0.006301151189777584,
+                "raw_ci95": [
+                  -0.015938565656185445,
+                  0.003336263276630275
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.02335883103303402,
+                "raw_units_per_environment_sd": -0.003138993300424125,
+                "raw_ci95": [
+                  -0.014078802832462396,
+                  0.007800816231614147
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 4.94845291946388e-05,
+                "raw_units_per_environment_sd": 6.649802183891117e-06,
+                "raw_ci95": [
+                  -0.008019883161857946,
+                  0.00803318276622573
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.04999408193574523,
+                "raw_units_per_environment_sd": -0.006718276613895077,
+                "raw_ci95": [
+                  -0.013031009824590914,
+                  -0.00040554340319923985
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": 0.018969232651910847,
+                "raw_units_per_environment_sd": 0.002549112758439293,
+                "raw_ci95": [
+                  -0.005877158687142702,
+                  0.010975384204021287
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.033163767916200654,
+                "raw_units_per_environment_sd": -0.0044565948166907475,
+                "raw_ci95": [
+                  -0.01454462253586419,
+                  0.005631432902482694
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": 0.05386493131494173,
+                "raw_units_per_environment_sd": 0.007238446919124195,
+                "raw_ci95": [
+                  -0.0006294599112590157,
+                  0.015106353749507405
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": 0.004287555385024419,
+                "raw_units_per_environment_sd": 0.0005761678574478273,
+                "raw_ci95": [
+                  -0.014366339661244634,
+                  0.015518675376140286
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.0869077055620668,
+                "raw_units_per_environment_sd": -0.011678782432595321,
+                "raw_ci95": [
+                  -0.02273539144441239,
+                  -0.0006221734207782537
+                ]
+              }
+            },
+            "response_sd": 0.13438143783757697,
+            "response_mean": 1.029957648741162,
+            "reference_prediction": 1.0353247140303545
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 0.17969887162928308,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.6720087062102931
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 1.6587069591332406,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.199008158033426
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.3194568431522546,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.5724578461528942
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 2.6632528771831578e-06,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.9986992392603598
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 4.394726282903394,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.037088940776743996
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.3551061076357324,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.5517937518240217
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.7572594601621606,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.38504987618180403
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 3.2841524638684225,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.0711910687452887
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 0.0057690197670328975,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.9395183976127418
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 4.329145387301643,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.03851718893146311
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "capitulum_outline_circularity": {
+      "main_n": 176048,
+      "balanced_n": 1421,
+      "main_species": 243,
+      "balanced_species": 243,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": 0.0021958811096629755,
+          "raw_units_per_environment_sd": 0.00025219789918884194,
+          "raw_ci95": [
+            -0.004782687654275063,
+            0.005287083452652747
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": 0.010137180917347359,
+          "raw_units_per_environment_sd": 0.0011642596312714786,
+          "raw_ci95": [
+            -0.0028678755017175063,
+            0.005196394764260464
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.05727248420390643,
+          "raw_units_per_environment_sd": -0.0065777696861594685,
+          "raw_ci95": [
+            -0.0124707401038262,
+            -0.0006847992684927358
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.025294575598562706,
+          "raw_units_per_environment_sd": 0.0029050929937686587,
+          "raw_ci95": [
+            0.0010711352669922358,
+            0.004739050720545082
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.03143775491341147,
+          "raw_units_per_environment_sd": -0.003610639806265713,
+          "raw_ci95": [
+            -0.007452818350975351,
+            0.00023153873844392408
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.006064501421114403,
+          "raw_units_per_environment_sd": 0.0006965106222292425,
+          "raw_ci95": [
+            -0.0015420185833560224,
+            0.002935039827814508
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": 0.0001469436708444205,
+          "raw_units_per_environment_sd": 1.6876544418995134e-05,
+          "raw_ci95": [
+            -0.004777948499242771,
+            0.004811701588080761
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": 0.0294834235918144,
+          "raw_units_per_environment_sd": 0.003386184005149331,
+          "raw_ci95": [
+            0.0002036159922021711,
+            0.006568752018096491
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": -0.09782918616817224,
+          "raw_units_per_environment_sd": -0.011235724521877172,
+          "raw_ci95": [
+            -0.018259635194588026,
+            -0.004211813849166319
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.06491212091704301,
+          "raw_units_per_environment_sd": -0.007455185280810996,
+          "raw_ci95": [
+            -0.013245987425140982,
+            -0.001664383136481009
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 354,
+        "I": -0.02887321089738633,
+        "permutation_p": 0.294,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.047561423677571324,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "capitulum_outline_circularity"
+        ],
+        "components": {
+          "capitulum_outline_circularity": {
+            "status": "estimated",
+            "n": 1421,
+            "n_species": 243,
+            "variance_ratio": 0.03000709938117374,
+            "residual_variance": 0.9741062811782245,
+            "variance_boundary": false,
+            "objective": 66.70216924389862,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": 0.04880392844159063,
+                "raw_units_per_environment_sd": 0.0054066061604553725,
+                "raw_ci95": [
+                  -0.004277793908635191,
+                  0.015091006229545935
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": 0.005183179380194404,
+                "raw_units_per_environment_sd": 0.0005742039721503817,
+                "raw_ci95": [
+                  -0.019532153147804477,
+                  0.020680561092105244
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": 0.04415200259681405,
+                "raw_units_per_environment_sd": 0.004891255619351865,
+                "raw_ci95": [
+                  -0.0033962339310674755,
+                  0.013178745169771206
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 0.019393411526442347,
+                "raw_units_per_environment_sd": 0.00214844463507889,
+                "raw_ci95": [
+                  -0.01191356941727152,
+                  0.016210458687429298
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.01915974866608457,
+                "raw_units_per_environment_sd": -0.00212255895126981,
+                "raw_ci95": [
+                  -0.006865335887175827,
+                  0.002620217984636207
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": -0.020986375023461477,
+                "raw_units_per_environment_sd": -0.002324916622711438,
+                "raw_ci95": [
+                  -0.01159565411181055,
+                  0.006945820866387675
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.00521729878741369,
+                "raw_units_per_environment_sd": -0.0005779837948645235,
+                "raw_ci95": [
+                  -0.008914566085597469,
+                  0.007758598495868423
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": 0.02155310597656621,
+                "raw_units_per_environment_sd": 0.002387700319848523,
+                "raw_ci95": [
+                  -0.004374179110738658,
+                  0.009149579750435705
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": -0.07822231697359706,
+                "raw_units_per_environment_sd": -0.00866563972080029,
+                "raw_ci95": [
+                  -0.020012750953942587,
+                  0.0026814715123420064
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.042903300792099225,
+                "raw_units_per_environment_sd": -0.004752921696540243,
+                "raw_ci95": [
+                  -0.01784470370795152,
+                  0.008338860314871034
+                ]
+              }
+            },
+            "response_sd": 0.11078219178454232,
+            "response_mean": 0.3397065882301714,
+            "reference_prediction": 0.3437718780177872
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 1.2093582321418912,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.2725520225669152
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 0.0031645833628155414,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.9551853793410138
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 1.3515921841264429,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.24614514039357605
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 0.09057413965259431,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.7637069328064029
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.7771503792187626,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.3788888090420924
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.24402658226969332,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.6217609817123495
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.018651174310959914,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.8914847865342689
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 0.4838109901002522,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.4873685428410982
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 2.262984468769312,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.13380245837166757
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.5114164907160393,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.47521565586228065
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "capitulum_outline_solidity": {
+      "main_n": 176048,
+      "balanced_n": 1421,
+      "main_species": 243,
+      "balanced_species": 243,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": -0.03822946215313881,
+          "raw_units_per_environment_sd": -0.0026189091132179437,
+          "raw_ci95": [
+            -0.005691026686307688,
+            0.0004532084598718014
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": -0.004522971761744516,
+          "raw_units_per_environment_sd": -0.00030984615787192236,
+          "raw_ci95": [
+            -0.0020756183946699347,
+            0.00145592607892609
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.06080953851693987,
+          "raw_units_per_environment_sd": -0.004165757131362515,
+          "raw_ci95": [
+            -0.00762359208680653,
+            -0.0007079221759185002
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.0009760618660011335,
+          "raw_units_per_environment_sd": 6.686511323897877e-05,
+          "raw_ci95": [
+            -0.0007348627414438654,
+            0.0008685929679218229
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.01784864353134503,
+          "raw_units_per_environment_sd": -0.0012227212356682373,
+          "raw_ci95": [
+            -0.003018891915844825,
+            0.0005734494445083501
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.001962347039024045,
+          "raw_units_per_environment_sd": 0.00013443057407425143,
+          "raw_ci95": [
+            -0.0010713273914298787,
+            0.0013401885395783813
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": -0.0050476514633970675,
+          "raw_units_per_environment_sd": -0.00034578933820425463,
+          "raw_ci95": [
+            -0.003337726029699445,
+            0.002646147353290936
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": 0.020719962037312155,
+          "raw_units_per_environment_sd": 0.0014194208955302116,
+          "raw_ci95": [
+            -0.00041811499306467,
+            0.0032569567841250935
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": 0.008183120627777941,
+          "raw_units_per_environment_sd": 0.0005605846375971005,
+          "raw_ci95": [
+            -0.003486912854938692,
+            0.004608082130132893
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.03978425055214789,
+          "raw_units_per_environment_sd": -0.002725419884700406,
+          "raw_ci95": [
+            -0.005758167112211538,
+            0.00030732734281072575
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 354,
+        "I": -0.02269076080569714,
+        "permutation_p": 0.394,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.02723264665443641,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "capitulum_outline_solidity"
+        ],
+        "components": {
+          "capitulum_outline_solidity": {
+            "status": "estimated",
+            "n": 1421,
+            "n_species": 243,
+            "variance_ratio": 0.02979999072332497,
+            "residual_variance": 0.9717111954381304,
+            "variance_boundary": false,
+            "objective": 63.0617894159347,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": 0.00020314622773756695,
+                "raw_units_per_environment_sd": 1.3407164442250495e-05,
+                "raw_ci95": [
+                  -0.005770915217864287,
+                  0.0057977295467487875
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.05706665140257263,
+                "raw_units_per_environment_sd": -0.0037662623029912612,
+                "raw_ci95": [
+                  -0.013362949517597346,
+                  0.0058304249116148225
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": 0.041128814794292395,
+                "raw_units_per_environment_sd": 0.002714403262138307,
+                "raw_ci95": [
+                  -0.0027993008336979954,
+                  0.008228107357974608
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": -0.024599368364928015,
+                "raw_units_per_environment_sd": -0.0016234993901542906,
+                "raw_ci95": [
+                  -0.008851623995389166,
+                  0.005604625215080586
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.016374564113621877,
+                "raw_units_per_environment_sd": -0.001080682010128728,
+                "raw_ci95": [
+                  -0.003995579324446326,
+                  0.00183421530418887
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": -0.04204246240828516,
+                "raw_units_per_environment_sd": -0.0027747018162364665,
+                "raw_ci95": [
+                  -0.007763492088164307,
+                  0.0022140884556913734
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.001666985669030145,
+                "raw_units_per_environment_sd": -0.00011001706128865078,
+                "raw_ci95": [
+                  -0.005468658564435986,
+                  0.0052486244418586845
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": 0.03687121182346458,
+                "raw_units_per_environment_sd": 0.0024334116641380513,
+                "raw_ci95": [
+                  -0.0012160387076095393,
+                  0.006082862035885642
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": 0.02844152529293201,
+                "raw_units_per_environment_sd": 0.0018770725444302713,
+                "raw_ci95": [
+                  -0.004614980218561192,
+                  0.008369125307421735
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.03232643836727183,
+                "raw_units_per_environment_sd": -0.002133467501952246,
+                "raw_ci95": [
+                  -0.009278474770451545,
+                  0.005011539766547051
+                ]
+              }
+            },
+            "response_sd": 0.06599760473805326,
+            "response_mean": 0.7909777137029979,
+            "reference_prediction": 0.7916876677576471
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 2.0845860744089025e-05,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.9963608512102992
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 0.5976258663368438,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.4402397226877009
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.9404003164202794,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.3331431167458588
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 0.19575097678068293,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.658567790252028
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.5333352188558352,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.46591440824383923
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 1.2003090573802668,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.27434904293893936
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.0016355416686650369,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.9677742259591476
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 1.7251512860340474,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.19027521808999923
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 0.324376193265083,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.5695177875691784
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.34595344008777795,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.5569612775715636
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "capitulum_width_profile_cv": {
+      "main_n": 176048,
+      "balanced_n": 1421,
+      "main_species": 243,
+      "balanced_species": 243,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": 0.08517783005864502,
+          "raw_units_per_environment_sd": 0.007337202858718611,
+          "raw_ci95": [
+            0.00418529911799162,
+            0.0104891065994456
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": -0.02091043247627801,
+          "raw_units_per_environment_sd": -0.0018012208674059538,
+          "raw_ci95": [
+            -0.003807109911914179,
+            0.00020466817710227143
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": 0.023225725506906277,
+          "raw_units_per_environment_sd": 0.0020006597898509244,
+          "raw_ci95": [
+            -0.001956165950978318,
+            0.005957485530680167
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": -0.013940941372424867,
+          "raw_units_per_environment_sd": -0.0012008701656353448,
+          "raw_ci95": [
+            -0.001986972529545341,
+            -0.0004147678017253487
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.006287946782493705,
+          "raw_units_per_environment_sd": -0.0005416425973310034,
+          "raw_ci95": [
+            -0.00339086096481057,
+            0.002307575770148563
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.004437764475374226,
+          "raw_units_per_environment_sd": 0.00038226822839484807,
+          "raw_ci95": [
+            -0.0010647895435304505,
+            0.0018293260003201465
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": -0.012191279377601014,
+          "raw_units_per_environment_sd": -0.0010501545981998494,
+          "raw_ci95": [
+            -0.004192277316351597,
+            0.0020919681199518987
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": -0.019181551605769145,
+          "raw_units_per_environment_sd": -0.0016522953822562636,
+          "raw_ci95": [
+            -0.0037552634047590635,
+            0.00045067264024653634
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": -0.06243999899457291,
+          "raw_units_per_environment_sd": -0.005378570207833906,
+          "raw_ci95": [
+            -0.00977741364013853,
+            -0.0009797267755292838
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": 0.03944757168638125,
+          "raw_units_per_environment_sd": 0.003398006682578644,
+          "raw_ci95": [
+            0.0002782614015237996,
+            0.0065177519636334886
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 354,
+        "I": -0.027591078482881854,
+        "permutation_p": 0.292,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.03749633327093724,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "capitulum_width_profile_cv"
+        ],
+        "components": {
+          "capitulum_width_profile_cv": {
+            "status": "estimated",
+            "n": 1421,
+            "n_species": 243,
+            "variance_ratio": 0.030338658619576107,
+            "residual_variance": 0.9711662494325386,
+            "variance_boundary": false,
+            "objective": 62.71048796691622,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": 0.05882565928760211,
+                "raw_units_per_environment_sd": 0.005002489658356713,
+                "raw_ci95": [
+                  -0.0025269030591214036,
+                  0.012531882375834826
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.030898192230045547,
+                "raw_units_per_environment_sd": -0.002627558942213109,
+                "raw_ci95": [
+                  -0.013071434105427254,
+                  0.007816316221001035
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.03635184711016681,
+                "raw_units_per_environment_sd": -0.003091333636257262,
+                "raw_ci95": [
+                  -0.010376210470261512,
+                  0.004193543197746988
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": -0.04082221052295737,
+                "raw_units_per_environment_sd": -0.003471489966205852,
+                "raw_ci95": [
+                  -0.012058500927850843,
+                  0.005115520995439139
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": -0.008319915682855351,
+                "raw_units_per_environment_sd": -0.0007075193489698035,
+                "raw_ci95": [
+                  -0.004719751010341247,
+                  0.0033047123124016406
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": 0.022700231300878903,
+                "raw_units_per_environment_sd": 0.0019304105334334105,
+                "raw_ci95": [
+                  -0.005436544557122274,
+                  0.009297365623989097
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.010133830033438776,
+                "raw_units_per_environment_sd": -0.0008617732560203758,
+                "raw_ci95": [
+                  -0.0069687738053143995,
+                  0.005245227293273647
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": 0.02301698824271179,
+                "raw_units_per_environment_sd": 0.001957347304647221,
+                "raw_ci95": [
+                  -0.004897214306785159,
+                  0.008811908916079601
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": -0.10786861144383353,
+                "raw_units_per_environment_sd": -0.009173065287222414,
+                "raw_ci95": [
+                  -0.0174086059917439,
+                  -0.0009375245827009313
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.055100204607670816,
+                "raw_units_per_environment_sd": -0.004685679804719242,
+                "raw_ci95": [
+                  -0.015530155607894865,
+                  0.006158795998456381
+                ]
+              }
+            },
+            "response_sd": 0.0850392451004968,
+            "response_mean": 0.38054587296228404,
+            "reference_prediction": 0.38515406676610203
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 1.712787320832144,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.19186559608136364
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 0.24560235663731964,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.6206384875396511
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.6987121115112603,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.40404133452678226
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 0.6341598372452295,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.4266140561572851
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.12065784956120998,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.7286239937738068
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.26642455694140493,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.6062116544908943
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.07726468634923848,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.7812763603936548
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 0.3163933560391379,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.5743038827176505
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 4.813884572796437,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.029182601907353986
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.7244009766171704,
+            "df1": 1,
+            "df2": 242,
+            "p": 0.3955454741954427
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "bract_projection_p95": {
+      "main_n": 1303,
+      "balanced_n": 509,
+      "main_species": 111,
+      "balanced_species": 111,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": -0.02595610730722628,
+          "raw_units_per_environment_sd": -0.0028410412528846077,
+          "raw_ci95": [
+            -0.013771548711753739,
+            0.008089466205984525
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": 0.12390339282334553,
+          "raw_units_per_environment_sd": 0.013561919983490324,
+          "raw_ci95": [
+            0.0001363677372194472,
+            0.0269874722297612
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.027259419052155717,
+          "raw_units_per_environment_sd": -0.0029836960195985165,
+          "raw_ci95": [
+            -0.016410958284679138,
+            0.010443566245482106
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.10991444039728326,
+          "raw_units_per_environment_sd": 0.012030750827165466,
+          "raw_ci95": [
+            0.0019505905590287706,
+            0.022110911095302162
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.016156928076705757,
+          "raw_units_per_environment_sd": -0.0017684662281015917,
+          "raw_ci95": [
+            -0.010440825295433581,
+            0.0069038928392304
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.031690347010512265,
+          "raw_units_per_environment_sd": 0.0034686858899688725,
+          "raw_ci95": [
+            -0.003893550651285856,
+            0.010830922431223602
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": 0.035818816407064274,
+          "raw_units_per_environment_sd": 0.0039205699775188745,
+          "raw_ci95": [
+            -0.0067314260513218396,
+            0.01457256600635959
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": 0.012366438279710616,
+          "raw_units_per_environment_sd": 0.0013535758998086706,
+          "raw_ci95": [
+            -0.004417407567735717,
+            0.007124559367353058
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": -0.16247082806115626,
+          "raw_units_per_environment_sd": -0.017783341679418918,
+          "raw_ci95": [
+            -0.031104068620984297,
+            -0.004462614737853536
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.03472016539682297,
+          "raw_units_per_environment_sd": -0.003800316473953264,
+          "raw_ci95": [
+            -0.018051584090421766,
+            0.010450951142515241
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 201,
+        "I": 0.03602980237690433,
+        "permutation_p": 0.213,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.06918405992573082,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "bract_projection_p95"
+        ],
+        "components": {
+          "bract_projection_p95": {
+            "status": "estimated",
+            "n": 509,
+            "n_species": 111,
+            "variance_ratio": 0.021569629070116465,
+            "residual_variance": 0.9808632909928751,
+            "variance_boundary": false,
+            "objective": 58.420953549319634,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": -0.032322567831241364,
+                "raw_units_per_environment_sd": -0.0035355355503438016,
+                "raw_ci95": [
+                  -0.016294323564657827,
+                  0.009223252463970225
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.0034264715226981764,
+                "raw_units_per_environment_sd": -0.00037479732253917284,
+                "raw_ci95": [
+                  -0.02142835225264801,
+                  0.020678757607569667
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.038160444463205795,
+                "raw_units_per_environment_sd": -0.004174099307981955,
+                "raw_ci95": [
+                  -0.020044951367885273,
+                  0.011696752751921361
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": 0.095794394220466,
+                "raw_units_per_environment_sd": 0.010478266703883316,
+                "raw_ci95": [
+                  -0.005648729364822936,
+                  0.02660526277258957
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": 0.02451958803041687,
+                "raw_units_per_environment_sd": 0.0026820231490869715,
+                "raw_ci95": [
+                  -0.00741671577072225,
+                  0.012780762068896194
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": 0.05042574127534422,
+                "raw_units_per_environment_sd": 0.005515712794300331,
+                "raw_ci95": [
+                  -0.007195801572936343,
+                  0.018227227161537005
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": 0.01833553270666733,
+                "raw_units_per_environment_sd": 0.002005593369232762,
+                "raw_ci95": [
+                  -0.01127085218972459,
+                  0.015282038928190116
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": -0.017080297197522118,
+                "raw_units_per_environment_sd": -0.0018682920944761406,
+                "raw_ci95": [
+                  -0.01159082404336308,
+                  0.0078542398544108
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": -0.1157677290518147,
+                "raw_units_per_environment_sd": -0.012663007585976823,
+                "raw_ci95": [
+                  -0.029847166027682608,
+                  0.004521150855728961
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.008116198046381286,
+                "raw_units_per_environment_sd": -0.0008877731149465392,
+                "raw_ci95": [
+                  -0.01998293716262811,
+                  0.018207390932735035
+                ]
+              }
+            },
+            "response_sd": 0.10938287975148223,
+            "response_mean": 0.2103350070611719,
+            "reference_prediction": 0.20913251374568212
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 0.3015754644054917,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.5840095012990003
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 0.0012446479143983957,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.9719207568040413
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.2716623790858505,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.6032665528809422
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 1.6579688561483519,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.200580227450874
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.27700983367954063,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.5997274201099214
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 0.7394573580799615,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.3917050239185741
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.08962446249717083,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.7652200306187836
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 0.14502244610578913,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.7040726661064923
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 2.132660028348315,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.1470406588561849
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.008489099460352829,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.9267573289585711
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    },
+    "bract_spread_fraction": {
+      "main_n": 1303,
+      "balanced_n": 509,
+      "main_species": 111,
+      "balanced_species": 111,
+      "main_effects": {
+        "chelsa_bio01__between": {
+          "standardized_beta": -0.029473832959236272,
+          "raw_units_per_environment_sd": -0.0028338947222173337,
+          "raw_ci95": [
+            -0.015700619532617376,
+            0.010032830088182709
+          ]
+        },
+        "chelsa_bio01__within": {
+          "standardized_beta": -0.02063670161183659,
+          "raw_units_per_environment_sd": -0.0019842088357710855,
+          "raw_ci95": [
+            -0.018354336770180328,
+            0.014385919098638155
+          ]
+        },
+        "chelsa_bio04__between": {
+          "standardized_beta": -0.04686229902679912,
+          "raw_units_per_environment_sd": -0.00450578728822577,
+          "raw_ci95": [
+            -0.018932211779541602,
+            0.009920637203090063
+          ]
+        },
+        "chelsa_bio04__within": {
+          "standardized_beta": 0.036446665924831416,
+          "raw_units_per_environment_sd": 0.0035043292248296176,
+          "raw_ci95": [
+            -0.007574393003997698,
+            0.014583051453656931
+          ]
+        },
+        "chelsa_bio12__between": {
+          "standardized_beta": -0.03295582621015013,
+          "raw_units_per_environment_sd": -0.003168686681926426,
+          "raw_ci95": [
+            -0.012838614670424272,
+            0.006501241306571419
+          ]
+        },
+        "chelsa_bio12__within": {
+          "standardized_beta": 0.022698427785158154,
+          "raw_units_per_environment_sd": 0.0021824428058595394,
+          "raw_ci95": [
+            -0.007535649475390912,
+            0.01190053508710999
+          ]
+        },
+        "chelsa_bio15__between": {
+          "standardized_beta": 0.052500984150717,
+          "raw_units_per_environment_sd": 0.005047944123918522,
+          "raw_ci95": [
+            -0.00852051552770927,
+            0.01861640377554631
+          ]
+        },
+        "chelsa_bio15__within": {
+          "standardized_beta": -0.0049258610640018395,
+          "raw_units_per_environment_sd": -0.00047361914858366587,
+          "raw_ci95": [
+            -0.007279267489519064,
+            0.006332029192351733
+          ]
+        },
+        "chelsa_rsds_mean__between": {
+          "standardized_beta": -0.12288917906248356,
+          "raw_units_per_environment_sd": -0.011815734873860704,
+          "raw_ci95": [
+            -0.024313843469193193,
+            0.0006823737214717865
+          ]
+        },
+        "chelsa_rsds_mean__within": {
+          "standardized_beta": -0.043132029489767056,
+          "raw_units_per_environment_sd": -0.004147123684205766,
+          "raw_ci95": [
+            -0.014680392637558524,
+            0.006386145269146994
+          ]
+        }
+      },
+      "residual_spatial_diagnostic": {
+        "status": "estimated",
+        "cells": 201,
+        "I": -0.015192726802734013,
+        "permutation_p": 0.759,
+        "permutations": 999,
+        "cell_mean_residual_sd": 0.06781637912341307,
+        "scope": "Cell-mean residual diagnostic; not proof of independent errors."
+      },
+      "balanced_fit": {
+        "status": "estimated",
+        "outcomes": [
+          "bract_spread_fraction"
+        ],
+        "components": {
+          "bract_spread_fraction": {
+            "status": "estimated",
+            "n": 509,
+            "n_species": 111,
+            "variance_ratio": 0.0,
+            "residual_variance": 1.0047951515526636,
+            "variance_boundary": true,
+            "objective": 62.59544260591664,
+            "effects": {
+              "chelsa_bio01__between": {
+                "standardized_beta": 0.02926270240340704,
+                "raw_units_per_environment_sd": 0.0028682519071441814,
+                "raw_ci95": [
+                  -0.009671853834207792,
+                  0.015408357648496154
+                ]
+              },
+              "chelsa_bio01__within": {
+                "standardized_beta": -0.13274068319676108,
+                "raw_units_per_environment_sd": -0.013010887117876131,
+                "raw_ci95": [
+                  -0.03576262225945343,
+                  0.009740848023701171
+                ]
+              },
+              "chelsa_bio04__between": {
+                "standardized_beta": -0.025453392450284485,
+                "raw_units_per_environment_sd": -0.002494873523038585,
+                "raw_ci95": [
+                  -0.016714892724716338,
+                  0.011725145678639167
+                ]
+              },
+              "chelsa_bio04__within": {
+                "standardized_beta": -0.017866319009338306,
+                "raw_units_per_environment_sd": -0.001751208855071926,
+                "raw_ci95": [
+                  -0.01643039682598124,
+                  0.01292797911583739
+                ]
+              },
+              "chelsa_bio12__between": {
+                "standardized_beta": 0.002526107664992115,
+                "raw_units_per_environment_sd": 0.00024760232421054787,
+                "raw_ci95": [
+                  -0.010026889414298976,
+                  0.010522094062720071
+                ]
+              },
+              "chelsa_bio12__within": {
+                "standardized_beta": -0.13247497888405285,
+                "raw_units_per_environment_sd": -0.012984843491038268,
+                "raw_ci95": [
+                  -0.02889443236724787,
+                  0.0029247453851713326
+                ]
+              },
+              "chelsa_bio15__between": {
+                "standardized_beta": -0.036705206970027174,
+                "raw_units_per_environment_sd": -0.003597746320300366,
+                "raw_ci95": [
+                  -0.018113050769949856,
+                  0.010917558129349124
+                ]
+              },
+              "chelsa_bio15__within": {
+                "standardized_beta": -0.0358323386933115,
+                "raw_units_per_environment_sd": -0.0035121901038969246,
+                "raw_ci95": [
+                  -0.01600309379591554,
+                  0.008978713588121695
+                ]
+              },
+              "chelsa_rsds_mean__between": {
+                "standardized_beta": -0.04169979244645281,
+                "raw_units_per_environment_sd": -0.0040873022444478406,
+                "raw_ci95": [
+                  -0.017337464810476478,
+                  0.009162860321580799
+                ]
+              },
+              "chelsa_rsds_mean__within": {
+                "standardized_beta": -0.021510746268720127,
+                "raw_units_per_environment_sd": -0.0021084258780613373,
+                "raw_ci95": [
+                  -0.019815121957510548,
+                  0.015598270201387876
+                ]
+              }
+            },
+            "response_sd": 0.09801732825640302,
+            "response_mean": 0.3479265941026227,
+            "reference_prediction": 0.3480523219915062
+          }
+        },
+        "tests": {
+          "chelsa_bio01__between": {
+            "status": "estimated",
+            "F": 0.20546441532283677,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.6512387160413556
+          },
+          "chelsa_bio01__within": {
+            "status": "estimated",
+            "F": 1.2843671908278258,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.2595526397085718
+          },
+          "chelsa_bio04__between": {
+            "status": "estimated",
+            "F": 0.12089299425730149,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.7287324102809084
+          },
+          "chelsa_bio04__within": {
+            "status": "estimated",
+            "F": 0.05589542432655034,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.8135448066209384
+          },
+          "chelsa_bio12__between": {
+            "status": "estimated",
+            "F": 0.0022808313372313185,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.9619956716646005
+          },
+          "chelsa_bio12__within": {
+            "status": "estimated",
+            "F": 2.616133826991208,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.10864603941701961
+          },
+          "chelsa_bio15__between": {
+            "status": "estimated",
+            "F": 0.24127549120570946,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.6242650103269317
+          },
+          "chelsa_bio15__within": {
+            "status": "estimated",
+            "F": 0.31050796274891596,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.5785007541161781
+          },
+          "chelsa_rsds_mean__between": {
+            "status": "estimated",
+            "F": 0.37371069423796943,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.5422498250721136
+          },
+          "chelsa_rsds_mean__within": {
+            "status": "estimated",
+            "F": 0.05568600237349752,
+            "df1": 1,
+            "df2": 110,
+            "p": 0.8138879239546857
+          }
+        },
+        "environment_parameterization": "within_between",
+        "predictors": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean"
+        ],
+        "joint_temperature_vpd": {},
+        "fixed_adjustments": [],
+        "conditional_hue_contrasts": {},
+        "inference": "approximate stacked marginal REML species-cluster Wald F",
+        "random_effects": "response-specific species intercept; no phylogenetic correction",
+        "pointwise_component_intervals_not_joint_significance_tests": true
+      }
+    }
+  },
+  "model_sha256": "5ff4325f9d5367ab06878d2f14437f7f975a881fb01e16894334a395a928a278",
+  "contract_sha256": "210bf222469db899c6c423bf3f790705dc88d4118b6c0ad17a115b270a7c2587",
+  "scope": "Fixed spatial concentration sensitivity; main model not replaced. Species-cluster intervals remain conditional on that error treatment. Neither native filtering nor thinning certifies spatial independence."
+}

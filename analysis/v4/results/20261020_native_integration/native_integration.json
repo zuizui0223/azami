@@ -1,0 +1,5789 @@
+{
+  "run_id": "39428065666",
+  "git_sha": "e5db09e102d6d5bf48038ee8469008bee033a69b",
+  "input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "model_sha256": "5ff4325f9d5367ab06878d2f14437f7f975a881fb01e16894334a395a928a278",
+  "contract_sha256": "9a8b42f71ab3e2f626df2cbcad5869f1a0398ce7e204ef2e841f436d4a3cfb4f",
+  "coordinate_scales": {
+    "orientation_image_vertical_angle": 43.18161588235266,
+    "corolla_lab_lightness": 10.67588790377589,
+    "corolla_lab_chroma": 13.67511847861703,
+    "corolla_hue_sin": 0.549852687339204,
+    "corolla_hue_cos": 0.549852687339204,
+    "capitulum_outline_aspect_ratio": 0.14715989204675414,
+    "capitulum_outline_circularity": 0.11485043433319089,
+    "capitulum_outline_solidity": 0.06850499498860774,
+    "capitulum_width_profile_cv": 0.08613981893723918
+  },
+  "common_cohort": {
+    "status": "estimated",
+    "n": 157654,
+    "species": 174,
+    "pairs": [
+      {
+        "left": "angle",
+        "right": "lightness",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.012327692565407864,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.006447103429689076,
+              "upper": 0.01985301129968013
+            },
+            "correlation": 0.11103014259834067,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.08029385505110141,
+              "upper": 0.14090071227243894
+            }
+          },
+          "raw/between": {
+            "rv": 0.00201261989300941,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.1741224082838415e-05,
+              "upper": 0.04220612377018652
+            },
+            "correlation": 0.04486223236765431,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.1035133141286135,
+              "upper": 0.2054412529581044
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.010315072672398454,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.01781467995822485,
+              "upper": 0.02941522217275314
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.012692384329683027,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.006778325955201735,
+              "upper": 0.02013570260859079
+            },
+            "correlation": 0.1126604825556993,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.08233058087876555,
+              "upper": 0.14190026657911078
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.014489102357336754,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 2.9547291839941e-05,
+              "upper": 0.07607310034348594
+            },
+            "correlation": 0.1203706872844745,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.03229396905937585,
+              "upper": 0.2758133572485806
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0017967180276537275,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.016334711830943236,
+              "upper": 0.06397262789795989
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0003646917642751626,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0010731935131976784,
+              "upper": 0.0003113377188529518
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.012476482464327344,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.04313345284983247,
+              "upper": 0.009152718547932483
+            }
+          }
+        }
+      },
+      {
+        "left": "angle",
+        "right": "chroma",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0006360517317553343,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 2.0312052613677085e-06,
+              "upper": 0.0033164910542342126
+            },
+            "correlation": -0.025220066053746455,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.05758897495469539,
+              "upper": 0.008556779145568646
+            }
+          },
+          "raw/between": {
+            "rv": 0.03799945333337898,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0025287014337817743,
+              "upper": 0.12083347145344883
+            },
+            "correlation": -0.1949344847208389,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.3476110922097702,
+              "upper": -0.04959815979715307
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.037363401601623644,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.001619480643694746,
+              "upper": 0.12033868842700664
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0007558564899049109,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.325781247874014e-06,
+              "upper": 0.003598409534191748
+            },
+            "correlation": -0.027492844340026204,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.05998673894788545,
+              "upper": 0.005260678282357751
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.05384100973822001,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.005970582802613375,
+              "upper": 0.14473627928570995
+            },
+            "correlation": -0.23203665602275003,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.38044218485556336,
+              "upper": -0.07726954127283399
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0530851532483151,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.004858997541898394,
+              "upper": 0.14390282460085682
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.00011980475814957659,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0003550854270073631,
+              "upper": 2.8580379971587225e-05
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.01584155640484103,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.05505878580435163,
+              "upper": 0.020543882353429428
+            }
+          }
+        }
+      },
+      {
+        "left": "angle",
+        "right": "hue",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0006149837010811661,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.521047345893028e-05,
+              "upper": 0.0029894552298311144
+            }
+          },
+          "raw/between": {
+            "rv": 0.01012854607587159,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.000782833474002224,
+              "upper": 0.0755293532107265
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.009513562374790424,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -7.937204948181841e-05,
+              "upper": 0.07253136524422026
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0007574624634040744,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.712901970588549e-05,
+              "upper": 0.0033425453520004042
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.03069127563365073,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.002211382159341909,
+              "upper": 0.11921175304477084
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.029933813170246654,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0013575112001705278,
+              "upper": 0.11817487431940496
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.00014247876232290828,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00045645383292798657,
+              "upper": 3.6353979987405836e-05
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.020562729557779137,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.05997213430490665,
+              "upper": 0.003510882180781532
+            }
+          }
+        }
+      },
+      {
+        "left": "angle",
+        "right": "aspect",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.004531246402681099,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0005192139528328385,
+              "upper": 0.012663983032803637
+            },
+            "correlation": -0.067314533368962,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.112534362386403,
+              "upper": -0.022786101328376118
+            }
+          },
+          "raw/between": {
+            "rv": 0.07146412665290772,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.006651710689887951,
+              "upper": 0.19655384976359463
+            },
+            "correlation": -0.26732775137068676,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.4433439328968095,
+              "upper": -0.08155650949986323
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.06693288025022662,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0036507169883332907,
+              "upper": 0.18865209522142226
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.004518591274726608,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0005044102128923855,
+              "upper": 0.012511520200708535
+            },
+            "correlation": -0.06722046767708931,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.11185490087659877,
+              "upper": -0.022459077866775076
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.054579386783627795,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0018489047818892078,
+              "upper": 0.17208163539899918
+            },
+            "correlation": -0.23362231653595897,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.4148272190788226,
+              "upper": -0.035065292905201655
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.05006079550890119,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0002060382144960171,
+              "upper": 0.16545095910841257
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 1.265512795449019e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00014006318823339,
+              "upper": 0.00016399065051567963
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.01688473986927992,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0013388761027479216,
+              "upper": 0.03926906745226535
+            }
+          }
+        }
+      },
+      {
+        "left": "angle",
+        "right": "circularity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0011357136414726881,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.1057949295670911e-05,
+              "upper": 0.0049791727899885785
+            },
+            "correlation": -0.033700350761864305,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.07056322319805045,
+              "upper": 0.0007019487448971721
+            }
+          },
+          "raw/between": {
+            "rv": 0.0368319411919969,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0006154449192149515,
+              "upper": 0.12717840992273108
+            },
+            "correlation": -0.19191649536190705,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.35662081972628423,
+              "upper": -0.016349403572112772
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.03569622755052421,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0002363332168631268,
+              "upper": 0.125661044501924
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.001153035352923018,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 9.893454194385132e-06,
+              "upper": 0.005062528112512424
+            },
+            "correlation": -0.033956374260557,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.07115136945630145,
+              "upper": -0.0004729950121054405
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.028399383327302255,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.00022117337428924325,
+              "upper": 0.11399081254149314
+            },
+            "correlation": -0.16852116581397794,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.3376252191113873,
+              "upper": 0.020913408183968807
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.027246347974379238,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00042681612777557387,
+              "upper": 0.11237956045936677
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -1.7321711450329902e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00011540788437899879,
+              "upper": 7.354299730518945e-05
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.008432557864694643,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.012375987454297136,
+              "upper": 0.03255535308025395
+            }
+          }
+        }
+      },
+      {
+        "left": "angle",
+        "right": "solidity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0014921504920459097,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.856452213435193e-05,
+              "upper": 0.005870282949816223
+            },
+            "correlation": -0.03862836382822743,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.07661776306359523,
+              "upper": -0.005723522093862654
+            }
+          },
+          "raw/between": {
+            "rv": 0.01977413826998608,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0001350263410865568,
+              "upper": 0.0887698003741877
+            },
+            "correlation": -0.1406205471116724,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.29794259540774565,
+              "upper": 0.027643451646756165
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.01828198777794017,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0014574685827567543,
+              "upper": 0.08633473834439057
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.001525459371871714,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 5.201448185836728e-05,
+              "upper": 0.006004725591793186
+            },
+            "correlation": -0.039057129590789365,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.07749016416005995,
+              "upper": -0.006195508272810814
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.020209271759826817,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 8.95943883037117e-05,
+              "upper": 0.09406203473025686
+            },
+            "correlation": -0.14215931823073302,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.30669531585931453,
+              "upper": 0.03514718557935725
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.018683812387955103,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.001533554735719801,
+              "upper": 0.09039091716667484
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -3.330887982580435e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00013855763426906398,
+              "upper": 3.945957885263313e-05
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.00043513348984073816,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.018838440600995845,
+              "upper": 0.014162716426743318
+            }
+          }
+        }
+      },
+      {
+        "left": "angle",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.00015101721466709715,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 5.055427116320421e-07,
+              "upper": 0.001868757167022805
+            },
+            "correlation": 0.01228890616235217,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.017003627370890277,
+              "upper": 0.043229099103952624
+            }
+          },
+          "raw/between": {
+            "rv": 0.002431457777673109,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.499260817192071e-06,
+              "upper": 0.046043657034004336
+            },
+            "correlation": -0.04930981421251868,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.21392174737883,
+              "upper": 0.0986176878918659
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.0022804405630060115,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0008514949600698625,
+              "upper": 0.045639865498658415
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.00013192586384736598,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.427518992511101e-07,
+              "upper": 0.0018417717409866835
+            },
+            "correlation": 0.011485898478019297,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.01793241454412896,
+              "upper": 0.042915867973067026
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.003469003955489401,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.0197860878014283e-05,
+              "upper": 0.04915348623012374
+            },
+            "correlation": -0.058898250869524146,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.22170567686725387,
+              "upper": 0.08210097099103372
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0033370780916420354,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0007767533195122727,
+              "upper": 0.04913166952543641
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 1.9091350819731173e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -3.9064665427519216e-05,
+              "upper": 0.00010204199543256451
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0010375461778162924,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.013949643180390095,
+              "upper": 0.010978348978701378
+            }
+          }
+        }
+      },
+      {
+        "left": "lightness",
+        "right": "chroma",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.08516585710500642,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.06395041378861319,
+              "upper": 0.10914926769051639
+            },
+            "correlation": -0.29183189871055293,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.3303774623099074,
+              "upper": -0.25288418479636804
+            }
+          },
+          "raw/between": {
+            "rv": 0.2718155520696116,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.17397079182729605,
+              "upper": 0.3837715853352025
+            },
+            "correlation": -0.521359331046843,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.6194930059452406,
+              "upper": -0.41709779343063813
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.1866496949646052,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.08735261425362242,
+              "upper": 0.294894997667422
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.08605211019231422,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.06492517915481347,
+              "upper": 0.11010067664258111
+            },
+            "correlation": -0.2933463996580054,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.33181421234226105,
+              "upper": -0.25480419762419637
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.25036911228268105,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.14304508493183568,
+              "upper": 0.3689610228792979
+            },
+            "correlation": -0.5003689761392897,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.6074215031042768,
+              "upper": -0.3782130152810389
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.16431700209036681,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.053524784311238985,
+              "upper": 0.28106734984339826
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0008862530873078034,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.002622288443484287,
+              "upper": 0.0009975712930961756
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.02144643978693056,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.04188734592385264,
+              "upper": 0.08422383535783039
+            }
+          }
+        }
+      },
+      {
+        "left": "lightness",
+        "right": "hue",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.10362614799396941,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0829600864523689,
+              "upper": 0.1262163924857911
+            }
+          },
+          "raw/between": {
+            "rv": 0.4316992240367569,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.33646225973702365,
+              "upper": 0.5273542152327222
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.3280730760427875,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.22890747758592253,
+              "upper": 0.42919444241584187
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.10670447566329622,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0858375040914458,
+              "upper": 0.12968080475227875
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.4747835814704608,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.3749212703593419,
+              "upper": 0.5764767958166684
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.3680791058071646,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.27064641336874606,
+              "upper": 0.46768787538449963
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.003078327669326808,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.005607579602253744,
+              "upper": -0.0004786653491857648
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.04308435743370387,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.10136984595027494,
+              "upper": 0.020844896122226737
+            }
+          }
+        }
+      },
+      {
+        "left": "lightness",
+        "right": "aspect",
+        "estimates": {
+          "raw/within": {
+            "rv": 1.735944725049709e-05,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.468465816374162e-07,
+              "upper": 0.0015488651393632748
+            },
+            "correlation": 0.0041664669986089045,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.027299372059316658,
+              "upper": 0.035937656819368564
+            }
+          },
+          "raw/between": {
+            "rv": 0.00032775456971609497,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 5.5889607236375805e-06,
+              "upper": 0.02488718011602311
+            },
+            "correlation": -0.018103993198079118,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.15278248897387278,
+              "upper": 0.10916282603717342
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.00031039512246559787,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0006534702425633323,
+              "upper": 0.024705351706261387
+            }
+          },
+          "adjusted/within": {
+            "rv": 2.1641890825730607e-05,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 2.274390704060066e-07,
+              "upper": 0.0015650588852693004
+            },
+            "correlation": 0.004652084567775032,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.026499293528066247,
+              "upper": 0.03686780147093408
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.00397157425005579,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.5167581915627346e-05,
+              "upper": 0.042675173605390866
+            },
+            "correlation": -0.06302042724431334,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.20657963251910672,
+              "upper": 0.06858724536156992
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0039499323592300595,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0004809730981546903,
+              "upper": 0.04267303050690208
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -4.282443575233518e-06,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0001170322459905123,
+              "upper": 7.593106041822193e-05
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0036438196803396947,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.023240349994219457,
+              "upper": 0.008426907428388763
+            }
+          }
+        }
+      },
+      {
+        "left": "lightness",
+        "right": "circularity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.006165582635610042,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0020889313834586694,
+              "upper": 0.0119271984542038
+            },
+            "correlation": -0.07852122410921804,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.10921171008735248,
+              "upper": -0.0457045826773893
+            }
+          },
+          "raw/between": {
+            "rv": 0.020977565765591927,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 8.58173772589015e-05,
+              "upper": 0.09075695065762965
+            },
+            "correlation": -0.14483634131526496,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.3012589376413385,
+              "upper": 0.021856701099705795
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.014811983129981884,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.007717302810716858,
+              "upper": 0.08340951979606175
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.006068857787452184,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0019483528506314559,
+              "upper": 0.011891357776137226
+            },
+            "correlation": -0.07790287406413311,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.10904747042843646,
+              "upper": -0.044140132628608046
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.013020000332047569,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.7444836853146305e-05,
+              "upper": 0.07621997484519168
+            },
+            "correlation": -0.1141052160597734,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.27607965272920615,
+              "upper": 0.05952321633995981
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.006951142544595385,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00876002929725023,
+              "upper": 0.06952243614654395
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 9.672484815785847e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00030540071800529275,
+              "upper": 0.0004905224504963545
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.007957565433544358,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00826725553670127,
+              "upper": 0.03112226165145126
+            }
+          }
+        }
+      },
+      {
+        "left": "lightness",
+        "right": "solidity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.009905117037161428,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.004557879247046776,
+              "upper": 0.017492120284769035
+            },
+            "correlation": -0.09952445446804231,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.13225777958677748,
+              "upper": -0.0675120674093867
+            }
+          },
+          "raw/between": {
+            "rv": 0.0005939946221778181,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 7.86294326068218e-06,
+              "upper": 0.02733637816720959
+            },
+            "correlation": -0.024372004886299734,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.1631877897013943,
+              "upper": 0.10991454196798277
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.00931112241498361,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.015248743503924609,
+              "upper": 0.016991959045650627
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.009979795704438466,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.004581883761549128,
+              "upper": 0.017549261845874218
+            },
+            "correlation": -0.09989892744388433,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.1324736131272971,
+              "upper": -0.06768960526402808
+            }
+          },
+          "adjusted/between": {
+            "rv": 1.637194335622422e-08,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.807550309306341e-06,
+              "upper": 0.030738387058403337
+            },
+            "correlation": -0.0001279528950677718,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.15058906275703618,
+              "upper": 0.15720226639038268
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": -0.009979779332495109,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.015139339293072556,
+              "upper": 0.018899597950071224
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -7.467866727703734e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0006152523758076494,
+              "upper": 0.0004349372105745055
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.0005939782502344618,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.014113038671933574,
+              "upper": 0.010657178846819956
+            }
+          }
+        }
+      },
+      {
+        "left": "lightness",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0011271801160914628,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.4853973004428845e-05,
+              "upper": 0.0045173887152209526
+            },
+            "correlation": 0.033573503184676196,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0002807259071278913,
+              "upper": 0.06721148380759394
+            }
+          },
+          "raw/between": {
+            "rv": 0.010916536470897867,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.280436343310352e-05,
+              "upper": 0.08686473342125911
+            },
+            "correlation": -0.10448223040736576,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.29472767490453783,
+              "upper": 0.06844178463334445
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.009789356354806404,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0024371909160963066,
+              "upper": 0.08425237706769725
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0009586573877992013,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.898915962804205e-06,
+              "upper": 0.0043186801880585055
+            },
+            "correlation": 0.030962192877753366,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0037573560909562264,
+              "upper": 0.06571665913077988
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.008635436288402288,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.5283762084315347e-05,
+              "upper": 0.07548197199889019
+            },
+            "correlation": -0.09292704820665665,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.27473925214719785,
+              "upper": 0.07626856266451208
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0076767789006030865,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0023011137279309877,
+              "upper": 0.07340874900886481
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 0.0001685227282922615,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -4.107476797138397e-05,
+              "upper": 0.0005054061994916295
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.002281100182495579,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.013755204080244205,
+              "upper": 0.029042570063915606
+            }
+          }
+        }
+      },
+      {
+        "left": "chroma",
+        "right": "hue",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.05908040016613014,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.03706329387279558,
+              "upper": 0.08538564501866633
+            }
+          },
+          "raw/between": {
+            "rv": 0.34969052262051714,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.23892898427544948,
+              "upper": 0.46558010184838516
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.290610122454387,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.1805725876433681,
+              "upper": 0.40087251467878937
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.060760578777172,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.03822245564370921,
+              "upper": 0.0865511032696533
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.28536658553625194,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.17812256840724078,
+              "upper": 0.4138030702000042
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.22460600675907993,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.11174297033625866,
+              "upper": 0.3547476602493134
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0016801786110418604,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0032092192956416454,
+              "upper": -0.00017716279413999245
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.0643239370842652,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.013077741019729245,
+              "upper": 0.13760464656507915
+            }
+          }
+        }
+      },
+      {
+        "left": "chroma",
+        "right": "aspect",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.00024310027186091678,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 8.252421915621001e-07,
+              "upper": 0.002294372628452437
+            },
+            "correlation": -0.01559167315784027,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.04789960641036571,
+              "upper": 0.015958622008628874
+            }
+          },
+          "raw/between": {
+            "rv": 0.00034755418628375245,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 5.156965341235842e-06,
+              "upper": 0.04589740523706106
+            },
+            "correlation": 0.018642805214981798,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.14964211279441356,
+              "upper": 0.20830885671933005
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.00010445391442283567,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0012931710291444033,
+              "upper": 0.045526138087156186
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.00023981601194513616,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 7.267114123625863e-07,
+              "upper": 0.002286880192671502
+            },
+            "correlation": -0.01548599405737766,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.04782133044517926,
+              "upper": 0.015679374145788454
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.0009405193907499896,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.912591258895502e-05,
+              "upper": 0.048301894247636624
+            },
+            "correlation": 0.03066788859295647,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.13750720126358898,
+              "upper": 0.2156221735130238
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0007007033788048534,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.001243043332130949,
+              "upper": 0.04680702718814415
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 3.284259915780621e-06,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -6.85575241763832e-05,
+              "upper": 0.00010620498882730697
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0005929652044662371,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.01737198595579082,
+              "upper": 0.01449570379442406
+            }
+          }
+        }
+      },
+      {
+        "left": "chroma",
+        "right": "circularity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0067247311430508536,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.002108028960453096,
+              "upper": 0.015147464363869313
+            },
+            "correlation": 0.08200445806814928,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.04591327151390206,
+              "upper": 0.12307502167883885
+            }
+          },
+          "raw/between": {
+            "rv": 0.03124325854474459,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.00037985804918697086,
+              "upper": 0.1170625266663636
+            },
+            "correlation": 0.1767576265532681,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.004469265396651882,
+              "upper": 0.34214395981365747
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.024518527401693736,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00681051056015203,
+              "upper": 0.1093073807084525
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.006736298083727955,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0020860626958738126,
+              "upper": 0.015231470825719977
+            },
+            "correlation": 0.08207495405864054,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.045673345856023194,
+              "upper": 0.12341583625903513
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.010547684127279008,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.3446401049481735e-05,
+              "upper": 0.08450094318687922
+            },
+            "correlation": 0.10270191881011281,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.09185533544413423,
+              "upper": 0.290690454896328
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0038113860435510533,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.010295717056364492,
+              "upper": 0.07453315606427602
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -1.1566940677101498e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0003390501564441769,
+              "upper": 0.00025993328599218236
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.02069557441746558,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.007832995424632762,
+              "upper": 0.056092901414642675
+            }
+          }
+        }
+      },
+      {
+        "left": "chroma",
+        "right": "solidity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.005491565328797297,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0014666170390042269,
+              "upper": 0.012058593255826472
+            },
+            "correlation": 0.07410509651027584,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.03829635968627653,
+              "upper": 0.10981162550307251
+            }
+          },
+          "raw/between": {
+            "rv": 0.0028816892894178996,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 7.325980410534896e-06,
+              "upper": 0.04865655805691175
+            },
+            "correlation": -0.053681368177589325,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.2205821071961648,
+              "upper": 0.1201954218357405
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.0026098760393793974,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.009614963863007716,
+              "upper": 0.04360591774481376
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.005572161884838169,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0014106694039720548,
+              "upper": 0.01213982858301014
+            },
+            "correlation": 0.07464691477106185,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.037558828126534945,
+              "upper": 0.11018088129686687
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.0007339682236293103,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.2325016833622668e-05,
+              "upper": 0.04763345422343856
+            },
+            "correlation": -0.02709184791831872,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.20438701733787246,
+              "upper": 0.14745805335587936
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": -0.004838193661208859,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.010470019846829033,
+              "upper": 0.04192874416877804
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -8.059655604087182e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0003854441391105815,
+              "upper": 0.00017447262476520429
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.0021477210657885894,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.012967329289825767,
+              "upper": 0.019201878710445684
+            }
+          }
+        }
+      },
+      {
+        "left": "chroma",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 1.6257343534005425e-05,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.643334086818549e-07,
+              "upper": 0.0020719361369833486
+            },
+            "correlation": 0.004032039624557951,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.03593582564190477,
+              "upper": 0.04232758196848844
+            }
+          },
+          "raw/between": {
+            "rv": 0.02573982849264409,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0001551692955610748,
+              "upper": 0.12883565654336454
+            },
+            "correlation": 0.16043636898360697,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.015444097618500451,
+              "upper": 0.3589366958190739
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.025723571149110086,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -9.518353106333361e-05,
+              "upper": 0.12843645610507842
+            }
+          },
+          "adjusted/within": {
+            "rv": 2.701302397925789e-05,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.8179214724963044e-07,
+              "upper": 0.0020764020054954506
+            },
+            "correlation": 0.005197405504601107,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.03515988604668306,
+              "upper": 0.04357547738618063
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.0034708283582124575,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 2.630781606954513e-05,
+              "upper": 0.07462501357091748
+            },
+            "correlation": 0.05891373658335089,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.14338202462432434,
+              "upper": 0.26893238705619266
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0034438153342331995,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0006875139815406767,
+              "upper": 0.0723860819941305
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -1.0755680445252465e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00015740441259793042,
+              "upper": 0.00011224575267805707
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.022269000134431633,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.018817098975893284,
+              "upper": 0.07224265297580786
+            }
+          }
+        }
+      },
+      {
+        "left": "hue",
+        "right": "aspect",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0031080596853354943,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0008279670113019687,
+              "upper": 0.008083654399936585
+            }
+          },
+          "raw/between": {
+            "rv": 0.001710057457231361,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 8.820713630057631e-05,
+              "upper": 0.03971787111734162
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.0013980022281041334,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.005914650998239826,
+              "upper": 0.03540904117454758
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0030553906851623004,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.000794334396413389,
+              "upper": 0.008118604491998598
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.0005656236822980595,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.00013911206383001952,
+              "upper": 0.029990311038729126
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": -0.002489767002864241,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.005462758092428901,
+              "upper": 0.026985086760769675
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 5.2669000173193904e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00019523345090917808,
+              "upper": 0.00026656517570511964
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.0011444337749333014,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.013693228158953135,
+              "upper": 0.019500335667652278
+            }
+          }
+        }
+      },
+      {
+        "left": "hue",
+        "right": "circularity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0022011353067531774,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0007915741705455092,
+              "upper": 0.005785979816356308
+            }
+          },
+          "raw/between": {
+            "rv": 0.03129869326792171,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0017951588824575166,
+              "upper": 0.09565645232924706
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.02909755796116853,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0007766740624949796,
+              "upper": 0.09292210251723128
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0022161153865487004,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.000807753469662918,
+              "upper": 0.0057236685556732855
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.025895263852864565,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0016632950703127042,
+              "upper": 0.08601321520497399
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.023679148466315865,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0007294825723718386,
+              "upper": 0.08461034755642965
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -1.4980079795522995e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00015304292291029286,
+              "upper": 0.00015462416014945646
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.005403429415057143,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.01881692008838021,
+              "upper": 0.0356279731013385
+            }
+          }
+        }
+      },
+      {
+        "left": "hue",
+        "right": "solidity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.001357088064450578,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0004115853778624907,
+              "upper": 0.0041675751688231046
+            }
+          },
+          "raw/between": {
+            "rv": 0.0012526076727773386,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0001067736397889958,
+              "upper": 0.03740476741267956
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.00010448039167323931,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0025815134600122346,
+              "upper": 0.03584207733817211
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0013777038251851599,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.00043835964284342246,
+              "upper": 0.004278004417743387
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.0021613037835287773,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.00024720370891561836,
+              "upper": 0.02837553731864376
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.0007835999583436174,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0019166840920616277,
+              "upper": 0.02710030028922231
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -2.061576073458197e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00019901730234472143,
+              "upper": 0.00011471577225873129
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0009086961107514387,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0195386089794693,
+              "upper": 0.02257075449877438
+            }
+          }
+        }
+      },
+      {
+        "left": "hue",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.003976553343738052,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0013962895881585856,
+              "upper": 0.008937895057157997
+            }
+          },
+          "raw/between": {
+            "rv": 0.11800904129874468,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.04546543028476391,
+              "upper": 0.2365702517193676
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.11403248795500663,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.04075962483482666,
+              "upper": 0.23103365200238785
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.004281666799524364,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0015342678894887571,
+              "upper": 0.00939170765647747
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.05398019421130892,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.006855907235217696,
+              "upper": 0.15348305662937298
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.04969852741178455,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0012281523022610406,
+              "upper": 0.14885029392138138
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0003051134557863124,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0007289072617688491,
+              "upper": 4.477165115563696e-06
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.06402884708743575,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.023306615605245336,
+              "upper": 0.11175107597433351
+            }
+          }
+        }
+      },
+      {
+        "left": "aspect",
+        "right": "circularity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.0018874494809837665,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 9.263910397236919e-05,
+              "upper": 0.005888823633474048
+            },
+            "correlation": 0.04344478658002323,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.009624919116669826,
+              "upper": 0.07673867104301181
+            }
+          },
+          "raw/between": {
+            "rv": 0.041882895884413025,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.002947739881710232,
+              "upper": 0.13178941528612143
+            },
+            "correlation": 0.20465311110367473,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.053835551441853584,
+              "upper": 0.36302810835640487
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.03999544640342926,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0008644434576605153,
+              "upper": 0.12977952568851803
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.0019589083384705906,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.00011256727427160472,
+              "upper": 0.005978717971907496
+            },
+            "correlation": 0.044259556464910386,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.010609768980431545,
+              "upper": 0.07732216199655012
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.04216578188310674,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.002104831414602204,
+              "upper": 0.13169486454179744
+            },
+            "correlation": 0.20534308335833162,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.04373380023463019,
+              "upper": 0.3628978694856866
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.040206873544636146,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0009955651417966481,
+              "upper": 0.12687884981705017
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -7.14588574868241e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00016843176384670903,
+              "upper": -2.5103190689805677e-06
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0002828859986937146,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.020707569291906577,
+              "upper": 0.01907661415527277
+            }
+          }
+        }
+      },
+      {
+        "left": "aspect",
+        "right": "solidity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.00012326702444121775,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 2.980738794604474e-07,
+              "upper": 0.00222633948289494
+            },
+            "correlation": -0.011102568371382262,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.04592206118591799,
+              "upper": 0.02324062965583843
+            }
+          },
+          "raw/between": {
+            "rv": 0.014081401386063662,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.855391615905349e-05,
+              "upper": 0.08403559754603047
+            },
+            "correlation": 0.11866508073592526,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.036370269092575416,
+              "upper": 0.2898888366034467
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.013958134361622444,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0009739615403014166,
+              "upper": 0.0837499847337127
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.00011072105371078923,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.915003643012869e-07,
+              "upper": 0.002146483556642584
+            },
+            "correlation": -0.01052240722034598,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.04524501583334631,
+              "upper": 0.024218563674838656
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.016651302111632644,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 4.9301939255536135e-05,
+              "upper": 0.08922941387325158
+            },
+            "correlation": 0.12903992448708518,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.03841279640776467,
+              "upper": 0.2987129157993996
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.016540581057921853,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0008771175881708744,
+              "upper": 0.0890952616542882
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": 1.2545970730428518e-05,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -3.8333212240959176e-05,
+              "upper": 6.188176362942755e-05
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0025699007255689816,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.019838063743007388,
+              "upper": 0.008470023296661557
+            }
+          }
+        }
+      },
+      {
+        "left": "aspect",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.006376429976529826,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0020287582961108146,
+              "upper": 0.01327487377183905
+            },
+            "correlation": -0.07985255147163318,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.11521652416612627,
+              "upper": -0.04504164516733652
+            }
+          },
+          "raw/between": {
+            "rv": 0.0032614645483786753,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 3.282670968275449e-06,
+              "upper": 0.03311046920644411
+            },
+            "correlation": -0.057109233477421806,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.1803476455718169,
+              "upper": 0.08225256822827948
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.0031149654281511507,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.010572394888312136,
+              "upper": 0.026414725685325813
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.006482435157629918,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.002062303993260203,
+              "upper": 0.0134013588631504
+            },
+            "correlation": -0.08051357126366906,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.11576408266962897,
+              "upper": -0.04541259669865315
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.004982182129870589,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 1.2909223999730844e-05,
+              "upper": 0.039178408402236596
+            },
+            "correlation": -0.07058457430537206,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.1974931243353405,
+              "upper": 0.07938663856216918
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": -0.0015002530277593287,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.010331117091562259,
+              "upper": 0.034316886304615754
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.00010600518110009168,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.00023951608620667432,
+              "upper": 8.15345679500313e-06
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0017207175814919137,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.01597906818666781,
+              "upper": 0.008882959252342762
+            }
+          }
+        }
+      },
+      {
+        "left": "circularity",
+        "right": "solidity",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.7335636832973391,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.7205231118711717,
+              "upper": 0.7474491073096515
+            },
+            "correlation": 0.85648332342045,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.8488363280813903,
+              "upper": 0.864551390661854
+            }
+          },
+          "raw/between": {
+            "rv": 0.6908607129203364,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.6059238726611282,
+              "upper": 0.7648153705764291
+            },
+            "correlation": 0.8311803131212483,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.7784111110536202,
+              "upper": 0.8745372321966565
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": -0.04270297037700277,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.12464415474824912,
+              "upper": 0.03061407650808151
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.7337662443884216,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.720867751447406,
+              "upper": 0.7475425779721941
+            },
+            "correlation": 0.8566015668841737,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.8490393108763679,
+              "upper": 0.8646054464110617
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.7431356157049135,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.677074444422125,
+              "upper": 0.8051725748254442
+            },
+            "correlation": 0.8620531397222061,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.8228453340364619,
+              "upper": 0.8973140872936229
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.009369371316491848,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.06047985430244656,
+              "upper": 0.07538881248091503
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0002025610910825204,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.000877702427515592,
+              "upper": 0.0005183032201137277
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.05227490278457714,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.08946124645182583,
+              "upper": -0.01885188629584433
+            }
+          }
+        }
+      },
+      {
+        "left": "circularity",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.11142985830986626,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.08550153412048388,
+              "upper": 0.14306651009100832
+            },
+            "correlation": -0.33381111172318134,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.3782413382653421,
+              "upper": -0.2924064529259805
+            }
+          },
+          "raw/between": {
+            "rv": 0.15732666035760254,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.03289747568173743,
+              "upper": 0.33291184196637275
+            },
+            "correlation": -0.3966442491170174,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.5769851302261704,
+              "upper": -0.18137661271702016
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.045896802047736274,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.07876350039612402,
+              "upper": 0.1994004952272196
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.11177260381903417,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.08564033210547885,
+              "upper": 0.14342623910849184
+            },
+            "correlation": -0.33432409996743306,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.3787165682338542,
+              "upper": -0.2926436933572871
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.22833479669761583,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.07543753625820639,
+              "upper": 0.4207388594929897
+            },
+            "correlation": -0.4778439041126462,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.6486438563893508,
+              "upper": -0.274658360122608
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.11656219287858166,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.03626230549808943,
+              "upper": 0.2926669103525633
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0003427455091679077,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0008975108199990485,
+              "upper": 0.00019713806637004566
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": -0.0710081363400133,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.1291555058572787,
+              "upper": -0.019026035245839287
+            }
+          }
+        }
+      },
+      {
+        "left": "solidity",
+        "right": "width_profile",
+        "estimates": {
+          "raw/within": {
+            "rv": 0.15345190882520968,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.1213492528767782,
+              "upper": 0.18834499174811054
+            },
+            "correlation": -0.39172938213160585,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.43398731708472776,
+              "upper": -0.3483521937932835
+            }
+          },
+          "raw/between": {
+            "rv": 0.22410802830977372,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.1097592640390623,
+              "upper": 0.35988479492176184
+            },
+            "correlation": -0.4734004946234992,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.5999039841203619,
+              "upper": -0.33129919714170153
+            }
+          },
+          "raw/between_minus_within_rv": {
+            "estimate": 0.07065611948456405,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.042730551095708294,
+              "upper": 0.1971974624358201
+            }
+          },
+          "adjusted/within": {
+            "rv": 0.15355651484781274,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.12165149088984305,
+              "upper": 0.18859680433584683
+            },
+            "correlation": -0.39186287760875327,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.43427733569246346,
+              "upper": -0.3487857371427384
+            }
+          },
+          "adjusted/between": {
+            "rv": 0.21790153729066283,
+            "rv_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": 0.0942864143371328,
+              "upper": 0.35847911491174084
+            },
+            "correlation": -0.4667992473115856,
+            "correlation_interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.5987312197028893,
+              "upper": -0.3070608500149386
+            }
+          },
+          "adjusted/between_minus_within_rv": {
+            "estimate": 0.06434502244285009,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.052945083997408264,
+              "upper": 0.20293229282842076
+            }
+          },
+          "raw_minus_adjusted/within": {
+            "estimate": -0.0001046060226030654,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.0006721999025301809,
+              "upper": 0.0004895249275887272
+            }
+          },
+          "raw_minus_adjusted/between": {
+            "estimate": 0.006206491019110888,
+            "interval": {
+              "status": "estimated",
+              "finite": 1000,
+              "lower": -0.042828138580071694,
+              "upper": 0.049063964193724705
+            }
+          }
+        }
+      }
+    ],
+    "equal_n_diagnostic": {
+      "raw": {
+        "median_pair_delta_q025_q50_q975": [
+          0.0005366112596448728,
+          0.010894464590130746,
+          0.019055685562282286
+        ],
+        "scope": "Resampling range, not a confidence interval; between means fixed."
+      },
+      "adjusted": {
+        "median_pair_delta_q025_q50_q975": [
+          0.0013669046033239908,
+          0.009778251579950256,
+          0.0165366393416816
+        ],
+        "scope": "Resampling range, not a confidence interval; between means fixed."
+      }
+    }
+  },
+  "pair_specific": {
+    "angle/lightness": {
+      "status": "estimated",
+      "n": 164095,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "lightness",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.01017652166099073,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.004796678382464529,
+                "upper": 0.01686090551388008
+              },
+              "correlation": 0.10087874732068558,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.06925805061989089,
+                "upper": 0.129849549448104
+              }
+            },
+            "raw/between": {
+              "rv": 0.003723699721440747,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.473471634974019e-05,
+                "upper": 0.05176493210246863
+              },
+              "correlation": 0.061022124851898986,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.09144113684423122,
+                "upper": 0.2275185865759468
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": -0.006452821939549983,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.01382827430996799,
+                "upper": 0.04026398511313362
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.010430022397051915,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.005081997885587539,
+                "upper": 0.01705171576409817
+              },
+              "correlation": 0.1021274811059781,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.07128807126636195,
+                "upper": 0.13058221840288287
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.01548438883333679,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 6.733840148673703e-05,
+                "upper": 0.08171821392022659
+              },
+              "correlation": 0.12443628423147644,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.02806994175206401,
+                "upper": 0.2858639732027358
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.005054366436284876,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.01201720754551827,
+                "upper": 0.0691598655462724
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.0002535007360611845,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0008587901205379037,
+                "upper": 0.00029828431412868726
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.011760689111896042,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04067940455015221,
+                "upper": 0.007676458184866113
+              }
+            }
+          }
+        }
+      ]
+    },
+    "angle/chroma": {
+      "status": "estimated",
+      "n": 164095,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "chroma",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0007819258615251657,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.364641780114834e-06,
+                "upper": 0.0036725172909783336
+              },
+              "correlation": -0.0279629372835753,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06060129524387222,
+                "upper": 0.004814402640452795
+              }
+            },
+            "raw/between": {
+              "rv": 0.04500676080593779,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0037013049938752936,
+                "upper": 0.12843746855128
+              },
+              "correlation": -0.21214796912989242,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.35838171618425213,
+                "upper": -0.060837103890504174
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.04422483494441262,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.002153694715363373,
+                "upper": 0.1272342608243101
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0008906907254800268,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.0040961379535768e-05,
+                "upper": 0.003785877477714004
+              },
+              "correlation": -0.02984444212043554,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06152946438787256,
+                "upper": 0.003012785360115468
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.05960124186563771,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.009339043737036232,
+                "upper": 0.14519867481122556
+              },
+              "correlation": -0.24413365574135348,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.38104927497600044,
+                "upper": -0.0966235755775372
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.05871055114015768,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.007918341211154364,
+                "upper": 0.14422032460280693
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.00010876486395486112,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0003088126352288125,
+                "upper": 3.65961505806982e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.014594481059699918,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.05093679596996082,
+                "upper": 0.02100114300466301
+              }
+            }
+          }
+        }
+      ]
+    },
+    "angle/hue": {
+      "status": "estimated",
+      "n": 164052,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "hue",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.00040681326528709384,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.129602654621591e-05,
+                "upper": 0.0025823282587459813
+              }
+            },
+            "raw/between": {
+              "rv": 0.01099247664250411,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0006636998809996098,
+                "upper": 0.06961812925875933
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.010585663377217017,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 6.28523747161107e-06,
+                "upper": 0.06767446816114503
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0005162705419030403,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 3.130824030935797e-05,
+                "upper": 0.0028831011990681833
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.02659372534810804,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0026220178230592275,
+                "upper": 0.0992415802611023
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.026077454806205002,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.002134989044909786,
+                "upper": 0.09851980646406257
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.00010945727661594649,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0003971924947080572,
+                "upper": 3.7380629460431123e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.015601248705603931,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04652431203337194,
+                "upper": 0.006197650334426902
+              }
+            }
+          }
+        }
+      ]
+    },
+    "angle/aspect": {
+      "status": "estimated",
+      "n": 159849,
+      "species": 176,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "aspect",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0036575113246557025,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00015644225819122227,
+                "upper": 0.011211829800020095
+              },
+              "correlation": -0.060477362084136094,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.10588586869532816,
+                "upper": -0.012259157899414154
+              }
+            },
+            "raw/between": {
+              "rv": 0.06673990926689188,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.004290325342610193,
+                "upper": 0.20453757127029565
+              },
+              "correlation": -0.25834068449799363,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.4522582617515509,
+                "upper": -0.06550028032179432
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.06308239794223618,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0025639598837008852,
+                "upper": 0.1945034825063926
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.003685948496962184,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0001631963639826095,
+                "upper": 0.011264213337897129
+              },
+              "correlation": -0.06071201278958049,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.1061329553139169,
+                "upper": -0.01261326445160658
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.05118532788438598,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0009856560382218008,
+                "upper": 0.18809264540817205
+              },
+              "correlation": -0.22624174655528537,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.43369648976580505,
+                "upper": -0.02206979855362407
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.047499379387423796,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0003837982327189241,
+                "upper": 0.1801943955667736
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -2.8437172306481663e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00019806655115955473,
+                "upper": 0.00014238825351886014
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.015554581382505907,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00289160685047295,
+                "upper": 0.03923203786441538
+              }
+            }
+          }
+        }
+      ]
+    },
+    "angle/circularity": {
+      "status": "estimated",
+      "n": 159849,
+      "species": 176,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "circularity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0006913651790449453,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.7139630849086393e-06,
+                "upper": 0.003920186289023528
+              },
+              "correlation": -0.026293823971513638,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0626113347954789,
+                "upper": 0.008693372015000719
+              }
+            },
+            "raw/between": {
+              "rv": 0.024711819508326047,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00014737057590475536,
+                "upper": 0.10277726024001245
+              },
+              "correlation": -0.15719993482290648,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.32058878860902085,
+                "upper": 0.017891567977669286
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.024020454329281102,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0006482452859896918,
+                "upper": 0.10165115350986817
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0007357982938769753,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 3.0763661323586086e-06,
+                "upper": 0.0039579505135918505
+              },
+              "correlation": -0.027125602184596295,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06291224443793338,
+                "upper": 0.007556958923231903
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.020316361551803552,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 9.92780471006921e-05,
+                "upper": 0.09773443068543775
+              },
+              "correlation": -0.14253547471350264,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.31262505416487113,
+                "upper": 0.04124416023620249
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.019580563257926578,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0008643175015574765,
+                "upper": 0.09673065639243587
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -4.4433114832030034e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00019770244956550303,
+                "upper": 5.249366742837531e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.004395457956522495,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.015627753495851805,
+                "upper": 0.02429611727703424
+              }
+            }
+          }
+        }
+      ]
+    },
+    "angle/solidity": {
+      "status": "estimated",
+      "n": 159849,
+      "species": 176,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "solidity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0010025780715070935,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 3.732979784717019e-06,
+                "upper": 0.004629650178068579
+              },
+              "correlation": -0.0316635132527503,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06804151999302493,
+                "upper": 0.0038305035865781253
+              }
+            },
+            "raw/between": {
+              "rv": 0.008701688061779062,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.2217806752378248e-05,
+                "upper": 0.061399208013734725
+              },
+              "correlation": -0.09328283905295262,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.24778854162881742,
+                "upper": 0.055723927119563345
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.007699109990271969,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0018080420704272176,
+                "upper": 0.05870650485169431
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.001051675242409535,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.165849240583956e-06,
+                "upper": 0.004709332016045799
+              },
+              "correlation": -0.03242954274129586,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06862456651194257,
+                "upper": 0.0026662148923265387
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.010940666179203827,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.6013462848369793e-05,
+                "upper": 0.07718495227464528
+              },
+              "correlation": -0.10459763945330615,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.2778217641044959,
+                "upper": 0.05891169302323184
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.009888990936794292,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0016918367245240841,
+                "upper": 0.07589655949164575
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -4.9097170902441404e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0001624796618615913,
+                "upper": 2.4361422100744696e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.002238978117424765,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.022817136425110632,
+                "upper": 0.00862999166128536
+              }
+            }
+          }
+        }
+      ]
+    },
+    "angle/width_profile": {
+      "status": "estimated",
+      "n": 159849,
+      "species": 176,
+      "pairs": [
+        {
+          "left": "angle",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 2.3074138146428694e-05,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.0196301601259354e-07,
+                "upper": 0.0013619099899225373
+              },
+              "correlation": 0.004803554740650791,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.023903695062676148,
+                "upper": 0.0368223042915152
+              }
+            },
+            "raw/between": {
+              "rv": 0.008017186167866687,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.231309627830585e-05,
+                "upper": 0.054462386844832705
+              },
+              "correlation": -0.08953874115636586,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.23337177787932833,
+                "upper": 0.05925912548743724
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.007994112029720259,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00028538680966808073,
+                "upper": 0.054253261490693434
+              }
+            },
+            "adjusted/within": {
+              "rv": 1.82985090243706e-05,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 3.950548282194626e-07,
+                "upper": 0.001361786259531588
+              },
+              "correlation": 0.004277675656752228,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.024896863987566985,
+                "upper": 0.036444597969846206
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.008361634928338382,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 9.206481609291357e-06,
+                "upper": 0.052976021858324965
+              },
+              "correlation": -0.0914419757460346,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.23016517721322227,
+                "upper": 0.04999448251744768
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.00834333641931401,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00030967609369117097,
+                "upper": 0.052605966948771045
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": 4.775629122058093e-06,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -4.966833656469949e-05,
+                "upper": 5.960014572392348e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.00034444876047169497,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.014083679209747733,
+                "upper": 0.01641071799541963
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lightness/chroma": {
+      "status": "estimated",
+      "n": 186315,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "lightness",
+          "right": "chroma",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.08404744734243876,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.06440437440671999,
+                "upper": 0.10806351886528184
+              },
+              "correlation": -0.28990937781044396,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.3287301209165539,
+                "upper": -0.2537801682739799
+              }
+            },
+            "raw/between": {
+              "rv": 0.24894294414199764,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.15720689458177356,
+                "upper": 0.36524480416898164
+              },
+              "correlation": -0.4989418244064107,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.6043548542660692,
+                "upper": -0.39649324627203764
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.1648954967995589,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.06715173836568279,
+                "upper": 0.2843483439497949
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.08450766029834006,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.06474266275123462,
+                "upper": 0.10867326520671286
+              },
+              "correlation": -0.29070201289007286,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.32965626259692055,
+                "upper": -0.25444575961795207
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.22672550030413138,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.1205044206463565,
+                "upper": 0.34503060432208366
+              },
+              "correlation": -0.4761570122387482,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.5873930577474165,
+                "upper": -0.3471374602139461
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.14221784000579132,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.03636761443044619,
+                "upper": 0.2582137966477329
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.00046021295590130407,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0022472284990805074,
+                "upper": 0.001139242565174401
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.022217443837866252,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04068024659208728,
+                "upper": 0.08342769748771867
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lightness/hue": {
+      "status": "estimated",
+      "n": 186266,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "lightness",
+          "right": "hue",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.10142227838355652,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.08081119776032104,
+                "upper": 0.12336597247494281
+              }
+            },
+            "raw/between": {
+              "rv": 0.437202096165204,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.34243090392061826,
+                "upper": 0.5360181970134644
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.33577981778164745,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.2394458381182301,
+                "upper": 0.43568719735035716
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.10400518525699994,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.08317556127103924,
+                "upper": 0.12672005391609853
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.4857219285650479,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.3959816555107371,
+                "upper": 0.5758078968353187
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.381716743308048,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.29210120956322405,
+                "upper": 0.4785486756673756
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.0025829068734434107,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.005061712585010421,
+                "upper": -0.00014068990322843908
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.04851983239984392,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.10333680793560306,
+                "upper": 0.014778521841664826
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lightness/aspect": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "lightness",
+          "right": "aspect",
+          "estimates": {
+            "raw/within": {
+              "rv": 3.4841332324633093e-06,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.8362718645736192e-07,
+                "upper": 0.0011660086387826586
+              },
+              "correlation": 0.0018665833044531682,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.029158559913551485,
+                "upper": 0.03142166300095137
+              }
+            },
+            "raw/between": {
+              "rv": 0.002262115841229279,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.4804149661819514e-05,
+                "upper": 0.0356572380470683
+              },
+              "correlation": -0.047561705617327046,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.18883104288035937,
+                "upper": 0.0926143277237899
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.0022586317079968153,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0004590223040690769,
+                "upper": 0.03512274794171637
+              }
+            },
+            "adjusted/within": {
+              "rv": 3.5086176732639298e-06,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.1040369044559715e-07,
+                "upper": 0.0011274584530131717
+              },
+              "correlation": 0.0018731304474766113,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.028442873209958724,
+                "upper": 0.031405334351317454
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.008604241763569968,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 5.13376139136373e-05,
+                "upper": 0.056435016992399306
+              },
+              "correlation": -0.09275905219206355,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.23756052528029825,
+                "upper": 0.03979794443591655
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.008600733145896704,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00023982502327925424,
+                "upper": 0.05632000864822831
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -2.4484440800620443e-08,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -8.65631559286186e-05,
+                "upper": 8.297517499989822e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.006342125922340689,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.02635913101645579,
+                "upper": 0.006127219764582698
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lightness/circularity": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "lightness",
+          "right": "circularity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.004652982866146279,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0012430711237863307,
+                "upper": 0.010967103307312938
+              },
+              "correlation": -0.06821277641429264,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.10472381815228099,
+                "upper": -0.03525720317177077
+              }
+            },
+            "raw/between": {
+              "rv": 0.00543838753137918,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.6282305748919575e-05,
+                "upper": 0.06352901105916102
+              },
+              "correlation": -0.07374542379957674,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.2520496048404639,
+                "upper": 0.1086575888676118
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.0007854046652329008,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.007635540009283884,
+                "upper": 0.0587545846942119
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.004588003337565738,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0012557945290938633,
+                "upper": 0.010948607968828657
+              },
+              "correlation": -0.06773480152451719,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.10463559565593684,
+                "upper": -0.03543718135738824
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.002439553820635398,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 8.544374790449653e-06,
+                "upper": 0.057088738725542
+              },
+              "correlation": -0.04939183961582518,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.23527599428131005,
+                "upper": 0.14932924446526888
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": -0.00214844951693034,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.007984396152300531,
+                "upper": 0.05152401228991538
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": 6.497952858054105e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00023737611144499586,
+                "upper": 0.0003610264155933642
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.0029988337107437818,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.012919922677653259,
+                "upper": 0.021764913574584793
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lightness/solidity": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "lightness",
+          "right": "solidity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.007844777052839045,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0027682984754554417,
+                "upper": 0.014952536472263222
+              },
+              "correlation": -0.08857074603298228,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.12228056067098969,
+                "upper": -0.05261462155186394
+              }
+            },
+            "raw/between": {
+              "rv": 0.004814824201339473,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.7614789649118647e-05,
+                "upper": 0.040909821921667
+              },
+              "correlation": 0.06938893428594702,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06658213075314832,
+                "upper": 0.2018186171962526
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": -0.003029952851499571,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.013055323113085073,
+                "upper": 0.03416428445288687
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.00785791164992689,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.002820272142616072,
+                "upper": 0.015105563010564831
+              },
+              "correlation": -0.08864486251287713,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.12290468573592919,
+                "upper": -0.05310622854265482
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.00672797558406895,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 7.0786178253741404e-06,
+                "upper": 0.05042040700626754
+              },
+              "correlation": 0.08202423778413885,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.06378860940607542,
+                "upper": 0.22297900371292592
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": -0.0011299360658579404,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.013170321741795362,
+                "upper": 0.04335250067308383
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -1.3134597087845895e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0004323382751705,
+                "upper": 0.0004312777520577913
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.0019131513827294767,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.017918038726222694,
+                "upper": 0.006068321184653055
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lightness/width_profile": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "lightness",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0004074160292445224,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.7668231964843544e-06,
+                "upper": 0.003113102620013592
+              },
+              "correlation": 0.020184549270284,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.014037882568194745,
+                "upper": 0.05579518386336227
+              }
+            },
+            "raw/between": {
+              "rv": 0.032144245469645664,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.000639328996978348,
+                "upper": 0.12715990089239793
+              },
+              "correlation": -0.17928816321677699,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.35659486918019734,
+                "upper": -0.004430203805035833
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.03173682944040114,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00011690320827251542,
+                "upper": 0.12557614414926777
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0003422594909945354,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 9.774032915364617e-07,
+                "upper": 0.002888297379539621
+              },
+              "correlation": 0.01850025651158749,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.01658928884510268,
+                "upper": 0.05374288212295811
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.02606353819201328,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00012249761765557252,
+                "upper": 0.10826300100984772
+              },
+              "correlation": -0.16144205831199404,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.32903341875663444,
+                "upper": 0.0059329612352304155
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.025721278701018747,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -8.482647018231008e-05,
+                "upper": 0.10791505366069087
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": 6.515653824998698e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -9.390953710203541e-05,
+                "upper": 0.0002869520059353319
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.0060807072776323835,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.015861804091061513,
+                "upper": 0.038093522427239644
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chroma/hue": {
+      "status": "estimated",
+      "n": 186266,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "chroma",
+          "right": "hue",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.04306015115183528,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.025428944971430695,
+                "upper": 0.06590032504098543
+              }
+            },
+            "raw/between": {
+              "rv": 0.3373913316421122,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.22391505807789652,
+                "upper": 0.4539097248926347
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.29433118049027696,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.18267198768670156,
+                "upper": 0.41082327346106223
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.04420486025108625,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.025803498535276272,
+                "upper": 0.0672763228403087
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.26840515402608645,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.15408150069680626,
+                "upper": 0.3991972835457999
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.2242002937750002,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.11115120277476336,
+                "upper": 0.35026525795271013
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.0011447090992509693,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0025703624822834012,
+                "upper": 0.0003529552312654586
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.06898617761602577,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0058687470623058164,
+                "upper": 0.1406193475525089
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chroma/aspect": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "chroma",
+          "right": "aspect",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.00026975838791530365,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.1998924668744814e-06,
+                "upper": 0.001990640951377194
+              },
+              "correlation": -0.016424323058053376,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.044616581369218734,
+                "upper": 0.012299873031490612
+              }
+            },
+            "raw/between": {
+              "rv": 0.0012641779126538115,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 6.622121344423979e-06,
+                "upper": 0.04937219776929953
+              },
+              "correlation": 0.03555527967340169,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.1294770784179636,
+                "upper": 0.22195060101624073
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.0009944195247385077,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0009343862262917194,
+                "upper": 0.04913277575183992
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.00026992151934191757,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 6.172160409694221e-07,
+                "upper": 0.001955151954518462
+              },
+              "correlation": -0.016429288461218203,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.044217093557580155,
+                "upper": 0.012384114488095958
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.0021543745086460768,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.0222233190122946e-05,
+                "upper": 0.051296229103560194
+              },
+              "correlation": 0.04641524004727409,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.1218878291671733,
+                "upper": 0.22648666863170705
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.0018844529893041592,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0008856401612894518,
+                "upper": 0.05119418863104348
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -1.6313142661391385e-07,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -7.403743129545254e-05,
+                "upper": 9.693252094208913e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.0008901965959922653,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.022062351132621453,
+                "upper": 0.013380142598015243
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chroma/circularity": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "chroma",
+          "right": "circularity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.008025656913624312,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.002675191494583024,
+                "upper": 0.016379224400641657
+              },
+              "correlation": 0.08958603079512067,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.051722251672748576,
+                "upper": 0.1279813436736907
+              }
+            },
+            "raw/between": {
+              "rv": 0.019815837980664452,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.230952571860235e-05,
+                "upper": 0.09076415879782689
+              },
+              "correlation": 0.14076873935879533,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.031727967628956265,
+                "upper": 0.3012708643323199
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.01179018106704014,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.01018667244724269,
+                "upper": 0.08284243533790794
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.008057047007205479,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0026412849842427652,
+                "upper": 0.01658117213963027
+              },
+              "correlation": 0.08976105506958726,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.051393432927667154,
+                "upper": 0.1287678829185707
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.0029157392736095735,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.2597445831227138e-05,
+                "upper": 0.05452329925820979
+              },
+              "correlation": 0.05399758581278957,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.1298709947503944,
+                "upper": 0.23350219485278453
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": -0.005141307733595906,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.013174883634347014,
+                "upper": 0.048160389903833846
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -3.139009358116632e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.000347527604108592,
+                "upper": 0.00026529922377223114
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.01690009870705488,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.01563901845430296,
+                "upper": 0.05123509226199847
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chroma/solidity": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "chroma",
+          "right": "solidity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0067159517834509035,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0021982819142548553,
+                "upper": 0.013944386271086311
+              },
+              "correlation": 0.08195091081526126,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.046885453070609505,
+                "upper": 0.11808629931134318
+              }
+            },
+            "raw/between": {
+              "rv": 0.008986282320177508,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.672726555969688e-05,
+                "upper": 0.0647950738735235
+              },
+              "correlation": -0.09479600371417303,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.25454875911991504,
+                "upper": 0.05391388289158538
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.0022703305367266042,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.011787606568642287,
+                "upper": 0.05927732234191472
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.006824779925126686,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.002178116426784078,
+                "upper": 0.013919726109451039
+              },
+              "correlation": 0.08261222624482824,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.04667011185316114,
+                "upper": 0.1179815733491462
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.004432558449343213,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.6999601390299123e-05,
+                "upper": 0.05365298293669834
+              },
+              "correlation": -0.06657746202239323,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.23163113003859787,
+                "upper": 0.09192413539981528
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": -0.0023922214757834724,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.012064317178561016,
+                "upper": 0.04835802784003005
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.00010882814167578227,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0003836590104607842,
+                "upper": 0.00016020663325480876
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.004553723870834294,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.009801025370941775,
+                "upper": 0.023127251854051945
+              }
+            }
+          }
+        }
+      ]
+    },
+    "chroma/width_profile": {
+      "status": "estimated",
+      "n": 170147,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "chroma",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 5.3792309359790575e-05,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.4290885004283155e-07,
+                "upper": 0.0020589376285023394
+              },
+              "correlation": -0.007334324056093417,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04503139024565771,
+                "upper": 0.02996226687646283
+              }
+            },
+            "raw/between": {
+              "rv": 0.0545502088099617,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0046942706885606325,
+                "upper": 0.15496689331509111
+              },
+              "correlation": 0.23355986129890063,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.06851472906277886,
+                "upper": 0.3936580990442001
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.054496416500601906,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.004535332781134895,
+                "upper": 0.15381105472735185
+              }
+            },
+            "adjusted/within": {
+              "rv": 4.208013228626798e-05,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 3.184916088602576e-07,
+                "upper": 0.0019931824465012514
+              },
+              "correlation": -0.0064869200924836425,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0442274923504569,
+                "upper": 0.031189661997930454
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.020012399335154505,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00010034234877564295,
+                "upper": 0.09691139125741212
+              },
+              "correlation": 0.14146518771469715,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.03675692560552537,
+                "upper": 0.3113057996833232
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.019970319202868236,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -9.304940102746527e-05,
+                "upper": 0.09645174014105706
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": 1.1712177073522592e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -7.034109552103142e-05,
+                "upper": 0.0001336218931423655
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.034537809474807196,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.001713114177666062,
+                "upper": 0.08174732513615979
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hue/aspect": {
+      "status": "estimated",
+      "n": 170099,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "hue",
+          "right": "aspect",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.003470827682437521,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0010496494017105651,
+                "upper": 0.008427139098195436
+              }
+            },
+            "raw/between": {
+              "rv": 0.000542571374300143,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 9.374873953123383e-05,
+                "upper": 0.033502113115743304
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": -0.002928256308137378,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.005870665105007639,
+                "upper": 0.02912648231160424
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0033947740011628425,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0010201226048521905,
+                "upper": 0.008306554863347792
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.00048277969240961805,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0001216986815630585,
+                "upper": 0.034789423264423906
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": -0.0029119943087532246,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0060772052941059996,
+                "upper": 0.03008098354619239
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": 7.605368127467857e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0001480617702030815,
+                "upper": 0.00026772439988679333
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 5.979168189052496e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.020164562927650016,
+                "upper": 0.01689134467804798
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hue/circularity": {
+      "status": "estimated",
+      "n": 170099,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "hue",
+          "right": "circularity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.002480149068864341,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0010345315086820548,
+                "upper": 0.005459342116775712
+              }
+            },
+            "raw/between": {
+              "rv": 0.016699342156667376,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.000888389422935049,
+                "upper": 0.06926548999449579
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.014219193087803035,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.002226140602742603,
+                "upper": 0.06726182356181815
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.00252473770462594,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0010672870005191673,
+                "upper": 0.005578647897889888
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.010706622604062572,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0005813749775253593,
+                "upper": 0.05780833068052906
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.008181884899436631,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0026854714835688894,
+                "upper": 0.055275964846187395
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -4.45886357615991e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00020969121505468803,
+                "upper": 7.870633331675552e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.0059927195526048044,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.010545993240926569,
+                "upper": 0.03230170749258399
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hue/solidity": {
+      "status": "estimated",
+      "n": 170099,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "hue",
+          "right": "solidity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.002663071602927109,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0010074105442852636,
+                "upper": 0.006306461290702446
+              }
+            },
+            "raw/between": {
+              "rv": 0.01057949230782631,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00035648156944859577,
+                "upper": 0.060388968901460074
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.007916420704899202,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0031340049874705126,
+                "upper": 0.05858286959767452
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.00272361904326602,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0010204306944220213,
+                "upper": 0.006520016051358243
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.005012866309150936,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0006461724223942661,
+                "upper": 0.04072572632431999
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.002289247265884916,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0028252785706977773,
+                "upper": 0.03790520139800735
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -6.054744033891094e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00030391418182148063,
+                "upper": 0.00015789223766533405
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.0055666259986753746,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.009870782486248418,
+                "upper": 0.030149092846255426
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hue/width_profile": {
+      "status": "estimated",
+      "n": 170099,
+      "species": 175,
+      "pairs": [
+        {
+          "left": "hue",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.007200706729457246,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0031576675051203187,
+                "upper": 0.012756420295165811
+              }
+            },
+            "raw/between": {
+              "rv": 0.16831454341980526,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.07522617375012315,
+                "upper": 0.28919533329984876
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.161113836690348,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.065356534900833,
+                "upper": 0.281536634868969
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.007554835374518286,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.00331017353615615,
+                "upper": 0.013201822727615428
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.09564585541098432,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.020677701305474687,
+                "upper": 0.2112049646401503
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.08809102003646603,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.013052433683147725,
+                "upper": 0.2037759193493595
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.0003541286450610406,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0008347578055948215,
+                "upper": 7.07620097030118e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.07266868800882094,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.02909307502032997,
+                "upper": 0.12480090518529138
+              }
+            }
+          }
+        }
+      ]
+    },
+    "aspect/circularity": {
+      "status": "estimated",
+      "n": 175926,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "aspect",
+          "right": "circularity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0012147731787535883,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.3903244823553564e-05,
+                "upper": 0.004267984552510827
+              },
+              "correlation": 0.034853596353225706,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0060997458406897315,
+                "upper": 0.06532980946123546
+              }
+            },
+            "raw/between": {
+              "rv": 0.02413892237810823,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0001920853751630595,
+                "upper": 0.09834497811150456
+              },
+              "correlation": 0.15536705692684094,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0011405668417978168,
+                "upper": 0.3135999731948657
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.022924149199354642,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0009159709543360739,
+                "upper": 0.09707389303461235
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0012241716671352143,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 4.8789284948868405e-05,
+                "upper": 0.004332873863019376
+              },
+              "correlation": 0.03498816467228903,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.005896778501888114,
+                "upper": 0.06582456880557527
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.02401133461178406,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0002614681261260196,
+                "upper": 0.1004590620523289
+              },
+              "correlation": 0.1549559118323146,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.016374483274638287,
+                "upper": 0.31695277155205404
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.022787162944648845,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.001093292855194947,
+                "upper": 0.09870707343367789
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -9.398488381626028e-06,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -8.444407467796227e-05,
+                "upper": 6.41120269003362e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.00012758776632416924,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.01621911820365483,
+                "upper": 0.015936418671818848
+              }
+            }
+          }
+        }
+      ]
+    },
+    "aspect/solidity": {
+      "status": "estimated",
+      "n": 175926,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "aspect",
+          "right": "solidity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.00018654758998698197,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 3.6063562931139425e-07,
+                "upper": 0.0023194766568542524
+              },
+              "correlation": -0.013658242565827493,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.048160944831991806,
+                "upper": 0.01907254526053195
+              }
+            },
+            "raw/between": {
+              "rv": 0.002351557049707813,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 2.628525422813036e-05,
+                "upper": 0.053326395768636736
+              },
+              "correlation": 0.048492855656352245,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.12655907259521168,
+                "upper": 0.2286188946559065
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.002165009459720831,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0010738883093918041,
+                "upper": 0.05324065553277633
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0001810559169037087,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 6.005488984252657e-07,
+                "upper": 0.0022680387087737645
+              },
+              "correlation": -0.013455702021957408,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04762390713076539,
+                "upper": 0.019504993433166126
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.003006369941001653,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 1.0308427603693389e-05,
+                "upper": 0.061125178212671896
+              },
+              "correlation": 0.054830374255531514,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.14111272984627746,
+                "upper": 0.24723506421218802
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.0028253140240979443,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0008745290090704561,
+                "upper": 0.06082232012236834
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": 5.4916730832732725e-06,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -3.0138734208979064e-05,
+                "upper": 4.2068076270276124e-05
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.0006548128912938398,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.014124048193927097,
+                "upper": 0.00601257764518692
+              }
+            }
+          }
+        }
+      ]
+    },
+    "aspect/width_profile": {
+      "status": "estimated",
+      "n": 175926,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "aspect",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.0027940448141517073,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0005223558907259777,
+                "upper": 0.007675491121973953
+              },
+              "correlation": -0.05285872505227218,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.087609860996386,
+                "upper": -0.022855035911500534
+              }
+            },
+            "raw/between": {
+              "rv": 0.0006868266405184462,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 7.858059715781116e-06,
+                "upper": 0.03123097782671773
+              },
+              "correlation": 0.02620737759712799,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.11450808381833102,
+                "upper": 0.17329315270780093
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": -0.002107218173633261,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.006408893400322701,
+                "upper": 0.02808503865266762
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.0028835845787662244,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0005655712349961862,
+                "upper": 0.007668649633942608
+              },
+              "correlation": -0.053699018415295306,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.08757078398365754,
+                "upper": -0.023781694129707206
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.00020857864915931518,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 6.450933449125918e-06,
+                "upper": 0.0292039740361164
+              },
+              "correlation": 0.01444225221907287,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.12338038033386312,
+                "upper": 0.16118803006819948
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": -0.002675005929606909,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.006207367969136467,
+                "upper": 0.02606673416726913
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -8.953976461451713e-05,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.00019867178983767878,
+                "upper": 2.352866043786019e-06
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.000478247991359131,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.007557371726516039,
+                "upper": 0.00984122877265372
+              }
+            }
+          }
+        }
+      ]
+    },
+    "circularity/solidity": {
+      "status": "estimated",
+      "n": 175926,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "circularity",
+          "right": "solidity",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.7686919165568564,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.7541014197914123,
+                "upper": 0.7831032194007169
+              },
+              "correlation": 0.8767507722020302,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.868390131089707,
+                "upper": 0.8849311947259669
+              }
+            },
+            "raw/between": {
+              "rv": 0.730511890348095,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.6634037248668315,
+                "upper": 0.7903080985874108
+              },
+              "correlation": 0.8546998832035109,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.8144959943792484,
+                "upper": 0.8889927381183004
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": -0.038180026208761375,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.10810101156083057,
+                "upper": 0.027645762631481885
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.7688772264937991,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.7545729174882654,
+                "upper": 0.7833515292181619
+              },
+              "correlation": 0.8768564457730804,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.8686615658092812,
+                "upper": 0.8850714824016171
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.7795201095083307,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.7205970423091208,
+                "upper": 0.8382265274338618
+              },
+              "correlation": 0.8829043603405358,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.8488798750760029,
+                "upper": 0.9155471176398058
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.010642883014531646,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04988181218298404,
+                "upper": 0.07467743432398563
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.00018530993694265696,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0006668588623755884,
+                "upper": 0.0003027382213503876
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.04900821916023568,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.07977693105446035,
+                "upper": -0.017019906265825793
+              }
+            }
+          }
+        }
+      ]
+    },
+    "circularity/width_profile": {
+      "status": "estimated",
+      "n": 175926,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "circularity",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.23086853938374888,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.18698185506459503,
+                "upper": 0.27558662829303443
+              },
+              "correlation": -0.4804878139804889,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.5249634531859483,
+                "upper": -0.43241398107891127
+              }
+            },
+            "raw/between": {
+              "rv": 0.29244156611621586,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.16620375498136686,
+                "upper": 0.41924794089738554
+              },
+              "correlation": -0.5407786664766057,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.6474935778586737,
+                "upper": -0.4076809383637346
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.06157302673246698,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.04900604743006895,
+                "upper": 0.17773759949060255
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.2313900461544974,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.18814858670641027,
+                "upper": 0.27602782442818086
+              },
+              "correlation": -0.48103019256019414,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.5253835019834593,
+                "upper": -0.43376091704453856
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.3601563839489543,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.22053371698388197,
+                "upper": 0.4888038950740002
+              },
+              "correlation": -0.6001303058077923,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.6991450840830398,
+                "upper": -0.46961014336296214
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.12876633779445687,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.0032955226482933764,
+                "upper": 0.2562389846369584
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.0005215067707485255,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0013088576413247074,
+                "upper": 0.00020570599783237468
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": -0.06771481783273842,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.11822816994532766,
+                "upper": -0.011582527968694793
+              }
+            }
+          }
+        }
+      ]
+    },
+    "solidity/width_profile": {
+      "status": "estimated",
+      "n": 175926,
+      "species": 177,
+      "pairs": [
+        {
+          "left": "solidity",
+          "right": "width_profile",
+          "estimates": {
+            "raw/within": {
+              "rv": 0.2551025151214178,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.21324516182797615,
+                "upper": 0.2968302360978467
+              },
+              "correlation": -0.505076741813972,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.5448212882194334,
+                "upper": -0.4617847376021918
+              }
+            },
+            "raw/between": {
+              "rv": 0.366442788482083,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.23755957453247126,
+                "upper": 0.51240533685594
+              },
+              "correlation": -0.6053451812660963,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.7158249319744036,
+                "upper": -0.48740083440900395
+              }
+            },
+            "raw/between_minus_within_rv": {
+              "estimate": 0.11134027336066521,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.015806978383567313,
+                "upper": 0.24442682225344628
+              }
+            },
+            "adjusted/within": {
+              "rv": 0.2552865728274859,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.2135501051509657,
+                "upper": 0.29696654714424586
+              },
+              "correlation": -0.5052589166234337,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.5449463706338757,
+                "upper": -0.46211478298930825
+              }
+            },
+            "adjusted/between": {
+              "rv": 0.35570545079730886,
+              "rv_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": 0.21299014500862487,
+                "upper": 0.5118813450757416
+              },
+              "correlation": -0.5964104717367971,
+              "correlation_interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.7154588334031662,
+                "upper": -0.4615085503064595
+              }
+            },
+            "adjusted/between_minus_within_rv": {
+              "estimate": 0.10041887796982296,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.03624661543830203,
+                "upper": 0.25313972045131417
+              }
+            },
+            "raw_minus_adjusted/within": {
+              "estimate": -0.00018405770606810812,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0007196407696140536,
+                "upper": 0.00039898883639298273
+              }
+            },
+            "raw_minus_adjusted/between": {
+              "estimate": 0.01073733768477414,
+              "interval": {
+                "status": "estimated",
+                "finite": 1000,
+                "lower": -0.0317164337803338,
+                "upper": 0.050627812310523684
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "replicates": 1000,
+  "seed": 20261020,
+  "interval_scope": "Species-cluster bootstrap; adjusted intervals conditional on fixed environment coefficients. No spatial or coefficient-estimation uncertainty.",
+  "claim_boundary": "Descriptive phenotype association, not latent random-effect/genetic covariance, adaptation, or a causal environment-explained fraction."
+}

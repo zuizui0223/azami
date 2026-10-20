@@ -51,6 +51,8 @@ def execute(source, output):
     data = read_sources(source)
     models, integration, space, audit = [data[k] for k in (
         "native_trait_models", "native_integration", "native_spatial", "native_integration_audit")]
+    if models["git_sha"] != "e5db09e102d6d5bf48038ee8469008bee033a69b":
+        raise ValueError("Narrative is scoped to the reviewed numerical run; review before using new results")
     output.mkdir(parents=True, exist_ok=True)
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
     predictors = models["selection"]["selected"]
@@ -153,6 +155,48 @@ def execute(source, output):
         lines.append("|"+label+"|"+"|".join(rendered)+"|")
     lines += ["", f'向きの空間均等化で観測数は{rain["main_n"]:,}から{rain["balanced_n"]:,}へ変わる。',
               "区間は引き続き種クラスタに基づく。間引きによる標本変更は空間誤差モデルの代用ではない。",
+              "", "## 色は具体的にどう変わるか", "",
+              "共同検定はL*・C*・色相のsin/cosを合わせた検定。以下の成分の区間は点別95%で、"
+              "個別成分を多重性調整済みの発見と扱わない。種内と種間の係数差自体を検定した結果でもない。",
+              "",
+              "|環境増分|尺度|明度 L* の変化［95%区間］|彩度 C* の変化［95%区間］|",
+              "|---|---|---:|---:|"]
+    effects = pd.read_csv(source/"native_trait_effects.csv")
+    for variable in predictors:
+        for level, label in (("between", "種間"), ("within", "種内")):
+            entries = []
+            for endpoint in ("corolla_lab_lightness", "corolla_lab_chroma"):
+                effect = effects.loc[(effects.endpoint == endpoint) &
+                                     (effects.term == variable+"__"+level)].iloc[0]
+                entries.append(f'{effect.trait_change:+.3f} [{effect.lower95:+.3f}, {effect.upper95:+.3f}]')
+            lines.append(f'|{ENV[variable]} +{effect.environmental_increment:g}|{label}|'
+                         +"|".join(entries)+"|")
+    lines += ["",
+              "現在のモデルでは、種間の日射勾配は明るく・低彩度になる方向。"
+              "同じ種内の温度勾配も明るく・低彩度になる方向だが、種間の温度と彩度は正方向である。"
+              "したがって、種をまたいだ比較を、そのまま同じ種の温度応答として読めない。",
+              "",
+              "|環境|種間：色相変化（度）|種内：色相変化（度）|",
+              "|---|---:|---:|"]
+    hue = models["models"]["colour"]["conditional_hue_contrasts"]
+    for variable in predictors:
+        lines.append(f'|{ENV[variable]} +1 native SD|'
+                     f'{hue[variable+"__between"]["change_degrees"]:+.2f}|'
+                     f'{hue[variable+"__within"]["change_degrees"]:+.2f}|')
+    lines += ["",
+              "色相はモデルの共通基準点から環境を1標準偏差動かした記述的な円周角変化。"
+              "色相角変化の信頼区間ではなく、写真の再構成色・色素組成の変化でもない。"
+              "角度の正負だけで、すべての種が同じ色名から別の色名へ変わるとは解釈できない。",
+              "",
+              "アントシアニンに関しては、種内の高温側で明るく低彩度となるパターンは、"
+              "他の植物で実験的に観察された高温での花弁アントシアニン減少と整合し得る。"
+              "ただし、アザミで色素量や生育温度への反応を直接測った結果ではなく、"
+              "気候平年値との空間的な対応である。"
+              "[キクの花弁色素の温度実験](https://www.jstage.jst.go.jp/article/ecb/56/3/56_99/_article/-char/en)。",
+              "高温でアントシアニンが増えるユリの実験もあり、反応は普遍的ではない。"
+              "[ユリの実験](https://eprints.lib.hokudai.ac.jp/repo/huscap/all/87732/)。"
+              "日射側の低彩度も、単純な「日射が強いほど色素が増える」という説明を支持しない。"
+              "日射はUV専用指標ではなく、JPEGの露出・花齢・白色花の混合なども未分離である。",
               "", "## 種内・種間の共変動", "",
               "共通標本の全28関係を表示した。調整前後は同じ観測で比較し、種のランダム切片は差し引かない。",
               "調整後の区間は環境係数を固定した種ブートストラップであり、その係数の推定誤差は含まない。",
@@ -178,6 +222,15 @@ def execute(source, output):
               "種ランダム切片は系統補正ではない。撮影者IDは準備済み表にないため撮影者効果は未調整。",
               "", "全成分の実単位効果は `native_trait_effects.csv`、"
               "共変動の区間とペア別標本は `integration_pairs.csv` を参照。"]
+    lines += ["", "## 統合した結論", "",
+              "写真からの定量により、種のカテゴリー記述に閉じず、種内の連続変異と種間の形質の組み合わせを"
+              "同じ測定軸で比較できた。今回の条件付き解析では、降水と向きの対応は主に種間に現れ、"
+              "色の温度・日射との対応は尺度と成分によって異なった。",
+              "環境の固定効果を差し引いた後にも、種間の形質間関連が種内より強い方向が等標本数診断で残った。"
+              "これは、測定した環境勾配だけで形質の組み合わせを説明しきれないという記述的な結果である。",
+              "雨からの保護や色素の生理機能は、この対応を説明する検証候補であり、本解析だけで適応を確定しない。"
+              "総苞片SIでは、今回の5環境に対する共同検定は明瞭ではなかった。"
+              "測定数と形質の代理性を考えると、防御機能がないという結論にはならない。"]
     (output/"report_ja.md").write_text("\n".join(lines)+"\n", encoding="utf-8")
     (output/"native_trait_effects.csv").write_bytes((source/"native_trait_effects.csv").read_bytes())
     rows = []
