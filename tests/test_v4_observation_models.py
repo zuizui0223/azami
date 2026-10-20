@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import json
 from pathlib import Path
-from analysis.v4.observation_models import reuse_inventory
+from analysis.v4.observation_models import reuse_inventory, spherical_basis
 from analysis.v4.observation_models import ENV, MODULES, fit_response, fit_module, design_diagnostics
 
 
@@ -142,3 +142,25 @@ def test_inventory_keeps_unmeasured_and_ineligible_values_out_of_inference():
     report['endpoints'][main]['eligible']=1
     with pytest.raises(ValueError,match='coverage differs'):
         reuse_inventory(frame,report,crosswalk)
+
+
+def test_spherical_basis_is_periodic_across_longitude_and_has_eight_terms():
+    lat=np.array([-40.,0.,35.,65.])
+    lon=np.array([-179.,-40.,80.,179.])
+    assert spherical_basis(lat,lon).shape==(4,8)
+    assert spherical_basis(lat,lon)==pytest.approx(spherical_basis(lat,lon+360),abs=1e-12)
+
+
+def test_fixed_adjustment_removes_known_confounding_without_averaging_rows():
+    frame,scales=sample()
+    rng=np.random.default_rng(822)
+    frame['adjustment']=frame[ENV[0]+'__within']+rng.normal(size=len(frame))
+    frame['y1']=2*frame.adjustment+rng.normal(size=len(frame))*.02
+    reference=fit_module(frame,['y1'],scales)
+    adjusted=fit_module(frame,['y1'],scales,adjustments=['adjustment'])
+    term=ENV[0]+'__within'
+    assert reference['components']['y1']['effects'][term]['raw_units_per_environment_sd']>1.8
+    assert abs(adjusted['components']['y1']['effects'][term]['raw_units_per_environment_sd'])<.01
+    assert adjusted['components']['y1']['n']==reference['components']['y1']['n']==660
+    assert len(adjusted['tests'])==8
+    assert 'adjustment' not in adjusted['tests']

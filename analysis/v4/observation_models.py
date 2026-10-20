@@ -136,11 +136,20 @@ def fit_response(x, y, groups):
             'objective':float(evaluate(ratio))}
 
 
-def fit_module(frame, outcomes, scales, predictors=None):
+def spherical_basis(latitude, longitude):
+    lat,lon=np.deg2rad(latitude),np.deg2rad(longitude)
+    x,y,z=np.cos(lat)*np.cos(lon),np.cos(lat)*np.sin(lon),np.sin(lat)
+    return np.column_stack([x,y,z,x*y,x*z,y*z,x*x-y*y,3*z*z-1])
+
+
+def fit_module(frame, outcomes, scales, predictors=None, adjustments=()):
     predictors=ENV if predictors is None else predictors
-    terms=['intercept']+[v+s for v in predictors for s in ('__between','__within')]
+    climate_terms=[v+s for v in predictors for s in ('__between','__within')]
+    terms=['intercept']+climate_terms+list(adjustments)
     # Even reduced sensitivity models retain exactly the four-predictor complete rows.
     finite_environment=np.isfinite(frame[ENV]).all(axis=1)
+    if adjustments:
+        finite_environment &= np.isfinite(frame[list(adjustments)]).all(axis=1)
     labels=np.sort(frame.accepted_key.unique())
     label_index={label:i for i,label in enumerate(labels)}
     fits=[];influences=[];components={}
@@ -149,7 +158,8 @@ def fit_module(frame, outcomes, scales, predictors=None):
         d=frame.loc[eligible]
         x=np.column_stack([np.ones(len(d))]+[
             ((d[v+s]-(scales[v]['mean'] if s=='__between' else 0))/scales[v]['sd']).to_numpy()
-            for v in predictors for s in ('__between','__within')])
+            for v in predictors for s in ('__between','__within')]+[
+                d[a].to_numpy(float) for a in adjustments])
         y=d[outcome].to_numpy(float)
         center=float(y.mean()) if len(y) else 0.
         scale=float(y.std()) if len(y) else 0.
@@ -185,7 +195,7 @@ def fit_module(frame, outcomes, scales, predictors=None):
         statistic=float((b/sd)@np.linalg.solve(corr,b/sd)/len(ix))
         return {'status':'estimated','F':statistic,'df1':len(ix),
                 'df2':denominator,'p':float(f.sf(statistic,len(ix),denominator))}
-    for j,term in enumerate(terms[1:],1):
+    for j,term in enumerate(climate_terms,1):
         tests[term]=wald([i*len(terms)+j for i in range(len(outcomes))])
     joint_temperature_vpd={}
     if ENV[0] in predictors and ENV[2] in predictors:
@@ -198,7 +208,7 @@ def fit_module(frame, outcomes, scales, predictors=None):
         sine,cosine=components['corolla_hue_sin'],components['corolla_hue_cos']
         s0,c0=sine['reference_prediction'],cosine['reference_prediction']
         if np.hypot(s0,c0)>1e-6:
-            for term in terms[1:]:
+            for term in climate_terms:
                 s1=s0+sine['effects'][term]['raw_units_per_environment_sd']
                 c1=c0+cosine['effects'][term]['raw_units_per_environment_sd']
                 delta=np.rad2deg(np.arctan2(s1,c1)-np.arctan2(s0,c0))
@@ -207,6 +217,7 @@ def fit_module(frame, outcomes, scales, predictors=None):
                            'scope':'descriptive fixed-effect +1 native predictor SD contrast; not an independent test'}
     return {'status':'estimated','outcomes':outcomes,'components':components,'tests':tests,
             'predictors':predictors,'joint_temperature_vpd':joint_temperature_vpd,
+            'fixed_adjustments':list(adjustments),
             'conditional_hue_contrasts':hue,
             'inference':'approximate stacked marginal REML species-cluster Wald F',
             'random_effects':'response-specific species intercept; no phylogenetic correction',
@@ -269,6 +280,31 @@ def execute(table, receipt, output):
             if test['status']=='estimated':test['holm_p_six_block_tests']=float(adjusted)
     result['attribution_scope']='retrospective six joint temperature-VPD block tests; '
     result['attribution_scope']+='omission models are same-row diagnostics, not preferred causal models'
+    geo=spherical_basis(frame.latitude.to_numpy(float),frame.longitude.to_numpy(float))
+    if not np.isfinite(geo).all():
+        raise ValueError('Native coordinates missing; matched spatial comparison cannot proceed')
+    mean,sd=geo.mean(axis=0),geo.std(axis=0)
+    if np.any(sd<=1e-12):raise ValueError('Insufficient spatial support')
+    spatial_terms=[f'broad_space_{j}' for j in range(8)]
+    frame[spatial_terms]=(geo-mean)/sd
+    result['spatial_design']={'basis':['x','y','z','xy','xz','yz','x2-y2','3z2-1'],
+                              'mean':mean.tolist(),'sd':sd.tolist(),
+                              'scope':'fixed broad geographic trend, not a residual spatial process'}
+    result['spatial_models']={}
+    for module,outcomes in MODULES.items():
+        print(f'Same-row broad-space comparison: {module}',flush=True)
+        model=fit_module(frame,outcomes,scales,adjustments=spatial_terms)
+        if model['status']=='estimated':
+            for outcome,c in model['components'].items():
+                if c['n']!=result['models'][module+'/drop0']['components'][outcome]['n']:
+                    raise ValueError('Spatial comparison changed the observation set')
+        result['spatial_models'][module]=model
+    spatial_tests=[result['spatial_models'][module].get('tests',{}).get(
+                       term,{'status':'not_identifiable'})
+                   for module in MODULES for term in TERMS[1:]]
+    for test,q in zip(spatial_tests,multipletests(
+            [test.get('p',1.) for test in spatial_tests],method='holm')[1]):
+        if test['status']=='estimated':test['holm_p_spatial_24']=float(q)
     family=[test for name,model in result['models'].items() if name.endswith('/drop0')
             for test in model.get('tests',{}).values()]
     if len(family)!=24 or any(test['status']!='estimated' for test in family):
@@ -279,13 +315,16 @@ def execute(table, receipt, output):
             test['holm_p']=float(q)
         result['primary_status']='estimated'
     (output/'results.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+    export_models={**result['models'],
+                   **result['attribution_sensitivity'],
+                   **{'spatial/'+k:v for k,v in result['spatial_models'].items()}}
     rows=[]
-    for name,model in result['models'].items():
+    for name,model in export_models.items():
         for term,test in model.get('tests',{}).items():
             rows.append({'model':name,'term':term,**test})
     pd.DataFrame(rows).to_csv(output/'joint_tests.csv',index=False)
     rows=[]
-    for name,model in result['models'].items():
+    for name,model in export_models.items():
         for outcome,component in model.get('components',{}).items():
             for term,effect in component.get('effects',{}).items():
                 rows.append({'model':name,'outcome':outcome,'term':term,
@@ -369,7 +408,8 @@ def write_report(result, output):
             'その成分について種間異質性が明確に推定できたとは扱わない。',
             '- 種内と種間は異なる尺度の条件付き傾向。種間の差を同一個体・同一種の'
             '温暖化応答や可塑性に読み替えない。すべての種が同じ傾きを持つとも断定しない。',
-            '- 主解析は広域空間構造・系統を同時調整していない。土壌を含む追加検証も別工程。'
+            '- 基準モデルと広域空間8項を加えた比較を併記する。残差の空間独立性や系統調整を'
+            '保証するものではない。土壌を含む追加検証も別工程。'
             '本結果のみで投稿準備完了とはしない。',
             '- GEBの主題は、連続的な写真形質によって種カテゴリー内の変異まで比較でき、'
             '異なる生物学的尺度の環境関連を区別できること。解析手法の利用自体を新規性とはしない。',
@@ -415,6 +455,18 @@ def write_report(result, output):
     for row in result['reuse_inventory']:
         lines.append(f"|{row['endpoint']}|{row['eligible']:,}|"
                      f"{row['eligible_with_four_climate']:,}|{row['current_use']}|")
+    lines+=['','## 同じ観測を使った広域空間比較','',
+            '球面座標の8項を追加し、環境8項と種ランダム切片は維持した。'
+            '下表のP値は空間比較24検定の中でHolm補正。基準モデルとの独立な再現ではない。','',
+            '|形質群|環境|種間P|種内P|','|---|---|---:|---:|']
+    for module,label in labels.items():
+        model=result['spatial_models'][module]
+        for v in ENV:
+            cells=[]
+            for suffix in ('__between','__within'):
+                p=model.get('tests',{}).get(v+suffix,{}).get('holm_p_spatial_24')
+                cells.append(f'{p:.4g}' if p is not None else '評価不能')
+            lines.append(f'|{label}|{names[v]}|'+ '|'.join(cells)+'|')
     (Path(output)/'conclusions_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 

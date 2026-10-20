@@ -88,3 +88,25 @@ Source comparison inspected on 2026-10-20:
 - [aza3 empirical head comparison](https://github.com/zuizui0223/aza3/blob/2dabd7750a80686f002849873ab941b180135131/docs/CIRSIUM_HEAD_CORE_VS_BRACT_TIP_SPREAD_EMPIRICAL_20261020.md):
   reproductive dimensions and relative external spread can differ in coupling;
   the existing comparison is exploratory and does not establish genetic modules.
+
+## Integrated broad-space comparison
+
+Retain the complete four-climate model as the common reference. The spatial
+comparison adds eight fixed spherical coordinates:
+`x, y, z, xy, xz, yz, x²-y², 3z²-1`, where `x=cos(lat)cos(lon)`,
+`y=cos(lat)sin(lon)`, `z=sin(lat)`. Center/scale these on the same full native
+population, without looking at phenotypes. This is a low-order broad-geographic
+trend, not a spatial covariance process or proof that residual dependence is gone.
+Retain all eight climate within/between terms, species random intercepts, and the
+same response-specific observations. Verify matched counts against the reference.
+Do not tune basis complexity, drop climate terms, or select species by significance.
+
+Report the three spatial fits and the same 24 climate tests with a separate Holm
+family, explicitly as sensitivity estimates. Keep singular/failed fits visible;
+do not alter the design to force a significant or identifiable answer.
+The reference, species-removal, temperature/VPD attribution and spatial fits run
+in the same existing Action and report. New image measurement is not a dependency.
+
+Implementation/verification: extend `fit_module` with optional fixed adjustment
+columns, exercise same-row and geographic-basis invariants in existing numerical
+tests, then run and inspect the existing manual Action. No local model execution.

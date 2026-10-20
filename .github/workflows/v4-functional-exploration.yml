@@ -144,6 +144,9 @@ jobs:
           assert all(m['status']=='estimated' for m in a['models'].values())
           assert len(a['attribution_sensitivity'])==6
           assert all(m['status']=='estimated' for m in a['attribution_sensitivity'].values())
+          assert set(a['spatial_models'])=={'colour','orientation','bract_projection'}
+          assert all(m['status'] in {'estimated','not_identifiable'} for m in a['spatial_models'].values())
+          assert len(a['reuse_inventory'])==27
           assert a['models']['colour/drop0']['components']['corolla_lab_lightness']['n']==186439
           assert a['models']['colour/drop0']['components']['corolla_hue_sin']['n']==186390
           assert a['models']['orientation/drop0']['components']['orientation_image_vertical_angle']['n']==170066
