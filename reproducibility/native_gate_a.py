@@ -136,7 +136,7 @@ def _strict_endpoint_masks(frame: pd.DataFrame, ledger: dict | None) -> tuple[di
     endpoint_ids = [r["endpoint_id"] for r in ledger["endpoints"]] if ledger else list(
         dict.fromkeys((*CORE9, *RECOVERED_FIVE))
     )
-    missing = sorted(set(endpoint_ids) | {x + "__eligible" for x in endpoint_ids} - set(frame))
+    missing = sorted((set(endpoint_ids) | {x + "__eligible" for x in endpoint_ids}) - set(frame.columns))
     if missing:
         raise ValueError("Missing endpoint columns: " + ", ".join(missing))
     coverage, masks = {}, {}
@@ -231,7 +231,8 @@ def audit_gate_a(
         pd.to_datetime(frame["observed_on"], errors="coerce")
         if "observed_on" in frame else None
     )
-    source_top5 = list(frame["accepted_key"].value_counts().head(5).index)
+    source_counts = frame["accepted_key"].value_counts()
+    source_top5 = sorted(source_counts.index, key=lambda x: (-int(source_counts[x]), str(x)))[:5]
     result = {
         "status": "actual_matched_phenotype_eligibility_only" if ledger else "synthetic_qa_only",
         "native_observations": int(len(frame)),
