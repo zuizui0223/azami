@@ -1,10 +1,9 @@
 name: V4 all 665115 upstream native climate replay
+# The exact upstream 2026-07-03 source Actions artifact expired on GitHub.
+# This FULL private-data replay may only be triggered after restoring that same
+# checksum-authenticated source to an owner-authorized access path. Normal PR CI
+# runs source-independent synthetic tests (reproducibility-integrity).
 on:
-  pull_request:
-    paths:
-      - 'analysis/v4/native_665115_pipeline.py'
-      - 'tests/test_v4_native_665115_pipeline.py'
-      - '.github/workflows/v4-native-665115-replay.yml'
   workflow_dispatch:
 
 permissions:
