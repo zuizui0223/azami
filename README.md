@@ -42,6 +42,14 @@ retains a positive between-species rainfall–orientation coefficient across all
 This is a grafting-scenario sensitivity, not a resolved molecular phylogeny,
 joint spatial–phylogenetic model or evolutionary cross-trait covariance test.
 
+The [joint covariance decomposition](analysis/v4/results/20261020_native_covariance/README.md)
+then separates phylogenetic, independent-species and within-species covariance
+on 157561 common observations from 170 taxa. It uses constrained quadratic
+moments and conditional parametric uncertainty. Phylogenetic correlation
+directions are unstable; extreme boundary estimates are not evidence of
+evolutionary integration. The dedicated **V4 native covariance decomposition**
+Action supports numerical execution or report-only `report_run` rendering.
+
 The verified 665,115-observation original-source classification yields a
 313,350-observation native-primary roster **before** any image or trait selection.
 Only 22 of the 27 registered V2 endpoints have historical measurements; five were

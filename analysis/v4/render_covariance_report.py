@@ -111,7 +111,7 @@ def render(source, output):
     fig.suptitle("Conditional covariance components — PSD moment estimates\n"
                  "Large RV alone is not evidence: small component variances can produce extreme correlations.",
                  fontsize=12)
-    fig.savefig(output/"covariance_components.png", dpi=180)
+    fig.savefig(output/"covariance_components.png", dpi=180, bbox_inches="tight", pad_inches=.2)
     plt.close(fig)
     manifest = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                 for p in output.iterdir() if p.is_file() and p.name!="manifest.json"}
