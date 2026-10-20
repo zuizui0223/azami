@@ -6,8 +6,7 @@ import numpy as np
 import pandas as pd
 
 from analysis.v4.environment_candidate_audit import CANDIDATES
-from analysis.v4.environment_response import execute
-from analysis.v4.observation_models import MODULES
+from analysis.v4.environment_response import execute, MODULES
 
 
 def test_fixed_workflow_keeps_response_specific_missingness(tmp_path):
@@ -45,7 +44,9 @@ def test_fixed_workflow_keeps_response_specific_missingness(tmp_path):
     assert set(result['models'])==set(MODULES)
     assert result['predictors']==selected
     assert result['environment_parameterization']=='within_between'
-    assert sum(len(m['tests']) for m in result['models'].values())==30
+    assert sum(len(m['tests']) for m in result['models'].values())==40
+    assert result['models']['head_outline']['components']['capitulum_outline_circularity']['n']==350
+    assert result['models']['head_outline']['tests'][selected[0]+'__within']['df1']==4
     assert result['models']['orientation']['components']['orientation_image_vertical_angle']['n']==349
     assert result['models']['colour']['components']['corolla_lab_lightness']['n']==350
     assert result['models']['bract_projection']['components']['bract_projection_p95']['n']==350

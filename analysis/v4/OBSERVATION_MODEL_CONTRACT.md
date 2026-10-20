@@ -92,3 +92,5 @@ No omission-model search, additional spatial/soil/phylogenetic models or whole-h
 integration are part of this narrowed execution path. Historical code/results
 remain available in Git and prior artifacts and are not selected for significance.
 
+
+Latest scope amendment: main modules are colour, orientation and four head-outline endpoints (aspect ratio, circularity, solidity, width-profile CV). Bract projection remains SI. Four modules x eight predictors x two levels implies 64 joint tests. Individual head-outline effects and gradients are reported alongside the four-component joint test. No cross-module completeness requirement.

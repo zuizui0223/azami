@@ -10,9 +10,15 @@ import pandas as pd
 from statsmodels.stats.multitest import multipletests
 
 from analysis.v4.environment_candidate_audit import matrix_summary
-from analysis.v4.observation_models import MODULES, fit_module, reuse_inventory
+from analysis.v4.environment_gradients import exposure_support, gradient_points
+from analysis.v4.observation_models import MODULES as LEGACY_MODULES, fit_module, reuse_inventory
 
-LABELS={'colour':'色全体','orientation':'向き','bract_projection':'総苞片の輪郭突出'}
+MODULES = {**LEGACY_MODULES, 'head_outline': [
+    'capitulum_outline_aspect_ratio', 'capitulum_outline_circularity',
+    'capitulum_outline_solidity', 'capitulum_width_profile_cv']}
+
+LABELS={'colour':'色全体','orientation':'向き','head_outline':'頭花輪郭4項目',
+        'bract_projection':'総苞片の輪郭突出'}
 ENV_LABELS={'chelsa_bio01':'温度','chelsa_rsds_mean':'日射','chelsa_vpd_mean':'VPD',
             'chelsa_bio12':'降水','chelsa_bio04':'温度季節性','chelsa_bio15':'降水季節性',
             'chelsa_sfcwind_mean':'風速','chelsa_gsp':'生育期降水量','chelsa_npp':'NPP'}
@@ -47,7 +53,7 @@ def execute(table, receipt_path, output, selection_path):
     for outcomes in MODULES.values():
         for endpoint in outcomes:
             rows=frame.loc[complete & frame[endpoint+'__eligible'].eq(True) & np.isfinite(frame[endpoint])]
-            diagnostics[endpoint]={'n':len(rows),'designs':{
+            diagnostics[endpoint]={'n':len(rows),'exposure_support':exposure_support(rows,predictors),'designs':{
                 level:matrix_summary(rows,columns) for level,columns in [
                     ('between',[v+'__between' for v in predictors]),
                     ('within',[v+'__within' for v in predictors]),
@@ -64,8 +70,20 @@ def execute(table, receipt_path, output, selection_path):
     for test,q in zip(tests,multipletests([t.get('p',1.) for t in tests],method='holm')[1]):
         if test.get('status')=='estimated':
             test['holm_p']=float(q)
+    for model in models.values():
+        for endpoint, component in model.get('components',{}).items():
+            component['gradients']={}
+            for term, effect in component.get('effects',{}).items():
+                variable=term.rsplit('__',1)[0]
+                component['gradients'][term]=gradient_points(
+                    effect,diagnostics[endpoint]['exposure_support'][term],scales[variable]['sd'])
     crosswalk=Path(__file__).with_name('trait27_functional_crosswalk_v1.json')
     inventory=reuse_inventory(frame,receipt,json.loads(crosswalk.read_text()))
+    for row in inventory:
+        if row['endpoint'] in MODULES['head_outline'] and row['eligible']:
+            row['current_use']='joint_primary_module'
+        elif row['endpoint'] in MODULES['bract_projection'] and row['eligible']:
+            row['current_use']='supplementary_module'
     result={'question':'Which environmental gradients are associated with head traits, '
                         'conditional on the other included environmental dimensions?',
             'input_sha256':digest,'input_receipt':receipt,
@@ -106,10 +124,12 @@ def report(result,output):
            '色全体は明度・彩度・円周色相の共同検定。各成分の利用可能な観測を使う。','',
            '過去の結果を閲覧済みの改訂観測解析であり、事前登録した独立検証ではない。'
            f"{result['family_size']}共同検定でHolm補正。成分の95%区間は点別である。",'',
-           '主解析は色全体と向き。総苞片は測定数・被覆範囲と機能的指標の制約からSIに置く。'
-           '移動を理由に48検定の補正をやり直していない。','',
+           '主解析は色全体・向き・頭花輪郭4項目。総苞片はSIに置く。'
+           '補正対象は今回の全モジュール・環境・種内／種間の共同検定。','',
            '|形質|環境|種間P（Holm）|種内P（Holm）|','|---|---|---:|---:|']
-    for module in ('colour','orientation'):
+    for module in ('colour','orientation','head_outline'):
+        if module not in result['models']:
+            continue
         label=LABELS[module]
         for v in result['predictors']:
             cells=[]
@@ -121,7 +141,9 @@ def report(result,output):
             '全自生域母集団の環境1標準偏差当たりの変化。単独の成分検定で'
             '色全体の関連を判定しない。色相sin/cosは共同で読む。','',
             '|成分|観測数|種数|環境・尺度|変化［95%区間］|','|---|---:|---:|---|---|']
-    for module in ('colour','orientation'):
+    for module in ('colour','orientation','head_outline'):
+        if module not in result['models']:
+            continue
         model=result['models'][module]
         for endpoint,c in model.get('components',{}).items():
             for term,e in c.get('effects',{}).items():
@@ -143,7 +165,7 @@ def report(result,output):
     si=['# SI：総苞片の輪郭突出・広がり','',
         '既存測定1,303観測の補足解析。主解析より観測規模・対象被覆が限定されるためSIに置く。'
         'この判断は有意性による選別ではなく、測定範囲と指標の制約に基づく。'
-        '既存の48検定Holm補正を維持する。','',
+        f"主解析と合わせた{result['family_size']}検定のHolm補正を使用する。",'',
         '輪郭突出・広がりは個々の総苞片の開出角や棘による防御効果そのものではない。'
         '気候との関連が明確でなくても、食害者・訪花者に対する防御機能の否定にはならない。','',
         '|環境|種間P（Holm）|種内P（Holm）|','|---|---:|---:|']
