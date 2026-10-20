@@ -90,5 +90,85 @@
     "independent_image_measurement_accuracy": "NOT_VERIFIED",
     "recovered_five_head_measurements": "NOT_VERIFIED"
   },
-  "privacy": "No observation IDs, taxonomy labels, observer IDs, original URLs or location coordinates are contained in this receipt."
+  "privacy": "No observation IDs, taxonomy labels, observer IDs, original URLs or location coordinates are contained in this receipt.",
+  "source_sampling_context": {
+    "scope": "ORIGINAL_313350_NATIVE_RECORDS_NOT_MATCHED_CORE9_OBSERVER_DATA",
+    "evidence": {
+      "observer_aggregate_ref": "https://github.com/zuizui0223/azami/blob/archive/pr142-v4-20261020-preconsolidation/analysis/v4/observer_effort_aggregate_20261020.json",
+      "observer_aggregate_blob_sha": "c559e6092280173a81cd729cd8640b5a879e7157",
+      "spatial_run_id": 39428065666,
+      "spatial_artifact_id": 12266812186,
+      "spatial_member_sha256": "d62e01810179334303d0d07930e070feb86af0c4cd6c08ea59fb41ea091e0430",
+      "integration_member_sha256": "1545037041b62b2494934d022c7b21e7a7109f54f3582579c6557dfadf998752"
+    },
+    "original_observation_effort": {
+      "native_observations": 313350,
+      "taxa": 306,
+      "observers": 92839,
+      "top2_taxa_record_fraction": 0.4500207435774693,
+      "top5_taxa_record_fraction": 0.6314472634434338,
+      "top1pct_observer_record_fraction": 0.29660762725386947,
+      "top10pct_observer_record_fraction": 0.5995021541407372,
+      "same_taxon_cell_observer_repeated_record_fraction": 0.608179352162119,
+      "simpson_effective_recording_taxa": 8.31136474333058,
+      "scope_limit": "FULL NATIVE SOURCE only; not 9-trait matched cohort"
+    },
+    "individual_endpoint_coarse_spatial_support": {
+      "spatial_cell": "longitude bands 5 degrees by uniform sine(latitude) intervals, one record per accepted taxon-cell; model predictor-complete endpoints",
+      "not_joint_core9": true,
+      "not_independent_plants": true,
+      "endpoints": {
+        "orientation_image_vertical_angle": {
+          "main_n": 170066,
+          "taxa": 244,
+          "one_per_taxon_cell_n": 1421
+        },
+        "corolla_lab_chroma": {
+          "main_n": 186439,
+          "taxa": 244,
+          "one_per_taxon_cell_n": 1437
+        },
+        "corolla_hue_sin": {
+          "main_n": 186390,
+          "taxa": 244,
+          "one_per_taxon_cell_n": 1437
+        },
+        "capitulum_outline_aspect_ratio": {
+          "main_n": 176048,
+          "taxa": 243,
+          "one_per_taxon_cell_n": 1421
+        },
+        "bract_projection_p95": {
+          "main_n": 1303,
+          "taxa": 111,
+          "one_per_taxon_cell_n": 509
+        }
+      }
+    },
+    "previously_fitted_complete_core9": {
+      "measured_native_n": 157779,
+      "measured_native_taxa": 242,
+      "fitted_n": 157654,
+      "fitted_taxa": 174,
+      "selection": "predictor-complete and >=5 observations per accepted taxon",
+      "scope_limit": "Model-admitted observations/taxa, not the full 9-endpoint measurement-cohort; no coefficients imported"
+    },
+    "pending_exact_core9_sampling": {
+      "native_matched_observer_n": "NOT_VERIFIED",
+      "native_matched_taxon_cell_n": "NOT_VERIFIED",
+      "native_matched_observer_taxon_cell_n": "NOT_VERIFIED",
+      "environmental_regions_and_QC": "NOT_VERIFIED"
+    }
+  },
+  "legacy_five_archive_metadata": {
+    "documented_artifact_id": 8269246732,
+    "documented_zip_sha256": "5f18b42d18cfcb81691c38ce0f04bcef754e6a67382025ea90110dbc50ae194b",
+    "parts_recorded": 20,
+    "parts_with_existing_drive_metadata_found": 20,
+    "reassembly_manifest_metadata_found": true,
+    "archive_raw_bytes_reassembled_and_verified": false,
+    "original_1255791_head_row_fields_rechecked": false,
+    "native_joined_five_endpoint_counts": "NOT_VERIFIED",
+    "limit": "Drive file metadata only; archived content was not downloaded, reassembled, or remeasured."
+  }
 }

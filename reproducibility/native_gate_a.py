@@ -209,6 +209,78 @@ def validate_existing_overlap_receipt(ledger: dict, receipt: dict) -> dict:
         "no_new_trait_values_estimated": True,
     }
 
+
+
+def validate_existing_sampling_context(receipt: dict) -> dict:
+    """Validate scope of historical SOURCE-WIDE effort and single-trait cells.
+
+    The source summary must never be mistaken for photographer/cell support
+    of the exact nine-trait matched observation cohort.
+    """
+    c = receipt["source_sampling_context"]
+    if c["scope"] != "ORIGINAL_313350_NATIVE_RECORDS_NOT_MATCHED_CORE9_OBSERVER_DATA":
+        raise ValueError("Incorrect native sample scope")
+    e = c["evidence"]
+    if (e["spatial_run_id"], e["spatial_artifact_id"]) != (39428065666, 12266812186):
+        raise ValueError("Historical spatial run identity changed")
+    if e["spatial_member_sha256"] != "d62e01810179334303d0d07930e070feb86af0c4cd6c08ea59fb41ea091e0430":
+        raise ValueError("Historical spatial output digest changed")
+    if e["integration_member_sha256"] != "1545037041b62b2494934d022c7b21e7a7109f54f3582579c6557dfadf998752":
+        raise ValueError("Historical model-cohort output digest changed")
+    a = c["original_observation_effort"]
+    if (a["native_observations"], a["taxa"], a["observers"]) != (313350, 306, 92839):
+        raise ValueError("Native source effort denominator changed")
+    fields = ("top2_taxa_record_fraction", "top5_taxa_record_fraction",
+              "top1pct_observer_record_fraction", "top10pct_observer_record_fraction",
+              "same_taxon_cell_observer_repeated_record_fraction")
+    if any(not 0 < a[k] < 1 for k in fields):
+        raise ValueError("Invalid source posting fraction")
+    if a["top2_taxa_record_fraction"] > a["top5_taxa_record_fraction"]:
+        raise ValueError("Taxon posting fraction nonmonotone")
+    if a["top1pct_observer_record_fraction"] > a["top10pct_observer_record_fraction"]:
+        raise ValueError("Observer posting fraction nonmonotone")
+    cells = c["individual_endpoint_coarse_spatial_support"]
+    if not cells["not_joint_core9"] or not cells["not_independent_plants"]:
+        raise ValueError("Single-endpoint cells falsely promoted to joint plants")
+    known = {
+        "orientation_image_vertical_angle": (170066, 244, 1421),
+        "corolla_lab_chroma": (186439, 244, 1437),
+        "corolla_hue_sin": (186390, 244, 1437),
+        "capitulum_outline_aspect_ratio": (176048, 243, 1421),
+        "bract_projection_p95": (1303, 111, 509),
+    }
+    for key, (n, taxa, ncells) in known.items():
+        v = cells["endpoints"][key]
+        if (v["main_n"], v["taxa"], v["one_per_taxon_cell_n"]) != (n, taxa, ncells):
+            raise ValueError("Historical coarse-cell reference changed: " + key)
+    m = c["previously_fitted_complete_core9"]
+    if (m["measured_native_n"],m["measured_native_taxa"],m["fitted_n"],m["fitted_taxa"]) != (157779,242,157654,174):
+        raise ValueError("Model-admitted taxa are not original measurement support")
+    if (receipt["complete_core9"]["n"], receipt["complete_core9"]["accepted_taxa"]) != (157779,242):
+        raise ValueError("Core9 measured cohort changed")
+    a5 = receipt["legacy_five_archive_metadata"]
+    if (a5["documented_artifact_id"],a5["parts_recorded"],
+        a5["parts_with_existing_drive_metadata_found"]) != (8269246732,20,20):
+        raise ValueError("Legacy head archive metadata inventory changed")
+    if a5["archive_raw_bytes_reassembled_and_verified"] or a5["original_1255791_head_row_fields_rechecked"]:
+        raise ValueError("Cannot certify original head-level content from Drive metadata")
+    if a5["native_joined_five_endpoint_counts"] != "NOT_VERIFIED":
+        raise ValueError("Historical five traits not source-certified")
+    for value in c["pending_exact_core9_sampling"].values():
+        if value != "NOT_VERIFIED":
+            raise ValueError("Source-wide totals cannot close matched-core9 sampling gate")
+    return {
+        "status":"HISTORICAL_SOURCE_EFFORT_AND_SPATIAL_SUPPORT_VERIFIED_ONLY",
+        "source_observations":313350,
+        "source_observers":92839,
+        "core9_measured_observations":157779,
+        "core9_fitted_previous_observations":157654,
+        "core9_fitted_previous_taxa":174,
+        "core9_original_observer_strata":"NOT_VERIFIED",
+        "legacy_head_parts_with_metadata":20,
+        "legacy_five_native_values":"NOT_VERIFIED"
+    }
+
 def _strict_endpoint_masks(frame: pd.DataFrame, ledger: dict | None) -> tuple[dict, dict]:
     endpoint_ids = [r["endpoint_id"] for r in ledger["endpoints"]] if ledger else list(
         dict.fromkeys((*CORE9, *RECOVERED_FIVE))
@@ -435,8 +507,10 @@ def main() -> None:
     existing_path = Path(__file__).with_name("native_gate_a_existing_overlap_20261020.json")
     existing = json.loads(existing_path.read_text(encoding="utf-8"))
     verified = validate_existing_overlap_receipt(ledger, existing)
+    existing_sampling = validate_existing_sampling_context(existing)
     output = {"bounds_only": guaranteed_bounds(ledger),
-              "existing_aggregate_audit": verified}
+              "existing_aggregate_audit": verified,
+              "historical_sampling_context": existing_sampling}
     if bool(args.recovered_five_csv) != bool(args.recovered_five_report):
         parser.error("Historical five requires both file and provenance report")
     if (args.observer_input or args.recovered_five_csv) and not args.native_input:

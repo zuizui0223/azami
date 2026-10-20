@@ -440,3 +440,32 @@ def test_existing_native_gate_a_trait_overlap_receipt_is_verified():
     tampered2['module_census']['outline']['n'] += 2
     with pytest.raises(ValueError, match="module marginal"):
         validate_existing_overlap_receipt(ledger, tampered2)
+
+
+def test_gate_a_historical_sampling_scope_and_head_metadata_dont_certify_core9():
+    from reproducibility.native_gate_a import validate_existing_sampling_context
+    import copy
+    receipt = json.loads((ROOT/'reproducibility/native_gate_a_existing_overlap_20261020.json').read_text())
+    r = validate_existing_sampling_context(receipt)
+    assert r['status'] == 'HISTORICAL_SOURCE_EFFORT_AND_SPATIAL_SUPPORT_VERIFIED_ONLY'
+    assert r['source_observers'] == 92839
+    assert r['core9_measured_observations'] == 157779
+    assert (r['core9_fitted_previous_observations'],r['core9_fitted_previous_taxa']) == (157654,174)
+    assert r['core9_original_observer_strata'] == 'NOT_VERIFIED'
+    assert r['legacy_head_parts_with_metadata'] == 20
+    assert r['legacy_five_native_values'] == 'NOT_VERIFIED'
+    s = receipt['source_sampling_context']['original_observation_effort']
+    assert 0.45 < s['top2_taxa_record_fraction'] < 0.451
+    assert 0.60 < s['same_taxon_cell_observer_repeated_record_fraction'] < 0.61
+    bad = copy.deepcopy(receipt)
+    bad['source_sampling_context']['original_observation_effort']['observers'] += 1
+    with pytest.raises(ValueError, match='Native source effort'):
+        validate_existing_sampling_context(bad)
+    bad = copy.deepcopy(receipt)
+    bad['legacy_five_archive_metadata']['archive_raw_bytes_reassembled_and_verified'] = True
+    with pytest.raises(ValueError, match='Cannot certify'):
+        validate_existing_sampling_context(bad)
+    bad = copy.deepcopy(receipt)
+    bad['source_sampling_context']['pending_exact_core9_sampling']['native_matched_observer_n'] = 92839
+    with pytest.raises(ValueError, match='cannot close'):
+        validate_existing_sampling_context(bad)
