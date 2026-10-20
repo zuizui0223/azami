@@ -194,7 +194,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install report imports
-        run: python -m pip install -r reproducibility/requirements-current.txt
+        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8
       - name: Verify saved numerical output and render main and SI
         run: |
           python - <<'PY'
@@ -211,6 +211,8 @@ jobs:
           assert 'bract_projection_p95|' in (output/'environment_response_si_ja.md').read_text()
           print('Verified original numerical artifact; main/SI rendering only, no refit')
           PY
+          python -m analysis.v4.plot_colour_response \
+            analysis/v4/results/20261020_selected_environment/environment_response.json work/report
       - uses: actions/upload-artifact@v4
         with:
           name: v4-main-si-reports
