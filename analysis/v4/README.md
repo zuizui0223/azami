@@ -20,6 +20,24 @@ reproduced 665,115 source observations, 313,350 native-eligible observations and
 matched all 16 inherited numerical reference outputs. These establish reusable
 inputs and a historical baseline, not the redesigned v4 biological conclusions.
 
+The next input gate passed in [run 39408603488](https://github.com/zuizui0223/azami/actions/runs/39408603488):
+all 313,350 native rows remain, including 96,246 without a full-source archived
+measurement row. All 27 endpoint columns and their separate eligibility flags
+are retained. No extra trait averaging or cross-trait complete-case filter is
+applied. With the four common climate predictors, orientation has 170,066 usable
+observations, lightness/chroma 186,439, circular hue 186,390, and archived
+involucre/projection descriptors 1,303. These last descriptors are not opening
+angles. The colour cohort has temperature–VPD correlation 0.91045 and VPD VIF
+10.21468; joint effects require uncertainty and collinearity diagnostics.
+
+Downstream input: encrypted artifact `12257794094`,
+`v4-native-observation-input-encrypted`; checksum/provenance and endpoint counts
+are in aggregate artifact `12257893990`. The prepared table contains every native
+observation and the original per-observation values, including ineligible values
+with false eligibility flags. It must be filtered by each response's own flags at
+model fitting, not by completeness across all 27 endpoints. Its success is input
+readiness, not a fitted v4 result.
+
 ## Inputs and reuse
 
 - Reuse the published [Zenodo v3 numerical inputs](https://doi.org/10.5281/zenodo.22703215)
