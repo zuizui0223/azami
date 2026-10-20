@@ -18,6 +18,8 @@ Run `v4-functional-exploration.yml` with `fit_after_selection=true` for the comp
 path; its default selection-only mode produces the environmental selection audit.
 The frozen v3 reproduction and results linked below remain a separate published
 evidence chain and should not be presented as v4 results.
+The [verified selected-environment results](analysis/v4/results/20261020_selected_environment/README.md)
+include the complete aggregate model output, selection audit and interpretation.
 
 1. [Current numerical reproduction](reproducibility/CURRENT_ANALYSIS.md): verified inputs, one-command execution, and result validation.
 2. [Current results and interpretation](analysis/v3/README.md): biological constructs, environmental associations and whole-capitulum integration.
