@@ -142,12 +142,13 @@ def spherical_basis(latitude, longitude):
     return np.column_stack([x,y,z,x*y,x*z,y*z,x*x-y*y,3*z*z-1])
 
 
-def fit_module(frame, outcomes, scales, predictors=None, adjustments=()):
+def fit_module(frame, outcomes, scales, predictors=None, adjustments=(), required_environment=None):
     predictors=ENV if predictors is None else predictors
     climate_terms=[v+s for v in predictors for s in ('__between','__within')]
     terms=['intercept']+climate_terms+list(adjustments)
     # Even reduced sensitivity models retain exactly the four-predictor complete rows.
-    finite_environment=np.isfinite(frame[list(dict.fromkeys(ENV+list(predictors)))]).all(axis=1)
+    required_environment=ENV if required_environment is None else required_environment
+    finite_environment=np.isfinite(frame[list(dict.fromkeys(list(required_environment)+list(predictors)))]).all(axis=1)
     finite_environment &= np.isfinite(frame[climate_terms]).all(axis=1)
     if adjustments:
         finite_environment &= np.isfinite(frame[list(adjustments)]).all(axis=1)

@@ -7,6 +7,11 @@ on:
       - 'tests/test_v4_functional_pilot.py'
       - '.github/workflows/v4-functional-exploration.yml'
   workflow_dispatch:
+    inputs:
+      fit_after_selection:
+        description: Fit trait modules using the vifstep-selected environment set
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -141,6 +146,33 @@ jobs:
         run: |
           Rscript analysis/v4/select_environment.R \
             work/v4-observation/private/vifstep work/v4-observation/output
+      - name: Fit traits with the selected environmental set
+        if: inputs.fit_after_selection
+        run: |
+          python -m analysis.v4.environment_response \
+            --table work/v4-observation/private/observations.csv.gz \
+            --receipt work/v4-observation/receipt/measurement_receipt.json \
+            --selection work/v4-observation/output/environment_selection.json \
+            --output work/v4-observation/output
+      - name: Verify selection is used unchanged in trait models
+        if: inputs.fit_after_selection
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/v4-observation/output')
+          s=json.loads((root/'environment_selection.json').read_text())
+          a=json.loads((root/'environment_response.json').read_text())
+          assert a['predictors']==s['selected']
+          assert a['family_size']==6*len(s['selected'])
+          assert set(a['models'])=={'colour','orientation','bract_projection'}
+          for model in a['models'].values():
+              assert model['status'] in {'estimated','not_identifiable'}
+              if model['status']=='estimated':
+                  assert model['predictors']==s['selected']
+                  assert len(model['tests'])==2*len(s['selected'])
+          print('Selected environment set preserved:', a['inference_status'])
+          PY
       - name: Save aggregate model results only
         if: always()
         uses: actions/upload-artifact@v4

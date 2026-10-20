@@ -180,3 +180,12 @@ def test_added_environment_uses_finite_matched_rows():
     assert expanded['status']=='estimated'
     assert expanded['components']['y1']['n']==reference['components']['y1']['n']==659
     assert len(expanded['tests'])==10
+
+
+def test_selected_design_does_not_require_excluded_environment():
+    frame,scales=sample()
+    frame.loc[0,ENV[2]]=np.nan
+    selected=[v for v in ENV if v!=ENV[2]]
+    model=fit_module(frame,['y1'],scales,selected,required_environment=selected)
+    assert model['components']['y1']['n']==660
+    assert ENV[2]+'__within' not in model['tests']

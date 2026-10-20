@@ -35,10 +35,16 @@ def test_fixed_workflow_keeps_response_specific_missingness(tmp_path):
     receipt['prepared_table_sha256']=hashlib.sha256(table.read_bytes()).hexdigest()
     receipt_path=tmp_path/'receipt.json'
     receipt_path.write_text(json.dumps(receipt))
-    result=execute(table,receipt_path,tmp_path/'output')
+    selected=[v for v in CANDIDATES if v!='chelsa_vpd_mean']
+    selection_path=tmp_path/'selection.json'
+    selection_path.write_text(json.dumps({
+        'status':'selected_before_trait_models','selected':selected,
+        'input':{'input_sha256':receipt['prepared_table_sha256'],'candidates':CANDIDATES}}))
+    result=execute(table,receipt_path,tmp_path/'output',selection_path)
     assert result['inference_status']=='estimated'
     assert set(result['models'])==set(MODULES)
-    assert sum(len(m['tests']) for m in result['models'].values())==36
+    assert result['predictors']==selected
+    assert sum(len(m['tests']) for m in result['models'].values())==30
     assert result['models']['orientation']['components']['orientation_image_vertical_angle']['n']==349
     assert result['models']['colour']['components']['corolla_lab_lightness']['n']==350
     assert result['models']['bract_projection']['components']['bract_projection_p95']['n']==350
