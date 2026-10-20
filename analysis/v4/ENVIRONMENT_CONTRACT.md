@@ -1,7 +1,7 @@
 # Consolidated V4 environment contract
 
 Status: selection rule fixed after the input-only audit, before new trait fits.
-Earlier PR143 model results have been seen; this is a revised analysis, not an
+Earlier exploratory model results had already been inspected; this is a revised analysis, not an
 independent preregistration. All selected exposures enter every main module.
 
 ## Candidate roles
