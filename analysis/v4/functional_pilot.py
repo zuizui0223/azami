@@ -162,6 +162,17 @@ def fit_univariate_within(frame, drop_taxa=()):
         "beta_equal_taxon_weight": float((x / count) @ y / ((x / count) @ x)),
     }
 
+def among_chroma_radiation(traits, env, drop_taxa=()):
+    """Taxon-median chroma x solar slope, identical inclusion/summary to v3 anchor."""
+    c = traits[(traits.endpoint_id == "corolla_lab_chroma") &
+               traits.value.notna()].groupby("taxon_name").value.agg(["median", "size"])
+    c = c[c["size"] >= 5][["median"]]
+    exposures = env.groupby("taxon_name").chelsa_rsds_mean.median()
+    common = c.join(exposures).drop(index=list(drop_taxa), errors="ignore").dropna()
+    x = zarr(common.chelsa_rsds_mean.to_numpy())
+    y = zarr(common["median"].to_numpy())
+    return {"n_taxa": int(len(common)), "beta_standardized": float(x @ y / (x @ x))}
+
 def run(traits_path, env_path, outdir):
     outdir.mkdir(exist_ok=True, parents=True)
     traits = pd.read_csv(traits_path, usecols=["obs_id", "taxon_name", "endpoint_id", "value"],
@@ -181,6 +192,12 @@ def run(traits_path, env_path, outdir):
         "exclude_top5": list(counts.index[:5]),
     }
     sensitivity = {k: fit_univariate_within(thin, v) for k, v in drop_sets.items()}
+    # Unlike raw observation leverage, this tests whether a few widespread taxa
+    # control the v3 *between-taxon* colour-radiation headline itself.
+    between_sensitivity = {
+        k: among_chroma_radiation(traits, env, v)
+        for k, v in drop_sets.items()
+    }
     cohort = construct_cohort(traits, env)
     tax = cohort.groupby("taxon_name").median(numeric_only=True)
     # Species exposure is the median of ALL environmental observations, as in v3.
@@ -212,6 +229,7 @@ def run(traits_path, env_path, outdir):
         "complete_observations": int(len(cohort)),
         "complete_taxa": int(cohort.taxon_name.nunique()),
         "influence_within_chroma_radiation": sensitivity,
+        "influence_among_chroma_radiation": between_sensitivity,
         "environment_blocks": blocks,
         "cross_scale_module_integration": integration(cohort),
         "analysis_scope": "retrospective_exploratory_not_confirmatory",
