@@ -1,0 +1,122 @@
+{
+  "schema_version": "native_gate_b_existing_rv_observed_receipt_20261021_v1",
+  "source": {
+    "run_id": 39428065666,
+    "artifact_id": 12266812186,
+    "member": "native_integration.json",
+    "member_sha256": "1545037041b62b2494934d022c7b21e7a7109f54f3582579c6557dfadf998752",
+    "corrected_prepared_table_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
+  },
+  "cohort": {
+    "native_measurement_9_outputs_n": 157779,
+    "native_measurement_9_outputs_taxa": 242,
+    "model_eligible_n": 157654,
+    "model_eligible_taxa": 174,
+    "qualification": "distinct predictor-complete, minimum five observations per taxon (not all matched measurement taxa)"
+  },
+  "analysis": {
+    "constructs": 8,
+    "paired_rv_comparisons": 28,
+    "raw_positive_deltas": 21,
+    "adjusted_positive_deltas": 24,
+    "raw_pointwise_95pct_positive": 7,
+    "adjusted_pointwise_95pct_positive": 7,
+    "cross_module_pairs": 19,
+    "cross_module_adjusted_positive": 16,
+    "cross_module_adjusted_pointwise_95pct_positive": 3,
+    "pointwise_not_multiplicity_adjusted": true,
+    "method": "Existing 1000 species-bootstrap replicates; adjusted estimates condition on fixed environment coefficients; no independent observer/region sensitivity",
+    "groups": {
+      "colour/colour": {
+        "pairs": 3,
+        "raw_positive_deltas": 3,
+        "adjusted_positive_deltas": 3,
+        "adjusted_pointwise_positive": 3
+      },
+      "colour/outline": {
+        "pairs": 12,
+        "raw_positive_deltas": 8,
+        "adjusted_positive_deltas": 9,
+        "adjusted_pointwise_positive": 1
+      },
+      "colour/presentation": {
+        "pairs": 3,
+        "raw_positive_deltas": 2,
+        "adjusted_positive_deltas": 3,
+        "adjusted_pointwise_positive": 2
+      },
+      "outline/outline": {
+        "pairs": 6,
+        "raw_positive_deltas": 4,
+        "adjusted_positive_deltas": 5,
+        "adjusted_pointwise_positive": 1
+      },
+      "outline/presentation": {
+        "pairs": 4,
+        "raw_positive_deltas": 4,
+        "adjusted_positive_deltas": 4,
+        "adjusted_pointwise_positive": 0
+      }
+    }
+  },
+  "adjusted_pointwise_positive_pairs": [
+    {
+      "pair": "angle/chroma",
+      "delta": 0.0530851532483151,
+      "low": 0.004858997541898394,
+      "high": 0.14390282460085682
+    },
+    {
+      "pair": "angle/hue",
+      "delta": 0.029933813170246654,
+      "low": 0.0013575112001705278,
+      "high": 0.11817487431940496
+    },
+    {
+      "pair": "aspect/circularity",
+      "delta": 0.040206873544636146,
+      "low": 0.0009955651417966481,
+      "high": 0.12687884981705017
+    },
+    {
+      "pair": "chroma/hue",
+      "delta": 0.22460600675907993,
+      "low": 0.11174297033625866,
+      "high": 0.3547476602493134
+    },
+    {
+      "pair": "hue/width_profile",
+      "delta": 0.04969852741178455,
+      "low": 0.0012281523022610406,
+      "high": 0.14885029392138138
+    },
+    {
+      "pair": "lightness/chroma",
+      "delta": 0.16431700209036681,
+      "low": 0.053524784311238985,
+      "high": 0.28106734984339826
+    },
+    {
+      "pair": "lightness/hue",
+      "delta": 0.3680791058071646,
+      "low": 0.27064641336874606,
+      "high": 0.46768787538449963
+    }
+  ],
+  "equal_n_resampling": {
+    "raw_pair_delta_quantiles": [
+      0.0005366112596448728,
+      0.010894464590130746,
+      0.019055685562282286
+    ],
+    "adjusted_pair_delta_quantiles": [
+      0.0013669046033239908,
+      0.009778251579950256,
+      0.0165366393416816
+    ],
+    "qualifier": "Sampling ranges, not confidence intervals; between-taxon means fixed."
+  },
+  "interpretation": "Observed scale-dependent photograph-derived covariation is heterogeneous; strong colour internal pairs are technically non-independent. Cross-module 3/19 have positive pointwise intervals; none is multiplicity-adjusted or photographer/region-validated.",
+  "empirical_new_result": false,
+  "no_decrypted_native_rows_in_receipt": true
+}
