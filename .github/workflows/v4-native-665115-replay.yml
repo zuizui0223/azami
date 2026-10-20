@@ -1,8 +1,7 @@
 name: V4 all 665115 upstream native climate replay
 # The exact upstream 2026-07-03 source Actions artifact expired on GitHub.
-# This FULL private-data replay may only be triggered after restoring that same
-# checksum-authenticated source via AZAMI_ORIGINAL_METADATA_URL repository secret.
-# The secret must hold an HTTPS download URL accessible to the runner. Normal PR CI
+# The identical source is encrypted in an existing draft Release. The separate
+# AZAMI_METADATA_KEY secret decrypts it only on the runner. Normal PR CI
 # runs source-independent synthetic tests (reproducibility-integrity).
 on:
   workflow_dispatch:
@@ -26,31 +25,30 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install native source, geometry and raster numerical dependencies
-        run: python -m pip install 'numpy>=2,<3' 'pandas>=2.2,<4' 'shapely>=2,<3' 'rasterio>=1.4,<2' pytest
+        run: python -m pip install 'numpy>=2,<3' 'pandas>=2.2,<4' 'shapely>=2,<3' 'rasterio>=1.4,<2' 'cryptography>=46,<49' pytest
       - name: Verify full-source synthetic source and climate invariants
         run: python -m pytest -q tests/test_v4_native_665115_pipeline.py tests/test_v4_native_climate_cache.py
       - name: Recover checksum-pinned original 665115 observation source and 350-taxon WCVP evidence
         env:
-          AZAMI_ORIGINAL_METADATA_URL: ${{ secrets.AZAMI_ORIGINAL_METADATA_URL }}
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
         run: |
           set -euo pipefail
           mkdir -p work/native-665115/private work/native-665115/public work/native-665115/cache
+          gh release download private-v3-numerical-20260908 --repo zuizui0223/azami --pattern 'original-metadata-665115-dfa98fa162a8029c.aesgcm' --dir work/native-665115/private
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/native-665115/private/original-metadata-665115-dfa98fa162a8029c.aesgcm' | sha256sum -c -
           python - <<'PY'
           import os
-          import urllib.request
-          from pathlib import Path
-          from urllib.parse import urlsplit
-          url = os.environ.get('AZAMI_ORIGINAL_METADATA_URL', '')
-          if urlsplit(url).scheme != 'https':
-              raise SystemExit('Set AZAMI_ORIGINAL_METADATA_URL to an owner-authorized HTTPS download URL. The original Actions artifact has expired.')
-          try:
-              with urllib.request.urlopen(url, timeout=120) as response:
-                  if urlsplit(response.url).scheme != 'https':
-                      raise ValueError('Non-HTTPS redirect')
-                  data = response.read()
-          except Exception:
-              raise SystemExit('Private source download failed; check access or URL expiry. URL omitted from logs.') from None
           import hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          sealed = Path('work/native-665115/private/original-metadata-665115-dfa98fa162a8029c.aesgcm').read_bytes()
+          try:
+              key = bytes.fromhex(os.environ.get('AZAMI_METADATA_KEY', ''))
+              if len(key) != 32:
+                  raise ValueError('Missing or invalid key')
+              data = AESGCM(key).decrypt(sealed[:12], sealed[12:], b'azami-original-metadata-v1')
+          except Exception:
+              raise SystemExit('Private source authentication failed. Check AZAMI_METADATA_KEY and the encrypted source; no raw data exported.') from None
           if hashlib.sha256(data).hexdigest() != '2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae':
               raise SystemExit('Original metadata checksum mismatch; stopping before native classification.')
           Path('work/native-665115/original-metadata.zip').write_bytes(data)

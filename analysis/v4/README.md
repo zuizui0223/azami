@@ -12,10 +12,11 @@ of the redesigned v4 analysis. Execution and verification belong in GitHub Actio
   original photographs. Do not silently substitute the old 46,276-observation
   cohort for the full source.
 - The existing `V4 all 665115 upstream native climate replay` Action restores the
-  exact original source from the repository secret `AZAMI_ORIGINAL_METADATA_URL`,
-  an owner-authorized HTTPS download URL. The SHA-256 remains fixed. The former
-  Actions artifact expired; a normal private Drive sharing link is not a direct
-  authenticated download for GitHub runners.
+  exact original source from an AES-256-GCM encrypted asset in the existing draft
+  Release `private-v3-numerical-20260908`. The separate `AZAMI_METADATA_KEY` secret
+  decrypts it only inside the runner. Both encrypted and original byte hashes are
+  checked; only aggregate receipts are uploaded. The former Actions artifact
+  expired. The original Drive backup remains private and unchanged.
 - Reuse existing WCVP evidence, CHELSA raster caches and valid archived image
   measurements. Missing or unusable measurements remain explicit. Reacquisition
   is for missing coverage or measurements whose definition must change.

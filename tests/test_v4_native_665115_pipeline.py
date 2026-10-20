@@ -30,28 +30,33 @@ def test_nine_climate_archives_and_two_source_hashes_pinned():
     assert len(ORIGINAL_SHA)==len(AUTHORITY_SHA)==64
 
 
-@pytest.mark.parametrize('case', ['missing', 'network', 'changed_bytes'])
-def test_private_source_download_stops_without_exposing_url(tmp_path, monkeypatch, case):
-    import io
+@pytest.mark.parametrize('case', ['missing', 'wrong_key', 'tampered', 'changed_bytes'])
+def test_private_source_authentication_stops_before_export(tmp_path, monkeypatch, case):
+    import os
     import textwrap
-    import urllib.request
     from pathlib import Path
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     workflow = (Path(__file__).resolve().parents[1] /
                 '.github/workflows/v4-native-665115-replay.yml').read_text()
     # Exercise the actual runner's acquisition code, with no external network.
     script = textwrap.dedent(workflow.split("python - <<'PY'\n", 1)[1].split("\n          PY", 1)[0])
-    url = 'https://example.invalid/private?token=do-not-print'
-    monkeypatch.setenv('AZAMI_ORIGINAL_METADATA_URL', '' if case == 'missing' else url)
+    key = AESGCM.generate_key(bit_length=256)
+    nonce = os.urandom(12)
+    payload = nonce + AESGCM(key).encrypt(nonce, b'not the frozen source',
+                                         b'azami-original-metadata-v1')
+    if case == 'tampered':
+        payload = payload[:-1] + bytes([payload[-1] ^ 1])
+    supplied_key = os.urandom(32) if case == 'wrong_key' else key
+    monkeypatch.setenv('AZAMI_METADATA_KEY', '' if case == 'missing' else supplied_key.hex())
     monkeypatch.chdir(tmp_path)
-    def fetch(*args, **kwargs):
-        if case == 'network':
-            raise OSError(url)
-        response = io.BytesIO(b'not the frozen source')
-        response.url = url
-        return response
-    monkeypatch.setattr(urllib.request, 'urlopen', fetch)
+    source = Path('work/native-665115/private/original-metadata-665115-dfa98fa162a8029c.aesgcm')
+    source.parent.mkdir(parents=True)
+    source.write_bytes(payload)
     with pytest.raises(SystemExit) as exc:
         exec(compile(script, '<private-source-acquisition>', 'exec'), {})
-    assert url not in str(exc.value)
-    assert 'do-not-print' not in str(exc.value)
+    assert supplied_key.hex() not in str(exc.value)
+    if case == 'changed_bytes':
+        assert 'checksum mismatch' in str(exc.value)
+    else:
+        assert 'authentication failed' in str(exc.value)
     assert not list(tmp_path.rglob('*.zip'))
