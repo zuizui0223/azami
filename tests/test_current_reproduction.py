@@ -691,7 +691,7 @@ def test_native_gate_c_historical_source_blob_pin_and_descriptive_reference(tmp_
     source = tmp_path / 'small.dat'
     source.write_bytes(b'source-pinned gate c')
     data = source.read_bytes()
-    expected = hashlib.sha1(b'blob '+str(len(data)).encode()+b'\\0'+data).hexdigest()
+    expected = hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
     validate_blob(source, expected)
     source.write_bytes(b'source-pinned gate c tampered')
     with pytest.raises(ValueError, match='Git blob hash changed'):
