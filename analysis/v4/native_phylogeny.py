@@ -144,9 +144,9 @@ def execute(table, output):
     names = frame.taxon_name.astype(str).str.strip().str.replace(" ", "_", regex=False)
     mapping, audit = {}, []
     for key, group in frame.assign(_name=names).groupby("accepted_key"):
-        candidates = sorted(set(group._name) & tipsets[0])
+        candidates = sorted(set(group["_name"]) & tipsets[0])
         mapping[key] = candidates[0] if len(candidates) == 1 else None
-        audit.append(dict(accepted_key=str(key), source_names=sorted(set(group._name)),
+        audit.append(dict(accepted_key=str(key), source_names=sorted(set(group["_name"])),
                           tree_matches=candidates, status="matched" if len(candidates)==1
                           else "ambiguous" if candidates else "absent"))
     assigned = [value for value in mapping.values() if value is not None]

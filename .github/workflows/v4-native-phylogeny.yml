@@ -62,6 +62,8 @@ jobs:
             --output work/native-integration/decoded
       - name: Fit fixed environmental model across historical placements
         run: python -m analysis.v4.native_phylogeny --table work/native-integration/decoded/observations.csv.gz --output work/phylogeny-output
+      - name: Summarise completed fits
+        run: python -m analysis.v4.render_phylogeny_report --source work/phylogeny-output --output work/phylogeny-output
       - uses: actions/upload-artifact@v4
         if: always()
         with:
