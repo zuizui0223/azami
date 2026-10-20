@@ -94,7 +94,7 @@ jobs:
       - name: Install pinned numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Verify observation-level REML and joint score invariants
-        run: python -m pytest -q tests/test_v4_observation_models.py
+        run: python -m pytest -q tests/test_v4_observation_models.py tests/test_v4_measurement_coverage_audit.py
       - name: Restore verified observation input
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -121,6 +121,12 @@ jobs:
           assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
           (root/'private/observations.csv.gz').write_bytes(data)
           PY
+      - name: Audit inherited measurement selection and failure before inference
+        run: |
+          python -m analysis.v4.measurement_coverage_audit \
+            --table work/v4-observation/private/observations.csv.gz \
+            --work work/v4-observation/zenodo \
+            --output work/v4-observation/output/measurement_coverage_audit.json
       - name: Fit three modules with common climate predictors at both scales
         run: |
           python -m analysis.v4.observation_models \

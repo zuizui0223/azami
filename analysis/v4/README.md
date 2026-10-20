@@ -30,6 +30,18 @@ involucre/projection descriptors 1,303. These last descriptors are not opening
 angles. The colour cohort has temperature–VPD correlation 0.91045 and VPD VIF
 10.21468; joint effects require uncertainty and collinearity diagnostics.
 
+The 1,303 phyllary-proxy records are **inherited coverage, not the result of
+measuring all native photographs**. Published cohort and measurement receipts
+trace 406,582 detector-positive observations → 203,020 with qualifying
+high-resolution heads → 22,186 after intersecting the old strict spatial cohort
+and retaining one head per observation → 22,177 reconstructed crops → 2,326
+usable contour measurements, of which 1,303 enter the current native analysis.
+These historical stages use different denominators from the original 665,115
+source records. The existing manual Action now audits per-endpoint failure
+dispositions from the checksum-verified Zenodo archive before fitting models.
+Failure codes describe the old processing method, not the inherent measurability
+of the original photograph. Full native anatomical measurement remains unfinished.
+
 Downstream input: encrypted artifact `12257794094`,
 `v4-native-observation-input-encrypted`; checksum/provenance and endpoint counts
 are in aggregate artifact `12257893990`. The prepared table contains every native
