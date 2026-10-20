@@ -1,0 +1,48 @@
+{
+  "schema_version": "native_gate_d_corrected_existing_gradient_20261021_v1",
+  "source": {
+    "run_id": 39422378058,
+    "artifact_id": 12263957798,
+    "member": "environment_response.json",
+    "sha256": "563bead7d30ca59cd00b5c435457a654de53656f5f74e84e1d164b7dc330341a",
+    "corrected_native_input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "invalid_gsp_encoding_rows_masked": 1239,
+    "corrected_nine_environment_complete": 312001,
+    "native_source_rows": 313350
+  },
+  "tests": {
+    "joint_families": 4,
+    "predictors": 8,
+    "between_within_scales": 2,
+    "holm_family": 64,
+    "holm_less_than_0_05": 14,
+    "by_model": {
+      "colour": {
+        "within": 4,
+        "between": 4
+      },
+      "orientation": {
+        "within": 0,
+        "between": 0
+      },
+      "head_outline": {
+        "within": 2,
+        "between": 4
+      },
+      "bract_projection": {
+        "within": 0,
+        "between": 0
+      }
+    },
+    "orientation_bio12_between_holm_p": 1,
+    "orientation_bio12_within_holm_p": 1,
+    "status": "PREVIOUS_EXECUTED_CORRECTED_MODEL_NOT_GATE_D_HYPERVOLUME"
+  },
+  "claim_boundary": {
+    "gate_d_covariance_density_environment_not_run": true,
+    "observer_region_heldout_not_completed": true,
+    "phylogenetic_correction_not_done": true,
+    "camera_orientation_image_vertical": true,
+    "unvalidated_involucre_projection": true
+  }
+}
