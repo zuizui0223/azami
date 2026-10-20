@@ -509,7 +509,7 @@ def test_gate_a_corrected_source_contract_matches_native_space_and_rejects_legac
 def test_gate_a_exact_core9_matched_effort_is_safe_and_order_invariant():
     import numpy as np
     import pandas as pd
-    from reproducibility.native_gate_a import audit_gate_a, CORE9
+    from reproducibility.native_gate_a import audit_gate_a, CORE9, RECOVERED_FIVE
     rows = []
     for i in range(60):
         taxon = str(200 + i//20)
@@ -522,6 +522,9 @@ def test_gate_a_exact_core9_matched_effort_is_safe_and_order_invariant():
             r[name+'__eligible'] = True
         if i % 4 == 0:
             r[CORE9[0]+'__eligible'] = False
+        for name in RECOVERED_FIVE:
+            r[name] = np.nan
+            r[name+'__eligible'] = False
         rows.append(r)
     frame = pd.DataFrame(rows)
     obs = pd.DataFrame({
@@ -550,12 +553,15 @@ def test_gate_a_exact_core9_matched_effort_is_safe_and_order_invariant():
 
 def test_gate_a_no_original_observers_never_claims_sampling_gate_complete():
     import pandas as pd
-    from reproducibility.native_gate_a import audit_gate_a, CORE9
+    from reproducibility.native_gate_a import audit_gate_a, CORE9, RECOVERED_FIVE
     base = {'obs_id':['1','2'], 'accepted_key':['A','B'],
             'latitude':[0.,20.], 'longitude':[0.,40.]}
     for name in CORE9:
         base[name] = [.5,.6]
         base[name+'__eligible'] = [True,True]
+    for name in RECOVERED_FIVE:
+        base[name] = [float('nan'),float('nan')]
+        base[name+'__eligible'] = [False,False]
     out = audit_gate_a(pd.DataFrame(base))
     d = out['matched_core9_sampling_diagnostics']
     assert d['matched_observer_effort'] is None
