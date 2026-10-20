@@ -20,6 +20,11 @@ import numpy as np
 import pandas as pd
 
 PREPARED_SHA256 = "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29"
+# Environmental rasters in this ORIGINAL table had undecoded scale/offset and
+# invalid GSP sentinel values. For any new joint Gate A-D execution, use the
+# separately hash-verified PR143 corrected table; keep the original fingerprint
+# exclusively as a fail-closed diagnostic for superseded inputs.
+CORRECTED_PREPARED_SHA256 = "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
 SOURCE_RECEIPT_SHA256 = "246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6"
 NATIVE_N = 313350
 MEASURED_N = 217104
@@ -388,6 +393,88 @@ def _spatial_index(frame: pd.DataFrame) -> pd.Series:
     return result
 
 
+
+def sampling_selection_diagnostics(
+    frame: pd.DataFrame,
+    matched: np.ndarray,
+    spatial: pd.Series,
+    dates: pd.Series | None,
+    observers: pd.Series | None,
+) -> dict:
+    """Exact cohort sampling-effort audit; emits no individual/observer/taxon IDs.
+
+    Source and matched comparisons use the same *original native roster*. The
+    cells are the coarse approximate equal-area Gate A cells, NOT individual
+    plants, independent regions, or the Gate B 0.5-degree angular grid.
+    """
+    if len(matched) != len(frame) or len(spatial) != len(frame):
+        raise ValueError("Source/matched cohort length mismatch")
+    mask = np.asarray(matched, dtype=bool)
+    source = frame[["accepted_key"]].copy()
+    source["cell"] = spatial.to_numpy()
+    eligible = source.loc[mask].dropna(subset=["cell"]).copy()
+    group_n = eligible.groupby(["accepted_key", "cell"], sort=False).size()
+    source_cell_n = source.dropna(subset=["cell"]).groupby(
+        ["accepted_key", "cell"], sort=False
+    ).size()
+    result = {
+        "scope": "EXACT_MATCHED_OBSERVATIONS_NOT_INDEPENDENT_PLANTS",
+        "source_observations": int(len(frame)),
+        "matched_observations": int(mask.sum()),
+        "matched_taxon_cells": int(len(group_n)),
+        "source_taxon_cells": int(len(source_cell_n)),
+        "matched_taxon_cells_with_repeated_observations": int(group_n.gt(1).sum()),
+        "matched_observations_in_repeated_taxon_cells": int(group_n.loc[group_n.gt(1)].sum()),
+        "coarse_cell_method": "2-degree longitude by equal-sin-latitude bands, NOT 0.5-degree Gate B cells",
+        "observer_status": "NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN",
+        "season_status": "NOT_EVALUABLE_NO_OBSERVATION_DATE",
+        "photographic_quality_status": "NOT_EVALUABLE_NO_SOURCE_IMAGE_QUALITY_OR_CAMERA_POSE_FLAGS",
+        "endpoint_failure_reason_status": "NOT_DISAGGREGATED_IN_PREPARED_TABLE",
+        "source_vs_matched_monthly": None,
+        "matched_observer_effort": None,
+    }
+    if dates is not None:
+        months = dates.dt.month
+        source_counts = months.value_counts(dropna=True)
+        matched_counts = months.loc[mask].value_counts(dropna=True)
+        result["season_status"] = "SOURCE_VS_MATCHED_RECORD_MONTH_ONLY_NOT_FLOWERING_STAGE"
+        result["source_n_observations_with_date"] = int(months.notna().sum())
+        result["matched_n_observations_with_date"] = int(months.loc[mask].notna().sum())
+        result["source_vs_matched_monthly"] = [
+            {"month": k,
+             "source_n": int(source_counts.get(k, 0)),
+             "matched_n": int(matched_counts.get(k, 0))}
+            for k in range(1, 13)
+        ]
+    if observers is not None:
+        if len(observers) != len(frame) or observers.isna().any():
+            raise ValueError("Incomplete original observer roster")
+        selected_observers = observers.loc[mask]
+        observer_counts = selected_observers.value_counts()
+        top = max(1, int(np.ceil(0.01 * len(observer_counts)))) if len(observer_counts) else 0
+        with_cell = eligible.copy()
+        with_cell["observer"] = observers.loc[with_cell.index].to_numpy()
+        triple = with_cell.groupby(["accepted_key", "cell", "observer"], sort=False).size()
+        result["observer_status"] = "EXACT_MATCHED_ORIGINAL_OBSERVER_SUPPORT"
+        result["matched_observer_effort"] = {
+            "n_original_observers": int(selected_observers.nunique()),
+            "n_taxon_observer_pairs": int(
+                source.loc[mask].assign(observer=selected_observers.to_numpy())
+                .drop_duplicates(["accepted_key", "observer"]).shape[0]
+            ),
+            "n_taxon_cell_observer_strata": int(len(triple)),
+            "n_taxon_cell_observer_strata_with_repeats": int(triple.gt(1).sum()),
+            "matched_observations_in_repeated_taxon_cell_observer_strata": int(
+                triple.loc[triple.gt(1)].sum()
+            ),
+            "matched_top_1pct_observer_fraction": (
+                float(observer_counts.iloc[:top].sum() / int(mask.sum()))
+                if mask.any() else None
+            ),
+        }
+    return result
+
+
 def audit_gate_a(
     frame: pd.DataFrame,
     *,
@@ -480,6 +567,10 @@ def audit_gate_a(
             ),
         }
         result["modules"][name] = record
+    result["matched_core9_sampling_diagnostics"] = sampling_selection_diagnostics(
+        frame, np.logical_and.reduce([masks[x] for x in CORE9]),
+        spatial, dates, observer_ids
+    )
     for names in itertools.combinations(CORE3, 2):
         mask = masks[names[0]] & masks[names[1]]
         result["intersections"]["__".join(names)] = int(mask.sum())
@@ -573,8 +664,13 @@ def main() -> None:
         parser.error("Private joins require --native-input")
     if args.native_input:
         source_hash = sha256(args.native_input)
-        if source_hash != PREPARED_SHA256:
-            raise ValueError("Private prepared native-observation checksum mismatch")
+        if source_hash == PREPARED_SHA256:
+            raise ValueError(
+                "Uncorrected environment input: original GSP sentinels and "
+                "CHELSA affine decoding are superseded by PR143"
+            )
+        if source_hash != CORRECTED_PREPARED_SHA256:
+            raise ValueError("Unknown native input bytes; expected corrected PR143 table")
         native = pd.read_csv(args.native_input, dtype={"obs_id": str}, low_memory=False)
         observers = None
         if args.observer_input:
@@ -592,7 +688,8 @@ def main() -> None:
         interval = verified["core3_observation_range"]
         if not interval["lower"] <= exact_core3 <= interval["upper"]:
             raise ValueError("Current source core3 falls outside archived aggregate-derived interval")
-        output["actual_gate_a"]["source_prepared_table_sha256"] = PREPARED_SHA256
+        output["actual_gate_a"]["source_prepared_table_sha256"] = source_hash
+        output["actual_gate_a"]["environment_source_status"] = "PR143_CORRECTED_SHA256_LOCKED"
         if args.recovered_five_csv:
             output["historical_five_linkage"] = audit_recovered_five(
                 native, args.recovered_five_csv, args.recovered_five_report
