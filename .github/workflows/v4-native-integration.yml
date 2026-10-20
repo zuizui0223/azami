@@ -1,10 +1,14 @@
 name: V4 native capitulum integration
 on:
   workflow_dispatch:
+    inputs:
+      report_run:
+        description: 'Completed numerical run to render; leave empty for numerical execution'
+        type: string
+        default: ''
   push:
     branches: [codex/v4-native-integration-workflow]
     paths:
-      - '.github/workflows/v4-native-integration.yml'
       - 'analysis/v4/decode_environment.py'
       - 'analysis/v4/environment_source_metadata.json'
       - 'analysis/v4/native_integration_audit.py'
@@ -32,6 +36,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   input-audit:
+    if: ${{ !inputs.report_run }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -118,5 +123,33 @@ jobs:
         with:
           name: v4-native-integration-audit
           path: work/native-integration/output/
+          if-no-files-found: error
+          retention-days: 90
+  report:
+    if: ${{ inputs.report_run != '' && github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: ${{ inputs.report_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install renderer environment
+        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8
+      - name: Verify and retrieve completed aggregate evidence
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_RUN" =~ ^[0-9]+$ ]]
+          test "$(gh run view "$SOURCE_RUN" --repo zuizui0223/azami --json conclusion --jq .conclusion)" = success
+          gh run download "$SOURCE_RUN" --repo zuizui0223/azami --name v4-native-integration-audit --dir work/report-source
+      - name: Render without refitting
+        run: python -m analysis.v4.render_native_report --source work/report-source --output work/native-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-integration-report
+          path: work/native-report/
           if-no-files-found: error
           retention-days: 90
