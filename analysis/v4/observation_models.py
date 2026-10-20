@@ -44,7 +44,7 @@ def reuse_inventory(frame, report, crosswalk):
             raise ValueError('Endpoint coverage differs from input receipt: '+name)
         values=frame.loc[eligible,name]
         quantiles=values.quantile([.1,.5,.9]).tolist() if len(values) else [None]*3
-        use=('joint_primary_module' if name in main else
+        use=('joint_primary_module' if name in main and actual['eligible'] else
              'secondary_phenotype_description' if actual['eligible'] else
              'technical_validation_only' if actual['finite'] else 'unmeasured')
         rows.append({'endpoint':name,'module':entry['biological_module'],
