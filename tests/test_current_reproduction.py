@@ -215,6 +215,12 @@ def test_native_space_gate_requires_eligible_joint_original_observations():
     assert a['occupancy_status'] == 'descriptive_space_proxy_available'
     assert a['rarefied_gaussian_95pct_ellipsoid_volume_proxy']['median'] > 0
     assert 'obs_id' not in str(a) and 'latitude' not in str(a) and 'longitude' not in str(a)
+    assert a['core3_scale_specific_covariance']['identity_max_abs_residual'] < 1e-10
+    assert len(a['core3_scale_specific_covariance']['within_taxon_pairwise_correlations']) == 3
+    assert len(a['core3_scale_specific_covariance']['among_taxon_pairwise_correlations']) == 3
+    assert set(a['core3_among_covariance_by_climate_halves']) == {'chelsa_bio12', 'chelsa_rsds_mean'}
+    assert all(v['status'] == 'insufficient_taxa_without_inferential_interpretation'
+               for v in a['core3_among_covariance_by_climate_halves'].values())
 
     # A source-generated eligibility failure must remove only the affected module.
     frame.loc[0,'capitulum_outline_aspect_ratio__eligible'] = False
@@ -227,3 +233,45 @@ def test_native_space_gate_requires_eligible_joint_original_observations():
         analyze_native_space(frame, rarefaction_n=20, replicates=12)
     with pytest.raises(ValueError, match="Observation IDs"):
         analyze_native_space(pd.concat([frame.iloc[:1],frame.iloc[:1]],ignore_index=True),rarefaction_n=6,replicates=2)
+
+
+def test_native_space_scale_specific_covariance_sign_reversal():
+    """A pooled summary hides independent within- and among-taxon directions."""
+    import numpy as np
+    import pandas as pd
+    from reproducibility.native_space_gate import analyze_native_space, CORE9, CORE3
+
+    rows = []
+    for taxon in range(6):
+        for k in range(28):
+            # Within taxon, presentation and colour increase together. Across
+            # taxa, presentation increases but colour decreases. Real nonlinearity
+            # in all three variables keeps the ellipsoid nondegenerate.
+            wave = np.sin(k * .35)
+            angle = 10 + 4 * taxon + wave * 3 + k * .03
+            row = {
+                'obs_id': f'o-{taxon}-{k}', 'accepted_key': str(taxon+101),
+                'latitude': 10+taxon*.5+k*.6, 'longitude': 35+taxon*.7+k*.72,
+                'chelsa_bio12': 300+taxon*90+k,
+                'chelsa_rsds_mean': 130+taxon*20+k*.3,
+                'orientation_image_vertical_angle': angle,
+                'corolla_lab_chroma': 70-7*taxon+wave*3.6+np.cos(k*.7)*.6,
+                'capitulum_outline_aspect_ratio': 1.2+taxon*.04+np.cos(k*.25)*.08,
+                'corolla_lab_lightness': 45+taxon*.1+np.sin(k*.23),
+                'corolla_hue_sin': np.sin(k*.11), 'corolla_hue_cos': np.cos(k*.11),
+                'capitulum_outline_circularity': .5+np.sin(k*.13)*.02,
+                'capitulum_outline_solidity': .8+np.cos(k*.17)*.01,
+                'capitulum_width_profile_cv': .15+np.sin(k*.19)*.02,
+            }
+            for name in CORE9:
+                row[name+'__eligible'] = True
+            rows.append(row)
+    frame = pd.DataFrame(rows)
+    result = analyze_native_space(frame, rarefaction_n=20, replicates=8)
+    key = CORE3[0] + '__' + CORE3[1]
+    cov = result['core3_scale_specific_covariance']
+    assert cov['within_taxon_pairwise_correlations'][key] > .6
+    assert cov['among_taxon_pairwise_correlations'][key] < -.8
+    assert cov['among_minus_within_pairwise_correlations'][key] < -1.4
+    assert cov['identity_max_abs_residual'] < 1e-10
+    assert result['occupancy_status'] == 'descriptive_space_proxy_available'

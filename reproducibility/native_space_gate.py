@@ -62,6 +62,113 @@ def _summary(values: list[float]) -> dict:
     }
 
 
+
+def _correlation_pairs(covariance: np.ndarray) -> dict:
+    """Off-diagonal correlations for the same three independently labelled photo axes."""
+    diagonal = np.diag(covariance)
+    answer = {}
+    for i in range(3):
+        for j in range(i + 1, 3):
+            denom = math.sqrt(max(0.0, diagonal[i]) * max(0.0, diagonal[j]))
+            estimate = float(covariance[i, j] / denom) if denom > 1e-12 else None
+            answer[CORE3[i] + "__" + CORE3[j]] = estimate
+    return answer
+
+
+def _scale_specific_core3_covariance(
+    distinct: pd.DataFrame, qualified, centers: np.ndarray, scales: np.ndarray,
+) -> dict:
+    """Identity W+B=T for equal-taxon/equal-spatial-cell photo phenotypes.
+
+    This is descriptive covariance in the same matched source observations,
+    not genetic covariance, a phylogenetic contrast, or a hypothesis test.
+    """
+    group_means, group_covariances = [], []
+    groups = []
+    for taxon in qualified:
+        values = (
+            distinct.loc[distinct.accepted_key.eq(taxon), list(CORE3)].to_numpy(float)
+            - centers
+        ) / scales
+        if len(values) < 2 or not np.isfinite(values).all():
+            raise ValueError("Degenerate within-taxon photo covariance")
+        mean = values.mean(axis=0)
+        centered = values - mean
+        group_means.append(mean)
+        group_covariances.append(centered.T @ centered / len(values))
+        groups.append(values)
+    m = np.asarray(group_means)
+    w = np.mean(group_covariances, axis=0)
+    mean = m.mean(axis=0)
+    b = (m - mean).T @ (m - mean) / len(m)
+    total = w + b
+
+    direct_pooled = np.zeros((3, 3), dtype=float)
+    for values in groups:
+        delta = values - mean
+        direct_pooled += (delta.T @ delta) / len(values) / len(groups)
+    error = float(np.max(np.abs(direct_pooled - total)))
+    if not np.isfinite(error) or error > 1e-8:
+        raise ValueError("Pooled covariance identity mismatch")
+
+    within = _correlation_pairs(w)
+    among = _correlation_pairs(b)
+    contrasts = {
+        key: (float(among[key] - within[key])
+              if among[key] is not None and within[key] is not None else None)
+        for key in within
+    }
+    fractions = np.diag(b) / np.maximum(np.diag(total), 1e-20)
+    return {
+        "status": "descriptive_native_photo_covariance_decomposition",
+        "n_accepted_taxa": int(len(groups)),
+        "axes": list(CORE3),
+        "sampling": "one original observation per accepted taxon x 0.5-degree geographic cell",
+        "within_taxon_pairwise_correlations": within,
+        "among_taxon_pairwise_correlations": among,
+        "among_minus_within_pairwise_correlations": contrasts,
+        "between_taxon_variance_fraction_by_axis": {
+            axis: float(value) for axis, value in zip(CORE3, fractions)
+        },
+        "identity_max_abs_residual": error,
+        "interpretation_limit": "W and B describe photographic phenotypic covariance, not separate genetic or developmental modules. No phylogeny/photographer adjustment, uncertainty intervals, or significance tests.",
+    }
+
+
+def _environment_specific_among_covariance(
+    means: pd.DataFrame, environments: pd.DataFrame,
+) -> dict:
+    """Preselected current BIO12/RSDS coarse halves, with no p or causal claim."""
+    result = {}
+    for name in CLIMATE:
+        aligned = means.join(environments[[name]], how="inner").dropna()
+        axis = aligned[name]
+        midpoint = float(axis.median()) if len(aligned) else None
+        lower = aligned.loc[axis <= midpoint] if midpoint is not None else aligned.iloc[:0]
+        upper = aligned.loc[axis > midpoint] if midpoint is not None else aligned.iloc[:0]
+        entry = {
+            "eligible_taxa": int(len(aligned)),
+            "lower_n_taxa": int(len(lower)),
+            "higher_n_taxa": int(len(upper)),
+            "split": "native taxon median climate, lower <= pooled qualified-taxon median",
+            "status": "insufficient_taxa_without_inferential_interpretation",
+            "lower_among_pairwise_correlations": None,
+            "higher_among_pairwise_correlations": None,
+        }
+        # Ten distinct accepted taxa per side are a feasibility floor, not power.
+        if len(lower) >= 10 and len(upper) >= 10:
+            entry["status"] = "descriptive_without_phylogenetic_or_spatial_adjustment"
+            entry["lower_among_pairwise_correlations"] = _correlation_pairs(
+                np.cov(lower[list(CORE3)].to_numpy(float), rowvar=False, bias=True)
+            )
+            entry["higher_among_pairwise_correlations"] = _correlation_pairs(
+                np.cov(upper[list(CORE3)].to_numpy(float), rowvar=False, bias=True)
+            )
+        result[name] = entry
+    return result
+
+
+
 def analyze_native_space(
     data: pd.DataFrame, *, expected_n: int | None = None,
     rarefaction_n: int = 20, replicates: int = 100, seed: int = 20261020,
@@ -140,6 +247,12 @@ def analyze_native_space(
     if not np.isfinite(scales).all() or np.any(scales <= 1e-10):
         return dict(report, occupancy_status="degenerate_module_scaling")
 
+    # Primary matched-cohort estimand: covariation at two biological scales.
+    # Volume is a secondary summary of this same joint phenotypic geometry.
+    report["core3_scale_specific_covariance"] = _scale_specific_core3_covariance(
+        distinct, qualified, centers, scales
+    )
+
     rng = np.random.default_rng(seed)
     constant = (4.0 * math.pi / 3.0) * chi2.ppf(.95, df=3) ** 1.5
     volume_by_taxon: dict[object, float] = {}
@@ -177,6 +290,15 @@ def analyze_native_space(
         climate[col] = pd.to_numeric(climate[col], errors="coerce")
     by_taxon = climate.groupby("accepted_key", sort=True)[list(CLIMATE)].median()
     rows = [(taxon, vol) for taxon, vol in volume_by_taxon.items() if taxon in by_taxon.index]
+    # Environment can change the *joint arrangement*, not merely the volume.
+    # This conditional comparison is descriptive, not a fitted eco-evolutionary model.
+    qualified_means = (
+        distinct.loc[distinct.accepted_key.isin(qualified)]
+        .groupby("accepted_key", sort=True)[list(CORE3)].mean()
+    )
+    report["core3_among_covariance_by_climate_halves"] = _environment_specific_among_covariance(
+        qualified_means, by_taxon
+    )
     report["exploratory_volume_climate_spearman_no_pvalues"] = {}
     for col in CLIMATE:
         pairs = [(math.log(vol), float(by_taxon.at[taxon, col])) for taxon, vol in rows
@@ -195,6 +317,8 @@ def analyze_native_space(
         "Source observation is not a validated unique plant, and photographer effects are not identified",
         "Volume-environment Spearman estimates are descriptive, uncorrected and conditioned on image measurability",
         "No kernel hypervolume, genetic covariance, selection, adaptation or geographical transfer is demonstrated",
+        "A pooled covariance is partitioned into equal-taxon within and between components; statistical identity is not biological causation",
+        "Climate-half trait correlations are descriptive and may be driven by different related taxa in each half",
     ]
     return report
 
