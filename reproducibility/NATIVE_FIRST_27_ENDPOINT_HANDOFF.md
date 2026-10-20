@@ -1,5 +1,7 @@
 # Native-first 27-endpoint handoff (2026-10-20)
 
+**研究設計の最新版：** [過去のPRとコミットを照合した「共変動 × 分布 × 環境」洗練設計](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md)。この従来の引継ぎ文書は測定数・過去の証拠と手動プリフライトを記録する資料であり、3形質楕円体を最終的な機能的ハイパーボリュームとしない。**新たな推定は未実行。**
+
 ## Decision: what is active and what remains paused
 
 Chapter 1's frozen v3/GEB outputs remain the historical reference; they are **not** automatically native-only by replaying them. The next primary cohort is selected from the **original pre-detector source, prior to any detector or trait selection**, using a fixed native-range definition. An all-upstream native classification and inherited-measurement linkage already exist in the archived PR142 evidence. **Reuse that completed result; do not reacquire WCVP, CHELSA rasters, original images, or remeasure missing pixels in this consolidation.** No new V4 Actions or competing analysis entry point is authorized by this note.
