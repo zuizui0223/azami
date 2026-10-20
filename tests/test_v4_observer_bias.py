@@ -53,3 +53,16 @@ def test_dateline_regions_are_distinct_and_deterministic():
     k=cells(np.array([34,34]),np.array([179.9,-179.9]))
     assert k[0]!=k[1]
     assert (k==cells(np.array([34,34]),np.array([179.9,-179.9]))).all()
+
+
+def test_observer_balanced_covariance_bootstrap_is_deterministic():
+    from analysis.v4.observer_covariance import integration
+    f=fixture()
+    from analysis.v4.observer_bias import ALL_TRAITS
+    f["corolla_lab_lightness_median"]=f["corolla_lab_chroma_median"]*0.3+60
+    f["corolla_hue_sin_median"]=np.sin(f["corolla_lab_chroma_median"])
+    f["corolla_hue_cos_median"]=np.cos(f["corolla_lab_chroma_median"])
+    a=integration(f,reps=16,seed=219)
+    b=integration(f,reps=16,seed=219)
+    assert a==b and a["n_taxa"]==24
+    assert -1<a["matched_taxon_bootstrap_95pct"][0]<1
