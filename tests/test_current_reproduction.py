@@ -841,3 +841,31 @@ def test_corrected_gate_d_requires_holm_family_and_no_false_rain_angle_result():
     bad=copy.deepcopy(data);bad['input_sha256']='old-sentinel-file'
     with pytest.raises(ValueError,match='Not source-corrected'):
         summarize_existing_gradients(bad)
+
+
+def test_gate_d_real_corrected_source_receipt_is_not_causal_hypervolume():
+    from reproducibility.native_gate_d_existing_gradient import (
+        SHA256, CORRECTED_INPUT_SHA256, ORIGINAL_RUN, ORIGINAL_ARTIFACT
+    )
+    receipt=json.loads((
+        ROOT/'reproducibility/native_gate_d_corrected_gradient_receipt_20261021.json'
+    ).read_text(encoding='utf-8'))
+    src=receipt['source']
+    assert (src['run_id'],src['artifact_id'],src['sha256']) == (
+        ORIGINAL_RUN,ORIGINAL_ARTIFACT,SHA256)
+    assert src['corrected_native_input_sha256'] == CORRECTED_INPUT_SHA256
+    assert src['invalid_gsp_encoding_rows_masked']==1239
+    assert src['native_source_rows']==313350
+    assert src['corrected_nine_environment_complete']==312001
+    test=receipt['tests']
+    assert test['holm_family']==64
+    assert test['holm_less_than_0_05']==14
+    assert sum(sum(by.values()) for by in test['by_model'].values())==14
+    assert test['by_model']['colour']=={'within':4,'between':4}
+    assert test['by_model']['head_outline']=={'within':2,'between':4}
+    assert test['by_model']['orientation']=={'within':0,'between':0}
+    assert test['by_model']['bract_projection']=={'within':0,'between':0}
+    assert test['orientation_bio12_between_holm_p']==1
+    assert test['orientation_bio12_within_holm_p']==1
+    assert receipt['claim_boundary']['gate_d_covariance_density_environment_not_run']
+    assert receipt['claim_boundary']['observer_region_heldout_not_completed']
