@@ -367,6 +367,7 @@ def test_gate_a_exact_intersection_is_different_from_marginals_and_private_keys(
     with pytest.raises(ValueError, match="Duplicated|duplicated|observation ID"):
         audit_gate_a(pd.concat([data.iloc[:1],data.iloc[:1]], ignore_index=True))
     bad = data.copy()
+    bad[CORE3[0]+'__eligible'] = bad[CORE3[0]+'__eligible'].astype(object)
     bad.loc[0, CORE3[0]+'__eligible'] = 'unknown'
     with pytest.raises(ValueError, match="eligibility"):
         audit_gate_a(bad)
