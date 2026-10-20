@@ -103,9 +103,14 @@ def render(source, output):
             im = ax.imshow(values, vmin=0, vmax=1, cmap="viridis")
             ax.set_xticks(range(8), names, rotation=60, ha="right", fontsize=8)
             ax.set_yticks(range(8), names, fontsize=8)
-            ax.set_title(f"{version}: {level.replace('_', ' ')}", fontsize=11)
+            title = f"{version}: {level.replace('_', ' ')}"
+            if level == "phylogenetic":
+                title += "\nBoundary estimates: inspect uncertainty"
+            ax.set_title(title, fontsize=10)
     fig.colorbar(im, ax=axes.ravel().tolist(), label="Median RV across placement trees")
-    fig.suptitle("Conditional covariance components — PSD moment estimates")
+    fig.suptitle("Conditional covariance components — PSD moment estimates\n"
+                 "Large RV alone is not evidence: small component variances can produce extreme correlations.",
+                 fontsize=12)
     fig.savefig(output/"covariance_components.png", dpi=180)
     plt.close(fig)
     manifest = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
