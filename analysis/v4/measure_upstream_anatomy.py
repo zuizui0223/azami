@@ -81,6 +81,15 @@ def run(source,annotations,out):
         overlay=Image.alpha_composite(overlay,Image.fromarray(tint)).convert('RGB');d=ImageDraw.Draw(overlay)
         if base is not None and top is not None:d.line([base,top],fill='yellow',width=max(2,im.width//300))
         if stem is not None and base is not None:d.line([stem,base],fill='cyan',width=max(2,im.width//300))
+        if candidates:
+            palette={'outer':'lime','middle':'yellow','inner':'magenta','unknown':'orange'}
+            width=max(2,im.width//350)
+            for phyllary in candidates:
+                fill=palette[phyllary['whorl']]
+                d.line([phyllary['base'],phyllary['tip']],fill=fill,width=width)
+                x,y=phyllary['base'];rr=max(3,width)
+                d.ellipse((x-rr,y-rr,x+rr,y+rr),outline=fill,width=width)
+            d.text((10,10),'UNVALIDATED 2D phyllary candidate axes',fill='orange')
         overlay.thumbnail((900,900));overlay.save(out/f"{a['photo_id']}_{key[1]}_annotation.png")
     receipt={'measurement_source':'original_image_bytes_and_explicit_anatomical_annotations',
              'n_head_records':len(results),'review_status_counts':{s:sum(r['review_status']==s for r in results) for s in {r['review_status'] for r in results}},
