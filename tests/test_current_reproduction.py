@@ -497,3 +497,68 @@ def test_historical_native_five_restored_measurements_do_not_replace_new_ledger(
     counterfeit["source_sampling_context"]["individual_endpoint_coarse_spatial_support"]["endpoints"]["orientation_image_vertical_angle"]["taxa"] = 241
     with pytest.raises(ValueError, match="Impossible prior spatial"):
         coarse_cell_retention_ceiling(counterfeit)
+
+
+def test_gate_a_corrected_source_contract_matches_native_space_and_rejects_legacy():
+    from reproducibility import native_gate_a, native_space_gate
+    assert native_gate_a.PREPARED_SHA256 == native_space_gate.RAW_UNCORRECTED_SHA256
+    assert native_gate_a.CORRECTED_PREPARED_SHA256 == native_space_gate.EXPECTED_SHA256
+    assert native_gate_a.CORRECTED_PREPARED_SHA256 != native_gate_a.PREPARED_SHA256
+
+
+def test_gate_a_exact_core9_matched_effort_is_safe_and_order_invariant():
+    import numpy as np
+    import pandas as pd
+    from reproducibility.native_gate_a import audit_gate_a, CORE9
+    rows = []
+    for i in range(60):
+        taxon = str(200 + i//20)
+        r = {'obs_id':str(10000+i), 'accepted_key':taxon,
+             'latitude': 10+(i//10)*.1, 'longitude': 30+(i//5)*.1,
+             'observed_on': '2026-05-14' if i < 30 else '2026-08-20',
+             'source_photo_count': 1}
+        for name in CORE9:
+            r[name] = .5+i*.01
+            r[name+'__eligible'] = True
+        if i % 4 == 0:
+            r[CORE9[0]+'__eligible'] = False
+        rows.append(r)
+    frame = pd.DataFrame(rows)
+    obs = pd.DataFrame({
+        'obs_id': frame.obs_id, 'user_id': ['private_user_'+str(i//10) for i in range(60)]
+    })
+    out = audit_gate_a(frame, observers=obs)
+    d = out['matched_core9_sampling_diagnostics']
+    assert d['source_observations'] == 60 and d['matched_observations'] == 45
+    assert d['observer_status'] == 'EXACT_MATCHED_ORIGINAL_OBSERVER_SUPPORT'
+    assert d['matched_observer_effort']['n_original_observers'] == 6
+    assert 0 < d['matched_observer_effort']['matched_top_1pct_observer_fraction'] <= 1
+    assert d['matched_observer_effort']['n_taxon_cell_observer_strata'] <= d['matched_taxon_cells']*6
+    assert d['matched_observer_effort']['matched_observations_in_repeated_taxon_cell_observer_strata'] > 0
+    assert len(d['source_vs_matched_monthly']) == 12
+    assert sum(m['source_n'] for m in d['source_vs_matched_monthly']) == 60
+    assert sum(m['matched_n'] for m in d['source_vs_matched_monthly']) == 45
+    assert d['photographic_quality_status'].startswith('NOT_EVALUABLE')
+    assert d['endpoint_failure_reason_status'].startswith('NOT_DISAGGREGATED')
+    # Public output should contain only counts and fixed labels.
+    exported = json.dumps(out, ensure_ascii=False)
+    assert 'private_user_' not in exported
+    assert '"obs_id"' not in exported and '"accepted_key"' not in exported
+    permuted = frame.sample(frac=1, random_state=29).reset_index(drop=True)
+    assert out == audit_gate_a(permuted, observers=obs.sample(frac=1, random_state=13))
+
+
+def test_gate_a_no_original_observers_never_claims_sampling_gate_complete():
+    import pandas as pd
+    from reproducibility.native_gate_a import audit_gate_a, CORE9
+    base = {'obs_id':['1','2'], 'accepted_key':['A','B'],
+            'latitude':[0.,20.], 'longitude':[0.,40.]}
+    for name in CORE9:
+        base[name] = [.5,.6]
+        base[name+'__eligible'] = [True,True]
+    out = audit_gate_a(pd.DataFrame(base))
+    d = out['matched_core9_sampling_diagnostics']
+    assert d['matched_observer_effort'] is None
+    assert d['observer_status'] == 'NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN'
+    assert d['season_status'] == 'NOT_EVALUABLE_NO_OBSERVATION_DATE'
+    assert out['observer_audit'] == 'NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN'
