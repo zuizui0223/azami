@@ -113,7 +113,7 @@ def build(source_zip, native_csv, outdir, source_sha256=SOURCE_SHA):
             }
             for person in ("A", "B"):
                 token = person + "-" + sha(
-                    (person + "|" + x["sha256"]).encode()
+                    (person + "|" + sha(x["sha256"].encode())).encode()
                 )[:12]
                 filename = token + ".jpg"
                 entries[person].append(blank_review(token, filename))
@@ -134,7 +134,7 @@ def build(source_zip, native_csv, outdir, source_sha256=SOURCE_SHA):
     )
     for person in ("A", "B"):
         entries[person].sort(key=lambda row: sha(
-            (person + "|order|" + row["image_token"]).encode()
+            (person + "|review-order|" + row["image_token"]).encode()
         ))
         with zipfile.ZipFile(
             out / ("blinded_review_" + person + ".zip"), "w", zipfile.ZIP_DEFLATED
