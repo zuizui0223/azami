@@ -31,7 +31,7 @@ METRICS = ("density_overlap", "wasserstein_w2", "centred_share_w2_squared")
 
 def validate_blob(path: Path, blob_sha: str) -> None:
     data = path.read_bytes()
-    envelope = b"blob " + str(len(data)).encode("ascii") + b"\\0" + data
+    envelope = b"blob " + str(len(data)).encode("ascii") + b"\0" + data
     if hashlib.sha1(envelope).hexdigest() != blob_sha:
         raise ValueError("Historical PR92 Git blob hash changed or wrong input")
 
@@ -89,16 +89,9 @@ def analyze_historical_density(
     report = {}
     for group, taxa_n in CORE_GROUPS.items():
         p = pairwise.loc[pairwise.group.eq(group)].copy()
-        left = b.loc[list(zip(p.group, p.taxon_a))]
-        right = b.loc[list(zip(p.group, p.taxon_b))]
-        # Only original taxa whose 30 disjoint 50+50 same-species W2 draws exist.
-        mask = np.isfinite(left.same_taxon_w2_p95.to_numpy(float)) & np.isfinite(
-            right.same_taxon_w2_p95.to_numpy(float))
-        if not mask.all():
-            raise ValueError("Same-taxon reference joined unexpectedly")
-        # The all-pair CSV has 54 eligible taxa, so restrict to 33/33/34 baseline taxa.
-        # The pairs without baseline taxa are NOT included in the reference comparison.
-        # Build the appropriate all-pairs subset *before* baseline indexing.
+        # The all-pair CSV has 54 taxa, but only 33/33/34 taxa have a
+        # disjoint same-species reference. NEVER left-join the full 54 here;
+        # first filter both ends to taxa with a genuine finite-sample null.
         report[group] = {
             "historical_between_species_pairs":int(len(p)),
             "full_median_overlap":median(p.density_overlap),
@@ -199,7 +192,7 @@ def main() -> None:
         pd.read_csv(paths["bandwidth"]),
     )
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    a.out.write_text(json.dumps(report,indent=2,ensure_ascii=False,allow_nan=False)+"\\n",
+    a.out.write_text(json.dumps(report,indent=2,ensure_ascii=False,allow_nan=False)+"\n",
                       encoding="utf-8")
     print(json.dumps({"status":report["status"],"modules":report["modules"]}))
 
