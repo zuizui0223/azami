@@ -1,0 +1,94 @@
+{
+  "schema_version": "native_gate_a_existing_aggregate_overlap_20261020_v1",
+  "status": "EXISTING_TRAIT_ELIGIBILITY_AUDIT_NOT_NEW_REPLAY",
+  "provenance": {
+    "repository": "zuizui0223/azami",
+    "workflow_run_id": 39428065666,
+    "artifact_id": 12266812186,
+    "artifact_member": "native_integration_audit.json",
+    "artifact_member_sha256": "39d5613b611cce30be989682b3e47cdb3153aa880a0c2744cd40bb0d72b9edd4",
+    "source_input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "verification": "Pre-existing artifact inspected; all nine marginal endpoint eligibility counts matched the original 27-endpoint receipt.",
+    "excluded_science": "No environmental gradient, fitting coefficient, p-value or claim from the separate model is reused."
+  },
+  "original_source": {
+    "native_observations": 313350,
+    "accepted_taxa": 306,
+    "inherited_measurement_rows": 217104
+  },
+  "module_census": {
+    "orientation": {
+      "n": 170066,
+      "taxa": 244
+    },
+    "colour": {
+      "n": 186390,
+      "taxa": 244
+    },
+    "outline": {
+      "n": 176048,
+      "taxa": 243
+    },
+    "bract_si": {
+      "n": 1303,
+      "taxa": 111
+    }
+  },
+  "module_overlap": {
+    "orientation/colour": {
+      "n": 164167,
+      "taxa": 243
+    },
+    "orientation/outline": {
+      "n": 159967,
+      "taxa": 242
+    },
+    "colour/outline": {
+      "n": 170227,
+      "taxa": 243
+    },
+    "orientation/bract_si": {
+      "n": 1141,
+      "taxa": 108
+    },
+    "colour/bract_si": {
+      "n": 1140,
+      "taxa": 109
+    },
+    "outline/bract_si": {
+      "n": 1164,
+      "taxa": 110
+    }
+  },
+  "complete_core9": {
+    "n": 157779,
+    "accepted_taxa": 242,
+    "definition": "orientation image vertical; four colour outputs including hue sin/cos; four 2D head-outline outputs; same observation & endpoint eligibility",
+    "selection_stage": "before >=5 eligible-observations-per-taxon model filtering"
+  },
+  "core3_inferred_bound": {
+    "lower": 157779,
+    "upper": 157828,
+    "exact": false,
+    "logic": "core9 set is nested in image-angle/chroma/outline-aspect core3; only 49 native observations have chroma without the full four-output colour module, and the outline four-output set matches the outline-aspect count.",
+    "unresolved": "Exact 3-feature individual-ID join not contained in prior aggregate artifact."
+  },
+  "sampling_availability": {
+    "latitude": true,
+    "longitude": true,
+    "observer_id": false,
+    "user_id": false,
+    "photographer_id": false,
+    "region": false,
+    "tdwg3": false,
+    "interpretation": "Original observer/region provenance requires a separately authenticated private join. Geographic coordinates alone do not identify independent plants."
+  },
+  "status_by_gate": {
+    "cohort_and_module_overlap": "VERIFIED_FROM_EXISTING_AGGREGATE",
+    "core3_observation_intersection": "SHARP_49_OBSERVATION_RANGE_ONLY",
+    "per_module_taxon_cell_observer_strata": "NOT_VERIFIED",
+    "independent_image_measurement_accuracy": "NOT_VERIFIED",
+    "recovered_five_head_measurements": "NOT_VERIFIED"
+  },
+  "privacy": "No observation IDs, taxonomy labels, observer IDs, original URLs or location coordinates are contained in this receipt."
+}

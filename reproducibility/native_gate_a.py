@@ -132,6 +132,83 @@ def guaranteed_bounds(ledger: dict) -> dict:
     }
 
 
+
+
+def validate_existing_overlap_receipt(ledger: dict, receipt: dict) -> dict:
+    """Check an independently archived, NON-IDENTIFYING trait intersection receipt.
+
+    This uses an existing frozen source aggregate and cannot substitute for
+    the observer/cell QC or a fresh join of individual native source rows.
+    """
+    if receipt.get("schema_version") != "native_gate_a_existing_aggregate_overlap_20261020_v1":
+        raise ValueError("Unrecognized historical native intersection receipt schema")
+    source = receipt["original_source"]
+    if source["native_observations"] != NATIVE_N or source["inherited_measurement_rows"] != MEASURED_N:
+        raise ValueError("Existing intersection source denominator changed")
+    if source["accepted_taxa"] != ledger["denominators"]["native_wcvp_accepted_keys"]:
+        raise ValueError("Existing intersection taxon universe changed")
+    p = receipt["provenance"]
+    if p["workflow_run_id"] != 39428065666 or p["artifact_id"] != 12266812186:
+        raise ValueError("Existing intersection artifact origin changed")
+    if p["artifact_member_sha256"] != "39d5613b611cce30be989682b3e47cdb3153aa880a0c2744cd40bb0d72b9edd4":
+        raise ValueError("Existing intersection member hash changed")
+    counts = {e["endpoint_id"]: e["n_eligible_native"] for e in ledger["endpoints"]}
+    by = receipt["module_census"]
+    expected = {
+        "orientation": ("orientation_image_vertical_angle",),
+        "colour": ("corolla_lab_lightness", "corolla_lab_chroma", "corolla_hue_sin", "corolla_hue_cos"),
+        "outline": ("capitulum_outline_aspect_ratio", "capitulum_outline_circularity", "capitulum_outline_solidity", "capitulum_width_profile_cv"),
+        "bract_si": ("bract_projection_p95", "bract_spread_fraction"),
+    }
+    for name, fields in expected.items():
+        n = int(by[name]["n"])
+        if not (0 < n <= MEASURED_N) or not all(n <= counts[k] for k in fields):
+            raise ValueError("Invalid module marginal or missing registered endpoint: " + name)
+        if name in ("orientation", "outline", "bract_si") and not all(counts[k] == n for k in fields):
+            raise ValueError("Module marginal disagrees with identical original endpoint eligibility: " + name)
+        if name == "colour" and n != min(counts[k] for k in fields):
+            raise ValueError("Colour4 module does not have the expected common-hue gate")
+        if not 0 < by[name]["taxa"] <= source["accepted_taxa"]:
+            raise ValueError("Invalid module taxon count")
+    pair = receipt["module_overlap"]
+    for pair_name, value in pair.items():
+        parts = pair_name.split("/")
+        if len(parts) != 2 or parts[0] == parts[1] or any(x not in by for x in parts):
+            raise ValueError("Invalid module pair key")
+        n = value["n"]
+        if not max(0, by[parts[0]]["n"] + by[parts[1]]["n"] - MEASURED_N) <= n <= min(by[x]["n"] for x in parts):
+            raise ValueError("Historical module pair violates original source intersection bounds")
+        if not 0 < value["taxa"] <= min(by[x]["taxa"] for x in parts):
+            raise ValueError("Historical module pair taxon count inconsistent")
+    core = receipt["complete_core9"]
+    nc = core["n"]
+    if nc != 157779 or core["accepted_taxa"] != 242:
+        raise ValueError("Existing complete-nine intersection changed")
+    if not all(nc <= pair[name]["n"] for name in ("orientation/colour", "orientation/outline", "colour/outline")):
+        raise ValueError("Complete-nine cohort exceeds a necessary pairwise joint cohort")
+    bounds = guaranteed_bounds(ledger)["intersections"]
+    if not bounds["complete_core9"]["lower"] <= nc <= bounds["complete_core9"]["upper"]:
+        raise ValueError("Complete-nine overlap violates original source count bounds")
+    extra_colour = counts["corolla_lab_chroma"] - by["colour"]["n"]
+    if extra_colour != 49:
+        raise ValueError("Colour4-versus-chroma difference unexpected")
+    # The original four outline endpoints share identical eligibility here;
+    # the COMPLETE colour module is nested in the chroma endpoint set.
+    interval = {"lower": nc, "upper": min(pair["orientation/outline"]["n"], nc + extra_colour)}
+    if interval != {
+        "lower": receipt["core3_inferred_bound"]["lower"],
+        "upper": receipt["core3_inferred_bound"]["upper"],
+    }:
+        raise ValueError("Derived core3 observation intersection range changed")
+    return {
+        "status": "VERIFIED_EXISTING_AGGREGATE_NOT_REPLAY",
+        "complete_core9_n": nc,
+        "complete_core9_taxa": core["accepted_taxa"],
+        "core3_observation_range": interval,
+        "photographer_join_required": not receipt["sampling_availability"]["user_id"],
+        "no_new_trait_values_estimated": True,
+    }
+
 def _strict_endpoint_masks(frame: pd.DataFrame, ledger: dict | None) -> tuple[dict, dict]:
     endpoint_ids = [r["endpoint_id"] for r in ledger["endpoints"]] if ledger else list(
         dict.fromkeys((*CORE9, *RECOVERED_FIVE))
@@ -355,7 +432,11 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True, help="Aggregate-only JSON")
     args = parser.parse_args()
     ledger = load_ledger(args.ledger)
-    output = {"bounds_only": guaranteed_bounds(ledger)}
+    existing_path = Path(__file__).with_name("native_gate_a_existing_overlap_20261020.json")
+    existing = json.loads(existing_path.read_text(encoding="utf-8"))
+    verified = validate_existing_overlap_receipt(ledger, existing)
+    output = {"bounds_only": guaranteed_bounds(ledger),
+              "existing_aggregate_audit": verified}
     if bool(args.recovered_five_csv) != bool(args.recovered_five_report):
         parser.error("Historical five requires both file and provenance report")
     if (args.observer_input or args.recovered_five_csv) and not args.native_input:
@@ -374,6 +455,13 @@ def main() -> None:
         output["actual_gate_a"] = audit_gate_a(
             native, ledger=ledger, observers=observers, expected_n=NATIVE_N
         )
+        verified_count = output["actual_gate_a"]["modules"]["complete_primary_core9"]["n_observations_exact"]
+        if verified_count != verified["complete_core9_n"]:
+            raise ValueError("Current source exact core9 does not match archived aggregate receipt")
+        exact_core3 = output["actual_gate_a"]["modules"]["primary_core3"]["n_observations_exact"]
+        interval = verified["core3_observation_range"]
+        if not interval["lower"] <= exact_core3 <= interval["upper"]:
+            raise ValueError("Current source core3 falls outside archived aggregate-derived interval")
         output["actual_gate_a"]["source_prepared_table_sha256"] = PREPARED_SHA256
         if args.recovered_five_csv:
             output["historical_five_linkage"] = audit_recovered_five(
@@ -383,7 +471,9 @@ def main() -> None:
     args.out.write_text(json.dumps(output, indent=2, allow_nan=False)+"\n", encoding="utf-8")
     print(json.dumps({
         "actual_source_analysed": "actual_gate_a" in output,
-        "core3_lower": output["bounds_only"]["intersections"]["matched_core3"]["lower"],
+        "core3_lower": output["existing_aggregate_audit"]["core3_observation_range"]["lower"],
+        "core3_upper": output["existing_aggregate_audit"]["core3_observation_range"]["upper"],
+        "existing_core9": output["existing_aggregate_audit"]["complete_core9_n"],
         "exact_core3": output.get("actual_gate_a", {}).get("intersections", {}).get("all_core3"),
     }))
 

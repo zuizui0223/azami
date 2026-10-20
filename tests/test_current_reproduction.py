@@ -415,3 +415,28 @@ def test_gate_a_recovered_five_requires_authenticated_head_aggregation(tmp_path)
     rp.write_text(json.dumps(receipt))
     with pytest.raises(ValueError, match="not closed"):
         audit_recovered_five(native,csv,rp)
+
+
+
+def test_existing_native_gate_a_trait_overlap_receipt_is_verified():
+    """Aggregate original source audit already established the core nine overlap."""
+    from reproducibility.native_gate_a import load_ledger, validate_existing_overlap_receipt
+    ledger = load_ledger(ROOT/'reproducibility/native_first_27_endpoint_coverage_20261020.json')
+    receipt = json.loads((ROOT/'reproducibility/native_gate_a_existing_overlap_20261020.json').read_text())
+    result = validate_existing_overlap_receipt(ledger, receipt)
+    assert result['status'] == 'VERIFIED_EXISTING_AGGREGATE_NOT_REPLAY'
+    assert (result['complete_core9_n'], result['complete_core9_taxa']) == (157779, 242)
+    assert result['core3_observation_range'] == {'lower': 157779, 'upper': 157828}
+    assert result['photographer_join_required']
+    assert result['no_new_trait_values_estimated']
+    assert receipt['module_overlap']['orientation/colour'] == {'n': 164167, 'taxa': 243}
+    assert receipt['module_overlap']['orientation/outline'] == {'n': 159967, 'taxa': 242}
+    assert receipt['module_overlap']['colour/outline'] == {'n': 170227, 'taxa': 243}
+    tampered = json.loads(json.dumps(receipt))
+    tampered['complete_core9']['n'] += 1
+    with pytest.raises(ValueError, match="complete-nine intersection"):
+        validate_existing_overlap_receipt(ledger, tampered)
+    tampered2 = json.loads(json.dumps(receipt))
+    tampered2['module_census']['outline']['n'] += 2
+    with pytest.raises(ValueError, match="Module marginal"):
+        validate_existing_overlap_receipt(ledger, tampered2)

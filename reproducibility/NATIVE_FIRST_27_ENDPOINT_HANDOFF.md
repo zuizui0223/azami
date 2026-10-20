@@ -6,6 +6,24 @@ The [machine-readable Gate A bound receipt](native_gate_a_bounds_20261020.json) 
 
 A read-only [manual Gate A audit](native_gate_a.py) now verifies the exact historical prepared-table SHA and frozen source counts, performs **27 endpoint-specific QC checks**, audits the core three modules and their exact observation-level intersections, reports accepted-taxon and spatial-cell counts, and optionally joins private original observer IDs or a verified previously recovered five-field head→observation file. No new photo/raster collection, model fitting, publication of IDs/coordinates or public Actions workflow is involved. The current protected private input is **not present in the public repository**, so the actual intersection, independent spatial/observer support, and recovered-five native counts remain **not executed and not verified**.
 
+## Actual native nine-endpoint observation overlap recovered from earlier aggregate audit
+
+An **existing**, provenance-pinned [native module-overlap aggregate](native_gate_a_existing_overlap_20261020.json) (Actions [39428065666](https://github.com/zuizui0223/azami/actions/runs/39428065666), artifact \`12266812186\`, member \`native_integration_audit.json\`, SHA256 \`39d5613b611cce30be989682b3e47cdb3153aa880a0c2744cd40bb0d72b9edd4\`) contains exact observation/accepted-taxon intersections for source-matched, image-measured *modules*, irrespective of how the separately fitted ecological models behave. Its nine marginal endpoint eligible counts exactly match the previously independent 27-row receipt. These are **existing results reused**, not a new raw-data replay.
+
+| Matched original-image measurement modules | Original native observations | Accepted taxa |
+| --- | ---: | ---: |
+| Presentation | 170,066 | 244 |
+| Joint four-output colour (L*, C*, hue sine/cosine) | 186,390 | 244 |
+| Joint four-output 2D head outline | 176,048 | 243 |
+| Presentation × joint colour | 164,167 | 243 |
+| Presentation × head outline | 159,967 | 242 |
+| Colour × head outline | 170,227 | 243 |
+| **Presentation × colour × outline (all 9 recorded outputs)** | **157,779** | **242** |
+
+The separately fitted complete-case joint *model* may lose further taxa/observations through modelling gates and is **not** interchangeable with this measurement-only audit. Because colour C* is eligible for 186,439 observations but complete colour4 for 186,390, while the four outline outputs have an identical 176,048-observation eligible census, the simpler orientation+C*+aspect \`core3\` has a valid **157,779 to 157,828** observation range. Its **exact** identity intersection has not been reconstituted from protected row-level values and must not be invented.
+
+The saved native measurement frame has no original \`user_id\`/\`photographer_id\` or direct regional identifiers; although source coordinates are recorded privately, original human effort and population replication cannot be inferred from image counts. Do not declare Gate A entirely passed before exact taxon×cell×observer support, season/image-quality missingness and the historical five-field head-level recovery check are verified. The manual [Gate A script](native_gate_a.py) now validates this prior receipt and tests any later private row-level replay against its exact nine-endpoint count and the bounded core3 overlap. No original identities are published and no previously excluded exploratory model is promoted into the paper.
+
 ## Canonical design (historical audit reconciled, design only)
 
 The [single refined study design](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md) is authoritative for future native-first work. The [historical PR/commit index](HISTORY_AUDIT_INDEX_20261020.json) preserves scoped audit metadata. This document retains the source/endpoint evidence receipts and archived analyses **as provenance, not competing execution instructions**. Follow Gate A matched-observation/QC checks before new measurements, Gate B covariance before Gate C density/KDE/Wasserstein and Gate D ecology. No new original images, source extraction, Actions workflow, or frozen GEB V3 claim is authorized.
@@ -82,7 +100,7 @@ The full native roster has **313,244** observations with the four previously sel
 
 ## Operational gate
 
-The native-primary **source selection is already completed** in archived PR142 and need not be reacquired. The **27-endpoint aggregate coverage ledger is completed and checked in PR142**, but the exact matched native-core three-module intersection, photographer/region missingness audit, native KDE/Wasserstein outputs and independent ecological validation **are not completed**. The current [V3 numerical replay](CURRENT_ANALYSIS.md) validates old frozen inputs and 16 reference outputs; it **does not** implement a native-only reanalysis by itself. Do not equate green staging/integrity CI with execution of this handoff. The next executable step is reuse of the archived, checksum-verified 313,350-observation native-only prepared table to generate the 27-row eligibility ledger, without downloading or remeasuring images.
+The native-primary **source selection is already completed** in archived PR142 and need not be reacquired. The **27-endpoint aggregate coverage ledger is completed and checked in PR142**, but the **all-nine-primary photo endpoint matched intersection is now recovered from an existing aggregate receipt (157,779 native observations / 242 taxa)**. The representative core3 triple has a refined mathematical bound of 157,779–157,828 observations, while independent photographer/region missingness, actual recovered five-head fields, native KDE/Wasserstein and ecological validation **remain incomplete**. The current [V3 numerical replay](CURRENT_ANALYSIS.md) validates old frozen inputs and 16 reference outputs; it **does not** implement a native-only reanalysis by itself. Do not equate green staging/integrity CI with execution of this handoff. The next executable step is reuse of the archived, checksum-verified 313,350-observation native-only prepared table to generate the 27-row eligibility ledger, without downloading or remeasuring images.
 
 
 ## Retired exploratory environment-model notes
