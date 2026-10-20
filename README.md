@@ -10,6 +10,15 @@ The current statistical analysis **has executable code**. Its replay starts from
 
 ## Start here
 
+**PR142 / v4 development:** the [observation workflow contract](analysis/v4/OBSERVATION_MODEL_CONTRACT.md)
+defines the current native-observation environmental response analysis. It selects
+from all nine stored environmental candidates in six groups using `usdm::vifstep`
+before fitting colour, orientation and bract projection with the selected set.
+Run `v4-functional-exploration.yml` with `fit_after_selection=true` for the complete
+path; its default selection-only mode produces the environmental selection audit.
+The frozen v3 reproduction and results linked below remain a separate published
+evidence chain and should not be presented as v4 results.
+
 1. [Current numerical reproduction](reproducibility/CURRENT_ANALYSIS.md): verified inputs, one-command execution, and result validation.
 2. [Current results and interpretation](analysis/v3/README.md): biological constructs, environmental associations and whole-capitulum integration.
 3. [GEB scope freeze](analysis/v3/GEB_SCOPE_FREEZE_20260912.md): frozen claim boundary, submission-readiness work, analysis stop list, and separate evidence routes for any higher-tier successor.
