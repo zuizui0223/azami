@@ -795,77 +795,60 @@ def test_gate_c_actual_pr92_receipt_matches_legacy_method_floors():
     assert receipt['independent_reaudit']['new_native_density_fit'] is False
 
 
-def test_corrected_gate_d_requires_holm_family_and_no_false_rain_angle_result():
-    import copy
-    from reproducibility.native_gate_d_existing_gradient import (
-        CORRECTED_INPUT_SHA256, ORIGINAL_RUN, ORIGINAL_ARTIFACT,
-        CLIMATE, MODELS, EXPECTED_JOINT_FAMILY, summarize_existing_gradients,
-    )
+
+def test_gate_d_pr144_scientific_ownership_and_cohort_contract():
+    from reproducibility.native_gate_a import CORRECTED_PREPARED_SHA256
     from reproducibility.native_space_gate import EXPECTED_SHA256
-    assert CORRECTED_INPUT_SHA256 == EXPECTED_SHA256
-    assert (ORIGINAL_RUN, ORIGINAL_ARTIFACT, EXPECTED_JOINT_FAMILY) == (
-        39422378058, 12263957798, 64
-    )
-    keys=[name+'__'+scale for name in CLIMATE for scale in ('within','between')]
-    entry={'status':'estimated','p':.8,'holm_p':1.0}
-    data={
-        'input_sha256':CORRECTED_INPUT_SHA256,
-        'family_size':64,
-        'inference_status':'estimated',
-        'predictors':list(CLIMATE),
-        'models':{name:{'tests':{k:dict(entry) for k in keys}} for name in MODELS},
-    }
-    data['models']['colour']['tests']['chelsa_rsds_mean__between']={
-        'status':'estimated','p':.0001,'holm_p':.005
-    }
-    data['models']['head_outline']['tests']['chelsa_bio04__within']={
-        'status':'estimated','p':.0001,'holm_p':.006
-    }
-    out=summarize_existing_gradients(data)
-    assert out['total_supported']==2
-    assert out['scale_specific_supported_counts']['colour']=={'within':0,'between':1}
-    assert out['scale_specific_supported_counts']['head_outline']=={'within':1,'between':0}
-    assert out['scale_specific_supported_counts']['orientation']=={'within':0,'between':0}
-    assert out['status'].endswith('NOT_NEW_GATE_D')
-    bad=copy.deepcopy(data);bad['family_size']=63
-    with pytest.raises(ValueError,match='Holm family'):
-        summarize_existing_gradients(bad)
-    bad=copy.deepcopy(data);bad['models']['orientation']['tests']['chelsa_bio12__between']={
-        'status':'estimated','p':.0002,'holm_p':.02
-    }
-    with pytest.raises(ValueError,match='rain and angle'):
-        summarize_existing_gradients(bad)
-    bad=copy.deepcopy(data);bad['models']['colour']['tests']['chelsa_gsp__within']['holm_p']=-1
-    with pytest.raises(ValueError,match='Invalid adjusted'):
-        summarize_existing_gradients(bad)
-    bad=copy.deepcopy(data);bad['input_sha256']='old-sentinel-file'
-    with pytest.raises(ValueError,match='Not source-corrected'):
-        summarize_existing_gradients(bad)
+    handoff = json.loads((
+        ROOT / "reproducibility/GATE_D_PR144_HANDOFF_20261021.json"
+    ).read_text(encoding="utf-8"))
+    assert handoff["schema_version"] == "gate_d_pr144_canonical_handoff_20261021_v1"
+    assert handoff["scientific_owner"]["pull_request"] == 144
+    assert handoff["scientific_owner"]["state_at_verification"] == "open_draft"
+    native = handoff["native_source"]
+    assert native["corrected_input_sha256"] == CORRECTED_PREPARED_SHA256 == EXPECTED_SHA256
+    assert native["original_pre_detector_native_observations"] == 313350
+    assert native["accepted_taxon_keys"] == 306
+    assert native["all_nine_environment_complete"] == 312001
+    assert native["common_nine_outputs_eligible"] == {"observations": 157779, "taxa": 242}
+    assert native["model_complete"] == {"observations": 157654, "taxa": 174}
+    env = handoff["environment"]
+    assert env["numerical_run"] == 39428065666
+    assert env["variables"] == [
+        "chelsa_bio01", "chelsa_bio04", "chelsa_bio12",
+        "chelsa_bio15", "chelsa_rsds_mean"
+    ]
+    assert env["orientation_rain_between"]["degrees_per_100mm"] > 0
+    assert env["orientation_rain_between"]["holm_p"] < .01
+    assert env["orientation_rain_within"]["interval_crosses_zero"]
+    trees = handoff["phylogenetic_placements"]
+    assert trees["run"] == 39435174409 and trees["placement_scenarios"] == 52
+    assert trees["tree_taxa"] == 194 and trees["orientation_observations"] == 169912
+    assert trees["between_bio12_degrees_per_100mm_range"][0] > 0
+    assert trees["within_bio12_zero_in_ci_scenarios"] == 52
+    covariance = handoff["multivariate_covariance"]
+    assert covariance["run"] == 39437849165
+    assert covariance["cohort"] == {"observations": 157561, "taxa": 170}
+    assert covariance["raw_adjusted_placement_fits"] == 104
+    assert covariance["phylogenetic_boundary_fits"] == 104
+    assert covariance["fit_failures"] == 0
+    assert handoff["boundaries"]["v3_frozen_8_stages_16_files_unchanged"]
 
 
-def test_gate_d_real_corrected_source_receipt_is_not_causal_hypervolume():
-    from reproducibility.native_gate_d_existing_gradient import (
-        SHA256, CORRECTED_INPUT_SHA256, ORIGINAL_RUN, ORIGINAL_ARTIFACT
-    )
-    receipt=json.loads((
-        ROOT/'reproducibility/native_gate_d_corrected_gradient_receipt_20261021.json'
-    ).read_text(encoding='utf-8'))
-    src=receipt['source']
-    assert (src['run_id'],src['artifact_id'],src['sha256']) == (
-        ORIGINAL_RUN,ORIGINAL_ARTIFACT,SHA256)
-    assert src['corrected_native_input_sha256'] == CORRECTED_INPUT_SHA256
-    assert src['invalid_gsp_encoding_rows_masked']==1239
-    assert src['native_source_rows']==313350
-    assert src['corrected_nine_environment_complete']==312001
-    test=receipt['tests']
-    assert test['holm_family']==64
-    assert test['holm_less_than_0_05']==14
-    assert sum(sum(by.values()) for by in test['by_model'].values())==14
-    assert test['by_model']['colour']=={'within':4,'between':4}
-    assert test['by_model']['head_outline']=={'within':2,'between':4}
-    assert test['by_model']['orientation']=={'within':0,'between':0}
-    assert test['by_model']['bract_projection']=={'within':0,'between':0}
-    assert test['orientation_bio12_between_holm_p']==1
-    assert test['orientation_bio12_within_holm_p']==1
-    assert receipt['claim_boundary']['gate_d_covariance_density_environment_not_run']
-    assert receipt['claim_boundary']['observer_region_heldout_not_completed']
+def test_gate_d_legacy_evidence_is_not_active_in_pr142():
+    ledger = (
+        ROOT / "reproducibility/GATES_A_TO_E_EXECUTION_DECISIONS_20261021.md"
+    ).read_text(encoding="utf-8")
+    for name in (
+        "reproducibility/GATES_A_TO_E_EXECUTION_DECISIONS_20261021.md",
+        "reproducibility/NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md",
+        "reproducibility/NATIVE_FIRST_27_ENDPOINT_HANDOFF.md",
+        "reproducibility/native_gate_a.py",
+        "reproducibility/native_space_gate.py",
+    ):
+        text = (ROOT / name).read_text(encoding="utf-8")
+        assert "PR #143" not in text and "PR143" not in text
+    assert "PR #144" in ledger
+    assert "GATE_D_PR144_HANDOFF_20261021.json" in ledger
+    assert not (ROOT / "reproducibility/native_gate_d_existing_gradient.py").exists()
+    assert not (ROOT / "reproducibility/native_gate_d_corrected_gradient_receipt_20261021.json").exists()
