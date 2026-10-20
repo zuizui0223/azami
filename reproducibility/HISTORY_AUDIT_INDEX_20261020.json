@@ -1,0 +1,4659 @@
+{
+  "schema_version": "azami_pr_and_main_commit_index_20261020_v1",
+  "provenance": {
+    "repository": "zuizui0223/azami",
+    "method": "GitHub REST GET /pulls?state=all, /commits?sha=main, /pulls/{id}/commits; fixed pagination with unique-id checks",
+    "collected_date": "2026-10-20",
+    "main_latest_sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d",
+    "pr142_head_at_collection": "145208104fb4639bfb9a413c5875d36e308cc79a",
+    "counts": {
+      "all_pr_metadata": 140,
+      "main_branch_commits": 272,
+      "focused_branch_commits": {
+        "pr142": 118,
+        "pr92": 70,
+        "pr143": 120
+      }
+    },
+    "limitations": [
+      "This exhaustively indexes PR metadata and default-branch commit subjects exposed by GitHub at collection, not line-by-line content review of every commit.",
+      "PR #92/#143/#142 commit-message indexes include their unmerged histories; other unmerged PR branch commits are not exhaustively indexed.",
+      "Categorical tags are search aids, not proof that a scientific method has been executed, validated or adopted.",
+      "Historical PR and main branch content are frozen at different SHA/time; do not infer a unified sample or model from this catalog."
+    ]
+  },
+  "historically_nontrivial_decisions": {
+    "PR92": {
+      "status": "closed_unmerged_method_and_data_history",
+      "inspected": "full PR description, source-recovery and KDE/overlap/ellipsoid source results",
+      "reuse": "KDE 90% breadth, overlap, W2/centred W2, same-taxon split baseline and bandwidth/sample-size sensitivity, no uncorrected global numbers promoted as native-only"
+    },
+    "PR143": {
+      "status": "closed_unmerged_superseding_environment_incident",
+      "inspected": "incident, decoder, correction manifest, corrected response main results",
+      "reuse": "Require corrected 313350 observation table SHA; GSP 1239 invalid codes; nine predictors full-case 312001; retire preceding uncorrected simultaneous climate findings"
+    },
+    "PR142": {
+      "status": "draft_active_minimal_handoff",
+      "inspected": "current PR files and CI",
+      "reuse": "Only one native-first manual measurement/phenospace audit, not another V4 Actions or re-download pipeline"
+    },
+    "PR70/71": {
+      "status": "historical_ontology",
+      "inspected": "PR bodies and frozen 27-endpoint inventory",
+      "reuse": "End-to-end missingness/QC; five colour/display fields absent from V2 observation-level table; separately archived original head-field recovery code is unverified for native sample"
+    },
+    "PR72/93": {
+      "status": "frozen_geb_science_do_not_mutate",
+      "inspected": "PR bodies and v3 results",
+      "reuse": "separate species/observation/head units, circular hue, nine constructs, 36 RV pairs, scale-dependent covariance"
+    },
+    "PR33/54": {
+      "status": "historical_positive_and_withdrawn",
+      "inspected": "PR bodies",
+      "reuse": "earlier PCA/niche breadth descriptive; reject precision-confounded species responsiveness/lability headline withdrawn in PR54"
+    },
+    "PR69": {
+      "status": "historical_qc_bias_gate",
+      "inspected": "PR body",
+      "reuse": "phenology, hemispheric seasonality, native status, sharpness/resolution, taxon and image-thinning audits"
+    },
+    "PR30": {
+      "status": "unmerged_untested_expensive_spatial_model",
+      "inspected": "PR body",
+      "reuse": "low-rank spatial trait covariance is an alternative future sensitivity, not current numerical evidence"
+    }
+  },
+  "pr_index": [
+    {
+      "number": 1,
+      "title": "[codex] Add Cirsium floral trait architecture scaffold",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-02T09:57:39Z",
+      "head_sha": "9f12ceb19efefda6907605557e1d155d2ff067fa",
+      "created_at": "2026-07-02T09:34:31Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Redesign Chapter 1 as global multi-trait image-derived macroecology",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-02T15:32:30Z",
+      "head_sha": "d4587e78085cd6220940b50cd53bdbd94be7bf5b",
+      "created_at": "2026-07-02T14:44:43Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Ch.1: establish image-level annotation foundation",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-03T04:57:33Z",
+      "head_sha": "2174c9de6a03bfd556cd1367e87e1af65795077a",
+      "created_at": "2026-07-03T04:03:43Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Ch.1: add annotation-manifest CI and smoke test",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-03T05:09:21Z",
+      "head_sha": "17bc407859baee500fcd621eb5498746a5b3fc12",
+      "created_at": "2026-07-03T05:00:44Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 5,
+      "title": "Ch.1: add local blinded trait-annotation app",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-03T05:22:38Z",
+      "head_sha": "832a3d26197b6b17ed57d153b57cab0178bdc75c",
+      "created_at": "2026-07-03T05:13:47Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 6,
+      "title": "Ch.1: implement reproducible global iNaturalist collection pipeline",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-03T06:02:30Z",
+      "head_sha": "babcd3e4e8ac9d4f914a73e4fe53f9b47386dabc",
+      "created_at": "2026-07-03T05:33:28Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 7,
+      "title": "Fix TypeError when writing bool values into StringDtype DataFrame columns in trait ontology validation",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "fafe7f0566da59d93e032cd7b48b2d216c923c03",
+      "created_at": "2026-07-03T10:29:27Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Ch.1 submission-readiness review + representative trait-measurement certification (priority 1)",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T02:52:15Z",
+      "head_sha": "56204d0762d9f19c0dc5abdf836291e12d6bb996",
+      "created_at": "2026-07-10T01:16:54Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 9,
+      "title": "Fix trait audit app startup on Streamlit Cloud",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T02:52:29Z",
+      "head_sha": "3772e8665f49c3f1c43b4a8f93f7bf8b684f5809",
+      "created_at": "2026-07-10T02:42:13Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 10,
+      "title": "Build representative human holdout for Chapter 1 primary traits",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T05:34:48Z",
+      "head_sha": "aed63be5e4d12667468f7f4e6a9634a9901ceab8",
+      "created_at": "2026-07-10T05:18:43Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 11,
+      "title": "Simplify Chapter 1 human holdout to 360 + 90 tasks",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T07:11:01Z",
+      "head_sha": "3a37ca454a073846d1c39f05222fde1e482ede52",
+      "created_at": "2026-07-10T07:03:19Z",
+      "tags": []
+    },
+    {
+      "number": 12,
+      "title": "Replace primary trait categories with continuous automated measurements",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T10:05:19Z",
+      "head_sha": "758f2c577a9bb1b116764ed600c5513f2609d77e",
+      "created_at": "2026-07-10T09:37:24Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 13,
+      "title": "Correct continuous colour masks and signed head orientation",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T10:41:05Z",
+      "head_sha": "493483ac171770641a2c8a25596a6400b2ce082a",
+      "created_at": "2026-07-10T10:18:33Z",
+      "tags": [
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 14,
+      "title": "Audit continuous-trait QC and integrate involucre supplements",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T11:25:27Z",
+      "head_sha": "6c6d0ed1647f4413a464ada37014560a3255affb",
+      "created_at": "2026-07-10T11:10:04Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 15,
+      "title": "Add audited historical constraints and PGLS sensitivity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T12:23:59Z",
+      "head_sha": "d3fbb5a03e1216a534e1410f1ba38583fdf224ab",
+      "created_at": "2026-07-10T11:30:56Z",
+      "tags": [
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 16,
+      "title": "Clean and harden Chapter 1 for manuscript submission",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-10T13:31:59Z",
+      "head_sha": "43ddacffd5947cb73a06bc8acdbd7dce646be2a1",
+      "created_at": "2026-07-10T13:19:45Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 17,
+      "title": "Freeze Chapter 1 manuscript scope and novelty position",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-11T02:05:11Z",
+      "head_sha": "4dd16a8eb0f403725d7233577340a83c9cceb459",
+      "created_at": "2026-07-11T02:02:32Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 18,
+      "title": "Run exhaustive all-photo continuous inference before thinning",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-11T03:36:24Z",
+      "head_sha": "481e7addea27e8ff8861164097c763d58aa573b6",
+      "created_at": "2026-07-11T03:27:29Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 19,
+      "title": "Run one-off exhaustive queue build",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "483d1613ef157d21acabea59f8e99f298a9a49a3",
+      "created_at": "2026-07-11T05:07:25Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 20,
+      "title": "Execute exhaustive all-photo queue build",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "e38cf57352f4911d38bb94e39dfea89620398e47",
+      "created_at": "2026-07-11T05:10:27Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 21,
+      "title": "Execute exhaustive inference pilot on shard 1",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "5938c36f1ace208b74a30c641f53008779bd10af",
+      "created_at": "2026-07-11T05:17:35Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 22,
+      "title": "Fix nested artifact path resolution for exhaustive shard inference",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-11T05:34:43Z",
+      "head_sha": "65557f7ce6e3c075138f7af5cc03b055e1b27288",
+      "created_at": "2026-07-11T05:31:15Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 23,
+      "title": "Keep failed exhaustive image downloads in the audit instead of aborting shards",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-11T05:37:43Z",
+      "head_sha": "6ad3e8292f662e10a3c2092b27fcb56a8c804afb",
+      "created_at": "2026-07-11T05:36:12Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 24,
+      "title": "Execute robust exhaustive inference pilot on shard 1",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "2ba030f2d4b79bb3445981a7848ef2837ec531e9",
+      "created_at": "2026-07-11T05:38:32Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 25,
+      "title": "Execute full exhaustive all-photo continuous trait inference",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "0b20fa8e492db5967e1d143592eb92cf451cb560",
+      "created_at": "2026-07-11T05:47:49Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 26,
+      "title": "Recover exhaustive merge from completed shard artifacts",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "de4b64d93ab98827121090997b62869a65c7cd4b",
+      "created_at": "2026-07-13T00:53:25Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 27,
+      "title": "Extract compact summary from final exhaustive artifact",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-13T09:22:41Z",
+      "head_sha": "c03e259f63083c249dcb1bc906b160d7f9b5a10f",
+      "created_at": "2026-07-13T05:32:03Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 28,
+      "title": "Run exhaustive within-species climate analysis",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-13T09:22:54Z",
+      "head_sha": "a6951bdb4e67638380837197a8b44589b7329924",
+      "created_at": "2026-07-13T06:16:48Z",
+      "tags": [
+        "source_and_qc",
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 29,
+      "title": "Run hierarchical SPDE-INLA environment analysis with XGBoost benchmark",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-14T13:39:02Z",
+      "head_sha": "44e2161ed911e0f66157048815e448e0e24d5ee7",
+      "created_at": "2026-07-13T07:03:08Z",
+      "tags": [
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 30,
+      "title": "Add joint multivariate hierarchical TMB spatial model",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "06e51191bb2df1019adbc535a3d4c9735e23b9d3",
+      "created_at": "2026-07-14T05:44:47Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 31,
+      "title": "Add lightweight grouped SPDE-INLA environment analysis",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-14T23:17:41Z",
+      "head_sha": "8aa9d024a0412506c15f85a45c1f81fed09d1586",
+      "created_at": "2026-07-14T13:23:19Z",
+      "tags": [
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 32,
+      "title": "Clean Chapter 1 repository for manuscript submission",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-14T14:03:12Z",
+      "head_sha": "f3d33af4a81e57fb4f021f45c2f0c10111695389",
+      "created_at": "2026-07-14T13:54:19Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 33,
+      "title": "Add Ch1 submission cleanup, trait-module, and niche analyses",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-14T23:17:59Z",
+      "head_sha": "cf04a1907d3f8cb209353ae29dea666b63f0697e",
+      "created_at": "2026-07-14T14:28:06Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 34,
+      "title": "Finalize two-axis species lability analysis and submission structure",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T02:21:10Z",
+      "head_sha": "e296d5141ffff66864e8fe538a26d2b317ee6f95",
+      "created_at": "2026-07-14T23:21:04Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 35,
+      "title": "Clean lability workflow and audit phylogenetic-signal feasibility",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T03:15:22Z",
+      "head_sha": "9754703a7a2c222c4fa74d24689a0d38142e2e0c",
+      "created_at": "2026-07-15T02:33:20Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 36,
+      "title": "Run live molecular coverage audit and phylogenetic signal analysis",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T05:38:21Z",
+      "head_sha": "6bf05b63e89e6bbf256924839045f7de5cf39740",
+      "created_at": "2026-07-15T04:02:51Z",
+      "tags": []
+    },
+    {
+      "number": 37,
+      "title": "Add phylogenetic evidence robustness summary",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T06:04:26Z",
+      "head_sha": "67de8021d025656b0bbe20bd31649018109bd191",
+      "created_at": "2026-07-15T05:49:24Z",
+      "tags": []
+    },
+    {
+      "number": 38,
+      "title": "Freeze final Chapter 1 claims, documentation and submission path",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T06:32:40Z",
+      "head_sha": "d2d9228cc5a594ad83c9e72003a0ab1703801283",
+      "created_at": "2026-07-15T06:13:46Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 39,
+      "title": "Align Chapter 1 entry points after final freeze",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T08:02:14Z",
+      "head_sha": "1471e17d76d699710cc5ca0bd75e536d24b85818",
+      "created_at": "2026-07-15T06:52:04Z",
+      "tags": []
+    },
+    {
+      "number": 40,
+      "title": "Result-led manuscript strategy",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T10:37:38Z",
+      "head_sha": "0dfc1c4fadfd883519e1f9673661b4238d75b6fe",
+      "created_at": "2026-07-15T10:28:33Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 41,
+      "title": "Integrate Cirsium evolutionary ecology into Chapter 1 discussion",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T10:51:16Z",
+      "head_sha": "d951e766ba7605f953ddd184b368e84287da5f0d",
+      "created_at": "2026-07-15T10:47:20Z",
+      "tags": []
+    },
+    {
+      "number": 42,
+      "title": "Consolidate Chapter 1 analysis entry points and manuscript workspace",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-15T12:48:34Z",
+      "head_sha": "4a0516e524aa73e63ca9154f0589a88407ab921a",
+      "created_at": "2026-07-15T12:23:57Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 43,
+      "title": "Draft Chapter 1 Introduction from structured literature review",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-16T09:04:15Z",
+      "head_sha": "b45b6a1f3282d2e72fee4d48ac51ea9d9273ac80",
+      "created_at": "2026-07-16T04:56:32Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 44,
+      "title": "Draft Chapter 1 Results from frozen repository evidence",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T02:34:52Z",
+      "head_sha": "938efd391a588c1930586d7308be03133a1c89e2",
+      "created_at": "2026-07-17T02:04:16Z",
+      "tags": []
+    },
+    {
+      "number": 45,
+      "title": "Add Figure 1 measurement and detector audit infrastructure",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T02:57:49Z",
+      "head_sha": "ab8d4c30bcc0947940b4abed375e3b5c72efe7e8",
+      "created_at": "2026-07-17T02:31:24Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 46,
+      "title": "Run Figure 1 and detector audits as a reproducible workflow",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T03:11:31Z",
+      "head_sha": "73bcb077899fe8d4533fd8d1f27d75ff1bb83498",
+      "created_at": "2026-07-17T02:59:05Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 47,
+      "title": "Freeze repository-grounded title, abstract and submission strategy",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T04:13:15Z",
+      "head_sha": "8a993f6a52fdf070196ef04f297ea329fdd0e068",
+      "created_at": "2026-07-17T03:14:28Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 48,
+      "title": "Add reproducible Chapter 1 taxonomic freeze audit",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T05:25:22Z",
+      "head_sha": "9e0cb5bce184b1c2934e848e6b9687d37e344cbd",
+      "created_at": "2026-07-17T04:05:36Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 49,
+      "title": "Add Chapter 1 residual spatial and broad-region robustness audit",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T06:23:45Z",
+      "head_sha": "89a7bfc15a95f4444ebc0abb800d050db7948b05",
+      "created_at": "2026-07-17T05:29:45Z",
+      "tags": [
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 50,
+      "title": "Prepare frozen observation-level input for spatial robustness audit",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-17T09:09:56Z",
+      "head_sha": "86a2f4d68a1b4d8cd1af9fe478e9d2c469131ebe",
+      "created_at": "2026-07-17T06:29:49Z",
+      "tags": [
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 51,
+      "title": "Draft Chapter 1 Methods from frozen repository evidence",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-18T09:19:10Z",
+      "head_sha": "726b0c493496536f8c1c8a3f29de2194afdfce42",
+      "created_at": "2026-07-18T06:23:46Z",
+      "tags": []
+    },
+    {
+      "number": 52,
+      "title": "Package submission utilities and remove duplicated audit helpers",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-19T14:42:18Z",
+      "head_sha": "2c4ff354f64d4622f999de2b164780c09f7ad5fe",
+      "created_at": "2026-07-19T03:59:18Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 53,
+      "title": "Complete Chapter 1 supervisor draft and add result figures",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-20T08:45:01Z",
+      "head_sha": "6255d778919abea1f8235ddfa560d7df847623cf",
+      "created_at": "2026-07-20T04:32:02Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 54,
+      "title": "Replace confounded lability result and decompose nested image variance",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-22T06:33:18Z",
+      "head_sha": "c047d54df0f7a4a889ac6048a0570735d2cc62d1",
+      "created_at": "2026-07-22T05:34:22Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 55,
+      "title": "Build leakage-free independent YOLO detector audit",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-07-22T11:11:43Z",
+      "head_sha": "b31f86e699fd1af4eb7fce477ab69b848656387a",
+      "created_at": "2026-07-22T07:19:02Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 56,
+      "title": "Close remaining Chapter 1 submission diagnostics",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-08T02:14:16Z",
+      "head_sha": "b24da673efa4e55bc3d4b242fa7e80404356495b",
+      "created_at": "2026-08-07T05:31:14Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 57,
+      "title": "Synchronize Chapter 1 continuous phenomics and EAzami handoff",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-17T11:15:58Z",
+      "head_sha": "8cf75cff25806471b0d16dca4723616544277d8e",
+      "created_at": "2026-08-16T09:13:51Z",
+      "tags": [
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 58,
+      "title": "Freeze Azami observation-only handoff to EAzami mechanisms",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-20T02:52:13Z",
+      "head_sha": "ef126dce4fab9b4f50db5fbbb5054d49c1838250",
+      "created_at": "2026-08-20T02:51:43Z",
+      "tags": []
+    },
+    {
+      "number": 59,
+      "title": "Refocus repository on Chapter 1 submission",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "215df4abf48705b8b768e9a8f5ed271eeda6c171",
+      "created_at": "2026-08-20T04:20:42Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 60,
+      "title": "Refocus repository on Chapter 1 submission and build Supplement",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-20T06:00:49Z",
+      "head_sha": "e49dd89ccd8fc64cfe56038e0b6badef2ad22fe4",
+      "created_at": "2026-08-20T05:35:12Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 61,
+      "title": "Complete frozen Chapter 1 Supplement tables",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-20T06:24:01Z",
+      "head_sha": "1c16c4a59de9561d60580e84795db972c394ec11",
+      "created_at": "2026-08-20T06:06:17Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 62,
+      "title": "Restore the Azami to EAzami inference boundary",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-20T06:19:42Z",
+      "head_sha": "67c86f4f34facba33e06dfbc503d7d51fa109052",
+      "created_at": "2026-08-20T06:19:03Z",
+      "tags": []
+    },
+    {
+      "number": 63,
+      "title": "Freeze Azami observational boundary from EAzami mechanism reduction",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-20T06:23:34Z",
+      "head_sha": "4ec2f44bddd08620a252213f49f25c8bb464f3f5",
+      "created_at": "2026-08-20T06:21:43Z",
+      "tags": []
+    },
+    {
+      "number": 64,
+      "title": "Update Azami handoff to EAzami pattern-reduction v2",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-20T07:42:36Z",
+      "head_sha": "96a9b458edf407503fea7dc93da896f17432b7fe",
+      "created_at": "2026-08-20T07:41:52Z",
+      "tags": []
+    },
+    {
+      "number": 65,
+      "title": "Freeze reproducible Supplement figures S1-S5",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-21T00:33:38Z",
+      "head_sha": "a66736898fd6d682bb99459d3e6da3e849ef48c0",
+      "created_at": "2026-08-20T21:55:37Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 66,
+      "title": "Strengthen ecological Discussion and reference integration",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-21T03:27:45Z",
+      "head_sha": "1d421a340f979842b1b4b8b93804aafcabcb98bd",
+      "created_at": "2026-08-21T03:11:41Z",
+      "tags": [
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 67,
+      "title": "Strengthen Chapter 1 visual narrative and sampling diagnostics",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-21T05:16:33Z",
+      "head_sha": "3945aec8a75c35bf6d77847ab5a23bd02477afb3",
+      "created_at": "2026-08-21T04:13:20Z",
+      "tags": []
+    },
+    {
+      "number": 68,
+      "title": "Clarify Azami boundary with East Asian EAzami doctoral programme",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-22T04:54:47Z",
+      "head_sha": "42bdacbaa1a0e2f25314a688f41980b8dc72466f",
+      "created_at": "2026-08-22T04:53:13Z",
+      "tags": []
+    },
+    {
+      "number": 69,
+      "title": "Add locked reviewer bias controls and narrow Chapter 1 claims",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-26T16:03:41Z",
+      "head_sha": "c335bdbbd58591c6140682733a29ed23d4607a24",
+      "created_at": "2026-08-26T07:37:00Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 70,
+      "title": "Superseded — continuous trait universe integrated through PR #71 and #72",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "e77c5f04a54bd2a7fc9abfb74d91b0b890aa0ed8",
+      "created_at": "2026-08-26T07:46:42Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 71,
+      "title": "Run GEB v2 continuous trait geography and evidence grading",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-26T16:03:40Z",
+      "head_sha": "4ecd7c72c0eec6ba190fe6bfcefdeacc74c2e94c",
+      "created_at": "2026-08-26T09:41:48Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 72,
+      "title": "Resolve multilevel GEB v2 capitulum space and environmental structure",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-27T04:30:50Z",
+      "head_sha": "5718da7422c05e7282fdc6aa0bac2c92ea7c69dd",
+      "created_at": "2026-08-26T16:20:50Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "environmental_modelling",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 73,
+      "title": "Harmonize EAzami direct colour proxies with production detector crops",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "d5353168eb0bd7c69be9953d65fb39dd53dedc1b",
+      "created_at": "2026-08-27T01:44:31Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 74,
+      "title": "Audit existing strict-spatial colour evidence for all 14 exact Japan38 concepts",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "8dc1c66bb16b828b756c914f763e42cf95e9f4ab",
+      "created_at": "2026-08-27T01:57:53Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 75,
+      "title": "Close Chapter 1 hypothesis recovery and synchronize the final narrative",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-27T07:06:34Z",
+      "head_sha": "1fd6636d5cd31a6beaef4acc0e79f6a913736292",
+      "created_at": "2026-08-27T06:33:37Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 76,
+      "title": "Build the frozen GEB submission release",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "075febfdac751715171af294412efabb4d491b24",
+      "created_at": "2026-08-27T08:26:28Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 77,
+      "title": "Export Japan38 bridge for all continuous capitulum traits",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388",
+      "created_at": "2026-08-27T09:31:46Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 78,
+      "title": "Separate GEB main/supp and clarify thistles as a rapid-radiation model system",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-28T03:55:00Z",
+      "head_sha": "44606ae93bead7e869af9ab9fd481ffcdd4c4c58",
+      "created_at": "2026-08-28T02:55:15Z",
+      "tags": [
+        "environmental_modelling",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 79,
+      "title": "Align GEB v2 figures, tables, and manuscript format",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-08-28T08:52:40Z",
+      "head_sha": "0777fab52f9ef5ae4f13545fa9a78736e311eba7",
+      "created_at": "2026-08-28T06:58:08Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 80,
+      "title": "Resolve supervisor comments and strengthen Chapter 1 method audit",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388",
+      "created_at": "2026-08-31T05:02:02Z",
+      "tags": []
+    },
+    {
+      "number": 81,
+      "title": "Prepublication content removed",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388",
+      "created_at": "2026-09-01T05:00:55Z",
+      "tags": []
+    },
+    {
+      "number": 82,
+      "title": "Prepublication content removed",
+      "state": "closed",
+      "draft": true,
+      "merged_at": "2026-09-02T05:06:30Z",
+      "head_sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388",
+      "created_at": "2026-09-01T05:51:04Z",
+      "tags": []
+    },
+    {
+      "number": 83,
+      "title": "Prepublication content removed",
+      "state": "closed",
+      "draft": true,
+      "merged_at": "2026-09-02T05:04:54Z",
+      "head_sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388",
+      "created_at": "2026-09-02T04:59:36Z",
+      "tags": []
+    },
+    {
+      "number": 84,
+      "title": "Repair Chapter 1 reproducibility pipeline after cleanup",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-03T05:44:49Z",
+      "head_sha": "ee1b47e8d1a4ae5c888eb57e3c3d5ff370a96a9a",
+      "created_at": "2026-09-03T02:38:25Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 86,
+      "title": "Complete Chapter 1 recovery inventory and archive guardrails",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-04T03:59:27Z",
+      "head_sha": "d4777d71d752f93f22c6256eb1567e2cce827cf3",
+      "created_at": "2026-09-03T08:20:45Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 87,
+      "title": "Document audited Chapter 1 reproduction materials and Windows runbook",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-04T04:58:03Z",
+      "head_sha": "a67d343ffbeb7979fce9d3c51a3de38d399db61d",
+      "created_at": "2026-09-04T04:56:57Z",
+      "tags": [
+        "environmental_modelling",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 89,
+      "title": "Define independent third-party Chapter 1 reproducibility",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-04T05:13:22Z",
+      "head_sha": "7f27ecf599b30d9b42766898dee3de3af5e95396",
+      "created_at": "2026-09-04T05:12:22Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 90,
+      "title": "Record published Zenodo v1 pending anonymous verification",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-04T08:57:14Z",
+      "head_sha": "7610a311e42540e968d69678672c4e0257a6f976",
+      "created_at": "2026-09-04T08:56:12Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 91,
+      "title": "Close Zenodo anonymous redownload gate",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-04T12:23:34Z",
+      "head_sha": "f890256fe550b9de2cfc4edd164570361d0996d3",
+      "created_at": "2026-09-04T12:13:44Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 92,
+      "title": "ch1 v3: exploratory capitulum hypervolumes and phenotype distributions",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "6061befaf56ee545bb3b2b4a80ed220d2def1190",
+      "created_at": "2026-09-07T04:40:13Z",
+      "tags": [
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 93,
+      "title": "ch1 v3: scale-dependent biological integration with frozen-v2 robustness anchors",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-11T03:27:47Z",
+      "head_sha": "53b825771b558f8064de063ee6df3bef480cdac8",
+      "created_at": "2026-09-09T23:43:40Z",
+      "tags": [
+        "multivariate_shape_and_function"
+      ]
+    },
+    {
+      "number": 94,
+      "title": "ch1: environment-first continuous capitulum trait synthesis",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "1046ac457bc25f9b76a51a5b50cb0f04fdf0e3bd",
+      "created_at": "2026-09-10T06:15:31Z",
+      "tags": [
+        "source_and_qc",
+        "multivariate_shape_and_function",
+        "environmental_modelling"
+      ]
+    },
+    {
+      "number": 95,
+      "title": "Unify current reproduction and isolate historical implementations",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-11T05:24:33Z",
+      "head_sha": "0bffad4c6890e5c3dfcf6d0c5f668a218d2feeb4",
+      "created_at": "2026-09-11T05:11:19Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 96,
+      "title": "Reproducible figure layout revisions",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-11T06:02:52Z",
+      "head_sha": "c6d16fddd3b697c9b40a0bad8be9efc2b0eba394",
+      "created_at": "2026-09-11T05:54:15Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 97,
+      "title": "Freeze Chapter 1 at GEB-ready scope",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T03:37:52Z",
+      "head_sha": "3bb1d6f1baef1beb0e4a59bb94d0f450411fe794",
+      "created_at": "2026-09-12T03:33:11Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 99,
+      "title": "Stage current Chapter 1 artifacts for durable release",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T03:44:13Z",
+      "head_sha": "d0c0acd5f055ad5a20e19309741eaaa8f62a4c06",
+      "created_at": "2026-09-12T03:43:53Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 100,
+      "title": "Add fail-closed Chapter 1 release bundle builder",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T03:56:08Z",
+      "head_sha": "d0efe920246e73329c100d1380f127dca8e46afc",
+      "created_at": "2026-09-12T03:47:36Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 101,
+      "title": "Add current scale-dependent integration main-figure recipe",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:07:39Z",
+      "head_sha": "865967277804015852206d6a70f504c1b8544093",
+      "created_at": "2026-09-12T04:02:12Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 102,
+      "title": "Freeze current Chapter 1 figure roles",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:16:34Z",
+      "head_sha": "7ff3bcf4d9bc18af552ec0fbf1e96294dc500755",
+      "created_at": "2026-09-12T04:09:24Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 103,
+      "title": "Fix scale-integration figure edge clipping",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:22:25Z",
+      "head_sha": "3804c6e33c66335ae8eae4f52c53e6b7a0743f77",
+      "created_at": "2026-09-12T04:12:36Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 104,
+      "title": "Require approved metadata for final Chapter 1 release",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:32:29Z",
+      "head_sha": "08ef69bc42b97a0c92187d4e32c4a1d5d7edfd44",
+      "created_at": "2026-09-12T04:15:17Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 105,
+      "title": "Add predeclared WCVP taxonomy sensitivity for Chapter 1",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:45:39Z",
+      "head_sha": "5b8af3de01165715658de2b612b8e7d427856324",
+      "created_at": "2026-09-12T04:21:18Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 106,
+      "title": "Add GEB blinded-review submission audit",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:42:47Z",
+      "head_sha": "412cb2b3b6f839512ab38e24f9f57728ca8f306b",
+      "created_at": "2026-09-12T04:38:49Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 107,
+      "title": "Record durable WCVP taxonomy sensitivity evidence",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T04:50:30Z",
+      "head_sha": "53c9b330fbdbf8b338c742046cf98aee95a52cc6",
+      "created_at": "2026-09-12T04:47:48Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 108,
+      "title": "Freeze GEB word budget and SI numbering plan",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-12T13:29:55Z",
+      "head_sha": "c2c331b3373b14dc87b50c1c84f19ac92fd7405f",
+      "created_at": "2026-09-12T04:51:50Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 109,
+      "title": "TEMP: pack canonical SI figures for document assembly",
+      "state": "closed",
+      "draft": false,
+      "merged_at": null,
+      "head_sha": "c830d42e2f9b9586fce273f6fc47338d1b277390",
+      "created_at": "2026-09-13T00:50:51Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 110,
+      "title": "Audit RV estimator validity for Chapter 1 scale contrast",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-15T07:04:23Z",
+      "head_sha": "5ef09cedd66835ee0f78edf54e0de07ae4c528dc",
+      "created_at": "2026-09-15T05:43:05Z",
+      "tags": []
+    },
+    {
+      "number": 111,
+      "title": "Build anonymous Chapter 1 peer-review bundle",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-15T07:52:04Z",
+      "head_sha": "9ca2446276dc9fa601b888c9d8144fca83e3bf90",
+      "created_at": "2026-09-15T07:12:16Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 112,
+      "title": "Clarify upstream-data boundary and current replay status",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T09:30:55Z",
+      "head_sha": "e69f4d37a94e4321ccdfac764938ea1b13fdacaa",
+      "created_at": "2026-09-26T09:29:06Z",
+      "tags": [
+        "source_and_qc"
+      ]
+    },
+    {
+      "number": 113,
+      "title": "Freeze current release inputs and replay environment",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T09:45:44Z",
+      "head_sha": "ffff33ca052c73546b79f7b0005199017cb0cddb",
+      "created_at": "2026-09-26T09:36:17Z",
+      "tags": [
+        "environmental_modelling",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 114,
+      "title": "Build current GEB figure surface for release",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T11:20:49Z",
+      "head_sha": "191c4463e4d9e7516571c38ef13ea5696bc82654",
+      "created_at": "2026-09-26T09:49:15Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 115,
+      "title": "Build current Chapter 1 Zenodo staging bundle",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T11:24:34Z",
+      "head_sha": "80a3e1f1ab3ee1b87b14a967028699064aab042b",
+      "created_at": "2026-09-26T11:22:55Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 116,
+      "title": "Fix Zenodo staging workflow runner paths",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T11:28:24Z",
+      "head_sha": "761f280f0a1e236836cda38e6b08d391554900a2",
+      "created_at": "2026-09-26T11:26:01Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 117,
+      "title": "Record assembled Chapter 1 Zenodo staging archive",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T11:33:36Z",
+      "head_sha": "f91c7923aa00da3058909566b52471a6eda288b8",
+      "created_at": "2026-09-26T11:32:28Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 118,
+      "title": "Freeze latest main Zenodo staging identity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T11:38:27Z",
+      "head_sha": "89c1c2a7cf61848bf373a209498021e1be22d422",
+      "created_at": "2026-09-26T11:36:55Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 119,
+      "title": "Record SI document QA and prepare Zenodo metadata",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-26T21:18:13Z",
+      "head_sha": "2df2e149b4484de31a6c6781f729007f39a9b51d",
+      "created_at": "2026-09-26T21:17:04Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 120,
+      "title": "Exclude manuscripts from Chapter 1 Zenodo release",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T01:34:11Z",
+      "head_sha": "b86b4bdf918436f8846302ab808d3a00e588bef7",
+      "created_at": "2026-09-27T01:32:36Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 121,
+      "title": "Record manuscript-free Chapter 1 Zenodo staging bundle",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T01:38:33Z",
+      "head_sha": "84e4db58852a79cdcccd46ffddbd651462762d01",
+      "created_at": "2026-09-27T01:37:28Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 122,
+      "title": "Make Chapter 1 Zenodo release analysis-data only",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T02:06:07Z",
+      "head_sha": "bafc382efe10574d55769090e8655c5afc9a094b",
+      "created_at": "2026-09-27T01:56:26Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 123,
+      "title": "Record verified data-only Zenodo staging bundle",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T02:17:53Z",
+      "head_sha": "70818c2543e060c137509c88293c435d7d9e9b82",
+      "created_at": "2026-09-27T02:15:22Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 124,
+      "title": "Build approved final data-only Zenodo candidate",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T02:22:09Z",
+      "head_sha": "277123a3abaec072088a40a57e3cd49909926586",
+      "created_at": "2026-09-27T02:20:07Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 125,
+      "title": "Record release-ready Chapter 1 Zenodo data candidate",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T03:40:56Z",
+      "head_sha": "55eb3752862d268045cf6eb5435e996692425e9d",
+      "created_at": "2026-09-27T03:39:45Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 126,
+      "title": "Add Chapter 1 Zenodo publication handoff",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T03:43:47Z",
+      "head_sha": "9c514b8280fb66564b833047820b980765f2398c",
+      "created_at": "2026-09-27T03:42:34Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 127,
+      "title": "Publish Chapter 1 v3 data-only archive to Zenodo",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:24:21Z",
+      "head_sha": "a1cca5f11fb09471185a3331f6b75fd0f09a9bfe",
+      "created_at": "2026-09-27T05:23:59Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 128,
+      "title": "Reuse existing Zenodo new-version draft",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:26:31Z",
+      "head_sha": "0dd2afe4a8452093faeea5e77eb5fee649d14771",
+      "created_at": "2026-09-27T05:26:12Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 129,
+      "title": "Reset only stale locked Zenodo v2-shaped draft",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:29:13Z",
+      "head_sha": "fd18b51e81a886245db6340584ff648f9380518a",
+      "created_at": "2026-09-27T05:28:57Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 130,
+      "title": "Accept Zenodo discard HTTP 204",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:30:49Z",
+      "head_sha": "00bac081cc23baf462f0b4adae06014f6706bb3f",
+      "created_at": "2026-09-27T05:30:29Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 131,
+      "title": "Use Zenodo deposition file delete endpoint",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:32:30Z",
+      "head_sha": "f3fb7247907401bca41d23d1307c58e354dea478",
+      "created_at": "2026-09-27T05:32:12Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 132,
+      "title": "Diagnose Zenodo deposit write scope",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:36:13Z",
+      "head_sha": "49c45561777990a0c37b9a645a623605651b06dc",
+      "created_at": "2026-09-27T05:35:56Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 133,
+      "title": "Diagnose Zenodo new-version draft identity",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:38:07Z",
+      "head_sha": "6ffb24a1723f2095e7a8172bc71471a4b4610430",
+      "created_at": "2026-09-27T05:37:47Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 134,
+      "title": "Select only true unpublished Zenodo draft",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:40:08Z",
+      "head_sha": "f337645ff04e629d2d287c060624d24ee11f23c2",
+      "created_at": "2026-09-27T05:39:46Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 135,
+      "title": "Refetch full Zenodo draft before replacing files",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:43:26Z",
+      "head_sha": "583be8091186cad7d3a58c84bd8b97c822d365bf",
+      "created_at": "2026-09-27T05:43:04Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 136,
+      "title": "Wait for Zenodo file transfer before publishing",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-27T05:46:39Z",
+      "head_sha": "71c3137e37905bd7200a238697ac2286775dea07",
+      "created_at": "2026-09-27T05:46:15Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 137,
+      "title": "Reuse verified Zenodo draft file across publish retries",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-28T03:48:26Z",
+      "head_sha": "11bf50b6ab4644e89bea61e5abb925996b1faeb4",
+      "created_at": "2026-09-28T03:48:13Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 138,
+      "title": "Upload Chapter 1 v3 data through Zenodo bucket Files API",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-28T04:03:26Z",
+      "head_sha": "58fad24f654766409e7c2f0905cb57cda69c9bde",
+      "created_at": "2026-09-28T04:03:06Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 139,
+      "title": "Diagnose Zenodo bucket transfer state",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-28T04:17:12Z",
+      "head_sha": "d19297008f37a688be0820b040e5420130c341e4",
+      "created_at": "2026-09-28T04:16:48Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 140,
+      "title": "Harden Zenodo bucket transfer diagnostic",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-28T04:19:37Z",
+      "head_sha": "202fed9c5bf4a5c1a52d7acd807e830ee9dcc484",
+      "created_at": "2026-09-28T04:19:17Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 141,
+      "title": "Remove stale incomplete Zenodo bucket heads before publish",
+      "state": "closed",
+      "draft": false,
+      "merged_at": "2026-09-28T04:23:02Z",
+      "head_sha": "036e1fdf9d658fb47762048d9d7f1bf03670df2d",
+      "created_at": "2026-09-28T04:22:41Z",
+      "tags": [
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 142,
+      "title": "V3 reproducibility + native-first 27-endpoint handoff (upstream remeasurement paused)",
+      "state": "open",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "145208104fb4639bfb9a413c5875d36e308cc79a",
+      "created_at": "2026-10-20T04:10:06Z",
+      "tags": [
+        "source_and_qc",
+        "release_and_reproducibility"
+      ]
+    },
+    {
+      "number": 143,
+      "title": "V4: within- and between-species environmental gradients of colour, orientation and head outline",
+      "state": "closed",
+      "draft": true,
+      "merged_at": null,
+      "head_sha": "a7b870dc85475e9ad4d955269074f38e2e219c83",
+      "created_at": "2026-10-20T11:53:56Z",
+      "tags": [
+        "multivariate_shape_and_function",
+        "environmental_modelling"
+      ]
+    }
+  ],
+  "main_commit_index": [
+    {
+      "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d",
+      "date": "2026-09-28T04:23:02Z",
+      "subject": "Merge pull request #141 from zuizui0223/fix/ch1-clean-stale-zenodo-bucket-heads-20260928"
+    },
+    {
+      "sha": "036e1fdf9d658fb47762048d9d7f1bf03670df2d",
+      "date": "2026-09-28T04:22:23Z",
+      "subject": "Remove stale incomplete Zenodo bucket heads before publish"
+    },
+    {
+      "sha": "22887476251a8e29560e38975a2c77c2a7233da8",
+      "date": "2026-09-28T04:19:37Z",
+      "subject": "Merge pull request #140 from zuizui0223/fix/ch1-zenodo-bucket-diag-response-20260928"
+    },
+    {
+      "sha": "202fed9c5bf4a5c1a52d7acd807e830ee9dcc484",
+      "date": "2026-09-28T04:19:04Z",
+      "subject": "Make Zenodo bucket diagnostic response parsing robust"
+    },
+    {
+      "sha": "c3a8e1f431fc800ec6047b1e80c46546b892d99c",
+      "date": "2026-09-28T04:17:12Z",
+      "subject": "Merge pull request #139 from zuizui0223/diag/ch1-zenodo-bucket-transfer-state-20260928"
+    },
+    {
+      "sha": "d19297008f37a688be0820b040e5420130c341e4",
+      "date": "2026-09-28T04:16:35Z",
+      "subject": "Diagnose Zenodo bucket transfer state read-only"
+    },
+    {
+      "sha": "d936143f2c78df547dea1119b344cdcb04963ef3",
+      "date": "2026-09-28T04:03:25Z",
+      "subject": "Merge pull request #138 from zuizui0223/fix/ch1-use-zenodo-bucket-upload-20260928"
+    },
+    {
+      "sha": "58fad24f654766409e7c2f0905cb57cda69c9bde",
+      "date": "2026-09-28T04:02:52Z",
+      "subject": "Upload Zenodo v3 data through bucket Files API"
+    },
+    {
+      "sha": "643ba0854f00ebdaaa362ab7f9207e9c23a4f421",
+      "date": "2026-09-28T03:48:26Z",
+      "subject": "Merge pull request #137 from zuizui0223/fix/ch1-reuse-transferred-zenodo-file-20260928"
+    },
+    {
+      "sha": "11bf50b6ab4644e89bea61e5abb925996b1faeb4",
+      "date": "2026-09-28T03:47:59Z",
+      "subject": "Reuse verified Zenodo draft file across publish retries"
+    },
+    {
+      "sha": "aa363bbdc0c5b2f2a16873c322e48f09ab25a6e7",
+      "date": "2026-09-27T05:46:38Z",
+      "subject": "Merge pull request #136 from zuizui0223/fix/ch1-wait-zenodo-file-transfer-20260927"
+    },
+    {
+      "sha": "71c3137e37905bd7200a238697ac2286775dea07",
+      "date": "2026-09-27T05:46:03Z",
+      "subject": "Wait for Zenodo transfer before publish"
+    },
+    {
+      "sha": "a45b7073e05d8abefa57c4d553e464ec9fabed77",
+      "date": "2026-09-27T05:43:26Z",
+      "subject": "Merge pull request #135 from zuizui0223/fix/ch1-refetch-zenodo-draft-files-20260927"
+    },
+    {
+      "sha": "583be8091186cad7d3a58c84bd8b97c822d365bf",
+      "date": "2026-09-27T05:42:49Z",
+      "subject": "Refetch full Zenodo draft before replacing files"
+    },
+    {
+      "sha": "aa758a33e583b4072e13760a75b5de06cf4f60a3",
+      "date": "2026-09-27T05:40:08Z",
+      "subject": "Merge pull request #134 from zuizui0223/fix/ch1-select-real-zenodo-draft-20260927"
+    },
+    {
+      "sha": "f337645ff04e629d2d287c060624d24ee11f23c2",
+      "date": "2026-09-27T05:39:31Z",
+      "subject": "Select only true unpublished Zenodo draft"
+    },
+    {
+      "sha": "343a53d7b728f6e3d50f0485b494dc56d94f8308",
+      "date": "2026-09-27T05:38:06Z",
+      "subject": "Merge pull request #133 from zuizui0223/diag/ch1-zenodo-draft-identity-20260927"
+    },
+    {
+      "sha": "6ffb24a1723f2095e7a8172bc71471a4b4610430",
+      "date": "2026-09-27T05:37:38Z",
+      "subject": "Diagnose Zenodo draft identity read-only"
+    },
+    {
+      "sha": "717fb97684a85f43a816253405d3d7f7841b5a16",
+      "date": "2026-09-27T05:36:13Z",
+      "subject": "Merge pull request #132 from zuizui0223/diag/ch1-zenodo-write-scope-20260927"
+    },
+    {
+      "sha": "49c45561777990a0c37b9a645a623605651b06dc",
+      "date": "2026-09-27T05:35:45Z",
+      "subject": "Diagnose Zenodo deposit write scope"
+    },
+    {
+      "sha": "d14d92ef20107d98bc98f8039f0fab6a88ff6913",
+      "date": "2026-09-27T05:32:30Z",
+      "subject": "Merge pull request #131 from zuizui0223/fix/ch1-zenodo-delete-deposition-file-endpoint-20260927"
+    },
+    {
+      "sha": "f3fb7247907401bca41d23d1307c58e354dea478",
+      "date": "2026-09-27T05:31:59Z",
+      "subject": "Use deposition file endpoint for Zenodo draft deletion"
+    },
+    {
+      "sha": "66a36172dcb0380f9b8d51e36d7d852275cb6e08",
+      "date": "2026-09-27T05:30:48Z",
+      "subject": "Merge pull request #130 from zuizui0223/fix/ch1-accept-zenodo-discard-204-20260927"
+    },
+    {
+      "sha": "00bac081cc23baf462f0b4adae06014f6706bb3f",
+      "date": "2026-09-27T05:30:15Z",
+      "subject": "Accept Zenodo discard HTTP 204"
+    },
+    {
+      "sha": "07c90569359a98513335469969c28571d71ab268",
+      "date": "2026-09-27T05:29:13Z",
+      "subject": "Merge pull request #129 from zuizui0223/fix/ch1-reset-stale-zenodo-draft-20260927"
+    },
+    {
+      "sha": "fd18b51e81a886245db6340584ff648f9380518a",
+      "date": "2026-09-27T05:28:44Z",
+      "subject": "Reset only exact stale locked Zenodo draft"
+    },
+    {
+      "sha": "71113ba65b9129abf3884dba2c41e93b70edef4c",
+      "date": "2026-09-27T05:26:31Z",
+      "subject": "Merge pull request #128 from zuizui0223/fix/ch1-publish-existing-zenodo-draft-20260927"
+    },
+    {
+      "sha": "0dd2afe4a8452093faeea5e77eb5fee649d14771",
+      "date": "2026-09-27T05:25:58Z",
+      "subject": "Reuse existing Zenodo new-version draft"
+    },
+    {
+      "sha": "89f9db9b305a36f48cc3e2ad56ab41aa949c01ae",
+      "date": "2026-09-27T05:24:20Z",
+      "subject": "Merge pull request #127 from zuizui0223/release/ch1-publish-zenodo-v3-20260927"
+    },
+    {
+      "sha": "a1cca5f11fb09471185a3331f6b75fd0f09a9bfe",
+      "date": "2026-09-27T05:23:25Z",
+      "subject": "Publish and verify Chapter 1 Zenodo v3 data"
+    },
+    {
+      "sha": "70801352e71636d131c70bb41bc8b2c51143f1bc",
+      "date": "2026-09-27T03:43:47Z",
+      "subject": "Merge pull request #126 from zuizui0223/docs/ch1-zenodo-publication-handoff-20260927"
+    },
+    {
+      "sha": "9c514b8280fb66564b833047820b980765f2398c",
+      "date": "2026-09-27T03:42:16Z",
+      "subject": "Test Zenodo publication handoff identity"
+    },
+    {
+      "sha": "d512f7123a845aa80d3c92ee295ba3b0fb96a5d5",
+      "date": "2026-09-27T03:42:01Z",
+      "subject": "Link Zenodo publication handoff"
+    },
+    {
+      "sha": "2f11f24ff51e10d001369eed915110da5e1b299a",
+      "date": "2026-09-27T03:41:50Z",
+      "subject": "Add Zenodo data publication handoff"
+    },
+    {
+      "sha": "d7857a4b0e7e6301d20cbc1eea82a769e40fe220",
+      "date": "2026-09-27T03:40:56Z",
+      "subject": "Merge pull request #125 from zuizui0223/repro/ch1-record-final-data-candidate-20260927"
+    },
+    {
+      "sha": "55eb3752862d268045cf6eb5435e996692425e9d",
+      "date": "2026-09-27T03:39:30Z",
+      "subject": "Test release-ready data-only candidate receipt"
+    },
+    {
+      "sha": "3e095087bd6504e670f6de68172fc2d46354a3cc",
+      "date": "2026-09-27T03:39:14Z",
+      "subject": "Point runbook to final data-only candidate"
+    },
+    {
+      "sha": "8041ede6d3d09c3682334edef7d067c5c198520e",
+      "date": "2026-09-27T03:39:11Z",
+      "subject": "Document release-ready data-only candidate"
+    },
+    {
+      "sha": "a7fe017f6f4e6a15039935646bb7c7ee47478e3f",
+      "date": "2026-09-27T03:38:46Z",
+      "subject": "Record release-ready data-only Zenodo candidate"
+    },
+    {
+      "sha": "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f",
+      "date": "2026-09-27T02:22:08Z",
+      "subject": "Merge pull request #124 from zuizui0223/repro/ch1-zenodo-data-final-20260927"
+    },
+    {
+      "sha": "277123a3abaec072088a40a57e3cd49909926586",
+      "date": "2026-09-27T02:19:53Z",
+      "subject": "Test explicit data-only release approval"
+    },
+    {
+      "sha": "d24a44fff6df7f06059e3466dbe69524468123d3",
+      "date": "2026-09-27T02:19:38Z",
+      "subject": "Build approved final data-only Zenodo candidate"
+    },
+    {
+      "sha": "d58afbfa290aeeb42debc1cfd3eb9548ef62c610",
+      "date": "2026-09-27T02:19:02Z",
+      "subject": "Approve data-only Zenodo release boundary"
+    },
+    {
+      "sha": "a4950e9e60d3d7c0c679fdb1046b649877a84263",
+      "date": "2026-09-27T02:17:53Z",
+      "subject": "Merge pull request #123 from zuizui0223/repro/ch1-record-data-only-zenodo-staging-20260927"
+    },
+    {
+      "sha": "70818c2543e060c137509c88293c435d7d9e9b82",
+      "date": "2026-09-27T02:15:05Z",
+      "subject": "Test verified data-only staging identity"
+    },
+    {
+      "sha": "26faa55c4087424502253ca6aa51ebb34f257593",
+      "date": "2026-09-27T02:14:43Z",
+      "subject": "Record passing data-only staging build"
+    },
+    {
+      "sha": "f7396351be9dfabe69e48cc69bab17b689fe8766",
+      "date": "2026-09-27T02:14:39Z",
+      "subject": "Document verified data-only Zenodo staging bundle"
+    },
+    {
+      "sha": "ac7cc37ac61b13b49c82060f9a5c6fd30e4b8f06",
+      "date": "2026-09-27T02:14:20Z",
+      "subject": "Record verified data-only Zenodo staging bundle"
+    },
+    {
+      "sha": "810637d9dfdde9c4b810c2472f43f254786ce614",
+      "date": "2026-09-27T02:06:06Z",
+      "subject": "Merge pull request #122 from zuizui0223/repro/ch1-zenodo-data-only-20260927"
+    },
+    {
+      "sha": "bafc382efe10574d55769090e8655c5afc9a094b",
+      "date": "2026-09-27T02:02:56Z",
+      "subject": "Align reproduction doc test with data-only Zenodo policy"
+    },
+    {
+      "sha": "09d750826434bdf0a0414d802e908c83dbdd20dd",
+      "date": "2026-09-27T01:56:03Z",
+      "subject": "Keep figure surface outside Zenodo data package"
+    },
+    {
+      "sha": "9dd3dc968ed4266b185a3c3a88778b0a62b139de",
+      "date": "2026-09-27T01:56:00Z",
+      "subject": "Align upstream boundary with data-only Zenodo role"
+    },
+    {
+      "sha": "f1c07e117ff6c565afd6ee3b503fd588626c8dbe",
+      "date": "2026-09-27T01:55:57Z",
+      "subject": "Clarify Zenodo as data-only archive"
+    },
+    {
+      "sha": "5c283296ce07f74744f86831da3066d40fb67414",
+      "date": "2026-09-27T01:54:59Z",
+      "subject": "Refocus Zenodo audit on analysis inputs only"
+    },
+    {
+      "sha": "290ef90bed561be1204d72f73f68b7495793ad77",
+      "date": "2026-09-27T01:54:56Z",
+      "subject": "Describe Zenodo as data-only durability layer"
+    },
+    {
+      "sha": "a5bcbe2acbdab578ca5b6b64a1f16fea365de54f",
+      "date": "2026-09-27T01:54:00Z",
+      "subject": "Define Zenodo as durable analysis-input storage"
+    },
+    {
+      "sha": "7dae3f2a9e5338f39859fbf1c4487638ba0f2dce",
+      "date": "2026-09-27T01:53:39Z",
+      "subject": "Test data-only Zenodo release boundary"
+    },
+    {
+      "sha": "8f2691f37e08eb103c37d0bddc8586fecbf586e2",
+      "date": "2026-09-27T01:53:12Z",
+      "subject": "Define data-only Zenodo metadata contract"
+    },
+    {
+      "sha": "a4e9213986b7e8970a6587a0b6c51d70ddf0b686",
+      "date": "2026-09-27T01:52:55Z",
+      "subject": "Align Zenodo metadata template with data-only archive"
+    },
+    {
+      "sha": "503b854c0e77dccde44ef5808036da5f4da986f6",
+      "date": "2026-09-27T01:52:51Z",
+      "subject": "Prepare data-only Zenodo metadata"
+    },
+    {
+      "sha": "084be690027f9c1fa8ab3499de6227202302be13",
+      "date": "2026-09-27T01:52:17Z",
+      "subject": "Build data-only Zenodo staging archive"
+    },
+    {
+      "sha": "794235d2b92deabf266ab022e8de838211d988ab",
+      "date": "2026-09-27T01:51:49Z",
+      "subject": "Make Chapter 1 Zenodo bundle data-only"
+    },
+    {
+      "sha": "d8d040cc71b8e0585f8bfb06c10ab03e870534f1",
+      "date": "2026-09-27T01:38:33Z",
+      "subject": "Merge pull request #121 from zuizui0223/repro/ch1-record-manuscript-free-staging-20260927"
+    },
+    {
+      "sha": "84e4db58852a79cdcccd46ffddbd651462762d01",
+      "date": "2026-09-27T01:37:13Z",
+      "subject": "Test manuscript-free staging bundle identity"
+    },
+    {
+      "sha": "3f6a0b7d5393dff0e6a45c85c08af8f688fca81a",
+      "date": "2026-09-27T01:36:58Z",
+      "subject": "Point README to manuscript-free staging bundle"
+    },
+    {
+      "sha": "be640cba14868ef4ca822cdc253f61ff43c94811",
+      "date": "2026-09-27T01:36:56Z",
+      "subject": "Record manuscript-free Zenodo staging identity"
+    },
+    {
+      "sha": "f5eb2cecc70b8b87c6b0badeb692ea43c5993c12",
+      "date": "2026-09-27T01:36:23Z",
+      "subject": "Record manuscript-free Zenodo staging bundle"
+    },
+    {
+      "sha": "b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4",
+      "date": "2026-09-27T01:34:11Z",
+      "subject": "Merge pull request #120 from zuizui0223/fix/ch1-zenodo-exclude-manuscript-20260927"
+    },
+    {
+      "sha": "b86b4bdf918436f8846302ab808d3a00e588bef7",
+      "date": "2026-09-27T01:32:14Z",
+      "subject": "Exclude manuscripts from release metadata contract"
+    },
+    {
+      "sha": "cc8c6d53a8068b605c60a157ba0eedf36ff6bbed",
+      "date": "2026-09-27T01:32:12Z",
+      "subject": "Separate figure-file release from manuscript pagination"
+    },
+    {
+      "sha": "5253e3f7f39693b9b1ff98f73b11cffa66707c52",
+      "date": "2026-09-27T01:31:41Z",
+      "subject": "Align release tests with manuscript-free Zenodo policy"
+    },
+    {
+      "sha": "486c712c2887326e4d8930dee20ca336c48af4f2",
+      "date": "2026-09-27T01:31:26Z",
+      "subject": "Record manuscript-free Zenodo release policy"
+    },
+    {
+      "sha": "66b9c893072709fc07c16aabe44cc40c7961e073",
+      "date": "2026-09-27T01:31:08Z",
+      "subject": "Make prepared Zenodo metadata manuscript-independent"
+    },
+    {
+      "sha": "89f161e535eae14d1bcb18cafa834173c4db667b",
+      "date": "2026-09-27T01:31:05Z",
+      "subject": "Mark document QA as submission-only"
+    },
+    {
+      "sha": "e5cce6cca209255791a48a2a2e1656c9264bee7c",
+      "date": "2026-09-27T01:30:45Z",
+      "subject": "Remove manuscript from Zenodo release gates"
+    },
+    {
+      "sha": "7be06e04641c722240addb5b1831625bb20eaebc",
+      "date": "2026-09-27T01:30:40Z",
+      "subject": "Separate manuscript QA from Zenodo release"
+    },
+    {
+      "sha": "9cc3532a1bdadc0487998cd322c1d47657ee9a7b",
+      "date": "2026-09-27T01:29:42Z",
+      "subject": "Keep manuscript outside Zenodo staging gate"
+    },
+    {
+      "sha": "e2ff62711d6032645c28b202a67823f30cd7764e",
+      "date": "2026-09-27T01:29:27Z",
+      "subject": "Test manuscript exclusion from Zenodo bundle"
+    },
+    {
+      "sha": "79db99160cad4fba063e8715a9d36e94bbaeeb22",
+      "date": "2026-09-27T01:29:11Z",
+      "subject": "Decouple manuscript QA from Zenodo release"
+    },
+    {
+      "sha": "fbea78f0a6ffbc8806dbee757a61b4b13eeb856c",
+      "date": "2026-09-26T21:18:13Z",
+      "subject": "Merge pull request #119 from zuizui0223/repro/ch1-si-qa-metadata-prep-20260927"
+    },
+    {
+      "sha": "2df2e149b4484de31a6c6781f729007f39a9b51d",
+      "date": "2026-09-26T21:16:50Z",
+      "subject": "Guard narrowed document and metadata release gates"
+    },
+    {
+      "sha": "b123b6e955c522728433678170079ba50b0fc7f0",
+      "date": "2026-09-26T21:16:40Z",
+      "subject": "Record SI QA and prepared metadata in staging receipt"
+    },
+    {
+      "sha": "5e652869d27e17a9beb3f9fd7a59375f832af6ee",
+      "date": "2026-09-26T21:16:27Z",
+      "subject": "Test prepared release metadata and document QA boundary"
+    },
+    {
+      "sha": "c846b9c410995a8e36d62c76b7e87cb764de806f",
+      "date": "2026-09-26T21:16:25Z",
+      "subject": "Document SI QA and prepared Zenodo metadata"
+    },
+    {
+      "sha": "e49accdd76444bc928dc19f9f521409fda05cb14",
+      "date": "2026-09-26T21:16:22Z",
+      "subject": "Narrow Zenodo gates after SI QA and metadata preparation"
+    },
+    {
+      "sha": "1de82b7a5c05c09167203e6136d47e217b8ad0bb",
+      "date": "2026-09-26T21:16:00Z",
+      "subject": "Prepare non-author Zenodo release metadata"
+    },
+    {
+      "sha": "731612c6cb7a3c9ba2da8c4b3e80189a1ed11521",
+      "date": "2026-09-26T21:15:57Z",
+      "subject": "Record SI visual QA and remaining Main document gate"
+    },
+    {
+      "sha": "a6c0085d8b578e777998f657e412cb3f1c9feb39",
+      "date": "2026-09-26T11:38:26Z",
+      "subject": "Merge pull request #118 from zuizui0223/repro/ch1-freeze-latest-zenodo-staging-20260926"
+    },
+    {
+      "sha": "89c1c2a7cf61848bf373a209498021e1be22d422",
+      "date": "2026-09-26T11:36:45Z",
+      "subject": "Test latest main Zenodo staging identity"
+    },
+    {
+      "sha": "3dff1d740d514b74f6146b9779fcb7da9410e1d0",
+      "date": "2026-09-26T11:36:42Z",
+      "subject": "Point reproducibility README to latest main staging bundle"
+    },
+    {
+      "sha": "b7c63f8056326c93777d9ca49fbc17a7f740573a",
+      "date": "2026-09-26T11:36:40Z",
+      "subject": "Point Zenodo audit to latest main staging bundle"
+    },
+    {
+      "sha": "2a48868bbabb038e3bfeb03c163a63fa794c0468",
+      "date": "2026-09-26T11:36:10Z",
+      "subject": "Freeze latest main Zenodo staging bundle identity"
+    },
+    {
+      "sha": "5c0ae2af9a92bb79295fd11d77ad5bbc25f39757",
+      "date": "2026-09-26T11:33:36Z",
+      "subject": "Merge pull request #117 from zuizui0223/repro/ch1-record-zenodo-staging-20260926"
+    },
+    {
+      "sha": "f91c7923aa00da3058909566b52471a6eda288b8",
+      "date": "2026-09-26T11:32:17Z",
+      "subject": "Avoid receipt-triggered Zenodo staging rebuild loop"
+    },
+    {
+      "sha": "fdc38486c2d081feb3f1cb1aef4e5249d02aa6ed",
+      "date": "2026-09-26T11:31:52Z",
+      "subject": "Record current Zenodo staging archive in reproducibility README"
+    },
+    {
+      "sha": "496c18220f198e644150a21b79e218bda07b553d",
+      "date": "2026-09-26T11:31:41Z",
+      "subject": "Test recorded Zenodo staging bundle identity"
+    },
+    {
+      "sha": "593e51f9a7eb873202a41bb66125cabec6784007",
+      "date": "2026-09-26T11:31:21Z",
+      "subject": "Document assembled Zenodo v3 staging archive"
+    },
+    {
+      "sha": "5f1b4e3bfbcc9d3e8e919f8353b9527025ab6169",
+      "date": "2026-09-26T11:30:37Z",
+      "subject": "Record assembled current v3 Zenodo staging bundle"
+    },
+    {
+      "sha": "4ba2304eba83e9a54f616d33cc85fd7ad818caf0",
+      "date": "2026-09-26T11:28:23Z",
+      "subject": "Merge pull request #116 from zuizui0223/fix/ch1-zenodo-staging-workflow-20260926"
+    },
+    {
+      "sha": "761f280f0a1e236836cda38e6b08d391554900a2",
+      "date": "2026-09-26T11:25:51Z",
+      "subject": "Initialize Zenodo staging paths after runner starts"
+    },
+    {
+      "sha": "939d90709a45432927b8080389dae445aabf4aed",
+      "date": "2026-09-26T11:24:33Z",
+      "subject": "Merge pull request #115 from zuizui0223/repro/ch1-zenodo-staging-bundle-20260926"
+    },
+    {
+      "sha": "80a3e1f1ab3ee1b87b14a967028699064aab042b",
+      "date": "2026-09-26T11:23:31Z",
+      "subject": "Build Zenodo staging bundle after merge to main"
+    },
+    {
+      "sha": "a0afa9e18b0f99aaabb63c552a84aadd438c7588",
+      "date": "2026-09-26T11:22:47Z",
+      "subject": "Build current Zenodo staging bundle in CI"
+    },
+    {
+      "sha": "85fe9e4e11f9baa2c07aac18732fad049a9d2b7b",
+      "date": "2026-09-26T11:20:49Z",
+      "subject": "Merge pull request #114 from zuizui0223/repro/ch1-current-figure-bundle-20260926"
+    },
+    {
+      "sha": "191c4463e4d9e7516571c38ef13ea5696bc82654",
+      "date": "2026-09-26T11:19:47Z",
+      "subject": "Track frozen full figure surface in release staging test"
+    },
+    {
+      "sha": "1b991dc10d724baf7d32c929015599fc87de8629",
+      "date": "2026-09-26T09:55:20Z",
+      "subject": "Test final figure document QA gate"
+    },
+    {
+      "sha": "887247b4d5888ac53dc9dc4f7172ea2037be2efd",
+      "date": "2026-09-26T09:55:08Z",
+      "subject": "Require document QA before final figure release"
+    },
+    {
+      "sha": "0524a8d6ab59d936a437b8ce570b850fbf6b307d",
+      "date": "2026-09-26T09:54:41Z",
+      "subject": "Record current figure surface and remaining document QA"
+    },
+    {
+      "sha": "3317444117d8e55e5a0f1ce2453e627e9db91813",
+      "date": "2026-09-26T09:54:38Z",
+      "subject": "Record current figure surface and remaining document QA"
+    },
+    {
+      "sha": "137022d443a807b523c777e60e7939e15074779d",
+      "date": "2026-09-26T09:54:35Z",
+      "subject": "Record current figure surface and remaining document QA"
+    },
+    {
+      "sha": "030d378f2fb750941a0fdbd3d05037bda7071cbb",
+      "date": "2026-09-26T09:54:07Z",
+      "subject": "Record durable current GEB figure surface"
+    },
+    {
+      "sha": "cbf313cb9da435194eb57c512bfd51c25dd7da69",
+      "date": "2026-09-26T09:48:57Z",
+      "subject": "Build checksum-gated current GEB figure surface"
+    },
+    {
+      "sha": "f2c053025adf6a9b69890027bf5f6fc4605711e7",
+      "date": "2026-09-26T09:48:39Z",
+      "subject": "Test frozen current GEB figure role map"
+    },
+    {
+      "sha": "008cdefab4b8a32c72c1ed9fc7dfc89eab3f0742",
+      "date": "2026-09-26T09:48:30Z",
+      "subject": "Test portable construct figure font"
+    },
+    {
+      "sha": "45909d2b11222f0eae28f0a0b0175df912fc9b57",
+      "date": "2026-09-26T09:48:19Z",
+      "subject": "Test portable current figure manifests"
+    },
+    {
+      "sha": "539192d49f308aff5d105b91cd872c0ecb0c1767",
+      "date": "2026-09-26T09:48:04Z",
+      "subject": "Accept portable manifest-relative figure surfaces"
+    },
+    {
+      "sha": "bb482123005f339e7fdea770197459c78caea778",
+      "date": "2026-09-26T09:47:28Z",
+      "subject": "Build current GEB figure surface manifest"
+    },
+    {
+      "sha": "4a39c32512a27ea97247b2f8d6293ddaa99a6aa3",
+      "date": "2026-09-26T09:46:49Z",
+      "subject": "Make construct environment figure CI reproducible"
+    },
+    {
+      "sha": "45f0f54fccd2d10f3efd5bb61eb591c34266bf0e",
+      "date": "2026-09-26T09:45:44Z",
+      "subject": "Merge pull request #113 from zuizui0223/repro/ch1-release-input-freeze-20260926"
+    },
+    {
+      "sha": "ffff33ca052c73546b79f7b0005199017cb0cddb",
+      "date": "2026-09-26T09:35:49Z",
+      "subject": "Align runbook with pinned replay environment"
+    },
+    {
+      "sha": "aca5fe5f26d163d53483970e17998da0d0d50181",
+      "date": "2026-09-26T09:35:18Z",
+      "subject": "Close native-status recovery and pin replay dependencies"
+    },
+    {
+      "sha": "6b810a5ff22dc45047d7adadbad1d5042a1c451b",
+      "date": "2026-09-26T09:35:02Z",
+      "subject": "Close native-status release-input recovery gate"
+    },
+    {
+      "sha": "a9c454415f6701f17a965e9732f1fd731ce07945",
+      "date": "2026-09-26T09:34:51Z",
+      "subject": "Document taxonomy-backed release input extraction"
+    },
+    {
+      "sha": "ad65c12741f55a6eb0c698dcbb9cb7698706a7cc",
+      "date": "2026-09-26T09:34:35Z",
+      "subject": "Pin replay environment in tests"
+    },
+    {
+      "sha": "775bbf2dcb90e4b9e5f34cf0758c3dceba1e7492",
+      "date": "2026-09-26T09:34:27Z",
+      "subject": "Test taxonomy-backed native-status release contract"
+    },
+    {
+      "sha": "e853d22463edf23ec7c62911df814b31da7b147d",
+      "date": "2026-09-26T09:34:00Z",
+      "subject": "Extract native status from durable taxonomy artifact"
+    },
+    {
+      "sha": "5c18cf51c52e96bfdaa7a8d1231b5ada89896ccf",
+      "date": "2026-09-26T09:33:31Z",
+      "subject": "Pin current replay Biopython version"
+    },
+    {
+      "sha": "3a4e1d228b6c0a51e5050321d8726943f986e07d",
+      "date": "2026-09-26T09:30:55Z",
+      "subject": "Merge pull request #112 from zuizui0223/docs/ch1-repro-boundary-20260926"
+    },
+    {
+      "sha": "e69f4d37a94e4321ccdfac764938ea1b13fdacaa",
+      "date": "2026-09-26T09:29:49Z",
+      "subject": "Mention durable current replay in staging overview"
+    },
+    {
+      "sha": "e8cefb83444ad734dad3cec5c89123d3fa4b6fb3",
+      "date": "2026-09-26T09:28:51Z",
+      "subject": "Guard current reproducibility documentation against drift"
+    },
+    {
+      "sha": "85f30599d49ed8f4afea025e734fc8097da01de3",
+      "date": "2026-09-26T09:28:40Z",
+      "subject": "Test durable eight-stage replay staging"
+    },
+    {
+      "sha": "a118a08d10e18143de9b96bd02c75b36ce7d2c27",
+      "date": "2026-09-26T09:28:11Z",
+      "subject": "Align GEB review archive status with anonymous numerical bundle"
+    },
+    {
+      "sha": "331085b73680640720bddf41fe4dbe74964d7506",
+      "date": "2026-09-26T09:27:39Z",
+      "subject": "Record durable eight-stage replay artifact"
+    },
+    {
+      "sha": "30537d1258a57317c938c6582e028037a81bf34b",
+      "date": "2026-09-26T09:27:26Z",
+      "subject": "Close current replay gate in Zenodo audit"
+    },
+    {
+      "sha": "9a189e24ce55b66636b99f174faf14f615fac0fb",
+      "date": "2026-09-26T09:27:05Z",
+      "subject": "Align current runbook with eight-stage replay"
+    },
+    {
+      "sha": "0f7c47866677c51bd4f876f69f1240634c6ce2db",
+      "date": "2026-09-26T09:26:41Z",
+      "subject": "Update replay status and upstream boundary"
+    },
+    {
+      "sha": "4cc8b16622203ddce4c9615599dcb16c3218e539",
+      "date": "2026-09-26T09:26:19Z",
+      "subject": "Clarify current code and upstream-data boundary"
+    },
+    {
+      "sha": "697729566f1718bd1e9f043f6b123864c5a61195",
+      "date": "2026-09-26T09:26:01Z",
+      "subject": "Document upstream data and numerical replay boundary"
+    },
+    {
+      "sha": "b802975365b32267d804aaafe25494d81e39c97e",
+      "date": "2026-09-15T07:52:04Z",
+      "subject": "Merge PR #111: build anonymous peer-review bundle"
+    },
+    {
+      "sha": "9ca2446276dc9fa601b888c9d8144fca83e3bf90",
+      "date": "2026-09-15T07:38:29Z",
+      "subject": "Lock anonymous estimator replay seed to canonical runner"
+    },
+    {
+      "sha": "462f064222613a0f36036b3e64129546c255192e",
+      "date": "2026-09-15T07:38:15Z",
+      "subject": "Align anonymous estimator replay with canonical seed"
+    },
+    {
+      "sha": "8b403a877c8a997ad8b866666b695a94dbaf7e65",
+      "date": "2026-09-15T07:21:04Z",
+      "subject": "Include required spatial and historical helpers in review bundle"
+    },
+    {
+      "sha": "3ff643202f2f6432bfc4b9b31e4431bfc795d1be",
+      "date": "2026-09-15T07:18:07Z",
+      "subject": "Fix namespace package handling in anonymous bundle"
+    },
+    {
+      "sha": "67994d2f725a8c3867b71e8138a3bcdb4e0d6881",
+      "date": "2026-09-15T07:13:52Z",
+      "subject": "Install pytest for anonymous bundle CI"
+    },
+    {
+      "sha": "521e00c5c41b857dc29fe73fed2c52cf427d11e1",
+      "date": "2026-09-15T07:12:04Z",
+      "subject": "Build and self-replay anonymous review package"
+    },
+    {
+      "sha": "a7fed0a16d0598c49f147c5a029e5b2853dd099e",
+      "date": "2026-09-15T07:11:47Z",
+      "subject": "Test anonymous review bundle contract"
+    },
+    {
+      "sha": "6af45a5fa734b8b54c1ae87a384b09899181820f",
+      "date": "2026-09-15T07:11:27Z",
+      "subject": "Build fail-closed anonymous peer-review bundle"
+    },
+    {
+      "sha": "dd8b68bc65811d8a4b402629d2d84a3120979bc1",
+      "date": "2026-09-15T07:04:23Z",
+      "subject": "Merge PR #110: audit RV estimator validity"
+    },
+    {
+      "sha": "5ef09cedd66835ee0f78edf54e0de07ae4c528dc",
+      "date": "2026-09-15T07:00:41Z",
+      "subject": "Update release builder for 16-file current reference surface"
+    },
+    {
+      "sha": "af864778e9ed79417c2e06f3017bc128398fde2c",
+      "date": "2026-09-15T06:38:15Z",
+      "subject": "Update replay receipt for eight-stage estimator-validity surface"
+    },
+    {
+      "sha": "3e55cc2b5e2b9454637cf9caec8b2438fead48ff",
+      "date": "2026-09-15T06:38:01Z",
+      "subject": "Record successful 16-file eight-stage numerical replay"
+    },
+    {
+      "sha": "8dda27c4c7543dacd9748afcbb397ed4331f912f",
+      "date": "2026-09-15T06:37:36Z",
+      "subject": "Remove temporary eight-stage replay workflow after successful validation"
+    },
+    {
+      "sha": "a15eedca318c84962eaf519dc720f4e6ed8daff7",
+      "date": "2026-09-15T06:02:38Z",
+      "subject": "tmp: run eight-stage current replay on estimator PR"
+    },
+    {
+      "sha": "48c76bd11bdf281a4846c2fd7d990d9a8e82020c",
+      "date": "2026-09-15T06:02:19Z",
+      "subject": "Update Zenodo audit for estimator-validity surface"
+    },
+    {
+      "sha": "730566aab9b41ea3c957342b81777b19575bbb77",
+      "date": "2026-09-15T06:01:40Z",
+      "subject": "Document eight-stage replay and estimator-validity figure"
+    },
+    {
+      "sha": "42289963197faf2a26e2a3790524bf9a0bcf8b00",
+      "date": "2026-09-15T06:00:49Z",
+      "subject": "Update current replay tests to eight stages and 16 references"
+    },
+    {
+      "sha": "236ad98fbf25e687a7c8c11aa26d3c8cacfdbd2b",
+      "date": "2026-09-15T06:00:03Z",
+      "subject": "Update release tests for estimator-validity surface"
+    },
+    {
+      "sha": "9c1054c3b2e0dd627a4f4e990bcb7b304409eae5",
+      "date": "2026-09-15T05:59:37Z",
+      "subject": "Stage estimator-validity and revised integration figure artifacts"
+    },
+    {
+      "sha": "7aa42cd2bf7c033d7bcc2db1b5ccd6cb063df53f",
+      "date": "2026-09-15T05:58:07Z",
+      "subject": "Fix existing within-axis checksum in expanded manifest"
+    },
+    {
+      "sha": "3690912647b84e02cc6e9ae25e83fc41321a71bf",
+      "date": "2026-09-15T05:57:31Z",
+      "subject": "Add estimator-validity summary to current reference manifest"
+    },
+    {
+      "sha": "22f203147c7c466247f595b8326ecd970ff2414c",
+      "date": "2026-09-15T05:56:11Z",
+      "subject": "Add estimator validity to current numerical replay"
+    },
+    {
+      "sha": "ee675156c3fa24318007eaacdb7b837b48e85857",
+      "date": "2026-09-15T05:52:29Z",
+      "subject": "Keep estimator-validity labels inside figure canvas"
+    },
+    {
+      "sha": "aba28b4d000595b83ac2623ed7f38a308085cc99",
+      "date": "2026-09-15T05:49:41Z",
+      "subject": "Trigger scale figure on estimator-validity updates"
+    },
+    {
+      "sha": "cf7763ed71bfc0a4065a8cd3f41d155fc780f14f",
+      "date": "2026-09-15T05:49:10Z",
+      "subject": "Test estimator-validity figure surface"
+    },
+    {
+      "sha": "1bf20c10ab635cd63adb74d94bccb60877e116f6",
+      "date": "2026-09-15T05:48:58Z",
+      "subject": "Show estimator-validity sensitivity in scale-integration figure"
+    },
+    {
+      "sha": "873402913ab4468d28607941befbb3efe9b92f62",
+      "date": "2026-09-15T05:47:58Z",
+      "subject": "Document RV estimator-validity result"
+    },
+    {
+      "sha": "ee8f6efc0f5414710e9949a4fad919b9b4317fba",
+      "date": "2026-09-15T05:47:22Z",
+      "subject": "Freeze RV estimator-validity summary"
+    },
+    {
+      "sha": "1c3ea9db02bb0bd3a4558f4e64e6abe34bf7ebd2",
+      "date": "2026-09-15T05:42:53Z",
+      "subject": "Test RV estimator-validity helpers"
+    },
+    {
+      "sha": "af60244540bcfec5b9bd1b1de75b35aa2fe67de6",
+      "date": "2026-09-15T05:42:36Z",
+      "subject": "Add RV estimator-validity workflow"
+    },
+    {
+      "sha": "4bf69d94c762606a84fbeb0d30ad357c2fd1fea5",
+      "date": "2026-09-15T05:42:20Z",
+      "subject": "Implement RV estimator-validity sensitivity"
+    },
+    {
+      "sha": "d62403bdac6d5bd8448c5d20501e1dda0836d45d",
+      "date": "2026-09-15T05:41:34Z",
+      "subject": "Add RV estimator-validity sensitivity contract"
+    },
+    {
+      "sha": "e479e10485abcc2fe0c97dda9ee9acf36dd2d7b7",
+      "date": "2026-09-12T13:29:55Z",
+      "subject": "Merge pull request #108 from zuizui0223/docs/ch1-geb-word-budget-20260912"
+    },
+    {
+      "sha": "c2c331b3373b14dc87b50c1c84f19ac92fd7405f",
+      "date": "2026-09-12T04:50:58Z",
+      "subject": "docs: freeze GEB Supporting Information numbering plan"
+    },
+    {
+      "sha": "b7ee3cd392c51b4e0e21b4616d91e21d604922a5",
+      "date": "2026-09-12T04:50:30Z",
+      "subject": "Merge pull request #107 from zuizui0223/repro/ch1-stage-taxonomy-result-20260912"
+    },
+    {
+      "sha": "7ee007b705ca57f7496392190d2f22c0d8ace78c",
+      "date": "2026-09-12T04:49:14Z",
+      "subject": "docs: update GEB audit after taxonomy and word-count checks"
+    },
+    {
+      "sha": "06a30815d3eb47f00ae7627b9b5e6dbc8bdf5fe8",
+      "date": "2026-09-12T04:48:47Z",
+      "subject": "docs: freeze GEB main-text compression budget"
+    },
+    {
+      "sha": "53c9b330fbdbf8b338c742046cf98aee95a52cc6",
+      "date": "2026-09-12T04:46:56Z",
+      "subject": "test: require durable taxonomy staging evidence"
+    },
+    {
+      "sha": "da3be71dc7cc3698b7cec9fcedff89265e6b7f76",
+      "date": "2026-09-12T04:46:39Z",
+      "subject": "repro: stage WCVP taxonomy sensitivity evidence"
+    },
+    {
+      "sha": "62e6920fcd7746f8955aa399bbab5861bd92a72d",
+      "date": "2026-09-12T04:45:39Z",
+      "subject": "Merge pull request #105 from zuizui0223/analysis/ch1-wcvp-taxonomy-sensitivity-20260912"
+    },
+    {
+      "sha": "e7fbc23064e491aafaf1030ebbbbba8c4243f1f1",
+      "date": "2026-09-12T04:42:47Z",
+      "subject": "Merge pull request #106 from zuizui0223/docs/ch1-geb-submission-audit-20260912"
+    },
+    {
+      "sha": "5b8af3de01165715658de2b612b8e7d427856324",
+      "date": "2026-09-12T04:41:02Z",
+      "subject": "results: document taxonomy sensitivity outcome"
+    },
+    {
+      "sha": "f6008f5112fabd87889136ac60d8300c90fed95e",
+      "date": "2026-09-12T04:40:41Z",
+      "subject": "results: freeze WCVP taxonomy sensitivity summary"
+    },
+    {
+      "sha": "412cb2b3b6f839512ab38e24f9f57728ca8f306b",
+      "date": "2026-09-12T04:38:36Z",
+      "subject": "docs: link GEB submission audit"
+    },
+    {
+      "sha": "33431f217d8fc0232c63f655f7435350c927c25c",
+      "date": "2026-09-12T04:38:16Z",
+      "subject": "docs: add fail-closed anonymous review-access template"
+    },
+    {
+      "sha": "a642550643c5e0bbed1d06c1af3ac7faadbf0847",
+      "date": "2026-09-12T04:38:07Z",
+      "subject": "docs: add GEB submission-format and anonymity audit"
+    },
+    {
+      "sha": "0bcd3d15afee91176e57b3e7be671d7518555c5c",
+      "date": "2026-09-12T04:32:28Z",
+      "subject": "Merge pull request #104 from zuizui0223/repro/ch1-release-metadata-contract-20260912"
+    },
+    {
+      "sha": "c2c4dfb7434b1b2bfc70afade9b55084019524d5",
+      "date": "2026-09-12T04:25:03Z",
+      "subject": "ci: retain taxonomy evidence on technical failure"
+    },
+    {
+      "sha": "08ef69bc42b97a0c92187d4e32c4a1d5d7edfd44",
+      "date": "2026-09-12T04:23:45Z",
+      "subject": "test: include durably staged current integration figure"
+    },
+    {
+      "sha": "8e11c4402457e530436bf96cae6429c028611109",
+      "date": "2026-09-12T04:23:25Z",
+      "subject": "repro: record durable CI copy of current scale-integration figure"
+    },
+    {
+      "sha": "fd42d0a7ca53a44f393c3898063ce49ad14103e3",
+      "date": "2026-09-12T04:22:25Z",
+      "subject": "Merge PR #103: fix scale-integration figure edge clipping"
+    },
+    {
+      "sha": "48986ef6aebe996ad3235bcd041c5e8556774144",
+      "date": "2026-09-12T04:20:59Z",
+      "subject": "test: create synthetic taxonomy-gate directories explicitly"
+    },
+    {
+      "sha": "7c8fff49c4c6a669e055d9fe78c036c0bdcd9e53",
+      "date": "2026-09-12T04:20:32Z",
+      "subject": "test: lock WCVP taxonomy sensitivity gates"
+    },
+    {
+      "sha": "b0484a977df9a6f9697d35ed8007cbbbdeef2d20",
+      "date": "2026-09-12T04:20:18Z",
+      "subject": "ci: honor frozen native-status newline normalization"
+    },
+    {
+      "sha": "17942d8782cdb6d52883efe3fd9afda552c0faa0",
+      "date": "2026-09-12T04:19:51Z",
+      "subject": "ci: run frozen WCVP taxonomy sensitivity"
+    },
+    {
+      "sha": "cd6332aa223ed4b8fbdc89231fdd5a153bbc2849",
+      "date": "2026-09-12T04:19:31Z",
+      "subject": "analysis: freeze WCVP taxonomy sensitivity contract before outcome"
+    },
+    {
+      "sha": "fc9e048687b0ee0c69ebafa934cc952b137565ee",
+      "date": "2026-09-12T04:19:06Z",
+      "subject": "analysis: add predeclared taxonomy sensitivity gate summary"
+    },
+    {
+      "sha": "6d94b07fc4b7d972a14315c3b0a3c0b483f58a27",
+      "date": "2026-09-12T04:18:43Z",
+      "subject": "analysis: add authority-resolved taxonomy sensitivity preprocessor"
+    },
+    {
+      "sha": "9ad5097721d7fad8d40579a52d6370a96652dedd",
+      "date": "2026-09-12T04:16:34Z",
+      "subject": "Merge PR #102: freeze current Chapter 1 figure roles"
+    },
+    {
+      "sha": "d813c4483cf86dbba760db185e6c7ac065bd6836",
+      "date": "2026-09-12T04:15:03Z",
+      "subject": "docs: define author-owned final release metadata gate"
+    },
+    {
+      "sha": "c6b301f27821066c6e1335b0070305a8ed4189d5",
+      "date": "2026-09-12T04:14:50Z",
+      "subject": "test: keep native-status identity single-valued"
+    },
+    {
+      "sha": "a5ffcf44d42ba92f881adaaf7b28fa2b895bafb6",
+      "date": "2026-09-12T04:14:35Z",
+      "subject": "test: require approved non-placeholder release metadata"
+    },
+    {
+      "sha": "57187e6a50f4ecc8f6fc993b96c18988646b6f73",
+      "date": "2026-09-12T04:14:19Z",
+      "subject": "repro: validate release approval metadata before final bundling"
+    },
+    {
+      "sha": "d8f642813ed0057b3dc5a6a508df7e04c634978c",
+      "date": "2026-09-12T04:13:49Z",
+      "subject": "repro: add author-owned release metadata template"
+    },
+    {
+      "sha": "a8936712a261717732d0ccdc6252116d16710deb",
+      "date": "2026-09-12T04:13:37Z",
+      "subject": "repro: add fail-closed release metadata contract"
+    },
+    {
+      "sha": "3804c6e33c66335ae8eae4f52c53e6b7a0743f77",
+      "date": "2026-09-12T04:12:28Z",
+      "subject": "test: fail if scale figure clips against canvas edge"
+    },
+    {
+      "sha": "a8e5df30d9fcecd94c613a6943e0dc903f9c4686",
+      "date": "2026-09-12T04:11:20Z",
+      "subject": "figures: fix final-width label clipping and annotation overlap"
+    },
+    {
+      "sha": "7ff3bcf4d9bc18af552ec0fbf1e96294dc500755",
+      "date": "2026-09-12T04:09:17Z",
+      "subject": "docs: surface current figure role freeze"
+    },
+    {
+      "sha": "ffc2e84199a9570e4f47414e136c438dd713a2a9",
+      "date": "2026-09-12T04:09:00Z",
+      "subject": "docs: freeze current Chapter 1 figure roles"
+    },
+    {
+      "sha": "5ba5f3e04bf2a8e482f2808df1aa174c0fdbad40",
+      "date": "2026-09-12T04:07:38Z",
+      "subject": "Merge PR #101: add current scale-integration main-figure recipe"
+    },
+    {
+      "sha": "865967277804015852206d6a70f504c1b8544093",
+      "date": "2026-09-12T04:04:58Z",
+      "subject": "figures: repair scale-integration layout after visual QA"
+    },
+    {
+      "sha": "46b917baaf810d463c4aebd4ed3633ff5ce944cc",
+      "date": "2026-09-12T04:02:02Z",
+      "subject": "docs: add current scale-integration figure recipe"
+    },
+    {
+      "sha": "10d01e1785cc6ee74970c24bb2158753fbdad4ea",
+      "date": "2026-09-12T04:01:39Z",
+      "subject": "ci: render current scale-integration figure artifact"
+    },
+    {
+      "sha": "f4d84a4046b6e2642594c7f4007dee78a2cab37a",
+      "date": "2026-09-12T04:01:31Z",
+      "subject": "test: lock current scale-integration figure contract"
+    },
+    {
+      "sha": "555ac03832a2d1fa8e744655456a50cf3661dbfc",
+      "date": "2026-09-12T04:01:22Z",
+      "subject": "figures: add current scale-integration renderer"
+    },
+    {
+      "sha": "a7c264d43ce085f8911e0cc7928478878ed709a0",
+      "date": "2026-09-12T03:56:08Z",
+      "subject": "Merge PR #100: add fail-closed Chapter 1 release bundle builder"
+    },
+    {
+      "sha": "d0efe920246e73329c100d1380f127dca8e46afc",
+      "date": "2026-09-12T03:47:23Z",
+      "subject": "docs: add fail-closed current release bundle workflow"
+    },
+    {
+      "sha": "e33ea11d4c8cd87bf82c6eb4d611cf91d8584bdb",
+      "date": "2026-09-12T03:46:50Z",
+      "subject": "test: lock current release bundle contract and hard stops"
+    },
+    {
+      "sha": "4c5b0bd2ec7325d937db7b8eb1dceb4b88445b80",
+      "date": "2026-09-12T03:46:33Z",
+      "subject": "repro: add fail-closed current release bundle builder"
+    },
+    {
+      "sha": "2093417191e0207f8062974b23eb92c56685c260",
+      "date": "2026-09-12T03:44:13Z",
+      "subject": "Merge PR #99: stage current Chapter 1 release artifacts"
+    },
+    {
+      "sha": "d0c0acd5f055ad5a20e19309741eaaa8f62a4c06",
+      "date": "2026-09-12T03:43:04Z",
+      "subject": "repro: link current release staging and remaining public gate"
+    },
+    {
+      "sha": "3be00b77216320909d4c043bd32b53fe580ccf85",
+      "date": "2026-09-12T03:42:52Z",
+      "subject": "repro: narrow Zenodo gate after durable artifact recovery"
+    },
+    {
+      "sha": "b7363dc50b75db66e5aecd77e41dc313a8beb36d",
+      "date": "2026-09-12T03:42:21Z",
+      "subject": "repro: record durable staging of current release artifacts"
+    },
+    {
+      "sha": "fa55e9a7205e29e97ed6f8a182e4cfdb25217189",
+      "date": "2026-09-12T03:37:52Z",
+      "subject": "Merge PR #97: freeze Chapter 1 at GEB-ready scope"
+    },
+    {
+      "sha": "3bb1d6f1baef1beb0e4a59bb94d0f450411fe794",
+      "date": "2026-09-12T03:35:45Z",
+      "subject": "docs: surface GEB scope freeze from repository entry point"
+    },
+    {
+      "sha": "306998956a8179eed9b448c169a29391c6d0b043",
+      "date": "2026-09-12T03:34:08Z",
+      "subject": "docs: link GEB scope freeze from v3 entry point"
+    },
+    {
+      "sha": "a7190a00fffcc9453aea65c987f36623b7f91acd",
+      "date": "2026-09-12T03:33:52Z",
+      "subject": "chore: remove temporary scope pointer"
+    },
+    {
+      "sha": "19f7588dae0d6c46f972239979b6dfe911459dac",
+      "date": "2026-09-12T03:33:18Z",
+      "subject": "temp"
+    },
+    {
+      "sha": "f285bc06d74abbe8d7baf9a29b9e8efc64ba3c13",
+      "date": "2026-09-12T03:32:55Z",
+      "subject": "docs: freeze Chapter 1 GEB scope and separate higher-tier extensions"
+    },
+    {
+      "sha": "52c207a64a09b243e021dc6e7b20598ab4ab7f02",
+      "date": "2026-09-11T06:02:52Z",
+      "subject": "Merge pull request #96 from zuizui0223/cleanup/geb-layout-recipes-20260911"
+    },
+    {
+      "sha": "c6d16fddd3b697c9b40a0bad8be9efc2b0eba394",
+      "date": "2026-09-11T05:59:47Z",
+      "subject": "Package complete construct environment figure recipe"
+    },
+    {
+      "sha": "e655fea729cb0348c4b0e60348e16be2b7c0ffab",
+      "date": "2026-09-11T05:53:58Z",
+      "subject": "Add reproducible presentation-only figure layout revisions"
+    },
+    {
+      "sha": "1857f0ad398b8a5c41d6080443ef6146a675c185",
+      "date": "2026-09-11T05:24:32Z",
+      "subject": "Merge pull request #95 from zuizui0223/cleanup/geb-main-20260911"
+    },
+    {
+      "sha": "0bffad4c6890e5c3dfcf6d0c5f668a218d2feeb4",
+      "date": "2026-09-11T05:19:30Z",
+      "subject": "Verify full current-scope numerical replay against frozen artifacts"
+    },
+    {
+      "sha": "3cd942202804fe027d98b78f38541124e96f086a",
+      "date": "2026-09-11T05:11:12Z",
+      "subject": "Unify current numerical reproduction and isolate legacy implementations"
+    },
+    {
+      "sha": "fe25abd46e7235c85e6da191f976e1c8a02d0406",
+      "date": "2026-09-11T03:29:39Z",
+      "subject": "docs: point merged v3 reproduction to main merge commit"
+    },
+    {
+      "sha": "477fd73fc8ebcbad5603775cc0dc980c418c6268",
+      "date": "2026-09-11T03:27:47Z",
+      "subject": "ch1: integrate biological-construct and whole-capitulum synthesis"
+    },
+    {
+      "sha": "a52ff425c49611be804c4070e491f76a7d129482",
+      "date": "2026-09-05T02:42:23Z",
+      "subject": "docs: update public reproducibility instructions"
+    },
+    {
+      "sha": "4585d55743b06f44210f170be2a2daf1b9f656df",
+      "date": "2026-09-04T12:23:34Z",
+      "subject": "Close Zenodo anonymous redownload gate"
+    },
+    {
+      "sha": "82f0e22bd57ed50819a704d66528b5fa98d26bd1",
+      "date": "2026-09-04T08:57:14Z",
+      "subject": "Record published Zenodo v1 pending anonymous verification"
+    },
+    {
+      "sha": "ea1eb0710c6485bc7a5601fdc0c6c808b00aa6f8",
+      "date": "2026-09-04T06:07:54Z",
+      "subject": "Align third-party runbook wording guard with DOI/stable URL terminology"
+    },
+    {
+      "sha": "20732c0889ca71da28e49fdff3013dec2215faf5",
+      "date": "2026-09-04T06:04:53Z",
+      "subject": "Preserve recovery-complete keys while tracking public release separately"
+    },
+    {
+      "sha": "655e6314b86103a21615978628b0d40e08f8c5ae",
+      "date": "2026-09-04T06:04:10Z",
+      "subject": "Record prepared third-party public bundle separately from DOI publication"
+    },
+    {
+      "sha": "7e19e5d2ccdbed04f5caed61309039d96c5266af",
+      "date": "2026-09-04T06:03:41Z",
+      "subject": "Update independent runbook for prepared single public bundle"
+    },
+    {
+      "sha": "e326c0f4bae06803c6da3d9769001b7f861bd934",
+      "date": "2026-09-04T06:03:01Z",
+      "subject": "Surface prepared public reproduction bundle and remaining DOI gate"
+    },
+    {
+      "sha": "456e6b9dac1c9ebf7a9d031d5efb1c84fc7d82db",
+      "date": "2026-09-04T06:02:43Z",
+      "subject": "Register prepared public bundle deposition materials"
+    },
+    {
+      "sha": "6a66aa702f178e777dd5893f64a558f1ff90a769",
+      "date": "2026-09-04T06:02:15Z",
+      "subject": "Add one-step public data deposition and verification procedure"
+    },
+    {
+      "sha": "0988563530c362730b1211e8c9e7218058d1ae8e",
+      "date": "2026-09-04T06:01:53Z",
+      "subject": "Guard prepared public reproduction bundle and immutable code ref"
+    },
+    {
+      "sha": "a8199e89c00369cc06d3667d218756ba28e7b1ec",
+      "date": "2026-09-04T06:01:21Z",
+      "subject": "Record prepared public reproduction bundle and immutable code ref"
+    },
+    {
+      "sha": "b34ab75ac4be14dba288231916d077a2105bef05",
+      "date": "2026-09-04T06:00:36Z",
+      "subject": "Add Zenodo deposition metadata for public reproduction bundle"
+    },
+    {
+      "sha": "584af97b050d15701f26ce1facea212d5b648d4d",
+      "date": "2026-09-04T05:13:22Z",
+      "subject": "Define independent third-party Chapter 1 reproducibility"
+    },
+    {
+      "sha": "eb49860156f06b9833af9f2fcb66c8b2fda5cda0",
+      "date": "2026-09-04T04:58:03Z",
+      "subject": "Document audited Chapter 1 reproduction materials and Windows runbook (#87)"
+    },
+    {
+      "sha": "33ce3b34385c56fbc3f9c7b4964b4d9c51b4160f",
+      "date": "2026-09-04T03:59:27Z",
+      "subject": "Complete Chapter 1 recovery inventory and durable archive"
+    },
+    {
+      "sha": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc",
+      "date": "2026-09-03T05:44:48Z",
+      "subject": "Repair Chapter 1 reproducibility pipeline after cleanup (#84)"
+    },
+    {
+      "sha": "b09a7640e54f6edf03060e72447c021840c7c28f",
+      "date": "2026-09-02T09:32:40Z",
+      "subject": "Update README.md"
+    },
+    {
+      "sha": "ae5cbaf053821f3486f726607655320bc7440749",
+      "date": "2026-09-02T06:35:56Z",
+      "subject": "Catalog source Actions artifacts for reproducibility"
+    },
+    {
+      "sha": "3a6fcce519351284d3ee3d852caca9beffb3a2ab",
+      "date": "2026-09-02T06:33:12Z",
+      "subject": "Fix frozen figure rebuild path handling"
+    },
+    {
+      "sha": "fed15362c284d42f59a83a6f6abc92e5b06f4a8b",
+      "date": "2026-09-02T06:31:29Z",
+      "subject": "Trigger reproducibility figure verification"
+    },
+    {
+      "sha": "ad03af16f87bd659a09bb842928565dfcfadd375",
+      "date": "2026-09-02T06:26:53Z",
+      "subject": "Align frozen figure report with reproducibility layout"
+    },
+    {
+      "sha": "2fba6b051d0e3091648401cd89b64fe442fac811",
+      "date": "2026-09-02T06:25:57Z",
+      "subject": "Add frozen figure reproducibility workflow"
+    },
+    {
+      "sha": "8d079baf889ecc6c6df3939b62894563f5655c1d",
+      "date": "2026-09-02T06:25:20Z",
+      "subject": "Add reproducibility integrity workflow"
+    },
+    {
+      "sha": "8b4b4bfe1a30a48e76126abcfcce98cc81da12bb",
+      "date": "2026-09-02T06:24:58Z",
+      "subject": "Test reproducibility layout instead of manuscript layout"
+    },
+    {
+      "sha": "31aec9d2b60862f0c6f19a5dc26dd611de9fd64a",
+      "date": "2026-09-02T06:22:25Z",
+      "subject": "Align technical audit provenance with reproducibility layout"
+    },
+    {
+      "sha": "ae96df7fc45759ceadbc4eb3de24fbc2c8e34c79",
+      "date": "2026-09-02T06:06:40Z",
+      "subject": "Remove redundant figure wrapper"
+    },
+    {
+      "sha": "03e818a5ac6e1979b6360355649fbb434f110115",
+      "date": "2026-09-02T06:05:54Z",
+      "subject": "Use canonical reproducibility figure entry point"
+    },
+    {
+      "sha": "f5953ac7bc539fe70db7907982d2877c66e9904e",
+      "date": "2026-09-02T06:04:56Z",
+      "subject": "Make reproducibility figure builder safe by default"
+    },
+    {
+      "sha": "15d3753dac12c7cdeef2bf83bd399048f438eaca",
+      "date": "2026-09-02T06:03:28Z",
+      "subject": "Document reproducible figure rebuild commands"
+    },
+    {
+      "sha": "0058ee14c615937fdb289a5a999c9381b0f6a32a",
+      "date": "2026-09-02T06:00:53Z",
+      "subject": "Add canonical reproducibility figure runner"
+    },
+    {
+      "sha": "b109a0143bc23c2c783ce5d9291e2f81d9349ccf",
+      "date": "2026-09-02T06:00:32Z",
+      "subject": "Point technical audit figures to reproducibility artifacts"
+    },
+    {
+      "sha": "9589f621dd87fdce58549529bda0a2eb4f493f93",
+      "date": "2026-09-02T06:00:05Z",
+      "subject": "Point figure input builder to reproducibility artifacts"
+    },
+    {
+      "sha": "d8c43e4d5addc9652eaaf33a037041e07e7d527c",
+      "date": "2026-09-02T05:58:02Z",
+      "subject": "Restore frozen reproducibility artifacts without manuscript or submission files"
+    },
+    {
+      "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388",
+      "date": "2026-09-02T04:50:12Z",
+      "subject": "Reset public history to prepublication-safe analysis code"
+    },
+    {
+      "sha": "ceb9d06d5a010c2db5ef00558f35c7b73cf56318",
+      "date": "2025-12-03T09:36:45Z",
+      "subject": "Add files via upload"
+    }
+  ],
+  "focused_unmerged_commits": {
+    "pr92": [
+      {
+        "sha": "1a02cb767debc3a246b0ba62a2128f50a7913086",
+        "date": "2026-09-09T06:29:54Z",
+        "subject": "Add minimal v3 provenance utilities"
+      },
+      {
+        "sha": "992090b7650a9b580bd35106aebaf59c6cdd6b22",
+        "date": "2026-09-09T06:30:08Z",
+        "subject": "Define minimal v3 upstream repair contract"
+      },
+      {
+        "sha": "5c222f54081d6209c70661f7363b42a8b79de1e1",
+        "date": "2026-09-09T06:30:36Z",
+        "subject": "Pin minimal v3 upstream archives"
+      },
+      {
+        "sha": "7a9cb73b6858d3d3e14d8d19df190794436b5b5f",
+        "date": "2026-09-09T06:31:35Z",
+        "subject": "Restore source reconciliation only"
+      },
+      {
+        "sha": "adefbe90c128514c745d1d27ea733fd2dce02afb",
+        "date": "2026-09-09T06:32:32Z",
+        "subject": "Restore historical processing recount"
+      },
+      {
+        "sha": "04e713068812243a7f59048e34c0d9fcfa5a388d",
+        "date": "2026-09-09T06:33:06Z",
+        "subject": "Restore historical measurement aggregation patch"
+      },
+      {
+        "sha": "eeb8191bbdaca3992ea3f7f61f1ff3beaf456b10",
+        "date": "2026-09-09T06:33:47Z",
+        "subject": "Record compact v3-to-v2 reuse receipt"
+      },
+      {
+        "sha": "25f62e755d5c779678404299f7fb4db5260eae30",
+        "date": "2026-09-09T06:34:06Z",
+        "subject": "Document minimal v3 reuse path"
+      },
+      {
+        "sha": "5d4b8b60bdb396a70786d8ec4c23a4dda895f689",
+        "date": "2026-09-09T06:34:27Z",
+        "subject": "Add minimal v3 reuse preflight"
+      },
+      {
+        "sha": "1d762dab453d2f343e27b61266d2322dbea41c0e",
+        "date": "2026-09-09T06:34:38Z",
+        "subject": "Add minimal v3 reuse CI"
+      },
+      {
+        "sha": "01b59b56252d955dc8e8e972048a4a5066914b85",
+        "date": "2026-09-09T07:09:32Z",
+        "subject": "Add native-only v2 reuse runner"
+      },
+      {
+        "sha": "a2cbbf9650d35de4c5d0643bb38f3233a6507cd5",
+        "date": "2026-09-09T07:09:55Z",
+        "subject": "Run minimal native-only v2 reanalysis"
+      },
+      {
+        "sha": "df6d00c8b36d2a6cc73ef8b9c1483882ded9df7e",
+        "date": "2026-09-09T07:11:03Z",
+        "subject": "Fix frozen native-status recovery"
+      },
+      {
+        "sha": "d5a28771292f6c464767b43a02812a5fe8f3d0e6",
+        "date": "2026-09-09T07:14:39Z",
+        "subject": "Harden native/full direction comparison"
+      },
+      {
+        "sha": "dbc7c19f289be039692553441cb6266f959a9470",
+        "date": "2026-09-09T07:14:59Z",
+        "subject": "Materialize frozen native status through Git LFS"
+      },
+      {
+        "sha": "f7b2807e0824f2ac2f64e83e820536585c789184",
+        "date": "2026-09-09T07:16:55Z",
+        "subject": "Fetch frozen native status from pinned LFS media object"
+      },
+      {
+        "sha": "0c3414677f77e0218a9fa351090b8fe251abdc85",
+        "date": "2026-09-09T07:18:41Z",
+        "subject": "Rebuild frozen native status instead of retrieving LFS"
+      },
+      {
+        "sha": "95ea060605063976c81c41583a45e77601129104",
+        "date": "2026-09-09T07:25:06Z",
+        "subject": "Use immutable v2 tag for native-status input"
+      },
+      {
+        "sha": "0c8e7bcb2c9b002d4d0e799a89938320701e845b",
+        "date": "2026-09-09T07:26:40Z",
+        "subject": "Fetch frozen native status by LFS object oid"
+      },
+      {
+        "sha": "44bd1b38b23df15b574cacd2b105205370977669",
+        "date": "2026-09-09T07:43:18Z",
+        "subject": "Rebuild exact native status from frozen auxiliary tables"
+      },
+      {
+        "sha": "9a77227f19bba827258f299e96e745d7543b1e98",
+        "date": "2026-09-09T07:43:47Z",
+        "subject": "Rebuild native status from frozen auxiliary tables"
+      },
+      {
+        "sha": "f04b551a3fcc09db84ebf7ab53e7408d0f5a5913",
+        "date": "2026-09-09T07:44:54Z",
+        "subject": "Fix native rebuild import path"
+      },
+      {
+        "sha": "8fd6cc2d8f8e5f8b857d25b86be7a264cb3bf62a",
+        "date": "2026-09-09T07:47:20Z",
+        "subject": "Preserve frozen accepted-key dtype in native rebuild"
+      },
+      {
+        "sha": "7f44dfb29c1aa1a9459a67f19daff11da1db9172",
+        "date": "2026-09-09T07:50:28Z",
+        "subject": "Accept deterministic regenerated native cohort"
+      },
+      {
+        "sha": "15c4648bbd8b878af9f71a5f16ea93a0e2975dc5",
+        "date": "2026-09-09T07:51:09Z",
+        "subject": "Allow regenerated frozen-v2 native cohort"
+      },
+      {
+        "sha": "d2b4bd76515058724b936747847169b24728f126",
+        "date": "2026-09-09T07:51:35Z",
+        "subject": "Run native reanalysis on regenerated frozen cohort"
+      },
+      {
+        "sha": "ba41558676b33e0efbccc417b180b51ba1e9f4b2",
+        "date": "2026-09-09T07:54:22Z",
+        "subject": "Export recovered observation values for native reanalysis"
+      },
+      {
+        "sha": "8bbd46c265029d45e272712b6ec08c98e02a74fb",
+        "date": "2026-09-09T07:54:49Z",
+        "subject": "Use external recovery workspace for historical endpoints"
+      },
+      {
+        "sha": "c8d547f227b50c34f0f3d78e7786a16fb134984f",
+        "date": "2026-09-09T08:14:01Z",
+        "subject": "Sample frozen environment on native cohort only"
+      },
+      {
+        "sha": "b751adc011d1b293d46542d078ead4b9687e822c",
+        "date": "2026-09-09T08:24:58Z",
+        "subject": "Read frozen CHELSA COGs in block order"
+      },
+      {
+        "sha": "ce17fa61ac1d78d99222524d74a531a5000a36f7",
+        "date": "2026-09-09T08:25:28Z",
+        "subject": "Trigger native reanalysis on CHELSA sampler changes"
+      },
+      {
+        "sha": "259c2bc33165db35bc76535e8b3abcefd0c52bd7",
+        "date": "2026-09-09T08:37:56Z",
+        "subject": "Accept prefiltered native environment in v2 reuse wrapper"
+      },
+      {
+        "sha": "a37539ac1809cbccd474d9a5591318fa9aafa320",
+        "date": "2026-09-09T08:51:52Z",
+        "subject": "Append recovered endpoints to native trait table"
+      },
+      {
+        "sha": "a53dd8cb12242ccc2d1e302455c5118acfd6b6f8",
+        "date": "2026-09-09T09:22:21Z",
+        "subject": "Run native spatial and historical sensitivities"
+      },
+      {
+        "sha": "a68fd1d785a0f3510276763e559f5aef70e05c8e",
+        "date": "2026-09-09T09:36:07Z",
+        "subject": "Record native spatial and historical sensitivity results"
+      },
+      {
+        "sha": "70ec88ffbacdbaa8957f8e92df7e7ec89eb51e4f",
+        "date": "2026-09-09T09:48:10Z",
+        "subject": "Add native scale-specific VIFstep10 selector"
+      },
+      {
+        "sha": "b6d41669c87b9711311969b3ed45acc4f260c4bc",
+        "date": "2026-09-09T09:48:33Z",
+        "subject": "Add selected-predictor v2 atlas runner"
+      },
+      {
+        "sha": "7702b7d43afb7fc02c9da17b7af5e5055ea27b09",
+        "date": "2026-09-09T09:49:42Z",
+        "subject": "Run native VIFstep10 scale-specific reanalysis"
+      },
+      {
+        "sha": "931be8fdf75489d2ac46f17aa04357bf7260f9b3",
+        "date": "2026-09-09T10:12:39Z",
+        "subject": "Fix VIFstep10 historical summary receipt"
+      },
+      {
+        "sha": "30fd702f2c324a1496fd472667787750f02ebe25",
+        "date": "2026-09-09T10:27:48Z",
+        "subject": "Freeze native VIFstep10 reanalysis receipt"
+      },
+      {
+        "sha": "e7091f07ac4cc90ade85a19ff1e2e737dca4f34f",
+        "date": "2026-09-09T10:29:36Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "a3b30e5b13f6d292b00e02b87dacab19d15aec88",
+        "date": "2026-09-09T10:31:00Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "8acb937cdec35fa27890c9bebc90f3d87d53d630",
+        "date": "2026-09-09T10:31:21Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "3619eab73240068e3e86af1ae32cb2d15f88f5ee",
+        "date": "2026-09-09T10:31:44Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "5f05becf21d743aad3d58c105b3db5dea414c262",
+        "date": "2026-09-09T10:32:03Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "051afe6949fa7296286c1418cf2705b36bdb6c32",
+        "date": "2026-09-09T10:32:22Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "f00ace462ef4f37af05e688f14c305ab3654bd5a",
+        "date": "2026-09-09T10:32:42Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "d580d8a97e6ccd46e8fff59bdc2973272df59a0a",
+        "date": "2026-09-09T10:33:00Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "b2a099fc1878e554d90cddea4c73e92ddb243216",
+        "date": "2026-09-09T10:33:35Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "acb035a9c748e1f10ebc04fb121e932625c6e764",
+        "date": "2026-09-09T10:34:18Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "c126f3be519b95023c0eb2279fa591868305305a",
+        "date": "2026-09-09T10:35:31Z",
+        "subject": "Document native VIFstep10 shortest route"
+      },
+      {
+        "sha": "dcaa68d3b23fb8295e321a3e05a7cee1c20c6da0",
+        "date": "2026-09-09T11:21:46Z",
+        "subject": "Add full-cohort multivariable VIF10 analysis"
+      },
+      {
+        "sha": "418a82ee0a7e2f286575992be55afa324160573d",
+        "date": "2026-09-09T11:22:17Z",
+        "subject": "Run full-cohort multivariable VIF10 analysis"
+      },
+      {
+        "sha": "c1d1a5f38cc32ce11a596e909c53837a569bdc1d",
+        "date": "2026-09-09T11:36:27Z",
+        "subject": "Fix full-cohort multivariable import path"
+      },
+      {
+        "sha": "48d76f1efb0a04573a4323bf094899ad6f0d61bd",
+        "date": "2026-09-09T23:23:01Z",
+        "subject": "Map recovered endpoint columns for full-cohort model"
+      },
+      {
+        "sha": "cd6d8480f85e923503ca94ad90ea9b354bafe5d6",
+        "date": "2026-09-10T00:00:20Z",
+        "subject": "Add trait-function hypothesis registry"
+      },
+      {
+        "sha": "8ef813e59e41b373dbf4feb986640a56707c9555",
+        "date": "2026-09-10T00:01:20Z",
+        "subject": "Implement hypothesis-driven trait environment atlas"
+      },
+      {
+        "sha": "6bdb2f77a7150d2af86f9d0a0220e8f93c5622c4",
+        "date": "2026-09-10T00:01:40Z",
+        "subject": "Run hypothesis-driven trait environment atlas"
+      },
+      {
+        "sha": "b0552a19bb0b902ed1c531c7ba2348f8357bfec4",
+        "date": "2026-09-10T00:16:09Z",
+        "subject": "Record hypothesis-driven Chapter 1 results"
+      },
+      {
+        "sha": "8050a34341a5f648035ae6d2cdbe34396730847d",
+        "date": "2026-09-10T00:16:52Z",
+        "subject": "Align hypothesis receipt with artifact precision"
+      },
+      {
+        "sha": "6813ad5c40fb198ec21365fbeca72720ea8985d2",
+        "date": "2026-09-10T00:27:54Z",
+        "subject": "Add multiscale whole-capitulum organization analysis"
+      },
+      {
+        "sha": "a2ea35a8921270f31d944542aa29ea23a656222f",
+        "date": "2026-09-10T00:28:13Z",
+        "subject": "Run multiscale whole-capitulum organization analysis"
+      },
+      {
+        "sha": "c9e48c3c197d37bce0332354a295f51bffc05145",
+        "date": "2026-09-10T00:48:15Z",
+        "subject": "Record multiscale whole-capitulum result receipt"
+      },
+      {
+        "sha": "e0daf2f5c4f3eeaf80db5685b0fa9a9410282904",
+        "date": "2026-09-10T03:19:16Z",
+        "subject": "Add capitulum hypervolume geometry analysis"
+      },
+      {
+        "sha": "d3fbfe4802193b4ccffdc035b42e62b4a3ff9287",
+        "date": "2026-09-10T03:19:36Z",
+        "subject": "Run capitulum hypervolume geometry"
+      },
+      {
+        "sha": "0edb070af03d2642c67d89123b4942a227377016",
+        "date": "2026-09-10T03:21:14Z",
+        "subject": "Freeze capitulum hypervolume result receipt"
+      },
+      {
+        "sha": "6e444f04a9c8be2a15cda604f98e96bd20c6b2c1",
+        "date": "2026-09-10T04:16:39Z",
+        "subject": "Add full-range density breadth and spatial-held-out prediction pilot"
+      },
+      {
+        "sha": "c060218005b01f7ce7155ea583b737589800b28b",
+        "date": "2026-09-10T04:31:30Z",
+        "subject": "Add full-range density overlap and exact Wasserstein pilot"
+      },
+      {
+        "sha": "19a9970e42285e16d206a497d35afc574711d734",
+        "date": "2026-09-10T04:50:28Z",
+        "subject": "Add distribution figures and same-taxon sampling reference"
+      },
+      {
+        "sha": "6061befaf56ee545bb3b2b4a80ed220d2def1190",
+        "date": "2026-09-10T05:06:23Z",
+        "subject": "Visualize continuous measurements in shared PCA and hypervolume space"
+      }
+    ],
+    "pr142": [
+      {
+        "sha": "ec837ad93d66db7a91dbc910949c79c53ae55166",
+        "date": "2026-10-20T04:04:57Z",
+        "subject": "v4: add executable function-focused trait and environment pilot"
+      },
+      {
+        "sha": "6809bcd65687949f5b570f594fb7d62604b4fbdd",
+        "date": "2026-10-20T04:07:38Z",
+        "subject": "v4: document functional trait contract and exploratory evidence boundaries"
+      },
+      {
+        "sha": "05dc120b26b0ddefcdd4d2aa0344411bca8828b6",
+        "date": "2026-10-20T04:08:17Z",
+        "subject": "test v4 Shapley attribution, RV and species-leverage invariants"
+      },
+      {
+        "sha": "a1fcd05f08cba52f59ae6a7d5f830c063a56ee50",
+        "date": "2026-10-20T04:09:38Z",
+        "subject": "ci: replay v4 models from frozen artifacts and validate summary invariants"
+      },
+      {
+        "sha": "fa755c6e626335eafe23bd09889b8924fce618e6",
+        "date": "2026-10-20T04:13:55Z",
+        "subject": "v4: compare taxon-balanced multivariate within associations to among-taxon blocks"
+      },
+      {
+        "sha": "e297b256c6c12620dbc635cce06c1d9f9d998262",
+        "date": "2026-10-20T04:14:21Z",
+        "subject": "docs(v4): record equal-taxon-weighted within vs among multivariate environment contrast"
+      },
+      {
+        "sha": "14a0ca2641ee97e20c970b664c90e64eb3510dfa",
+        "date": "2026-10-20T04:16:01Z",
+        "subject": "v4: add taxon-median leave-dominant-species-out validation of frozen chroma-radiation anchor"
+      },
+      {
+        "sha": "6cafc612ee91af4f009e69d5e3e98c46e6631349",
+        "date": "2026-10-20T04:16:15Z",
+        "subject": "docs(v4): record real leave-dominant-taxon-out species-median anchor sensitivity"
+      },
+      {
+        "sha": "d9827e2b667717215c25ede8122e9eb683ed4fcc",
+        "date": "2026-10-20T04:16:28Z",
+        "subject": "ci(v4): assert species-median headline reproduction and within-betwen blocks"
+      },
+      {
+        "sha": "75c29fbc7af4c3cb76156394f3cbce5bdaee31ab",
+        "date": "2026-10-20T04:52:50Z",
+        "subject": "v4: restart from pre-detector metadata and original photographs with anatomical measurement contracts"
+      },
+      {
+        "sha": "09add0969d1a03fedb6eb6ca8d8e255e52a8232b",
+        "date": "2026-10-20T05:05:43Z",
+        "subject": "v4: define native-range-first eligibility independently of phenotype"
+      },
+      {
+        "sha": "5a951796021cfde3cc1feda5a1d9bd78e1bbcc39",
+        "date": "2026-10-20T05:06:40Z",
+        "subject": "v4: freeze all 288 source taxa before native-range filtering"
+      },
+      {
+        "sha": "209da3f2235a45a19d8097078d5aafdcd16a3d7b",
+        "date": "2026-10-20T05:07:16Z",
+        "subject": "v4: acquire complete WCVP source evidence for the upstream taxon roster"
+      },
+      {
+        "sha": "02e89e47716539f3a6f956eac26b339940718f63",
+        "date": "2026-10-20T05:07:42Z",
+        "subject": "test: enforce native-first scope and never rescue unknown range records"
+      },
+      {
+        "sha": "5c054777f7708af83e8ef3a78ba02633896986df",
+        "date": "2026-10-20T05:08:04Z",
+        "subject": "ci: validate native-first rules and snapshot all upstream WCVP range evidence"
+      },
+      {
+        "sha": "f5e4b5df4dbd0df42fb00457ae07e278f3da47a1",
+        "date": "2026-10-20T05:18:38Z",
+        "subject": "v4: remeasure anatomical original-image pixels and separate monochrome colour failure from geometry"
+      },
+      {
+        "sha": "113b3f5ac675221ead180ba3ae6c0bbb28286dde",
+        "date": "2026-10-20T05:24:38Z",
+        "subject": "v4: freeze occupied climate cache cells for all 244570 native observations"
+      },
+      {
+        "sha": "20b87ce31ac4b5277077af40b9f21d002def1835",
+        "date": "2026-10-20T05:25:20Z",
+        "subject": "v4: cache native climate footprint without resampling source pixels"
+      },
+      {
+        "sha": "62bf5e54e4cbc3e224ed012060ba87b6aee797b4",
+        "date": "2026-10-20T05:25:38Z",
+        "subject": "test v4 native climate exact pixels, source identity and missing-tile handling"
+      },
+      {
+        "sha": "5a4ac8d7d4e6d502e7b80424f527e3368df6aa38",
+        "date": "2026-10-20T05:25:57Z",
+        "subject": "ci: acquire all nine climate layers for full native upstream footprint"
+      },
+      {
+        "sha": "e9d31e1c133c3e270dd83088141a409d88eccbad",
+        "date": "2026-10-20T05:36:46Z",
+        "subject": "v4: include 62 additional species from the full pre-detector source roster"
+      },
+      {
+        "sha": "80491be91e2396aec920929401f51e82199712b1",
+        "date": "2026-10-20T05:37:13Z",
+        "subject": "ci(v4): complete native-source coverage for all 350 upstream species"
+      },
+      {
+        "sha": "0c09d8078aca2d15efee1f8eaf2dcc364ea1fb2a",
+        "date": "2026-10-20T05:38:52Z",
+        "subject": "ci: freeze successful native climate acquisition and prevent repeated raster downloads on analysis commits"
+      },
+      {
+        "sha": "ad98a4169705de931246118aef61c26e02e52846",
+        "date": "2026-10-20T05:39:32Z",
+        "subject": "v4: evaluate native within-between covariance with taxon bootstrap and matched sample size"
+      },
+      {
+        "sha": "b27c159dd7ec929c63a9a040a91f58fc7f73c515",
+        "date": "2026-10-20T05:40:39Z",
+        "subject": "v4: jointly analyse climate and space with leakage-free native geographic holdouts"
+      },
+      {
+        "sha": "e97c15bee7e921237561b004c708e209fe313309",
+        "date": "2026-10-20T05:43:05Z",
+        "subject": "v4: enforce full upstream roster before native filtering and full-coverage numerical replay"
+      },
+      {
+        "sha": "5973705e50415197c90d3e4179d20d0619995674",
+        "date": "2026-10-20T05:43:54Z",
+        "subject": "test native covariance accounting, hue rotation invariance and holdout leakage guards"
+      },
+      {
+        "sha": "e9e2a43bf38ad468431c81379e086a686ee6f8fc",
+        "date": "2026-10-20T05:46:59Z",
+        "subject": "v4: record full native-range climate analysis and revised cross-scale uncertainty"
+      },
+      {
+        "sha": "b82fe1682ad059ae8d3b86c30e95d51360a4b662",
+        "date": "2026-10-20T05:49:06Z",
+        "subject": "v4: reproduce native-only historical pattern checks and dominant-taxon exclusions"
+      },
+      {
+        "sha": "cf5169780a9c74ddda818f8ba20ffbeb083b034e",
+        "date": "2026-10-20T06:04:33Z",
+        "subject": "v4: classify all 665115 upstream observations native-first and run explicitly labelled legacy diagnostics"
+      },
+      {
+        "sha": "1915425cd2876a879e3bf9f8115d444bd379eeba",
+        "date": "2026-10-20T06:22:02Z",
+        "subject": "v4: replay all 665115 original observations through native-first WCVP and CHELSA caches"
+      },
+      {
+        "sha": "24ade7467d304d581b3e966745998e6bf796a5a7",
+        "date": "2026-10-20T06:22:18Z",
+        "subject": "test v4 full upstream species-only authority scope and source pinning"
+      },
+      {
+        "sha": "2b4832d5341d42e31bcfa1ff2e636a1cec2fd969",
+        "date": "2026-10-20T06:23:22Z",
+        "subject": "ci: replay full 665115-observation native roster with nine cached CHELSA rasters"
+      },
+      {
+        "sha": "3e4ea42e0e938ea2e9d1e2f2a8d9ca121392a13c",
+        "date": "2026-10-20T06:30:52Z",
+        "subject": "docs(v4): distinguish original native source/climate completion from archived measurement coverage"
+      },
+      {
+        "sha": "cd76eaba10e8f22420f306edd406cc498369d8f0",
+        "date": "2026-10-20T07:09:56Z",
+        "subject": "v4: test dominant-species and photographer leverage on native-only ecological associations"
+      },
+      {
+        "sha": "7d122df0e906b69c06609371729a83668a4eef6c",
+        "date": "2026-10-20T07:10:40Z",
+        "subject": "test(v4): isolate repeat photographer uploads from equal taxon/region/observer weights"
+      },
+      {
+        "sha": "33923fbad5a003c5ba7aa7dc9080de601be851be",
+        "date": "2026-10-20T07:11:34Z",
+        "subject": "v4: compare observer-balanced trait covariance within and among native taxa"
+      },
+      {
+        "sha": "545a118e2ddb6b054e06fa83f996fce82283b3cf",
+        "date": "2026-10-20T07:11:54Z",
+        "subject": "test(v4): deterministic observer-balanced within/among RV sensitivity"
+      },
+      {
+        "sha": "19c58112ea6826df29936a99e13766a173b689a2",
+        "date": "2026-10-20T07:12:43Z",
+        "subject": "ci(v4): make expired private-source full replay explicit/manual rather than permanently failing each PR"
+      },
+      {
+        "sha": "1d786e4780e4856fb70a2bd9dc27c7cdd7858f86",
+        "date": "2026-10-20T07:14:24Z",
+        "subject": "docs(v4): distinguish observer effort and dominant species from native ecological associations"
+      },
+      {
+        "sha": "19c311a9911463908e2c0ccdf90a9740d5e19d35",
+        "date": "2026-10-20T07:14:57Z",
+        "subject": "v4: decompose pooled floral climate slopes into within/among under observer and taxon weighting"
+      },
+      {
+        "sha": "6d7726352d0878cd42f83725a26fe19683491dd9",
+        "date": "2026-10-20T07:15:31Z",
+        "subject": "test v4 observer weighting, exact covariance identity and missing-ID fail-closed contracts"
+      },
+      {
+        "sha": "5633d0d07a99779330973a1aa8ef70f944b11713",
+        "date": "2026-10-20T07:16:50Z",
+        "subject": "v4: add top 10% prolific observer omission and concentration check"
+      },
+      {
+        "sha": "b3b6203a5a3075ec6bc6ba51b6c0ff37ff7b9848",
+        "date": "2026-10-20T07:16:51Z",
+        "subject": "test: pooled observer-weighted covariances must equal between-plus-within decomposition"
+      },
+      {
+        "sha": "adcee00efd726468c74e0312b8c97141a564e5d3",
+        "date": "2026-10-20T07:17:33Z",
+        "subject": "v4: freeze aggregate observation/taxon/observer leverage receipt without private identifiers"
+      },
+      {
+        "sha": "f9e518a1ce428321eadd335c00e418f7478fe8bd",
+        "date": "2026-10-20T07:18:00Z",
+        "subject": "fix v4 receipt denominator: dominant-species fractions refer to measured-colour cohort"
+      },
+      {
+        "sha": "7425c9621a1d52b65bb59e83c884e5e35902d98f",
+        "date": "2026-10-20T07:18:03Z",
+        "subject": "docs(v4): exact between/within contribution of recording-weighted pooled slopes"
+      },
+      {
+        "sha": "f641e117ca724e3582f13434794b051246919212",
+        "date": "2026-10-20T07:19:17Z",
+        "subject": "docs(v4): report human-observer versus dominant-taxon dilution in native floral ecology"
+      },
+      {
+        "sha": "a95cdd2517e4ff77c7c55add94b17c8267e53623",
+        "date": "2026-10-20T07:20:15Z",
+        "subject": "test v4 public observer-bias receipt privacy and descriptive covariance arithmetic"
+      },
+      {
+        "sha": "8db9ac61ea3f60af501adfcac3716c8f82bbd22c",
+        "date": "2026-10-20T07:20:32Z",
+        "subject": "fix v4 observer receipt: preserve distinct climate-and-space intervals for both phenotypes"
+      },
+      {
+        "sha": "5f44264123bc09bae633696754bc1bf3e8cd4511",
+        "date": "2026-10-20T07:20:45Z",
+        "subject": "test v4 observer full spatial intervals separately, not as merged key"
+      },
+      {
+        "sha": "3694bfd4967ef3022723b799d08173cba8c053aa",
+        "date": "2026-10-20T07:21:48Z",
+        "subject": "fix(v4): fail closed for numerically constant observer-weighted covariates"
+      },
+      {
+        "sha": "7f00dc7f0f7b5d758712d80e20259e1d02c3ac86",
+        "date": "2026-10-20T07:23:15Z",
+        "subject": "fix(v4): align within-taxon confidence intervals and top-source counts with replayed native inputs"
+      },
+      {
+        "sha": "bdd3cfebad662ba0c91c466d51cd6902fec476b6",
+        "date": "2026-10-20T10:09:34Z",
+        "subject": "Reuse published Zenodo inputs in existing numerical replay"
+      },
+      {
+        "sha": "b701db295cc23cc3d3146c9d9d5c42d6a4eaa54b",
+        "date": "2026-10-20T10:13:52Z",
+        "subject": "Reuse Zenodo inputs in existing staging validation"
+      },
+      {
+        "sha": "4e09c78f86a14cc51bf06566f02c050c284de29b",
+        "date": "2026-10-20T10:18:19Z",
+        "subject": "Clarify v4 workflow and restore private source access in existing Action"
+      },
+      {
+        "sha": "8af6a104b07f0b057df40a012e89f051f6c03e4f",
+        "date": "2026-10-20T10:21:39Z",
+        "subject": "Restore encrypted original source for private GitHub Actions replay"
+      },
+      {
+        "sha": "a71697427948d50d20d7f354d9fdf8f2028d8513",
+        "date": "2026-10-20T10:22:05Z",
+        "subject": "v4: retain all 27 raw image endpoints and define function-led trait-module crosswalk"
+      },
+      {
+        "sha": "06754561e980a7e47dc2c120d33d328010287995",
+        "date": "2026-10-20T10:22:47Z",
+        "subject": "ci(v4): lock all 27 trait IDs, historical availability and noninterchangeable biological meanings"
+      },
+      {
+        "sha": "e25bf121b4e802ddeb26b0ac090a95c8cfbce6be",
+        "date": "2026-10-20T10:23:29Z",
+        "subject": "Allow manual source replay to read existing draft release"
+      },
+      {
+        "sha": "acdc23f60e243af2893ee065e5aa9066bdbca426",
+        "date": "2026-10-20T10:23:52Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into explore/v4-functional-modules-20261020"
+      },
+      {
+        "sha": "f1b37018e17dc87428cdc26e239e2efec88916e7",
+        "date": "2026-10-20T10:25:59Z",
+        "subject": "docs(v4): define 27-endpoint preservation and three functional modules across azami, EAzami and aza3"
+      },
+      {
+        "sha": "37c2fc9b3919891ba31c9b30324c2f2bdcdb4313",
+        "date": "2026-10-20T10:29:51Z",
+        "subject": "v4: add whorl-resolved phyllary posture, recurvature and glandular body annotation gates"
+      },
+      {
+        "sha": "bb6808c2d23f776fa458b64c00f28afce38ce97b",
+        "date": "2026-10-20T10:31:40Z",
+        "subject": "Reuse archived observations without complete-case or species averaging"
+      },
+      {
+        "sha": "e6be824ffe7c37a5711c1430d0671d6e85de2bf7",
+        "date": "2026-10-20T10:31:41Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into explore/v4-functional-modules-20261020"
+      },
+      {
+        "sha": "f60d60860daa18a9c5e9b689724985780fe34cfe",
+        "date": "2026-10-20T10:36:21Z",
+        "subject": "Record verified full-native observation inputs and predictor overlap"
+      },
+      {
+        "sha": "162b0144ab68c03cdddd8ef58ba6f5ecff93a3bf",
+        "date": "2026-10-20T10:42:01Z",
+        "subject": "Fit observation-level functional modules with within-between climate terms"
+      },
+      {
+        "sha": "62fba4736dba1b6c16b096d3ae243df573bd7a92",
+        "date": "2026-10-20T10:47:05Z",
+        "subject": "v4: measure full-floret pixel Lab dispersion with all neutral pixels retained"
+      },
+      {
+        "sha": "f795a1867d0d3ec6ff2be3d54ae70002380f884d",
+        "date": "2026-10-20T10:48:12Z",
+        "subject": "v4: add projected head-stalk and whorl-aware phyllary continuous coordinates without functional overclaims"
+      },
+      {
+        "sha": "1a02dcc514f2758dc3dae98efe1803452f331091",
+        "date": "2026-10-20T10:49:03Z",
+        "subject": "v4: connect full-floret colour, projected presentation and annotated phyllary axes in original-byte head replay"
+      },
+      {
+        "sha": "a6fa8d435520d9d03e2b4fc4cef9140953099344",
+        "date": "2026-10-20T10:50:13Z",
+        "subject": "test v4 original-pixel Lab distribution, camera-roll/mirror invariance and anatomically explicit phyllary axes"
+      },
+      {
+        "sha": "6d45541d7a25294e92a2a5b469832638229858a9",
+        "date": "2026-10-20T10:50:37Z",
+        "subject": "Report whole-colour contrasts and GEB claim boundaries"
+      },
+      {
+        "sha": "e53a72b48f34348b9049f0c0598cf45537593952",
+        "date": "2026-10-20T10:50:47Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "6d472838d3aaa04058057f87a4cd052a01f52675",
+        "date": "2026-10-20T10:51:20Z",
+        "subject": "ci(v4): replay new functional coordinates on 64 original photos and require no fabricated phyllary measurement"
+      },
+      {
+        "sha": "c7eb14aab3977a1cec95f109163368754270bf3f",
+        "date": "2026-10-20T10:55:03Z",
+        "subject": "Audit collinearity in exact within-between observation model designs"
+      },
+      {
+        "sha": "75683f8dd796c0f2f4bfa2740e05e8bc01255ab0",
+        "date": "2026-10-20T10:56:24Z",
+        "subject": "v4: mark four candidate visible phyllary axes on one original CC0 image as unvalidated method pilot"
+      },
+      {
+        "sha": "87bec64e799439f8103aa1bbbde9ef1a9dc7382f",
+        "date": "2026-10-20T10:56:53Z",
+        "subject": "ci(v4): independently replay one original-photo phyllary-axis proposal and enforce unvalidated status"
+      },
+      {
+        "sha": "8c8d51c97dc2ad5cd2a545d64a41bbf60b234581",
+        "date": "2026-10-20T10:58:15Z",
+        "subject": "Evaluate thermal-VPD attribution under a hypothesis-led observational design"
+      },
+      {
+        "sha": "2768f7538d387da4b9e4b57f59f5eae483ec7d07",
+        "date": "2026-10-20T10:58:16Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "92d5681e0d9f8c22c80bcc5e0cb0e4aafa506285",
+        "date": "2026-10-20T11:01:40Z",
+        "subject": "v4: visibly overlay candidate phyllary axes and unvalidated label for anatomical review"
+      },
+      {
+        "sha": "808a606fffd58941d657d387e983da868dbeefa8",
+        "date": "2026-10-20T11:03:41Z",
+        "subject": "docs(v4): record verified original-image continuous Lab and phyllary pilot with unvalidated status"
+      },
+      {
+        "sha": "17415e62a858cd1def1144c747b3d9b49201b82e",
+        "date": "2026-10-20T11:04:38Z",
+        "subject": "Trace phyllary measurement attrition before observation-model inference"
+      },
+      {
+        "sha": "2312a21522b753795816e738f43d0431ee588f6d",
+        "date": "2026-10-20T11:04:40Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "fdb0d43ac6b7b803167b75f978c3219e29f76dca",
+        "date": "2026-10-20T11:07:34Z",
+        "subject": "Create clean-runner archive directories before coverage audit"
+      },
+      {
+        "sha": "86485df06243ad183ad92204afa88768791c68b1",
+        "date": "2026-10-20T11:08:51Z",
+        "subject": "Integrate original-photo method replay before coverage and reference inference"
+      },
+      {
+        "sha": "f697debfb432d80d14d1140749a9488b05f193f0",
+        "date": "2026-10-20T11:11:06Z",
+        "subject": "Prioritize complete 27-endpoint reuse without requiring image remeasurement"
+      },
+      {
+        "sha": "7aaa2f3c940a0ffd054786b7b8a4bfa8f8fe5631",
+        "date": "2026-10-20T11:12:28Z",
+        "subject": "Classify missing primary coordinates as unmeasured in reuse inventory"
+      },
+      {
+        "sha": "7de76dbfe16da38ef49c400234729be3c5917c6f",
+        "date": "2026-10-20T11:16:24Z",
+        "subject": "Integrate matched-observation broad-space comparison into reusable trait workflow"
+      },
+      {
+        "sha": "67e302d89084738e408eda336dfdddf2eda62325",
+        "date": "2026-10-20T11:23:29Z",
+        "subject": "Audit seasonal environmental candidates before trait inference"
+      },
+      {
+        "sha": "fc3663b3657ca4c98b15591890583d3432c3188e",
+        "date": "2026-10-20T11:25:59Z",
+        "subject": "Compare six climate dimensions with matched observation references"
+      },
+      {
+        "sha": "22af8cd48f5031ad911ddb697ccc1817f46c3385",
+        "date": "2026-10-20T11:28:52Z",
+        "subject": "v4: native-only source-photo A/B blind anatomy packets and fail-closed agreement audit"
+      },
+      {
+        "sha": "39c7eaab62528173e64e8c7ba4b8498b63c25d23",
+        "date": "2026-10-20T11:29:36Z",
+        "subject": "Unify workflow around fixed conditional environmental responses"
+      },
+      {
+        "sha": "d775b3218d7fbc09e743fb65c17320f1e3170fc9",
+        "date": "2026-10-20T11:29:37Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "842332ae30849f8cbe079d202e1b276b101fe63f",
+        "date": "2026-10-20T11:29:49Z",
+        "subject": "test(v4): native observation join, independent rater packets, masking agreement and missing-value gates"
+      },
+      {
+        "sha": "67af2758566e55017634e92870a8930fbfc1ba10",
+        "date": "2026-10-20T11:30:18Z",
+        "subject": "ci(v4): exercise blinded native anatomical packet and paired-annotation validation gates"
+      },
+      {
+        "sha": "90333dbce2e35b7346273b5b9229e377bc0ac3ec",
+        "date": "2026-10-20T11:30:53Z",
+        "subject": "v4: keep A/B token and review order deterministic with executed local native packets"
+      },
+      {
+        "sha": "2a119c2687ce18d8148d401c77683aebc56f2510",
+        "date": "2026-10-20T11:31:40Z",
+        "subject": "v4: record 46 original native photos across 26 taxa for blinded 2-rater anatomy verification"
+      },
+      {
+        "sha": "a626b205085358a3e14ec1e89d2085e96f92fe0a",
+        "date": "2026-10-20T11:33:30Z",
+        "subject": "Select all six-group environment candidates with usdm vifstep before inference"
+      },
+      {
+        "sha": "50b4b5463943c8a0cbbe253444fe40c512fe0b56",
+        "date": "2026-10-20T11:33:31Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "cf94b52d9a62884209124f3706929455e75cabe2",
+        "date": "2026-10-20T11:33:53Z",
+        "subject": "docs(v4): report executed 46 native original-photo blinded A/B review preparation without claiming anatomical validation"
+      },
+      {
+        "sha": "94e037c2a149aa22f1c13fbdad8def50db394147",
+        "date": "2026-10-20T11:35:27Z",
+        "subject": "Consume vifstep selections unchanged in response models"
+      },
+      {
+        "sha": "b8e18fdb39c73326267649fd29dc4000912c5c9d",
+        "date": "2026-10-20T11:35:28Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "c6f8846b42bd47d782672285db3e285e4de3a205",
+        "date": "2026-10-20T11:37:36Z",
+        "subject": "Document one selection-first v4 environmental response workflow"
+      },
+      {
+        "sha": "f6935d8187ed1c988a14ca2c4cb663d1bf4d0632",
+        "date": "2026-10-20T11:41:08Z",
+        "subject": "Preserve verified selection-first v4 results and interpretation"
+      },
+      {
+        "sha": "6f18bfc5f4bd734a526ea0e439743f1f7f615c48",
+        "date": "2026-10-20T11:44:31Z",
+        "subject": "Separate bract SI from main colour and orientation reports without refitting"
+      },
+      {
+        "sha": "1d257966c55b7f7c364267e448dc2ccdac47884b",
+        "date": "2026-10-20T11:46:44Z",
+        "subject": "Plot saved whole-colour component responses without reconstructing false swatches"
+      },
+      {
+        "sha": "18c0a035d71be7d2e74d6cff872b232cd4c8e3a5",
+        "date": "2026-10-20T11:48:17Z",
+        "subject": "Separate colour figure legend from panel titles"
+      },
+      {
+        "sha": "130c66442421426d373662feafaa83894b60fb79",
+        "date": "2026-10-20T11:50:39Z",
+        "subject": "Consolidate PR142 onto frozen v3 reproducibility; park v4 exploration and upstream workflows"
+      },
+      {
+        "sha": "4c3bb2047b24a68d5e61473e911264d21c18b247",
+        "date": "2026-10-20T12:02:54Z",
+        "subject": "Document native-first source gate and 27-endpoint measurement gaps without restarting upstream"
+      },
+      {
+        "sha": "326d30e9d8c6ff82085a5c42e8ca8cc446e2f224",
+        "date": "2026-10-20T12:03:30Z",
+        "subject": "Link native-first 27-trait coverage gate without reopening upstream workflows"
+      },
+      {
+        "sha": "95e749a6b0b88d2dbece426c3696a81fba2e2f78",
+        "date": "2026-10-20T12:07:31Z",
+        "subject": "Preserve actual native-first 27-endpoint eligible/finite counts from verified Actions receipt"
+      },
+      {
+        "sha": "70ff302b07bb8c1e3cad1513bde059ae47cda168",
+        "date": "2026-10-20T12:08:12Z",
+        "subject": "Integrate verified all-27 native-only measurement receipt with explicit eligible versus finite distinction"
+      },
+      {
+        "sha": "4918024a1e3affa45bcdd9ec7ab7ce9b912b5953",
+        "date": "2026-10-20T12:21:24Z",
+        "subject": "Audit native-only 27-endpoint taxon coverage and existing joint ecological evidence"
+      },
+      {
+        "sha": "a6d965bdc00e6d7cd9fdadb26326c2342ad1b15d",
+        "date": "2026-10-20T12:33:41Z",
+        "subject": "Connect archived capitulum morphospace, EAzami disparity/history and aza3 functional validation without new V4 models"
+      },
+      {
+        "sha": "b92cccc6beee1c60d0cda8fc166b885595584d91",
+        "date": "2026-10-20T12:48:37Z",
+        "subject": "Add native-only matched phenotype-space feasibility audit without new workflows"
+      },
+      {
+        "sha": "1c819bec6f581642d2a20c6a7ba15f868eee412c",
+        "date": "2026-10-20T12:50:18Z",
+        "subject": "Fix synthetic invalid-eligibility test fixture dtype for strict pandas"
+      },
+      {
+        "sha": "6b3bb8cc58e97ff8c97d036986b8eff2a1f67d7b",
+        "date": "2026-10-20T13:00:56Z",
+        "subject": "Expose matched native-photo within/among trait covariance ahead of hypervolume feasibility"
+      },
+      {
+        "sha": "145208104fb4639bfb9a413c5875d36e308cc79a",
+        "date": "2026-10-20T13:03:24Z",
+        "subject": "Retain frozen trait-pair covariance examples alongside native-first scale gate"
+      }
+    ],
+    "pr143": [
+      {
+        "sha": "ec837ad93d66db7a91dbc910949c79c53ae55166",
+        "date": "2026-10-20T04:04:57Z",
+        "subject": "v4: add executable function-focused trait and environment pilot"
+      },
+      {
+        "sha": "6809bcd65687949f5b570f594fb7d62604b4fbdd",
+        "date": "2026-10-20T04:07:38Z",
+        "subject": "v4: document functional trait contract and exploratory evidence boundaries"
+      },
+      {
+        "sha": "05dc120b26b0ddefcdd4d2aa0344411bca8828b6",
+        "date": "2026-10-20T04:08:17Z",
+        "subject": "test v4 Shapley attribution, RV and species-leverage invariants"
+      },
+      {
+        "sha": "a1fcd05f08cba52f59ae6a7d5f830c063a56ee50",
+        "date": "2026-10-20T04:09:38Z",
+        "subject": "ci: replay v4 models from frozen artifacts and validate summary invariants"
+      },
+      {
+        "sha": "fa755c6e626335eafe23bd09889b8924fce618e6",
+        "date": "2026-10-20T04:13:55Z",
+        "subject": "v4: compare taxon-balanced multivariate within associations to among-taxon blocks"
+      },
+      {
+        "sha": "e297b256c6c12620dbc635cce06c1d9f9d998262",
+        "date": "2026-10-20T04:14:21Z",
+        "subject": "docs(v4): record equal-taxon-weighted within vs among multivariate environment contrast"
+      },
+      {
+        "sha": "14a0ca2641ee97e20c970b664c90e64eb3510dfa",
+        "date": "2026-10-20T04:16:01Z",
+        "subject": "v4: add taxon-median leave-dominant-species-out validation of frozen chroma-radiation anchor"
+      },
+      {
+        "sha": "6cafc612ee91af4f009e69d5e3e98c46e6631349",
+        "date": "2026-10-20T04:16:15Z",
+        "subject": "docs(v4): record real leave-dominant-taxon-out species-median anchor sensitivity"
+      },
+      {
+        "sha": "d9827e2b667717215c25ede8122e9eb683ed4fcc",
+        "date": "2026-10-20T04:16:28Z",
+        "subject": "ci(v4): assert species-median headline reproduction and within-betwen blocks"
+      },
+      {
+        "sha": "75c29fbc7af4c3cb76156394f3cbce5bdaee31ab",
+        "date": "2026-10-20T04:52:50Z",
+        "subject": "v4: restart from pre-detector metadata and original photographs with anatomical measurement contracts"
+      },
+      {
+        "sha": "09add0969d1a03fedb6eb6ca8d8e255e52a8232b",
+        "date": "2026-10-20T05:05:43Z",
+        "subject": "v4: define native-range-first eligibility independently of phenotype"
+      },
+      {
+        "sha": "5a951796021cfde3cc1feda5a1d9bd78e1bbcc39",
+        "date": "2026-10-20T05:06:40Z",
+        "subject": "v4: freeze all 288 source taxa before native-range filtering"
+      },
+      {
+        "sha": "209da3f2235a45a19d8097078d5aafdcd16a3d7b",
+        "date": "2026-10-20T05:07:16Z",
+        "subject": "v4: acquire complete WCVP source evidence for the upstream taxon roster"
+      },
+      {
+        "sha": "02e89e47716539f3a6f956eac26b339940718f63",
+        "date": "2026-10-20T05:07:42Z",
+        "subject": "test: enforce native-first scope and never rescue unknown range records"
+      },
+      {
+        "sha": "5c054777f7708af83e8ef3a78ba02633896986df",
+        "date": "2026-10-20T05:08:04Z",
+        "subject": "ci: validate native-first rules and snapshot all upstream WCVP range evidence"
+      },
+      {
+        "sha": "f5e4b5df4dbd0df42fb00457ae07e278f3da47a1",
+        "date": "2026-10-20T05:18:38Z",
+        "subject": "v4: remeasure anatomical original-image pixels and separate monochrome colour failure from geometry"
+      },
+      {
+        "sha": "113b3f5ac675221ead180ba3ae6c0bbb28286dde",
+        "date": "2026-10-20T05:24:38Z",
+        "subject": "v4: freeze occupied climate cache cells for all 244570 native observations"
+      },
+      {
+        "sha": "20b87ce31ac4b5277077af40b9f21d002def1835",
+        "date": "2026-10-20T05:25:20Z",
+        "subject": "v4: cache native climate footprint without resampling source pixels"
+      },
+      {
+        "sha": "62bf5e54e4cbc3e224ed012060ba87b6aee797b4",
+        "date": "2026-10-20T05:25:38Z",
+        "subject": "test v4 native climate exact pixels, source identity and missing-tile handling"
+      },
+      {
+        "sha": "5a4ac8d7d4e6d502e7b80424f527e3368df6aa38",
+        "date": "2026-10-20T05:25:57Z",
+        "subject": "ci: acquire all nine climate layers for full native upstream footprint"
+      },
+      {
+        "sha": "e9d31e1c133c3e270dd83088141a409d88eccbad",
+        "date": "2026-10-20T05:36:46Z",
+        "subject": "v4: include 62 additional species from the full pre-detector source roster"
+      },
+      {
+        "sha": "80491be91e2396aec920929401f51e82199712b1",
+        "date": "2026-10-20T05:37:13Z",
+        "subject": "ci(v4): complete native-source coverage for all 350 upstream species"
+      },
+      {
+        "sha": "0c09d8078aca2d15efee1f8eaf2dcc364ea1fb2a",
+        "date": "2026-10-20T05:38:52Z",
+        "subject": "ci: freeze successful native climate acquisition and prevent repeated raster downloads on analysis commits"
+      },
+      {
+        "sha": "ad98a4169705de931246118aef61c26e02e52846",
+        "date": "2026-10-20T05:39:32Z",
+        "subject": "v4: evaluate native within-between covariance with taxon bootstrap and matched sample size"
+      },
+      {
+        "sha": "b27c159dd7ec929c63a9a040a91f58fc7f73c515",
+        "date": "2026-10-20T05:40:39Z",
+        "subject": "v4: jointly analyse climate and space with leakage-free native geographic holdouts"
+      },
+      {
+        "sha": "e97c15bee7e921237561b004c708e209fe313309",
+        "date": "2026-10-20T05:43:05Z",
+        "subject": "v4: enforce full upstream roster before native filtering and full-coverage numerical replay"
+      },
+      {
+        "sha": "5973705e50415197c90d3e4179d20d0619995674",
+        "date": "2026-10-20T05:43:54Z",
+        "subject": "test native covariance accounting, hue rotation invariance and holdout leakage guards"
+      },
+      {
+        "sha": "e9e2a43bf38ad468431c81379e086a686ee6f8fc",
+        "date": "2026-10-20T05:46:59Z",
+        "subject": "v4: record full native-range climate analysis and revised cross-scale uncertainty"
+      },
+      {
+        "sha": "b82fe1682ad059ae8d3b86c30e95d51360a4b662",
+        "date": "2026-10-20T05:49:06Z",
+        "subject": "v4: reproduce native-only historical pattern checks and dominant-taxon exclusions"
+      },
+      {
+        "sha": "cf5169780a9c74ddda818f8ba20ffbeb083b034e",
+        "date": "2026-10-20T06:04:33Z",
+        "subject": "v4: classify all 665115 upstream observations native-first and run explicitly labelled legacy diagnostics"
+      },
+      {
+        "sha": "1915425cd2876a879e3bf9f8115d444bd379eeba",
+        "date": "2026-10-20T06:22:02Z",
+        "subject": "v4: replay all 665115 original observations through native-first WCVP and CHELSA caches"
+      },
+      {
+        "sha": "24ade7467d304d581b3e966745998e6bf796a5a7",
+        "date": "2026-10-20T06:22:18Z",
+        "subject": "test v4 full upstream species-only authority scope and source pinning"
+      },
+      {
+        "sha": "2b4832d5341d42e31bcfa1ff2e636a1cec2fd969",
+        "date": "2026-10-20T06:23:22Z",
+        "subject": "ci: replay full 665115-observation native roster with nine cached CHELSA rasters"
+      },
+      {
+        "sha": "3e4ea42e0e938ea2e9d1e2f2a8d9ca121392a13c",
+        "date": "2026-10-20T06:30:52Z",
+        "subject": "docs(v4): distinguish original native source/climate completion from archived measurement coverage"
+      },
+      {
+        "sha": "cd76eaba10e8f22420f306edd406cc498369d8f0",
+        "date": "2026-10-20T07:09:56Z",
+        "subject": "v4: test dominant-species and photographer leverage on native-only ecological associations"
+      },
+      {
+        "sha": "7d122df0e906b69c06609371729a83668a4eef6c",
+        "date": "2026-10-20T07:10:40Z",
+        "subject": "test(v4): isolate repeat photographer uploads from equal taxon/region/observer weights"
+      },
+      {
+        "sha": "33923fbad5a003c5ba7aa7dc9080de601be851be",
+        "date": "2026-10-20T07:11:34Z",
+        "subject": "v4: compare observer-balanced trait covariance within and among native taxa"
+      },
+      {
+        "sha": "545a118e2ddb6b054e06fa83f996fce82283b3cf",
+        "date": "2026-10-20T07:11:54Z",
+        "subject": "test(v4): deterministic observer-balanced within/among RV sensitivity"
+      },
+      {
+        "sha": "19c58112ea6826df29936a99e13766a173b689a2",
+        "date": "2026-10-20T07:12:43Z",
+        "subject": "ci(v4): make expired private-source full replay explicit/manual rather than permanently failing each PR"
+      },
+      {
+        "sha": "1d786e4780e4856fb70a2bd9dc27c7cdd7858f86",
+        "date": "2026-10-20T07:14:24Z",
+        "subject": "docs(v4): distinguish observer effort and dominant species from native ecological associations"
+      },
+      {
+        "sha": "19c311a9911463908e2c0ccdf90a9740d5e19d35",
+        "date": "2026-10-20T07:14:57Z",
+        "subject": "v4: decompose pooled floral climate slopes into within/among under observer and taxon weighting"
+      },
+      {
+        "sha": "6d7726352d0878cd42f83725a26fe19683491dd9",
+        "date": "2026-10-20T07:15:31Z",
+        "subject": "test v4 observer weighting, exact covariance identity and missing-ID fail-closed contracts"
+      },
+      {
+        "sha": "5633d0d07a99779330973a1aa8ef70f944b11713",
+        "date": "2026-10-20T07:16:50Z",
+        "subject": "v4: add top 10% prolific observer omission and concentration check"
+      },
+      {
+        "sha": "b3b6203a5a3075ec6bc6ba51b6c0ff37ff7b9848",
+        "date": "2026-10-20T07:16:51Z",
+        "subject": "test: pooled observer-weighted covariances must equal between-plus-within decomposition"
+      },
+      {
+        "sha": "adcee00efd726468c74e0312b8c97141a564e5d3",
+        "date": "2026-10-20T07:17:33Z",
+        "subject": "v4: freeze aggregate observation/taxon/observer leverage receipt without private identifiers"
+      },
+      {
+        "sha": "f9e518a1ce428321eadd335c00e418f7478fe8bd",
+        "date": "2026-10-20T07:18:00Z",
+        "subject": "fix v4 receipt denominator: dominant-species fractions refer to measured-colour cohort"
+      },
+      {
+        "sha": "7425c9621a1d52b65bb59e83c884e5e35902d98f",
+        "date": "2026-10-20T07:18:03Z",
+        "subject": "docs(v4): exact between/within contribution of recording-weighted pooled slopes"
+      },
+      {
+        "sha": "f641e117ca724e3582f13434794b051246919212",
+        "date": "2026-10-20T07:19:17Z",
+        "subject": "docs(v4): report human-observer versus dominant-taxon dilution in native floral ecology"
+      },
+      {
+        "sha": "a95cdd2517e4ff77c7c55add94b17c8267e53623",
+        "date": "2026-10-20T07:20:15Z",
+        "subject": "test v4 public observer-bias receipt privacy and descriptive covariance arithmetic"
+      },
+      {
+        "sha": "8db9ac61ea3f60af501adfcac3716c8f82bbd22c",
+        "date": "2026-10-20T07:20:32Z",
+        "subject": "fix v4 observer receipt: preserve distinct climate-and-space intervals for both phenotypes"
+      },
+      {
+        "sha": "5f44264123bc09bae633696754bc1bf3e8cd4511",
+        "date": "2026-10-20T07:20:45Z",
+        "subject": "test v4 observer full spatial intervals separately, not as merged key"
+      },
+      {
+        "sha": "3694bfd4967ef3022723b799d08173cba8c053aa",
+        "date": "2026-10-20T07:21:48Z",
+        "subject": "fix(v4): fail closed for numerically constant observer-weighted covariates"
+      },
+      {
+        "sha": "7f00dc7f0f7b5d758712d80e20259e1d02c3ac86",
+        "date": "2026-10-20T07:23:15Z",
+        "subject": "fix(v4): align within-taxon confidence intervals and top-source counts with replayed native inputs"
+      },
+      {
+        "sha": "bdd3cfebad662ba0c91c466d51cd6902fec476b6",
+        "date": "2026-10-20T10:09:34Z",
+        "subject": "Reuse published Zenodo inputs in existing numerical replay"
+      },
+      {
+        "sha": "b701db295cc23cc3d3146c9d9d5c42d6a4eaa54b",
+        "date": "2026-10-20T10:13:52Z",
+        "subject": "Reuse Zenodo inputs in existing staging validation"
+      },
+      {
+        "sha": "4e09c78f86a14cc51bf06566f02c050c284de29b",
+        "date": "2026-10-20T10:18:19Z",
+        "subject": "Clarify v4 workflow and restore private source access in existing Action"
+      },
+      {
+        "sha": "8af6a104b07f0b057df40a012e89f051f6c03e4f",
+        "date": "2026-10-20T10:21:39Z",
+        "subject": "Restore encrypted original source for private GitHub Actions replay"
+      },
+      {
+        "sha": "a71697427948d50d20d7f354d9fdf8f2028d8513",
+        "date": "2026-10-20T10:22:05Z",
+        "subject": "v4: retain all 27 raw image endpoints and define function-led trait-module crosswalk"
+      },
+      {
+        "sha": "06754561e980a7e47dc2c120d33d328010287995",
+        "date": "2026-10-20T10:22:47Z",
+        "subject": "ci(v4): lock all 27 trait IDs, historical availability and noninterchangeable biological meanings"
+      },
+      {
+        "sha": "e25bf121b4e802ddeb26b0ac090a95c8cfbce6be",
+        "date": "2026-10-20T10:23:29Z",
+        "subject": "Allow manual source replay to read existing draft release"
+      },
+      {
+        "sha": "acdc23f60e243af2893ee065e5aa9066bdbca426",
+        "date": "2026-10-20T10:23:52Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into explore/v4-functional-modules-20261020"
+      },
+      {
+        "sha": "f1b37018e17dc87428cdc26e239e2efec88916e7",
+        "date": "2026-10-20T10:25:59Z",
+        "subject": "docs(v4): define 27-endpoint preservation and three functional modules across azami, EAzami and aza3"
+      },
+      {
+        "sha": "37c2fc9b3919891ba31c9b30324c2f2bdcdb4313",
+        "date": "2026-10-20T10:29:51Z",
+        "subject": "v4: add whorl-resolved phyllary posture, recurvature and glandular body annotation gates"
+      },
+      {
+        "sha": "bb6808c2d23f776fa458b64c00f28afce38ce97b",
+        "date": "2026-10-20T10:31:40Z",
+        "subject": "Reuse archived observations without complete-case or species averaging"
+      },
+      {
+        "sha": "e6be824ffe7c37a5711c1430d0671d6e85de2bf7",
+        "date": "2026-10-20T10:31:41Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into explore/v4-functional-modules-20261020"
+      },
+      {
+        "sha": "f60d60860daa18a9c5e9b689724985780fe34cfe",
+        "date": "2026-10-20T10:36:21Z",
+        "subject": "Record verified full-native observation inputs and predictor overlap"
+      },
+      {
+        "sha": "162b0144ab68c03cdddd8ef58ba6f5ecff93a3bf",
+        "date": "2026-10-20T10:42:01Z",
+        "subject": "Fit observation-level functional modules with within-between climate terms"
+      },
+      {
+        "sha": "62fba4736dba1b6c16b096d3ae243df573bd7a92",
+        "date": "2026-10-20T10:47:05Z",
+        "subject": "v4: measure full-floret pixel Lab dispersion with all neutral pixels retained"
+      },
+      {
+        "sha": "f795a1867d0d3ec6ff2be3d54ae70002380f884d",
+        "date": "2026-10-20T10:48:12Z",
+        "subject": "v4: add projected head-stalk and whorl-aware phyllary continuous coordinates without functional overclaims"
+      },
+      {
+        "sha": "1a02dcc514f2758dc3dae98efe1803452f331091",
+        "date": "2026-10-20T10:49:03Z",
+        "subject": "v4: connect full-floret colour, projected presentation and annotated phyllary axes in original-byte head replay"
+      },
+      {
+        "sha": "a6fa8d435520d9d03e2b4fc4cef9140953099344",
+        "date": "2026-10-20T10:50:13Z",
+        "subject": "test v4 original-pixel Lab distribution, camera-roll/mirror invariance and anatomically explicit phyllary axes"
+      },
+      {
+        "sha": "6d45541d7a25294e92a2a5b469832638229858a9",
+        "date": "2026-10-20T10:50:37Z",
+        "subject": "Report whole-colour contrasts and GEB claim boundaries"
+      },
+      {
+        "sha": "e53a72b48f34348b9049f0c0598cf45537593952",
+        "date": "2026-10-20T10:50:47Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "6d472838d3aaa04058057f87a4cd052a01f52675",
+        "date": "2026-10-20T10:51:20Z",
+        "subject": "ci(v4): replay new functional coordinates on 64 original photos and require no fabricated phyllary measurement"
+      },
+      {
+        "sha": "c7eb14aab3977a1cec95f109163368754270bf3f",
+        "date": "2026-10-20T10:55:03Z",
+        "subject": "Audit collinearity in exact within-between observation model designs"
+      },
+      {
+        "sha": "75683f8dd796c0f2f4bfa2740e05e8bc01255ab0",
+        "date": "2026-10-20T10:56:24Z",
+        "subject": "v4: mark four candidate visible phyllary axes on one original CC0 image as unvalidated method pilot"
+      },
+      {
+        "sha": "87bec64e799439f8103aa1bbbde9ef1a9dc7382f",
+        "date": "2026-10-20T10:56:53Z",
+        "subject": "ci(v4): independently replay one original-photo phyllary-axis proposal and enforce unvalidated status"
+      },
+      {
+        "sha": "8c8d51c97dc2ad5cd2a545d64a41bbf60b234581",
+        "date": "2026-10-20T10:58:15Z",
+        "subject": "Evaluate thermal-VPD attribution under a hypothesis-led observational design"
+      },
+      {
+        "sha": "2768f7538d387da4b9e4b57f59f5eae483ec7d07",
+        "date": "2026-10-20T10:58:16Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "92d5681e0d9f8c22c80bcc5e0cb0e4aafa506285",
+        "date": "2026-10-20T11:01:40Z",
+        "subject": "v4: visibly overlay candidate phyllary axes and unvalidated label for anatomical review"
+      },
+      {
+        "sha": "808a606fffd58941d657d387e983da868dbeefa8",
+        "date": "2026-10-20T11:03:41Z",
+        "subject": "docs(v4): record verified original-image continuous Lab and phyllary pilot with unvalidated status"
+      },
+      {
+        "sha": "17415e62a858cd1def1144c747b3d9b49201b82e",
+        "date": "2026-10-20T11:04:38Z",
+        "subject": "Trace phyllary measurement attrition before observation-model inference"
+      },
+      {
+        "sha": "2312a21522b753795816e738f43d0431ee588f6d",
+        "date": "2026-10-20T11:04:40Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "fdb0d43ac6b7b803167b75f978c3219e29f76dca",
+        "date": "2026-10-20T11:07:34Z",
+        "subject": "Create clean-runner archive directories before coverage audit"
+      },
+      {
+        "sha": "86485df06243ad183ad92204afa88768791c68b1",
+        "date": "2026-10-20T11:08:51Z",
+        "subject": "Integrate original-photo method replay before coverage and reference inference"
+      },
+      {
+        "sha": "f697debfb432d80d14d1140749a9488b05f193f0",
+        "date": "2026-10-20T11:11:06Z",
+        "subject": "Prioritize complete 27-endpoint reuse without requiring image remeasurement"
+      },
+      {
+        "sha": "7aaa2f3c940a0ffd054786b7b8a4bfa8f8fe5631",
+        "date": "2026-10-20T11:12:28Z",
+        "subject": "Classify missing primary coordinates as unmeasured in reuse inventory"
+      },
+      {
+        "sha": "7de76dbfe16da38ef49c400234729be3c5917c6f",
+        "date": "2026-10-20T11:16:24Z",
+        "subject": "Integrate matched-observation broad-space comparison into reusable trait workflow"
+      },
+      {
+        "sha": "67e302d89084738e408eda336dfdddf2eda62325",
+        "date": "2026-10-20T11:23:29Z",
+        "subject": "Audit seasonal environmental candidates before trait inference"
+      },
+      {
+        "sha": "fc3663b3657ca4c98b15591890583d3432c3188e",
+        "date": "2026-10-20T11:25:59Z",
+        "subject": "Compare six climate dimensions with matched observation references"
+      },
+      {
+        "sha": "22af8cd48f5031ad911ddb697ccc1817f46c3385",
+        "date": "2026-10-20T11:28:52Z",
+        "subject": "v4: native-only source-photo A/B blind anatomy packets and fail-closed agreement audit"
+      },
+      {
+        "sha": "39c7eaab62528173e64e8c7ba4b8498b63c25d23",
+        "date": "2026-10-20T11:29:36Z",
+        "subject": "Unify workflow around fixed conditional environmental responses"
+      },
+      {
+        "sha": "d775b3218d7fbc09e743fb65c17320f1e3170fc9",
+        "date": "2026-10-20T11:29:37Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "842332ae30849f8cbe079d202e1b276b101fe63f",
+        "date": "2026-10-20T11:29:49Z",
+        "subject": "test(v4): native observation join, independent rater packets, masking agreement and missing-value gates"
+      },
+      {
+        "sha": "67af2758566e55017634e92870a8930fbfc1ba10",
+        "date": "2026-10-20T11:30:18Z",
+        "subject": "ci(v4): exercise blinded native anatomical packet and paired-annotation validation gates"
+      },
+      {
+        "sha": "90333dbce2e35b7346273b5b9229e377bc0ac3ec",
+        "date": "2026-10-20T11:30:53Z",
+        "subject": "v4: keep A/B token and review order deterministic with executed local native packets"
+      },
+      {
+        "sha": "2a119c2687ce18d8148d401c77683aebc56f2510",
+        "date": "2026-10-20T11:31:40Z",
+        "subject": "v4: record 46 original native photos across 26 taxa for blinded 2-rater anatomy verification"
+      },
+      {
+        "sha": "a626b205085358a3e14ec1e89d2085e96f92fe0a",
+        "date": "2026-10-20T11:33:30Z",
+        "subject": "Select all six-group environment candidates with usdm vifstep before inference"
+      },
+      {
+        "sha": "50b4b5463943c8a0cbbe253444fe40c512fe0b56",
+        "date": "2026-10-20T11:33:31Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "cf94b52d9a62884209124f3706929455e75cabe2",
+        "date": "2026-10-20T11:33:53Z",
+        "subject": "docs(v4): report executed 46 native original-photo blinded A/B review preparation without claiming anatomical validation"
+      },
+      {
+        "sha": "94e037c2a149aa22f1c13fbdad8def50db394147",
+        "date": "2026-10-20T11:35:27Z",
+        "subject": "Consume vifstep selections unchanged in response models"
+      },
+      {
+        "sha": "b8e18fdb39c73326267649fd29dc4000912c5c9d",
+        "date": "2026-10-20T11:35:28Z",
+        "subject": "Merge remote-tracking branch 'origin/explore/v4-functional-modules-20261020' into HEAD"
+      },
+      {
+        "sha": "c6f8846b42bd47d782672285db3e285e4de3a205",
+        "date": "2026-10-20T11:37:36Z",
+        "subject": "Document one selection-first v4 environmental response workflow"
+      },
+      {
+        "sha": "f6935d8187ed1c988a14ca2c4cb663d1bf4d0632",
+        "date": "2026-10-20T11:41:08Z",
+        "subject": "Preserve verified selection-first v4 results and interpretation"
+      },
+      {
+        "sha": "6f18bfc5f4bd734a526ea0e439743f1f7f615c48",
+        "date": "2026-10-20T11:44:31Z",
+        "subject": "Separate bract SI from main colour and orientation reports without refitting"
+      },
+      {
+        "sha": "1d257966c55b7f7c364267e448dc2ccdac47884b",
+        "date": "2026-10-20T11:46:44Z",
+        "subject": "Plot saved whole-colour component responses without reconstructing false swatches"
+      },
+      {
+        "sha": "18c0a035d71be7d2e74d6cff872b232cd4c8e3a5",
+        "date": "2026-10-20T11:48:17Z",
+        "subject": "Separate colour figure legend from panel titles"
+      },
+      {
+        "sha": "d0a588b8c6905fc47ecb7b81405d8c9c48aace9a",
+        "date": "2026-10-20T11:52:15Z",
+        "subject": "Fit raw environmental values with species random intercepts as primary model"
+      },
+      {
+        "sha": "78b9b6707677126ba11fefa2fb33cb99f68d54bb",
+        "date": "2026-10-20T12:09:22Z",
+        "subject": "Restore within-between observation gradients and preserve common-slope evidence"
+      },
+      {
+        "sha": "2f26f7739eb281fedb74e6146ce866c41331e5d4",
+        "date": "2026-10-20T12:12:22Z",
+        "subject": "Add head-outline main module and supported conditional gradient figures"
+      },
+      {
+        "sha": "58a16d3a351f0958442fd80d3eee724b6f1ae1bd",
+        "date": "2026-10-20T12:14:09Z",
+        "subject": "Document environmental selection rationale and main versus SI scope"
+      },
+      {
+        "sha": "e9a85026695ed7f29153869a282bce0d8632f2a7",
+        "date": "2026-10-20T12:16:24Z",
+        "subject": "Audit environmental ranges and sentinel frequencies before inference"
+      },
+      {
+        "sha": "6fe40c06bec8138be9b77892bfcf4cd4e31fc47c",
+        "date": "2026-10-20T12:18:08Z",
+        "subject": "Trace GSP value anomaly to immutable raster metadata"
+      },
+      {
+        "sha": "c7e50fe800f4c95bff35db86e230e26d8eee28c1",
+        "date": "2026-10-20T12:20:58Z",
+        "subject": "Flag GSP sentinel contamination and hold affected v4 conclusions"
+      },
+      {
+        "sha": "d5d6d801061ac0432770f421f1bd0b4ff76fd095",
+        "date": "2026-10-20T12:22:33Z",
+        "subject": "Audit all nine original raster decoding contracts"
+      },
+      {
+        "sha": "93e8d874bc2c5c09ba5692e2c77bad723194ee5f",
+        "date": "2026-10-20T12:27:01Z",
+        "subject": "Decode audited environmental units and mask invalid GSP before selection"
+      },
+      {
+        "sha": "bd1d2d7443227bf3c5ce0af6e783bf359dd6cc19",
+        "date": "2026-10-20T12:32:22Z",
+        "subject": "Archive corrected estimates and render environmental effects in physical units"
+      },
+      {
+        "sha": "d25c41af307ec8e6fc6157c608574b9d0c4ebaad",
+        "date": "2026-10-20T12:33:06Z",
+        "subject": "Point v4 readers to corrected input and inference evidence"
+      },
+      {
+        "sha": "66cc625575b03adcf316f04f499916e1cf3ddb23",
+        "date": "2026-10-20T12:36:10Z",
+        "subject": "Add fixed abundance and matched-row broad-space checks"
+      },
+      {
+        "sha": "a7b870dc85475e9ad4d955269074f38e2e219c83",
+        "date": "2026-10-20T12:45:29Z",
+        "subject": "Compare rainfall-only and adjusted orientation on fixed observations"
+      }
+    ]
+  }
+}
