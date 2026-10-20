@@ -1,0 +1,49 @@
+# PR #142 — Gate A–E execution decisions (2026-10-21)
+
+**Scope:** Supplemental, source-backed execution decision log for the [canonical Japanese design](NATIVE_CAPITULUM_SPACE_REFINED_DESIGN_20261020.md); not a revised GEB V3 result. Do not modify the frozen eight-stage / 16-reference-output replay. Keep PR #142 Draft. This document does not assert a new successful native-only B/C/D analysis.
+
+## Gate A — native source, matched phenotypes, sampling selection
+
+- Original pre-detector native roster: **313,350 observations / 306 accepted taxon keys**; inherited measurement rows **217,104**. Independently executed existing intersection receipt: **157,779 observations / 242 accepted taxa** with all **nine numerical outputs** eligible on the *same observation*. This is a numerical output intersection, not nine independent biological characters; the hue sine/cosine pair is circular.
+- The three-variable intersection remains **157,779–157,828**, an interval, not a separately observed exact census.
+- **Execution repair in this PR:** `native_gate_a.py` now requires the corrected prepared native input SHA-256 `342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed`, matching `native_space_gate.py`. It explicitly rejects the original undecoded input `8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29`. This resolves a real input-contract mismatch before any future ecological execution. It has *not* decrypted or recomputed the private 313,350-row table here.
+- The manual audit now computes, for the **matched nine-output cohort**, the exact source-versus-matched taxon×coarse-cell support, the number of records in repeated taxon×cell groups, observation-month selection, and—**only with an original private observer join**—observer, taxon×observer and taxon×cell×observer support and top-1% observer contribution. It never exports original IDs, names or coordinates.
+- **Still outstanding:** execute that audit on the authorised SHA-pinned private input and separately verified `obs_id,user_id` roster. No source image quality/camera-roll, anthesis stage or differentiated endpoint failure-reason columns exist in the prepared audit input; these are explicitly **not evaluable**, not zero. The old 5 restored composition/visible-floret endpoints remain on a different **27,066-observation** native cohort (23,881 restored rows per endpoint) until original head source hash, exact join and compositional closure are verified.
+- **Decision:** **PARTIAL**. Do not treat matched photograph count or single-endpoint coarse-cell counts as independent plants/locations, or select an arbitrary all-taxa 20-cell cutoff.
+
+## Gate B — same-observation within/among covariance
+
+- The archived native observer/cell-weighted exploratory analysis was **164,050 observations / 177 taxa**, with presentation × four-output colour RV **0.006793 within** and **0.037122 among**. The matched-n taxon-bootstrap among-minus-within RV was **+0.024622**, 95% interval **[−0.020787, +0.083385]**, including zero. These numbers come from the **archived, distinct** native cohort; they do not describe the **157,779/242** common-nine cohort.
+- `native_space_gate.py` already implements same-frame three-proxy `W + B = T` descriptive covariance, but not full circular-colour/outline module inference or photographer-balanced null-corrected RV. No corrected-input native execution is established in the current PR.
+- **Decision:** **METHOD/PILOT EXISTS; CORE-NINE INFERENCE NOT EXECUTED**. First lock the eligible species×cell×observer support and matched-n/null estimator. Test sign/covariance structure before estimating multivariate volume; never call photo covariance genetic modularity.
+
+## Gate C — density, overlap and shape of phenotypic distributions
+
+- [Historical PR #92](https://github.com/zuizui0223/azami/pull/92) executed 50 observations × 30 repetitions, 90% KDE probability content, TPD overlap, Wasserstein W2 and bandwidth/same-species reference checks in a **different cohort** (54-taxon principal module analysis). This is a working methodology to reuse, not a result for the new 313,350-row source.
+- A Gaussian 95% correlation ellipsoid in three image proxies is **not** a KDE-based density or functional hypervolume. Four colour fractions are compositional (sum to one), and circular hue is not two independent evolutionary traits.
+- **Decision:** **BLOCKED for current native cohort** until Gate A support and Gate B same-frame weights/coordinates permit independently assessed n=20/50 and 0.75/1/1.25 bandwidth checks. Report probability-content volume, TPD overlap, full W2 and centred W2 separately.
+
+## Gate D — environment/space, with the corrected source
+
+- **Critical evidence update:** [PR #143](https://github.com/zuizui0223/azami/pull/143), **closed without merge**, identified **1,239** invalid GSP sentinel encodings and unapplied raster scale/offset. The [verified corrected Actions run 39422378058](https://github.com/zuizui0223/azami/actions/runs/39422378058) preserved **313,350** native rows; **312,001** have all nine corrected environments.
+- Its **different exploratory estimand** fitted endpoint-specific within/between-species multivariate gradients: colour 185,515–185,564 observations, orientation 169,263, outline 175,223. The earlier positive between-species BIO12–orientation result **did not persist**; the corrected joint orientation–BIO12 test has Holm-adjusted P=1 between and within. Colour and outline have some corrected environmental associations, but without full spatial/observer/phylogenetic transfer validation. This is **not** a new Gate D covariance-density test and cannot be folded into frozen V3 estimates.
+- **Decision:** **CORRECTED EXPOSURE CONTRACT VERIFIED; CURRENT GATE D NOT EXECUTED**. Restrict primary predeclared starting axes to BIO12/RSDS, separate within-taxon shifts from species replacement, control source geography and report held-out predictive improvement or its absence.
+
+## Gate E — independent evolutionary and ecological function evidence
+
+- [EAzami PR #122](https://github.com/zuizui0223/EAzami/pull/122) is still **Draft/unmerged**: generative scale-decoupling structures fit some registered targets but remain provisional without independent held-out validation. They do not establish true genetic component independence.
+- [aza3 PR #61](https://github.com/zuizui0223/aza3/pull/61) is **merged**: one published *C. arvense* block experiment shows a pollinator-exclusion minus control fertile-achene fraction difference **−0.523066** over **36/36 complete blocks**. This is a reproductive intervention, **not** a head-angle/colour/phyllary-specific functional effect.
+- [aza3 PR #64](https://github.com/zuizui0223/aza3/pull/64) is **merged**: among **63** North American nuclear-tree tips, bird-coded vs insect-coded syndrome has outer-spreading phyllaries **6/7 vs 10/56**, with a conditional phylogenetic association. Original syndrome coding may partly incorporate floral traits; after removing red-corolla taxa only two bird-coded tips remain and the association is not identified. Do **not** use it as independent proof of bird delivery or evolutionary adaptation.
+- **Decision:** **CROSS-REPO EVIDENCE VERIFIED, EXACT-CONCEPT / INDIVIDUAL-LEVEL CROSSWALK NOT COMPLETE**. WCVP accepted keys, Japanese taxon concepts, geographic sampling, original pollinator/fitness interventions and phylogenetic tips must be linked at their actual evidence unit. No source-photo proxy becomes true gravity angle, pigment chemistry, exudate, spine length, defence or genetic LEGO without independent field measurements.
+
+## Gate dependency & falsifiability
+
+| Gate | Can reuse now | Required before declaring a *new* current-native result |
+| --- | --- | --- |
+| A | 27-endpoint source ledger, exact nine-output aggregate, corrected input contract and instrumented manual audit | Private corrected row-level and observer join; native matched QC/season/regional selection; head-field provenance |
+| B | Archived observer-balanced RV, V3 scale-aware lessons, three-proxy code | A denominators and sampling, signed scale-separated covariances plus matched-n and observer/region robustness on same core-nine input |
+| C | PR92 KDE/TPD/W2 algorithms | Same-frame spatial/observer support, predeclared low-dimensional modules, bandwidth and same-species finite-n nulls |
+| D | Corrected PR143 exposure/estimates and fixed BIO12/RSDS candidates | Same-sample centre/spread/covariance/overlap vs environment, spatial transfer and source-measurability sensitivities |
+| E | EAzami and aza3 independent direct evidence | Authority-backed taxon-concept crosswalk, independently measured anatomy/function and lineage correspondence |
+
+**Operational boundary:** The available [encrypted native input artifact 12257794094](https://github.com/zuizui0223/azami/actions/runs/39408603488) is **40.6 MB of encrypted data**. Its existence is not equivalent to a decrypted, authorised execution environment or an observer join. Therefore the successful public aggregate audit and passing CI must not be described as the full Gate A or native B–E numerical analyses. No new image/raster download, workflow proliferation, automatic parameter mining, GEB claim update or merge was performed.
