@@ -40,7 +40,9 @@ def test_aggregate_claim_ceiling_keeps_spatial_uncertainty():
     assert s["color_radiation_beta"]<0
     assert s["presentation_rain_beta"]<0
     assert s["independent_environmental_causation_supported"] is False
-    for interval in (s["color_radiation_beta"], s["presentation_rain_beta"]):
-        assert math.isfinite(interval)
+    for k in ("color_radiation","presentation_rain"):
+        assert math.isfinite(s[k+"_beta"])
+        lo,hi=s[k+"_ci95"]
+        assert lo<0<hi
     p=r["orientation_color_integration_observer_balanced"]
     assert p["bootstrap_matched_n_interval_95"][0]<0<p["bootstrap_matched_n_interval_95"][1]
