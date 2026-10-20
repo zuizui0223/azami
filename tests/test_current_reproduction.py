@@ -361,7 +361,7 @@ def test_gate_a_exact_intersection_is_different_from_marginals_and_private_keys(
     assert agg['intersections']['__'.join(CORE3[:2])] == 30
     assert agg['modules']['colour']['n_observations_exact'] == 35
     assert agg['observer_audit'] == 'NOT_EVALUABLE_NO_ORIGINAL_OBSERVER_JOIN'
-    assert '100' not in json.dumps(agg) and 'latitude' not in json.dumps(agg)
+    assert not any(k in json.dumps(agg) for k in ('"obs_id"', '"user_id"', '"accepted_key"'))
     shuffled = audit_gate_a(data.sample(frac=1, random_state=9).reset_index(drop=True))
     assert agg == shuffled
     with pytest.raises(ValueError, match="Duplicated|duplicated|observation ID"):
