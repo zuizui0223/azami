@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from analysis.v4.upstream import digest,colour,angles
 from analysis.v4.anatomical_geometry import involucre
+from analysis.v4.functional_coordinates import presentation_geometry,phyllary_geometry
 from analysis.v4.run_upstream_acquisition import decode
 
 def point(p,size):
@@ -38,15 +39,41 @@ def run(source,annotations,out):
         base=point(a.get('head_base'),im.size);top=point(a.get('floral_end'),im.size);stem=point(a.get('peduncle_point'),im.size)
         pairs=[[point(p,im.size) for p in pair] for pair in a.get('anatomical_phyllary_pairs',[])]
         if any(len(pair)!=2 for pair in pairs):raise ValueError('A phyllary annotation needs base and tip')
+        new_phyllaries=a.get('anatomical_phyllaries',[])
+        if pairs and new_phyllaries:
+            raise ValueError('Do not silently duplicate legacy pairs and new phyllary annotations')
+        candidates=[{'base':pair[0],'tip':pair[1],'whorl':'unknown'} for pair in pairs]
+        candidates.extend({'base':point(row.get('base'),im.size),
+                           'tip':point(row.get('tip'),im.size),
+                           'whorl':row.get('whorl','unknown')} for row in new_phyllaries)
+        body_rim=point(a.get('involucre_rim'),im.size)
+        if any(row['base'] is None or row['tip'] is None for row in candidates):
+            raise ValueError('Annotated phyllary must have both base and tip')
+        colour_result=({'status':'source_colour_unassessable','reason':profile}
+                       if profile not in {'ICC_to_sRGB','assumed_sRGB_no_embedded_profile'}
+                       else colour(rgb,floral)) if a.get('flowering_stage')=='anthesis' else {
+                           'status':'anthesis_not_confirmed'}
+        module_colour={'status':colour_result['status'],'lab_joint_median':colour_result.get('lab_joint_median'),
+                       'lab_within_head_dispersion_median':colour_result.get('lab_dispersion_median'),
+                       'low_chroma_fraction':colour_result.get('low_chroma_fraction'),
+                       'camera_colour_not_absolute_reflectance':True}
         result={'photo_id':a['photo_id'],'unit_id':key[1],'obs_id':r['obs_id'],'taxon_name':r.get('current_taxon_name'),
                 'source_sha256':r['sha256'],'annotation_sha256':digest(annotations),'review_status':a.get('review_status','unreviewed'),
                 'flowering_stage':a.get('flowering_stage','unknown'),'colour_profile':profile,
                 'sampling_role':a.get('sampling_role','unknown'),'tissue_scope':a.get('tissue_scope','unspecified'),
                 'source_attribution':r.get('attribution'),'source_photo_license':r.get('license'),'source_url':r.get('url'),
                 'eligible_for_primary_ecology':False,
-                'colour':({'status':'source_colour_unassessable','reason':profile} if profile not in {'ICC_to_sRGB','assumed_sRGB_no_embedded_profile'} else colour(rgb,floral)) if a.get('flowering_stage')=='anthesis' else {'status':'anthesis_not_confirmed'},
+                'colour':colour_result,
                 'presentation':angles(base,top,stem) if base is not None and top is not None else {'status':'missing_landmarks'},
-                'involucre':involucre(body,base,point(a.get('involucre_rim'),im.size),pairs)}
+                'involucre':involucre(body,base,body_rim,pairs),
+                'functional_coordinates':{
+                    'visible_floret_colour':module_colour,
+                    'presentation_2d':presentation_geometry(base,top,stem),
+                    'visible_phyllary_axes_2d':phyllary_geometry(body,base,body_rim,candidates),
+                    'same_annotated_head':True,
+                    'source_image_semantics':'pixel_and_annotated_2d',
+                    'genetic_or_adaptive_function_inferred':False,
+                    'ready_for_primary_ecology':False}}
         results.append(result)
         overlay=im.copy().convert('RGBA');tint=np.zeros((im.height,im.width,4),dtype=np.uint8)
         if body is not None:tint[body]=[0,150,255,75]
