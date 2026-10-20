@@ -22,7 +22,7 @@ import pandas as pd
 PREPARED_SHA256 = "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29"
 # Environmental rasters in this ORIGINAL table had undecoded scale/offset and
 # invalid GSP sentinel values. For any new joint Gate A-D execution, use the
-# separately hash-verified PR143 corrected table; keep the original fingerprint
+# PR #144 verified corrected native table; keep the original fingerprint
 # exclusively as a fail-closed diagnostic for superseded inputs.
 CORRECTED_PREPARED_SHA256 = "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
 SOURCE_RECEIPT_SHA256 = "246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6"
@@ -667,10 +667,10 @@ def main() -> None:
         if source_hash == PREPARED_SHA256:
             raise ValueError(
                 "Uncorrected environment input: original GSP sentinels and "
-                "CHELSA affine decoding are superseded by PR143"
+                "CHELSA affine decoding are superseded by the PR #144 input contract"
             )
         if source_hash != CORRECTED_PREPARED_SHA256:
-            raise ValueError("Unknown native input bytes; expected corrected PR143 table")
+            raise ValueError("Unknown native input bytes; expected corrected PR #144 input")
         native = pd.read_csv(args.native_input, dtype={"obs_id": str}, low_memory=False)
         observers = None
         if args.observer_input:
@@ -689,7 +689,7 @@ def main() -> None:
         if not interval["lower"] <= exact_core3 <= interval["upper"]:
             raise ValueError("Current source core3 falls outside archived aggregate-derived interval")
         output["actual_gate_a"]["source_prepared_table_sha256"] = source_hash
-        output["actual_gate_a"]["environment_source_status"] = "PR143_CORRECTED_SHA256_LOCKED"
+        output["actual_gate_a"]["environment_source_status"] = "PR144_CORRECTED_SHA256_LOCKED"
         if args.recovered_five_csv:
             output["historical_five_linkage"] = audit_recovered_five(
                 native, args.recovered_five_csv, args.recovered_five_report
