@@ -66,3 +66,16 @@ def test_observer_balanced_covariance_bootstrap_is_deterministic():
     b=integration(f,reps=16,seed=219)
     assert a==b and a["n_taxa"]==24
     assert -1<a["matched_taxon_bootstrap_95pct"][0]<1
+
+
+def test_pooled_covariance_equals_exact_within_plus_between_parts():
+    from analysis.v4.observer_effort_covariance import covariance_parts
+    f=fixture()
+    from analysis.v4.observer_effort_covariance import SCHEMES
+    for scheme in SCHEMES:
+        row=covariance_parts(f,scheme,"corolla_lab_chroma_median","chelsa_bio01")
+        assert np.isclose(row["pooled_standardized_coefficient"],
+                          row["between_contribution"]+row["within_contribution"],atol=1e-10)
+        assert row["identity_residual"] < 1e-10
+        if scheme=="observation":
+            assert row["top_two_taxon_weight_mass"] > 2/len(f.taxon.unique())
