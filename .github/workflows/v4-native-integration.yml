@@ -1,0 +1,73 @@
+name: V4 native capitulum integration
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-native-integration-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  input-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical environment
+        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+      - name: Check decoding and cohort invariants
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py
+      - name: Restore authenticated native input
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/native-integration/private work/native-integration/receipt
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/native-integration/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/native-integration/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/native-integration')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Private observation input authentication failed.') from None
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Apply verified environmental decoding
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/native-integration/private/observations.csv.gz \
+            --receipt work/native-integration/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/native-integration/decoded
+      - name: Audit trait overlap and environment structure
+        run: |
+          python -m analysis.v4.native_integration_audit \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --output work/native-integration/output
+          cp work/native-integration/decoded/measurement_receipt.json work/native-integration/output/environment_decoding_receipt.json
+      - name: Save aggregate evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-integration-audit
+          path: work/native-integration/output/
+          if-no-files-found: error
+          retention-days: 90
