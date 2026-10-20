@@ -47,3 +47,44 @@ within-species variation beyond categorical species descriptions. Relate observe
 patterns to functional predictions; do not equate associations with adaptation,
 pigment concentration or physical defence. Journal scope:
 https://onlinelibrary.wiley.com/page/journal/14668238/homepage/aims.htm
+
+## Hypothesis-led interpretation and attribution audit
+
+The scientific framing is hypothesis-led observational evaluation. Existing
+outcomes have already been inspected: neither the 24 tests nor the following
+diagnostics are retroactively preregistered confirmation.
+
+- Rain protection predicts a more downward presentation in wetter environments.
+  Evaluate between- and within-species coefficients separately. Annual rainfall
+  is exposure context, not measured floral wetting; image vertical is not gravity.
+- Visible colour can reflect several functional pathways. Test the whole colour
+  response and describe lightness, chroma and circular hue jointly. Do not impose
+  a universal temperature/pigment sign, or identify anthocyanin from photographs.
+- Protective-envelope function requires validated botanical geometry. Archived
+  contour projection is a limited proxy, not a measurement of antagonist access.
+  Its 1,303 observations are inherited coverage, not a full-source remeasurement.
+- Trait covariation can distinguish phenotypic coupling across scales. A direct
+  comparison is required; significant in one scale and nonsignificant in another
+  is not evidence of a difference. Phenotypic covariance cannot establish
+  genetic LEGO, developmentally independent modules or selection.
+
+Before further spatial/phylogenetic extensions, audit the exact endpoint-specific
+eight-column design. Retain the four-predictor model. Supplement it with joint
+temperature-plus-VPD tests (3 modules x 2 scales, a separate six-test Holm family)
+and same-observation omission diagnostics for temperature and VPD. Omission fits
+show attribution sensitivity, not a criterion for choosing a favourable model.
+Do not call design correlations causal confounding estimates. If independent
+attribution is unstable, report joint environmental association and uncertainty,
+rather than claim temperature or VPD is the unique mechanism.
+
+Source comparison inspected on 2026-10-20:
+
+- [EAzami V10](https://github.com/zuizui0223/EAzami/blob/c9870e91604ed1514344ddc8f765eae5237dbf27/docs/chapter2/MANUSCRIPT_JEB_V10_FUNCTIONAL_ASSEMBLY_ORIGIN_DECOUPLING.md):
+  repeated functional assembly and present ecological association do not identify
+  a historical selective trigger; a post-result orientation regime is labelled.
+- [aza3 higher-order LEGO](https://github.com/zuizui0223/aza3/blob/2dabd7750a80686f002849873ab941b180135131/docs/ANTO_HIGHER_ORDER_LEGO_MEASUREMENT_PLAN_V2.md):
+  same-individual functional/genomic resources and fitness evidence are additional
+  requirements, beyond photographic covariance.
+- [aza3 empirical head comparison](https://github.com/zuizui0223/aza3/blob/2dabd7750a80686f002849873ab941b180135131/docs/CIRSIUM_HEAD_CORE_VS_BRACT_TIP_SPREAD_EMPIRICAL_20261020.md):
+  reproductive dimensions and relative external spread can differ in coupling;
+  the existing comparison is exploratory and does not establish genetic modules.

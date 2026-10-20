@@ -70,6 +70,9 @@ def test_joint_test_unchanged_by_response_units():
     after=fit_module(frame,['y1','y2'],scales)
     for term,test in before['tests'].items():
         assert after['tests'][term]['F']==pytest.approx(test['F'],rel=1e-6)
+    for term,test in before['joint_temperature_vpd'].items():
+        assert test['df1']==4
+        assert after['joint_temperature_vpd'][term]['F']==pytest.approx(test['F'],rel=1e-6)
 
 
 def test_singular_design_is_not_promoted_to_inference():
@@ -94,3 +97,14 @@ def test_actual_design_diagnostics_preserve_endpoint_missingness_and_detect_coll
     assert b['full_eight_terms']['status']=='singular'
     assert b['between_observation_weighted']['status']=='singular'
     assert b['within']['status']=='estimated'
+
+
+def test_omission_sensitivity_does_not_recover_missing_predictor_rows():
+    frame,scales=sample()
+    frame.loc[:15,ENV[2]]=np.nan
+    full=fit_module(frame,['y1','y2'],scales)
+    reduced=fit_module(frame,['y1','y2'],scales,[v for v in ENV if v!=ENV[2]])
+    assert full['components']['y1']['n']==644
+    assert reduced['components']['y1']['n']==644
+    assert reduced['joint_temperature_vpd']=={}
+    assert ENV[2]+'__between' not in reduced['tests']

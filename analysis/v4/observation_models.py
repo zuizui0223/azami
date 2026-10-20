@@ -104,7 +104,10 @@ def fit_response(x, y, groups):
             'objective':float(evaluate(ratio))}
 
 
-def fit_module(frame, outcomes, scales):
+def fit_module(frame, outcomes, scales, predictors=None):
+    predictors=ENV if predictors is None else predictors
+    terms=['intercept']+[v+s for v in predictors for s in ('__between','__within')]
+    # Even reduced sensitivity models retain exactly the four-predictor complete rows.
     finite_environment=np.isfinite(frame[ENV]).all(axis=1)
     labels=np.sort(frame.accepted_key.unique())
     label_index={label:i for i,label in enumerate(labels)}
@@ -114,7 +117,7 @@ def fit_module(frame, outcomes, scales):
         d=frame.loc[eligible]
         x=np.column_stack([np.ones(len(d))]+[
             ((d[v+s]-(scales[v]['mean'] if s=='__between' else 0))/scales[v]['sd']).to_numpy()
-            for v in ENV for s in ('__between','__within')])
+            for v in predictors for s in ('__between','__within')])
         y=d[outcome].to_numpy(float)
         center=float(y.mean()) if len(y) else 0.
         scale=float(y.std()) if len(y) else 0.
@@ -122,7 +125,7 @@ def fit_module(frame, outcomes, scales):
         components[outcome]={k:v for k,v in fit.items() if k not in ('labels','beta','influence')}
         if fit['status']!='estimated':
             return {'status':'not_identifiable','components':components}
-        influence=np.zeros((len(labels),len(TERMS)))
+        influence=np.zeros((len(labels),len(terms)))
         influence[[label_index[a] for a in fit['labels']]]=fit['influence']
         influences.append(influence);fits.append(fit)
         se=np.sqrt(np.sum(fit['influence']**2,axis=0))
@@ -132,7 +135,7 @@ def fit_module(frame, outcomes, scales):
                   'raw_units_per_environment_sd':float(fit['beta'][j]*scale),
                   'raw_ci95':[float((fit['beta'][j]-critical*se[j])*scale),
                               float((fit['beta'][j]+critical*se[j])*scale)]}
-            for j,term in enumerate(TERMS) if j}
+            for j,term in enumerate(terms) if j}
         components[outcome]['response_sd']=scale
         components[outcome]['response_mean']=center
         components[outcome]['reference_prediction']=float(center+fit['beta'][0]*scale)
@@ -141,23 +144,29 @@ def fit_module(frame, outcomes, scales):
     coefficients=np.concatenate([a['beta'] for a in fits])
     tests={}
     denominator=min(a['n_species'] for a in fits)-1
-    for j,term in enumerate(TERMS[1:],1):
-        ix=[i*len(TERMS)+j for i in range(len(outcomes))]
+    def wald(ix):
         b=coefficients[ix];c=covariance[np.ix_(ix,ix)]
         sd=np.sqrt(np.maximum(np.diag(c),0))
         corr=c/np.outer(sd,sd) if np.all(sd>0) else np.zeros_like(c)
-        if np.linalg.matrix_rank(corr)<len(outcomes):
-            tests[term]={'status':'not_identifiable'}
-        else:
-            statistic=float((b/sd)@np.linalg.solve(corr,b/sd)/len(outcomes))
-            tests[term]={'status':'estimated','F':statistic,'df1':len(outcomes),
-                         'df2':denominator,'p':float(f.sf(statistic,len(outcomes),denominator))}
+        if np.linalg.matrix_rank(corr)<len(ix):
+            return {'status':'not_identifiable'}
+        statistic=float((b/sd)@np.linalg.solve(corr,b/sd)/len(ix))
+        return {'status':'estimated','F':statistic,'df1':len(ix),
+                'df2':denominator,'p':float(f.sf(statistic,len(ix),denominator))}
+    for j,term in enumerate(terms[1:],1):
+        tests[term]=wald([i*len(terms)+j for i in range(len(outcomes))])
+    joint_temperature_vpd={}
+    if ENV[0] in predictors and ENV[2] in predictors:
+        for suffix in ('__between','__within'):
+            ix=[i*len(terms)+terms.index(v+suffix)
+                for i in range(len(outcomes)) for v in (ENV[0],ENV[2])]
+            joint_temperature_vpd[suffix]=wald(ix)
     hue={}
     if 'corolla_hue_sin' in components and 'corolla_hue_cos' in components:
         sine,cosine=components['corolla_hue_sin'],components['corolla_hue_cos']
         s0,c0=sine['reference_prediction'],cosine['reference_prediction']
         if np.hypot(s0,c0)>1e-6:
-            for term in TERMS[1:]:
+            for term in terms[1:]:
                 s1=s0+sine['effects'][term]['raw_units_per_environment_sd']
                 c1=c0+cosine['effects'][term]['raw_units_per_environment_sd']
                 delta=np.rad2deg(np.arctan2(s1,c1)-np.arctan2(s0,c0))
@@ -165,6 +174,7 @@ def fit_module(frame, outcomes, scales):
                            'change_degrees':float((delta+180)%360-180),
                            'scope':'descriptive fixed-effect +1 native predictor SD contrast; not an independent test'}
     return {'status':'estimated','outcomes':outcomes,'components':components,'tests':tests,
+            'predictors':predictors,'joint_temperature_vpd':joint_temperature_vpd,
             'conditional_hue_contrasts':hue,
             'inference':'approximate stacked marginal REML species-cluster Wald F',
             'random_effects':'response-specific species intercept; no phylogenetic correction',
@@ -202,6 +212,25 @@ def execute(table, receipt, output):
             fit['excluded_taxa']=[str(frame.loc[frame.accepted_key.eq(taxon),'taxon_name'].mode().iloc[0])
                                   for taxon in ranking[:drop]]
             result['models'][f'{module}/drop{drop}']=fit
+    result['attribution_sensitivity']={}
+    for omitted in (ENV[0],ENV[2]):
+        for module,outcomes in MODULES.items():
+            print(f'Attribution sensitivity {module}, omit {omitted}; fixed rows',flush=True)
+            fit=fit_module(frame,outcomes,scales,[v for v in ENV if v!=omitted])
+            if fit['status']=='estimated':
+                for outcome,c in fit['components'].items():
+                    if c['n']!=result['models'][module+'/drop0']['components'][outcome]['n']:
+                        raise ValueError('Attribution comparison observation set changed')
+            result['attribution_sensitivity'][module+'/omit_'+omitted]=fit
+    block_family=[test for name,model in result['models'].items() if name.endswith('/drop0')
+                  for test in model.get('joint_temperature_vpd',{}).values()]
+    # Missing block tests do not shrink the prespecified six-test family.
+    block_p=[test.get('p',1.) for test in block_family]
+    if len(block_family)==6:
+        for test,adjusted in zip(block_family,multipletests(block_p,method='holm')[1]):
+            if test['status']=='estimated':test['holm_p_six_block_tests']=float(adjusted)
+    result['attribution_scope']='retrospective six joint temperature-VPD block tests; '
+    result['attribution_scope']+='omission models are same-row diagnostics, not preferred causal models'
     family=[test for name,model in result['models'].items() if name.endswith('/drop0')
             for test in model.get('tests',{}).values()]
     if len(family)!=24 or any(test['status']!='estimated' for test in family):
@@ -321,6 +350,21 @@ def write_report(result, output):
     if full['status']=='estimated':
         lines+=['',f"8項全体の標準化条件指数：{full['standardized_condition_index']:.2f}。"
                 '8項全体でのVIFはresults.jsonを参照。']
+    lines+=['','## 温度とVPDの寄与を分けられるか','',
+            '4環境モデルの温度・VPDを共同で検定し、日射・降水を調整した'
+            'この2変数ブロックの関連を評価した。これは独立した温度効果やVPD効果の証明ではない。'
+            '以下は追加6検定内でのHolm補正。主解析24検定の補正とは別である。','',
+            '|形質群|種間 温度＋VPD|種内 温度＋VPD|','|---|---:|---:|']
+    for module,label in labels.items():
+        block=result['models'][module+'/drop0'].get('joint_temperature_vpd',{})
+        cells=[]
+        for suffix in ('__between','__within'):
+            p=block.get(suffix,{}).get('holm_p_six_block_tests')
+            cells.append(f'{p:.4g}' if p is not None else '評価不能')
+        lines.append(f'|{label}|'+ '|'.join(cells)+'|')
+    lines+=['','温度除外・VPD除外モデルは、各座標の解析対象行を固定して再推定した。'
+            '省略すると他方の効果に共通の関連が混ざり得るため、有意性を理由に主モデルを'
+            '置き換えない。係数・区間・共同検定はresults.jsonのattribution_sensitivityに保存した。']
     (Path(output)/'conclusions_ja.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 
