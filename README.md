@@ -34,6 +34,14 @@ The [environment](analysis/v4/ENVIRONMENT_CONTRACT.md),
 limits. PR143 remains closed. Frozen V3 replay and its scientific reference
 outputs are unchanged.
 
+The separate **V4 native phylogenetic sensitivity** Action reuses the frozen
+Zenodo placement trees with the same five-environment observation-level model.
+The [completed placement sensitivity](analysis/v4/results/20261020_native_phylogeny/README.md)
+retains a positive between-species rainfall–orientation coefficient across all
+52 placements on 194 covered taxa; the within-species interval includes zero.
+This is a grafting-scenario sensitivity, not a resolved molecular phylogeny,
+joint spatial–phylogenetic model or evolutionary cross-trait covariance test.
+
 The verified 665,115-observation original-source classification yields a
 313,350-observation native-primary roster **before** any image or trait selection.
 Only 22 of the 27 registered V2 endpoints have historical measurements; five were
