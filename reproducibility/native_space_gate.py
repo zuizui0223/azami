@@ -16,7 +16,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chi2, spearmanr
 
-EXPECTED_SHA256 = "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29"
+RAW_UNCORRECTED_SHA256 = "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29"
+EXPECTED_SHA256 = "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
+SOURCE_CORRECTION = "PR143 / Actions run 39422378058; GSP-invalid sentinel masked"
 EXPECTED_N = 313350
 CORE3 = (
     "orientation_image_vertical_angle",
@@ -35,6 +37,24 @@ CORE9 = (
     "capitulum_width_profile_cv",
 )
 CLIMATE = ("chelsa_bio12", "chelsa_rsds_mean")
+
+
+
+def verify_corrected_native_input(path: Path) -> str:
+    """Accept only the affine-decoded, checksum-locked existing PR143 source."""
+    h = hashlib.sha256()
+    with path.open("rb") as source:
+        for block in iter(lambda: source.read(1 << 20), b""):
+            h.update(block)
+    sha = h.hexdigest()
+    if sha == RAW_UNCORRECTED_SHA256:
+        raise ValueError(
+            "Uncorrected environment input: GSP invalid sentinels and missing "
+            "CHELSA affine decoding. Supply the already-corrected PR143 output."
+        )
+    if sha != EXPECTED_SHA256:
+        raise ValueError("Unknown native input bytes: expected the corrected PR143 SHA256")
+    return sha
 
 
 def _eligible(frame: pd.DataFrame, endpoints: tuple[str, ...]) -> np.ndarray:
@@ -330,14 +350,14 @@ def main() -> None:
     parser.add_argument("--rarefaction-n", type=int, default=20)
     parser.add_argument("--replicates", type=int, default=100)
     args = parser.parse_args()
-    if hashlib.sha256(args.native_input.read_bytes()).hexdigest() != EXPECTED_SHA256:
-        raise SystemExit("Private native input SHA256 differs from the completed and frozen source gate")
+    verify_corrected_native_input(args.native_input)
     frame = pd.read_csv(args.native_input, dtype={"obs_id": str}, low_memory=False)
     report = analyze_native_space(
         frame, expected_n=EXPECTED_N,
         rarefaction_n=args.rarefaction_n, replicates=args.replicates,
     )
     report["source_prepared_table_sha256"] = EXPECTED_SHA256
+    report["source_environment_decoding_status"] = SOURCE_CORRECTION
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     print(json.dumps({

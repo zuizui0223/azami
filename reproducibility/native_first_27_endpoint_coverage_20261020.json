@@ -1,5 +1,5 @@
 {
-  "schema_version": "native_first_27_endpoint_coverage_20261020_v2",
+  "schema_version": "native_first_27_endpoint_coverage_20261020_v3",
   "provenance": {
     "source": "GitHub Actions native-first aggregate receipt; no observation-level private data",
     "run_id": 39408603488,
@@ -21,7 +21,8 @@
     "native_climate_all_nine_complete": 313240,
     "native_climate_four_anchor_complete": 313244,
     "native_with_inherited_measurement_row": 217104,
-    "native_without_inherited_measurement_row": 96246
+    "native_without_inherited_measurement_row": 96246,
+    "native_climate_all_nine_complete_corrected": 312001
   },
   "status_summary": {
     "registered_endpoints": 27,
@@ -38,7 +39,8 @@
     "Five unexecuted endpoints are not biological zeros. Raw-photo/mask remeasurement is not undertaken in this PR.",
     "The native-first coverage ledger itself is not a native-only ecological model result.",
     "Per-endpoint n_eligible_native_taxa is independently joined from the archived native-only model reuse_inventory on the same frozen 313,350-native-observation source; it is NOT the number of local populations.",
-    "A positive measurement eligibility count is not proof of accuracy. Native-only model scientific claims need explicit estimator, correction family and regional-transfer limits."
+    "A positive measurement eligibility count is not proof of accuracy. Native-only model scientific claims need explicit estimator, correction family and regional-transfer limits.",
+    "Do not use raw 313240 nine-environment rows as corrected complete-case coverage. Corrected all-nine N=312001, see environment_correction. Old selected 48 joint tests are superseded by PR143."
   ],
   "endpoints": [
     {
@@ -284,5 +286,29 @@
       "status": "technical_validation_only_not_analysis_eligible",
       "n_eligible_native_taxa": 0
     }
-  ]
+  ],
+  "environment_correction": {
+    "source_pr": 143,
+    "corrected_run_id": 39422378058,
+    "corrected_prepared_table_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "raw_prepared_table_sha256": "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29",
+    "invalid_gsp_uint32_max": 1239,
+    "corrected_eligible_nine_environment": 312001,
+    "corrected_eligible_four_environment": 313244,
+    "raw_nine_numeric_313240_superseded": true,
+    "correction_note": "Legacy denominator 313240 is numeric-only with invalid GSP; corrected nine-exposure complete is 312001. Endpoint finite/eligible counts unchanged; uncorrected joint-environment model claims withdrawn.",
+    "corrected_model": {
+      "family_size": 64,
+      "observations_by_module": {
+        "colour_L_C": 185564,
+        "colour_hue": 185515,
+        "orientation": 169263,
+        "outline": 175223,
+        "bract_SI": 1298
+      },
+      "orientation_holm_supported_joint_tests": 0,
+      "colour_and_outline_exploratory_candidates": true,
+      "spatial_or_phylogenetic_causal_validation": false
+    }
+  }
 }

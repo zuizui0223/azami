@@ -130,7 +130,7 @@ def test_native_first_27_endpoint_ledger_matches_frozen_ontology_and_coverage():
     with (ROOT / 'analysis_outputs/v2_full27_environment_atlas_2026-08-27/v2_full27_endpoint_inventory.csv').open(encoding='utf-8-sig', newline='') as handle:
         v2 = {r['endpoint_id']: r for r in csv.DictReader(handle)}
     items = data['endpoints']
-    assert data['schema_version'] == 'native_first_27_endpoint_coverage_20261020_v2'
+    assert data['schema_version'] == 'native_first_27_endpoint_coverage_20261020_v3'
     assert len(items) == len(v2) == 27
     assert len({r['endpoint_id'] for r in items}) == 27
     assert {r['endpoint_id'] for r in items} == set(v2)
@@ -275,3 +275,32 @@ def test_native_space_scale_specific_covariance_sign_reversal():
     assert cov['among_minus_within_pairwise_correlations'][key] < -1.4
     assert cov['identity_max_abs_residual'] < 1e-10
     assert result['occupancy_status'] == 'descriptive_space_proxy_available'
+
+
+def test_native_space_gate_rejects_superseded_and_unknown_environment_bytes(tmp_path, monkeypatch):
+    from reproducibility import native_space_gate as gate
+    import hashlib
+    source = tmp_path / "native.csv.gz"
+    source.write_bytes(b"raw-uncorrected-test")
+    monkeypatch.setattr(gate, "RAW_UNCORRECTED_SHA256", hashlib.sha256(source.read_bytes()).hexdigest())
+    with pytest.raises(ValueError, match="Uncorrected environment"):
+        gate.verify_corrected_native_input(source)
+    source.write_bytes(b"unrecognized-native-test")
+    with pytest.raises(ValueError, match="Unknown native input bytes"):
+        gate.verify_corrected_native_input(source)
+    corrected = hashlib.sha256(source.read_bytes()).hexdigest()
+    monkeypatch.setattr(gate, "EXPECTED_SHA256", corrected)
+    assert gate.verify_corrected_native_input(source) == corrected
+
+
+def test_native_space_gate_source_identity_is_corrected_20261020():
+    from reproducibility import native_space_gate as gate
+    assert gate.EXPECTED_N == 313350
+    assert gate.RAW_UNCORRECTED_SHA256 == "8ceed49e4ac73b31f9a5c726ca84f4198bfc3c51e9ee43303e29524e915a5c29"
+    assert gate.EXPECTED_SHA256 == "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
+    evidence=json.loads((ROOT/"reproducibility/native_first_27_endpoint_coverage_20261020.json").read_text())
+    d=evidence["denominators"]
+    assert d["native_climate_all_nine_complete"] == 313240  # legacy numeric-only!
+    assert d["native_climate_all_nine_complete_corrected"] == 312001
+    assert evidence["environment_correction"]["corrected_eligible_nine_environment"] == 312001
+    assert evidence["environment_correction"]["invalid_gsp_uint32_max"] == 1239
