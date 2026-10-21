@@ -168,19 +168,19 @@ def append_observation_measures(frame:pd.DataFrame,clear:bytes|None)->pd.DataFra
     if clear is None:
         return data
     fields=["obs_id","orientation_angle_degrees_median",
-            "n_usable_heads_orientation","corolla_lab_chroma_median",
-            "n_usable_heads_colour"]
+            "orientation_angle_degrees_n_usable_heads","corolla_lab_chroma_median",
+            "corolla_lab_chroma_n_usable_heads"]
     measured=pd.read_csv(io.BytesIO(clear),usecols=fields,dtype={"obs_id":str},
                         low_memory=False)
     if not measured.obs_id.is_unique or measured.obs_id.isna().any():
         raise ValueError("Archived measurements duplicate observation identity")
     measured["orientation_eligible"]=(
-        pd.to_numeric(measured["n_usable_heads_orientation"],errors="coerce").gt(0)
+        pd.to_numeric(measured["orientation_angle_degrees_n_usable_heads"],errors="coerce").gt(0)
         &pd.to_numeric(measured["orientation_angle_degrees_median"],
                        errors="coerce").between(0,180)
     )
     measured["colour_eligible"]=(
-        pd.to_numeric(measured["n_usable_heads_colour"],errors="coerce").gt(0)
+        pd.to_numeric(measured["corolla_lab_chroma_n_usable_heads"],errors="coerce").gt(0)
         &np.isfinite(pd.to_numeric(measured["corolla_lab_chroma_median"],
                                    errors="coerce"))
     )
