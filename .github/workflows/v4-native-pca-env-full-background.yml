@@ -12,6 +12,8 @@ on:
       - 'analysis/v4/native_rain_niche_trait_redistribution.py'
       - 'analysis/v4/s2_full_distribution_exploration.py'
       - 'analysis/v4/s2_joint_rain_angle_landscape.py'
+      - 'analysis/v4/s2_conditional_curve_spatial.py'
+      - 'tests/test_v4_s2_conditional_curve_spatial.py'
       - 'tests/test_v4_s2_joint_rain_angle_landscape.py'
       - 'tests/test_v4_s2_full_distribution_exploration.py'
       - 'tests/test_v4_native_rain_niche_trait_redistribution.py'
@@ -57,7 +59,8 @@ jobs:
             tests/test_v4_s2_rainfall_occupancy_trait.py \
             tests/test_v4_native_rain_niche_trait_redistribution.py \
             tests/test_v4_s2_full_distribution_exploration.py \
-            tests/test_v4_s2_joint_rain_angle_landscape.py
+            tests/test_v4_s2_joint_rain_angle_landscape.py \
+            tests/test_v4_s2_conditional_curve_spatial.py
       - name: Recover original sealed 665115 source and WCVP350 authority, never publish originals
         run: |
           set -euo pipefail
@@ -206,9 +209,31 @@ jobs:
                   assert abs(sum(map(sum,panel['original_photo_joint_mass']))-1)<1e-7
               assert species['introduced_continents_supplementary'][
                   'all_introduced_joint_mass_recovered_exactly']
+          # Complete same-rain, same-species image-angle conditional CDF.
+          # Never select a tail or a width from the exploratory heatmap.
+          conditional=path.parent/'S2_full_conditional_rain_angle_ECDF_cell_sensitivity.json'
+          assert conditional.is_file()
+          q=json.loads(conditional.read_text())
+          assert q['status']=='SOURCE_VERIFIED_SAME_RAIN_UNSELECTED_ANGLE_FULL_CDF_CELL_SENSITIVITY'
+          assert q['n_source_photo_angle_eligible']==173737
+          assert q['n_photographer_cell_dated_balanced']==94060
+          assert q['no_chosen_width_quantile_extreme_tail_effect_metric']
+          assert set(q['source_original_five_CHELSA_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert set(q['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(q['source_privacy'].values())
+          for study in q['species'].values():
+              assert study['status'] in {
+                  'EXPLORATORY_SIMULTANEOUS_SAME_RAIN_FULL_HEAD_CDF_CELL_ENVELOPE',
+                  'STOP_INSUFFICIENT_CELL_BOOTSTRAP_SUPPORT'}
+              if study['status'].startswith('EXPLORATORY'):
+                  n=len(study['rainfall_display_bins_originally_supported_both_ranges'])
+                  assert n>=10
+                  assert len(study['observed_conditional_head_angle_CDF_introduced_minus_native'])==n
+                  assert len(study['simultaneous_95pct_spatial_sensitivity_lower'])==n
+                  assert study['simultaneous_interval_diagnostic']['draws_valid_for_all_common_rain_bins']>=360
           files=list(path.parent.iterdir())
-          assert set(files)=={path,response,wet,trait,decomposition,distribution,joint}, files
-          for file in (path,response,wet,trait,decomposition,distribution,joint):
+          assert set(files)=={path,response,wet,trait,decomposition,distribution,joint,conditional}, files
+          for file in (path,response,wet,trait,decomposition,distribution,joint,conditional):
               content=file.read_text()
               for field in ('"obs_id"','"user_id"','"latitude"','"longitude"'):
                   assert field not in content
