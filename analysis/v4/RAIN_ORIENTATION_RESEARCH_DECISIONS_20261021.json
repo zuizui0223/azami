@@ -306,7 +306,19 @@
     "tree_requirement": "validated source taxon-tip mapping, independently supported branch lengths, root, and dating calibration to estimate transition timing",
     "existing_52_trees_sufficient_for_dated_origin_counts": false,
     "existing_EAzami_conclusion": "BIO1/BIO15 causal axis not identified; reciprocal climatic associations are only contextual priors",
-    "scientific_output_if_pass": "posterior independent transition count and direction; rain vs temperature controls"
+    "scientific_output_if_pass": "posterior independent transition count and direction; rain vs temperature controls",
+    "technical_implementation": {
+      "status": "CODE_AND_SYNTHETIC_TESTS_IMPLEMENTED; NO REAL_BLIND_FLORA_SCORES_OR_REVIEWED_NEWICK_INGESTED",
+      "script": "analysis/v4/rain_history.py",
+      "contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
+      "templates": "analysis/v4/rain_history_templates",
+      "test": "tests/test_v4_rain_history.py",
+      "execution_method": "dual_blind_source_scores + exact_taxon_concept_crosswalk + verified_sha_nuclear_species_tree + conditional_two_state_symmetric_Mk_stochastic_maps",
+      "unscored_tips_excluded_from_transition_count": true,
+      "posterior_uncertainty_scope": "fixed_tree_and_MLE_rate_not_calibration_or_topology_integrated",
+      "evolutionary_rain_temperature_model_executed": false,
+      "estimated_origin_events_from_real_trees": false
+    }
   },
   "T3": {
     "status": "not_started_requires_T2_and_cross_tribe_comparable_measurement",
@@ -323,7 +335,20 @@
       "anthesis head stage",
       "trait/photo availability"
     ],
-    "cross_tribe_convergence_inferred": false
+    "cross_tribe_convergence_inferred": false,
+    "technical_implementation": {
+      "status": "CROSS_TRIBE_HOMOLOGY_AND_TWO_TRIBE_GATE_PLUS_CONDITIONAL_WITHIN_TRIBE_Mk_CODE_IMPLEMENTED; NO EMPIRICAL_CROSS_TRIBE_EVENTS_ESTIMATED",
+      "script": "analysis/v4/rain_history.py",
+      "required_tip_fields": [
+        "tribe",
+        "phenotype_reference",
+        "head_stage",
+        "homology_reviewed"
+      ],
+      "conditional_posterior_event_summary_not_rain_convergence": true,
+      "real_asteraceae_species_tree_ingested": false,
+      "evolutionary_rain_temperature_model_executed": false
+    }
   },
   "quality_controls": {
     "photographer_random_effect_fitted": false,
@@ -358,6 +383,8 @@
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
-    "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response"
+    "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response",
+    "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
+    "T2_T3_evidence_status": "TECHNICAL_TESTS_PASS_EMPIRICAL_TRANSITIONS_NOT_RUN"
   }
 }
