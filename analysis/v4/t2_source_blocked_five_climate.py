@@ -78,6 +78,8 @@ def cohort(rows):
     rows=sorted(rows,key=lambda row:row["source_taxon"])
     names=[r["source_taxon"].replace(" ","_") for r in rows]
     y=np.array([float(r["state"]=="nodding") for r in rows],dtype=float)
+    if any("s1_image_orientation_median" not in r for r in rows):
+        raise ValueError("Missing actual same-taxon S1 continuous image presentation")
     image_y=np.array([float(r["s1_image_orientation_median"]) for r in rows],dtype=float)
     if not np.isfinite(image_y).all():
         raise ValueError("Missing actual same-taxon S1 continuous image presentation")
