@@ -26,6 +26,12 @@ on:
       - 'analysis/v4/INTEGRATION_CONTRACT.md'
       - 'tests/test_v4_native_integration.py'
       - 'analysis/v4/native_spatial.py'
+      - 'analysis/v4/native_observers.py'
+      - 'analysis/v4/native_gates_ae.py'
+      - 'analysis/v4/native_gates_bcd.py'
+      - 'analysis/v4/run_native_abcde.py'
+      - 'tests/test_v4_unified_abcde.py'
+      - '.github/workflows/v4-native-integration.yml'
       - 'analysis/v4/SPACE_CONTRACT.md'
       - 'tests/test_v4_native_spatial.py'
 permissions:
@@ -51,7 +57,7 @@ jobs:
       - name: Install numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Check decoding and cohort invariants
-        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py tests/test_v4_native_spatial.py
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py tests/test_v4_native_spatial.py tests/test_v4_unified_abcde.py
       - name: Restore authenticated native input
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -85,6 +91,19 @@ jobs:
             --receipt work/native-integration/receipt/measurement_receipt.json \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/native-integration/decoded
+      - name: Restore original human-observer and image-QC strata privately
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          gh release download private-v3-numerical-20260908 --repo zuizui0223/azami \
+            --pattern original-metadata-665115-dfa98fa162a8029c.aesgcm \
+            --dir work/native-integration/private
+          python -m analysis.v4.native_observers \
+            --sealed work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm \
+            --native work/native-integration/decoded/observations.csv.gz \
+            --out-private work/native-integration/private/native-original-observers.csv.gz
+          rm work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm
       - name: Audit trait overlap and environment structure
         run: |
           python -m analysis.v4.native_integration_audit \
@@ -117,6 +136,18 @@ jobs:
             --table work/native-integration/decoded/observations.csv.gz \
             --models work/native-integration/output/native_trait_models.json \
             --output work/native-integration/output
+      - name: Execute unified source-gated A -> B -> C -> D -> E screen
+        run: |
+          python -m analysis.v4.run_native_abcde \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --models work/native-integration/output/native_trait_models.json \
+            --integration work/native-integration/output/native_integration.json \
+            --spatial work/native-integration/output/native_spatial.json \
+            --mapping analysis/v4/results/20261020_native_phylogeny/taxon_mapping.json \
+            --observers work/native-integration/private/native-original-observers.csv.gz \
+            --output work/native-integration/output \
+            --b-bootstrap 200 --c-replicates 12 --max-taxa 40
       - name: Save aggregate evidence only
         if: always()
         uses: actions/upload-artifact@v4
