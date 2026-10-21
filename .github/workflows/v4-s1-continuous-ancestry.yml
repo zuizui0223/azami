@@ -5,7 +5,9 @@ on:
     paths:
       - '.github/workflows/v4-s1-continuous-ancestry.yml'
       - 'analysis/v4/s1_continuous_phylogenetic_history.py'
+      - 'analysis/v4/s1_continuous_phylogenetic_signal.py'
       - 'tests/test_v4_s1_continuous_phylogenetic_history.py'
+      - 'tests/test_v4_s1_continuous_phylogenetic_signal.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,7 +32,7 @@ jobs:
       - name: Install pinned numerical and decryption dependencies
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Validate continuous non-categorical Brownian inference and five-climate design
-        run: python -m pytest -q tests/test_v4_s1_continuous_phylogenetic_history.py
+        run: python -m pytest -q tests/test_v4_s1_continuous_phylogenetic_history.py tests/test_v4_s1_continuous_phylogenetic_signal.py
       - name: Restore original encrypted S1 observations under source-integrity gate
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -69,6 +71,12 @@ jobs:
           python -m analysis.v4.s1_continuous_phylogenetic_history \
             --table work/s1-continuous/decoded/observations.csv.gz \
             --out work/s1-continuous/output/S1_CONTINUOUS_194_52_TREE_HISTORY.json
+      - name: Test source-verified signal before interpreting continuous Brownian branches as inherited history
+        run: |
+          python -m analysis.v4.s1_continuous_phylogenetic_signal \
+            --source work/s1-continuous/output/S1_CONTINUOUS_194_52_TREE_HISTORY.json \
+            --out work/s1-continuous/output/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_194_191_171_143.json \
+            --bootstrap-reps 399
       - name: Upload public species-level numerical ancestry and source audit only
         if: always()
         uses: actions/upload-artifact@v4
