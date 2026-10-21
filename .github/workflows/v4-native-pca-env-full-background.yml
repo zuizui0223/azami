@@ -8,6 +8,8 @@ on:
       - 'analysis/v4/native_pca_env_fullcoverage.py'
       - 'analysis/v4/native_full_rain_head_response.py'
       - 'analysis/v4/native_wet_edge.py'
+      - 'analysis/v4/s2_rainfall_occupancy_trait.py'
+      - 'tests/test_v4_s2_rainfall_occupancy_trait.py'
       - 'tests/test_v4_native_wet_edge.py'
       - 'tests/test_v4_native_full_rain_head_response.py'
       - 'analysis/v4/native_climate_source_archive.py'
@@ -45,7 +47,8 @@ jobs:
             tests/test_v4_native_pca_env.py \
             tests/test_v4_native_pca_env_fullcoverage.py \
             tests/test_v4_native_full_rain_head_response.py \
-            tests/test_v4_native_wet_edge.py
+            tests/test_v4_native_wet_edge.py \
+            tests/test_v4_s2_rainfall_occupancy_trait.py
       - name: Recover original sealed 665115 source and WCVP350 authority, never publish originals
         run: |
           set -euo pipefail
@@ -115,9 +118,23 @@ jobs:
           for species in w['focal'].values():
               assert len(species['native_original_unselected_climate_reference']['BIO12_q50_q75_q90_q95_q975_mm'])==5
               assert 'angle_blind_source_coverage' in species
+          trait=path.parent/'S2_rain_occupancy_vs_head_angle_bands.json'
+          assert trait.is_file()
+          t=json.loads(trait.read_text())
+          assert t['status']=='SOURCE_VERIFIED_RAIN_OCCUPANCY_AND_ANGLE_BANDS_EXPLORATORY'
+          assert set(t['focal'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert t['total_original_wild_two_species_source']==297622
+          assert t['total_original_photo_eligible']==173737
+          assert set(t['CHELSA_original_TIFF_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert not any(t['privacy'].values())
+          for species in t['focal'].values():
+              assert len(species['native_rain_reference_BIO12_q50_q75_q95_mm'])==3
+              for status in ('native','introduced_all'):
+                  assert len(species['climate_occupancy'][status]['bands'])==4
+                  assert len(species['orientation_by_native_rain_band'][status])==4
           files=list(path.parent.iterdir())
-          assert set(files)=={path,response,wet}, files
-          for file in (path,response,wet):
+          assert set(files)=={path,response,wet,trait}, files
+          for file in (path,response,wet,trait):
               content=file.read_text()
               for field in ('"obs_id"','"user_id"','"latitude"','"longitude"'):
                   assert field not in content
