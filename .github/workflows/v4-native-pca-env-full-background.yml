@@ -10,6 +10,8 @@ on:
       - 'analysis/v4/native_wet_edge.py'
       - 'analysis/v4/s2_rainfall_occupancy_trait.py'
       - 'analysis/v4/native_rain_niche_trait_redistribution.py'
+      - 'analysis/v4/s2_full_distribution_exploration.py'
+      - 'tests/test_v4_s2_full_distribution_exploration.py'
       - 'tests/test_v4_native_rain_niche_trait_redistribution.py'
       - 'tests/test_v4_s2_rainfall_occupancy_trait.py'
       - 'tests/test_v4_native_wet_edge.py'
@@ -51,7 +53,8 @@ jobs:
             tests/test_v4_native_full_rain_head_response.py \
             tests/test_v4_native_wet_edge.py \
             tests/test_v4_s2_rainfall_occupancy_trait.py \
-            tests/test_v4_native_rain_niche_trait_redistribution.py
+            tests/test_v4_native_rain_niche_trait_redistribution.py \
+            tests/test_v4_s2_full_distribution_exploration.py
       - name: Recover original sealed 665115 source and WCVP350 authority, never publish originals
         run: |
           set -euo pipefail
@@ -148,9 +151,30 @@ jobs:
               assert len(case['native_rain_source_cutoffs_q25_q50_q75_q90_q95_mm'])==5
               assert 'all_introduced' in case['introduced']
               assert len(case['native_source_rain']['source_occurrence_probabilities'])==6
+          # Visual curves are the primary exploratory inspection. Knots are
+          # not selected quantile tests, rain thresholds or claimed changes.
+          distribution=path.parent/'S2_unselected_full_rain_and_head_angle_distributions.json'
+          assert distribution.is_file()
+          curves=json.loads(distribution.read_text())
+          assert curves['status']=='ORIGINAL_NATIVE_ALL_INTRODUCED_FULL_EMPIRICAL_CURVES'
+          assert curves['no_selected_outcome_threshold_or_effect_score']
+          assert set(curves['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(curves['privacy'].values())
+          for species in curves['species'].values():
+              assert set(species)=={
+                  'rainfall_environment_full_distribution',
+                  'image_angle_full_distribution'
+              }
+              for trace in species.values():
+                  xs=trace['display_only_unselected_common_knots']
+                  assert len(xs)>50
+                  assert len(xs)==len(trace['native_empirical_cdf'])
+                  assert len(xs)==len(trace['all_introduced_empirical_cdf'])
+                  assert trace['native_empirical_cdf'][-1]==1.0
+                  assert trace['all_introduced_empirical_cdf'][-1]==1.0
           files=list(path.parent.iterdir())
-          assert set(files)=={path,response,wet,trait,decomposition}, files
-          for file in (path,response,wet,trait,decomposition):
+          assert set(files)=={path,response,wet,trait,decomposition,distribution}, files
+          for file in (path,response,wet,trait,decomposition,distribution):
               content=file.read_text()
               for field in ('"obs_id"','"user_id"','"latitude"','"longitude"'):
                   assert field not in content
