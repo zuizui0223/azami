@@ -180,7 +180,8 @@ def gate_a(
     return report, retained
 
 
-def gate_e(mapping: list[dict], *, currently_selected_keys: set[str] | None = None) -> dict:
+def gate_e(mapping: list[dict], *, currently_selected_keys: set[str] | None = None,
+           native_frame: pd.DataFrame | None = None) -> dict:
     def normalize(s): return " ".join(s.replace("_", " ").split())
     focal = []
     for name in EA_FOCAL:
@@ -197,7 +198,36 @@ def gate_e(mapping: list[dict], *, currently_selected_keys: set[str] | None = No
             else:
                 status = "single_source_name_exact"
             phylo = str(row["status"])
+        source_image_support = None
+        if native_frame is not None:
+            if "taxon_name" not in native_frame or "accepted_key" not in native_frame:
+                raise ValueError("Cannot reconcile source photos without original name and authority key")
+            source_names = native_frame["taxon_name"].astype(str).str.replace(
+                "_", " ", regex=False).str.strip()
+            original = native_frame.loc[source_names.eq(name)].copy()
+            colour = original.loc[
+                original["corolla_lab_chroma__eligible"].eq(True)
+                & np.isfinite(pd.to_numeric(original["corolla_lab_chroma"],errors="coerce"))
+            ] if len(original) else original
+            head = original.loc[original["orientation_image_vertical_angle__eligible"].eq(True)
+                & np.isfinite(pd.to_numeric(original["orientation_image_vertical_angle"],errors="coerce"))
+            ] if len(original) else original
+            source_image_support = {
+                "original_source_identification_observations":len(original),
+                "eligible_colour_observations":len(colour),
+                "eligible_orientation_observations":len(head),
+                "number_of_distinct_WCVP_accepted_keys":int(
+                    original.accepted_key.nunique()) if len(original) else 0,
+                "median_uncalibrated_JPEG_chroma":(
+                    float(colour.corolla_lab_chroma.median()) if len(colour)>=10 else None
+                ),
+                "median_uncalibrated_JPEG_lightness":(
+                    float(colour.corolla_lab_lightness.median()) if len(colour)>=10 else None
+                ),
+                "evidence_boundary":"Source photo labels and uncalibrated head colour; not independent taxonomic acceptance, anthocyanin or origin mechanism",
+            }
         focal.append({
+            "source_image_support":source_image_support,
             "published_concept": name, "status": status,
             "native_key_present": source is not None,
             "historical_tree_mapping": phylo,
