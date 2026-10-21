@@ -195,6 +195,268 @@ def _cell_bootstrap_contrast(a:pd.DataFrame,b:pd.DataFrame,
     }
 
 
+
+def _dated_metadata(frame:pd.DataFrame)->pd.DataFrame:
+    """Observation timing, NOT a measured flowering phenophase."""
+    out=frame.copy()
+    date=pd.to_datetime(out.observed_on,errors="coerce",format="mixed")
+    out["_audit_month"]=date.dt.month.fillna(0).astype(int)
+    out["_audit_grade"]=out.quality_grade.fillna("unknown").astype(str)
+    out["_audit_key"]=out["_audit_month"].astype(str).str.zfill(2)+":"+out["_audit_grade"]
+    return out
+
+
+def _weighted_subset_fraction(frame:pd.DataFrame,mask:np.ndarray)->float:
+    if frame.empty:
+        return 0.0
+    w=original_cell_weights(frame)
+    return float(w[np.asarray(mask,bool)].sum()/w.sum())
+
+
+def _source_eligibility_technical_profile(frame:pd.DataFrame,
+                                           eligible_obs:set[str])->dict:
+    """Only SOURCE-selected rows: do not call record grade camera image quality."""
+    if frame.empty:
+        return {"status":"NO_ORIGINAL_SOURCE_RECORDS"}
+    d=_dated_metadata(frame)
+    month=d["_audit_month"].to_numpy(int)
+    nphoto=pd.to_numeric(d.source_photo_count,errors="coerce").to_numpy(float)
+    if not np.isfinite(nphoto).all() or np.any(nphoto<1):
+        raise ValueError("Authenticated original linked photograph count invalid")
+    count=d.user_id.value_counts()
+    top_n=max(1,int(np.ceil(.01*len(count))))
+    top_observers=set(count.head(top_n).index)
+    return {
+        "status":"SOURCE_REPRESENTATIVE_OBSERVATION_TECHNICAL_PROFILE",
+        "original_source_observations":int(len(d)),
+        "original_5degree_cells":int(d._cell.nunique()),
+        "original_reporters":int(d.user_id.nunique()),
+        "same_selected_source_observation_has_eligible_archived_angle":
+            _weighted_subset_fraction(d,d.obs_id.isin(eligible_obs).to_numpy()),
+        "dated_observation_fraction":
+            _weighted_subset_fraction(d,month>0),
+        "summer_June_to_August_observation_fraction":
+            _weighted_subset_fraction(d,(month>=6)&(month<=8)),
+        "original_quality_grade_research_fraction_NOT_photo_pose":
+            _weighted_subset_fraction(d,d["_audit_grade"].eq("research").to_numpy()),
+        "original_multiple_linked_photographs_fraction_NOT_same_head":
+            _weighted_subset_fraction(d,nphoto>=2),
+        "top_1pct_original_reporters_fraction_of_source_observations":
+            float(d.user_id.isin(top_observers).sum()/len(d)),
+        "not_a_measured_camera_roll_pitch_or_gravity_angle":True,
+    }
+
+
+def _source_stratum_probs(frame:pd.DataFrame)->dict:
+    d=_dated_metadata(frame)
+    d=d.loc[d["_audit_month"].between(1,12)].copy()
+    if d.empty:
+        return {}
+    w=original_cell_weights(d)
+    labels=d["_audit_key"].to_numpy(str)
+    result={}
+    for k in np.unique(labels):
+        result[str(k)]=float(w[labels==k].sum()/w.sum())
+    return result
+
+
+def _eligible_photo_strata(frame:pd.DataFrame)->dict:
+    d=_dated_metadata(frame)
+    d=d.loc[d["_audit_month"].between(1,12)].copy()
+    result={}
+    for name,g in d.groupby("_audit_key",sort=True):
+        if (len(g)>=20 and g._cell.nunique()>=5 and
+            g.user_id.nunique()>=10):
+            result[str(name)]=g
+    return result
+
+
+def _normalised_stratum_composition(a:pd.DataFrame,b:pd.DataFrame,
+                                     target:dict)->tuple[pd.DataFrame,pd.DataFrame]:
+    def reweight(data):
+        arr=[]
+        for key,prob in target.items():
+            sub=data.loc[data["_audit_key"].eq(key)].copy()
+            w=original_cell_weights(sub)
+            sub["_audit_weight"]=w/w.sum()*prob
+            arr.append(sub)
+        return pd.concat(arr,ignore_index=True)
+    return reweight(a),reweight(b)
+
+
+def _technical_standardised_angles(source_n:pd.DataFrame,source_i:pd.DataFrame,
+                                   measured_n:pd.DataFrame,measured_i:pd.DataFrame,
+                                   *,seed:int)->dict:
+    """Same rainfall band; compare angle after shared month×record-grade composition.
+
+    Common target is computed from original non-angle-selected occurrences.
+    This does NOT adjust photographic camera orientation, biological flowering
+    stage, spatial/country history, temperature or actual genetic provenance.
+    """
+    pn=_source_stratum_probs(source_n)
+    pi=_source_stratum_probs(source_i)
+    a=_eligible_photo_strata(measured_n)
+    b=_eligible_photo_strata(measured_i)
+    overlap={k:min(pn.get(k,0.),pi.get(k,0.)) for k in set(pn)&set(pi)}
+    eligible={k:v for k,v in overlap.items()
+              if k in a and k in b and v>0}
+    total=float(sum(eligible.values()))
+    meta={"common_source_month_grade_overlap_fraction":float(sum(overlap.values())),
+          "admitted_common_source_month_grade_fraction":total,
+          "supported_month_grade_strata":int(len(eligible)),
+          "record_quality_grade_is_not_photo_pose":True,
+          "month_is_observation_time_not_verified_anthesis":True}
+    if total<.40 or not eligible:
+        return dict(meta,status="NOT_IDENTIFIABLE_MONTH_GRADE_OVERLAP")
+    target={k:eligible[k]/total for k in sorted(eligible)}
+    src_a=_dated_metadata(measured_n)
+    src_b=_dated_metadata(measured_i)
+    x,y=_normalised_stratum_composition(src_a,src_b,target)
+    if (min(len(x),len(y))<30 or min(x._cell.nunique(),y._cell.nunique())<15
+        or min(x.user_id.nunique(),y.user_id.nunique())<10):
+        return dict(meta,status="NOT_IDENTIFIABLE_MONTH_GRADE_SPATIAL_SUPPORT")
+    def summary(frame,weights):
+        angle=frame[ANGLE].to_numpy(float)
+        if not np.isfinite(angle).all() or np.any((angle<0)|(angle>180)):
+            raise ValueError("Archived photo-angle response invalid during QC")
+        ww=np.asarray(weights,float)
+        if ww.sum()<=0:
+            raise ValueError("Technical standardisation lost observation weights")
+        ww/=ww.sum()
+        return (weighted_quantiles(angle,ww,(.1,.5,.9)),
+                float(ww[angle>=90].sum()))
+    wx=x["_audit_weight"].to_numpy(float)
+    wy=y["_audit_weight"].to_numpy(float)
+    qx,fx=summary(x,wx.copy())
+    qy,fy=summary(y,wy.copy())
+    qdiff=[float(i-j) for i,j in zip(qy,qx)]
+    out=dict(meta,status="EXPLORATORY_COMMON_MONTH_GRADE_STANDARDISATION",
+             source_common_target_fixed_without_photo_angle=True,
+             standardised_native_n=int(len(x)),
+             standardised_introduced_n=int(len(y)),
+             standardised_native_cells=int(x._cell.nunique()),
+             standardised_introduced_cells=int(y._cell.nunique()),
+             standardised_native_effective_n=float(wx.sum()**2/np.square(wx).sum()),
+             standardised_introduced_effective_n=float(wy.sum()**2/np.square(wy).sum()),
+             standardised_native_Q10_Q50_Q90=qx,
+             standardised_introduced_Q10_Q50_Q90=qy,
+             introduced_minus_native_Q10_Q50_Q90=qdiff,
+             introduced_minus_native_fraction_ge90=float(fy-fx))
+    if min(out["standardised_native_effective_n"],
+           out["standardised_introduced_effective_n"])<30:
+        out["status"]="NOT_IDENTIFIABLE_LOW_EFFECTIVE_SAMPLE"
+        return out
+    # An explicit spatial sensitivity, with the prespecified common
+    # source-month/record-grade mix kept constant in each resample.
+    rng=np.random.default_rng(seed)
+    prep=[]
+    for frame in (x,y):
+        cells,inverse=np.unique(frame._cell.to_numpy(),return_inverse=True)
+        strata=frame["_audit_key"].astype(str).to_numpy()
+        strata_ix={k:np.flatnonzero(strata==k) for k in target}
+        prep.append((frame,cells,inverse,strata_ix,
+                     frame["_audit_weight"].to_numpy(float)))
+    estimates=[]
+    for _ in range(199):
+        outcome=[]
+        for frame,cells,inv,by_stratum,base in prep:
+            counts=np.bincount(rng.integers(len(cells),size=len(cells)),
+                               minlength=len(cells))
+            w=base*counts[inv]
+            good=True
+            for key,idx in by_stratum.items():
+                z=float(w[idx].sum())
+                if z<=0:
+                    good=False
+                    break
+                w[idx]*=target[key]/z
+            if not good:
+                outcome=[]
+                break
+            outcome.append(summary(frame,w))
+        if len(outcome)==2:
+            qnative,pnative=outcome[0]
+            qintro,pintro=outcome[1]
+            estimates.append([*(float(a-b) for a,b in zip(qintro,qnative)),
+                              float(pintro-pnative)])
+    if len(estimates)<180:
+        out["spatial_interval_status"]="INSUFFICIENT_VALID_MONTH_GRADE_SPATIAL_RESAMPLES"
+        out["spatial_resamples_valid"]=len(estimates)
+        return out
+    values=np.asarray(estimates,float)
+    out["spatial_interval_status"]="EXPLORATORY_FIXED_SEASON_GRADE_CELL_BOOTSTRAP"
+    out["spatial_resamples_valid"]=len(estimates)
+    out["introduced_minus_native_Q10_Q50_Q90_95pct_sensitivity"]=[
+        [float(q) for q in np.quantile(values[:,i],(.025,.975))]
+        for i in range(3)]
+    out["introduced_minus_native_fraction_ge90_95pct_sensitivity"]=[
+        float(q) for q in np.quantile(values[:,3],(.025,.975))]
+    out["camera_pose_or_head_identity_measured"]=False
+    return out
+
+
+def _top_reporter_exclusion(source_n:pd.DataFrame,source_i:pd.DataFrame,
+                            measured_n:pd.DataFrame,measured_i:pd.DataFrame)->dict:
+    """Directional reporter-concentration sensitivity, not independent cameras."""
+    result={}
+    medians=[]
+    for label,source,angles in (("native",source_n,measured_n),
+                                ("introduced",source_i,measured_i)):
+        names=source.user_id.value_counts()
+        k=max(1,int(np.ceil(len(names)*.01)))
+        exclude=set(names.head(k).index)
+        subset=angles.loc[~angles.user_id.isin(exclude)].copy()
+        n=len(subset)
+        result[label]={"observers_excluded":k,
+                       "observations_removed":int(len(angles)-n),
+                       "retained_cells":int(subset._cell.nunique())}
+        if (n<30 or subset._cell.nunique()<15
+            or subset.user_id.nunique()<10):
+            result["status"]="NOT_IDENTIFIABLE_AFTER_ORIGINAL_REPORTER_REMOVAL"
+            return result
+        w=original_cell_weights(subset)
+        medians.append(weighted_quantiles(
+            subset[ANGLE].to_numpy(float),w,(.5,))[0])
+    result["status"]="EXPLORATORY_REMOVE_TOP_1PCT_ORIGINAL_REPORTERS"
+    result["introduced_minus_native_median_image_degrees"]=float(medians[1]-medians[0])
+    result["not_a_camera_pose_or_identity_validation"]=True
+    return result
+
+
+def rainfall_wet_band_technical_audit(
+    source:pd.DataFrame,measured:pd.DataFrame,photo_ids:set[str],
+    edges:tuple[float,float,float],*,seed:int
+)->dict:
+    """Only the already-used q75–q95 band and original photographic metadata."""
+    required={"quality_grade","source_photo_count"}
+    if not required<=set(source) or not required<=set(measured):
+        return {"status":"MISSING_ORIGINAL_GRADE_OR_PHOTO_LINK_METADATA",
+                "no_camera_pose_inferred":True}
+    low,high=edges[1],edges[2]
+    s=source.loc[source[RAIN].between(low,high)].copy()
+    m=measured.loc[measured[RAIN].between(low,high)].copy()
+    sn=s.loc[s.range_state.eq("native")]
+    si=s.loc[s.range_state.eq("introduced")]
+    mn=m.loc[m.range_state.eq("native")]
+    mi=m.loc[m.range_state.eq("introduced")]
+    if min(len(sn),len(si),len(mn),len(mi))<30:
+        return {"status":"INSUFFICIENT_COMMON_WET_BAND_SOURCE"}
+    return {
+        "status":"ORIGINAL_SOURCE_WET_BAND_TECHNICAL_BIAS_AUDIT",
+        "native_source_metadata":_source_eligibility_technical_profile(sn,photo_ids),
+        "introduced_source_metadata":_source_eligibility_technical_profile(si,photo_ids),
+        "same_wet_band_month_x_record_grade_standardised_angle":
+            _technical_standardised_angles(sn,si,mn,mi,seed=seed),
+        "same_wet_band_excluding_top_1pct_source_observers":
+            _top_reporter_exclusion(sn,si,mn,mi),
+        "verified_camera_roll_pitch_or_actual_gravity":False,
+        "verified_flowering_stage":False,
+        "individual_head_identifiers_linked":False,
+        "original_linked_photo_count_is_not_same_head_repeat":True,
+    }
+
+
+
 def assess(source: pd.DataFrame, photo: pd.DataFrame,
            *,climate_shas:dict|None=None) -> dict:
     _verify(source,photo=False)
@@ -231,6 +493,8 @@ def assess(source: pd.DataFrame, photo: pd.DataFrame,
             "introduced_minus_native_median_and_down_fraction_by_band":{},
             "introduced_by_continent":{},
         }
+        result["wet_band_observation_bias_audit"]=rainfall_wet_band_technical_audit(
+            src,pi,photo_ids,edges,seed=SEED+sum(map(ord,name)))
         for k,band in enumerate(BANDS):
             aa=introduced.loc[_band(introduced[RAIN].to_numpy(float),edges)==band]
             bb=pn.loc[_band(pn[RAIN].to_numpy(float),edges)==band]
