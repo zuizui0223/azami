@@ -414,7 +414,7 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 actual image orientation 170066/244 + 194-tip continuous Brownian ancestry across 52 grafted placement scenarios source-verified; 191 collision-free sensitivity running; categorical 46 literature taxa supplementary; real nodding origin events and climate-dependent transitions NOT established; T3 NOT RUN",
+    "epistemic_status": "S1 measured image-axis angles for 170066 images/244 taxon keys, continuous Brownian history for all 194 PGLS tips and 191 collision-free sensitivity EXECUTED on 52 grafted scenarios; binary 46 external scores supplementary; no independently verified nodding gains or historic rain/temperature transition rates; T3 unrun",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
@@ -422,7 +422,9 @@
     "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
     "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING",
     "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
-    "S1_T2_region_and_nuclear_null_result": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json"
+    "S1_T2_region_and_nuclear_null_result": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json",
+    "S1_T2_primary_continuous_source_verified": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
+    "S1_T2_continuous_scientific_result_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
@@ -531,9 +533,9 @@
     }
   },
   "S1_T2_primary_continuous_head_history": {
-    "status": "S1_AUTHENTICATED_NATIVE_244_MEASURED_TAXON_KEYS_AND_194_CONTINUOUS_TREE_TIPS_SUCCESS",
-    "source_run_id": 39590112876,
-    "real_source_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_52_VERIFIED_20261021.json",
+    "status": "REAL_S1_IMAGE_ANGLE_194_AND_COLLISION_FREE_191_CONTINUOUS_ANCESTRY_52_TREE_PILOT_VERIFIED",
+    "source_run_id": 39591120377,
+    "real_source_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
     "continuous_history_runner": "analysis/v4/s1_continuous_phylogenetic_history.py",
     "native_S1_eligible_observations": 170066,
     "native_S1_taxon_keys_with_measured_image_orientation": 244,
@@ -561,12 +563,49 @@
       "Cirsium_yezoense"
     ],
     "191_taxon_collision_free_sensitivity_code_in_place": true,
-    "191_taxon_collision_free_empirical_run_result_verified": false,
+    "191_taxon_collision_free_empirical_run_result_verified": true,
     "literature_botanical_46_binary_states_role": "external_construct_validation_and_complementary_categorical_historical_sensitivity_not_primary_S1",
     "photographic_axis_is_gravitational_head_orientation": false,
     "true_independent_biological_downward_origins_estimated": false,
     "absolute_origin_dates_estimated": false,
     "rain_driven_causal_transition_rates_estimated": false,
-    "frozen_V3_and_existing_S1_mixed_model_changed": false
+    "frozen_V3_and_existing_S1_mixed_model_changed": false,
+    "previous_194_only_source_run_id": 39590112876,
+    "scientific_summary_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md",
+    "standalone_ci": ".github/workflows/v4-s1-continuous-ancestry.yml",
+    "original_194_with_alias_collision": 3,
+    "collision_free_191_taxon_sensitivity_code_in_place": true,
+    "same191_BIO12_image_deg_per_100mm_scenario_range": [
+      0.29670774840841135,
+      0.7549624280788562
+    ],
+    "same191_BIO15_image_deg_per_10units_scenario_range": [
+      -0.5515565053237328,
+      1.4249350781458259
+    ],
+    "BM_mean_194_all_edge_positive_ge10_expected_range": [
+      43.518257014727126,
+      48.6842861925713
+    ],
+    "BM_mean_191_all_edge_positive_ge10_expected_range": [
+      42.876073028232994,
+      47.9350385995627
+    ],
+    "BM_mean_194_internal_only_positive_ge10_expected_range": [
+      0.303215426516423,
+      4.185200165530188
+    ],
+    "BM_mean_191_internal_only_positive_ge10_expected_range": [
+      0.3225760975367542,
+      4.2475585108847
+    ],
+    "BM_mean_internal_only_ge10_prob095_branch_count_for_all_52": 0,
+    "ge10_increasing_image_angle_branch_expected_counts_are_not_independent_nodding_origin_counts": true,
+    "species_mean_five_covariate_BIO15_effect_sign_consistent": false,
+    "species_mean_five_covariate_BIO12_effect_positive_all_52_both194_and191": true,
+    "collision_excluded_191_BIO12_pointwise_CI_positive_all_52": false,
+    "biological_gravity_recalibration_done": false,
+    "nuclear_194_species_tree_verified": false,
+    "real_independent_evolutionary_nodding_gains_measured": false
   }
 }
