@@ -146,7 +146,7 @@ def continuous_BM(tree,tips,values,*,nugget_fraction=.05,thresholds=SHIFT_DEGREE
     if nugget_fraction<0 or nugget_fraction>1:
         raise ValueError("Unsupported tip-level residual nugget")
     y=np.asarray(values,dtype=float)
-    if len(y)!=len(tips) or len(y)<10 or not np.isfinite(y).all():
+    if len(y)!=len(tips) or len(y)<3 or not np.isfinite(y).all():
         raise ValueError("Invalid complete continuous S1 source trait")
     C,nodes,path,parent=shared_path_matrix(tree,tips)
     residual_nugget=nugget_fraction*float(np.mean(np.diag(C)))
