@@ -39,8 +39,12 @@ def weighted_quantiles(values:np.ndarray,weights:np.ndarray,quantiles=(.05,.95))
     weights=np.asarray(weights,float)
     if (len(values)==0 or len(weights)!=len(values) or
         not np.isfinite(values).all() or not np.isfinite(weights).all() or
-        np.any(weights<=0)):
-        raise ValueError("Native climatic reference must have finite cell weights")
+        np.any(weights<0) or not np.any(weights>0)):
+        raise ValueError("Native climatic reference must have nonnegative cell weights with positive total")
+    # Zero-weight observations are legitimately excluded by source-balancing.
+    # Remove them before interpolation so they cannot change the endpoints.
+    positive=weights>0
+    values=values[positive];weights=weights[positive]
     order=np.argsort(values,kind="mergesort")
     csum=(np.cumsum(weights[order])-.5*weights[order])/weights.sum()
     return [float(np.interp(q,csum,values[order],
