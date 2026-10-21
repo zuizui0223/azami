@@ -43,6 +43,7 @@ from analysis.v4.s2_rainfall_occupancy_trait import save as save_rain_occupancy_
 from analysis.v4.native_rain_niche_trait_redistribution import save as save_rain_niche_trait
 from analysis.v4.s2_full_distribution_exploration import save as save_full_distribution
 from analysis.v4.s2_joint_rain_angle_landscape import save as save_joint_landscape
+from analysis.v4.s2_conditional_curve_spatial import save as save_conditional_spatial
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -418,6 +419,15 @@ def execute(original:Path,authority_archive:Path,source_meta:Path,
             "S2_observed_joint_rain_angle":joint_report["status"],
             "same_original_observation":True,
             "all_introduced_primary":True,
+        },ensure_ascii=False),flush=True)
+        # One biological exposure × response at a time, but compare the WHOLE
+        # image-angle CDF surface across ALL native/introduced rain display
+        # classes; 5-degree cell resampling, no selected angle threshold.
+        full_conditional=save_conditional_spatial(photo,joint_report,output)
+        print(json.dumps({
+            "S2_conditional_entire_curve":full_conditional["status"],
+            "all_introduced_global_primary":True,
+            "single_chosen_trait_effect":False,
         },ensure_ascii=False),flush=True)
         conditional_report=save_rain_niche_trait(wild,land,auth,photo,output)
         print(json.dumps({
