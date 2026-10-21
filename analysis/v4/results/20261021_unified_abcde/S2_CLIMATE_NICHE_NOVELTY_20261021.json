@@ -1,0 +1,107 @@
+{
+  "schema_version": "v4_S2_observed_climate_novelty_20261021_v1",
+  "source": {
+    "repo": "zuizui0223/azami",
+    "action_run": 39545903306,
+    "artifact_id": 12320759155,
+    "artifact_name": "v4-rain-introduced-source-opportunity",
+    "artifact_zip_digest": "sha256:681ba010a7a1e248661a304d7f936f6b566807cb1a97d4a956b9c66cf7ca968e",
+    "source_member": "S2_native_introduced_common_support.json",
+    "source_member_sha256": "8f578b6548e3ce58cbe6b3c23147544353d6aeff46b7337c20120065c01310c4",
+    "frozen_decoded_source_metadata_SHA256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "frozen_WCVP_TDWG_status_SHA256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
+    "all_350_species_screen_in_same_run": true,
+    "no_native_introduced_climate_values_imputed": true
+  },
+  "contract": {
+    "species": [
+      "Cirsium arvense",
+      "Cirsium vulgare"
+    ],
+    "reason_only_two": "Of the 350 original species-rank source names, seven have both explicit wild WCVP native and introduced original observations, and only these two pass the original per-range observer/cell/head-angle measurement-support thresholds",
+    "source_universe": "original 665115 source, wild unique WCVP accepted key and source name, 1981–2010 original CHELSA pixels from existing caches, orientation-eligible archived images, one per original observer×5-degree equal-sin cell",
+    "climatic_variables": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "definition": "Introduced climate observation is outside the native distribution 5th–95th marginal percentile of ANY of the five variables; native reference uses the same 5th–95th rule.",
+    "photo_weighting": "Each distinct photographer×cell source observation one unit (still geographically concentrated)",
+    "cell_weighting": "Each distinct original 5-degree equal-sin cell gives a total weight of one, divided across its retained source observations",
+    "climate_novelty_is_realized_fundamental_niche_shift": false,
+    "statistical_significance_or_phylogenetic_inference_from_these_fractions": false,
+    "original_pixel_cache_missing_introduced_regions": true
+  },
+  "results": {
+    "Cirsium arvense": {
+      "photo_observation_weight": {
+        "native_own_fiveD_box_inside_fraction": 0.6819844535893919,
+        "introduced_inside_native_fiveD_box_fraction": 0.2661083506972271,
+        "introduced_outside_at_least_one_native_marginal_fraction": 0.7338916493027728,
+        "introduced_excess_outside_over_native_internal_reference": 0.4158761028921647
+      },
+      "cell_equal_weight": {
+        "native_own_fiveD_box_inside_fraction": 0.6495453164232564,
+        "introduced_inside_native_fiveD_box_fraction": 0.608402088586746,
+        "introduced_outside_at_least_one_native_marginal_fraction": 0.3915979114132539,
+        "introduced_excess_outside_over_native_internal_reference": 0.04114322783651031,
+        "introduced_minus_native_median_in_native_IQR": {
+          "bio01": 0.011,
+          "bio04": -0.049,
+          "bio12": 0.391,
+          "bio15": 0.028,
+          "rsds_mean": 0.19
+        },
+        "introduced_outside_native_5_to_95_per_axis": {
+          "bio01": 0,
+          "bio04": 0.0467,
+          "bio12": 0.0574,
+          "bio15": 0.2027,
+          "rsds_mean": 0.1262
+        }
+      },
+      "naive_photo_minus_equal_cell_novelty_fraction": 0.34229373788951895
+    },
+    "Cirsium vulgare": {
+      "photo_observation_weight": {
+        "native_own_fiveD_box_inside_fraction": 0.6880462883171242,
+        "introduced_inside_native_fiveD_box_fraction": 0.4017853631680365,
+        "introduced_outside_at_least_one_native_marginal_fraction": 0.5982146368319635,
+        "introduced_excess_outside_over_native_internal_reference": 0.28626092514908774
+      },
+      "cell_equal_weight": {
+        "native_own_fiveD_box_inside_fraction": 0.6277438045591082,
+        "introduced_inside_native_fiveD_box_fraction": 0.517159459668133,
+        "introduced_outside_at_least_one_native_marginal_fraction": 0.48284054033186696,
+        "introduced_excess_outside_over_native_internal_reference": 0.11058434489097513,
+        "introduced_minus_native_median_in_native_IQR": {
+          "bio01": 0,
+          "bio04": 0.164,
+          "bio12": 0.623,
+          "bio15": 0.239,
+          "rsds_mean": 0.428
+        },
+        "introduced_outside_native_5_to_95_per_axis": {
+          "bio01": 0.1007,
+          "bio04": 0.0365,
+          "bio12": 0.1019,
+          "bio15": 0.2549,
+          "rsds_mean": 0.114
+        }
+      },
+      "naive_photo_minus_equal_cell_novelty_fraction": 0.11537409650009656
+    }
+  },
+  "interpretation": {
+    "primary": "Introduced source-photo climate occupancy is partly outside native source-photo climate percentile bounds in both focal species, but the apparent magnitude falls markedly under cell-equal weighting, especially C. arvense.",
+    "benchmark": "Native own central 5D envelope is less than 100% covered even by native data (~65% and ~63% under cell weights), so introduced outside fraction alone must not be treated as strong niche expansion.",
+    "no_causal_adaptation_or_evolution_rate": true,
+    "no_genome_based_ancestry_or_common_garden": true,
+    "insufficient_multispecies_macro_sample": true,
+    "no_proven_full_multivariate_joint_density_overlap": true,
+    "photo_detection_and_geographic_climate_cache_bias_unresolved": true,
+    "next_falsification": "Obtain independently verified climate coverage in introduced-only regions and held-out observer/head angle calibration before testing a generalized trait response to climatic novelty."
+  }
+}
