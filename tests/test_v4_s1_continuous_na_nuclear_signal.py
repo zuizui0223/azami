@@ -46,6 +46,9 @@ def test_same_42_nuclear_plus_52_placements_reuse_original_continuous_angle():
     assert report["matched_52_placement_phenotype_fiveclimate_lambda"]["n_deltaAIC_over_2"]<=52
     assert len(result["per_placement_results"])==52
     assert report["same_NA42_nuclear_bootstrap"]["nuclear_S1_five_climate_adjusted"]["requested_draws"]==20
+    for source in report["same_NA42_nuclear_bootstrap"].values():
+        assert "independently published author nuclear" in source["scope"]
+        assert "NOT 52 V.PhyloMaker2 placements" in source["scope"]
     assert report["external_3_botanical_nodding_states_ignored_as_phenotype_response"] is True
 
 
