@@ -128,7 +128,10 @@ def taxon_paired_difference(private:dict,taxa:list[str],candidate:pd.DataFrame,
     colour=a["centred_flags"][target].astype(float)
     outline=b["centred_flags"][target].astype(float)
     n=len(taxa)
-    nc=int(sum(a["reference"][t] is not None for t in taxa))
+    reference_taxon_indices=np.array(
+        [i for i,t in enumerate(taxa) if a["reference"][t] is not None],dtype=int
+    )
+    nc=int(len(reference_taxon_indices))
     diff=float(np.mean(colour-outline))
     both=int(np.sum((colour==1)&(outline==1)))
     colour_only=int(np.sum((colour==1)&(outline==0)))
@@ -140,7 +143,8 @@ def taxon_paired_difference(private:dict,taxa:list[str],candidate:pd.DataFrame,
     rng=rng_for(SEED,"paired-colour-vs-outline-taxon-cluster-bootstrap")
     draws=[]
     for rep in range(bootstrap):
-        w=np.bincount(rng.integers(n,size=nc),minlength=n)
+        w=np.bincount(rng.choice(reference_taxon_indices,size=nc,replace=True),
+                      minlength=n)
         ew=w[pairs[:,0]]*w[pairs[:,1]]
         den=ew.sum()
         if den>0:
