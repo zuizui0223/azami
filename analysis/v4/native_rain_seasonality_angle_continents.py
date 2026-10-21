@@ -38,12 +38,11 @@ from analysis.v4.native_intro_continent_orientation import (
     MIN_INTERVAL_CELLS, MIN_DESCRIPTIVE_CELLS, MIN_DESCRIPTIVE_PHOTOS,
     MIN_DESCRIPTIVE_OBSERVERS
 )
-from analysis.v4.native_pca_env_fullcoverage import (
-    acquire_verified_source, sample_original_pixels
-)
 from analysis.v4.native_climate_trait_coupling import weighted_quantiles
 
-AXES=("chelsa_bio12","chelsa_bio15")
+PRIMARY_AXIS="chelsa_bio12"  # Annual rain: verified S1 between-taxon association
+SECONDARY_AXIS="chelsa_bio15"  # Uncertain S1 tendency: 95% interval includes zero
+AXES=(PRIMARY_AXIS,SECONDARY_AXIS)
 SOURCE_ORIGINAL_ALL_HEADS=173737
 TERCILE_BREAKS=(1/3,2/3)
 PREREGISTERED_NATIVE_REFERENCE=.95
@@ -164,6 +163,20 @@ def run_angle_seasonality(source:pd.DataFrame,original_meta:dict)->dict:
         "observer_cell_balanced_image_head_angles":len(eligible),
         "range_status_WCVP":"Wild un-obscured unique species accepted native vs explicit introduced original TDWG3",
         "climate_variables":list(AXES),
+        "primary_registered_climate_effect":{
+            "axis":PRIMARY_AXIS,
+            "why":"S1 among-species association +0.4382 image degrees / 100mm with 95pct interval +0.2058 to +0.6706; secondary precipitation seasonality was not an independently resolved effect",
+        },
+        "secondary_exploratory_climate_effect":{
+            "axis":SECONDARY_AXIS,
+            "S1_between_deg_per_plus10_units":0.7880825140436949,
+            "S1_between_95pct_interval":[-0.2662791617924732,1.8424441898798627],
+            "S1_between_interval_includes_zero":True,
+            "S1_within_deg_per_plus10_units":-0.15339124857684425,
+            "S1_within_95pct_interval":[-0.5267153435666101,0.2199328464129216],
+            "S1_within_interval_includes_zero":True,
+            "status":"SECONDARY_SUPPORTING_EXPLORATORY_NOT_CONFIRMED"
+        },
         "climate_window":"CHELSA v2.1 original 1981–2010 normals, NOT rainfall on observation date or during anthesis",
         "climate_threshold_selection":"Source-native (within species) 95th percentile and within introduced continent climate terciles, derived only from climate and cell weights",
         "distinct_focal_species":results,
@@ -183,6 +196,12 @@ def run_angle_seasonality(source:pd.DataFrame,original_meta:dict)->dict:
 
 def execute(focal:Path,original_status:Path,metadata:Path,
             work:Path,output:Path)->dict:
+    # Rasterio is ONLY required for the original-TIFF Actions execution. CI
+    # source-selection and estimand tests run without adding dependencies to
+    # the SHA-frozen GEB V3 integrity environment.
+    from analysis.v4.native_pca_env_fullcoverage import (
+        acquire_verified_source, sample_original_pixels
+    )
     frame,source=load_verified_focal(focal,original_status)
     grid=json.loads(metadata.read_text(encoding="utf-8"))
     provenance={}
