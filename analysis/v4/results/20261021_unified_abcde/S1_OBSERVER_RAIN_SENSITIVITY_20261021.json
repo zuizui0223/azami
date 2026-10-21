@@ -1,0 +1,122 @@
+{
+  "schema_version": "v4_S1_native_original_observer_rain_sensitivity_20261021_v1",
+  "source": {
+    "github_run": 39537702876,
+    "artifact_id": 12317937564,
+    "artifact_zip_digest": "sha256:21d797464a86e3a0ca21a5664a99c91e3841793774174165e978276b610822f5",
+    "member": "observer_rain_robustness.json",
+    "member_sha256": "6d060a09a35e83d4281609942674a68bc005522f5ba147dd1d2abac918c12b1e",
+    "native_table_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "model_json_sha256": "b626bec0e4d1a213cf7bbbe628004de6789726fce4c8ebc34e8989832cf62918",
+    "private_observer_ids_published": false
+  },
+  "primary_between_rainfall_degrees_per100mm": {
+    "original": {
+      "observations": 170066,
+      "taxa": 244,
+      "beta": 0.4381991922885207,
+      "ci": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "within_beta": -0.044298210799959194,
+      "within_ci": [
+        -0.21884898187399907,
+        0.13025256027408064
+      ]
+    },
+    "exclude_7_WCVP_collisions": {
+      "observations": 169612,
+      "taxa": 237,
+      "beta": 0.4178153874411991,
+      "ci": [
+        0.1838109413703968,
+        0.6518198335120015
+      ],
+      "within_beta": -0.04610937335372277,
+      "within_ci": [
+        -0.2207738350036355,
+        0.12855508829618995
+      ]
+    },
+    "one_original_observation_per_taxon_cell_observer": {
+      "observations": 91597,
+      "taxa": 237,
+      "beta": 0.38849173669129317,
+      "ci": [
+        0.1486089719914752,
+        0.6283745013911112
+      ],
+      "within_beta": 0.04442711943216054,
+      "within_ci": [
+        -0.09890329005478117,
+        0.18775752891910225
+      ]
+    },
+    "remove_top_one_percent_source_observers": {
+      "observers_removed": 929,
+      "observations": 118728,
+      "taxa": 225,
+      "beta": 0.3929428496585995,
+      "ci": [
+        0.1602584912786446,
+        0.6256272080385544
+      ],
+      "within_beta": 0.014607263430079351,
+      "within_ci": [
+        -0.15474483329371122,
+        0.18395936015386996
+      ]
+    }
+  },
+  "observer_within_taxon_5degree_cell_residual_variance_MoM": {
+    "orientation": {
+      "supported_strata": 793,
+      "supported_taxa": 150,
+      "supported_observations": 167544,
+      "observed_fraction": 0.029223202852330734,
+      "cell_bootstrap_300_q025_q50_q975": [
+        0.01830343597328404,
+        0.030031139115912736,
+        0.04049048424260718
+      ]
+    },
+    "colour_chroma": {
+      "supported_strata": 812,
+      "supported_taxa": 152,
+      "supported_observations": 183944,
+      "observed_fraction": 0.12030216356055574,
+      "cell_bootstrap_300_q025_q50_q975": [
+        0.09709781515833302,
+        0.12217397664006407,
+        0.14466670257545625
+      ]
+    },
+    "outline_aspect": {
+      "supported_strata": 802,
+      "supported_taxa": 150,
+      "supported_observations": 173529,
+      "observed_fraction": 0,
+      "cell_bootstrap_300_q025_q50_q975": [
+        0,
+        0,
+        0.0024821951358287705
+      ],
+      "variance_boundary_zero": true
+    }
+  },
+  "same_observation_original_photo_multiplicity": {
+    "orientation_eligible_after_concept_exclusion": 169612,
+    "with_multiple_source_photo_links": 77977,
+    "confirmed_same_head_repeated_measurements": 0
+  },
+  "scientific_limitations": [
+    "Between-species effect is observational and measured relative to camera vertical, not physical gravity or rain protection.",
+    "Four fits use different taxon sets after source deletion; intervals are species-cluster pointwise not all systematic observer camera offsets.",
+    "Observer within taxon-cell MoM is not crossed REML and includes plant, microhabitat, and photos of distinct individuals.",
+    "Multiple photos in same iNaturalist observation cannot be equated with the same flower head.",
+    "Native WCVP/TDWG region classification is not a field-proven spontaneous population.",
+    "Within rain coefficients include zero, which is not equivalence evidence or rejection of plasticity."
+  ],
+  "status": "SOURCE_VERIFIED_REAL_NATIVE_OBSERVER_SELECTION_SENSITIVITY_NOT_PHOTO_ERROR_CALIBRATION"
+}
