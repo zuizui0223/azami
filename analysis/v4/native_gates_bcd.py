@@ -346,7 +346,7 @@ def gate_d_same_sample(candidate:pd.DataFrame,full_native:pd.DataFrame,models:di
         "status":"descriptive_native_environment_density_structuring_screen",
         "model_owner":"PR144 unchanged five-variable within/between adjusted fit",
         "environment_split":"Within each accepted taxon, source-native unconditional median (not phenotype-selected)",
-        "same_candidate_observer_cell_frame_as_gates_B_C":True,
+        "same_candidate_observer_cell_frame_as_gates_B_C_D":True,
         "source_quality":"All native records contribute to environment median when finite",
         "predictors":results,
         "scope":"Not a controlled environmental effect, phylogenetic result, or spatially external prediction. Geographic climate sorting and observer selection remain possible.",
