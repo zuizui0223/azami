@@ -11,6 +11,8 @@ on:
       - 'tests/test_v4_native_introduced_climate_transfer.py'
       - 'analysis/v4/native_introduced_common_support.py'
       - 'tests/test_v4_native_introduced_common_support.py'
+      - 'analysis/v4/native_pca_env.py'
+      - 'tests/test_v4_native_pca_env.py'
       - 'analysis/v4/native_intro_continent_orientation.py'
       - 'tests/test_v4_native_intro_continent_orientation.py'
       - 'analysis/v4/native_niche_crossfit.py'
@@ -44,7 +46,7 @@ jobs:
       - name: Install audit environment (no global Cirsium downloads)
         run: python -m pip install -r reproducibility/requirements-current.txt 'shapely>=2,<3' 'cryptography>=46,<49' pytest
       - name: Check introduced/native WCVP partition and phantom-phenotype guards
-        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py tests/test_v4_native_niche_crossfit.py tests/test_v4_native_intro_continent_orientation.py
+        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py tests/test_v4_native_niche_crossfit.py tests/test_v4_native_intro_continent_orientation.py tests/test_v4_native_pca_env.py
       - name: Recover exact source and original measurement ciphertext and 350-species WCVP authority
         run: |
           set -euo pipefail
@@ -70,7 +72,8 @@ jobs:
             --measurements work/rain-transfer/private/original-measurements.aesgcm \
             --authority work/rain-transfer/private/authority350.zip \
             --output work/rain-transfer/public \
-            --private-focal-output work/rain-transfer/private/focal_native_intro_orientation.csv.gz
+            --private-focal-output work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --private-focal-all-wild-output work/rain-transfer/private/focal_all_wild_source.csv.gz
       - name: Restore existing five original-pixel CHELSA caches for focal native and introduced regions
         run: |
           set -euo pipefail
@@ -120,6 +123,14 @@ jobs:
             --climate-root work/rain-transfer/cache \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/rain-transfer/public
+      - name: Fit native vs introduced two-species PCA-env with WCVP-available CHELSA source background
+        run: |
+          python -m analysis.v4.native_pca_env \
+            --occurrences work/rain-transfer/private/focal_all_wild_source.csv.gz \
+            --authority work/rain-transfer/private/authority350.zip \
+            --cache-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
       - name: Validate public-only output and no original metadata exposure
         if: always()
         run: |
@@ -137,7 +148,8 @@ jobs:
                                'source665115_all_species_range_support.json',
                                'S2_native_introduced_climate_transfer.json',
                                'S2_native_introduced_common_support.json',
-                               'S2_original_head_angle_by_continent.json'}, files
+                               'S2_original_head_angle_by_continent.json',
+                               'S2_two_species_native_introduced_pca_env.json'}, files
           d=json.loads((output/'source665115_introduced_opportunity.json').read_text())
           o=d['overall']
           assert o['status_partition_conserved']
@@ -183,6 +195,15 @@ jobs:
               'climate_novelty_x_photo_angle_by_introduced_region']
           assert 'Cirsium vulgare|North America|chelsa_bio01' in continent[
               'climate_novelty_x_photo_angle_by_introduced_region']
+          pca=json.loads((output/'S2_two_species_native_introduced_pca_env.json').read_text())
+          assert pca['species_original_sightings_not_conditioned_on_photo_trait_eligibility']
+          assert set(pca['taxon_results'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not pca['private_individual_observations_or_user_coordinates_in_export']
+          assert pca['source_background']['original_source_raster_cache_tile_count']==316
+          assert all('complete_pixel_background_fraction_of_all_WCVP_available_area'
+                     in d['available_climatic_background_audit']['native']
+                     for d in pca['taxon_results'].values())
+          print('PCA-env available-background and source-coverage verified')
           print('Regional original photo-angle and warm/precip-seasonality test auditable')
           print('Joined climate novelty and photo-angle categories auditable')
           print('Public-only source aggregate verified')
