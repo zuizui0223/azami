@@ -346,6 +346,13 @@
       "original_published_nuclear_tree_only_North_America": true,
       "origin_dating_or_rain_temperature_model_completed": false,
       "cannot_claim_repeated_adaptation_from_this_screen": true
+    },
+    "exploratory_five_exposure_climate_null": {
+      "status": "REAL NA/EAST source-composition sharp-null 46, independent NA42 molecular-Mk phylogenetic-null executed; no BIO12 or BIO15 signal specific to binary head posture",
+      "run": 39587904816,
+      "report": "analysis/v4/results/20261021_unified_abcde/T2_FIVE_CLIMATE_SOURCE_BLOCKED_NUCLEAR_MK_RESULT_JA.md",
+      "does_not_replace_S1_original_Spatial_Model": true,
+      "T3_not_executed": true
     }
   },
   "T3": {
@@ -407,14 +414,15 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 verified 244 image keys and 194 placement keys (fixed 5 exposures); T2 46 independently coded state keys for exploratory 52-tree historical-sensitivity only; true independent Cirsium evolutionary origins and rain-temperature transition model NOT established; T3 NOT RUN",
+    "epistemic_status": "S1: 244 continuous image angle, 194 placement, BIO12 positive; T2: 46 independently coded posture, S1 five-exposure source-adjusted contrast no strong evidence, NA42 nuclear Mk null also no strong evidence; 5–6 minimum changes only on placement scenarios; historical rain transition causation and T3 untested",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
     "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response",
     "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
     "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING",
-    "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json"
+    "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
+    "S1_T2_region_and_nuclear_null_result": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
@@ -484,6 +492,42 @@
     "gravitational_angle_inferred_from_S1_image_axis": false,
     "any_additional_climate_predictor_chosen_after_EAzami_results": false,
     "frozen_S1_and_V3_reestimated": false,
-    "not_treat_EAzami_as_independent_out_of_sample_replication": true
+    "not_treat_EAzami_as_independent_out_of_sample_replication": true,
+    "source_stratified_five_climate_and_nuclear_null": {
+      "status": "EMPIRICAL_VALIDATED; five_CHELSA_S1_covar_binary_posture_source_stratification_positive_support_NOT_FOUND",
+      "run_id": 39587904816,
+      "summary_receipt": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json",
+      "scientific_report": "analysis/v4/results/20261021_unified_abcde/T2_FIVE_CLIMATE_SOURCE_BLOCKED_NUCLEAR_MK_RESULT_JA.md",
+      "script": "analysis/v4/t2_source_blocked_five_climate.py",
+      "NA42_EA4_nodding_rates": {
+        "NA42": 3,
+        "EA4": 3
+      },
+      "source_stratified_label_null_enumerations": 45920,
+      "sameNA42_label_null_enumerations": 11480,
+      "full46_five_covariate_gls_BIO12_coef": -0.07106796800422621,
+      "full46_five_covariate_gls_BIO15_coef": -0.04499973354640135,
+      "full46_sharpnull_maxT_two_axis_p_BIO12": 0.8390897212543554,
+      "full46_sharpnull_maxT_two_axis_p_BIO15": 0.6535714285714286,
+      "independent_author_nuclear_NA42_BIO12_coef": 0.016783856155216534,
+      "independent_author_nuclear_NA42_BIO15_coef": -0.020790158532731272,
+      "independent_author_nuclear_NA42_labelshuffle_maxT_p_BIO12": 0.9529616724738676,
+      "independent_author_nuclear_NA42_labelshuffle_maxT_p_BIO15": 0.9023519163763066,
+      "independent_nuclear_Mk_NA42_two_axis_maxT_BIO12_erect_stationary": [
+        0.9213857428381079,
+        0.938707528314457
+      ],
+      "independent_nuclear_Mk_NA42_two_axis_maxT_BIO15_erect_stationary": [
+        0.8807461692205196,
+        0.9100599600266489
+      ],
+      "region_blocked_null_is_not_phylogeny_correlated": false,
+      "markov_nuclear_null_phylogeny_correlated": true,
+      "sharpnull_not_specific_conditional_axis_test": true,
+      "covariates_fixed_before_state_source_test": true,
+      "S1_orientation_is_image_vertical_not_gravity": true,
+      "no_true_independent_evolutionary_origins_estimated": true,
+      "no_historical_climate_dependent_rate_estimated": true
+    }
   }
 }
