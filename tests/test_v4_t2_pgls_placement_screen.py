@@ -90,3 +90,36 @@ def test_tree_validation_catches_branch_and_tip_errors():
     tr.get_terminals()[0].branch_length=-1
     with pytest.raises(ValueError,match="negative"):
         screen.check_placement_tree(tr)
+
+
+def test_published_nuclear_tree_blob_and_coverage_guard(monkeypatch):
+    states={f"Cirsium_{i:02d}":int(i>=58) for i in range(63)}
+    raw=("("+",".join(f"{n}:0.2" for n in states)+");\n").encode()
+    monkeypatch.setattr(screen,"AUTHOR_NUCLEAR_TREE_GIT_BLOB",screen.git_blob_sha(raw))
+    phy=screen.read_author_nuclear_tree(raw,states)
+    assert len(phy.get_terminals())==63
+    with pytest.raises(ValueError,match="Git blob"):
+        screen.read_author_nuclear_tree(raw.replace(b"Cirsium_00",b"Cirsium_xx"),states)
+    missing=states.copy()
+    missing.pop("Cirsium_00")
+    with pytest.raises(ValueError,match="tip set"):
+        screen.read_author_nuclear_tree(raw,missing)
+
+
+def test_independent_nuclear_same_44_tip_comparison_synthetic(tmp_path):
+    states={f"Cirsium_{i:02d}":int(i>=58) for i in range(63)}
+    original=tree(list(states))
+    names=list(states)[:10]+list(states)[-5:]
+    placements=[(f"test_scenario_{i}",tree(names)) for i in range(52)]
+    out=screen.evaluate_placements(placements,states,"test_sha",tmp_path/"x.json",
+                                   published_nuclear_tree=original,nuclear_tree_sha="source-tree-sha",
+                                   draws=3,min_scored=12)
+    reference=out["summary"]["independent_nuclear_reference"]
+    assert reference["common_tip_comparison"]["n_taxa"]==15
+    assert reference["common_tip_comparison"]["n_nodding"]==5
+    assert reference["complete_published_63_tip_context"]["n_taxa"]==63
+    assert reference["not_global_cirsium_tree"] is True
+    assert reference["common_tip_comparison"]["chronogram_absolute_dates_inferred"] is False
+    with pytest.raises(ValueError,match="original SHA256"):
+        screen.evaluate_placements(placements,states,"test_sha",tmp_path/"y.json",
+                                   published_nuclear_tree=original,draws=2,min_scored=12)
