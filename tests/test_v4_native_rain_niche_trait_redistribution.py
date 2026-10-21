@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from analysis.v4.native_rain_niche_trait_redistribution import (
     RAIN,BANDS,_histogram,_composition,_bootstrap,
-    _rain_classes,_background_profile,_area_and_source
+    _rain_classes,_background_profile,_area_and_source,_opportunity_shift
 )
 from analysis.v4.native_climate_trait_coupling import weighted_quantiles
 
@@ -58,6 +58,27 @@ def test_area_opportunity_is_separate_from_occurrence_density():
     assert result["status"]=="DESCRIPTIVE_SOURCE_VS_AVAILABLE_CLIMATE"
     assert abs(sum(result["source_occurrence_probabilities"])-1)<1e-10
     assert abs(sum(result["available_area_probabilities"])-1)<1e-10
+
+def test_opportunity_shift_decomposes_wetter_occurrence_vs_background():
+    a,b,cut=synthetic()
+    native=_histogram(a,cut)
+    introduced=_histogram(b,cut)
+    nbg=a[[RAIN]].copy()
+    ibg=b[[RAIN]].copy()
+    nbg["_area_weight"]=1.
+    ibg["_area_weight"]=1.
+    out=_opportunity_shift(native,introduced,
+                           _background_profile(nbg,cut),
+                           _background_profile(ibg,cut))
+    assert out["status"]=="DECOMPOSED_DESCRIPTIVE_WET_OPPORTUNITY_VS_OCCUPANCY"
+    assert not out["not_establishment_or_selection_causal_effect"] is False
+    for band in out["thresholds"].values():
+        assert np.isclose(
+            band["recorded_occurrence_shift_introduced_minus_native"]-
+            band["available_climate_area_shift_introduced_minus_native"],
+            band["occurrence_shift_minus_available_area_shift"]
+        )
+
 
 def test_rain_mix_decomposition_identity_and_nonzero_condition():
     a,b,cut=synthetic()
