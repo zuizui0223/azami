@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from copy import deepcopy
 import csv
 import hashlib
 import io
@@ -266,7 +267,7 @@ def conditional_poisson_events(mean, odd, rng):
     raise EvidenceGateError("Failed to sample conditional branch transitions")
 
 
-def stochastic_maps(tree, observed, rate, draws=1000, seed=144):
+def stochastic_maps(tree, observed, rate, draws=1000, seed=144, tribe_by_tip=None):
     """Sample ancestral states and *all* symmetric Mk flips, not just node changes."""
     if draws < 1 or draws > 100000:
         raise EvidenceGateError("Posterior draw count out of supported bounds")
@@ -274,6 +275,16 @@ def stochastic_maps(tree, observed, rate, draws=1000, seed=144):
     rng = np.random.default_rng(seed)
     counts = np.zeros((draws, 2), dtype=int)
     root_nodding = 0
+    tribe_clades = {}
+    tribe_counts = {}
+    if tribe_by_tip is not None:
+        for node in tree.find_clades(order="postorder"):
+            if node.is_terminal():
+                tribe_clades[node] = {tribe_by_tip[node.name]}
+            else:
+                tribe_clades[node] = set().union(*(tribe_clades[c] for c in node.clades))
+        tribe_counts = {tribe: np.zeros(draws, dtype=int)
+                        for tribe in set(tribe_by_tip.values())}
     for i in range(draws):
         root_weights = partials[tree.root] / partials[tree.root].sum()
         root_state = int(rng.choice(2, p=root_weights))
@@ -287,10 +298,14 @@ def stochastic_maps(tree, observed, rate, draws=1000, seed=144):
                 new = int(rng.choice(2, p=probs))
                 n = conditional_poisson_events(rate * child.branch_length,
                                                old != new, rng)
-                counts[i, 0] += (n + (old == 0)) // 2  # erect -> nodding
+                gains = (n + (old == 0)) // 2
+                counts[i, 0] += gains  # erect -> nodding
                 counts[i, 1] += (n + (old == 1)) // 2  # nodding -> erect
+                if tribe_counts and len(tribe_clades[child]) == 1:
+                    tribe = next(iter(tribe_clades[child]))
+                    tribe_counts[tribe][i] += gains
                 stack.append((child, new))
-    return {
+    result = {
         "draws": draws, "seed": seed,
         "root_nodding_p": root_nodding / draws,
         "erect_to_nodding_q025_median_q975": np.quantile(counts[:, 0], [0.025, 0.5, 0.975]).tolist(),
@@ -298,6 +313,19 @@ def stochastic_maps(tree, observed, rate, draws=1000, seed=144):
         "p_at_least_two_erect_to_nodding": float(np.mean(counts[:, 0] >= 2)),
         "warning": "Conditional on one reviewed tree, binary-only tip scores, symmetric Mk and rate point estimate; NOT climate-dependent transitions, independent origin times, or fitness selection."
     }
+    if tribe_counts:
+        result["within_tribe_gain_distribution"] = {
+            k: np.quantile(v, [0.025, 0.5, 0.975]).tolist()
+            for k, v in sorted(tribe_counts.items())
+        }
+        result["p_gains_in_two_or_more_tribes_conditional_Mk"] = float(np.mean(
+            np.sum(np.stack([v > 0 for v in tribe_counts.values()]), axis=0) >= 2
+        ))
+        result["cross_tribe_warning"] = (
+            "Changes on mixed-tribe stem branches are NOT attributed; two within-tribe "
+            "event histories under a symmetric Mk do NOT establish rain-driven convergence."
+        )
+    return result
 
 
 def climate_coverage(rows, taxa):
@@ -353,6 +381,8 @@ def execute(scores_path, crosswalk_path, tree_path, manifest_path, output_path,
         climate = load_csv(climate_path, CLIMATE_COLS)
         result["source_sha256"]["climate"] = hashlib.sha256(Path(climate_path).read_bytes()).hexdigest()
         result["climate_coverage"] = climate_coverage(climate, taxa)
+    result["scored_tip_fraction"] = len(observed) / len(tree.get_terminals())
+    result["unscored_tips_excluded_from_Mk_pilot"] = len(tree.get_terminals()) - len(observed)
     if stage == "T3" and len(tribes) < 2:
         result["stop_reason"] = "T3 requires reviewed anthesis posture in at least two tribes"
     elif len(observed) < min_scored or min_scored < 4:
@@ -360,12 +390,21 @@ def execute(scores_path, crosswalk_path, tree_path, manifest_path, output_path,
     elif min(result["n_erect"], result["n_nodding"]) < 2:
         result["stop_reason"] = "Both binary states require at least two reviewed tips"
     else:
-        rate, lnL, boundary = rate_fit(tree, observed)
+        # Remove unscored branches: otherwise unconstrained hidden flips on them
+        # inflate the reported counts of independent state changes.
+        inference_tree = deepcopy(tree)
+        for leaf in list(inference_tree.get_terminals()):
+            if leaf.name not in observed:
+                inference_tree.prune(leaf.name)
+        rate, lnL, boundary = rate_fit(inference_tree, observed)
         result["status"] = "conditional_trait_only_Mk_pilot"
         result["fitted_symmetric_Mk_rate_per_branch_unit"] = rate
         result["Mk_log_likelihood"] = lnL
         result["rate_optimizer_boundary"] = boundary
-        result["transitions"] = stochastic_maps(tree, observed, rate, draws=draws)
+        result["transitions"] = stochastic_maps(
+            inference_tree, observed, rate, draws=draws,
+            tribe_by_tip={t["tip"]: t["tribe"] for t in taxa} if stage == "T3" else None
+        )
         result["stop_reason"] = "No joint rain-temperature historical model, no camera-gravity or biological fitness calibration; Mk pilot is not a rain-adaptation test"
     destination = Path(output_path)
     destination.parent.mkdir(parents=True, exist_ok=True)
