@@ -11,6 +11,8 @@ on:
       - 'tests/test_v4_native_introduced_climate_transfer.py'
       - 'analysis/v4/native_introduced_common_support.py'
       - 'tests/test_v4_native_introduced_common_support.py'
+      - 'analysis/v4/native_niche_crossfit.py'
+      - 'tests/test_v4_native_niche_crossfit.py'
       - 'analysis/v4/native_climate_trait_coupling.py'
       - 'tests/test_v4_native_climate_trait_coupling.py'
       - 'tests/test_v4_native_introduced_opportunity.py'
@@ -40,7 +42,7 @@ jobs:
       - name: Install audit environment (no global Cirsium downloads)
         run: python -m pip install -r reproducibility/requirements-current.txt 'shapely>=2,<3' 'cryptography>=46,<49' pytest
       - name: Check introduced/native WCVP partition and phantom-phenotype guards
-        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py
+        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py tests/test_v4_native_niche_crossfit.py
       - name: Recover exact source and original measurement ciphertext and 350-species WCVP authority
         run: |
           set -euo pipefail
@@ -140,6 +142,14 @@ jobs:
           assert set(overlap['focal_species'])==set(transferred['focal_species'])
           assert overlap['no_photo_or_location_or_user_ids_published'] is True
           for species,analysis in overlap['focal_species'].items():
+              holdout=analysis['climate_only_native_cell_holdout_crossfit']
+              assert holdout['status'].startswith('EXECUTED_SOURCE_CLIMATE_ONLY_CROSS_FIT')
+              assert holdout['folds']==5
+              assert holdout['independent_random_cell_partitions']==100
+              assert holdout['introduced_and_native_evaluated_without_angle_values']
+              assert holdout['reference_source_name']==species
+              assert len(holdout['results'])==4
+              assert all(q['not_a_sampling_confidence_interval'] for q in holdout['results'].values())
               trait=analysis['climate_novelty_x_observed_head_orientation']
               assert trait['status'].startswith('EXECUTED_CLIMATE_NOVELTY_X_PHOTO_ANGLE')
               assert trait['native_climate_reference']['climate_group_computed_without_orientation_values']
