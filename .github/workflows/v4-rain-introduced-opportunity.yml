@@ -120,6 +120,7 @@ jobs:
               raise SystemExit(0)
           files=[x.name for x in output.iterdir()]
           assert set(files)=={'source665115_introduced_opportunity.json',
+                               'source665115_all_species_range_support.json',
                                'S2_native_introduced_climate_transfer.json',
                                'S2_native_introduced_common_support.json'}, files
           d=json.loads((output/'source665115_introduced_opportunity.json').read_text())
