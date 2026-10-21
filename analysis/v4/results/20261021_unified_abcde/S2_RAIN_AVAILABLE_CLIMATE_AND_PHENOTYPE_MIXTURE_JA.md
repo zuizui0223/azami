@@ -1,6 +1,6 @@
 # S2：導入域の湿潤側占有と頭花画像角度の分布はどう接続するか
 
-**2026-10-21・実行済み探索解析。PR #144、GitHub Actions [#39582985273](https://github.com/zuizui0223/azami/actions/runs/39582985273) 成功。** 実数値は run artifact `12338801038` 中の `S2_rain_niche_phenotype_decomposition.json`。元画像・暗号化元観察・元撮影者・元CHELSA TIFFをバイト同一性とプライバシー制約付きで再結合。以前の固定V3/GEBの解析と主張は変更していない。
+**2026-10-21・実行済み探索解析。PR #144、GitHub Actions [#39583202027](https://github.com/zuizui0223/azami/actions/runs/39583202027) 成功。** 正式な再検証済み集計は run artifact `12338097602` 中の `S2_rain_niche_phenotype_decomposition.json`（artifact SHA256 `cbf93a2076dfda3b439c7783c0a3b585aa1331bbf58c68ba5655feeee6b579b1`）。初回数値実行 [#39582985273](https://github.com/zuizui0223/azami/actions/runs/39582985273) と主要数値は一致。元画像・暗号化元観察・元撮影者・元CHELSA TIFFをバイト同一性とプライバシー制約付きで再結合。以前の固定V3/GEBの解析と主張は変更していない。
 
 ## 科学的な問い
 
@@ -52,4 +52,4 @@
 
 **次の主解析：** この６雨量帯と利用可能背景を保持しつつ、各帯の撮影選択・他気候因子・撮影月を監査する。雨量帯内で環境の共通支持がある部分だけ、条件付き角度CDF/分位点とその地理的頑健性を検証する。雨と画像角度のデータを見て閾値や採用種を再選択しない。
 
-**実装：** `analysis/v4/native_rain_niche_trait_redistribution.py`、[元TIFFの同一ワークフロー](https://github.com/zuizui0223/azami/blob/codex/v4-native-integration-workflow/.github/workflows/v4-native-pca-env-full-background.yml)、`tests/test_v4_native_rain_niche_trait_redistribution.py`。上記の実数値は成功済みの#39582985273のソースを使用。後続版の背景シフト比較の集計は同一数学的定義で補強中。
+**実装：** `analysis/v4/native_rain_niche_trait_redistribution.py`、[元TIFFの同一ワークフロー](https://github.com/zuizui0223/azami/blob/codex/v4-native-integration-workflow/.github/workflows/v4-native-pca-env-full-background.yml)、`tests/test_v4_native_rain_niche_trait_redistribution.py`。上記の数値は#39583202027の source-verified 実行結果とその SHA で再確認した。背景シフトの検証レシートは上記JSON中の `species.*.introduced.*.environment_opportunity_vs_occurrence_shift`。
