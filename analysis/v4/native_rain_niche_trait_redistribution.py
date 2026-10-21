@@ -147,7 +147,10 @@ def _composition(native_source,intro_source,native_photo,intro_photo,
                            intro_photo["band_cells"])>=MIN_CELLS_PER_BAND)
         common&=(native_photo["band_n"]>=MIN_PHOTO_PER_BAND)
         common&=(intro_photo["band_n"]>=MIN_PHOTO_PER_BAND)
-    if common.sum()<2 or pn[common].sum()<MIN_SHARED_SOURCE_MASS or pi[common].sum()<MIN_SHARED_SOURCE_MASS:
+    if (common.sum()<2 or pn[common].sum()<MIN_SHARED_SOURCE_MASS
+        or pi[common].sum()<MIN_SHARED_SOURCE_MASS
+        or np.any(ng[common].sum(axis=1)<.999999)
+        or np.any(ig[common].sum(axis=1)<.999999)):
         return {"status":"STOP_NO_RAIN_BAND_SHARED_PHOTOGRAPHIC_SUPPORT",
                 "supported_bands":[BANDS[i] for i in np.flatnonzero(common)],
                 "native_source_mass_supported":float(pn[common].sum()),
