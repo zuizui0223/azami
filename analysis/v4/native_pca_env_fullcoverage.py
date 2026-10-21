@@ -40,6 +40,7 @@ from analysis.v4.native_introduced_opportunity import (
 from analysis.v4.native_full_rain_head_response import analyse_photo_orientation
 from analysis.v4.native_wet_edge import save as save_wet_edge
 from analysis.v4.s2_rainfall_occupancy_trait import save as save_rain_occupancy_trait
+from analysis.v4.native_rain_niche_trait_redistribution import save as save_rain_niche_trait
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -393,6 +394,13 @@ def execute(original:Path,authority_archive:Path,source_meta:Path,
             "S2_rainfall_occupancy_and_trait":rain_trait_report["status"],
             "focal_species":list(rain_trait_report["focal"]),
             "trait_and_source_aggregates_only":True,
+        },ensure_ascii=False),flush=True)
+        # Orthogonal ecological check: available rainfall backgrounds and
+        # standardized full photo-angle CDF decomposition, NOT a second source.
+        conditional_report=save_rain_niche_trait(wild,land,auth,photo,output)
+        print(json.dumps({
+            "S2_rainfall_opportunity_plus_phenotype":conditional_report["status"],
+            "source_phenotype_independence":conditional_report["sources_are_angle_blind"],
         },ensure_ascii=False),flush=True)
 
         print(json.dumps({
