@@ -305,6 +305,9 @@ def _pca_env_2d(env_native:pd.DataFrame,env_intro:pd.DataFrame,
                 occ_native:pd.DataFrame,occ_intro:pd.DataFrame)->dict:
     if min(len(env_native),len(env_intro))<MIN_BACKGROUND_POINTS:
         return {"status":"STOP_BACKGROUND_INSUFFICIENT_OR_RASTER_COVERAGE"}
+    for source in (env_native,env_intro,occ_native,occ_intro):
+        if not np.isfinite(source[list(VARIABLES)].to_numpy(float)).all():
+            raise ValueError("Original source environmental input has non-finite CHELSA pixels")
     if min(len(occ_native),len(occ_intro))<MIN_OCCURRENCE_POINTS:
         return {"status":"STOP_OCCURRENCE_CLIMATE_SUPPORT_TOO_SMALL"}
     background=pd.concat([env_native,env_intro],ignore_index=True)
