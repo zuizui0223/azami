@@ -13,7 +13,7 @@ def source_pair(monkeypatch):
     rows=[]
     for name in s2.SPECIES:
         for status in ("native","introduced"):
-            for i in range(360):
+            for i in range(1200):
                 lat=-58.+(i%18)*5.3
                 lon=-168.+((i//18)%20)*12.5
                 rain=400+(i%91)*15+110*(status=="introduced")
