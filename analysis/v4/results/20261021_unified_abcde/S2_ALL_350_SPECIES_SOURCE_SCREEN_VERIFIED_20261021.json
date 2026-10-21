@@ -1,0 +1,140 @@
+{
+  "schema_version": "v4_all350_native_introduced_orientation_support_result_20261021_v1",
+  "source": {
+    "github_actions_run": 39544849439,
+    "artifact_id": 12321361815,
+    "artifact_name": "v4-rain-introduced-source-opportunity",
+    "artifact_zip_sha256": "a747890663db1daaa914aee1b9b36e3b9212a3b9cc4b867470f8164ad429500f",
+    "source_member": "source665115_all_species_range_support.json",
+    "source_member_sha256": "9d7019098874664611fd048a6f920432b1645957bca9af267a13f3401c92cf5b",
+    "original_source_observations": 665115,
+    "species_rank_observations": 580066,
+    "pre_detector_source_names": 350,
+    "native_original_observations": 313350,
+    "WCVP_explicit_introduced_wild_observations": 156750,
+    "original_source_input_SHA256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "original_authority_SHA256": "a5bf23efffbf8e8f9459d5c3391a0136adcedd8f9dbff0117caa969ab545c2bd",
+    "historical_measurement_SHA256": "b49a093c849928c456d6747ec51772b5a6b78debb2ae5eb5dbe2a91b08f66dd7",
+    "all_source_taxa_checked_without_rain_or_orientation_values": true
+  },
+  "evidence_census": {
+    "source_species_rank_names": 350,
+    "wild_native_only_species_names": 306,
+    "wild_introduced_only_species_names": 0,
+    "wild_native_and_explicit_introduced_species_names": 7,
+    "neither_wild_source_range_species_names": 37,
+    "source_species_names_with_any_accepted_wild_record": 313,
+    "accepted_WCVP_keys_merging_more_than_one_source_species_name_in_full_wild": 7,
+    "both_range_basic_gate_species": 2,
+    "both_range_stronger_gate_species": 2
+  },
+  "predeclared_gates": {
+    "basic": {
+      "orientation_eligible_per_range": 30,
+      "5_degree_equal_sin_cells_per_range": 5,
+      "original_observers_per_range": 10
+    },
+    "stronger": {
+      "orientation_eligible_per_range": 100,
+      "5_degree_equal_sin_cells_per_range": 15,
+      "original_observers_per_range": 10
+    },
+    "niche_and_slope_models_require_additionally": "Five verified original-pixel covariates, month/year and ecological climate common support; species/range image quality and sampling biases must be assessed."
+  },
+  "all_both_range_species": [
+    {
+      "source_name": "Cirsium arvense",
+      "WCVP_key": "206745077",
+      "native_orientation_eligible": 49072,
+      "native_cells": 186,
+      "native_observers": 18991,
+      "introduced_orientation_eligible": 43195,
+      "introduced_cells": 100,
+      "introduced_observers": 22982,
+      "basic_pass": true,
+      "stronger_pass": true
+    },
+    {
+      "source_name": "Cirsium esculentum",
+      "WCVP_key": "206744771",
+      "native_orientation_eligible": 626,
+      "native_cells": 39,
+      "native_observers": 255,
+      "introduced_orientation_eligible": 2,
+      "introduced_cells": 1,
+      "introduced_observers": 1,
+      "basic_pass": false,
+      "stronger_pass": false
+    },
+    {
+      "source_name": "Cirsium heterophyllum",
+      "WCVP_key": "206743213",
+      "native_orientation_eligible": 6677,
+      "native_cells": 64,
+      "native_observers": 3460,
+      "introduced_orientation_eligible": 24,
+      "introduced_cells": 4,
+      "introduced_observers": 23,
+      "basic_pass": false,
+      "stronger_pass": false
+    },
+    {
+      "source_name": "Cirsium mexicanum",
+      "WCVP_key": "206745378",
+      "native_orientation_eligible": 387,
+      "native_cells": 14,
+      "native_observers": 307,
+      "introduced_orientation_eligible": 32,
+      "introduced_cells": 3,
+      "introduced_observers": 30,
+      "basic_pass": false,
+      "stronger_pass": false
+    },
+    {
+      "source_name": "Cirsium oleraceum",
+      "WCVP_key": "206742045",
+      "native_orientation_eligible": 8426,
+      "native_cells": 45,
+      "native_observers": 3915,
+      "introduced_orientation_eligible": 10,
+      "introduced_cells": 3,
+      "introduced_observers": 10,
+      "basic_pass": false,
+      "stronger_pass": false
+    },
+    {
+      "source_name": "Cirsium undulatum",
+      "WCVP_key": "206740278",
+      "native_orientation_eligible": 3750,
+      "native_cells": 31,
+      "native_observers": 2039,
+      "introduced_orientation_eligible": 10,
+      "introduced_cells": 3,
+      "introduced_observers": 7,
+      "basic_pass": false,
+      "stronger_pass": false
+    },
+    {
+      "source_name": "Cirsium vulgare",
+      "WCVP_key": "206739917",
+      "native_orientation_eligible": 33637,
+      "native_cells": 124,
+      "native_observers": 14211,
+      "introduced_orientation_eligible": 47833,
+      "introduced_cells": 157,
+      "introduced_observers": 27392,
+      "basic_pass": true,
+      "stronger_pass": true
+    }
+  ],
+  "selection_and_interpretation": {
+    "two_focal_species_selected_posthoc_before_global_source_screen": true,
+    "full350_source_screen_now_verifies_exact_same_two_species_are_all_supported": true,
+    "no_other_five_pass_min_cell_support": true,
+    "strict_status_means": "Original species-rank author IDs with unique WCVP accepted name, wild un-obscured source coordinate, specific TDWG3 introduction flag; unresolved records are NOT introduced.",
+    "geographic_natural_experiment": "Introduction into a region creates observational contrast, not guaranteed novel climatic niche, ecological adaptation, fast evolution or identifiable genotype.",
+    "absent_recent_introductions_not_proven": "The source-era iNaturalist sampling and WCVP region flags have limited temporal and species rank resolution; false-negative introduced status possible.",
+    "two_species_do_not_establish_cross_species_distribution": "Two introduced taxa are enough for matched case studies, not a multi-species macroevolutionary law.",
+    "no_photo_raw_user_coordinates_published": true
+  }
+}
