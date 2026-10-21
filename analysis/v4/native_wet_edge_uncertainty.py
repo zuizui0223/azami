@@ -69,18 +69,18 @@ def geographic_block_bootstrap(
             raise ValueError("Bad fixed-match bootstrap input")
     wet_cells=wet["_cell"].to_numpy()
     ref_cells=reference["_cell"].to_numpy()
-    union,wi,ri=np.unique(
+    union,inverse=np.unique(
         np.concatenate((wet_cells,ref_cells)),return_inverse=True
     )
     na=len(wet)
-    ia=wi[:na]
-    ib=wi[na:]
+    ia=inverse[:na]
+    ib=inverse[na:]
     if np.unique(wet_cells).size<15 or np.unique(ref_cells).size<15:
         return {"status":"STOP_INSUFFICIENT_INDEPENDENT_SPATIAL_BLOCKS"}
     yw=wet[ANGLE_COLUMN].to_numpy(float)
     yr=reference[ANGLE_COLUMN].to_numpy(float)
-    wa=np.asarray(wet_weights,float)
-    wb=np.asarray(reference_weights,float)
+    wa=np.asarray(wet_weights,float).copy()
+    wb=np.asarray(reference_weights,float).copy()
     wa/=wa.sum()
     wb/=wb.sum()
     seed=int.from_bytes(hashlib.sha256(label.encode("utf-8")).digest()[:8],
