@@ -78,10 +78,10 @@
     }
   },
   "S2": {
-    "status": "introduced_status_audited_and_source_original_five_climate_transfer_plus_overlap_screen_executed; no_equivalence_or_evolutionary_origin_inference",
+    "status": "S1 supported observational rainfall association; S2 original full350 screening confirms only two taxa are statistically supported in existing source; native-to-introduced 5-exposure slope/overlap pilot executed but not evolutionary origin",
     "focal_source_names": [
-      "Cirsium vulgare",
-      "Cirsium arvense"
+      "Cirsium arvense",
+      "Cirsium vulgare"
     ],
     "not_introduced": "all_non_native_original_observations",
     "invasion_definition": "WCVP unique accepted source species and TDWG3 explicit establishmentMeans INTRODUCED, wild nonobscured observations, with quality and source-image measurement exclusions separately reported",
@@ -168,6 +168,33 @@
         "strong_focal_evolutionary_fixed_trait_evidence": false,
         "all_slope_difference_intervals_cross_zero": true
       }
+    },
+    "all_350_source_species_screen": {
+      "status": "SOURCE_VERIFIED_AND_COMPLETE_FOR_FROZEN_665115_WCVP_JUNE2026",
+      "github_run": 39544849439,
+      "artifact_id": 12321361815,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json",
+      "report": "analysis/v4/results/20261021_unified_abcde/S2_ALL_SPECIES_RANGE_SUPPORT_RESULT_JA.md",
+      "total_original_species_rank_names": 350,
+      "source_native_only": 306,
+      "source_introduced_only": 0,
+      "source_both_WCVP_region_status": 7,
+      "neither_accepted_wild": 37,
+      "both_support_30_photo_5_cells_10_observers": 2,
+      "both_support_100_photo_15_cells_10_observers": 2,
+      "only_two_qualified_names": [
+        "Cirsium arvense",
+        "Cirsium vulgare"
+      ],
+      "other_five_both_ranges_but_insufficient": [
+        "Cirsium esculentum",
+        "Cirsium heterophyllum",
+        "Cirsium mexicanum",
+        "Cirsium oleraceum",
+        "Cirsium undulatum"
+      ],
+      "sources_partially_unlisted_not_absent_worldwide": true,
+      "independent_new_introduced_source_data_needed_to_expand_species": true
     }
   },
   "T2": {
