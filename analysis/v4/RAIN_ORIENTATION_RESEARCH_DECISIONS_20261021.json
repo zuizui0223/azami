@@ -414,7 +414,7 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 original source-verified 170066 image angles/244 taxon keys and 194/191/171/143 continuous trait trees; 52 GBOTB grafted-placement lambda profiles have median 0 and no >2 AIC gain for 191 mean + five original climates (weak identifiable phylogenetic signal); S1 positive BIO12 between-taxon photo-angle relationship remains; BM expected branch shifts cannot count actual biological nodding origins; independent nuclear history and T3 unrun",
+    "epistemic_status": "S1: genuine photo-axis continuous 170,066 observations/244 accepted keys; source-hashed continuous historical reconstruction 194, alias-free 191; Pagel lambda low after five-climate adjustment across 52 grafted scenarios AND in same-tip 42-NA nuclear tree (lambda=0); original annual BIO12 observational association remains; independent nodding origins/dates/rain causation/T3 not established",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
@@ -426,7 +426,8 @@
     "S1_T2_primary_continuous_source_verified": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
     "S1_T2_continuous_scientific_result_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md",
     "S1_T2_external_morphology_construct_check": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json",
-    "S1_continuous_phylogenetic_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json"
+    "S1_continuous_phylogenetic_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
+    "S1_continuous_phylogenetic_signal_registry": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
@@ -668,6 +669,33 @@
       "no_phylogenetic_signal_detected_is_not_proof_of_zero_heritable_evolution": true,
       "should_use_original_S1_BIO12_spatial_pattern_as_main_positive_evidence": true,
       "origin_dates_or_climate_dependent_evolution_rates_estimated": false
+    },
+    "phylogenetic_signal_empirically_verified": {
+      "status": "WEAK_PAGEL_LAMBDA_ON_S1_IMAGE_ANGLE_ON_52_GRAFTED_SCENARIOS_AND_MATCHED_TRUE_NA_NUCLEAR_REFERENCE",
+      "global_GBOTB_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
+      "global_signal_run_id": 39594257539,
+      "source_clean191_five_climate_lambda_ML_scenario_median": 0,
+      "source_clean191_five_climate_lambda_ML_scenario_range": [
+        0,
+        0.31901088460861526
+      ],
+      "source_clean191_52_scenarios_with_AIC_gain_gt2": 0,
+      "clean191_first_scenario_lambda0_bootstrap_p": 0.1775,
+      "source_clean143_min10photos_five_climate_lambda_ML_scenario_median": 0,
+      "NA_true_nuclear_vs_52_grafts_receipt": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json",
+      "NA_nuclear_real_run_id": 39595992874,
+      "published_NA_nuclear_original_tip_count": 63,
+      "published_NA_nuclear_identical_S1_measured_tip_count": 42,
+      "published_NA_nuclear_42_mean_photo_angle_lambda_ML_noclimate": 0,
+      "published_NA_nuclear_42_mean_photo_angle_lambda_ML_adjusted_five_S1": 0,
+      "published_NA_nuclear_42_lambda0_bootstrap_p_noclimate": 1,
+      "published_NA_nuclear_42_lambda0_bootstrap_p_adjusted_five_S1": 1,
+      "matched_NA42_grafted_52_fiveclimate_lambda_median": 0,
+      "matched_NA42_grafted_52_placement_AIC_gt2_count": 0,
+      "independent_nuclear_phylogeny_is_regional_only": true,
+      "global_194_ancestral_history_not_confirmed_as_true_independent_evolutionary_nodding_origins": true,
+      "does_not_prove_zero_evolutionary_inertia": true,
+      "no_photo_to_gravity_angle_calibration": true
     }
   }
 }
