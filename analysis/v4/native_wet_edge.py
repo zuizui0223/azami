@@ -385,6 +385,34 @@ def evaluate(source_wild:pd.DataFrame, photo:pd.DataFrame,
             "angle_blind_source_coverage":_source_support(sp,photo_ids,q75,q95),
             "introduced_by_continent":{},
         }
+        # Historic-native wet-tail is an independent within-native baseline,
+        # not a counterfactual original genotype or invasion-effect estimate.
+        ns=measured.loc[measured.taxon_name.eq(species) &
+                        measured.range_state.eq("native")].copy()
+        nw=ns.loc[ns[RAIN]>q95]
+        nr=ns.loc[ns[RAIN].between(q75,q95)]
+        native_case={
+            "comparison":"Within native range: above source-native q95 versus q75..q95; control for OTHER climate and imaging context",
+            "photographed_native_wet_edge":_counts(nw),
+            "photographed_native_known_wet_band":_counts(nr),
+            "not_a_native_to_introduced_evolutionary_counterfactual":True,
+        }
+        if (len(nw)>=MIN_ROWS and len(nr)>=MIN_ROWS
+            and nw._cell.nunique()>=MIN_INDEPENDENT_CELLS
+            and nr._cell.nunique()>=MIN_INDEPENDENT_CELLS
+            and nw.user_id.nunique()>=MIN_ORIGINAL_OBSERVERS
+            and nr.user_id.nunique()>=MIN_ORIGINAL_OBSERVERS):
+            native_match=match_without_angles(nw,nr,en)
+            native_case["matching"]={
+                k:v for k,v in native_match.items()
+                if not isinstance(v,np.ndarray)
+            }
+            native_case["conditional_angle_distribution"]=conditional_distribution(
+                nw,nr,native_match)
+        else:
+            native_case["matching"]={"status":"STOP_INSUFFICIENT_NATIVE_WET_EDGE_SUPPORT"}
+            native_case["conditional_angle_distribution"]={"status":"NOT_IDENTIFIED_NOT_ZERO"}
+        subj["native_internal_wet_edge"]=native_case
         ps=measured.loc[measured.taxon_name.eq(species) &
                         measured.range_state.eq("introduced")].copy()
         for tdwg,reg in ps.groupby("tdwg1",sort=True):
