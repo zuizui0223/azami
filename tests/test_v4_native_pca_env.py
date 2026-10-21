@@ -66,9 +66,10 @@ def test_species_WCVP_region_masks_are_climate_and_photo_outcome_blind():
         {"locationId":"TDWG:IN1","occurrenceStatus":"PRESENT",
          "establishmentMeans":"NATIVE"}
     )
-    assert "IN1" not in _native_and_introduced_codes(
-        a,str(SPECIES_KEYS["Cirsium arvense"])
-    )
+    with pytest.raises(ValueError,match="no unambiguous WCVP-introduced"):
+        _native_and_introduced_codes(
+            a,str(SPECIES_KEYS["Cirsium arvense"])
+        )
 
 
 def test_pca_background_projection_is_one_shared_climate_system():
