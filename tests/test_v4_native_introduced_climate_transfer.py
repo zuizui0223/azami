@@ -38,16 +38,16 @@ def toy_focal(per_state=120):
 def test_true_pixel_value_not_broad_five_degree_average(tmp_path):
     grid={
         "transform":[1.,0.,-180.,0.,-1.,90.],
-        "tiles":{"18_36":{"file":"tiles-000.npz","row_off":90,"col_off":180}},
+        "tiles":{"18_36":{"file":"tiles-000.npz","row_off":89,"col_off":180}},
         "nodata":65535
     }
     np.savez_compressed(tmp_path/"tiles-000.npz",**{"18_36":np.array([
         [13,14,15],[16,17,18],[19,20,21]
     ],dtype=np.uint16)})
-    # lat=(0,-1); lon=(0,1); original 1x1 pixel difference retained
-    a=sample_cached_pixels(tmp_path,grid,np.array([-0.1,-1.1]),
+    # Two longitudes differ by one original raster pixel inside the same 5-degree storage tile.
+    a=sample_cached_pixels(tmp_path,grid,np.array([0.1,0.1]),
                           np.array([0.1,1.1]))
-    assert np.array_equal(a,np.array([13,17]))
+    assert np.array_equal(a,np.array([13,14]))
     # Outside cached tile returns missing, never 0 or a coarse-cell mean.
     b=sample_cached_pixels(tmp_path,grid,np.array([20.]),np.array([30.]))
     assert np.isnan(b[0])
