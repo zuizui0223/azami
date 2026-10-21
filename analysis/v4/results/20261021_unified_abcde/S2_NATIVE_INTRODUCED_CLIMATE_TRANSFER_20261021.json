@@ -9,7 +9,7 @@
     "native_introduced_original_wcvp_snapshot_sha256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
     "source_species_status": "previous source-only run 39537559204",
     "climate_input": "Previously verified original-pixel CHELSA v2.1 rasters (BIO1 BIO4 BIO12 BIO15 RSDS), annual 1981-2010",
-    "source_climate_metadata_sha256": "",
+    "source_climate_metadata_sha256": "905dd41d987a742761d9bb5c8de23e908b730ea70691491483840b998e1ca342",
     "preexisting_archived_original_photo_values": true,
     "independent_new_photographic_assessment": false
   },
