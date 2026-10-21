@@ -59,3 +59,5 @@ S1全球自生域では、種間BIO12と画像角度の正方向関連が系統�
 **S1–S2本文で維持する肯定的な知見：** 全球自生域S1では年降水×画像角度の**種間正関連**が系統配置と撮影者感度を経ても残る。S2では2種とも全導入域への**年降水分布の多雨側偏位**が元出現ECDFと地理セル同時感度でも成立する。一方、頭花角度の**全球全導入域ECDF全体では統計的に明瞭な共通変化は確認されていない**。新しい「局所差候補」は一般化せず、局所的な高角度の原因が確かめられるまで保留する。
 
 **追加実装：** [全帯メタデータ＋全セル除外感度](../s2_conditional_curve_spatial.py)、[unit tests](../../../tests/test_v4_s2_conditional_curve_spatial.py)。元公開分布の数値や限定していない全導入域の主コホートは変更していない。
+
+**全工程の追加再検証：** [source-verified Actions #39660846461](https://github.com/zuizui0223/azami/actions/runs/39660846461) も **success**。workflow内で元暗号化ソース・WCVP/TDWG・5 CHELSA原TIFF・測定CSV検証、全合成テスト、集計プライバシー検査、全雨量区間のメタデータおよび全地理セルleave-one-out出力検査を完走。artifact **12372844249**（ZIP SHA256 **4d661f3973c36f5d4e68ee976605ccdba96493e21760fa0f0d884184a60aaf6d**）内の `S2_full_conditional_rain_angle_ECDF_cell_sensitivity.json` は初回QC実データ実行 #39660730883 と**完全に同一SHA256**（`45e3cfef9199308949f96ffb5cbf902b0a89714eef64cffae25b9c327d578a27`）。これは計算の再現性を確かめたもので、写真姿勢の正確さを検証するものではない。
