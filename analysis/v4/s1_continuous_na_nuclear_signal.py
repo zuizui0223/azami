@@ -80,6 +80,17 @@ def analyze(rows,nuclear,trees,*,bootstrap_reps=399):
         "nuclear_S1_five_climate_adjusted":LambdaProfile(nuclear_C,X5,.05).bootstrap_lambda0(
             y,reps=bootstrap_reps,seed=20261022),
     }
+    # The generic Pagel helper's fixed-tree bootstrap wording describes
+    # placement sensitivity by default. Override it for this source-authored
+    # independently estimated North-American nuclear species tree.
+    for record in boots.values():
+        record["scope"]=(
+            "One independently published author nuclear Cirsium species tree "
+            "(Siniscalchi et al. 2023) pruned to exactly the same 42 S1 photo "
+            "taxa; fixed topology, branch lengths, plug-in error variance and "
+            "source photo-angle measurement; NOT 52 V.PhyloMaker2 placements, "
+            "nor genus-wide ancestry, selection, or environmental causation."
+        )
     # Same data, different tree source. Report all placement scenarios, not
     # 52 independent confirmations of any nuclear-tree result.
     fits=[one_tree(tree,name,rows) for name,tree in trees]
