@@ -48,7 +48,7 @@ CACHE_ARCHIVE_MISSING="Do not substitute the historic 316 native-occupied tile s
 
 
 def prepare_original_wild_sources(sealed:Path,authority_archive:Path,
-                                  secret_hex:str)->tuple[pd.DataFrame,dict]:
+                                  secret_hex:str,*,keep_unbalanced:bool=False):
     clear=decrypt_checked(sealed.read_bytes(),secret_hex,
         ORIGINAL_SEALED_SHA,ORIGINAL_SHA,ORIGINAL_AAD)
     photos=source_photos(clear)
@@ -72,12 +72,13 @@ def prepare_original_wild_sources(sealed:Path,authority_archive:Path,
             raise ValueError("Original source class or taxon WCVP key changed")
     from analysis.v4.native_introduced_opportunity import angular_cells
     relevant["_cell"]=angular_cells(relevant.latitude,relevant.longitude)
+    all_wild=relevant if keep_unbalanced else None
     relevant=relevant.sort_values("obs_id").drop_duplicates(
         ["taxon_name","range_state","_cell","user_id"],keep="first").copy()
     if relevant.obs_id.duplicated().any() or relevant.user_id.isna().any():
         raise ValueError("Wild source IDs/observers changed during balancing")
     # DO NOT require orientation to be scoreable! This is a niche comparison.
-    return relevant,authority
+    return (relevant,authority,all_wild) if keep_unbalanced else (relevant,authority)
 
 
 def official_source_variable_name(name:str)->str:
@@ -187,14 +188,18 @@ def sample_original_pixels(source:Path,site:pd.DataFrame)->np.ndarray:
 
 
 def apply_original_five_CHELSA(wild:pd.DataFrame,land:pd.DataFrame,
-                              *,source_meta:Path,work:Path):
+                              *,source_meta:Path,work:Path,
+                              photo_angles:pd.DataFrame|None=None):
     metadata=json.loads(source_meta.read_text(encoding="utf-8"))
     work.mkdir(parents=True,exist_ok=True)
     site=pd.concat([
         wild[["latitude","longitude"]],
-        land[["latitude","longitude"]]
+        land[["latitude","longitude"]],
+        photo_angles[["latitude","longitude"]]
+          if photo_angles is not None else wild[["latitude","longitude"]].iloc[0:0]
     ],ignore_index=True)
     nw=len(wild)
+    nl=len(land)
     source_audit={}
     for name in VARIABLES:
         path,receipt=acquire_verified_source(name,metadata[name],work)
@@ -202,10 +207,14 @@ def apply_original_five_CHELSA(wild:pd.DataFrame,land:pd.DataFrame,
             source_raw=sample_original_pixels(path,site)
             source_phys=source_raw*float(metadata[name]["scale"])+float(metadata[name]["offset"])
             wild[name]=source_phys[:nw]
-            land[name]=source_phys[nw:]
+            land[name]=source_phys[nw:nw+nl]
+            if photo_angles is not None:
+                photo_angles[name]=source_phys[nw+nl:]
+                receipt["orientation_eligible_original_pixel_finite"]=int(
+                    np.isfinite(photo_angles[name]).sum())
             receipt["wild_pixels_finite"]=int(np.isfinite(source_phys[:nw]).sum())
-            receipt["background_pixels_finite"]=int(np.isfinite(source_phys[nw:]).sum())
-            receipt["background_pixels_nodata"]=int(np.isnan(source_phys[nw:]).sum())
+            receipt["background_pixels_finite"]=int(np.isfinite(source_phys[nw:nw+nl]).sum())
+            receipt["background_pixels_nodata"]=int(np.isnan(source_phys[nw:nw+nl]).sum())
             source_audit[name]=receipt
             if receipt["wild_pixels_finite"]<1000 or receipt["background_pixels_finite"]<1000:
                 raise ValueError("New original TIFF did not yield enough valid source pixels")
@@ -213,7 +222,7 @@ def apply_original_five_CHELSA(wild:pd.DataFrame,land:pd.DataFrame,
             path.unlink(missing_ok=True)
     if list(metadata) and any(name not in source_audit for name in VARIABLES):
         raise ValueError("All five original CHELSA source TIFFs were not verified")
-    return wild,land,source_audit
+    return (wild,land,source_audit,photo_angles) if photo_angles is not None else (wild,land,source_audit)
 
 
 def _collect_background_result(wild:pd.DataFrame,land:pd.DataFrame,
