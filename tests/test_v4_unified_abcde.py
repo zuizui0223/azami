@@ -21,7 +21,11 @@ def synthetic_native(n_taxa=5, n_each=100):
             row={
                 "obs_id":f"obs-{k:02d}-{j:03d}",
                 "accepted_key":str(k+101),
-                "taxon_name":f"Cirsium_synthetic{k}",
+                "taxon_name":(
+                    "Cirsium_brevicaule" if k==0 and j%2==0
+                    else "Cirsium_irumtiense" if k==0
+                    else f"Cirsium_synthetic{k}"
+                ),
                 "latitude":.01 + (j%12)*.001,
                 "longitude":1.+(j%12)*5.1,
                 "observed_on":"2026-04-10" if j%2 else "2026-09-10",
@@ -68,8 +72,8 @@ def test_gate_a_excludes_shared_accepted_key_without_discarding_original_sources
     assert result["source_original_observers"]>0
     assert result["observation_month"]["status"].startswith("source_vs")
     e=ae.gate_e(mapping,native_frame=frame)
-    assert e["eazami_source_concepts"][2]["source_image_support"]["original_source_identification_observations"]==100
-    assert e["eazami_source_concepts"][3]["source_image_support"]["original_source_identification_observations"]==0
+    assert e["eazami_source_concepts"][2]["source_image_support"]["original_source_identification_observations"]==50
+    assert e["eazami_source_concepts"][3]["source_image_support"]["original_source_identification_observations"]==50
     assert e["ryukyu_pair_share_wcvp_key"]
     assert e["eazami_source_concepts"][2]["status"].startswith("COLLISION")
     assert e["eazami_source_concepts"][3]["status"].startswith("COLLISION")
