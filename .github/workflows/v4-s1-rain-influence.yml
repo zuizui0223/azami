@@ -6,6 +6,7 @@ on:
       - '.github/workflows/v4-s1-rain-influence.yml'
       - 'analysis/v4/s1_annual_rain_taxon_influence.py'
       - 'tests/test_v4_s1_annual_rain_taxon_influence.py'
+      - 'tests/test_v4_s1_rain_influence_verified_receipt.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,7 +31,7 @@ jobs:
       - name: Install pinned numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt pytest
       - name: Verify BIO12 effects, image continuity, full S1 five-climate model and HC3 influence
-        run: python -m pytest -q tests/test_v4_s1_annual_rain_taxon_influence.py
+        run: python -m pytest -q tests/test_v4_s1_annual_rain_taxon_influence.py tests/test_v4_s1_rain_influence_verified_receipt.py
       - name: Restore original S1 194 measured taxon angles and five CHELSA source-means, with original archive hash
         run: |
           set -euo pipefail
