@@ -71,11 +71,11 @@ def test_historical_observation_measurements_only_one_value_per_original_obs(mon
     monkeypatch.setattr(m,"SOURCE_N",2)
     payload=pd.DataFrame([
        {"obs_id":"o1","orientation_angle_degrees_median":85.,
-        "n_usable_heads_orientation":1,
-        "corolla_lab_chroma_median":5.,"n_usable_heads_colour":2},
+        "orientation_angle_degrees_n_usable_heads":1,
+        "corolla_lab_chroma_median":5.,"corolla_lab_chroma_n_usable_heads":2},
        {"obs_id":"o2","orientation_angle_degrees_median":85.,
-        "n_usable_heads_orientation":0,
-        "corolla_lab_chroma_median":5.,"n_usable_heads_colour":0}
+        "orientation_angle_degrees_n_usable_heads":0,
+        "corolla_lab_chroma_median":5.,"corolla_lab_chroma_n_usable_heads":0}
     ]).to_csv(index=False).encode()
     out=m.append_observation_measures(mrows,payload)
     assert out.orientation_eligible.tolist()==[True,False]
