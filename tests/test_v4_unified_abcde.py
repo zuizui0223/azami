@@ -143,3 +143,42 @@ def test_unified_main_input_requires_same_verified_native_source_and_models(tmp_
     for path in paths:path.write_text("{}")
     with pytest.raises(ValueError,match="corrected native source bytes"):
         validate_inputs(fake,*paths)
+
+
+def test_unified_gate_b_reuses_exact_same_images_and_all_five_model_axes():
+    from analysis.v4.native_gates_bcd import gate_b
+    from analysis.v4.native_integration import FEATURES
+    rng=np.random.default_rng(92)
+    f,observers,_=synthetic_native(20,50)
+    f["user_id"]=observers.user_id.to_numpy()
+    f["_cell"]=np.arange(len(f))%10
+    columns=list(ae.CORE9)
+    for i,column in enumerate(columns):
+        f[column]=rng.normal(size=len(f)) + (f.accepted_key.astype(int).to_numpy()-100)*.03
+    angles=rng.uniform(-np.pi,np.pi,size=len(f))
+    f["corolla_hue_sin"]=np.sin(angles)
+    f["corolla_hue_cos"]=np.cos(angles)
+    names=["chelsa_bio01","chelsa_bio04","chelsa_bio12",
+           "chelsa_bio15","chelsa_rsds_mean"]
+    for name in names:
+        f[name+"__between"]=0.
+        f[name+"__within"]=0.
+    parts={x:{"status":"estimated",
+              "effects":{name+suffix:{"raw_units_per_environment_sd":0.}
+                         for name in names for suffix in ("__between","__within")}}
+           for x in columns}
+    model={
+        "selection":{"selected":names,"scales":{name:{"mean":0.,"sd":1.} for name in names}},
+        "models":{"all":{"components":parts}},
+    }
+    integration={"coordinate_scales":{x:1. for x in columns}}
+    result=gate_b(f,model,integration,replicates=3)
+    assert result["cohort"] == {
+        "observations":1000, "taxa":20,
+        "one_of_50_per_taxon_in_all_three_phenotype_modules":True
+    }
+    assert len(result["full_28_pair_descriptive"])==28
+    assert len(result["cross_module_pairs"])==19
+    assert result["status"]=="completed_exploratory_matched_native_gate_b"
+    assert result["same_sample_across_B_C_D"]
+    assert result["not_genetic_or_functional_covariance"]
