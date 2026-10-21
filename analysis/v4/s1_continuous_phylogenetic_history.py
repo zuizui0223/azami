@@ -297,6 +297,7 @@ def analyze(items,trees,*,thresholds=SHIFT_DEGREES,expected_taxa=194):
                     "n_eligible_images":x["n_eligible_S1_images"],
                     "image_mean_deg":x["mean_S1_image_axis_deg"],
                     "image_median_deg":x["median_S1_image_axis_deg"],
+                    "S1_five_climate_means":dict(zip(EXPOSURES,[float(z) for z in x["S1_five_climate_means"]])),
                     "source_concept_collision":x["collision"]}
                 for x in sorted(items,key=lambda z:z["tip"])]}
 
