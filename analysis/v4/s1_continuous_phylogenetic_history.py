@@ -234,11 +234,11 @@ def equal_species_five_climate_GLS(tree,tips,trait,climate,*,nugget_fraction=.05
     }
 
 
-def analyze(items,trees,*,thresholds=SHIFT_DEGREES):
+def analyze(items,trees,*,thresholds=SHIFT_DEGREES,expected_taxa=194):
     names=sorted(x["tip"] for x in items)
     byname={x["tip"]:x for x in items}
-    if len(names)!=194 or len(trees)!=52:
-        raise ValueError("Wrong S1 194 source cohort or 52 scenarios")
+    if len(names)!=expected_taxa or len(trees)!=52 or len(set(names))!=len(names):
+        raise ValueError("Wrong source-cohort size, duplicate tips, or 52 tree scenarios")
     climate=np.array([byname[n]["S1_five_climate_means"] for n in names])
     mean=np.array([byname[n]["mean_S1_image_axis_deg"] for n in names])
     median=np.array([byname[n]["median_S1_image_axis_deg"] for n in names])
@@ -252,23 +252,26 @@ def analyze(items,trees,*,thresholds=SHIFT_DEGREES):
         fit=continuous_BM(pruned,names,mean,thresholds=thresholds,cached_paths=cached)
         medfit=continuous_BM(pruned,names,median,thresholds=thresholds,cached_paths=cached)
         spec=equal_species_five_climate_GLS(pruned,names,mean,climate,cached_paths=cached)
-        results.append({"scenario":label,"scope":"194_measured_S1_species_image_axis",
+        results.append({"scenario":label,"scope":f"{expected_taxa}_measured_S1_species_image_axis",
               "branch_length":diag,"species_mean":fit,
               "species_median":medfit,"five_S1_climate_GLS":spec})
     def bounds(vals):
         return [float(min(vals)),float(max(vals))]
     summary={
-      "status":"EMPIRICAL_ALL_194_S1_CONTINUOUS_IMAGE_ORIENTATION_PHYLOGENY",
+      "status":f"EMPIRICAL_{expected_taxa}_S1_CONTINUOUS_IMAGE_ORIENTATION_PHYLOGENY",
       "n_original_S1_eligible_taxon_keys":244,
-      "n_tree_taxon_keys_with_original_continuous_orientation":194,
+      "n_tree_taxon_keys_with_original_continuous_orientation":expected_taxa,
       "n_original_images_in_S1":170066,
       "n_PGLS_historical_placement_scenarios":len(trees),
       "continuous_phenotype":"EXIF_oriented_image_vertical_angle_degrees_NOT_gravity",
       "measurement_is_continuous_not_binary":True,
       "S1_original_five_exposures":list(EXPOSURES),
-      "source_name_collisions_within_194":len(source_collisions),
+      "source_name_collisions_within_modeled_cohort":len(source_collisions),
+      "source_name_collisions_within_194":len(source_collisions) if expected_taxa==194 else 0,
       "source_name_collision_tips":source_collisions,
-      "source_collision_biological_interpretation":"must exclude collisions for definitive species ancestral state; here retained to reproduce original placement cohort",
+      "source_collision_biological_interpretation":(
+          "3 original alias collisions retained ONLY to reproduce legacy S1 placement sensitivity"
+          if source_collisions else "no source-name collision tips retained in sensitivity"),
       "n_BM_nonindependent_branch_shifts_cannot_equal_discrete_origins":True,
       "evolutionary_nodding_gain_count_claimed":False,
       "study_scope":"original 52 GBOTB grafted placements, not independently sequenced global Cirsium species trees",
@@ -286,7 +289,7 @@ def analyze(items,trees,*,thresholds=SHIFT_DEGREES):
                     for r in results])
     for env in ("chelsa_bio12","chelsa_bio15","chelsa_bio01"):
         for field in ("estimate","lower95","upper95"):
-            summary[f"diagnostic_same194_GLS_{env}_{field}_range"]=bounds([
+            summary[f"diagnostic_same{expected_taxa}_GLS_{env}_{field}_range"]=bounds([
               r["five_S1_climate_GLS"]["coefficients_image_axis_deg_per_increment"][env][field]
               for r in results])
     return {"summary":summary, "52_scenario_details":results,
@@ -306,6 +309,15 @@ def main():
     items=verified_species(args.table)
     trees=restore_trees()
     results=analyze(items,trees)
+    # Collision-free biological-taxon sensitivity: reuse ALL 52 original
+    # placements, but do not treat original WCVP-merged names as single species.
+    clean=[record for record in items if not record["collision"]]
+    if len(clean)!=191:
+        raise ValueError("Expected 194 mapped source keys minus exactly three unresolved aliases")
+    sensitivity=analyze(clean,trees,expected_taxa=191)
+    if sensitivity["summary"]["source_name_collisions_within_modeled_cohort"]!=0:
+        raise ValueError("Collision-free ancestral sensitivity still includes merged names")
+    results["collision_free_191_taxon_sensitivity"]=sensitivity["summary"]
     results["source_audit"]={
        "source_sha256":SHA,"native_observation_source_authenticated":True,
        "source_selection_sha256":hashlib.sha256(MODEL_PATH.read_bytes()).hexdigest(),
@@ -317,7 +329,9 @@ def main():
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(results,indent=2,ensure_ascii=False,allow_nan=False)+"\n",
                         encoding="utf-8")
-    print("T2_ALL_S1_CONTINUOUS_194_SUMMARY="+json.dumps(results["summary"],
+    public_summary={**results["summary"],
+       "collision_free_191_taxon_sensitivity":sensitivity["summary"]}
+    print("T2_ALL_S1_CONTINUOUS_194_SUMMARY="+json.dumps(public_summary,
           sort_keys=True,ensure_ascii=False),flush=True)
 
 
