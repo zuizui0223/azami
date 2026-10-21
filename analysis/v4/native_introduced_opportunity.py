@@ -165,6 +165,7 @@ def append_observation_measures(frame:pd.DataFrame,clear:bytes|None)->pd.DataFra
     data["has_archived_measurement_row"]=False
     data["orientation_eligible"]=False
     data["colour_eligible"]=False
+    data["orientation_angle_degrees_median"]=np.nan
     if clear is None:
         return data
     fields=["obs_id","orientation_angle_degrees_median",
@@ -185,9 +186,9 @@ def append_observation_measures(frame:pd.DataFrame,clear:bytes|None)->pd.DataFra
                                    errors="coerce"))
     )
     original_ids=data.obs_id
-    keep=measured[["obs_id","orientation_eligible","colour_eligible"]]
+    keep=measured[["obs_id","orientation_eligible","colour_eligible","orientation_angle_degrees_median"]]
     data=data.drop(columns=["orientation_eligible","colour_eligible",
-                            "has_archived_measurement_row"])
+                            "has_archived_measurement_row","orientation_angle_degrees_median"])
     data=data.merge(keep,on="obs_id",how="left",indicator=True,validate="one_to_one")
     data["has_archived_measurement_row"]=data["_merge"].eq("both")
     data["orientation_eligible"]=data.orientation_eligible.fillna(False).astype(bool)
@@ -346,7 +347,8 @@ def aggregate(frame:pd.DataFrame)->dict:
 
 
 def execute(original:Path,authority:Path,measurements:Path,output:Path,
-            metadata_key_hex:str,measurements_key_hex:str)->dict:
+            metadata_key_hex:str,measurements_key_hex:str,
+            private_focal_output:Path|None=None)->dict:
     native_clear=decrypt_checked(
         original.read_bytes(),metadata_key_hex,ORIGINAL_SEALED_SHA,ORIGINAL_SHA,ORIGINAL_AAD)
     master=source_photos(native_clear)
@@ -360,6 +362,22 @@ def execute(original:Path,authority:Path,measurements:Path,output:Path,
     frame=append_observation_measures(frame,measured)
     del measured
     result=aggregate(frame)
+    if private_focal_output is not None:
+        if "public" in private_focal_output.parts or "private" not in private_focal_output.parts:
+            raise ValueError("Focal record-level data must remain inside private runner directory")
+        fl=frame.loc[frame.taxon_name.isin(TARGET)&frame.orientation_eligible
+                     &frame.eligibility_reason.isin(["include","range_introduced"])].copy()
+        fl["range_state"]=np.where(fl.native_primary.eq(True),"native","introduced")
+        fields=["obs_id","taxon_name","accepted_key","user_id","latitude","longitude",
+                "observed_on","quality_grade","tdwg1","tdwg_level3_code",
+                "range_state","orientation_angle_degrees_median","source_photo_count"]
+        if fl.obs_id.duplicated().any() or fl["orientation_angle_degrees_median"].isna().any():
+            raise ValueError("Original focal response/observation identity changed")
+        private_focal_output.parent.mkdir(parents=True,exist_ok=True)
+        fl.loc[:,fields].to_csv(
+            private_focal_output,index=False,
+            compression={"method":"gzip","mtime":0}
+        )
     output.mkdir(parents=True,exist_ok=True)
     (output/"source665115_introduced_opportunity.json").write_text(
         json.dumps(result,indent=2,ensure_ascii=False,allow_nan=False)+"\n")
@@ -377,10 +395,12 @@ def main()->None:
     p=argparse.ArgumentParser(description=__doc__)
     for key in ("original","authority","measurements","output"):
         p.add_argument("--"+key,type=Path,required=True)
+    p.add_argument("--private-focal-output",type=Path)
     a=p.parse_args()
     execute(a.original,a.authority,a.measurements,a.output,
         os.environ.get("AZAMI_METADATA_KEY",""),
-        os.environ.get("AZAMI_MEASUREMENTS_KEY",""))
+        os.environ.get("AZAMI_MEASUREMENTS_KEY",""),
+        a.private_focal_output)
 
 
 if __name__=="__main__":
