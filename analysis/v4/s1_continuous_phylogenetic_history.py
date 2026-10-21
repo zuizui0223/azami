@@ -136,7 +136,7 @@ def shared_path_matrix(tree,tips):
     return C, ordered, path, parent
 
 
-def continuous_BM(tree,tips,values,*,nugget_fraction=.05,thresholds=SHIFT_DEGREES):
+def continuous_BM(tree,tips,values,*,nugget_fraction=.05,thresholds=SHIFT_DEGREES,cached_paths=None):
     """Fixed-tree continuous Brownian reconstruction with a tip-level nugget.
 
     Likelihood-derived root and rate. Per-edge conditional marginal probabilities
@@ -148,7 +148,8 @@ def continuous_BM(tree,tips,values,*,nugget_fraction=.05,thresholds=SHIFT_DEGREE
     y=np.asarray(values,dtype=float)
     if len(y)!=len(tips) or len(y)<3 or not np.isfinite(y).all():
         raise ValueError("Invalid complete continuous S1 source trait")
-    C,nodes,path,parent=shared_path_matrix(tree,tips)
+    C,nodes,path,parent=(cached_paths if cached_paths is not None
+                         else shared_path_matrix(tree,tips))
     residual_nugget=nugget_fraction*float(np.mean(np.diag(C)))
     V=C+np.eye(len(tips))*residual_nugget
     ch=cho_factor(V)
@@ -200,9 +201,10 @@ def continuous_BM(tree,tips,values,*,nugget_fraction=.05,thresholds=SHIFT_DEGREE
     }
 
 
-def equal_species_five_climate_GLS(tree,tips,trait,climate,*,nugget_fraction=.05):
+def equal_species_five_climate_GLS(tree,tips,trait,climate,*,nugget_fraction=.05,cached_paths=None):
     """Distinct species-mean sensitivity; never substitute for S1 observation fit."""
-    C,_,_,_=shared_path_matrix(tree,tips)
+    C,_,_,_=(cached_paths if cached_paths is not None
+             else shared_path_matrix(tree,tips))
     cov=np.asarray(climate,dtype=float)
     y=np.asarray(trait,dtype=float)
     if cov.shape!=(len(tips),5) or len(y)!=len(tips):
@@ -242,9 +244,12 @@ def analyze(items,trees,*,thresholds=SHIFT_DEGREES):
     results=[]
     for idx,(label,original) in enumerate(trees):
         pruned,diag=audited_pruned_tree(original,names)
-        fit=continuous_BM(pruned,names,mean,thresholds=thresholds)
-        medfit=continuous_BM(pruned,names,median,thresholds=thresholds)
-        spec=equal_species_five_climate_GLS(pruned,names,mean,climate)
+        # Same exact 194 taxa and topology; compute and validate covariance
+        # only once for the continuous mean, median and 5-environment GLS.
+        cached=shared_path_matrix(pruned,names)
+        fit=continuous_BM(pruned,names,mean,thresholds=thresholds,cached_paths=cached)
+        medfit=continuous_BM(pruned,names,median,thresholds=thresholds,cached_paths=cached)
+        spec=equal_species_five_climate_GLS(pruned,names,mean,climate,cached_paths=cached)
         results.append({"scenario":label,"scope":"194_measured_S1_species_image_axis",
               "branch_length":diag,"species_mean":fit,
               "species_median":medfit,"five_S1_climate_GLS":spec})
