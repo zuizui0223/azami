@@ -30,6 +30,7 @@ from analysis.v4.native_cached_climate import (
 
 SEED=20261021
 BOOTSTRAP=1000
+EXPECTED_FOCAL_SOURCE_N=173737
 MIN_DESCRIPTIVE_PHOTOS=30
 MIN_DESCRIPTIVE_CELLS=5
 MIN_DESCRIPTIVE_OBSERVERS=10
@@ -203,7 +204,7 @@ def analyse_regions(
     if set(private_source.range_state)!={"native","introduced"}:
         raise ValueError("Exact WCVP source status needed")
     original=private_source.copy()
-    if len(original)!=173737:
+    if len(original)!=EXPECTED_FOCAL_SOURCE_N:
         raise ValueError("Original two-species global source observation census changed")
     balanced=dated_and_balanced(original)
     if balanced.empty or balanced.obs_id.duplicated().any():
