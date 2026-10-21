@@ -20,7 +20,7 @@ def synthetic(seed=312):
                 wet=cell%6==0
                 rain=(
                     430+17*cell+5*j if status=="native" else
-                    620+20*cell+5*j+250*wet)
+                    470+18*cell+5*j+75*wet)
                 head=(67+0.015*(rain-700)
                       + 7*(status=="introduced")
                       +rng.normal(0,9))
