@@ -167,6 +167,29 @@
         "adequately_sampled_introduced_region": "North America only under existing original-pixel 316 native-occupied cell caches",
         "strong_focal_evolutionary_fixed_trait_evidence": false,
         "all_slope_difference_intervals_cross_zero": true
+      },
+      "climate_niche_occupancy": {
+        "status": "OBSERVATIONAL_SOURCE_PHOTO_CLIMATIC_NOVELTY_ESTIMATED_NOT_REALIZED_NICHE_ADAPTATION_OR_RATE",
+        "github_actions_run": 39545903306,
+        "receipt": "analysis/v4/results/20261021_unified_abcde/S2_CLIMATE_NICHE_NOVELTY_20261021.json",
+        "report": "analysis/v4/results/20261021_unified_abcde/S2_CLIMATE_NICHE_NOVELTY_RESULT_JA.md",
+        "evaluation": "Introduced records outside native 5th–95th marginal percentile along any fixed BIO1 BIO4 BIO12 BIO15 RSDS predictor, using same source orientation-eligible photographs",
+        "Cirsium arvense": {
+          "introduced_outside_native_fraction_photo_observation_weight": 0.7338916493027728,
+          "introduced_outside_native_fraction_equal_total_cell_weight": 0.3915979114132539,
+          "native_outside_own_fraction_equal_total_cell_weight": 0.3504546835767436,
+          "cell_equal_excess_over_native_baseline": 0.04114322783651031
+        },
+        "Cirsium vulgare": {
+          "introduced_outside_native_fraction_photo_observation_weight": 0.5982146368319635,
+          "introduced_outside_native_fraction_equal_total_cell_weight": 0.48284054033186696,
+          "native_outside_own_fraction_equal_total_cell_weight": 0.3722561954408918,
+          "cell_equal_excess_over_native_baseline": 0.11058434489097513
+        },
+        "per_original_geo_cell_weighting_changes_magnitude": true,
+        "novel_climate_adaptive_evolution": false,
+        "photography_detection_effort_bias_unresolved": true,
+        "continent_global_invasion_conclusion_supported": false
       }
     },
     "all_350_source_species_screen": {
@@ -265,6 +288,6 @@
     "epistemic_status": "S1 OBSERVED AND SOURCE-OBSERVER-ROBUST; S2 PROVISIONAL OBSERVED WITH FIVE-CLIMATE SUPPORT LIMIT; T2/T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
-    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_FIVE_EXPOSURE_COMMON_SUPPORT_RESULT_JA.md"
+    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_CLIMATE_NICHE_NOVELTY_RESULT_JA.md"
   }
 }
