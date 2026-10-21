@@ -1,0 +1,336 @@
+{
+  "schema_version": "azami_V4_T2_five_S1_climate_source_stratification_original_nuclear_Mk_20261021_v1",
+  "result_class": "EXECUTED_OBSERVATIONAL_SOURCE_STRATIFIED_AND_PUBLISHED_NUCLEAR_Mk_NULL_NOT_RAIN_ADAPTATION",
+  "run_url": "https://github.com/zuizui0223/azami/actions/runs/39587904816",
+  "run_id": 39587904816,
+  "original_job_id": 119181430701,
+  "artifact": {
+    "id": 12339653025,
+    "name": "v4-t2-source-blocked-five-climate",
+    "digest": "sha256:022501717ab262fee3fc11f856af8200b26f0567c3fd7defa95d155e389ea72b",
+    "size_bytes": 10190
+  },
+  "joined_source_receipt": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
+  "joined_source_artifact_run_id": 39584744194,
+  "script": "analysis/v4/t2_source_blocked_five_climate.py",
+  "tests": "tests/test_v4_t2_source_blocked_five_climate.py",
+  "exact_publication_inputs": [
+    {
+      "name": "Siniscalchi2023 published biological orientation and nuclear tree",
+      "repo": "carol-siniscalchi/cirsium",
+      "commit": "c925d4af86160064448f794a9715f70b917a2786",
+      "doi": "10.1086/724310"
+    },
+    {
+      "name": "EAzami FDT4 curated East Asian morphology",
+      "repo": "zuizui0223/EAzami",
+      "commit": "c9870e91604ed1514344ddc8f765eae5237dbf27"
+    },
+    {
+      "name": "Azami native-S1 corrected observation source",
+      "sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
+    }
+  ],
+  "interpretation_boundaries": {
+    "S1_continuous_image_angle_distinct_from_biological_head_posture": true,
+    "source_blocked_45920_exact_permutations_are_not_phylogenetic_null": true,
+    "Brownian_covariance_GLSEffect_alone_does_not_make_label_permutation_phylo_valid": true,
+    "NorthAmerican_42_nuclear_Mk_root_sensitive_plug_in_null_independently_executed": true,
+    "Mk_not_full_rate_topology_age_uncertainty": true,
+    "two_axis_maxT_is_not_climate_specific_partial_null_when_other_covariates_may_act": true,
+    "52_grafted_trees_not_independent_Cirsium_origin_events": true,
+    "independent_evolutionary_gain_events_established": false,
+    "historical_precipitation_at_state_transitions_estimated": false,
+    "EAzami_as_independent_validation": false
+  },
+  "summary": {
+    "NA42_equal_species": {
+      "all_five_covariates_in_model": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "estimated_linear_probability_coefficient_per_1SD": [
+        0.012041146373051245,
+        -0.048660403484566746
+      ],
+      "interpretation": "Conditional on source-lane counts under global sharp null of state/environment exchangeability; NOT axis-specific partial p if other exposure effects exist; no adaptation inference",
+      "model": "equal_species_fixed_source",
+      "n_downward": 3,
+      "n_taxa": 42,
+      "null_maps": 11480,
+      "source_prevalence": {
+        "EA": {
+          "D": 0,
+          "n": 0
+        },
+        "NA": {
+          "D": 3,
+          "n": 42
+        }
+      },
+      "source_stratified_exact_sharp_null_two_sided_p": [
+        0.8353658536585366,
+        0.35418118466898957
+      ],
+      "two_axis_maxT_source_stratified_exact_p": [
+        0.9710801393728223,
+        0.5730836236933798
+      ],
+      "two_registered_precipitation_axes": [
+        "chelsa_bio12",
+        "chelsa_bio15"
+      ]
+    },
+    "NA42_independent_nuclear_Mk_prevalence_null": {
+      "NA_EA_full_46_phylogenetic_null_not_computed": true,
+      "five_S1_environment_exposures": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "mode": "genuine_phylogeny_correlated_plug_in_Mk_tip_null_for_NA_only",
+      "no_historical_climate_at_transition_inferred": true,
+      "nuclear_tip_cohort": 42,
+      "original_nodding_taxa": 3,
+      "root_sensitivity": {
+        "erect": {
+          "Mk_MLE_loglikelihood": -11.115756078251943,
+          "Mk_MLE_rate_per_original_branch_unit": 0.04292633686495461,
+          "accepted_matching_NA_nodding_prevalence": 2224,
+          "axiswise_Mk_p": [
+            0.7268487674883412,
+            0.6515656229180546
+          ],
+          "null": "NA42_original_nuclear_symmetric_Mk_prevalence_conditioned",
+          "null_draws_used": 1500,
+          "null_mean": [
+            -0.004243419896324438,
+            0.0019979195024912235
+          ],
+          "null_q025_q50_q975": [
+            [
+              -0.12417864987503091,
+              -0.006352514888873606,
+              0.12282325458728964
+            ],
+            [
+              -0.09341079570421403,
+              -0.0035147200102497392,
+              0.12071129674105108
+            ]
+          ],
+          "null_sd": [
+            0.06245804087368842,
+            0.054073717834285905
+          ],
+          "observed_five_exposure_GLS_coefficients": [
+            0.016783856155216534,
+            -0.020790158532731272
+          ],
+          "phylogenetic_tree": "Siniscalchi et al. 2023 published 63-tip nuclear pruned to 42 S1 tips",
+          "proposed_tip_histories": 12288,
+          "rate_near_optimizer_bounds": false,
+          "root_model": "erect",
+          "status": "conditional_nuclear_Mk_null_computed",
+          "two_axis_maxT_Mk_p": [
+            0.9213857428381079,
+            0.8807461692205196
+          ]
+        },
+        "stationary": {
+          "Mk_MLE_loglikelihood": -11.774513078046322,
+          "Mk_MLE_rate_per_original_branch_unit": 0.04397805335881568,
+          "accepted_matching_NA_nodding_prevalence": 1703,
+          "axiswise_Mk_p": [
+            0.7495003331112592,
+            0.7128580946035976
+          ],
+          "null": "NA42_original_nuclear_symmetric_Mk_prevalence_conditioned",
+          "null_draws_used": 1500,
+          "null_mean": [
+            -0.0029818601123973217,
+            -0.000470993965357251
+          ],
+          "null_q025_q50_q975": [
+            [
+              -0.12475346588607661,
+              -0.004832521550572384,
+              0.13104107725194178
+            ],
+            [
+              -0.09442374114174146,
+              -0.007022936725799578,
+              0.12082271362938497
+            ]
+          ],
+          "null_sd": [
+            0.06399100527373615,
+            0.05459216390842636
+          ],
+          "observed_five_exposure_GLS_coefficients": [
+            0.016783856155216534,
+            -0.020790158532731272
+          ],
+          "phylogenetic_tree": "Siniscalchi et al. 2023 published 63-tip nuclear pruned to 42 S1 tips",
+          "proposed_tip_histories": 16384,
+          "rate_near_optimizer_bounds": false,
+          "root_model": "stationary",
+          "status": "conditional_nuclear_Mk_null_computed",
+          "two_axis_maxT_Mk_p": [
+            0.938707528314457,
+            0.9100599600266489
+          ]
+        }
+      },
+      "two_registered_axes": [
+        "chelsa_bio12",
+        "chelsa_bio15"
+      ],
+      "uncertainty_limitation": "Fixed nuclear topology/branch lengths, fitted Mk point-rate and selected 42 taxa; neither rainfall-dependent transition-rate nor climate-specific causal effect"
+    },
+    "NA42_independent_published_nuclear": {
+      "all_five_covariates_in_model": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "estimated_linear_probability_coefficient_per_1SD": [
+        0.016783856155216534,
+        -0.020790158532731272
+      ],
+      "interpretation": "Conditional on source-lane counts under global sharp null of state/environment exchangeability; NOT axis-specific partial p if other exposure effects exist; no adaptation inference",
+      "model": "Brownian_covariance_fixed_5pct_nugget",
+      "n_downward": 3,
+      "n_taxa": 42,
+      "null_maps": 11480,
+      "source_prevalence": {
+        "EA": {
+          "D": 0,
+          "n": 0
+        },
+        "NA": {
+          "D": 3,
+          "n": 42
+        }
+      },
+      "source_stratified_exact_sharp_null_two_sided_p": [
+        0.7877177700348432,
+        0.7045296167247387
+      ],
+      "two_axis_maxT_source_stratified_exact_p": [
+        0.9529616724738676,
+        0.9023519163763066
+      ],
+      "two_registered_precipitation_axes": [
+        "chelsa_bio12",
+        "chelsa_bio15"
+      ]
+    },
+    "NA_EA_source_blocked_null_maps": 45920,
+    "NA_only_null_maps": 11480,
+    "PGLS_scenario_count": 52,
+    "S1_five_fixed_exposures": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "S1_frozen_model_refitted": false,
+    "S1_original_image_angle_native_taxa": 244,
+    "S1_placement_tree_original_cohort": 194,
+    "climate_dependent_transition_rates_estimated": false,
+    "independent_binary_states_matched_to_S1_and_tree": 46,
+    "independent_evolutionary_origins_or_dates_estimated": false,
+    "joined46_BIO12_estimated_linear_probability_coefficient_per_1SD_scenario_range": [
+      -0.12218412475769161,
+      0.07392454337011388
+    ],
+    "joined46_BIO12_two_axis_maxT_source_stratified_exact_p_scenario_range": [
+      0.604616724738676,
+      0.9999782229965157
+    ],
+    "joined46_BIO15_estimated_linear_probability_coefficient_per_1SD_scenario_range": [
+      -0.10882065819621468,
+      0.02779495291090109
+    ],
+    "joined46_BIO15_two_axis_maxT_source_stratified_exact_p_scenario_range": [
+      0.11855400696864112,
+      0.9983885017421603
+    ],
+    "matched_EA": 4,
+    "matched_NA": 42,
+    "nodding_EA": 3,
+    "nodding_NA": 3,
+    "not_prospective_independent_EAzami_validation": true,
+    "null_type": "sharp no-climate-state-association conditioned on original source counts, NOT single-axis partial null",
+    "phylogeny_calibration_warning": "52-grafted-tree sharp-null ranks are NOT correlated-tip phylogenetic null probabilities; the NA42 original molecular tree has a separately calibrated symmetric-Mk plug-in sensitivity",
+    "primary_precipitation": "chelsa_bio12",
+    "sameNA42_BIO12_estimated_linear_probability_coefficient_per_1SD_scenario_range": [
+      0.000453040610428692,
+      0.10539338324040783
+    ],
+    "sameNA42_BIO12_two_axis_maxT_source_stratified_exact_p_scenario_range": [
+      0.26498257839721256,
+      0.9998257839721254
+    ],
+    "sameNA42_BIO15_estimated_linear_probability_coefficient_per_1SD_scenario_range": [
+      -0.11269834584632434,
+      0.015117784966603412
+    ],
+    "sameNA42_BIO15_two_axis_maxT_source_stratified_exact_p_scenario_range": [
+      0.13902439024390245,
+      0.9998257839721254
+    ],
+    "secondary_precipitation": "chelsa_bio15",
+    "source_confounded_region_response": "East Asia 3 D among 4 taxa, NA 3 D among 42; no independent regional replication or interaction power",
+    "status": "REAL_SOURCE_BLOCKED_FIVE_S1_COVARIATES_EMPIRICAL_ASSOCIATION",
+    "whole46_equal_species": {
+      "all_five_covariates_in_model": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "estimated_linear_probability_coefficient_per_1SD": [
+        -0.07106796800422621,
+        -0.04499973354640135
+      ],
+      "interpretation": "Conditional on source-lane counts under global sharp null of state/environment exchangeability; NOT axis-specific partial p if other exposure effects exist; no adaptation inference",
+      "model": "equal_species_fixed_source",
+      "n_downward": 6,
+      "n_taxa": 46,
+      "null_maps": 45920,
+      "source_prevalence": {
+        "EA": {
+          "D": 3,
+          "n": 4
+        },
+        "NA": {
+          "D": 3,
+          "n": 42
+        }
+      },
+      "source_stratified_exact_sharp_null_two_sided_p": [
+        0.622626306620209,
+        0.3890897212543554
+      ],
+      "two_axis_maxT_source_stratified_exact_p": [
+        0.8390897212543554,
+        0.6535714285714286
+      ],
+      "two_registered_precipitation_axes": [
+        "chelsa_bio12",
+        "chelsa_bio15"
+      ]
+    }
+  }
+}
