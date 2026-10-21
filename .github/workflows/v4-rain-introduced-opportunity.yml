@@ -122,7 +122,7 @@ jobs:
           assert set(files)=={'source665115_introduced_opportunity.json',
                                'S2_native_introduced_climate_transfer.json',
                                'S2_native_introduced_common_support.json'}, files
-          d=json.loads((output/files[0]).read_text())
+          d=json.loads((output/'source665115_introduced_opportunity.json').read_text())
           o=d['overall']
           assert o['status_partition_conserved']
           assert o['original_observations']==665115
