@@ -66,6 +66,10 @@ def test_real_wet_edge_angle_distribution_not_population_mean():
     result=evaluate(source,photo)
     assert set(result["focal"])==set(SPECIES)
     for species in SPECIES:
+        n=result["focal"][species]["native_internal_wet_edge"]
+        assert n["not_a_native_to_introduced_evolutionary_counterfactual"]
+        assert n["photographed_native_wet_edge"]["n"]>=0
+        assert n["conditional_angle_distribution"]["status"]
         r=result["focal"][species]["introduced_by_continent"]["North America"]
         assert r["source_wet_edge"]["cells"]>=15
         assert r["matching"]["status"]=="ANGLE_BLIND_MATCH_COMPLETE"
