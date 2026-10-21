@@ -133,10 +133,6 @@ def simulate_mk_tip_matrix(tree, rate, n, rng, root_mode="stationary"):
     nodes = list(tree.find_clades(order="preorder"))
     state = {tree.root: (np.zeros(n,dtype=np.int8) if root_mode=="erect"
                          else rng.integers(0,2,size=n,dtype=np.int8))}
-    for node in nodes[1:]:
-        # Find parent exactly once from the rooted tree.
-        # Parent lookup constructed below for the full tree to avoid quadratic search.
-        pass
     parent = {child: node for node in nodes for child in node.clades}
     for node in nodes[1:]:
         length = float(node.branch_length)
@@ -173,13 +169,15 @@ def fitted_rate_given_root(tree, state_dict, mode):
 def simulate_fixed_prevalence_shuffle(n,k,residual,proposals,seed):
     rng = np.random.default_rng(seed)
     results=[]
-    while sum(len(x) for x in results) < proposals:
-        batch=min(4096, proposals-sum(len(x) for x in results))
+    completed=0
+    while completed < proposals:
+        batch=min(4096, proposals-completed)
         u=rng.random((batch,n))
         indices=np.argpartition(u,k-1,axis=1)[:,:k]
         state=np.zeros((batch,n),dtype=np.int8)
         state[np.arange(batch)[:,None],indices]=1
         results.append(signed_contrast(state,residual))
+        completed+=batch
     return np.concatenate(results,axis=0)
 
 
@@ -269,6 +267,13 @@ def evaluate_tree(tree,states,climate,*,seed,root_modes=("erect","stationary"),
     result={"status":"assessable_published_head_state_climate",
             "trait_and_environment":desc,
             "root_hypotheses":{}}
+    shuffled=simulate_fixed_prevalence_shuffle(len(y),int(y.sum()),resid,
+                 proposals=max(2000, target_draws * 4),seed=seed+10000)
+    result["nonphylogenetic_fixed_prevalence_shuffle"]=inference_from_null(
+       obs,shuffled,{"status":"calibrated_label_shuffling_not_phylogenetic",
+                     "used_accepted_null_draws":len(shuffled),
+                     "null_name":"nonphylogenetic_fixed_prevalence_tip_label_shuffling"},
+       min_accepted=200)
     for i,root_mode in enumerate(root_modes):
         null, diag=conditional_mk_null(phy,observed,resid,root_mode=root_mode,
                                        seed=seed+i,target_draws=target_draws,
