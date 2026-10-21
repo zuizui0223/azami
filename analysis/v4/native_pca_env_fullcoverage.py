@@ -41,6 +41,7 @@ from analysis.v4.native_full_rain_head_response import analyse_photo_orientation
 from analysis.v4.native_wet_edge import save as save_wet_edge
 from analysis.v4.s2_rainfall_occupancy_trait import save as save_rain_occupancy_trait
 from analysis.v4.native_rain_niche_trait_redistribution import save as save_rain_niche_trait
+from analysis.v4.s2_full_distribution_exploration import save as save_full_distribution
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -397,6 +398,15 @@ def execute(original:Path,authority_archive:Path,source_meta:Path,
         },ensure_ascii=False),flush=True)
         # Orthogonal ecological check: available rainfall backgrounds and
         # standardized full photo-angle CDF decomposition, NOT a second source.
+        # Keep the S2 main exploratory comparison metric-free: both complete
+        # empirical CDFs from exactly the same authenticated climate/photo source.
+        distribution_report=save_full_distribution(
+            wild,photo,output,
+            source_sha={k:v["source_SHA256"] for k,v in audit.items()})
+        print(json.dumps({
+            "S2_full_original_distributions":distribution_report["status"],
+            "no_selected_statistical_indices":True,
+        },ensure_ascii=False),flush=True)
         conditional_report=save_rain_niche_trait(wild,land,auth,photo,output)
         print(json.dumps({
             "S2_rainfall_opportunity_plus_phenotype":conditional_report["status"],
