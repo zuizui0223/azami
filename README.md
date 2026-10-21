@@ -18,47 +18,17 @@ The current statistical analysis **has executable code**. Its replay starts from
 6. [Reproducibility and archive status](reproducibility/README.md): published Zenodo inputs and their verification.
 7. [Historical implementations](legacy/README.md): v2 and superseded entry points. Do not start the current paper analysis from these scripts.
 
-## Native-only follow-up (not a replacement for frozen v3)
+## One unified native A→E research workflow (experimental V4; V3 frozen)
 
-The active native V4 consolidation is described in the
-[integrated workflow plan](docs/superpowers/plans/2026-10-20-v4-native-integration.md).
-It retains V3's within/between phenotype-integration question, with
-endpoint-specific full native observations and a shared conditional environmental
-model. Use the single **V4 native capitulum integration** Action on
-`codex/v4-native-integration-workflow`: an empty `report_run` executes numerical
-stages; a completed run ID regenerates figures and the report without refitting.
-The [environment](analysis/v4/ENVIRONMENT_CONTRACT.md),
-[model](analysis/v4/MODEL_CONTRACT.md),
-[integration](analysis/v4/INTEGRATION_CONTRACT.md) and
-[spatial](analysis/v4/SPACE_CONTRACT.md) contracts define the fixed scope and
-limits. PR143 remains closed. Frozen V3 replay and its scientific reference
-outputs are unchanged.
+**[Scientific question and A→E execution contract](analysis/v4/UNIFIED_NATIVE_GATE_A_TO_E_JA.md)**
 
-The separate **V4 native phylogenetic sensitivity** Action reuses the frozen
-Zenodo placement trees with the same five-environment observation-level model.
-The [completed placement sensitivity](analysis/v4/results/20261020_native_phylogeny/README.md)
-retains a positive between-species rainfall–orientation coefficient across all
-52 placements on 194 covered taxa; the within-species interval includes zero.
-This is a grafting-scenario sensitivity, not a resolved molecular phylogeny,
-joint spatial–phylogenetic model or evolutionary cross-trait covariance test.
+The native branch is **one study**, not independent Gate A, B, C, D and E papers or separately owned PRs. The [single V4 native integration Action](.github/workflows/v4-native-integration.yml) authenticates the same original 313,350-observation source and original human observer metadata, audits endpoint-specific QC and taxon concepts (**A**), compares matched within-/between-taxon covariance (**B**), estimates actual shared-space KDE density overlap and centre/shape-decomposed Wasserstein distances (**C**), compares the resulting distributions along native BIO12/RSDS regimes while reusing the existing fixed five-environment fitted model and spatial/phylogenetic placement sensitivities (**D**), and identifies taxon-concept matches and independently required functional/genomic experiments in EAzami/aza3 (**E**). All public workflow outputs contain **aggregate statistics only**; individual records, photographers, private source metadata and keys stay private.
 
-The [joint covariance decomposition](analysis/v4/results/20261020_native_covariance/README.md)
-then separates phylogenetic, independent-species and within-species covariance
-on 157561 common observations from 170 taxa. It uses constrained quadratic
-moments and conditional parametric uncertainty. Phylogenetic correlation
-directions are unstable; extreme boundary estimates are not evidence of
-evolutionary integration. The dedicated **V4 native covariance decomposition**
-Action supports numerical execution or report-only `report_run` rendering.
+The original pre-detector native-range roster is **313,350 observations / 306 accepted WCVP keys**, with **157,779 observations / 242 keys** eligible for the same nine primary image outputs. The endpoint inventory retains **27 registered outputs**, of which **22** had historical numeric measurements; those are not 27 independent anatomical or biological traits. The concept audit detected **seven accepted-key source-name collisions**, including the Ryukyu source labels *Cirsium brevicaule* and *C. irumtiense* on the same key. The unified registered sensitivity keeps mixed concepts **out of its balanced A→D cohort** and records them explicitly for future authority-backed resolution.
 
-The verified 665,115-observation original-source classification yields a
-313,350-observation native-primary roster **before** any image or trait selection.
-Only 22 of the 27 registered V2 endpoints have historical measurements; five were
-never measured. See the [current corrected input audit](analysis/v4/results/native_input_audit/README.md)
-for counts and the [earlier handoff](reproducibility/NATIVE_FIRST_27_ENDPOINT_HANDOFF.md)
-for upstream history. Earlier environment-completeness counts predate correction
-of invalid raster values. Upstream acquisition and image remeasurement remain
-paused; the bounded native integration Action is active under the user's revised
-scope. Native V4 outputs remain distinct from frozen V3 results.
+The new exploratory matched analysis predefines **one source observation per accepted taxon×5° spherical equal-area cell×original observer stratum**, then up to 40 eligible taxa, with shared 50-record/taxon rarefactions. The first unified numerical run is [Actions #39520165155](https://github.com/zuizui0223/azami/actions/runs/39520165155), which completed the connected sampling, covariance, KDE/W2 and native climate-distribution pilot. Rarefaction repetitions and technical camera/pigment validation are not yet publication-grade; photographic overlap does not demonstrate adaptation or genetic modularity. The latest source and final results are identified in its run-specific aggregate `unified_gate_abcde.json`.
+
+The original whole-native joint five-environment results, conditional cell-spatial diagnostics, [52 historical placement sensitivities](analysis/v4/results/20261020_native_phylogeny/README.md) and [104 three-component conditional covariance fits](analysis/v4/results/20261020_native_covariance/README.md) remain part of this **same V4 research question**. The separate long numerical Actions that generated those frozen evidence objects are computational subjobs, **not independent scientific gates**. Their source and estimator limitations are retained. The frozen V3 GEB eight-stage/16-reference-output analysis and main manuscript claims remain untouched.
 
 ## Current evidence chain
 
