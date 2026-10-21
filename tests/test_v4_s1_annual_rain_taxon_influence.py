@@ -68,7 +68,7 @@ def test_shift_angle_zero_and_temperature_scale_invariance():
 def test_fails_with_nonindependent_or_missing_five_climate_inputs():
     rows=synthetic()
     rows[1]["tip"]=rows[0]["tip"]
-    with pytest.raises(ValueError,match="Non-unique"):
+    with pytest.raises(ValueError,match="Unverified/source-collided"):
         rain.prepare(rows,"image_mean_deg")
     rows=synthetic()
     rows[0]["S1_five_climate_means"]["chelsa_bio15"]=float("nan")
