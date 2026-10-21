@@ -170,7 +170,7 @@ def cross_fitted_geographic_novelty(
             "genuinely_heldout_native_novel_fraction_partition_q025_q50_q975": quantiles(1),
             "introduced_minus_heldout_native_fraction_partition_q025_q50_q975": quantiles(2),
             "fraction_of_random_partitions_with_positive_excess": float(np.mean(x[:,2] > 0)),
-            "source_rain_and_head_angle_never_entered_selection": True,
+            "head_angle_never_entered_climate_reference_or_fold_selection": True,
             "not_a_sampling_confidence_interval": True,
         }
 
