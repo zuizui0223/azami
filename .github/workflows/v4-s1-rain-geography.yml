@@ -1,0 +1,79 @@
+name: V4 S1 native rain geographic and spatial confounding
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s1-rain-geography.yml'
+      - 'analysis/v4/s1_rain_native_geographic_controls.py'
+      - 'tests/test_v4_s1_rain_native_geographic_controls.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-s1-rain-geography-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  original-S1-native-geography:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install current pinned numerical inputs
+        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+      - name: Test original five CHELSA variables, source coordinates, sector and spherical design rank
+        run: python -m pytest -q tests/test_v4_s1_rain_native_geographic_controls.py
+      - name: Restore original S1 native observations without publishing coordinate-level data
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1-geography/private work/s1-geography/receipt work/s1-geography/result
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/s1-geography/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/s1-geography/receipt
+          python - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          path=Path('work/s1-geography')
+          raw=(path/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(path/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Private original S1 source integrity/authentication failed') from None
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (path/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Decode original CHELSA source with physical units and frozen SHA
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/s1-geography/private/observations.csv.gz \
+            --receipt work/s1-geography/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/s1-geography/decoded
+      - name: Test BIO12/BIO15 native S1 photo angles after predeclared geographic controls, 5-degree cell equalisation, and regional holdouts
+        run: |
+          python -m analysis.v4.s1_rain_native_geographic_controls \
+            --table work/s1-geography/decoded/observations.csv.gz \
+            --out work/s1-geography/result/S1_RAIN_NATIVE_GEO_CONTROLS.json
+      - name: Upload aggregate coefficients only; no coordinates or observation-level records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-native-geography-BIO12-5climate-sensitivity
+          path: work/s1-geography/result/
+          if-no-files-found: warn
+          retention-days: 90
