@@ -73,6 +73,18 @@ def test_original_north_american_42_tree_same_tip_and_regional_joins():
     assert outcome["null_maps"]==11480
     with pytest.raises(ValueError,match="absent from tree"):
         m.tree_covariance_for(tree,na["names"]+["Cirsium_missing"])
+    evolved=m.nuclear_Mk_prevalence_null(na,tree,seed=77,
+                   target_accepted=350,max_proposals=30000)
+    assert evolved["mode"].startswith("genuine_phylogeny_correlated")
+    assert evolved["nuclear_tip_cohort"]==42
+    assert evolved["NA_EA_full_46_phylogenetic_null_not_computed"] is True
+    assert set(evolved["root_sensitivity"])=={"erect","stationary"}
+    for result in evolved["root_sensitivity"].values():
+        assert result["proposed_tip_histories"]<=30000
+        assert result["null_draws_used"]<=350
+        if result["status"]=="conditional_nuclear_Mk_null_computed":
+            assert len(result["two_axis_maxT_Mk_p"])==2
+            assert all(0<p<=1 for p in result["two_axis_maxT_Mk_p"])
 
 
 def test_source_concepts_not_included_without_five_frozen_covariates():
