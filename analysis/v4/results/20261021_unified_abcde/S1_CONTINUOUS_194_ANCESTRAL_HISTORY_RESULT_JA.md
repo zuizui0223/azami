@@ -1,6 +1,6 @@
 # S1実測連続角度を主役にした194分類キーの系統進化予備解析
 
-**2026-10-21｜実測による実行成功。[GitHub Actions 39590112876](https://github.com/zuizui0223/azami/actions/runs/39590112876)、[元の実行ログに基づくSHA付き数値レシート](S1_CONTINUOUS_194_52_TREE_VERIFIED_20261021.json)。**
+**2026-10-21｜実測による実行成功。[GitHub Actions 39590112876](https://github.com/zuizui0223/azami/actions/runs/39590112876)、[元の実行ログに基づくSHA付き数値レシート](S1_CONTINUOUS_194_52_VERIFIED_20261021.json)。**
 
 ## 中心となる研究設計の修正
 
