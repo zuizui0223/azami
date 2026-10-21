@@ -116,6 +116,38 @@ def _area_and_source(source,available):
         "not_organism_independent_or_causal_environmental_selection":True,
     }
 
+def _opportunity_shift(native_source,intro_source,native_area,intro_area):
+    """Contrast rainfall occupancy and its WCVP available-climate background.
+
+    Purely descriptive; WCVP available land is not actual dispersal or
+    surveyed habitat, and observer uploads are not independent plant genets.
+    """
+    if native_area is None or intro_area is None:
+        return {"status":"NO_COMMON_NATIVE_INTRODUCED_WCVP_AREA_BASELINE"}
+    n=_counts(native_source)
+    i=_counts(intro_source)
+    comparisons={}
+    for label,index in (("above_native_q75",3),("above_native_q95",5)):
+        pn=float(n[index:].sum())
+        pi=float(i[index:].sum())
+        an=float(native_area[index:].sum())
+        ai=float(intro_area[index:].sum())
+        comparisons[label]={
+            "native_source_fraction":pn,
+            "introduced_source_fraction":pi,
+            "recorded_occurrence_shift_introduced_minus_native":pi-pn,
+            "native_available_climate_area_fraction":an,
+            "introduced_available_climate_area_fraction":ai,
+            "available_climate_area_shift_introduced_minus_native":ai-an,
+            "occurrence_shift_minus_available_area_shift":(pi-pn)-(ai-an)
+        }
+    return {
+        "status":"DECOMPOSED_DESCRIPTIVE_WET_OPPORTUNITY_VS_OCCUPANCY",
+        "thresholds":comparisons,
+        "not_establishment_or_selection_causal_effect":True,
+        "background_WCVP_available_not_actual_survey_effort":True
+    }
+
 def _profile(photo):
     cell=photo["angle_cell_band"].sum(axis=0)
     weights=cell.sum(axis=1)
@@ -301,6 +333,7 @@ def evaluate(wild:pd.DataFrame,land:pd.DataFrame,authority:dict,
             raise ValueError("Original TDWG available background absent")
         nsh=_histogram(native,percentiles)
         nph=_histogram(pn,percentiles,angle=True)
+        native_available=_background_profile(nbg,percentiles)
         summary={
             "native_rain_source_cutoffs_q25_q50_q75_q90_q95_mm":percentiles,
             "rain_classes":list(BANDS),
@@ -323,10 +356,12 @@ def evaluate(wild:pd.DataFrame,land:pd.DataFrame,authority:dict,
             if not len(scope):
                 continue
             ish=_histogram(scope,percentiles)
+            introduced_available=_background_profile(back,percentiles)
             entry={
                 "source_n":len(scope),"photo_n":len(iphotos),
-                "source_rain":_area_and_source(
-                    ish,_background_profile(back,percentiles)),
+                "source_rain":_area_and_source(ish,introduced_available),
+                "environment_opportunity_vs_occurrence_shift":_opportunity_shift(
+                    nsh,ish,native_available,introduced_available),
                 "source_n_by_band":ish["band_n"].tolist(),
                 "source_cells_by_band":ish["band_cells"].tolist(),
             }
