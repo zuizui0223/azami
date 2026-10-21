@@ -53,6 +53,20 @@ def test_no_preselected_width_or_tail_metrics():
             assert np.diff(a).min()>=-1e-10
             assert np.diff(b).min()>=-1e-10
             assert a[-1]==b[-1]==1
+            # No preselected quantile or threshold: uncertainty envelopes
+            # are reported for EVERY original empirical-CDF display knot.
+            band=case["whole_curve_spatial_uncertainty"]
+            assert band["status"]=="EXPLORATORY_FULL_ECDF_GEOGRAPHIC_CELL_UNCERTAINTY"
+            assert band["no_biological_tail_or_width_metric_selected"]
+            assert band["resamples_valid"]>=.90*band["resamples_requested"]
+            delta=np.asarray(band["introduced_minus_native_ECDF"])
+            low=np.asarray(band["simultaneous_95pct_spatial_sensitivity_lower"])
+            high=np.asarray(band["simultaneous_95pct_spatial_sensitivity_upper"])
+            assert np.allclose(delta,b-a)
+            assert len(low)==len(delta)==len(high)==len(x)
+            assert np.all(low<=delta+1e-10)
+            assert np.all(high>=delta-1e-10)
+            assert np.all(low>=-1) and np.all(high<=1)
             assert not {"Q10","Q50","Q90","width","IQR","score"} & set(case)
 
 
