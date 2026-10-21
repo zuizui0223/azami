@@ -11,6 +11,8 @@ on:
       - 'tests/test_v4_native_introduced_climate_transfer.py'
       - 'analysis/v4/native_introduced_common_support.py'
       - 'tests/test_v4_native_introduced_common_support.py'
+      - 'analysis/v4/native_intro_continent_orientation.py'
+      - 'tests/test_v4_native_intro_continent_orientation.py'
       - 'analysis/v4/native_niche_crossfit.py'
       - 'tests/test_v4_native_niche_crossfit.py'
       - 'analysis/v4/native_climate_trait_coupling.py'
@@ -42,7 +44,7 @@ jobs:
       - name: Install audit environment (no global Cirsium downloads)
         run: python -m pip install -r reproducibility/requirements-current.txt 'shapely>=2,<3' 'cryptography>=46,<49' pytest
       - name: Check introduced/native WCVP partition and phantom-phenotype guards
-        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py tests/test_v4_native_niche_crossfit.py
+        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py tests/test_v4_native_niche_crossfit.py tests/test_v4_native_intro_continent_orientation.py
       - name: Recover exact source and original measurement ciphertext and 350-species WCVP authority
         run: |
           set -euo pipefail
@@ -110,6 +112,14 @@ jobs:
             --climate-root work/rain-transfer/cache \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/rain-transfer/public
+      - name: Compare original photographed head angles in every introduced continent, including warm and seasonal source climates
+        run: |
+          python -m analysis.v4.native_intro_continent_orientation \
+            --private-focal work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --source-receipt work/rain-transfer/public/source665115_introduced_opportunity.json \
+            --climate-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
       - name: Validate public-only output and no original metadata exposure
         if: always()
         run: |
@@ -126,7 +136,8 @@ jobs:
           assert set(files)=={'source665115_introduced_opportunity.json',
                                'source665115_all_species_range_support.json',
                                'S2_native_introduced_climate_transfer.json',
-                               'S2_native_introduced_common_support.json'}, files
+                               'S2_native_introduced_common_support.json',
+                               'S2_original_head_angle_by_continent.json'}, files
           d=json.loads((output/'source665115_introduced_opportunity.json').read_text())
           o=d['overall']
           assert o['status_partition_conserved']
@@ -161,6 +172,18 @@ jobs:
               assert sum(g['photo_observations'] for g in groups.values())==(
                   trait['source_eligible_introduced_observations']
               )
+          continent=json.loads((output/'S2_original_head_angle_by_continent.json').read_text())
+          assert continent['status']=='OBSERVED_IMAGE_RELATIVE_HEAD_ANGLE_BY_NATIVE_AND_INTRODUCED_CONTINENT'
+          assert continent['two_species_archived_eligible_image_angle_observations']==173737
+          assert continent['no_private_original_identifiers_in_public_result']
+          assert 'Cirsium vulgare' in continent['source_taxa']
+          assert {'North America','Africa','South America','Australasia'} <= set(
+              continent['source_taxa']['Cirsium vulgare']['introduced_by_TDWG_level1'])
+          assert 'Cirsium vulgare|Africa|chelsa_bio15' in continent[
+              'climate_novelty_x_photo_angle_by_introduced_region']
+          assert 'Cirsium vulgare|North America|chelsa_bio01' in continent[
+              'climate_novelty_x_photo_angle_by_introduced_region']
+          print('Regional original photo-angle and warm/precip-seasonality test auditable')
           print('Joined climate novelty and photo-angle categories auditable')
           print('Public-only source aggregate verified')
           PY
