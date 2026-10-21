@@ -18,7 +18,9 @@ def example(monkeypatch):
             for cell in range(40):
                 for rain_level in range(15):
                     for rep in range(2):
-                        rain=300+70*rain_level+q*190+rng.normal(0,3)
+                        # Overlapping native/introduced rain climates are
+                        # necessary to inspect a conditional phenotype curve.
+                        rain=300+70*rain_level+q*30+rng.normal(0,45)
                         angle=np.clip(54+0.017*rain+3*q+
                             rng.normal(0,22),0,180)
                         j=len(rows)
@@ -44,6 +46,9 @@ def example(monkeypatch):
     monkeypatch.setattr(s2,"EXPECTED_BALANCED",len(photo))
     monkeypatch.setattr(original,"EXPECTED_PHOTO",len(photo))
     monkeypatch.setattr(original,"EXPECTED_SOURCE",len(wild))
+    # Test sample is tiny compared with 94,060 real observations; keep the
+    # plotting grid coarser rather than requiring fake original support.
+    monkeypatch.setattr(original,"RAIN_DISPLAY_KNOTS",21)
     receipt=original.evaluate(wild,photo)
     return photo,receipt
 
