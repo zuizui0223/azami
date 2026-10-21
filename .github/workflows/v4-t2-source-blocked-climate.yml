@@ -1,0 +1,59 @@
+name: V4 T2 five-climate source-conditioned phylogenetic contrast
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_source_blocked_five_climate.py'
+      - 'tests/test_v4_t2_source_blocked_five_climate.py'
+      - '.github/workflows/v4-t2-source-blocked-climate.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_source_blocked_five_climate.py'
+      - 'tests/test_v4_t2_source_blocked_five_climate.py'
+      - '.github/workflows/v4-t2-source-blocked-climate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-t2-region-climate-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-blocked-comparison:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned numerical environment
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Unit tests for exact source-state counts, region-blocking, five-exposure models
+        run: python -m pytest -q tests/test_v4_t2_source_blocked_five_climate.py
+      - name: Restore S1-T2 published aggregate, NOT decrypted personal/image metadata
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-five-climate/input work/t2-five-climate/result
+          gh run download 39584744194 --repo zuizui0223/azami \
+            --name v4-joint-s1-t2-exact-cohort-public-aggregate \
+            --dir work/t2-five-climate/input
+          test -s work/t2-five-climate/input/S1_T2_joint_244_194.json
+      - name: Execute source-blocked exact tests on original five S1 covariates across 52 placements and published NA nuclear tree
+        run: |
+          python -m analysis.v4.t2_source_blocked_five_climate \
+            --joint work/t2-five-climate/input/S1_T2_joint_244_194.json \
+            --out work/t2-five-climate/result/T2_SOURCE_BLOCKED_FIVE_CLIMATE.json
+      - name: Archive original exact conditional sensitivity results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-source-blocked-five-climate
+          path: work/t2-five-climate/result/
+          if-no-files-found: warn
+          retention-days: 90
