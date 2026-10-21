@@ -348,7 +348,8 @@ def aggregate(frame:pd.DataFrame)->dict:
 
 def execute(original:Path,authority:Path,measurements:Path,output:Path,
             metadata_key_hex:str,measurements_key_hex:str,
-            private_focal_output:Path|None=None)->dict:
+            private_focal_output:Path|None=None,
+            private_focal_all_wild_output:Path|None=None)->dict:
     native_clear=decrypt_checked(
         original.read_bytes(),metadata_key_hex,ORIGINAL_SEALED_SHA,ORIGINAL_SHA,ORIGINAL_AAD)
     master=source_photos(native_clear)
@@ -384,6 +385,30 @@ def execute(original:Path,authority:Path,measurements:Path,output:Path,
             private_focal_output,index=False,
             compression={"method":"gzip","mtime":0}
         )
+    if private_focal_all_wild_output is not None:
+        if "private" not in private_focal_all_wild_output.parts or "public" in private_focal_all_wild_output.parts:
+            raise ValueError("All wild focal source observations must stay PRIVATE")
+        candidates=frame.loc[
+            frame.taxon_name.isin(TARGET) &
+            frame.eligibility_reason.isin(["include","range_introduced"])
+        ].copy()
+        candidates["range_state"]=np.where(candidates.native_primary,"native","introduced")
+        required=["obs_id","taxon_name","accepted_key","user_id","latitude",
+                  "longitude","observed_on","quality_grade","tdwg1",
+                  "tdwg_level3_code","range_state","orientation_eligible"]
+        if candidates.obs_id.duplicated().any() or candidates.user_id.isna().any():
+            raise ValueError("Private all-wild source IDs duplicated or missing")
+        if len(candidates)!=297622:
+            raise ValueError("Previously audited two source species original native+introduced census changed")
+        private_focal_all_wild_output.parent.mkdir(parents=True,exist_ok=True)
+        candidates[required].to_csv(
+            private_focal_all_wild_output,index=False,
+            compression={"method":"gzip","mtime":0}
+        )
+        print(json.dumps({
+            "all_focal_wild_observations_saved_private_only":len(candidates),
+            "no_original_source_keys_uploaded":True
+        }))
     output.mkdir(parents=True,exist_ok=True)
     (output/"source665115_all_species_range_support.json").write_text(
         json.dumps(all_source_taxa,indent=2,ensure_ascii=False,allow_nan=False)+"\n"
@@ -407,11 +432,12 @@ def main()->None:
     for key in ("original","authority","measurements","output"):
         p.add_argument("--"+key,type=Path,required=True)
     p.add_argument("--private-focal-output",type=Path)
+    p.add_argument("--private-focal-all-wild-output",type=Path)
     a=p.parse_args()
     execute(a.original,a.authority,a.measurements,a.output,
         os.environ.get("AZAMI_METADATA_KEY",""),
         os.environ.get("AZAMI_MEASUREMENTS_KEY",""),
-        a.private_focal_output)
+        a.private_focal_output,a.private_focal_all_wild_output)
 
 
 if __name__=="__main__":
