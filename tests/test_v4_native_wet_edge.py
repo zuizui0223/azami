@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from analysis.v4.native_spatial import cells
 from analysis.v4.native_wet_edge import (
     SPECIES, RAIN, OTHER, evaluate, match_without_angles,
     native_envelope, _features, save,
@@ -21,14 +22,16 @@ def mock_original() -> tuple[pd.DataFrame,pd.DataFrame]:
                 wet=state=="introduced" and i%4==0
                 rain=(700+(i%100)*7 if state=="native"
                       else (1480+(i%5)*10 if wet else 1250+(i%7)*18))
+                lat=-25.+(i%7)*8.
+                lon=-155.+((i//7)%9)*12.
                 rows.append({
                     "obs_id":f"source-{s}-{state}-{i}",
                     "taxon_name":species,
                     "range_state":state,
                     "user_id":f"observer-{s}-{state}-{i}",
-                    "latitude":35.+(i%25)*.15,
-                    "longitude":-100.+(i%35)*.15,
-                    "_cell":i%35+s*40+(0 if state=="native" else 100),
+                    "latitude":lat,
+                    "longitude":lon,
+                    "_cell":int(cells([lat],[lon])[0]),
                     "tdwg1":1 if state=="native" else 7,
                     "observed_on":"2023-06-15",
                     "quality_grade":"research",
@@ -100,8 +103,11 @@ def test_matching_is_independent_of_angle_and_bio12_amplitude():
 
 def test_insufficient_independent_wet_cells_stop_as_unidentified():
     source,photo=mock_original()
+    all_wet=photo.loc[(photo.taxon_name==SPECIES[1]) &
+                       photo.range_state.eq("introduced") & (photo[RAIN]>1400)]
+    keep_cells=sorted(all_wet._cell.unique())[:2]
     selected=(photo.taxon_name==SPECIES[1]) & photo.range_state.eq("introduced") & (
-        photo[RAIN]>1400) & ~photo["_cell"].isin([140,141])
+        photo[RAIN]>1400) & ~photo["_cell"].isin(keep_cells)
     photo.loc[selected,"orientation_angle_degrees_median"]=np.nan
     result=evaluate(source,photo)
     r=result["focal"][SPECIES[1]]["introduced_by_continent"]["North America"]
