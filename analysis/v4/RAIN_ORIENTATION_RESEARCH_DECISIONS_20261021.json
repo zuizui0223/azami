@@ -78,7 +78,7 @@
     }
   },
   "S2": {
-    "status": "introduced_status_audited_and_provisional_five_climate_transfer_estimated; no evolutionary origin inference",
+    "status": "introduced_status_audited_and_source_original_five_climate_transfer_plus_overlap_screen_executed; no_equivalence_or_evolutionary_origin_inference",
     "focal_source_names": [
       "Cirsium vulgare",
       "Cirsium arvense"
@@ -133,8 +133,41 @@
         "introduced_minus_native_ci_includes_zero": true,
         "native_to_introduced_skill_vs_native_constant": -0.02026320808114135
       },
-      "extrapolation_warning": "Climate pixels missing from 18.5% introduced vulgare; common support only audited in marginal climate ranges, not formally restricted model",
-      "evolutionary_conclusion_established": false
+      "extrapolation_warning": "Native-to-introduced skill from full observed climate is negative without overlap restriction; the five-exposure 5–95% rectangle retains only 2.74%/7.37% of the balanced native arvense/vulgare photographic observations, not a validated 5D density common support",
+      "evolutionary_conclusion_established": false,
+      "common_support_robustness": {
+        "run": 39543173995,
+        "receipt": "analysis/v4/results/20261021_unified_abcde/S2_FIVE_EXPOSURE_COMMON_SUPPORT_VERIFIED_20261021.json",
+        "report": "analysis/v4/results/20261021_unified_abcde/S2_FIVE_EXPOSURE_COMMON_SUPPORT_RESULT_JA.md",
+        "original_source_hash_matches": true,
+        "common_support": "all five fixed native/introduced climatic 5th–95th marginal intersections",
+        "not_proof_of_joint_climate_density_overlap": true,
+        "arvense": {
+          "native_support_observations": 600,
+          "introduced_support_observations": 6428,
+          "native_fraction": 0.027434842249657063,
+          "delta_deg_100mm": 0.3295218734347314,
+          "delta_95pct": [
+            -4.408539960734997,
+            5.067583707604459
+          ],
+          "skill_vs_native_constant": 0.003236531722855318
+        },
+        "vulgare": {
+          "native_support_observations": 1198,
+          "introduced_support_observations": 10011,
+          "native_fraction": 0.07374122861011942,
+          "delta_deg_100mm": -1.911378787601412,
+          "delta_95pct": [
+            -4.974311707619215,
+            1.1515541324163903
+          ],
+          "skill_vs_native_constant": -0.06200938706327741
+        },
+        "adequately_sampled_introduced_region": "North America only under existing original-pixel 316 native-occupied cell caches",
+        "strong_focal_evolutionary_fixed_trait_evidence": false,
+        "all_slope_difference_intervals_cross_zero": true
+      }
     }
   },
   "T2": {
@@ -191,7 +224,9 @@
     "introduced_native_slopes_exploratorily_fitted": true,
     "introduced_native_photo_angle_equal_error_verified": false,
     "introduced_native_equivalence_hypothesis_verified": false,
-    "introduced_native_climate_common_support_transfer_validated": false
+    "introduced_native_climate_common_support_transfer_validated": false,
+    "introduced_native_five_exposure_overlap_falsification_executed": true,
+    "introduced_original_pixel_cache_completeness_all_continents": false
   },
   "publication_branches": {
     "fallback": "S1 with direct technical QC plus valid T2 transitions, optionally GEB. S1 alone is descriptive pattern, not evolutionary protection.",
@@ -200,9 +235,9 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "DESIGN PLUS VERIFIED S1 ONLY",
+    "epistemic_status": "S1 OBSERVED AND SOURCE-OBSERVER-ROBUST; S2 PROVISIONAL OBSERVED WITH FIVE-CLIMATE SUPPORT LIMIT; T2/T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
-    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S1_S2_RAIN_AND_INTRODUCED_SOURCE_RESULTS_JA.md"
+    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_FIVE_EXPOSURE_COMMON_SUPPORT_RESULT_JA.md"
   }
 }
