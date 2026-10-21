@@ -39,6 +39,7 @@ SOURCE_PHOTOS = 1122854
 NATIVE_N = 313350
 NATIVE_PHOTOS = 534186
 NATIVE_ACCEPTED = 306
+NATIVE_MEASURED_N = 217104
 TARGET = ("Cirsium arvense","Cirsium vulgare")
 CONTINENTS = {
     1:"Europe", 2:"Africa", 3:"Asia temperate",
@@ -285,7 +286,7 @@ def aggregate(frame:pd.DataFrame)->dict:
             "introduced_colour_eligible_obs":int(frame.loc[wild_intro,"colour_eligible"].sum()),
         }
     }
-    if overall["source_measurement_coverage"]["native_measured_rows"]!=217104:
+    if overall["source_measurement_coverage"]["native_measured_rows"]!=NATIVE_MEASURED_N:
         raise ValueError("Published native measurement denominator changed")
     focal=[]
     for name in TARGET:
