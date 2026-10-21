@@ -39,6 +39,7 @@ from analysis.v4.native_introduced_opportunity import (
 )
 from analysis.v4.native_full_rain_head_response import analyse_photo_orientation
 from analysis.v4.native_wet_edge import save as save_wet_edge
+from analysis.v4.s2_rainfall_occupancy_trait import save as save_rain_occupancy_trait
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -382,6 +383,18 @@ def execute(original:Path,authority_archive:Path,source_meta:Path,
         wet_report=save_wet_edge(
             wild,photo,output,
             source_climate_sha={k:v["source_SHA256"] for k,v in audit.items()})
+        # S2 streamlined ecological test: two real positive climate shifts
+        # followed by native-defined rainfall-band image-angle distributions.
+        # Use these already-authenticated original source/photo/climate frames.
+        rain_trait_report=save_rain_occupancy_trait(
+            wild,photo,output,
+            climate_shas={k:v["source_SHA256"] for k,v in audit.items()})
+        print(json.dumps({
+            "S2_rainfall_occupancy_and_trait":rain_trait_report["status"],
+            "focal_species":list(rain_trait_report["focal"]),
+            "trait_and_source_aggregates_only":True,
+        },ensure_ascii=False),flush=True)
+
         print(json.dumps({
             "wet_edge_source_complete":wet_report["source_wild_complete_climate_n"],
             "wet_edge_angle_complete":wet_report["orientation_original_image_balanced_climate_complete_n"],
