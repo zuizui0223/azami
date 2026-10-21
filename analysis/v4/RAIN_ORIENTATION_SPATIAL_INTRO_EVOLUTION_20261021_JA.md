@@ -53,9 +53,12 @@ WCVPの**TDWG単位で導入と明示されたレコード**のみを侵入域�
 
 **主推定対象：** 対象同一種 (s) で気候曝露を各地域状態 (r) により中心化し、同一標本重みで
 
-[
-Y_{isr}=\alpha_s+\alpha_{r(s)}+\beta_{N,s}(P_{isr}-\bar P_{N,s})+\theta_s I(r=I)(P_{isr}-\bar P_{I,s})+u_{observer}+u_{cell}+\varepsilon_{isr}.
-]
+$
+Y_{isr} = \alpha_s + \alpha_{r(s)}
+ + \beta_{N,s}(P_{isr}-\bar P_{s,r})
+ + \theta_s I(r=I)(P_{isr}-\bar P_{s,r})
+ + u_{observer} + u_{cell} + \varepsilon_{isr}.
+$
 
 ここで (Y) は向き（画像角）、(\beta_{N,s}) は在来域内のBIO12の傾き、(\beta_{N,s}+\theta_s) は導入域内の傾き。年降水の状態内SDで比較した値と元単位の値を両方報告し、両域で雨量が重なる**common support**を分けてチェックする。撮影者・空間・年月の交絡を吸収する設計を明示する。
 
