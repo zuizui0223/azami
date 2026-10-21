@@ -9,6 +9,8 @@ on:
       - 'analysis/v4/native_cached_climate.py'
       - 'analysis/v4/native_introduced_climate_transfer.py'
       - 'tests/test_v4_native_introduced_climate_transfer.py'
+      - 'analysis/v4/native_introduced_common_support.py'
+      - 'tests/test_v4_native_introduced_common_support.py'
       - 'tests/test_v4_native_introduced_opportunity.py'
       - '.github/workflows/v4-rain-introduced-opportunity.yml'
 permissions:
@@ -36,7 +38,7 @@ jobs:
       - name: Install audit environment (no global Cirsium downloads)
         run: python -m pip install -r reproducibility/requirements-current.txt 'shapely>=2,<3' 'cryptography>=46,<49' pytest
       - name: Check introduced/native WCVP partition and phantom-phenotype guards
-        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py
+        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py
       - name: Recover exact source and original measurement ciphertext and 350-species WCVP authority
         run: |
           set -euo pipefail
@@ -89,6 +91,21 @@ jobs:
             --climate-root work/rain-transfer/cache \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/rain-transfer/public
+      - name: Recheck five-climate common support on same source and refit only supported cells
+        run: |
+          set -euo pipefail
+          mkdir -p work/rain-transfer/prior
+          gh run download 39539209624 --repo zuizui0223/azami \
+            --name v4-rain-introduced-source-opportunity \
+            --dir work/rain-transfer/prior
+          echo 'a95e0eaa085cc4cbd55a8302f5d527e26e3800761f7bb043ae9e65bfecdbdb26  work/rain-transfer/prior/S2_native_introduced_climate_transfer.json' | sha256sum -c -
+          python -m analysis.v4.native_introduced_common_support \
+            --focal work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --source-receipt work/rain-transfer/public/source665115_introduced_opportunity.json \
+            --baseline work/rain-transfer/prior/S2_native_introduced_climate_transfer.json \
+            --climate-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
       - name: Validate public-only output and no original metadata exposure
         if: always()
         run: |
@@ -103,7 +120,8 @@ jobs:
               raise SystemExit(0)
           files=[x.name for x in output.iterdir()]
           assert set(files)=={'source665115_introduced_opportunity.json',
-                               'S2_native_introduced_climate_transfer.json'}, files
+                               'S2_native_introduced_climate_transfer.json',
+                               'S2_native_introduced_common_support.json'}, files
           d=json.loads((output/files[0]).read_text())
           o=d['overall']
           assert o['status_partition_conserved']
@@ -114,6 +132,10 @@ jobs:
           transferred=json.loads((output/'S2_native_introduced_climate_transfer.json').read_text())
           assert transferred['status']=='PROVISIONAL_SOURCE_MEASUREMENT_CLIMATE_TRANSFER_NO_CAUSAL_EVOLUTION'
           assert set(transferred['focal_species'])=={'Cirsium arvense','Cirsium vulgare'}
+          overlap=json.loads((output/'S2_native_introduced_common_support.json').read_text())
+          assert overlap['source_original_transfer_action']==39539209624
+          assert set(overlap['focal_species'])==set(transferred['focal_species'])
+          assert overlap['no_photo_or_location_or_user_ids_published'] is True
           print('Public-only source aggregate verified')
           PY
       - name: Upload aggregate source status without private observations
