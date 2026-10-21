@@ -98,3 +98,17 @@ def test_does_not_fabricate_camera_pose_or_obs_metadata():
         set(photo.obs_id),q,seed=0)
     assert invalid["status"]=="MISSING_ORIGINAL_GRADE_OR_PHOTO_LINK_METADATA"
     assert invalid["no_camera_pose_inferred"]
+
+def test_zero_balancing_weights_are_exclusions_not_negative_weights():
+    import numpy as np
+    import pytest
+    from analysis.v4.native_climate_trait_coupling import weighted_quantiles
+    a=np.array([-999.,10.,20.,1000.])
+    w=np.array([0.,1.,1.,0.])
+    q=weighted_quantiles(a,w,(.1,.5,.9))
+    assert all(10.<=v<=20. for v in q)
+    assert q[0]<=q[1]<=q[2]
+    with pytest.raises(ValueError,match="nonnegative"):
+        weighted_quantiles(a,np.array([-1.,1.,1.,1.]))
+    with pytest.raises(ValueError,match="positive total"):
+        weighted_quantiles(a,np.zeros(4))
