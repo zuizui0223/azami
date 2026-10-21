@@ -6,6 +6,11 @@ on:
       - 'analysis/v4/t2_pgls_placement_screen.py'
       - 'tests/test_v4_t2_pgls_placement_screen.py'
       - '.github/workflows/v4-t2-pgls-placements.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_pgls_placement_screen.py'
+      - 'tests/test_v4_t2_pgls_placement_screen.py'
+      - '.github/workflows/v4-t2-pgls-placements.yml'
   workflow_dispatch:
 permissions:
   contents: read
