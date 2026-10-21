@@ -101,3 +101,17 @@ def test_unresolved_WCVP_taxon_collision_stays_excluded():
     roster=sp.taxon_rosters(work,"photo_weighted")
     assert int(roster.source_concept_collision.sum())==1
     assert len(roster[~roster.source_concept_collision])==134
+
+
+def test_within_each_fixed_longitude_sector_uses_original_five_climates_only():
+    native=sample_taxa(135)
+    roster=sp.taxon_rosters(native,"photo_weighted")
+    result=sp.regional_within_sector_models(roster,"image_mean")
+    assert result["sector_selection_predeclared_without_response"] is True
+    assert set(result["regional_results"])==set(sp.SECTOR_NAMES)
+    for name,segment in result["regional_results"].items():
+        assert segment["n_species"]==45
+        assert len(segment["BIO12_taxon_mean_yearly_mm_q10_q50_q90"])==3
+        assert segment["within_sector_5_CHELSA_HC3_result"]["status"]=="estimated"
+        assert segment["within_sector_5_CHELSA_HC3_result"]["n_source_taxa"]==45
+        assert segment["geographic_qualification"].startswith("fixed longitude sector")
