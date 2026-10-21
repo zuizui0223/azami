@@ -177,6 +177,97 @@ def author_nuclear_tree():
     return tree
 
 
+
+def nuclear_Mk_prevalence_null(na42, nuclear_tree, *, seed=20261021,
+                               target_accepted=1500, max_proposals=150000):
+    """Phylogeny-correlated null for NA42; does NOT assume exchangeable tips.
+
+    Plug-in symmetric Mk with observed tip count held fixed, two alternative
+    root priors and full five-exposure coefficient statistic. The tree's
+    branch-length uncertainty and head-state ascertainment are not integrated.
+    """
+    from analysis.v4.t2_phylogenetic_climate_null import (
+        simulate_mk_tip_matrix, fitted_rate_given_root,
+    )
+    tree=deepcopy(nuclear_tree)
+    if not set(na42["names"]) <= check_placement_tree(tree):
+        raise ValueError("Cannot fit Mk null: original published molecular taxa absent")
+    for terminal in list(tree.get_terminals()):
+        if terminal.name not in na42["names"]:
+            tree.prune(terminal.name)
+    tips=[t.name for t in tree.get_terminals()]
+    idx={name:i for i,name in enumerate(tips)}
+    order=[idx[name] for name in na42["names"]]
+    states={name:int(y) for name,y in zip(na42["names"],na42["y"])}
+    cov=tree_covariance(tree,na42["names"])
+    # Same published five-climate design, Brownian GLS statistic, fixed ridge.
+    X=na42["X"]
+    VI_X=cho_solve(cho_factor((cov+cov.T)/2+np.eye(len(X))*.05),X)
+    W=cho_solve(cho_factor(X.T@VI_X),VI_X.T)
+    selected=[na42["predictor_offset"]+list(EXPOSURES).index(axis) for axis in AXES]
+    weights=W[selected]
+    observed=weights@na42["y"]
+    report={}
+    for k,root in enumerate(("erect","stationary")):
+        rate,ll,bound=fitted_rate_given_root(tree,states,root)
+        rng=np.random.default_rng(seed+k)
+        replicates=[]
+        n_proposed=0
+        n_accepted=0
+        while n_proposed<max_proposals and n_accepted<target_accepted:
+            batch=min(4096,max_proposals-n_proposed)
+            sims=simulate_mk_tip_matrix(tree,rate,batch,rng,root_mode=root)
+            n_proposed+=batch
+            selected_sims=sims[sims.sum(axis=1)==na42["n_nodding"],:]
+            if len(selected_sims):
+                # The simulator returns original phylogeny tip order.
+                b=selected_sims[:,order]@weights.T
+                replicates.append(b)
+                n_accepted+=len(b)
+        null=np.concatenate(replicates,axis=0)[:target_accepted] if replicates else np.empty((0,2))
+        diag={
+           "null":"NA42_original_nuclear_symmetric_Mk_prevalence_conditioned",
+           "phylogenetic_tree":"Siniscalchi et al. 2023 published 63-tip nuclear pruned to 42 S1 tips",
+           "root_model":root,
+           "Mk_MLE_rate_per_original_branch_unit":float(rate),
+           "Mk_MLE_loglikelihood":float(ll),
+           "rate_near_optimizer_bounds":bool(bound),
+           "proposed_tip_histories":int(n_proposed),
+           "accepted_matching_NA_nodding_prevalence":int(n_accepted),
+           "null_draws_used":int(len(null)),
+           "observed_five_exposure_GLS_coefficients":observed.tolist(),
+           "status":"insufficient_prevalence_matched_Mk_draws" if len(null)<300
+                    else "conditional_nuclear_Mk_null_computed",
+        }
+        if len(null)>=300:
+            means=null.mean(axis=0);sd=null.std(axis=0)
+            if np.any(sd<=1e-12):
+                raise ValueError("Degenerate conditional Mk benchmark")
+            z_obs=np.abs((observed-means)/sd)
+            z_sim=np.abs((null-means)/sd)
+            diag.update({
+              "null_mean":means.tolist(),
+              "null_sd":sd.tolist(),
+              "null_q025_q50_q975":[np.quantile(null[:,j],[.025,.5,.975]).tolist()
+                                    for j in range(2)],
+              "two_axis_maxT_Mk_p":[float((1+np.count_nonzero(z_sim.max(axis=1)>=v))/(1+len(null)))
+                                   for v in z_obs],
+              "axiswise_Mk_p":[float((1+np.count_nonzero(z_sim[:,j]>=v))/(1+len(null)))
+                               for j,v in enumerate(z_obs)],
+            })
+        report[root]=diag
+    return {
+       "mode":"genuine_phylogeny_correlated_plug_in_Mk_tip_null_for_NA_only",
+       "five_S1_environment_exposures":list(EXPOSURES),
+       "two_registered_axes":list(AXES),
+       "nuclear_tip_cohort":42,"original_nodding_taxa":3,
+       "no_historical_climate_at_transition_inferred":True,
+       "NA_EA_full_46_phylogenetic_null_not_computed":True,
+       "uncertainty_limitation":"Fixed nuclear topology/branch lengths, fitted Mk point-rate and selected 42 taxa; neither rainfall-dependent transition-rate nor climate-specific causal effect",
+       "root_sensitivity":report,
+    }
+
+
 def run(joint,output,*,include_scenarios=True):
     from analysis.v4.native_phylogeny import restore_trees
     data=json.loads(Path(joint).read_text(encoding="utf-8"))
@@ -192,6 +283,7 @@ def run(joint,output,*,include_scenarios=True):
         raise ValueError("Unexpected source-count conditioned exact label universe")
     nuclear=author_nuclear_tree()
     nuclear42=score(na,nlabs,tree_covariance_for(nuclear,na["names"]))
+    nuclear_Mk=nuclear_Mk_prevalence_null(na,nuclear)
     base46=score(whole,labels)
     base42=score(na,nlabs)
     results=[]
@@ -221,6 +313,8 @@ def run(joint,output,*,include_scenarios=True):
        "whole46_equal_species":base46,
        "NA42_equal_species":base42,
        "NA42_independent_published_nuclear":nuclear42,
+       "NA42_independent_nuclear_Mk_prevalence_null":nuclear_Mk,
+       "phylogeny_calibration_warning":"52-grafted-tree sharp-null ranks are NOT correlated-tip phylogenetic null probabilities; the NA42 original molecular tree has a separately calibrated symmetric-Mk plug-in sensitivity",
        "PGLS_scenario_count":len(results),
        "source_confounded_region_response":"East Asia 3 D among 4 taxa, NA 3 D among 42; no independent regional replication or interaction power",
        "S1_frozen_model_refitted":False,
