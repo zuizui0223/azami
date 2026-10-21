@@ -138,8 +138,8 @@ def _climate_technical_coverage(frame:pd.DataFrame,
 def hypothesis_within_continent(
         native:pd.DataFrame,introduced:pd.DataFrame,
         *,climate_variable:str,scenario:str) -> dict:
-    if climate_variable not in {"chelsa_bio01","chelsa_bio15"}:
-        raise ValueError("Only literature-registered warm and precipitation-seasonality axes")
+    if climate_variable not in {"chelsa_bio01","chelsa_bio12","chelsa_bio15"}:
+        raise ValueError("Only prespecified annual temperature, annual rainfall and precipitation-seasonality axes")
     n=native.loc[np.isfinite(native[climate_variable])].copy()
     i=introduced.loc[np.isfinite(introduced[climate_variable])].copy()
     out={
@@ -179,7 +179,8 @@ def hypothesis_within_continent(
         b["orientation_cell_equal_mean_degrees"]
     )
     difference={
-        "novel_warm_or_precip_seasonal_minus_local_other_cell_mean_image_angle":dif,
+        "novel_single_climate_axis_above_native_q95_minus_local_other_cell_mean_image_angle":dif,
+        "original_legacy_label_same_value":"novel_warm_or_precip_seasonal_minus_local_other_cell_mean_image_angle",
         "image_angle_difference_not_gravitational_head_nodding":True,
     }
     if (a["original_5degree_equal_sin_cells"]>=MIN_INTERVAL_CELLS and
