@@ -21,7 +21,7 @@ permissions:
   actions: read
 concurrency:
   group: v4-joint-s1-t2-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   join-without-refit:
     runs-on: ubuntu-latest
@@ -73,11 +73,10 @@ jobs:
             --receipt work/joint-source/receipt/measurement_receipt.json \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/joint-source/decoded
-      - name: Join exact 244 native image orientation keys to independent botanical states and all 5 fixed climate coefficients
+      - name: Reuse 244 original S1 taxon identity and five covariates; 46 biological states for validation only
         run: |
           python -m analysis.v4.joint_s1_t2_phylogeny \
             --native-table work/joint-source/decoded/observations.csv.gz \
-            --include-T2-history \
             --out work/joint-source/output/S1_T2_joint_244_194.json
       - name: Reconstruct all 194 original continuous S1 head angles on 52 frozen phylogenetic placement scenarios
         run: |
