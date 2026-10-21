@@ -1,0 +1,193 @@
+{
+  "schema_version": "v4_source_verified_S1_CONTINUOUS_BIO12_BIO15_taxon_LOO_HC3_bootstrap_20261021",
+  "status": "REAL_ORIGINAL_SOURCE_S1_191_AND_143_BIO12_POSITIVE_EVEN_WITH_SINGLE_TAXON_EXCLUSIONS",
+  "source_GitHub_Actions_run_id": 39598389991,
+  "source_job_id": 119216338254,
+  "workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39598389991",
+  "source_artifact": {
+    "id": 12345610456,
+    "name": "v4-s1-BIO12-BIO15-taxonomic-influence",
+    "digest": "sha256:29655962f422f2063d5423cd315a74b2732c0ffebf1b842ee97a7fa894f378de",
+    "size": 4036
+  },
+  "code": "analysis/v4/s1_annual_rain_taxon_influence.py",
+  "test": "tests/test_v4_s1_annual_rain_taxon_influence.py",
+  "original_native_S1_source_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "original_S1_continuous_taxon_run_id": 39594257539,
+  "original_S1_continuous_taxon_artifact_SHA": "sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb",
+  "axes": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean"
+  ],
+  "source_verified_stdout_numerical_summary": {
+    "rain_audit": {
+      "collision_free191": {
+        "chelsa_bio12": {
+          "HC3_conditional_t95_interval": [
+            0.2808224676541581,
+            0.7343206907177767
+          ],
+          "estimate_image_degrees_per_increment": 0.5075715791859674,
+          "increment_original_units": 100,
+          "largest_single_taxon_effect_on_slope": {
+            "absolute_effect_change": 0.03731753185250586,
+            "estimate_if_excluded": 0.5448891110384733,
+            "taxon": "Cirsium_hosokawae"
+          },
+          "not_spatially_independent_sites_or_causal_evolution": true,
+          "robust_se_HC3": 0.11493363359673292,
+          "source_original_5_joint_predictors": [
+            "chelsa_bio01",
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean"
+          ],
+          "species_leave_one_out_effect_all_positive": true,
+          "species_leave_one_out_effect_range": [
+            0.4750222168950582,
+            0.5448891110384733
+          ],
+          "species_leave_one_out_n": 191,
+          "species_leave_one_out_pointwise_HC3_lower95_positive_count": 191,
+          "species_pairs_bootstrap_completed": 1999,
+          "species_pairs_bootstrap_percentile95": [
+            0.2729592433282237,
+            0.7383870608208122
+          ],
+          "species_pairs_bootstrap_positive_fraction": 1,
+          "species_pairs_bootstrap_rank_failures": 0,
+          "species_pairs_bootstrap_requested": 1999
+        },
+        "chelsa_bio15": {
+          "HC3_conditional_t95_interval": [
+            -1.0255118536981813,
+            1.8359344579179986
+          ],
+          "estimate_image_degrees_per_increment": 0.40521130210990863,
+          "increment_original_units": 10,
+          "largest_single_taxon_effect_on_slope": {
+            "absolute_effect_change": 0.25188444537722776,
+            "estimate_if_excluded": 0.15332685673268087,
+            "taxon": "Cirsium_chinense"
+          },
+          "not_spatially_independent_sites_or_causal_evolution": true,
+          "robust_se_HC3": 0.7251989207681652,
+          "source_original_5_joint_predictors": [
+            "chelsa_bio01",
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean"
+          ],
+          "species_leave_one_out_effect_all_positive": true,
+          "species_leave_one_out_effect_range": [
+            0.15332685673268087,
+            0.6250782085891174
+          ],
+          "species_leave_one_out_n": 191,
+          "species_leave_one_out_pointwise_HC3_lower95_positive_count": 0,
+          "species_pairs_bootstrap_completed": 1999,
+          "species_pairs_bootstrap_percentile95": [
+            -0.9739639732695171,
+            1.8043617803325815
+          ],
+          "species_pairs_bootstrap_positive_fraction": 0.7178589294647324,
+          "species_pairs_bootstrap_rank_failures": 0,
+          "species_pairs_bootstrap_requested": 1999
+        }
+      },
+      "collision_free_at_least10": {
+        "chelsa_bio12": {
+          "HC3_conditional_t95_interval": [
+            0.08905014689717838,
+            0.8257608297447343
+          ],
+          "estimate_image_degrees_per_increment": 0.45740548832095634,
+          "increment_original_units": 100,
+          "largest_single_taxon_effect_on_slope": {
+            "absolute_effect_change": 0.09022720973976933,
+            "estimate_if_excluded": 0.367178278581187,
+            "taxon": "Cirsium_sieboldii"
+          },
+          "not_spatially_independent_sites_or_causal_evolution": true,
+          "robust_se_HC3": 0.1862797244885256,
+          "source_original_5_joint_predictors": [
+            "chelsa_bio01",
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean"
+          ],
+          "species_leave_one_out_effect_all_positive": true,
+          "species_leave_one_out_effect_range": [
+            0.367178278581187,
+            0.5214663683085056
+          ],
+          "species_leave_one_out_n": 143,
+          "species_leave_one_out_pointwise_HC3_lower95_positive_count": 143,
+          "species_pairs_bootstrap_completed": 1999,
+          "species_pairs_bootstrap_percentile95": [
+            0.08841377014737017,
+            0.817170880026526
+          ],
+          "species_pairs_bootstrap_positive_fraction": 0.9889944972486243,
+          "species_pairs_bootstrap_rank_failures": 0,
+          "species_pairs_bootstrap_requested": 1999
+        },
+        "chelsa_bio15": {
+          "HC3_conditional_t95_interval": [
+            -0.66061833686411,
+            2.3863297230594926
+          ],
+          "estimate_image_degrees_per_increment": 0.8628556930976913,
+          "increment_original_units": 10,
+          "largest_single_taxon_effect_on_slope": {
+            "absolute_effect_change": 0.3507924406278746,
+            "estimate_if_excluded": 0.5120632524698167,
+            "taxon": "Cirsium_chinense"
+          },
+          "not_spatially_independent_sites_or_causal_evolution": true,
+          "robust_se_HC3": 0.7704308602388814,
+          "source_original_5_joint_predictors": [
+            "chelsa_bio01",
+            "chelsa_bio04",
+            "chelsa_bio12",
+            "chelsa_bio15",
+            "chelsa_rsds_mean"
+          ],
+          "species_leave_one_out_effect_all_positive": true,
+          "species_leave_one_out_effect_range": [
+            0.5120632524698167,
+            1.1750436544752143
+          ],
+          "species_leave_one_out_n": 143,
+          "species_leave_one_out_pointwise_HC3_lower95_positive_count": 0,
+          "species_pairs_bootstrap_completed": 1999,
+          "species_pairs_bootstrap_percentile95": [
+            -0.7309579660055756,
+            2.1256060304962285
+          ],
+          "species_pairs_bootstrap_positive_fraction": 0.8609304652326163,
+          "species_pairs_bootstrap_rank_failures": 0,
+          "species_pairs_bootstrap_requested": 1999
+        }
+      }
+    },
+    "status": "EMPIRICAL_S1_ANNUAL_RAINFALL_CONTINUOUS_ANGLE_SINGLE_TAXON_INFLUENCE_AUDIT"
+  },
+  "scientific_claim_bounds": {
+    "original_S1_spatial_within_between_model_not_refitted": true,
+    "species_equal_weighting_not_observation_level": true,
+    "independent_species_LOO_does_not_test_geographic_block_confounding": true,
+    "HC3_and_taxon_pairs_bootstrap_not_phylogenetic_historical_origin_distribution": true,
+    "no_gravitational_angle_calibration": true,
+    "biological_nodding_origin_count_not_inferred": true,
+    "BIO15_independent_robust_signal_supported": false,
+    "precipitation_association_not_evolutionary_causation": true,
+    "published_PGLS_52_scenarios_not_independent_phylogenies": true
+  }
+}
