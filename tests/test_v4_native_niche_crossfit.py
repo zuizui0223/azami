@@ -144,5 +144,5 @@ def test_source_validation_and_cell_equal_quantiles():
     x.loc[x.index[0],"obs_id"]=x.iloc[1]["obs_id"]
     with pytest.raises(ValueError,match="not one-to-one"):
         cross_fitted_geographic_novelty(x,i,source_name="test",repeats=3)
-    with pytest.raises(ValueError,match="unique source taxon"):
+    with pytest.raises(ValueError,match="Exact preselected source taxon"):
         cross_fitted_geographic_novelty(n,i,source_name="",repeats=3)
