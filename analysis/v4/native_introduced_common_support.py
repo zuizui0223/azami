@@ -183,6 +183,115 @@ def continent_sensitivity(native:pd.DataFrame,introduced:pd.DataFrame,
     return out
 
 
+
+def _climate_percentile(data:np.ndarray, probs:tuple[float,...],
+                        weights:np.ndarray|None=None)->list[float]:
+    """Finite original observations only; deterministic monotone weighted q."""
+    x=np.asarray(data,float)
+    if len(x)==0 or not np.isfinite(x).all():
+        raise ValueError("Cannot infer a climate envelope from missing source pixels")
+    if weights is None:
+        return [float(xi) for xi in np.quantile(x,probs)]
+    w=np.asarray(weights,float)
+    if len(w)!=len(x) or not np.isfinite(w).all() or (w<=0).any():
+        raise ValueError("Cell-equal weights invalid")
+    ix=np.argsort(x,kind="mergesort")
+    ordered=x[ix];weight=w[ix]
+    rank=(np.cumsum(weight)-weight/2)/weight.sum()
+    return [float(np.interp(q,rank,ordered,left=ordered[0],right=ordered[-1]))
+            for q in probs]
+
+
+def _cell_equal_weights(sample:pd.DataFrame)->np.ndarray:
+    if len(sample)==0 or sample["_cell"].isna().any():
+        raise ValueError("Original equal-sin cell tags unavailable")
+    n=sample.groupby("_cell").obs_id.transform("size").to_numpy(float)
+    if (n<=0).any() or not np.isfinite(n).all():
+        raise ValueError("Invalid native observation-per-cell tally")
+    return 1/n
+
+
+def native_to_introduced_climate_novelty(native:pd.DataFrame,
+                                         introduced:pd.DataFrame)->dict:
+    """Climate-only novelty, not adaptation or a head-angle response.
+
+    All climate predictors are fixed before looking at the effect estimate.
+    The 5%–95% range is used only as a bounded support diagnostic. Occupancy
+    fractions are reported BOTH photo-observation weighted and 5-degree
+    observer×cell-equal weighted. Does not prove a fundamental niche shift.
+    """
+    if min(len(native),len(introduced))<30:
+        return {"status":"too_few_climatic_observations"}
+    for frame in (native,introduced):
+        if not set(VARIABLES)<=set(frame):
+            raise ValueError("Original five CHELSA predictors missing")
+        if not np.isfinite(frame[list(VARIABLES)].to_numpy(float)).all():
+            raise ValueError("Original CHELSA pixel values are incomplete")
+    result={}
+    for weighting in ("observer_photo_records","equal_total_weight_per_5degree_cell"):
+        wn=None if weighting=="observer_photo_records" else _cell_equal_weights(native)
+        wi=None if weighting=="observer_photo_records" else _cell_equal_weights(introduced)
+        axes={}
+        native_all=np.ones(len(native),bool)
+        introduced_all=np.ones(len(introduced),bool)
+        for variable in VARIABLES:
+            nx=native[variable].to_numpy(float)
+            ix=introduced[variable].to_numpy(float)
+            native05,native50,native95=_climate_percentile(nx,(.05,.50,.95),wn)
+            intro05,intro50,intro95=_climate_percentile(ix,(.05,.50,.95),wi)
+            p_below=ix<native05
+            p_above=ix>native95
+            q_under=nx<native05
+            q_over=nx>native95
+            def fraction(q,w):
+                return float(np.mean(q)) if w is None else float(
+                    np.sum(w[q])/np.sum(w))
+            native_all &= ~(q_under|q_over)
+            introduced_all &= ~(p_below|p_above)
+            iqr=np.diff(_climate_percentile(nx,(.25,.75),wn))[0]
+            axes[variable]={
+                "native_q05_q50_q95":[native05,native50,native95],
+                "introduced_q05_q50_q95":[intro05,intro50,intro95],
+                "introduced_below_native_q05_fraction":fraction(p_below,wi),
+                "introduced_above_native_q95_fraction":fraction(p_above,wi),
+                "introduced_outside_native_central90_fraction":fraction(
+                    p_below|p_above,wi),
+                "native_outside_own_central90_fraction":fraction(q_under|q_over,wn),
+                "introduced_minus_native_median_in_native_IQR_units":(
+                    (intro50-native50)/iqr if iqr>0 else None),
+                "dimension_is_source_photographic_climate_only":True
+            }
+        def share(mask,w):
+            return float(np.mean(mask)) if w is None else float(
+                np.sum(w[mask])/np.sum(w))
+        result[weighting]={
+            "axes":axes,
+            "native_fraction_within_native_5D_central_marginal_box":share(native_all,wn),
+            "introduced_fraction_within_native_5D_central_marginal_box":share(introduced_all,wi),
+            "introduced_fraction_novel_by_at_least_one_native_marginal_q05_q95":share(
+                ~introduced_all,wi),
+            "weighting":"each original archived eligible observation" if wn is None
+                        else "each independent native/introduction 5deg cell contributes total weight 1",
+            "no_head_angle_used_for_niche_envelope":True,
+        }
+    return {
+        "status":"CLIMATE_ONLY_SOURCE_OCCUPANCY_NOVELTY_ON_ORIENTATION_ELIGIBLE_OBSERVATIONS",
+        "source_native_balanced_photo_observations":len(native),
+        "source_introduced_balanced_photo_observations":len(introduced),
+        "dimensions":list(VARIABLES),
+        "native_reference_quantiles":[.05,.95],
+        "sampling_definition":"original WCVP wild range states and existing archived image-orientation measurement selection",
+        "by_weighting":result,
+        "limitations":[
+            "A photo-biased, historical recorded occurrence sample does not represent a full fundamental climate niche.",
+            "Outside any marginal 5–95% native climate range is a geometric novelty flag, not true novelty in the multivariate ecological niche.",
+            "Native calibration and introduced climate coverage both depend on original CHELSA 1981–2010 cached pixels; missing pixels are not extrapolated.",
+            "Observer×site duplicates were previously limited but repeated biological individuals and visit/flower timing are not identified.",
+            "A novel climate occupancy does not prove local adaptation, rapid evolution or pollen rain shelter.",
+        ],
+    }
+
+
 def re_audit(private_focal:pd.DataFrame,report:dict)->dict:
     if set(private_focal.taxon_name)!={"Cirsium arvense","Cirsium vulgare"}:
         raise ValueError("Only preregistered focal species allowed")
@@ -234,10 +343,11 @@ def re_audit(private_focal:pd.DataFrame,report:dict)->dict:
             "one_exposure_BIO12_5_95pct_overlap_diagnostic":compare_on_support(native,introduced,scales,rain),
             "all_five_exposure_joint_rectangle_5_95pct_overlap":compare_on_support(native,introduced,scales,joint),
             "introduced_continent_sensitivity":continent_sensitivity(native,introduced,scales),
+            "climate_only_niche_occupancy":native_to_introduced_climate_novelty(native,introduced),
             "design_scale":"Exactly original per-species SD and the same BIO1 BIO4 BIO12 BIO15 RSDS plus month/year",
         }
     return {
-        "schema_version":"v4_S2_native_introduced_common_support_falsification_20261021_v1",
+        "schema_version":"v4_S2_native_introduced_common_support_and_climate_novelty_20261021_v2",
         "status":"SOURCE_BACKED_OUTCOME_BLIND_COMMON_SUPPORT_AND_CONDITIONAL_TRANSFERS",
         "source_original_transfer_action":REFERENCE_RUN,
         "source_original_transfer_artifact_id":REFERENCE_ARTIFACT,
