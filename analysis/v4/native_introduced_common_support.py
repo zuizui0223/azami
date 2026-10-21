@@ -172,7 +172,7 @@ def continent_sensitivity(native:pd.DataFrame,introduced:pd.DataFrame,
         # Preserve every territory's observed support and failure, even when
         # the original pixel cache has no rows in that continent.
         out[key]=compare_on_support(native,part,scales,rect)
-        out[key]["introduced_region_original_observation_count"]=int(len(part))
+        out[key]["introduced_region_observer_cell_balanced_rows"]=int(len(part))
     return out
 
 
