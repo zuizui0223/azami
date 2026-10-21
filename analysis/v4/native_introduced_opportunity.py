@@ -56,11 +56,11 @@ def digest(raw:bytes)->str:
 
 
 def decrypt_checked(raw:bytes,key_hex:str,sha_sealed:str,sha_clear:str,aad:bytes)->bytes:
-    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     if digest(raw)!=sha_sealed:
         raise ValueError("Encrypted original source identity changed")
     if len(key_hex)!=64:
         raise ValueError("Source decryption key unavailable to authorised runner")
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     try:
         output=AESGCM(bytes.fromhex(key_hex)).decrypt(raw[:12],raw[12:],aad)
     except (ValueError,KeyError):
@@ -119,7 +119,7 @@ def taxon_authority_with_placeholders(master:pd.DataFrame,auth:dict)->dict:
             "accepted_key":None,"accepted_name":"",
             "n_exact_records":0,"n_accepted_targets":0
         })
-    if len(not_queried)!=117:
+    if int(not_queried.taxon_name.nunique())!=117:
         raise ValueError("Original non-species placeholder source number changed")
     source["resolutions"]=res
     return source
