@@ -1,0 +1,146 @@
+{
+  "schema_version": "azami_v4_rain_shelter_S1_S2_T2_T3_plan_20261021_v1",
+  "primary_question_ja": "雨はアザミの頭花の向きを形づくってきたか",
+  "hypothesis": "Head nodding protects exposed reproductive tissue from rain and may favour recurrent evolutionary transitions in wetter climates.",
+  "primary_response": "orientation_image_vertical_angle",
+  "response_reference": "EXIF corrected image vertical, NOT true gravitational inclination, pollen wetting or fitness",
+  "scientific_owner": "zuizui0223/azami PR #144",
+  "study_structure": [
+    "S1 global native spatial pattern",
+    "S2 native-to-introduced within-species transfer",
+    "T2 Cirsium transitions",
+    "T3 Asteraceae cross-tribe convergence"
+  ],
+  "modules_retired_from_main": [
+    "28-pair RV head integration",
+    "colour-outline KDE/Wasserstein differentiation",
+    "27-trait independent climatic effects"
+  ],
+  "modules_retain_in_SI": [
+    "colour-light radiative association",
+    "outline technical robustness",
+    "colour-outline density distinctiveness",
+    "same-image photo measurement specificity controls"
+  ],
+  "frozen_v3_reference": {
+    "stages": 8,
+    "outputs": 16,
+    "unchanged": true,
+    "submission_replacement_decision": "conditional_after_new_v4_validation"
+  },
+  "source_frame": {
+    "original_observations": 665115,
+    "original_photo_links": 1122854,
+    "native_primary_observations": 313350,
+    "native_accepted_keys": 306,
+    "native_orientation_eligible": 170066,
+    "native_orientation_taxa": 244,
+    "original_source_sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "native_corrected_input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_name_collision_keys": 7
+  },
+  "S1": {
+    "status": "existing_association_estimated_photographer_mixed_effect_and_physical_angle_validation_pending",
+    "model": "five previously selected CHELSA covariates BIO1 BIO4 BIO12 BIO15 RSDS, species between/within separately",
+    "annual_bio12_between_deg_per_100mm": 0.4381991922885207,
+    "annual_bio12_between_95pct_interval": [
+      0.2058063239224483,
+      0.6705920606545931
+    ],
+    "annual_bio12_between_holm_p": 0.00531,
+    "bio12_within_deg_per_100mm": -0.044298210799959194,
+    "bio12_within_interval_crosses_zero": true,
+    "phylogeny_placement_trees": 52,
+    "phylogeny_covered_orientation_observations": 169912,
+    "phylogeny_between_effect_scenario_range": [
+      0.4722,
+      0.5078
+    ],
+    "phylogeny_scenarios_are_independent_evolutionary_events": false,
+    "required_controls": [
+      "original observer mixed effects",
+      "orientation repeated photos same-head identity audit",
+      "camera pose and pixel quality",
+      "fixed spatial heldouts",
+      "taxon-name WCVP collisions"
+    ],
+    "independent_rain_functional_effect_established": false
+  },
+  "S2": {
+    "status": "introduced_status_and_original_photo_cohorts_not_yet_audited",
+    "focal_source_names": [
+      "Cirsium vulgare",
+      "Cirsium arvense"
+    ],
+    "not_introduced": "all_non_native_original_observations",
+    "invasion_definition": "WCVP unique accepted source species and TDWG3 explicit establishmentMeans INTRODUCED, wild nonobscured observations, with quality and source-image measurement exclusions separately reported",
+    "minimal_per_species_per_range_support": {
+      "orientation_eligible": 30,
+      "distinct_spatial_cells": 5,
+      "distinct_original_observers": 10
+    },
+    "estimand": "difference in within-species precipitation slope between native and introduced range under equal measurement and sampling definitions, plus external native-trained prediction transfer",
+    "false_null_evidence": "a nonsignificant introduced slope does not demonstrate no plasticity, evolutionary origin, or adaptation; require independently justified equivalence precision",
+    "introduction_age_inferred_from_photograph_date": false,
+    "source_file": "analysis/v4/native_range_status.py"
+  },
+  "T2": {
+    "status": "trait_blind_flora_ontology_and_transition_ready_species_tree_missing",
+    "flora_state_vocabulary": [
+      "erect",
+      "nodding",
+      "variable",
+      "unknown"
+    ],
+    "flora_ground_truth_protocol": "two botanically qualified assessors blinded to climate and study effect, third adjudicator",
+    "weather_covariates": [
+      "BIO12 precipitation",
+      "BIO1 temperature"
+    ],
+    "alternative_climate": "BIO15 and flowering-season rain after independently audited phenology",
+    "tree_requirement": "validated source taxon-tip mapping, independently supported branch lengths, root, and dating calibration to estimate transition timing",
+    "existing_52_trees_sufficient_for_dated_origin_counts": false,
+    "existing_EAzami_conclusion": "BIO1/BIO15 causal axis not identified; reciprocal climatic associations are only contextual priors",
+    "scientific_output_if_pass": "posterior independent transition count and direction; rain vs temperature controls"
+  },
+  "T3": {
+    "status": "not_started_requires_T2_and_cross_tribe_comparable_measurement",
+    "phylogenetic_scope": [
+      "Cirsium",
+      "Cardueae other genera",
+      "Asteraceae other tribes including Cremanthodium"
+    ],
+    "required_controls": [
+      "gravitational measurement comparability",
+      "independent molecular phylogenies and dating",
+      "simultaneous rainfall and temperature",
+      "elevation geographical confound",
+      "anthesis head stage",
+      "trait/photo availability"
+    ],
+    "cross_tribe_convergence_inferred": false
+  },
+  "quality_controls": {
+    "photographer_random_effect_fitted": false,
+    "same_observation_is_same_head_verified": false,
+    "pixel_measurement_error_model_fitted": false,
+    "same_photo_colour_outline_are_complete_negative_controls": false,
+    "historical_technical_orientation_bbox_shift_5pct_abs_error_p95_deg": 54.1,
+    "historical_frozen_outline_half_resolution_spearman_approx": 0.69,
+    "historical_automated_audit_human_ground_truth": false,
+    "floral_background_colour_control_remeasured": false,
+    "monthly_climate_precipitation_12_rasters_joined": false,
+    "photo_colour_composition_five_new_native_frame_fields_verified": false
+  },
+  "publication_branches": {
+    "fallback": "S1 with direct technical QC plus valid T2 transitions, optionally GEB. S1 alone is descriptive pattern, not evolutionary protection.",
+    "extension": "S2 independently interpretable transfer and/or T3 demonstrable convergence plus technical validation; assess New Phytologist or Ecology Letters fit without guaranteeing acceptance.",
+    "parallel_repositories": "EAzami JEB v10 independent and not asserted submitted; aza3 genetics and same-plant exposure/reproductive experiments independent mechanism validation."
+  },
+  "contracts": {
+    "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
+    "epistemic_status": "DESIGN PLUS VERIFIED S1 ONLY",
+    "no_new_inferred_fitness_or_origin_count": true,
+    "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true
+  }
+}
