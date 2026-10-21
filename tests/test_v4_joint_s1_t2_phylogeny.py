@@ -66,3 +66,32 @@ def test_frozen_244_requires_native_eligible_population():
     frame.loc[1,"obs_id"]=1
     with pytest.raises(ValueError,match="IDs not unique"):
         j.actual_native_roster(frame,models,cover)
+
+
+def test_52_placement_history_uses_only_real_source_scored_tips(monkeypatch):
+    from Bio import Phylo
+    from io import StringIO
+    from analysis.v4 import native_phylogeny
+    tips=[f"Cirsium_t{i}" for i in range(30)]
+    nw="("+",".join(t+":0.5" for t in tips)+");"
+    def mock_trees():
+        return [(f"scenario_{i}",Phylo.read(StringIO(nw),"newick")) for i in range(52)]
+    monkeypatch.setattr(native_phylogeny,"restore_trees",mock_trees)
+    joins=[{"s1_phylogeny_194_key_match":True,
+            "source_taxon":n.replace("_"," "),
+            "state":"nodding" if i<4 else "erect"}
+           for i,n in enumerate(tips)]
+    result=j.evaluate_T2_pgls_history(joins,draws=2)
+    assert result["taxa_with_independent_botanical_U_D_and_actual_S1_angle_and_tree"]==30
+    assert result["n_nodding"]==4
+    assert len(result["scenario_details"])==52
+    assert result["number_of_independent_real_biological_origins_estimated"] is False
+    assert result["rain_climate_dependent_transition_rate_estimated"] is False
+    assert result["S1_history_194_unchanged_no_redundant_environment_refit"] is True
+
+def test_inadequate_original_botanical_scoring_stops_tree_history():
+    joins=[{"s1_phylogeny_194_key_match":True,
+            "source_taxon":f"Cirsium test{i}",
+            "state":"nodding" if i<2 else "erect"} for i in range(30)]
+    result=j.evaluate_T2_pgls_history(joins,draws=2)
+    assert result["status"]=="insufficient_independently_scored_cross_source_tips"
