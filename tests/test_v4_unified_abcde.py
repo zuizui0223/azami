@@ -76,9 +76,6 @@ def test_gate_a_excludes_shared_accepted_key_without_discarding_original_sources
     # DIL and GitHub artifact summaries must not expose private user or obs IDs.
     public=json.dumps(result)
     assert "obs-00" not in public and "u-0-" not in public
-    a2,s2=ae.gate_a(frame.sample(frac=1,random_state=13),obs.sample(
-       frac=1,random_state=71),mapping,min_cells=5,min_observers=10,
-       min_balanced=50,max_taxa=4) if False else (None,None)
     # Actual shuffled-source invariance: positional order never selects an ID.
     a2,s2=ae.gate_a(frame.sample(frac=1,random_state=13),mapping,
          obs.sample(frac=1,random_state=71),min_cells=5,min_observers=10,
