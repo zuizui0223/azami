@@ -1,0 +1,192 @@
+{
+  "schema_version": "azami_20261021_original_S1_194_continuous_Brownian_ancestral_placement_sensitivity_v1",
+  "status": "REAL_194_CONTINUOUS_SOURCE_VERIFIED_PHYLOGENETIC_52_SCENARIO_PILOT",
+  "github_actions_run": 39590112876,
+  "original_workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39590112876",
+  "original_job_id": 119188667287,
+  "original_artifact": {
+    "id": 12341171287,
+    "name": "v4-joint-s1-t2-exact-cohort-public-aggregate",
+    "digest": "sha256:ee0e5d30d76090cee8dd37e8a05d3ec61493e7c8a6e83f2c0b40cda0bb7aeb93",
+    "bytes": 41591
+  },
+  "executable": "analysis/v4/s1_continuous_phylogenetic_history.py",
+  "tests": "tests/test_v4_s1_continuous_phylogenetic_history.py",
+  "original_native_S1_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "frozen_five_exposures": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean"
+  ],
+  "caveats": {
+    "image_angle_not_direct_gravity": true,
+    "52_grafted_trees_not_independent_nuclear_histories": true,
+    "branch_shifts_not_discrete_nodding_origins": true,
+    "only_194_of_244_images_tree_covered": true,
+    "existing_BIO12_full_original_S1_model_not_refit": true,
+    "three_mixed_taxon_source_keys_need_separate_analysis": true,
+    "original_biological_U_D_labels_not_assumed_for_194": true,
+    "thresholds_5_10_20_degrees_are_sensitivity_not_intrinsic_biological_states": true
+  },
+  "empirical_summary": {
+    "S1_original_five_exposures": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "continuous_phenotype": "EXIF_oriented_image_vertical_angle_degrees_NOT_gravity",
+    "diagnostic_same194_GLS_chelsa_bio01_estimate_range": [
+      -0.15106127403734543,
+      0.5974476507668952
+    ],
+    "diagnostic_same194_GLS_chelsa_bio01_lower95_range": [
+      -0.6837879349340097,
+      0.08035395634243825
+    ],
+    "diagnostic_same194_GLS_chelsa_bio01_upper95_range": [
+      0.35693227689471196,
+      1.1145413451913522
+    ],
+    "diagnostic_same194_GLS_chelsa_bio12_estimate_range": [
+      0.31187868516713924,
+      0.7649943527011548
+    ],
+    "diagnostic_same194_GLS_chelsa_bio12_lower95_range": [
+      0.010971424802538488,
+      0.47589054979190293
+    ],
+    "diagnostic_same194_GLS_chelsa_bio12_upper95_range": [
+      0.6051746723759264,
+      1.069090478071436
+    ],
+    "diagnostic_same194_GLS_chelsa_bio15_estimate_range": [
+      -0.4868122939801925,
+      1.429258375848951
+    ],
+    "diagnostic_same194_GLS_chelsa_bio15_lower95_range": [
+      -1.6583616963383152,
+      0.2720511969594981
+    ],
+    "diagnostic_same194_GLS_chelsa_bio15_upper95_range": [
+      0.6847371083779303,
+      2.6432635184990376
+    ],
+    "evolutionary_nodding_gain_count_claimed": false,
+    "measurement_is_continuous_not_binary": true,
+    "n_BM_nonindependent_branch_shifts_cannot_equal_discrete_origins": true,
+    "n_PGLS_historical_placement_scenarios": 52,
+    "n_original_S1_eligible_taxon_keys": 244,
+    "n_original_images_in_S1": 170066,
+    "n_tree_taxon_keys_with_original_continuous_orientation": 194,
+    "reused_data_no_frozen_S1_refit": true,
+    "source_collision_biological_interpretation": "must exclude collisions for definitive species ancestral state; here retained to reproduce original placement cohort",
+    "source_name_collision_tips": [
+      "Cirsium_parryi",
+      "Cirsium_setidens",
+      "Cirsium_yezoense"
+    ],
+    "source_name_collisions_within_194": 3,
+    "species_mean_all_edges_increase_ge_10deg_conditional_expected_edge_scenario_range": [
+      43.518257014727126,
+      48.6842861925713
+    ],
+    "species_mean_all_edges_increase_ge_10deg_high_probability_branch_count_range": [
+      5,
+      18
+    ],
+    "species_mean_all_edges_increase_ge_20deg_conditional_expected_edge_scenario_range": [
+      13.556901254029672,
+      17.812105306782893
+    ],
+    "species_mean_all_edges_increase_ge_20deg_high_probability_branch_count_range": [
+      0,
+      10
+    ],
+    "species_mean_all_edges_increase_ge_5deg_conditional_expected_edge_scenario_range": [
+      71.76848450956618,
+      78.98309405893164
+    ],
+    "species_mean_all_edges_increase_ge_5deg_high_probability_branch_count_range": [
+      8,
+      37
+    ],
+    "species_mean_internal_edges_only_increase_ge_10deg_conditional_expected_edge_scenario_range": [
+      0.303215426516423,
+      4.185200165530188
+    ],
+    "species_mean_internal_edges_only_increase_ge_10deg_high_probability_branch_count_range": [
+      0,
+      0
+    ],
+    "species_mean_internal_edges_only_increase_ge_20deg_conditional_expected_edge_scenario_range": [
+      0.0003686107629654733,
+      0.8482579203711315
+    ],
+    "species_mean_internal_edges_only_increase_ge_20deg_high_probability_branch_count_range": [
+      0,
+      0
+    ],
+    "species_mean_internal_edges_only_increase_ge_5deg_conditional_expected_edge_scenario_range": [
+      3.754310952612566,
+      12.097622855154933
+    ],
+    "species_mean_internal_edges_only_increase_ge_5deg_high_probability_branch_count_range": [
+      0,
+      0
+    ],
+    "species_median_all_edges_increase_ge_10deg_conditional_expected_edge_scenario_range": [
+      50.683704912191146,
+      55.45555744998653
+    ],
+    "species_median_all_edges_increase_ge_10deg_high_probability_branch_count_range": [
+      4,
+      23
+    ],
+    "species_median_all_edges_increase_ge_20deg_conditional_expected_edge_scenario_range": [
+      17.753392887287077,
+      23.529254378793368
+    ],
+    "species_median_all_edges_increase_ge_20deg_high_probability_branch_count_range": [
+      0,
+      11
+    ],
+    "species_median_all_edges_increase_ge_5deg_conditional_expected_edge_scenario_range": [
+      79.12858735453345,
+      84.38328579503252
+    ],
+    "species_median_all_edges_increase_ge_5deg_high_probability_branch_count_range": [
+      8,
+      34
+    ],
+    "species_median_internal_edges_only_increase_ge_10deg_conditional_expected_edge_scenario_range": [
+      0.7235190411727664,
+      5.5745238717604755
+    ],
+    "species_median_internal_edges_only_increase_ge_10deg_high_probability_branch_count_range": [
+      0,
+      0
+    ],
+    "species_median_internal_edges_only_increase_ge_20deg_conditional_expected_edge_scenario_range": [
+      0.0034658460697987673,
+      0.9108128429996887
+    ],
+    "species_median_internal_edges_only_increase_ge_20deg_high_probability_branch_count_range": [
+      0,
+      0
+    ],
+    "species_median_internal_edges_only_increase_ge_5deg_conditional_expected_edge_scenario_range": [
+      5.209476877760831,
+      14.061101283075327
+    ],
+    "species_median_internal_edges_only_increase_ge_5deg_high_probability_branch_count_range": [
+      0,
+      0
+    ],
+    "status": "EMPIRICAL_ALL_194_S1_CONTINUOUS_IMAGE_ORIENTATION_PHYLOGENY",
+    "study_scope": "original 52 GBOTB grafted placements, not independently sequenced global Cirsium species trees"
+  }
+}
