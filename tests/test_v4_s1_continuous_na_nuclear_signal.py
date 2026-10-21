@@ -25,8 +25,8 @@ def fake_rows():
 
 def tree(names):
     left=names[:21];right=names[21:]
-    nw="(("+",".join(f"{x}:0.5" for x in left)+"):2.0,("+
-          ",".join(f"{x}:0.5" for x in right)+"):2.0);"
+    nw=( "((" + ",".join(f"{x}:0.5" for x in left) + "):2.0,("
+          + ",".join(f"{x}:0.5" for x in right) + "):2.0);" )
     return Phylo.read(StringIO(nw),"newick")
 
 
