@@ -414,7 +414,7 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1: genuine photo-axis continuous 170,066 observations/244 accepted keys; source-hashed continuous historical reconstruction 194, alias-free 191; Pagel lambda low after five-climate adjustment across 52 grafted scenarios AND in same-tip 42-NA nuclear tree (lambda=0); original annual BIO12 observational association remains; independent nodding origins/dates/rain causation/T3 not established",
+    "epistemic_status": "Original S1 continuous image-angle 244 taxa /194 history tips/191 strict, fixed five climate axes; weak Pagel lambda across 52 placement trees also NA42 exact matching independently published nuclear topology lambda=0; original S1 BIO12 spatial positive remains; no demonstrable independent biological nodding gains/rainfall selection, T3 unrun",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
@@ -427,7 +427,8 @@
     "S1_T2_continuous_scientific_result_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md",
     "S1_T2_external_morphology_construct_check": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json",
     "S1_continuous_phylogenetic_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
-    "S1_continuous_phylogenetic_signal_registry": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json"
+    "S1_continuous_phylogenetic_signal_registry": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json",
+    "S1_continuous_NA42_independent_nuclear_comparison": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
@@ -536,7 +537,7 @@
     }
   },
   "S1_T2_primary_continuous_head_history": {
-    "status": "REAL_S1_PHOTO_ANGLE_CONTINUOUS_HISTORY_ON_194_AND_191_BUT_LOW_PHYLOGENETIC_SIGNAL_EVIDENCE",
+    "status": "REAL_194_191_MEASURED_S1_CONTINUOUS_ANCESTRY_WEAK_PHYLOGENETIC_SIGNAL_ON_GRAFTS_AND_NA42_ORIGINAL_NUCLEAR_REFERENCE",
     "source_run_id": 39591120377,
     "real_source_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
     "continuous_history_runner": "analysis/v4/s1_continuous_phylogenetic_history.py",
@@ -696,6 +697,35 @@
       "global_194_ancestral_history_not_confirmed_as_true_independent_evolutionary_nodding_origins": true,
       "does_not_prove_zero_evolutionary_inertia": true,
       "no_photo_to_gravity_angle_calibration": true
+    },
+    "independently_published_NA42_nuclear_same_S1_angle_signal_20261021": {
+      "status": "REAL_NA42_SAME_CONTINUOUS_PHOTO_ANGLE_NUCLEAR_VS_PGLS52_LAMBDA_ZERO",
+      "source_run_id": 39596484704,
+      "source_verified_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json",
+      "scientific_report": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_COMPARISON_RESULT_JA.md",
+      "nuclear_phylogeny_author_DOI": "10.1086/724310",
+      "NA_original_S1_image_median_taxa": 42,
+      "original_S1_five_CHELSA": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "independent_author_nuclear_Pagel_lambda_original_angle_unadjusted": 0,
+      "independent_author_nuclear_Pagel_lambda_original_angle_fiveclimate_adjusted": 0,
+      "independent_author_nuclear_first_tree_null_bootstrap_p": 1,
+      "same_NA42_GBOTB_52_tree_Pagel_lambda_median": 0,
+      "same_NA42_GBOTB_52_tree_Pagel_lambda_range": [
+        0,
+        0.44419565891063845
+      ],
+      "same_NA42_GBOTB_52_tree_number_AIC_gain_gt2": 0,
+      "original_52_trees_not_independently_replicated": true,
+      "nuclear_tree_not_global_independent_species_history_for_194": true,
+      "underlying_true_gravity_relative_nodding_histories_not_identified": true,
+      "phylogenetic_photo_angle_lack_of_signal_not_proof_of_no_heritability": true,
+      "causal_historical_rain_selection_not_tested": true
     }
   }
 }
