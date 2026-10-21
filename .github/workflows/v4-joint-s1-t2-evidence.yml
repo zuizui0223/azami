@@ -73,6 +73,7 @@ jobs:
         run: |
           python -m analysis.v4.joint_s1_t2_phylogeny \
             --native-table work/joint-source/decoded/observations.csv.gz \
+            --include-T2-history \
             --out work/joint-source/output/S1_T2_joint_244_194.json
       - name: Upload only aggregated public taxon coverage, effects and exclusion reasons
         if: always()
