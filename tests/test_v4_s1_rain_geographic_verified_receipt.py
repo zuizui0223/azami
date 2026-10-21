@@ -65,7 +65,7 @@ def test_scientific_registry_corrected_claim_does_not_forge_causal_rain_evolutio
     assert diag["run_id"]==39659502828
     assert diag["all_six_spherical_adjusted_cohort_HC3_BIO12_interval_includes_zero"] is True
     assert diag["independent_annual_precipitation_effect_after_spatial_controls_confirmed"] is False
-    assert diag["original_S1_observation_level_within_between_fit_reestimated"] if "original_S1_observation_level_within_between_fit_reestimated" in diag else diag["source_S1_observation_within_between_model_refitted"] is False
+    assert diag["source_S1_observation_within_between_model_refitted"] is False
     assert diag["location_coordinates_shared_in_output"] is False
     assert reg["S1"]["independent_rain_functional_effect_established"] is False
     assert reg["T3"]["cross_tribe_convergence_inferred"] is False
