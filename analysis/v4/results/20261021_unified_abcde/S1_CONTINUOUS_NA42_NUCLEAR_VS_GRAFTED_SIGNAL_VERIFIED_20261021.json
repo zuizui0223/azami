@@ -1,0 +1,132 @@
+{
+  "schema_version": "v4_s1_original_photo_angle_42_NA_original_nuclear_vs_52_placements_20261021",
+  "status": "EMPIRICAL_SAME_42_PHOTO_ANGLE_NUCLEAR_PHYLOGENETIC_SIGNAL_ZERO_AND_52_GRAFTS_WEAK",
+  "source_run_id": 39596484704,
+  "source_job_id": 119209950895,
+  "run_url": "https://github.com/zuizui0223/azami/actions/runs/39596484704",
+  "output_artifact": {
+    "id": 12344505559,
+    "name": "v4-s1-na42-independent-nuclear-vs-52-placements",
+    "sha256": "sha256:05c34751d83b0c214224e60f1e95234369ea7c280454c88281aec47c2932e1d6",
+    "size_bytes": 4849
+  },
+  "original_source_artifact_run": 39584744194,
+  "original_S1_native_170066_image_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "author_nuclear_DOI": "10.1086/724310",
+  "author_source_commit": "c925d4af86160064448f794a9715f70b917a2786",
+  "current_code": "analysis/v4/s1_continuous_na_nuclear_signal.py",
+  "tests": "tests/test_v4_s1_continuous_na_nuclear_signal.py",
+  "result": {
+    "52_placements_not_independent_evolutionary_replicates": true,
+    "NA42_is_not_global_Cirsium_independent_phylogeny": true,
+    "S1_available_GBOTB_matched_tip_count": 194,
+    "S1_five_original_covar": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "S1_native_photo_eligibility_total": 170066,
+    "S1_native_taxon_keys_total": 244,
+    "external_3_botanical_nodding_states_ignored_as_phenotype_response": true,
+    "fixed_tip_nugget_fraction": 0.05,
+    "matched_52_placement_phenotype_fiveclimate_lambda": {
+      "max": 0.44419565891063845,
+      "median": 0,
+      "min": 0,
+      "n_deltaAIC_over_2": 0,
+      "n_positive_lambda_ge_0_1": 5
+    },
+    "matched_52_placement_phenotype_unadjusted_lambda": {
+      "max": 0.5798672332404565,
+      "median": 0,
+      "min": 0,
+      "n_deltaAIC_over_2": 0,
+      "n_positive_lambda_ge_0_1": 7
+    },
+    "nodding_gravity_independent_evolution_or_rain_selection_uninferred": true,
+    "published_independent_NA_nuclear": {
+      "five_climate_adjusted": {
+        "ML_sigma2": 37.341482234026635,
+        "beta_at_lambda0": [
+          66.6810326861338,
+          -3.260921292879449,
+          -5.455515534518415,
+          -3.8600887022173405,
+          -4.140059973673985,
+          1.6521829718760561
+        ],
+        "deltaAIC_best_vs_lambda0": -2,
+        "lambda_ML": 0,
+        "likelihood_ratio_against_lambda0": 0,
+        "log_likelihood_best": -172.3246849850567,
+        "log_likelihood_lambda0": -172.3246849850567,
+        "model_rank": 6,
+        "n_taxa": 42,
+        "sigma2_at_lambda0": 37.341482234026635
+      },
+      "n_tips": 42,
+      "tree": "independent_published_original_NA_nuclear",
+      "unadjusted": {
+        "ML_sigma2": 40.78309423225711,
+        "beta_at_lambda0": [
+          66.68103262720743
+        ],
+        "deltaAIC_best_vs_lambda0": -2,
+        "lambda_ML": 0,
+        "likelihood_ratio_against_lambda0": 0,
+        "log_likelihood_best": -174.17610390168278,
+        "log_likelihood_lambda0": -174.17610390168278,
+        "model_rank": 1,
+        "n_taxa": 42,
+        "sigma2_at_lambda0": 40.78309423225711
+      }
+    },
+    "same_NA42_nuclear_bootstrap": {
+      "nuclear_S1_five_climate_adjusted": {
+        "boundary_calibrated_bootstrap_p": 1,
+        "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+        "null_lrt_q50_q95_q99": [
+          0,
+          0,
+          0.9022112869406128
+        ],
+        "observed_lambda_ML": 0,
+        "observed_lrt": 0,
+        "requested_draws": 399,
+        "scope": "One independently published author nuclear Cirsium species tree (Siniscalchi et al. 2023) pruned to exactly the same 42 S1 photo taxa; fixed topology, branch lengths, plug-in error variance and source photo-angle measurement; NOT 52 V.PhyloMaker2 placements, nor genus-wide ancestry, selection, or environmental causation.",
+        "seed": 20261022
+      },
+      "nuclear_unadjusted": {
+        "boundary_calibrated_bootstrap_p": 1,
+        "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+        "null_lrt_q50_q95_q99": [
+          0,
+          0,
+          2.159359142375278
+        ],
+        "observed_lambda_ML": 0,
+        "observed_lrt": 0,
+        "requested_draws": 399,
+        "scope": "One independently published author nuclear Cirsium species tree (Siniscalchi et al. 2023) pruned to exactly the same 42 S1 photo taxa; fixed topology, branch lengths, plug-in error variance and source photo-angle measurement; NOT 52 V.PhyloMaker2 placements, nor genus-wide ancestry, selection, or environmental causation.",
+        "seed": 20261021
+      }
+    },
+    "same_original_photo_phenotype_nuclear_vs_placements_n_taxa": 42,
+    "source_genuine_nuclear_tree_DOI": "10.1086/724310",
+    "source_original_head_angle": "median_EXIF_image_vertical_degrees_NOT_gravity",
+    "status": "REAL_S1_SAME_NA42_CONTINUOUS_ANGLE_INDEPENDENT_NUCLEAR_VS_52_GRAFTED_PHYLOGENETIC_SIGNAL",
+    "weak_signal_cannot_prove_no_genetic_structure": true
+  },
+  "limitations": {
+    "same_42_tips_use_S1_image_median_not_gravity": true,
+    "original_source_photo_angle_46_external_botanical_U_D_not_used_as_response": true,
+    "phylogenetic_null_conditional_on_one_published_NA_nuclear_tree": true,
+    "grafted_52_placements_are_same_taxa_uncertainty_not_52_independent_origins": true,
+    "same_sample_lambda_0_does_not_prove_trait_no_genetic_basis": true,
+    "not_global_complete_194_nuclear_tree": true,
+    "no_inferred_biological_nodding_independent_origins": true,
+    "no_historical_rain_selection_effect": true
+  }
+}
