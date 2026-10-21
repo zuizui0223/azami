@@ -299,6 +299,7 @@ def re_audit(private_focal:pd.DataFrame,report:dict)->dict:
     if set(previous)!=set(private_focal.taxon_name):
         raise ValueError("Original fitted species set differs from same source")
     response_key="orientation_angle_degrees_median"
+    from analysis.v4.native_climate_trait_coupling import analyse_niche_trait_pair
     results={}
     for name,frame in private_focal.groupby("taxon_name",sort=True):
         frame=frame.copy()
@@ -344,10 +345,13 @@ def re_audit(private_focal:pd.DataFrame,report:dict)->dict:
             "all_five_exposure_joint_rectangle_5_95pct_overlap":compare_on_support(native,introduced,scales,joint),
             "introduced_continent_sensitivity":continent_sensitivity(native,introduced,scales),
             "climate_only_niche_occupancy":native_to_introduced_climate_novelty(native,introduced),
+            "climate_novelty_x_observed_head_orientation":analyse_niche_trait_pair(
+                native,introduced,scales,bootstrap=500
+            ),
             "design_scale":"Exactly original per-species SD and the same BIO1 BIO4 BIO12 BIO15 RSDS plus month/year",
         }
     return {
-        "schema_version":"v4_S2_native_introduced_common_support_and_climate_novelty_20261021_v2",
+        "schema_version":"v4_S2_native_introduced_common_support_climate_novelty_and_head_orientation_20261021_v3",
         "status":"SOURCE_BACKED_OUTCOME_BLIND_COMMON_SUPPORT_AND_CONDITIONAL_TRANSFERS",
         "source_original_transfer_action":REFERENCE_RUN,
         "source_original_transfer_artifact_id":REFERENCE_ARTIFACT,
