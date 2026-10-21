@@ -9,6 +9,8 @@ on:
       - 'analysis/v4/native_full_rain_head_response.py'
       - 'analysis/v4/native_wet_edge.py'
       - 'analysis/v4/s2_rainfall_occupancy_trait.py'
+      - 'analysis/v4/native_rain_niche_trait_redistribution.py'
+      - 'tests/test_v4_native_rain_niche_trait_redistribution.py'
       - 'tests/test_v4_s2_rainfall_occupancy_trait.py'
       - 'tests/test_v4_native_wet_edge.py'
       - 'tests/test_v4_native_full_rain_head_response.py'
@@ -48,7 +50,8 @@ jobs:
             tests/test_v4_native_pca_env_fullcoverage.py \
             tests/test_v4_native_full_rain_head_response.py \
             tests/test_v4_native_wet_edge.py \
-            tests/test_v4_s2_rainfall_occupancy_trait.py
+            tests/test_v4_s2_rainfall_occupancy_trait.py \
+            tests/test_v4_native_rain_niche_trait_redistribution.py
       - name: Recover original sealed 665115 source and WCVP350 authority, never publish originals
         run: |
           set -euo pipefail
@@ -132,9 +135,22 @@ jobs:
               for status in ('native','introduced_all'):
                   assert len(species['climate_occupancy'][status]['bands'])==4
                   assert len(species['orientation_by_native_rain_band'][status])==4
+          decomposition=path.parent/'S2_rain_niche_phenotype_decomposition.json'
+          assert decomposition.is_file()
+          d=json.loads(decomposition.read_text())
+          assert d['status']=='EXECUTED_ORIGINAL_SOURCE_RAIN_OCCUPANCY_AND_IMAGE_TRAIT_MIXTURE'
+          assert d['sources_are_angle_blind']
+          assert d['original_source_two_species_n']==297622
+          assert d['original_angle_eligible_observations']==173737
+          assert set(d['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(d['privacy'].values())
+          for case in d['species'].values():
+              assert len(case['native_rain_source_cutoffs_q25_q50_q75_q90_q95_mm'])==5
+              assert 'all_introduced' in case['introduced']
+              assert len(case['native_source_rain']['source_occurrence_probabilities'])==6
           files=list(path.parent.iterdir())
-          assert set(files)=={path,response,wet,trait}, files
-          for file in (path,response,wet,trait):
+          assert set(files)=={path,response,wet,trait,decomposition}, files
+          for file in (path,response,wet,trait,decomposition):
               content=file.read_text()
               for field in ('"obs_id"','"user_id"','"latitude"','"longitude"'):
                   assert field not in content
