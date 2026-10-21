@@ -54,7 +54,8 @@ def score_botanical_records(rows):
     """
     if not rows:
         raise EvidenceGateError("No botanical evidence records; templates are not data")
-    if any(any(s in k.lower() for s in FORBIDDEN_SCORE_FRAGMENTS) for k in rows[0]):
+    if any(any(s in k.lower() for s in FORBIDDEN_SCORE_FRAGMENTS)
+           for k in (set(rows[0]) - SCORE_COLS)):
         raise EvidenceGateError("Scoring sheets must not contain climate or phylogeny estimates")
     records = defaultdict(list)
     for row in rows:
