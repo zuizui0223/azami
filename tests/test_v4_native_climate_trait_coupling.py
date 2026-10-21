@@ -126,5 +126,5 @@ def test_report_refuses_source_nulls_and_nonindependent_ids():
     dup.loc[0,"obs_id"]=dup.loc[1,"obs_id"]
     with pytest.raises(ValueError,match="Non-independent"):
         analyse_niche_trait_pair(n,dup,sd,bootstrap=200)
-    with pytest.raises(ValueError,match="original"):
+    with pytest.raises(ValueError,match="WCVP status changed"):
         analyse_niche_trait_pair(i,n,sd,bootstrap=200)
