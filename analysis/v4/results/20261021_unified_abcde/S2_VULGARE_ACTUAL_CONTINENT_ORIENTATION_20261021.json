@@ -1,0 +1,143 @@
+{
+  "schema_version": "v4_S2_actual_original_image_angle_C_vulgare_by_continent_20261021_v1",
+  "source": {
+    "run": 39550930196,
+    "artifact_id": 12323896390,
+    "artifact_zip_sha256": "7d522ba7873db19583818d3c77c23287d50d26150b80d3ef1bf3570cec6c9701",
+    "member": "S2_original_head_angle_by_continent.json",
+    "member_sha256": "3ee0390d5c64de53d4b28e994007278e1fe9a5837eef20cf1ebe00761260f94b",
+    "original_observations": 665115,
+    "focal_original_orientation_eligible_observations": 173737,
+    "focal_after_date_original_observer_cell_balancing": 94060,
+    "source_reference_sha256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
+    "code": "analysis/v4/native_intro_continent_orientation.py",
+    "true_photo_individual_genet_identity_known": false
+  },
+  "response_unit": "original EXIF-corrected image-vertical axis degrees, 0 image-up, 90 horizontal, 180 image-down; no botanical gravity calibration",
+  "original_sampling": "one original observation per taxon×WCVP-native-or-introduced status×5degree equal-sin(lat) cell×original photographer, valid observation date; equal weight per cell",
+  "source_native": {
+    "Cirsium vulgare": {
+      "n_balanced": 16246,
+      "cells": 124,
+      "original_observers": 14211,
+      "cell_mean_angle": 66.61232596450459
+    },
+    "Cirsium arvense": {
+      "n_balanced": 21870,
+      "cells": 186,
+      "original_observers": 18989,
+      "cell_mean_angle": 72.60418197398056
+    }
+  },
+  "Cirsium vulgare": {
+    "North America": {
+      "original_orientation_eligible": 39009,
+      "n_balanced": 25447,
+      "cells": 84,
+      "original_observers": 23156,
+      "cell_mean_angle": 66.265,
+      "native_minus_introduced_note": "values below use introduced minus native",
+      "introduced_minus_native_image_angle": -0.347,
+      "cell_bootstrap_q025_q50_q975": [
+        -4.891006147945793,
+        -0.43731064562822297,
+        4.227517819112337
+      ]
+    },
+    "Africa": {
+      "original_orientation_eligible": 2376,
+      "n_balanced": 1187,
+      "cells": 20,
+      "original_observers": 998,
+      "cell_mean_angle": 66.265,
+      "introduced_minus_native_image_angle": -0.348,
+      "cell_bootstrap_q025_q50_q975": [
+        -5.631549025900838,
+        -0.4009717064021032,
+        4.335165447348392
+      ]
+    },
+    "South America": {
+      "original_orientation_eligible": 2075,
+      "n_balanced": 1622,
+      "cells": 16,
+      "original_observers": 1591,
+      "cell_mean_angle": 66.03,
+      "introduced_minus_native_image_angle": -0.583,
+      "cell_bootstrap_q025_q50_q975": [
+        -7.978541961743114,
+        -0.575399479770283,
+        5.3553769660306525
+      ]
+    },
+    "Australasia": {
+      "original_orientation_eligible": 4238,
+      "n_balanced": 1932,
+      "cells": 28,
+      "original_observers": 1666,
+      "cell_mean_angle": 67.907,
+      "introduced_minus_native_image_angle": 1.294,
+      "cell_bootstrap_q025_q50_q975": [
+        -8.198392364739732,
+        1.066944630714552,
+        10.536825629945684
+      ]
+    },
+    "intro_warm_North_America": {
+      "original_CHELSA_BIO1_q95_native_cell_equal": 17.354378404351078,
+      "original_image_angle_CHELSA_complete_North_America": 25346,
+      "above_native_BIO1_q95": {
+        "original_balanced_photo_observations": 507,
+        "cells": 16,
+        "cell_mean_image_angle": 70.57831180117333
+      },
+      "at_or_below_native_BIO1_q95": {
+        "original_balanced_photo_observations": 24839,
+        "cells": 75,
+        "cell_mean_image_angle": 66.6371095048793
+      },
+      "above_q95_minus_other_image_angle": 3.9412022962940227,
+      "cell_bootstrap_q025_q50_q975": [
+        -12.839807936426048,
+        3.8999205215916817,
+        24.776581100381215
+      ],
+      "interval_includes_zero": true
+    },
+    "intro_precip_seasonality_Africa": {
+      "original_angle_measurements": 2376,
+      "five_original_pixel_climate_available_unbalanced": 72,
+      "qualified_BIO15_novel_x_head_angle": false,
+      "verdict": "STOP_NO_ORIGINAL_CLIMATE_COVERAGE_OR_INDEPENDENT_CELLS"
+    },
+    "intro_precip_seasonality_South_America": {
+      "original_angle_measurements": 2075,
+      "five_original_pixel_climate_available_unbalanced": 0,
+      "qualified_BIO15_novel_x_head_angle": false,
+      "verdict": "STOP_NO_ORIGINAL_CLIMATE_COVERAGE_OR_INDEPENDENT_CELLS"
+    }
+  },
+  "Cirsium arvense": {
+    "North_America": {
+      "n_balanced": 25052,
+      "cells": 80,
+      "cell_mean_angle": 72.163,
+      "introduced_minus_native_angle": -0.441,
+      "cell_bootstrap_q025_q50_q975": [
+        -4.955040995888725,
+        -0.3173323947565265,
+        4.361776932319392
+      ]
+    }
+  },
+  "limitations": [
+    "Continental photo distribution contrast is a cross-sectional image-axis phenotype contrast, not longitudinal change in individual heads.",
+    "Original angle 0up-180down is only oriented image vertical, not gravitational lean: camera pitch/pose may differ among continents and climate regimes.",
+    "Month, environment, flowering stage, observer-genet covariance are not jointly controlled in these raw continent means.",
+    "Warm North America BIO1 novel subset uses 16 independent cells; pointwise cell bootstrap is wide and includes zero.",
+    "C. vulgare introduced South America/Africa photographs exist, but original climate cache absent/sparse; no regional high-BIO15 photo-angle adaptation test is possible.",
+    "Continent-specific original source photos are observational; no rapid phenotypic evolution, genetic adaptation or rain-protection function is established.",
+    "WCVP introduced territory is not independent documentation of genetic source, ancestor region, establishment age or natural selection."
+  ],
+  "interpretation": "No observed systematic upward-to-downward angle shift by introduced continent in C. vulgare. A +3.94 image-degree contrast in warmer North America has a wide zero-crossing cell interval. Test of higher rainfall-seasonality introductions in Africa/South America is currently blocked by missing original CHELSA source pixels; do not infer yes/no."
+}
