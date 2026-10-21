@@ -290,7 +290,7 @@
     }
   },
   "T2": {
-    "status": "trait_blind_flora_ontology_and_transition_ready_species_tree_missing",
+    "status": "PGLS_52_PLACEMENT_AND_PUBLISHED_NA_NUCLEAR_44_63_EXPLORATORY_EXECUTED__GLOBAL_CLIMATE_DEPENDENT_T2_NOT_RUN",
     "flora_state_vocabulary": [
       "erect",
       "nodding",
@@ -318,6 +318,34 @@
       "posterior_uncertainty_scope": "fixed_tree_and_MLE_rate_not_calibration_or_topology_integrated",
       "evolutionary_rain_temperature_model_executed": false,
       "estimated_origin_events_from_real_trees": false
+    },
+    "exploratory_real_tree_and_author_trait_evidence": {
+      "status": "EXECUTED_SOURCE_VERIFIED_NOT_FULL_T2_TRANSITION_PROOF",
+      "report": "analysis/v4/results/20261021_unified_abcde/T2_PGLS_PHYLOGENETIC_REUSE_20261021_JA.md",
+      "source_verified_receipt": "analysis/v4/results/20261021_unified_abcde/T2_PGLS_52_VS_NUCLEAR_VERIFIED_20261021.json",
+      "reproducible_runner": "analysis/v4/t2_pgls_placement_screen.py",
+      "github_run": 39579878018,
+      "pgls_grafted_placement_trees": 52,
+      "independent_published_author_head_scores": 63,
+      "overlapping_pgls_and_published_score_taxa": 44,
+      "overlapping_nodding_taxa": 3,
+      "pgls_unknown_root_parsimony_steps_scenarios": [
+        2,
+        3
+      ],
+      "independent_nuclear_same_taxa_parsimony_steps": 3,
+      "independent_nuclear_full_63_parsimony_steps": 4,
+      "same_taxa_conditional_Mk_median_e2n_pgls_scenario_range": [
+        3,
+        3
+      ],
+      "same_taxa_conditional_Mk_median_e2n_nuclear": 3,
+      "full_63_conditional_Mk_median_e2n_nuclear": 5,
+      "scores_are_original_published_not_new_dual_blinded": true,
+      "pgls_trees_are_not_independent_molecular_species_trees": true,
+      "original_published_nuclear_tree_only_North_America": true,
+      "origin_dating_or_rain_temperature_model_completed": false,
+      "cannot_claim_repeated_adaptation_from_this_screen": true
     }
   },
   "T3": {
@@ -379,12 +407,12 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 OBSERVED AND SOURCE-OBSERVER-ROBUST; S2 PROVISIONAL OBSERVED WITH FIVE-CLIMATE SUPPORT LIMIT; T2/T3 NOT RUN",
+    "epistemic_status": "S1 OBSERVED; S2 PROVISIONAL; T2 published NA nuclear and 52 PGLS exploratory state-change sensitivity executed, global evolutionary rain-temperature test NOT RUN; T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
     "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response",
     "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
-    "T2_T3_evidence_status": "TECHNICAL_TESTS_PASS_EMPIRICAL_TRANSITIONS_NOT_RUN"
+    "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING"
   }
 }
