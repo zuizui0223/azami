@@ -35,7 +35,9 @@ on:
       - 'analysis/v4/SPACE_CONTRACT.md'
       - 'tests/test_v4_native_spatial.py'
 permissions:
-  contents: read
+  # GitHub requires write-scoped repository access to READ draft-release
+  # metadata assets. This workflow never publishes, changes or uploads releases.
+  contents: write
   actions: read
 concurrency:
   group: v4-native-integration-${{ github.ref }}
