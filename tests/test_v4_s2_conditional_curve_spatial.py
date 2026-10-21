@@ -27,6 +27,8 @@ def example(monkeypatch):
                             "user_id":f"user{j}",
                             "taxon_name":name,"range_state":state,
                             "_cell":1000*k+500*q+cell,
+                            "latitude":float(-50+cell*2.5),
+                            "longitude":float(-160+cell*7),
                             "tdwg1":1 if state=="native" else 7,
                             "observed_on":"2024-07-20",
                             "chelsa_bio01":11+rng.normal(),
