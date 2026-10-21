@@ -67,7 +67,7 @@ def test_small_geographic_cell_support_and_BIO15_uncertainty_are_not_dropped():
     assert reg["South America"]["uncertainty_interval_not_identifiable"]
     assert reg["Australasia"]["local_high_low_cell_bootstrap_q025_q50_q975"][0]<0
     s=d["secondary_BIO15_introduced_results"]
-    assert s["Cirsium arvense_North_America"]["high_minus_low_BIO15_photo_angle_deg"]<0
+    assert s["Cirsium arvense_North_America"]["high_BIO15_local_tercile_minus_low_tercile_photo_angle_deg"]<0
     assert s["Cirsium vulgare_North_America"]["cell_bootstrap_q025_q50_q975"][0]<0
     assert s["Cirsium vulgare_Africa"]["bootstrap_interval_not_identifiable"]
     assert s["Cirsium vulgare_South_America"]["bootstrap_interval_not_identifiable"]
