@@ -414,7 +414,7 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 measured image-axis angles for 170066 images/244 taxon keys, continuous Brownian history for all 194 PGLS tips and 191 collision-free sensitivity EXECUTED on 52 grafted scenarios; binary 46 external scores supplementary; no independently verified nodding gains or historic rain/temperature transition rates; T3 unrun",
+    "epistemic_status": "S1 measured image-relative continuous phenotype 170066 images/244 taxa, 194 full/191 source-collision-free 52-tree Brownian source-verified; external botanical U/D comparison n46 source-blocked AUC p0.131 does not establish angle→gravity calibration; independent biological origins, historical rain causation and cross-tribe T3 not inferred",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
@@ -424,7 +424,8 @@
     "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
     "S1_T2_region_and_nuclear_null_result": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json",
     "S1_T2_primary_continuous_source_verified": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
-    "S1_T2_continuous_scientific_result_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md"
+    "S1_T2_continuous_scientific_result_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md",
+    "S1_T2_external_morphology_construct_check": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
@@ -606,6 +607,20 @@
     "collision_excluded_191_BIO12_pointwise_CI_positive_all_52": false,
     "biological_gravity_recalibration_done": false,
     "nuclear_194_species_tree_verified": false,
-    "real_independent_evolutionary_nodding_gains_measured": false
+    "real_independent_evolutionary_nodding_gains_measured": false,
+    "external_botanical_state_photo_angle_construct_check": {
+      "status": "EMPIRICAL_SOURCE_BLOCKED_46_TAXA_AUC_COMPLETED_NOT_UNIVERSAL_BINARY_GRAVITY_VALIDATION",
+      "source_run_id": 39592398003,
+      "source_verified_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json",
+      "original_S1_photo_angle_valid_244_194_continuous": true,
+      "external_botanical_states_covered_46": true,
+      "NA42_nodding3_AUC": 0.7863247863247863,
+      "EA4_nodding3_AUC": 0,
+      "pooled_AUC_confounded_by_source": 0.8458333333333333,
+      "source_blocked_pair_weighted_AUC": 0.7666666666666667,
+      "source_blocked_two_sided_exact_p": 0.13066202090592335,
+      "source_blocked_exact_label_assignments": 45920,
+      "cannot_use_image_angle_threshold_to_proclaim_independent_nodding_origins": true
+    }
   }
 }
