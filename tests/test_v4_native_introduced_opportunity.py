@@ -109,6 +109,7 @@ def test_native_plus_introduced_plus_other_partition_excludes_captive_and_unknow
     monkeypatch.setattr(m,"SOURCE_PHOTOS",4)
     monkeypatch.setattr(m,"NATIVE_N",1)
     monkeypatch.setattr(m,"NATIVE_ACCEPTED",1)
+    monkeypatch.setattr(m,"NATIVE_MEASURED_N",1)
     monkeypatch.setattr(m,"TARGET",("Cirsium vulgare",))
     frame["accepted_key"]=[101,101,102,102]
     report=m.aggregate(frame)
