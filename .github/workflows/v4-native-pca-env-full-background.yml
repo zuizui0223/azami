@@ -231,6 +231,20 @@ jobs:
                   assert len(study['observed_conditional_head_angle_CDF_introduced_minus_native'])==n
                   assert len(study['simultaneous_95pct_spatial_sensitivity_lower'])==n
                   assert study['simultaneous_interval_diagnostic']['draws_valid_for_all_common_rain_bins']>=360
+                  audit=study['photo_sample_metadata_for_every_supported_rain_plot_bin']
+                  assert set(audit)=={'native','introduced_all'}
+                  assert len(audit['native'])==n and len(audit['introduced_all'])==n
+                  leverage=study['all_original_cells_removed_one_at_a_time_surface_sensitivity']
+                  assert leverage['status']=='FULL_CONDITIONAL_SURFACE_ALL_SINGLE_5DEG_CELL_DELETIONS'
+                  assert len(leverage['observed_delta_min_over_one_cell_deletion_or_original'])==n
+                  for state in audit.values():
+                      for admitted,metadata in zip(study['rainfall_display_bins_originally_supported_both_ranges'],state):
+                          if admitted:
+                              assert metadata['source_5degree_cells']>=5
+                              assert metadata['record_grade_is_NOT_photo_pose_or_clarity']
+                              assert len(metadata['observation_month_fractions_1_to_12'])==12
+                          else:
+                              assert metadata is None
           files=list(path.parent.iterdir())
           assert set(files)=={path,response,wet,trait,decomposition,distribution,joint,conditional}, files
           for file in (path,response,wet,trait,decomposition,distribution,joint,conditional):
