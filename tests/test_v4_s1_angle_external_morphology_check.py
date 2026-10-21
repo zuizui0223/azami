@@ -47,3 +47,23 @@ def test_no_picture_angle_as_gravity_and_range_guard():
     rows[0]["s1_image_orientation_median"]=199
     with pytest.raises(ValueError,match="range"):
         a.source_blocked_exact_auc(rows)
+
+def test_real_source_verified_morphology_ranks_are_not_pooled_origin_counts():
+    import json
+    from pathlib import Path
+    f=Path("analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json")
+    r=json.loads(f.read_text(encoding="utf-8"))
+    d=r["result"]
+    assert r["run_id"]==39592398003
+    assert r["artifact"]["sha256"].startswith("sha256:")
+    assert d["n_S1_angle_taxa"]==46
+    assert d["n_S1_tree_taxa_with_continuous_angle"]==194
+    assert d["n_S1_eligible_image_taxon_keys_total"]==244
+    assert d["source_prevalence_exact_assignments"]==45920
+    assert d["source_strata"]["North_American_published_author"]["n_taxa"]==42
+    assert d["source_strata"]["East_Asian_EAzami_curated"]["n_taxa"]==4
+    assert d["source_strata"]["North_American_published_author"]["observed_AUC"]==0.7863247863247863
+    assert d["source_strata"]["East_Asian_EAzami_curated"]["observed_AUC"]==0.0
+    assert d["within_source_pair_weighted_source_blocked_two_sided_p"]>0.05
+    assert r["interpretation_boundary"]["S1_continuous_194_as_main_remains_recommended"] is True
+    assert r["interpretation_boundary"]["number_of_independent_botanical_downward_origins_estimated"] is False
