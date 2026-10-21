@@ -64,6 +64,23 @@ def test_source_photo_joint_full_conditional_ecdf_geographic_sensitivity(monkeyp
         assert case["native_vs_ALL_introduced_only"]
         assert case["full_image_angle_axis_not_preselected_threshold"]
         assert case["common_rainfall_bins_originally_supported"]>=5
+        audit=case["photo_sample_metadata_for_every_supported_rain_plot_bin"]
+        assert set(audit)=={"native","introduced_all"}
+        jack=case["all_original_cells_removed_one_at_a_time_surface_sensitivity"]
+        assert jack["status"]=="FULL_CONDITIONAL_SURFACE_ALL_SINGLE_5DEG_CELL_DELETIONS"
+        assert jack["all_possible_union_cell_deletions"]>=40
+        assert len(jack["observed_delta_min_over_one_cell_deletion_or_original"])==len(
+            case["rainfall_display_bins_originally_supported_both_ranges"])
+        for group in audit.values():
+            for accepted,metadata in zip(
+                case["rainfall_display_bins_originally_supported_both_ranges"],group):
+                if accepted:
+                    assert metadata["original_photo_n"]>=30
+                    assert 1<=metadata["effective_cells_within_rain_plot_bin"]<=metadata["source_5degree_cells"]
+                    assert metadata["record_grade_is_NOT_photo_pose_or_clarity"]
+                    assert metadata["max_cell_fraction_within_rain_plot_bin"]>0
+                else:
+                    assert metadata is None
         diag=case["simultaneous_interval_diagnostic"]
         assert diag["draws_valid_for_all_common_rain_bins"]>=81
         assert diag["absolute_supremum_deviation_95percent"]>=0
