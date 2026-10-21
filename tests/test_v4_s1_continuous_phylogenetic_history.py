@@ -45,6 +45,21 @@ def test_continuous_ancestry_is_degree_scale_equivariant_not_discrete():
         s1h.continuous_BM(tree,tips,y,nugget_fraction=-.1)
 
 
+def test_shared_covariance_cache_reproduces_independent_fits():
+    tree=tree_fixture();tips=[t.name for t in tree.get_terminals()]
+    x=np.array([46.,63.,71.,80.,100.,91.,120.,110.,129.])
+    rng=np.random.default_rng(42)
+    climate=rng.normal(size=(len(tips),5))*np.array([1.,100.,100.,10.,1.])
+    cached=s1h.shared_path_matrix(tree,tips)
+    fresh=s1h.continuous_BM(tree,tips,x)
+    reused=s1h.continuous_BM(tree,tips,x,cached_paths=cached)
+    assert fresh["fitted_root_image_axis_deg"]==pytest.approx(reused["fitted_root_image_axis_deg"])
+    assert fresh["all_edges"]==reused["all_edges"]
+    a=s1h.equal_species_five_climate_GLS(tree,tips,x,climate)
+    b=s1h.equal_species_five_climate_GLS(tree,tips,x,climate,cached_paths=cached)
+    assert a["coefficients_image_axis_deg_per_increment"]==b["coefficients_image_axis_deg_per_increment"]
+
+
 def test_GLs_five_original_exposures_direct_effects_present():
     tree=tree_fixture(); tips=[t.name for t in tree.get_terminals()]
     n=len(tips); rng=np.random.default_rng(1)
