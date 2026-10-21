@@ -12,7 +12,7 @@ def sample():
     rows=[]
     for species in ("Cirsium arvense","Cirsium vulgare"):
         for status in ("native","introduced"):
-            for i in range(210):
+            for i in range(300):
                 lat=-54+(i%17)*6
                 lon=-170+((i//17)%12)*23
                 rain=400+(i%100)*11+(status=="introduced")*170
