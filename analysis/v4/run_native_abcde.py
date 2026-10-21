@@ -77,7 +77,7 @@ def execute(
     # effect, KDE or bootstrap outcome used to decide which rows qualify.
     gateA,candidate=gate_a(full,mapping,observer,max_taxa=max_taxa)
     selected=set(candidate.accepted_key.unique())
-    gateE=gate_e(mapping,currently_selected_keys=selected)
+    gateE=gate_e(mapping,currently_selected_keys=selected,native_frame=frame)
     output_dict={
         "schema_version":"unified_native_capitulum_abcde_20261021_v1",
         "status":"scientific_gates_partially_open_independent_field_validation_needed",
