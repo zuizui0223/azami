@@ -69,8 +69,8 @@
 
 ## 6. 実行順（これより前の旧「非転移」結論を更新しない）
 
-1. **A / angle-blind wet-edge ledger**：原野外全観察から気候層・背景・各層の観察／元投稿者／5°セル・カメラ／花期情報の欠損を計算。湿潤端の生データ支持が足りるか判定。**現時点で未実行。**
-2. **B / within-continent conditional phenotype**：③vs②・①の比較可能なZと季節／QCの層だけで、Q10/Q50/Q90・CDF・W1を源とcell hashを固定して推定。撮影者／地理ブロック感度。**未実行。**
+1. **A / angle-blind wet-edge ledger**：原野外全観察から気候層・背景・各層の観察／元投稿者／5°セル・カメラ／花期情報の欠損を計算。湿潤端の生データ支持が足りるか判定。**実行済みの初期監査**（[実データ・ソース集計](results/20261021_unified_abcde/S2_WET_EDGE_CONDITIONAL_ANGLE_RESULT_JA.md)）。
+2. **B / within-continent conditional phenotype**：③vs②・①の比較可能なZと季節／QCの層だけで、Q10/Q50/Q90・CDF・W1を源とcell hashを固定して推定。撮影者／地理ブロック感度。**北米2種で探索的に実行済み**（分位点差・W1・400回共同5°セルbootstrap）。写真校正・独立マッチング分散は未完了。
 3. **C / native-edge external check**：②の在来vs導入の条件付き分布と湿潤端の占有密度、既存旧S2の傾き/平均角度は二次参照値に下げる。**未実行。**
 4. **D / measurement gate**：原画像を盲検独立監査し、雨×画像角度差を重力基準・撮影姿勢誤差と分離。**未実行。**
 5. **E / optional flowering-rain**：月別雨の12枚と開花期の独立判定が揃った場合だけ、BIO12との競合予測を事前固定して実行。**未実行。**
