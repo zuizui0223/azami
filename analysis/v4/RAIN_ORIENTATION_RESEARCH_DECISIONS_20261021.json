@@ -107,6 +107,58 @@
       ],
       "S2_primary_test": "BIO12 upper/native-q95 and within-introduction annual precipitation tercile image-angle contrast",
       "S2_secondary_test": "BIO15 precipitation seasonality under the same climate-only source, reported as sensitivity/exploratory"
+    },
+    "source_verified_BIO12_BIO15_taxon_influence_20261021": {
+      "status": "EMPIRICAL_191_AND_143_SPECIES_NESTED_FIVE_S1_CLIMATE_HC3_LOO_BOOTSTRAP_COMPLETED",
+      "source_verification_run_id": 39598389991,
+      "source_sha_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json",
+      "interpretation_ja": "analysis/v4/results/20261021_unified_abcde/S1_RAIN_CONTINUOUS_ANGLE_ASSOCIATION_SYNTHESIS_20261021_JA.md",
+      "code": "analysis/v4/s1_annual_rain_taxon_influence.py",
+      "taxon_191_BIO12_degree_per100mm": 0.5075715791859674,
+      "taxon_191_BIO12_HC3_95pct": [
+        0.2808224676541581,
+        0.7343206907177767
+      ],
+      "taxon_191_BIO12_all_leave_one_out_191_positive": true,
+      "taxon_191_BIO12_all_leave_one_out_HC3_lower95_positive": true,
+      "taxon_191_BIO12_leave_one_out_slope_range": [
+        0.4750222168950582,
+        0.5448891110384733
+      ],
+      "taxon_191_BIO12_bootstrap_1999_percentile95": [
+        0.2729592433282237,
+        0.7383870608208122
+      ],
+      "taxon_143_BIO12_degree_per100mm": 0.45740548832095634,
+      "taxon_143_BIO12_HC3_95pct": [
+        0.08905014689717838,
+        0.8257608297447343
+      ],
+      "taxon_143_BIO12_all_leave_one_out_143_HC3_lower95_positive": true,
+      "taxon_143_BIO12_leave_one_out_slope_range": [
+        0.367178278581187,
+        0.5214663683085056
+      ],
+      "taxon_143_BIO12_bootstrap_1999_percentile95": [
+        0.08841377014737017,
+        0.817170880026526
+      ],
+      "taxon_191_BIO15_effect_hc3": [
+        0.40521130210990863,
+        -1.0255118536981813,
+        1.8359344579179986
+      ],
+      "taxon_143_BIO15_effect_hc3": [
+        0.8628556930976913,
+        -0.66061833686411,
+        2.3863297230594926
+      ],
+      "BIO15_independent_effect_confirmed": false,
+      "original_S1_observation_level_between_within_model_refitted": false,
+      "independent_botanical_downward_origins_inferred": false,
+      "within_species_BIO12_signal_significant": false,
+      "geographic_spatial_grouping_not_explicitly_resolved_by_LOO": true,
+      "no_taxon_level_bootstrap_proves_rain_selection": true
     }
   },
   "S2": {
@@ -414,7 +466,7 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "Original S1 continuous image-angle 244 taxa /194 history tips/191 strict, fixed five climate axes; weak Pagel lambda across 52 placement trees also NA42 exact matching independently published nuclear topology lambda=0; original S1 BIO12 spatial positive remains; no demonstrable independent biological nodding gains/rainfall selection, T3 unrun",
+    "epistemic_status": "S1 annual precipitation BIO12 positive between original 244 taxa, corroborated with 191 source-clean and 143 >=10-photo taxon-equal 5-CHELSA models, 191/191 and 143/143 positive-HC3 leave-one-out, 1999 taxon bootstrap; within-species BIO12 and among-species BIO15 not supported; image vertical != biological nodding, no rain-adaptive origin evidence; weak Pagel lambda on 52 grafts and NA42 published nuclear; T3 not run",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
@@ -428,7 +480,8 @@
     "S1_T2_external_morphology_construct_check": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json",
     "S1_continuous_phylogenetic_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
     "S1_continuous_phylogenetic_signal_registry": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json",
-    "S1_continuous_NA42_independent_nuclear_comparison": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json"
+    "S1_continuous_NA42_independent_nuclear_comparison": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json",
+    "S1_continuous_rain_single_taxon_robustness": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
