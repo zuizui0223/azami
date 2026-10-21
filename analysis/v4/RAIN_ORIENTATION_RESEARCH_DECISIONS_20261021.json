@@ -40,7 +40,7 @@
     "source_name_collision_keys": 7
   },
   "S1": {
-    "status": "existing_association_estimated_photographer_mixed_effect_and_physical_angle_validation_pending",
+    "status": "existing_native_S1_between_rain_association_and_original_observer_sampling_sensitivity_verified; camera_gravity_same_head_QC_pend",
     "model": "five previously selected CHELSA covariates BIO1 BIO4 BIO12 BIO15 RSDS, species between/within separately",
     "annual_bio12_between_deg_per_100mm": 0.4381991922885207,
     "annual_bio12_between_95pct_interval": [
@@ -64,10 +64,21 @@
       "fixed spatial heldouts",
       "taxon-name WCVP collisions"
     ],
-    "independent_rain_functional_effect_established": false
+    "independent_rain_functional_effect_established": false,
+    "observer_source_robustness": {
+      "run": 39537702876,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S1_OBSERVER_RAIN_SENSITIVITY_20261021.json",
+      "exclude_taxon_concept_collisions_deg_per100mm": 0.4178153874411991,
+      "observer_cell_single_sample_deg_per100mm": 0.38849173669129317,
+      "remove_top_1pct_original_posters_deg_per100mm": 0.3929428496585995,
+      "all_between_ci_positive": true,
+      "observer_cell_nested_residual_not_pure_camera": true,
+      "original_same_observation_multiple_photos_n": 77977,
+      "confirmed_same_head_remeasurement_n": 0
+    }
   },
   "S2": {
-    "status": "introduced_status_and_original_photo_cohorts_not_yet_audited",
+    "status": "introduced_status_and_original_photo_cohorts_audited_climate_transfer_estimation_in_progress",
     "focal_source_names": [
       "Cirsium vulgare",
       "Cirsium arvense"
@@ -82,7 +93,25 @@
     "estimand": "difference in within-species precipitation slope between native and introduced range under equal measurement and sampling definitions, plus external native-trained prediction transfer",
     "false_null_evidence": "a nonsignificant introduced slope does not demonstrate no plasticity, evolutionary origin, or adaptation; require independently justified equivalence precision",
     "introduction_age_inferred_from_photograph_date": false,
-    "source_file": "analysis/v4/native_range_status.py"
+    "source_file": "analysis/v4/native_range_status.py",
+    "source_range_audit": {
+      "run": 39537559204,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S2_INTRODUCED_SOURCE_AUDIT_20261021.json",
+      "original_observations": 665115,
+      "native_wild": 313350,
+      "explicit_WCVP_introduced_wild": 156750,
+      "unresolved_and_other": 195015,
+      "introduced_orientation_eligible": 91106,
+      "focal_native_orientation": {
+        "Cirsium arvense": 49072,
+        "Cirsium vulgare": 33637
+      },
+      "focal_introduced_orientation": {
+        "Cirsium arvense": 43195,
+        "Cirsium vulgare": 47833
+      },
+      "both_focal_source_support_rules_pass": true
+    }
   },
   "T2": {
     "status": "trait_blind_flora_ontology_and_transition_ready_species_tree_missing",
@@ -130,7 +159,10 @@
     "historical_automated_audit_human_ground_truth": false,
     "floral_background_colour_control_remeasured": false,
     "monthly_climate_precipitation_12_rasters_joined": false,
-    "photo_colour_composition_five_new_native_frame_fields_verified": false
+    "photo_colour_composition_five_new_native_frame_fields_verified": false,
+    "observer_cell_balancing_sensitivity_executed": true,
+    "source_introduced_WCVP_classification_executed": true,
+    "camerapose_independent_gravity_calibration_finished": false
   },
   "publication_branches": {
     "fallback": "S1 with direct technical QC plus valid T2 transitions, optionally GEB. S1 alone is descriptive pattern, not evolutionary protection.",
@@ -141,6 +173,7 @@
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
     "epistemic_status": "DESIGN PLUS VERIFIED S1 ONLY",
     "no_new_inferred_fitness_or_origin_count": true,
-    "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true
+    "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
+    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S1_S2_RAIN_AND_INTRODUCED_SOURCE_RESULTS_JA.md"
   }
 }
