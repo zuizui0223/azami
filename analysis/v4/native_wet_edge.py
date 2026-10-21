@@ -350,14 +350,6 @@ def conditional_distribution(wet:pd.DataFrame, ref:pd.DataFrame,
         "geographic_block_uncertainty":geographic_block_uncertainty(wet,ref,matched),
         "no_gravity_calibration_or_causal_interpretation":True,
     }
-    # Geographic uncertainty stays separate from raw point estimates and
-    # treats the frozen climate-only matches as fixed; camera and matching
-    # model uncertainty are not incorporated.
-    from analysis.v4.native_wet_edge_uncertainty import geographic_block_bootstrap
-    result["geographic_cell_uncertainty"] = geographic_block_bootstrap(
-        a,b,ww,wr,
-        label=str(a.taxon_name.iloc[0])+"|"+str(a.tdwg1.iloc[0])+"|BIO12-native-q95",
-    )
     return result
 
 
