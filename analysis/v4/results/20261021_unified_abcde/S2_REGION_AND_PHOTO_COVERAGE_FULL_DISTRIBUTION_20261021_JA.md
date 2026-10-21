@@ -47,4 +47,16 @@
 
 本解析は**真の重力基準の頭花下垂、遺伝的可塑性、雨よけ機能を検証しない**。分布の形を見た今後に、必要なら撮影月/元観察QC・地域セル・カメラ姿勢を切り分けるが、既存の完全ECDFや主解析の気候シフトを置き換えない。
 
+## 公開集計だけからの再現手順
+
+既存の成功run [#39596352429](https://github.com/zuizui0223/azami/actions/runs/39596352429) にあるartifact `12343858479` の `S2_full_joint_rain_angle_landscape.json` を入力し、次のCLIで**元の秘密情報にアクセスせず**、元出現／画像角度標本の雨量ECDF、各大陸の角度ECDF、同じ雨量表示帯にある写真角度の条件付き分布差を全グリッドについて復元できる。
+
+```bash
+python -m analysis.v4.s2_region_curve_diagnostics \
+  --joint-json S2_full_joint_rain_angle_landscape.json \
+  --out S2_photo_sampling_region_whole_curves.json
+```
+
+実装：[s2_region_curve_diagnostics.py](../../s2_region_curve_diagnostics.py)。独立した合成データテスト：[test_v4_s2_region_curve_diagnostics.py](../../../../tests/test_v4_s2_region_curve_diagnostics.py)。主解析のコホート・元CHELSA・画像計測値には手を加えない。再構成コードは入力ヒストグラムの総確率1、全導入域への地域混合再構成、公開データだけのプライバシー要件を検査し、数値が合わなければ停止する。
+
 **関連ファイル：** [同一観察の二次元分布一次実行](S2_SAME_OBSERVATION_JOINT_RAIN_ANGLE_20261021_JA.md)、[完全ECDFと399回地理セル感度](S2_FULL_DISTRIBUTIONS_BEFORE_METRICS_20261021_JA.md)。全数値は監査済み公開集計から再計算可能。今回の3種類の図は、(i) 元出現vs写真標本の降水ECDF、(ii) 地域別の画像角度CDF、(iii) 共通降水表示帯における角度条件付き分布差。
