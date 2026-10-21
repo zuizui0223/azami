@@ -26,7 +26,15 @@
     "source_species_names_with_any_accepted_wild_record": 313,
     "accepted_WCVP_keys_merging_more_than_one_source_species_name_in_full_wild": 7,
     "both_range_basic_gate_species": 2,
-    "both_range_stronger_gate_species": 2
+    "both_range_stronger_gate_species": 2,
+    "two_qualified_source_names_dominance": {
+      "introduced_wild_observations_from_two_species": 156608,
+      "introduced_wild_observations_in_five_sparse_species": 142,
+      "proportion_of_all_WCVP_introduced_source_wild_from_two_species": 0.9990940988835726,
+      "introduced_orientation_eligible_from_two_species": 91028,
+      "introduced_orientation_eligible_from_five_sparse_species": 78,
+      "proportion_of_all_WCVP_introduced_orientation_from_two_species": 0.999143854411345
+    }
   },
   "predeclared_gates": {
     "basic": {
