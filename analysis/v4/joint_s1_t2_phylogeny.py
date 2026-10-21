@@ -165,9 +165,12 @@ def actual_native_roster(frame,models,coverage):
     for key,group in sample.groupby("accepted_key",sort=True):
         names=sorted(set(group.taxon_name.dropna().astype(str).str.strip()))
         data=group[ENDPOINT].to_numpy(float)
+        climate=frame.loc[group.index,list(EXPOSURES)]
         by_key[str(key)]={"source_names":names,"n":int(len(group)),
                           "median_image_angle_deg":float(np.median(data)),
                           "mean_image_angle_deg":float(np.mean(data)),
+                          "mean_frozen_five_exposures":{
+                              e:float(climate[e].mean()) for e in EXPOSURES},
                           "concept_collision_in_source":len(names)!=1}
     return by_key
 
@@ -196,6 +199,7 @@ def match_sources(states,source,tree_index,*,scope_complete=True):
                     s1_validated_taxon_match=True,
                     s1_observations=group["n"],
                     s1_image_orientation_median=group["median_image_angle_deg"],
+                    s1_five_climate_centroids=group.get("mean_frozen_five_exposures"),
                     s1_phylogeny_194_key_match=bool(key in tree_index and
                         canonical in tree_index[key]["tree_matches"]),
                     join_status="exact_S1_and_tree" if
@@ -207,8 +211,70 @@ def match_sources(states,source,tree_index,*,scope_complete=True):
     return result
 
 
+def evaluate_T2_pgls_history(joins, *, draws=120):
+    """Exploratory minimum steps on the SAME 52 PGLS trees; not true origins."""
+    from copy import deepcopy
+    from analysis.v4.native_phylogeny import restore_trees
+    from analysis.v4.t2_pgls_placement_screen import check_placement_tree, parsimony
+    from analysis.v4.rain_history import rate_fit, stochastic_maps
+
+    by_tip={}
+    for r in joins:
+        if not r["s1_phylogeny_194_key_match"]:
+            continue
+        tip=r["source_taxon"].replace(" ","_")
+        state=1 if r["state"]=="nodding" else 0
+        if tip in by_tip and by_tip[tip]!=state:
+            raise ValueError("Independent botanical sources conflict on a tree tip")
+        by_tip[tip]=state
+    if len(by_tip)<25 or sum(by_tip.values())<3 or len(by_tip)-sum(by_tip.values())<10:
+        return {"status":"insufficient_independently_scored_cross_source_tips",
+                "eligible_tip_count":len(by_tip),"eligible_nodding_count":sum(by_tip.values()),
+                "not_a_completed_evolutionary_origin_inference":True}
+    trees=restore_trees()
+    if len(trees)!=52:
+        raise ValueError("PGLS tree sensitivity count changed")
+    diagnostics=[]
+    for i,(label,original) in enumerate(trees):
+        tips=check_placement_tree(original)
+        if not set(by_tip)<=tips:
+            raise ValueError("Cross-source source-tip join missing from PGLS placement")
+        phy=deepcopy(original)
+        for tip in list(phy.get_terminals()):
+            if tip.name not in by_tip:
+                phy.prune(tip)
+        pars=parsimony(phy,by_tip)
+        rate,ll,boundary=rate_fit(phy,by_tip)
+        maps=stochastic_maps(phy,by_tip,rate,draws=draws,seed=20261021+i)
+        diagnostics.append({"scenario":label,**pars,
+              "Mk_fixed_tree_rate":float(rate),"Mk_log_likelihood":float(ll),
+              "rate_boundary":bool(boundary),
+              "Mk_erect_to_nodding_median":float(maps["erect_to_nodding_q025_median_q975"][1]),
+              "Mk_nodding_to_erect_median":float(maps["nodding_to_erect_q025_median_q975"][1])})
+    def rng(key):
+        vals=[r[key] for r in diagnostics]
+        return [float(min(vals)),float(max(vals))]
+    return {
+       "status":"exploratory_grafted_placement_52_scenario_history_only",
+       "taxa_with_independent_botanical_U_D_and_actual_S1_angle_and_tree":len(by_tip),
+       "n_nodding":int(sum(by_tip.values())),
+       "n_erect":int(len(by_tip)-sum(by_tip.values())),
+       "unknown_root_minimum_steps_scenario_range":rng("unknown_root_min_steps"),
+       "erect_root_minimum_steps_scenario_range":rng("root_erect_min_steps"),
+       "nodding_root_minimum_steps_scenario_range":rng("root_nodding_min_steps"),
+       "Mk_erect_to_nodding_median_scenario_range":rng("Mk_erect_to_nodding_median"),
+       "Mk_nodding_to_erect_median_scenario_range":rng("Mk_nodding_to_erect_median"),
+       "scenario_details":diagnostics,
+       "independent_molecular_Cirsium_tree_event_support":False,
+       "number_of_independent_real_biological_origins_estimated":False,
+       "rain_climate_dependent_transition_rate_estimated":False,
+       "EAzami_and_Siniscalchi_states_only_no_photo_threshold":True,
+       "S1_history_194_unchanged_no_redundant_environment_refit":True,
+    }
+
+
 def build(s1_file,phylo_file,models_file,coverage_file,map_file,ea_rows,na_rows,
-          native_frame=None,native_source_sha=None):
+          native_frame=None,native_source_sha=None, *, include_T2_history=False):
     models=json.loads(Path(models_file).read_text())
     coverage=json.loads(Path(coverage_file).read_text())[ENDPOINT]
     s1=pd.read_csv(s1_file)
@@ -232,6 +298,12 @@ def build(s1_file,phylo_file,models_file,coverage_file,map_file,ea_rows,na_rows,
         source={}
         status="source_244_roster_unavailable_do_not_infer_taxon_state_coverage"
     joined=match_sources(states,source,tree_index)
+    if include_T2_history:
+        if native_frame is None:
+            raise ValueError("Cannot run full T2 placement without authenticated native source")
+        t2_history=evaluate_T2_pgls_history(joined)
+    else:
+        t2_history={"status":"not_requested"}
     def count(layer,metric):
         return sum(x["source"]==layer and x.get(metric) is True for x in joined)
     return {
@@ -244,6 +316,7 @@ def build(s1_file,phylo_file,models_file,coverage_file,map_file,ea_rows,na_rows,
                      "grafted_placement_scenarios":52},
       "fixed_covariates":list(EXPOSURES),
       "frozen_S1_five_exposure_effects":effects,
+      "T2_exploratory_placement_history":t2_history,
       "T2_independent_state_inventory":{
          "NA_original_author_states":63,"NA_original_nodding_states":5,
          "EAzami_source_concept_state_rows":20,"EAzami_resolved_states":17,
@@ -253,6 +326,13 @@ def build(s1_file,phylo_file,models_file,coverage_file,map_file,ea_rows,na_rows,
          "NA_exact_S1_194_tree_matches":count("Siniscalchi2023_author_scored","s1_phylogeny_194_key_match"),
          "EastAsia_exact_S1_244_matches":count("EAzami_FDT4_existing_authority","s1_validated_taxon_match"),
          "EastAsia_exact_S1_194_tree_matches":count("EAzami_FDT4_existing_authority","s1_phylogeny_194_key_match"),
+         "s1_join_exclusion_status_counts":{
+              k:int(sum(r["join_status"]==k for r in joined))
+              for k in sorted({r["join_status"] for r in joined})},
+         "exactly_joined_taxa_by_source":[
+             {"taxon":r["source_taxon"],"source":r["source"],"state":r["state"],
+              "accepted_key":r["accepted_key"],"tree194":r["s1_phylogeny_194_key_match"]}
+             for r in joined if r["s1_validated_taxon_match"]],
          "taxon_source_audit":joined},
       "falsification":{
         "EAzami_BIO15":"positive_EastAsian_U_D_direction_but_no_conditional_single_axis_specificity",
@@ -270,6 +350,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--out",required=True)
     p.add_argument("--native-table",type=Path)
+    p.add_argument("--include-T2-history",action="store_true",
+                   help="Evaluate source-independent biological states on existing 52 placements; descriptive only")
     p.add_argument("--no-native-diagnostic",action="store_true",
                    help="Allow ledger-only mode: exact 244-source join explicitly unavailable")
     args=p.parse_args()
@@ -281,7 +363,8 @@ def main():
     if args.native_table is not None:
         source=pd.read_csv(args.native_table,low_memory=False)
     result=build(S1_PATH,PGLS_PATH,MODEL_PATH,COVERAGE_PATH,MAPPING_PATH,ea,na,
-                 native_frame=source,native_source_sha=args.native_table)
+                 native_frame=source,native_source_sha=args.native_table,
+                 include_T2_history=args.include_T2_history)
     result["provenance"]={"EAzami_git_commit":T2_COMMIT_EA,
            "EAzami_source_git_blob":T2_BLOB_EA,"EAzami_source_sha256":ea_sha,
            "NA_source_git_commit":T2_COMMIT_NA,"NA_source_git_blob":T2_BLOB_NA,
@@ -300,6 +383,9 @@ def main():
                              if x["term"]=="chelsa_bio12__between"),
         "BIO15_between":next(x for x in result["frozen_S1_five_exposure_effects"]
                              if x["term"]=="chelsa_bio15__between"),
+        "T2_exploratory_placement_history":{
+           k:v for k,v in result["T2_exploratory_placement_history"].items()
+           if k!="scenario_details"},
     },ensure_ascii=False,sort_keys=True),flush=True)
 
 
