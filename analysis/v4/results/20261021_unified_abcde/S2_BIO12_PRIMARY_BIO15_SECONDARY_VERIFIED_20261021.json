@@ -1,0 +1,188 @@
+{
+  "schema_version": "v4_S2_real_two_Cirsium_BIO12_primary_BIO15_secondary_image_angle_20261021_v1",
+  "source": {
+    "github_action_run": 39559452415,
+    "artifact_id": 12326369656,
+    "artifact_name": "v4-two-Cirsium-original-rain-seasonality-photo-angle",
+    "artifact_zip_sha256": "ca5e520f7b08f0258534ab94010004e7d25904d3ee5903d667aca46e817ac853",
+    "member": "S2_introduced_rain_seasonality_vs_original_head_image_angle.json",
+    "member_sha256": "084b28ec90c20bf08826fca412e4b4f685257334affc3dcd14f20899f66ee0f7",
+    "original_iNaturalist_665115_records": 665115,
+    "focal_original_image_orientation_eligible": 173737,
+    "focal_original_observer_5degree_cell_balanced": 94060,
+    "source_original_BIO12_raster_sha256": "918441cac0b633227d2a6dcc0ddcfb5efd40e015a426951a01cfbf9ba2f7a22c",
+    "source_original_BIO15_raster_sha256": "0f349681b70c3502fd8027da5d266d0bf1d1e4ffd64d20fa4c1e8247f5a6b328",
+    "new_original_raster_1981_2010_checksum_verified": true,
+    "same_photo_original_human_observer_retained_private": true
+  },
+  "S1_cross_taxon_reference": {
+    "model": "five climate predictors BIO1 BIO4 BIO12 BIO15 RSDS simultaneously",
+    "n": 170066,
+    "taxa": 244,
+    "main_BIO12_between_deg_per_plus100mm": 0.4381991922885207,
+    "main_BIO12_between_95pct": [
+      0.2058063239224483,
+      0.6705920606545931
+    ],
+    "main_BIO12_Holm_p": 0.00531,
+    "secondary_BIO15_between_deg_per_plus10": 0.7880825140436949,
+    "secondary_BIO15_between_95pct": [
+      -0.2662791617924732,
+      1.8424441898798627
+    ],
+    "secondary_BIO15_within_deg_per_plus10": -0.15339124857684425,
+    "secondary_BIO15_within_95pct": [
+      -0.5267153435666101,
+      0.2199328464129216
+    ],
+    "seasonality_independently_supported": false,
+    "S1_and_S2_estimands_differ": true
+  },
+  "primary_BIO12_North_America": {
+    "definitions": "Source introduced photo-angle observations above original cell-weighted native within-species BIO12 q95 versus other observations in the same North American introduced range; also top minus bottom local rainfall tertiles",
+    "Cirsium arvense": {
+      "native_q95_BIO12_mm": 1690,
+      "above_native_q95": {
+        "observations": 576,
+        "cells": 21
+      },
+      "above_minus_not_above_image_angle_deg": 0.21015067996907533,
+      "cell_bootstrap_q025_q50_q975": [
+        -11.412187230174398,
+        -0.33202312215782825,
+        12.76590004372421
+      ],
+      "within_intro_top_third_minus_bottom_third": {
+        "high_obs": 10098,
+        "high_cells": 47,
+        "low_obs": 4753,
+        "low_cells": 39,
+        "delta_deg": 0.27937687085272955,
+        "cell_bootstrap_q025_q50_q975": [
+          -6.636401494681853,
+          -0.10505738933214559,
+          7.63194371174819
+        ]
+      }
+    },
+    "Cirsium vulgare": {
+      "native_q95_BIO12_mm": 1734.015972119705,
+      "above_native_q95": {
+        "observations": 809,
+        "cells": 19
+      },
+      "above_minus_not_above_image_angle_deg": -9.596039274254188,
+      "cell_bootstrap_q025_q50_q975": [
+        -22.04910434124674,
+        -9.55662383677754,
+        1.4058916918080226
+      ],
+      "within_intro_top_third_minus_bottom_third": {
+        "high_obs": 8097,
+        "high_cells": 51,
+        "low_obs": 4345,
+        "low_cells": 43,
+        "delta_deg": 3.8971542938219272,
+        "cell_bootstrap_q025_q50_q975": [
+          -3.4469415607433067,
+          3.7755272312063326,
+          12.186125109850677
+        ]
+      }
+    },
+    "all_reported_interval_bounds_include_zero": true,
+    "direction_consistently_positive": false,
+    "no_supported_rain_shelter_photo_angle_cline": true,
+    "within_photo_angle_unit": "0 degrees image-up, 90 degrees image-horizontal, 180 degrees image-down, no gravity calibration"
+  },
+  "other_introduced_BIO12_regions": {
+    "Cirsium arvense": {
+      "Australasia": {
+        "source_obs": 566,
+        "region_cells": 12,
+        "above_native_q95_source_obs": 60,
+        "above_native_q95_cells": 6,
+        "wet_extreme_point_delta_deg": -6.631518185992789,
+        "local_high_minus_low_tercile_deg": -19.96301414129961,
+        "uncertainty_interval_not_identifiable": true
+      }
+    },
+    "Cirsium vulgare": {
+      "Africa": {
+        "source_obs": 1187,
+        "region_cells": 20,
+        "above_native_q95_source_obs": 101,
+        "above_native_q95_cells": 3,
+        "wet_extreme_comparison_not_identifiable": true,
+        "local_high_minus_low_tercile_deg": -8.13301972325479,
+        "tercile_max_independent_cells": 12,
+        "uncertainty_interval_not_identifiable": true
+      },
+      "South America": {
+        "source_obs": 1622,
+        "region_cells": 16,
+        "above_native_q95_source_obs": 303,
+        "above_native_q95_cells": 7,
+        "wet_extreme_point_delta_deg": 6.120801501716656,
+        "local_high_minus_low_tercile_deg": -17.919758059543533,
+        "tercile_max_independent_cells": 14,
+        "uncertainty_interval_not_identifiable": true
+      },
+      "Australasia": {
+        "source_obs": 1932,
+        "region_cells": 28,
+        "wet_extreme_not_identifiable": true,
+        "local_high_minus_low_tercile_deg": 2.610824521823332,
+        "local_high_low_cell_bootstrap_q025_q50_q975": [
+          -12.278446192381994,
+          1.6836870691941925,
+          18.241132632012015
+        ]
+      }
+    }
+  },
+  "secondary_BIO15_introduced_results": {
+    "Cirsium arvense_North_America": {
+      "high_BIO15_local_tercile_minus_low_tercile_photo_angle_deg": -8.054969764043108,
+      "high_cells": 41,
+      "low_cells": 41,
+      "uncorrected_cell_bootstrap_q025_q50_q975": [
+        -15.11340301689269,
+        -7.999796535982107,
+        -1.8844244777680825
+      ],
+      "warning": "One exploratory unadjusted interval does not demonstrate independent BIO15 climatic effect, selected photo quality or mechanism; it is in the opposite image-angle direction from naive seasonality-driven rain shelter prediction."
+    },
+    "Cirsium vulgare_North_America": {
+      "high_minus_low_BIO15_photo_angle_deg": 2.438222912142976,
+      "cell_bootstrap_q025_q50_q975": [
+        -3.875388170383194,
+        1.9346227764145354,
+        9.72934794482198
+      ],
+      "interval_includes_zero": true
+    },
+    "Cirsium vulgare_Africa": {
+      "local_high_minus_low_BIO15_photo_angle_deg": 16.72366706371116,
+      "high_BIO15_cells": 10,
+      "low_BIO15_cells": 10,
+      "bootstrap_interval_not_identifiable": true
+    },
+    "Cirsium vulgare_South_America": {
+      "local_high_minus_low_BIO15_photo_angle_deg": 11.317522407708395,
+      "high_BIO15_cells": 8,
+      "low_BIO15_cells": 8,
+      "bootstrap_interval_not_identifiable": true
+    },
+    "secondary_status": "Exploratory, many comparisons, sparse geographic cell support outside North America, S1 global BIO15 between and within intervals cross zero; never claim confirmed seasonality selection"
+  },
+  "technical_and_causal_limits": [
+    "Both predictors derive from 1981–2010 mean climate; not rain on flowering day or flowering-season rainfall.",
+    "Native climate q95 and introduction terciles derived without photo angle or phenotype response values.",
+    "Original iNaturalist observation-level aggregated photo angle is camera-vertical, not gravitational head orientation, pollen protection or fitness.",
+    "Within-introduction climate comparisons are across independent observed sites, not the same genotype's trait before and after colonization.",
+    "Regional bootstrap quantiles are conditional on site cluster sampling; no simultaneous multiple-test correction, genetic control, photo viewpoint or true flowering stage correction.",
+    "Absence of a significant wet-end photo angle signal does not demonstrate zero trait change or evolutionary conservatism.",
+    "Africa and South America rainfall/seasonality climate pixels are now fully available for the eligible photo source, but independent sites are too few for definitive conclusions."
+  ]
+}
