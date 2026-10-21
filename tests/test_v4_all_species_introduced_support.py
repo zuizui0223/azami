@@ -51,23 +51,23 @@ def _run(monkeypatch,data):
 
 
 def test_screen_all_species_not_just_two_preselected_names(monkeypatch):
-    data=miniature_source(n=55)
+    data=miniature_source(n=120)
     data=pd.concat([data,pd.DataFrame([
         {**data.iloc[0].to_dict(),"obs_id":"new_taxon_native",
          "taxon_name":"Cirsium specimenx", "accepted_key":1003,
          "native_primary":True,"eligibility_reason":"include"}
     ])],ignore_index=True)
     monkeypatch.setattr(study,"SOURCE_N",len(data))
-    monkeypatch.setattr(study,"NATIVE_N",len(data)//2+1)
+    monkeypatch.setattr(study,"NATIVE_N",int(data.native_primary.sum()))
     result=study.records_by_source_species(data)
     assert result["source_species_rank_names"]==3
     assert result["source_species_with_both_wild_regions"]==2
     assert result["species_passing_basic_observer_cell_measurement_support"]==2
-    assert result["species_passing_stronger_observer_cell_measurement_support"]==2
+    assert result["species_passing_stronger_observer_cell_measurement_support"]==1
     byname={x["source_taxon_name"]:x for x in result["contiguous_source_species_counts"]}
     assert byname["Cirsium specimenx"]["both_ranges_pass_basic_measurement_support"] is False
     assert byname["Cirsium vulgare"]["range_support"]["introduced"]["orientation_eligible_observations"]==35
-    assert byname["Cirsium vulgare"]["range_support"]["introduced"]["original_source_observations"]==55
+    assert byname["Cirsium vulgare"]["range_support"]["introduced"]["original_source_observations"]==120
     assert "obs_id" not in str(result)
     assert "observer_" not in str(result)
     assert "latitude" not in str(result)
