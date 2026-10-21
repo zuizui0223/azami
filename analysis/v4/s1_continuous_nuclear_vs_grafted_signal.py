@@ -79,6 +79,12 @@ def fit_one_tree(tree,rows,*,root_label,source_type,nuggets=NUGGETS,
                     bootstrap[key]=evaluator.bootstrap_lambda0(
                         observed,reps=bootstrap_reps,
                         seed=seed+(0 if design_label=="no_climate" else 1))
+                    bootstrap[key]["scope"]=(
+                        "Original author-published North American nuclear tree "
+                        "pruned to identical 42 S1-measured taxa; fixed branch "
+                        "lengths, fixed nugget, normal residuals, and fitted "
+                        "lambda; not a genus-wide origin or photo-camera "
+                        "accuracy test")
     return report,bootstrap
 
 
