@@ -42,6 +42,7 @@ from analysis.v4.native_wet_edge import save as save_wet_edge
 from analysis.v4.s2_rainfall_occupancy_trait import save as save_rain_occupancy_trait
 from analysis.v4.native_rain_niche_trait_redistribution import save as save_rain_niche_trait
 from analysis.v4.s2_full_distribution_exploration import save as save_full_distribution
+from analysis.v4.s2_joint_rain_angle_landscape import save as save_joint_landscape
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -406,6 +407,17 @@ def execute(original:Path,authority_archive:Path,source_meta:Path,
         print(json.dumps({
             "S2_full_original_distributions":distribution_report["status"],
             "no_selected_statistical_indices":True,
+        },ensure_ascii=False),flush=True)
+        # The 1-D full ECDFs cannot show precipitation AND orientation of a
+        # single photographed observation. Join original photo-level rain×angle
+        # as a plotting surface without a preselected width/tail metric.
+        joint_report=save_joint_landscape(
+            wild,photo,output,
+            source_sha={k:v["source_SHA256"] for k,v in audit.items()})
+        print(json.dumps({
+            "S2_observed_joint_rain_angle":joint_report["status"],
+            "same_original_observation":True,
+            "all_introduced_primary":True,
         },ensure_ascii=False),flush=True)
         conditional_report=save_rain_niche_trait(wild,land,auth,photo,output)
         print(json.dumps({
