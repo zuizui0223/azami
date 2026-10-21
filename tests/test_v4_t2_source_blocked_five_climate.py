@@ -26,6 +26,7 @@ def fake_rows():
             "join_status":"exact_S1_and_tree",
             "s1_phylogeny_194_key_match":True,
             "s1_observations":20,
+            "s1_image_orientation_median":float(70 + (i % 11) * 6 + (i in (0,9,25,42,43,44))*4),
             "state":"nodding" if nodding else "erect",
             "source":source,
             "s1_five_climate_centroids":dict(zip(EXPOSURES,vals.tolist()))
@@ -54,9 +55,12 @@ def test_exact_label_universe_conditioned_on_source_frequency_and_p():
     outcome=m.score(full,labels)
     assert outcome["null_maps"]==45920
     assert outcome["all_five_covariates_in_model"]==list(EXPOSURES)
-    for raw,adjusted in zip(outcome["source_stratified_exact_sharp_null_two_sided_p"],
-                            outcome["two_axis_maxT_source_stratified_exact_p"]):
+    for raw,adjusted in zip(outcome["source_stratified_sharp_null_descriptive_rank"],
+                            outcome["two_axis_maxT_descriptive_reference_rank"]):
         assert 0<raw<=adjusted<=1
+    assert outcome["phylogeny_calibrated_p_status"]=="NOT_CALIBRATED_BY_SOURCE_LABEL_PERMUTATION"
+    assert len(outcome["same_cohort_S1_image_angle_deg_coefficient_per_1SD"])==2
+    assert all(np.isfinite(v) for v in outcome["same_cohort_S1_image_angle_deg_coefficient_per_1SD"])
 
 
 def test_original_north_american_42_tree_same_tip_and_regional_joins():
@@ -111,3 +115,17 @@ def test_source_concepts_not_included_without_five_frozen_covariates():
     data["T2_independent_state_inventory"]["taxon_source_audit"][0]["s1_five_climate_centroids"].pop("chelsa_bio12")
     with pytest.raises(ValueError,match="five-climate"):
         m.authenticate_input(data,receipt)
+
+def test_same_taxon_image_vs_independent_botanical_response_identity_ols():
+    rows=fake_rows()
+    c=m.cohort(rows)
+    labels,_=m.exact_source_maps(c)
+    result=m.score(c,labels)
+    expected=np.linalg.lstsq(c["X"],c["image_y"],rcond=None)[0]
+    indices=[c["predictor_offset"]+list(EXPOSURES).index(v) for v in m.AXES]
+    assert result["same_cohort_S1_image_angle_deg_coefficient_per_1SD"] == pytest.approx(
+        expected[indices].tolist(),abs=1e-9)
+    image_row=deepcopy(rows)
+    image_row[0].pop("s1_image_orientation_median")
+    with pytest.raises(ValueError,match="Missing actual same-taxon"):
+        m.cohort(image_row)
