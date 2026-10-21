@@ -40,7 +40,7 @@
     "source_name_collision_keys": 7
   },
   "S1": {
-    "status": "existing_native_S1_between_rain_association_and_original_observer_sampling_sensitivity_verified; camera_gravity_same_head_QC_pend",
+    "status": "Original 244-key native head-image-angle × annual rainfall BIO12 between-taxon association positive, but real-source geographic sensitivity 237/191/143 shows effect can be explained by species' broad geographic composition; globally unique annual-rain effect not supported under flexible spatial adjustment",
     "model": "five previously selected CHELSA covariates BIO1 BIO4 BIO12 BIO15 RSDS, species between/within separately",
     "annual_bio12_between_deg_per_100mm": 0.4381991922885207,
     "annual_bio12_between_95pct_interval": [
@@ -159,6 +159,89 @@
       "within_species_BIO12_signal_significant": false,
       "geographic_spatial_grouping_not_explicitly_resolved_by_LOO": true,
       "no_taxon_level_bootstrap_proves_rain_selection": true
+    },
+    "source_verified_native_geographical_confounds_20261022": {
+      "status": "REAL_SOURCE_SPATIAL_SENSITIVITY_SUCCESS__GLOBAL_BIO12_INDEPENDENT_EFFECT_NOT_SUPPORTED_AFTER_FLEXIBLE_GEOGRAPHY",
+      "original_244_S1_native_observations": 170066,
+      "native_location_coordinates_valid": 170066,
+      "native_invalid_coordinate_count": 0,
+      "clean_native_taxon_keys": 237,
+      "tree_strict_taxon_keys": 191,
+      "minimum10_photos_strict_taxon_keys": 143,
+      "fixed5_original_CHELSA": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "run_id": 39659502828,
+      "numeric_receipt": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_SOURCE_VERIFIED.json",
+      "scientific_summary_ja": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_RESULT_JA.md",
+      "script": "analysis/v4/s1_rain_native_geographic_controls.py",
+      "photo237_BIO12_original_per100mm": [
+        0.3621882377896445,
+        0.04853602669206236,
+        0.6758404488872266
+      ],
+      "photo237_BIO12_geo_sector_per100mm": [
+        0.10957712205366205,
+        -0.35620765380125397,
+        0.5753618979085781
+      ],
+      "photo237_BIO12_spherical_per100mm": [
+        -0.12229514648883688,
+        -0.7617335342096339,
+        0.5171432412319601
+      ],
+      "photo191_BIO12_original_per100mm": [
+        0.5075715791859658,
+        0.2808224676541563,
+        0.7343206907177754
+      ],
+      "photo191_BIO12_geo_sector_per100mm": [
+        0.3217862201649758,
+        -0.03145942826345055,
+        0.6750318685934023
+      ],
+      "photo191_BIO12_spherical_per100mm": [
+        0.044477493217758735,
+        -0.4620745799342485,
+        0.551029566369766
+      ],
+      "photo143_BIO12_spherical_per100mm": [
+        -0.12470467987198808,
+        -0.8035199878209717,
+        0.5541106280769955
+      ],
+      "all_six_spherical_adjusted_cohort_HC3_BIO12_interval_includes_zero": true,
+      "east_longitude_sector_of_photo191": {
+        "n_taxa": 40,
+        "mean_annual_BIO12_mm": 2400.79917544577,
+        "mean_photo_angle_deg": 80.06704350707992
+      },
+      "west_longitude_sector_of_photo191": {
+        "n_taxa": 93,
+        "mean_annual_BIO12_mm": 944.2461298303627,
+        "mean_photo_angle_deg": 71.12530571236893
+      },
+      "photo191_east_longitude_sector_heldout_BIO12_per100mm": [
+        0.1046311438871696,
+        -0.46001444265621544,
+        0.6692767304305547
+      ],
+      "cell5deg191_within_east_longitude_sector_BIO12_per100mm": [
+        0.6457895440963624,
+        0.008182015745228699,
+        1.283397072447496
+      ],
+      "within_east_region_photo_mean_191_interval_contains_zero": true,
+      "cell_weighting_can_change_local_sector_significance": true,
+      "global_annual_rainfall_and_image_angle_association_observed": true,
+      "independent_annual_precipitation_effect_after_spatial_controls_confirmed": false,
+      "source_S1_observation_within_between_model_refitted": false,
+      "location_coordinates_shared_in_output": false,
+      "independent_downward_nodding_origins_or_rain_selection_identified": false
     }
   },
   "S2": {
@@ -466,11 +549,11 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 annual precipitation BIO12 positive between original 244 taxa, corroborated with 191 source-clean and 143 >=10-photo taxon-equal 5-CHELSA models, 191/191 and 143/143 positive-HC3 leave-one-out, 1999 taxon bootstrap; within-species BIO12 and among-species BIO15 not supported; image vertical != biological nodding, no rain-adaptive origin evidence; weak Pagel lambda on 52 grafts and NA42 published nuclear; T3 not run",
+    "epistemic_status": "S1 original BIO12 image-angle association positive across 244 keys, stable to single-taxon removal but not independent of broad native geographic composition: 237/191/143 original-source continuous taxon panels all include zero under spherical 2nd-order. BIO15 and within-species BIO12 unsupported. S1 true gravitational posture, nodding-origin dates, causation and T3 remain untested.",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
-    "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response",
+    "primary_claim": "Positive native S1 BIO12 vs species-level continuous image-angle association; source-authenticated geography audit indicates no globally independent BIO12-specific effect after spherical control. S2 occupancy shift not trait causation. Do not claim rain-adaptive evolution.",
     "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
     "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING",
     "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
@@ -481,7 +564,9 @@
     "S1_continuous_phylogenetic_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
     "S1_continuous_phylogenetic_signal_registry": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json",
     "S1_continuous_NA42_independent_nuclear_comparison": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json",
-    "S1_continuous_rain_single_taxon_robustness": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json"
+    "S1_continuous_rain_single_taxon_robustness": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json",
+    "S1_precipitation_spatial_caveat_receipt": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_SOURCE_VERIFIED.json",
+    "S1_precipitation_spatial_caveat_ja": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_RESULT_JA.md"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
