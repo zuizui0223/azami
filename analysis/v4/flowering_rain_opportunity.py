@@ -150,7 +150,7 @@ def flowering_windows(frame:pd.DataFrame,mapping:list[dict],
             "phenology_basis":"visible_floret_image_proxy_not_observed_flowering",
         })
     private=pd.DataFrame.from_records(records)
-    if not private.empty and private.duplicated(idcols).any():
+    if not private.empty and private.duplicated(["accepted_key","latband_20","lonband_90"]).any():
         raise ValueError("Duplicate species-region phenological windows")
     focal=[]
     for name in FOCAL:
