@@ -1,6 +1,6 @@
 # S2追加実測：同一写真観察の降水量×頭花角度を二次元で見る
 
-**2026-10-21・元データ実行完了。** [GitHub Actions #39596352429](https://github.com/zuizui0223/azami/actions/runs/39596352429) **success**、結果artifact ID **12343858479**、artifact ZIP SHA256 **ca050288e6f9e61d52a3511723f429fd04eb550b6dc2076374feb71bd23ae384**。元のWCVP/TDWG野外分類、元BIO12 CHELSA原画素の完全5変数チェックサム、および既存頭花画像角度の計測値を**元の同一観察IDを使って**内部結合した。公開は集計JSONのみ、正確な緯度経度・撮影者・元観察ID・写真本体は含めない。
+**2026-10-21・元データ実行完了。** [GitHub Actions #39596352429](https://github.com/zuizui0223/azami/actions/runs/39596352429) **success**、結果artifact ID **12343858479**、artifact ZIP SHA256 **ca050288e6f9e61d52a3511723f429fd04eb550b6dc2076374feb71bd23ae384**。集計member `S2_full_joint_rain_angle_landscape.json` の SHA256 は **`76161affb2791cbd707417bd129fe959e0e3f53cc14b4a7cab409107d42e17b9`**。元のWCVP/TDWG野外分類、元BIO12 CHELSA原画素の完全5変数チェックサム、および既存頭花画像角度の計測値を**元の同一観察IDを使って**内部結合した。公開は集計JSONのみ、正確な緯度経度・撮影者・元観察ID・写真本体は含めない。
 
 ## 主張する前に比較対象を整理
 
