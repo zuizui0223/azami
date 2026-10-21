@@ -266,6 +266,45 @@ def directional_sector_holdouts(group,trait):
             "not_previously_defined_terrestrial_biogeographic_realm":True}
 
 
+
+def regional_within_sector_models(cohort,trait):
+    """Direct within-sector S1 photo-angle climate contrasts and data support.
+
+    These fixed longitude-sector aggregates represent native photo-geographic
+    composition, not political continents nor independent within-species tests.
+    Species are assigned by their dominant observed longitude sector.
+    """
+    rows=cohort.sort_values("accepted_key")
+    geography=rows.dominant_sector_id.to_numpy(int)
+    summary={}
+    for number,label in enumerate(SECTOR_NAMES):
+        sub=rows.loc[geography==number]
+        if len(sub)<15:
+            summary[label]={"status":"too_few_taxa",
+                            "n_taxa":int(len(sub))}
+            continue
+        reg=model_report(sub,trait,"none")
+        annual=sub["chelsa_bio12"].to_numpy(float)
+        angle=sub[trait].to_numpy(float)
+        summary[label]={
+            "n_species":int(len(sub)),
+            "n_source_images":int(sub.n_source_images.sum()),
+            "n_species_primary_source_sector_concentration_gt70pct":
+                 int(sum(sub.dominant_sector_fraction>=.7)),
+            "BIO12_taxon_mean_yearly_mm_q10_q50_q90":
+                np.quantile(annual,[.1,.5,.9]).tolist(),
+            "image_angle_taxon_mean_degree_q10_q50_q90":
+                np.quantile(angle,[.1,.5,.9]).tolist(),
+            "taxon_equal_mean_original_image_angle_deg":float(angle.mean()),
+            "taxon_equal_mean_BIO12_mm_year":float(annual.mean()),
+            "within_sector_5_CHELSA_HC3_result":reg,
+            "geographic_qualification":
+                "fixed longitude sector only, not a biological realm, and no species-level evolutionary origin conclusion",
+        }
+    return {"sector_selection_predeclared_without_response":True,
+            "regional_results":summary}
+
+
 def execute(table,out):
     work,audit=authenticated_source(table)
     mapped=tree_subset_keys()
@@ -280,8 +319,10 @@ def execute(table,out):
                 fits={model:model_report(cohort,phenotype,model)
                       for model in GEO_ADJUSTMENTS}
                 holds=directional_sector_holdouts(cohort,phenotype)
+                within_region=regional_within_sector_models(cohort,phenotype)
                 tests[phenotype]={"model_comparisons":fits,
-                                   "sector_holdouts":holds}
+                                   "sector_holdouts":holds,
+                                   "within_sector_and_composition":within_region}
             variant[cohort_key]={
                 "n_species":int(len(cohort)),
                 "n_geographical_5degree_cells_total":int(cohort.n_geo_cells.sum()),
