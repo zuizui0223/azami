@@ -31,7 +31,7 @@ def test_verified_191_and_143_taxon_annual_rain_is_positive_without_any_single_t
         assert b15["HC3_conditional_t95_interval"][0]<0<b15["HC3_conditional_t95_interval"][1]
         assert b15["species_pairs_bootstrap_percentile95"][0]<0<b15["species_pairs_bootstrap_percentile95"][1]
         assert b15["species_leave_one_out_pointwise_HC3_lower95_positive_count"]==0
-    assert doc["scientific_claim_bounds"]["original_S1_observation_level_between_within_model_not_refitted"] is True
+    assert doc["scientific_claim_bounds"]["original_S1_spatial_within_between_model_not_refitted"] is True
     assert doc["scientific_claim_bounds"]["precipitation_association_not_evolutionary_causation"] is True
 
 
