@@ -55,7 +55,7 @@ def test_selected_native_common_support_collapses_but_interval_not_positive():
         assert a["difference_ci95"][0]<0<a["difference_ci95"][1]
         assert x["pre_overlap"]["difference_ci95"][0]<0<x["pre_overlap"]["difference_ci95"][1]
         assert x["rain_only_overlap"]["difference_ci95"][0]<0<x["rain_only_overlap"]["difference_ci95"][1]
-        assert x["introduced_continents_evaluable"]==["North America"] if "introduced_continents_evaluable" in x else x["introduced_continent_evaluable"]==["North America"]
+        assert (x.get("introduced_continents_evaluable") or x.get("introduced_continent_evaluable")) == ["North America"]
     assert d["results"]["Cirsium arvense"]["pre_overlap"]["native_to_intro_skill_vs_native_constant"]<0
     assert d["results"]["Cirsium arvense"]["five_exposure_rectangle_overlap"]["native_to_intro_skill_vs_native_constant"]>0
     assert d["results"]["Cirsium vulgare"]["five_exposure_rectangle_overlap"]["native_to_intro_skill_vs_native_constant"]<0
