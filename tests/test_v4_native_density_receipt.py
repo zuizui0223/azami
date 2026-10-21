@@ -63,7 +63,7 @@ def test_colour_and_outline_share_identical_taxon_pairs_and_taxon_dependent_unce
 
 def test_bandwidth_and_observer_quadrant_sensitivities_remain_only_conditional():
     robust=json.loads((EVIDENCE/"native_density_robustness_receipt.json").read_text())
-    bw=robust["KDE"]
+    bw=robust["results"]["KDE"]
     for module in ("colour","outline"):
         x=bw[module]["overlap_075_1_125"]
         assert len(x)==3 and all(0<=v<=1 for v in x)
@@ -73,7 +73,7 @@ def test_bandwidth_and_observer_quadrant_sensitivities_remain_only_conditional()
         bw["colour"]["overlap_075_1_125"],
         bw["outline"]["overlap_075_1_125"]
     ))
-    deletions=robust["fixed_deletions"]
+    deletions=robust["results"]["fixed_deletions"]
     assert deletions["observer_top1pct"]["observers_removed"]==521
     assert deletions["observer_top1pct"]["difference_colour_minus_outline"]>0
     assert deletions["reference_replicates"]==10
