@@ -1,0 +1,138 @@
+{
+  "schema_version": "v4_S2_native_to_introduced_original_pixel_rain_transfer_20261021_v1",
+  "source": {
+    "github_actions_run": 39539209624,
+    "artifact_id": 12317764638,
+    "artifact_zip_sha256": "dad25a10ec658d386699829cfce702701523d79aa50e12afc0ef70a2803c9300",
+    "numeric_member_sha256": "a95e0eaa085cc4cbd55a8302f5d527e26e3800761f7bb043ae9e65bfecdbdb26",
+    "source_status_member_sha256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
+    "source_original_pre_detector_observations": 665115,
+    "native_WCVP_TDWG3": 313350,
+    "introduced_explicit_WCVP_TDWG3": 156750,
+    "uncertain_and_other": 195015,
+    "method": "original CHELSA 1981–2010 pixel values (five fixed covariates) plus observation month and year; one per source taxon×5° equal-sin cell×original human observer; equal total site-cell weight; cell-cluster sandwich intervals"
+  },
+  "effects": {
+    "Cirsium arvense": {
+      "native": {
+        "orientation_eligible_with_all_five_original_pix": 49072,
+        "balanced": 21870,
+        "cells": 186,
+        "observers": 18989,
+        "annual_BIO12_deg_per_100mm": -0.1116191421353511,
+        "ci95": [
+          -1.1306005929560614,
+          0.9073623086853592
+        ]
+      },
+      "introduced": {
+        "orientation_eligible_with_all_five_original_pix": 41995,
+        "balanced": 24956,
+        "cells": 71,
+        "observers": 22414,
+        "annual_BIO12_deg_per_100mm": 0.27825231318425475,
+        "ci95": [
+          -0.2634727368006064,
+          0.8199773631691158
+        ]
+      },
+      "difference": {
+        "introduced_minus_native": 0.3898714553196059,
+        "ci95": [
+          -0.7641602716696394,
+          1.5439031823088512
+        ]
+      },
+      "native_to_intro_skill": {
+        "versus_native_constant": -0.00897259179269927,
+        "versus_oracle_intro_mean": -0.010981443042486827
+      },
+      "BIO12_central_90pct_overlap": {
+        "range": [
+          524,
+          1403.55
+        ],
+        "native_fraction": 0.900182898948331,
+        "introduced_fraction": 0.763103061388043
+      },
+      "RSDS_central_90pct_overlap": {
+        "range": [
+          12.542,
+          14.400099999999998
+        ],
+        "native_fraction": 0.07384545038866026,
+        "introduced_fraction": 0.5117406635678795
+      }
+    },
+    "Cirsium vulgare": {
+      "native": {
+        "orientation_eligible_with_all_five_original_pix": 33637,
+        "balanced": 16246,
+        "cells": 124,
+        "observers": 14211,
+        "annual_BIO12_deg_per_100mm": 0.6992058496429765,
+        "ci95": [
+          -0.347689299402661,
+          1.746100998688614
+        ]
+      },
+      "introduced": {
+        "orientation_eligible_with_all_five_original_pix": 38983,
+        "balanced": 25429,
+        "cells": 88,
+        "observers": 23148,
+        "annual_BIO12_deg_per_100mm": -0.6119107212198934,
+        "ci95": [
+          -1.432583283546696,
+          0.2087618411069091
+        ]
+      },
+      "difference": {
+        "introduced_minus_native": -1.31111657086287,
+        "ci95": [
+          -2.6413394498013307,
+          0.019106308075590883
+        ]
+      },
+      "native_to_intro_skill": {
+        "versus_native_constant": -0.02026320808114135,
+        "versus_oracle_intro_mean": -0.020404238867123503
+      },
+      "BIO12_central_90pct_overlap": {
+        "range": [
+          546,
+          1529.75
+        ],
+        "native_fraction": 0.900529361073495,
+        "introduced_fraction": 0.8193794486609777
+      },
+      "RSDS_central_90pct_overlap": {
+        "range": [
+          12.581,
+          15.50625
+        ],
+        "native_fraction": 0.12526160285608764,
+        "introduced_fraction": 0.6752919894608518
+      }
+    }
+  },
+  "science": {
+    "status": "SOURCE_VERIFIED_EXECUTED_FIRST_PASS_NOT_EVOLUTION_OR_EQUIVALENCE",
+    "between_species_native_full_paper_BIO12_rain_assoc_is_different_estimand": true,
+    "all_within_range_coefficients_intervals_include_zero": true,
+    "both_native_to_intro_prediction_scores_negative": true,
+    "common_five_climate_support_checked_jointly": false,
+    "independent_same_head_or_gravity_measurement_verified": false,
+    "species_range_labels_geographic_TDWG_not_individual_naturalisation_proof": true,
+    "trait_family": "image-vertical head angle, not gravitational or physical rain-shelter function",
+    "nontransfer_alternatives": [
+      "five-covariate climate extrapolation incl strong native RSDS non-overlap",
+      "camera posture/pose",
+      "large within-species residual image variation",
+      "founder/source-lineage differences",
+      "photo detection selection",
+      "genuine ecological nonequivalence"
+    ],
+    "required_next_test": "5D outcome-blind native-introduced climate rectangle overlap; refit only if source cells sufficient, else STOP not flat slope"
+  }
+}
