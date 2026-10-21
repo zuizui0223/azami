@@ -290,7 +290,7 @@
     }
   },
   "T2": {
-    "status": "PGLS_52_PLACEMENT_AND_PUBLISHED_NA_NUCLEAR_44_63_EXPLORATORY_EXECUTED__GLOBAL_CLIMATE_DEPENDENT_T2_NOT_RUN",
+    "status": "S1_FULL_244_CONTINUOUS_PRIMARY_PLUS_194_TREE_ANOTHER_SCALE_REAL_EXECUTED_GLOBAL_INDEPENDENT_ORIGINS_NOT_IDENTIFIED",
     "flora_state_vocabulary": [
       "erect",
       "nodding",
@@ -414,7 +414,7 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1: 244 continuous image angle, 194 placement, BIO12 positive; T2: 46 independently coded posture, S1 five-exposure source-adjusted contrast no strong evidence, NA42 nuclear Mk null also no strong evidence; 5–6 minimum changes only on placement scenarios; historical rain transition causation and T3 untested",
+    "epistemic_status": "S1 actual image orientation 170066/244 + 194-tip continuous Brownian ancestry across 52 grafted placement scenarios source-verified; 191 collision-free sensitivity running; categorical 46 literature taxa supplementary; real nodding origin events and climate-dependent transitions NOT established; T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
@@ -529,5 +529,44 @@
       "no_true_independent_evolutionary_origins_estimated": true,
       "no_historical_climate_dependent_rate_estimated": true
     }
+  },
+  "S1_T2_primary_continuous_head_history": {
+    "status": "S1_AUTHENTICATED_NATIVE_244_MEASURED_TAXON_KEYS_AND_194_CONTINUOUS_TREE_TIPS_SUCCESS",
+    "source_run_id": 39590112876,
+    "real_source_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_52_VERIFIED_20261021.json",
+    "continuous_history_runner": "analysis/v4/s1_continuous_phylogenetic_history.py",
+    "native_S1_eligible_observations": 170066,
+    "native_S1_taxon_keys_with_measured_image_orientation": 244,
+    "historical_placement_matched_taxon_keys": 194,
+    "historical_GBOTB_VPhyloMaker_scenarios": 52,
+    "original_S1_image_angle_used_as_continuous_primary": true,
+    "frozen_original_5_climate_variables": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "same194_BIO12_image_deg_per_100mm_scenario_range": [
+      0.31187868516713924,
+      0.7649943527011548
+    ],
+    "same194_BIO15_image_deg_per_10units_scenario_range": [
+      -0.4868122939801925,
+      1.429258375848951
+    ],
+    "real_194_taxon_name_collisions": [
+      "Cirsium_parryi",
+      "Cirsium_setidens",
+      "Cirsium_yezoense"
+    ],
+    "191_taxon_collision_free_sensitivity_code_in_place": true,
+    "191_taxon_collision_free_empirical_run_result_verified": false,
+    "literature_botanical_46_binary_states_role": "external_construct_validation_and_complementary_categorical_historical_sensitivity_not_primary_S1",
+    "photographic_axis_is_gravitational_head_orientation": false,
+    "true_independent_biological_downward_origins_estimated": false,
+    "absolute_origin_dates_estimated": false,
+    "rain_driven_causal_transition_rates_estimated": false,
+    "frozen_V3_and_existing_S1_mixed_model_changed": false
   }
 }
