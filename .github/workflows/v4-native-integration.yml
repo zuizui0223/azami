@@ -96,9 +96,10 @@ jobs:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
         run: |
           set -euo pipefail
-          gh release download private-v3-numerical-20260908 --repo zuizui0223/azami \
-            --pattern original-metadata-665115-dfa98fa162a8029c.aesgcm \
-            --dir work/native-integration/private
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm
+          echo "dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm" | sha256sum -c -
           python -m analysis.v4.native_observers \
             --sealed work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm \
             --native work/native-integration/decoded/observations.csv.gz \
