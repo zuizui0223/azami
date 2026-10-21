@@ -6,6 +6,7 @@ on:
       - '.github/workflows/v4-s1-rain-geography.yml'
       - 'analysis/v4/s1_rain_native_geographic_controls.py'
       - 'tests/test_v4_s1_rain_native_geographic_controls.py'
+      - 'tests/test_v4_s1_rain_geographic_verified_receipt.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -30,7 +31,7 @@ jobs:
       - name: Install current pinned numerical inputs
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Test original five CHELSA variables, source coordinates, sector and spherical design rank
-        run: python -m pytest -q tests/test_v4_s1_rain_native_geographic_controls.py
+        run: python -m pytest -q tests/test_v4_s1_rain_native_geographic_controls.py tests/test_v4_s1_rain_geographic_verified_receipt.py
       - name: Restore original S1 native observations without publishing coordinate-level data
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
