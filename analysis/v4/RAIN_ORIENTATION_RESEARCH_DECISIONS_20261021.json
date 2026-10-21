@@ -190,6 +190,41 @@
         "novel_climate_adaptive_evolution": false,
         "photography_detection_effort_bias_unresolved": true,
         "continent_global_invasion_conclusion_supported": false
+      },
+      "direct_region_head_photo_orientation": {
+        "status": "EXECUTED_EXPLORATORY_IMAGE_ANGLE_BY_INTRODUCED_CONTINENT; no_causal_evolution_or_gravity_validation",
+        "source_action": 39550930196,
+        "original_artifact_id": 12323896390,
+        "receipt": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_ACTUAL_CONTINENT_ORIENTATION_20261021.json",
+        "report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
+        "source_image_axis_0up_90horizontal_180down": true,
+        "native_vulgare_cell_mean_angle_deg": 66.61232596450459,
+        "introduced_vulgare_cell_mean_angle_deg": {
+          "North America": 66.265,
+          "Africa": 66.265,
+          "South America": 66.03,
+          "Australasia": 67.907
+        },
+        "introduced_minus_native_cell_bootstrap_interval_crosses_zero_all_four": true,
+        "within_north_america_above_native_BIO1_q95": {
+          "original_BIO1_native_q95": 17.354378404351078,
+          "above_observations": 507,
+          "above_original_cells": 16,
+          "other_observations": 24839,
+          "other_original_cells": 75,
+          "mean_image_degree_difference": 3.9412022962940227,
+          "cell_bootstrap_q025_q50_q975": [
+            -12.839807936426048,
+            3.8999205215916817,
+            24.776581100381215
+          ],
+          "interval_includes_zero": true
+        },
+        "introduced_africa_BIO15_available_original_pixel_photos": 72,
+        "introduced_south_america_BIO15_available_original_pixel_photos": 0,
+        "no_original_pixels_not_equivalent_to_zero_sensitivity": true,
+        "statement": "No supported continent-wide image-downshift. Warmer novel NA source pixels show positive image-angle point estimate but large zero-crossing cell-bootstrap range. Higher BIO15 SA/Africa photo-angle association remains unavailable due to missing original cached rasters.",
+        "not_phylogenetic_evolution_or_true_gravity_angle": true
       }
     },
     "all_350_source_species_screen": {
@@ -288,6 +323,6 @@
     "epistemic_status": "S1 OBSERVED AND SOURCE-OBSERVER-ROBUST; S2 PROVISIONAL OBSERVED WITH FIVE-CLIMATE SUPPORT LIMIT; T2/T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
-    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_CLIMATE_NICHE_NOVELTY_RESULT_JA.md"
+    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md"
   }
 }
