@@ -32,6 +32,13 @@ def test_genuine_source_artifact_link_and_350_species_universe():
     assert j["evidence_census"]["wild_native_and_explicit_introduced_species_names"]==7
     assert j["evidence_census"]["both_range_basic_gate_species"]==2
     assert j["evidence_census"]["both_range_stronger_gate_species"]==2
+    share=j["evidence_census"]["two_qualified_source_names_dominance"]
+    assert share["introduced_wild_observations_from_two_species"]==156608
+    assert share["introduced_wild_observations_in_five_sparse_species"]==142
+    assert share["introduced_orientation_eligible_from_two_species"]==91028
+    assert share["introduced_orientation_eligible_from_five_sparse_species"]==78
+    assert share["proportion_of_all_WCVP_introduced_source_wild_from_two_species"]>0.999
+    assert share["proportion_of_all_WCVP_introduced_orientation_from_two_species"]>0.999
 
 
 def test_literature_source_names_remaining_are_recorded_as_non_evaluable_not_null():
