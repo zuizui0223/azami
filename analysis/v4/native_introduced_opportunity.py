@@ -362,6 +362,12 @@ def execute(original:Path,authority:Path,measurements:Path,output:Path,
     frame=append_observation_measures(frame,measured)
     del measured
     result=aggregate(frame)
+    # A-E evolved into a general Cirsium study: inspect ALL source species
+    # before interpreting the two abundant pioneer species as representative.
+    # Import at execution to keep original native/classifier utilities reusable
+    # and the historical two-species aggregate checksum byte-for-byte stable.
+    from analysis.v4.all_species_introduced_support import records_by_source_species
+    all_source_taxa=records_by_source_species(frame)
     if private_focal_output is not None:
         if "public" in private_focal_output.parts or "private" not in private_focal_output.parts:
             raise ValueError("Focal record-level data must remain inside private runner directory")
@@ -379,6 +385,9 @@ def execute(original:Path,authority:Path,measurements:Path,output:Path,
             compression={"method":"gzip","mtime":0}
         )
     output.mkdir(parents=True,exist_ok=True)
+    (output/"source665115_all_species_range_support.json").write_text(
+        json.dumps(all_source_taxa,indent=2,ensure_ascii=False,allow_nan=False)+"\n"
+    )
     (output/"source665115_introduced_opportunity.json").write_text(
         json.dumps(result,indent=2,ensure_ascii=False,allow_nan=False)+"\n")
     print(json.dumps({
@@ -387,6 +396,8 @@ def execute(original:Path,authority:Path,measurements:Path,output:Path,
         "native":result["overall"]["native_primary_wild_observations"],
         "introduced":result["overall"]["introduced_primary_wild_observations"],
         "supports":result["focal_native_intro_orientation_support"],
+        "all_species_basic_support":all_source_taxa["species_passing_basic_observer_cell_measurement_support"],
+        "all_species_stronger_support":all_source_taxa["species_passing_stronger_observer_cell_measurement_support"],
     },ensure_ascii=False))
     return result
 
