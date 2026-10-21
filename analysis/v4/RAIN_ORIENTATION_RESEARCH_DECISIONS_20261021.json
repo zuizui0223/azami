@@ -78,7 +78,7 @@
     }
   },
   "S2": {
-    "status": "S1 supported observational rainfall association; S2 original full350 screening confirms only two taxa are statistically supported in existing source; native-to-introduced 5-exposure slope/overlap pilot executed but not evolutionary origin",
+    "status": "introduced_status_all350_source_species_screened_exactly_two_eligible; five_covar_transfer_and_niche_overlap_exploratory_only; no_evolutionary_origin_or_equivalence_inference",
     "focal_source_names": [
       "Cirsium arvense",
       "Cirsium vulgare"
