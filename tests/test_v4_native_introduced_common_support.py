@@ -16,7 +16,7 @@ from analysis.v4.native_introduced_climate_transfer import (
 from analysis.v4.native_introduced_common_support import (
     REFERENCE_RUN, REFERENCE_RESULTS_SHA256,
     overlap_rectangle, report_support, compare_on_support,
-    continent_sensitivity,
+    continent_sensitivity, native_to_introduced_climate_novelty,
 )
 
 
@@ -118,3 +118,46 @@ def test_frozen_prior_executed_numerical_source_is_not_same_as_new_common_suppor
     assert REFERENCE_RESULTS_SHA256==(
         "a95e0eaa085cc4cbd55a8302f5d527e26e3800761f7bb043ae9e65bfecdbdb26"
     )
+
+
+def test_invasion_climate_novelty_is_independent_of_angle_response_and_reports_cell_weights():
+    native,introduced=toy_climates(nonoverlap_radiation=True)
+    a=native_to_introduced_climate_novelty(native,introduced)
+    assert a["status"].startswith("CLIMATE_ONLY_SOURCE_OCCUPANCY")
+    assert len(a["dimensions"])==5
+    assert set(a["by_weighting"])=={
+        "observer_photo_records","equal_total_weight_per_5degree_cell"
+    }
+    for sub in a["by_weighting"].values():
+        x=sub["axes"]["chelsa_rsds_mean"]
+        assert x["introduced_outside_native_central90_fraction"]>.90
+        assert sub["introduced_fraction_novel_by_at_least_one_native_marginal_q05_q95"]>.90
+        assert sub["no_head_angle_used_for_niche_envelope"]
+    m=native.copy()
+    m["orientation_angle_degrees_median"]=2000
+    n=introduced.copy()
+    n["orientation_angle_degrees_median"]=-1000
+    b=native_to_introduced_climate_novelty(m,n)
+    assert a==b
+
+
+def test_niche_shift_separates_photo_weight_from_5_degree_cell_weight():
+    native,introduced=toy_climates(n=120)
+    base=native_to_introduced_climate_novelty(native,introduced)
+    clone=pd.concat([introduced,introduced.iloc[:60].assign(
+        obs_id=lambda x:"copy_"+x.obs_id)],ignore_index=True)
+    added=native_to_introduced_climate_novelty(native,clone)
+    assert added["source_introduced_balanced_photo_observations"]>=len(introduced)
+    assert base["by_weighting"]["observer_photo_records"]["weighting"].startswith("each original")
+    assert base["by_weighting"]["equal_total_weight_per_5degree_cell"]["weighting"].startswith("each independent")
+    for v in base["by_weighting"].values():
+        assert 0 <= v["native_fraction_within_native_5D_central_marginal_box"] <= 1
+        assert 0 <= v["introduced_fraction_within_native_5D_central_marginal_box"] <= 1
+
+
+def test_niche_novelty_does_not_turn_missing_pixels_into_absence():
+    native,introduced=toy_climates(n=80)
+    introduced=introduced.copy()
+    introduced.iloc[0,introduced.columns.get_loc("chelsa_bio12")]=np.nan
+    with pytest.raises(ValueError,match="incomplete"):
+        native_to_introduced_climate_novelty(native,introduced)
