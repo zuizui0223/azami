@@ -59,7 +59,7 @@ def test_one_observation_per_original_observer_x_cell_and_time_index():
     assert len(a)>0
     assert not a.duplicated(["taxon_name","range_state","_cell","user_id"]).any()
     assert a._month.notna().all()
-    assert set(a._year)=={2023}
+    assert set(a._year)==set(range(2017,2024))
 
 
 def test_two_focal_native_introduced_bio12_slopes_are_separately_identifiable():
