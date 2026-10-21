@@ -407,12 +407,83 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 OBSERVED; S2 PROVISIONAL; T2 published NA nuclear and 52 PGLS exploratory state-change sensitivity executed, global evolutionary rain-temperature test NOT RUN; T3 NOT RUN",
+    "epistemic_status": "S1 verified 244 image keys and 194 placement keys (fixed 5 exposures); T2 46 independently coded state keys for exploratory 52-tree historical-sensitivity only; true independent Cirsium evolutionary origins and rain-temperature transition model NOT established; T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
     "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
     "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response",
     "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
-    "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING"
+    "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING",
+    "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json"
+  },
+  "S1_T2_shared_phylogenetic_evidence_20261021": {
+    "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
+    "source_verified_GitHub_Actions_run": 39584744194,
+    "source_verified_aggregate_receipt": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
+    "single_shared_runner": "analysis/v4/joint_s1_t2_phylogeny.py",
+    "exact_original_native_accepted_keys": 306,
+    "S1_image_vertical_orientation_eligible_accepted_keys": 244,
+    "S1_image_vertical_observations": 170066,
+    "S1_tree_matched_accepted_keys": 194,
+    "S1_tree_matched_observations": 169912,
+    "same_five_env_variables_across_S1_and_taxon_summaries": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "T2_known_botanical_state_source_lanes": {
+      "EAzami_resolved": 17,
+      "Siniscalchi2023": 63,
+      "total_unpooled_source_rows": 80
+    },
+    "exact_join_S1_image_and_independent_states": {
+      "EAzami": 5,
+      "Siniscalchi2023": 42
+    },
+    "exact_join_S1_image_and_52_tree_and_independent_states": {
+      "EAzami": 4,
+      "Siniscalchi2023": 42,
+      "total": 46,
+      "n_nodding": 6,
+      "n_erect": 40
+    },
+    "WCVP_multi_source_name_collision_excluded_rows": 5,
+    "T2_parsimony_unknown_root_change_minimum_52_placements": [
+      5,
+      6
+    ],
+    "T2_parsimony_erect_root_change_minimum_52_placements": [
+      5,
+      6
+    ],
+    "T2_parsimony_nodding_root_change_minimum_52_placements": [
+      5,
+      20
+    ],
+    "T2_symmetric_Mk_erect_to_nodding_median_sensitivity": [
+      5,
+      7
+    ],
+    "BIO12_S1_between_deg_100mm": 0.4381991922885207,
+    "BIO12_S1_between_pointwise_interval": [
+      0.2058063239224483,
+      0.6705920606545931
+    ],
+    "BIO12_52_placement_pointwise_positive_intervals": 52,
+    "BIO15_S1_between_deg_10units": 0.7880825140436949,
+    "BIO15_S1_between_pointwise_interval": [
+      -0.2662791617924732,
+      1.8424441898798627
+    ],
+    "BIO15_52_placement_positive_pointwise_intervals": 0,
+    "EAzami_v10_BIO15_axis_specificity_confirmed": false,
+    "independent_Cirsium_origin_events_proven": false,
+    "independent_full_global_nuclear_tree_available_for_194": false,
+    "gravitational_angle_inferred_from_S1_image_axis": false,
+    "any_additional_climate_predictor_chosen_after_EAzami_results": false,
+    "frozen_S1_and_V3_reestimated": false,
+    "not_treat_EAzami_as_independent_out_of_sample_replication": true
   }
 }
