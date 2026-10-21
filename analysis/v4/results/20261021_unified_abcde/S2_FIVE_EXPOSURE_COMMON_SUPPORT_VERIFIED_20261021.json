@@ -1,0 +1,162 @@
+{
+  "schema_version": "v4_S2_five_climate_common_support_real_source_20261021_v1",
+  "status": "EXECUTED_SOURCE_VERIFIED_SUPPORT_SENSITIVITY_NOT_EVIDENCE_OF_EVO_FIXED_OR_CLIMATE_CAUSAL",
+  "source": {
+    "github_run": 39543173995,
+    "artifact_id": 12320715523,
+    "artifact_name": "v4-rain-introduced-source-opportunity",
+    "artifact_zip_sha256": "2a3285d3be11efed6f3e56492ba573075346de5e4931c99807ce7e984f11f463",
+    "common_support_member_sha256": "1ef98d6ecd29cee86f02a29bf4b1dddc10deca70ce7d131d416d051d03edc115",
+    "recomputed_firstpass_member_sha256": "dc3a7c22688a7d8395bb4926614db97038286af022ec77b67766befe81bbcd26",
+    "original_source_status_sha256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
+    "source_reference_transfer_run": 39539209624,
+    "source_reference_transfer_sha256": "a95e0eaa085cc4cbd55a8302f5d527e26e3800761f7bb043ae9e65bfecdbdb26",
+    "original_source_not_public": true
+  },
+  "design": {
+    "original_population_observations": 665115,
+    "native_primary_observations": 313350,
+    "introduced_explicit_observations": 156750,
+    "other_status": 195015,
+    "source_species": [
+      "Cirsium arvense",
+      "Cirsium vulgare"
+    ],
+    "response": "image-vertical capitulum angle aggregated per iNaturalist original observation",
+    "original_Human_x_5degree_cell_dedup": true,
+    "geo_cells_min": 15,
+    "observer_min": 10,
+    "within_sample_min": 30,
+    "exposures": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "adjustments": [
+      "observation_month_sin",
+      "observation_month_cos",
+      "year"
+    ],
+    "standardized_by": "full original within-taxon combined native and introduced SD",
+    "overlap_rule": "Intersect native and introduced central 5th-95th marginal percentiles for each listed climate, include only jointly passing rows; other climate exposures remain in five-covariate model",
+    "five_D_density_overlap_confirmed": false
+  },
+  "results": {
+    "Cirsium arvense": {
+      "pre_overlap": {
+        "native_slope": -0.1116191421353511,
+        "introduced_slope": 0.27825231318425475,
+        "introduced_minus_native": 0.3898714553196059,
+        "difference_ci95": [
+          -0.7641602716696394,
+          1.5439031823088512
+        ],
+        "native_to_intro_skill_vs_native_constant": -0.00897259179269927
+      },
+      "rain_only_overlap": {
+        "native_rows": 19687,
+        "introduced_rows": 19044,
+        "native_cells": 138,
+        "introduced_cells": 61,
+        "native_slope": -0.5270143125740638,
+        "introduced_slope": 1.0074752053612448,
+        "difference": 1.5344895179353086,
+        "difference_ci95": [
+          -1.308088196128189,
+          4.377067231998806
+        ],
+        "native_to_intro_skill_vs_native_constant": -0.010369021271813716
+      },
+      "five_exposure_rectangle_overlap": {
+        "native_rows": 600,
+        "introduced_rows": 6428,
+        "native_fraction_of_observer_cell_cohort": 0.027434842249657063,
+        "introduced_fraction": 0.2575733290591441,
+        "native_cells": 23,
+        "introduced_cells": 27,
+        "native_observers": 576,
+        "introduced_observers": 6114,
+        "native_slope": -1.8210219645356287,
+        "introduced_slope": -1.4915000911008973,
+        "difference": 0.3295218734347314,
+        "difference_ci95": [
+          -4.408539960734997,
+          5.067583707604459
+        ],
+        "native_to_intro_skill_vs_native_constant": 0.003236531722855318,
+        "native_to_intro_skill_vs_oracle_intro_mean": -0.005115680261445599
+      },
+      "introduced_continent_evaluable": [
+        "North America"
+      ]
+    },
+    "Cirsium vulgare": {
+      "pre_overlap": {
+        "native_slope": 0.6992058496429765,
+        "introduced_slope": -0.6119107212198934,
+        "introduced_minus_native": -1.31111657086287,
+        "difference_ci95": [
+          -2.6413394498013307,
+          0.019106308075590883
+        ],
+        "native_to_intro_skill_vs_native_constant": -0.02026320808114135
+      },
+      "rain_only_overlap": {
+        "native_rows": 14630,
+        "introduced_rows": 20836,
+        "native_cells": 103,
+        "introduced_cells": 78,
+        "native_slope": 0.06360642144198674,
+        "introduced_slope": -0.7735833972315473,
+        "difference": -0.837189818673534,
+        "difference_ci95": [
+          -3.78905685518406,
+          2.1146772178369915
+        ],
+        "native_to_intro_skill_vs_native_constant": -0.02308107815665883
+      },
+      "five_exposure_rectangle_overlap": {
+        "native_rows": 1198,
+        "introduced_rows": 10011,
+        "native_fraction_of_observer_cell_cohort": 0.07374122861011942,
+        "introduced_fraction": 0.3936843761060207,
+        "native_cells": 23,
+        "introduced_cells": 28,
+        "native_observers": 1152,
+        "introduced_observers": 9455,
+        "native_slope": 0.9709505906617393,
+        "introduced_slope": -0.9404281969396727,
+        "difference": -1.911378787601412,
+        "difference_ci95": [
+          -4.974311707619215,
+          1.1515541324163903
+        ],
+        "native_to_intro_skill_vs_native_constant": -0.06200938706327741,
+        "native_to_intro_skill_vs_oracle_intro_mean": -0.06497327533479313
+      },
+      "introduced_continents_evaluable": [
+        "North America"
+      ],
+      "not_evaluable": {
+        "Africa": "zero source pixels under joint support",
+        "Asia_temperate": "4 jointly climate-supported introduced rows"
+      }
+    }
+  },
+  "claim_boundary": {
+    "all_native_introduced_BIO12_contrasts_ci_cross_zero": true,
+    "in_range_joint_five_climates_BIO12_contrast_crosses_zero": true,
+    "not_equivalent_to_zero": true,
+    "not_ev_fixed_or_plasticity_discrimination": true,
+    "North_America_only_climate_cache_coverage_sufficient": true,
+    "focal_yearly_precip_is_1981_2010_normals_not_daily_wetting": true,
+    "image_angle_not_gravity": true,
+    "bio12_only_overlap_misleading_if_other_4_extrapolate": true,
+    "joint_hyperrectangle_not_true_joint_5D_density_overlap": true,
+    "photo_measurement_error_and_source_phenology_unknown": true,
+    "unmeasured_nonresearch_or_taxonomic_selection": true,
+    "requirement_next": "Expand original pixel climate caches into introduced-only raster tiles and independent photo same-head quality review; then compare matched climate regimes and forest/convergence alternative explanations before origin claim."
+  }
+}
