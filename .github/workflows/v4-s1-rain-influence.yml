@@ -1,0 +1,56 @@
+name: V4 S1 measured annual rain vs seasonal rain taxon influence
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s1-rain-influence.yml'
+      - 'analysis/v4/s1_annual_rain_taxon_influence.py'
+      - 'tests/test_v4_s1_annual_rain_taxon_influence.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-s1-rain-influence-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  same-S1-rain-robustness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned numerical environment
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Verify BIO12 effects, image continuity, full S1 five-climate model and HC3 influence
+        run: python -m pytest -q tests/test_v4_s1_annual_rain_taxon_influence.py
+      - name: Restore original S1 194 measured taxon angles and five CHELSA source-means, with original archive hash
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1-rain-loo/input work/s1-rain-loo/result
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12343166776 --jq '.digest')" = "sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb"
+          gh run download 39594257539 --repo zuizui0223/azami \
+            --name v4-s1-continuous-194-taxa-52-placement-history \
+            --dir work/s1-rain-loo/input
+          test -s work/s1-rain-loo/input/S1_CONTINUOUS_194_52_TREE_HISTORY.json
+      - name: Refit original five S1 climate axes only on equal-weighted source species and run all 191 taxon leave-one-out perturbations plus bootstrap
+        run: |
+          python -m analysis.v4.s1_annual_rain_taxon_influence \
+            --source work/s1-rain-loo/input/S1_CONTINUOUS_194_52_TREE_HISTORY.json \
+            --out work/s1-rain-loo/result/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE.json \
+            --bootstrap 1999
+      - name: Archive verified species-level BIO12 and BIO15 sensitivity results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-BIO12-BIO15-taxonomic-influence
+          path: work/s1-rain-loo/result/
+          if-no-files-found: warn
+          retention-days: 90
