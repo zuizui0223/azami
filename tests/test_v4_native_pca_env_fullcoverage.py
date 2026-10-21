@@ -11,7 +11,10 @@ import hashlib
 import numpy as np
 import pandas as pd
 import pytest
-import rasterio
+rasterio=pytest.importorskip(
+    "rasterio",
+    reason="Frozen V3 integrity environment excludes rasterio; full-background source Actions installs and tests the original-TIFF path explicitly",
+)
 from rasterio.transform import from_origin
 
 from analysis.v4.native_pca_env_fullcoverage import (
