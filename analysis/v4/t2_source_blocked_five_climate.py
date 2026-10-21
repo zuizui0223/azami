@@ -67,7 +67,8 @@ def authenticate_input(raw, receipt):
         v=row.get("s1_five_climate_centroids",{})
         if (not row.get("s1_phylogeny_194_key_match") or
            set(v)!=set(EXPOSURES) or
-           not all(np.isfinite(float(v[k])) for k in EXPOSURES)):
+           not all(np.isfinite(float(v[k])) for k in EXPOSURES)
+           or not np.isfinite(float(row.get("s1_image_orientation_median",float("nan"))))):
             raise ValueError("Missing exact published five-climate S1 taxon source")
     return rows
 
@@ -77,6 +78,9 @@ def cohort(rows):
     rows=sorted(rows,key=lambda row:row["source_taxon"])
     names=[r["source_taxon"].replace(" ","_") for r in rows]
     y=np.array([float(r["state"]=="nodding") for r in rows],dtype=float)
+    image_y=np.array([float(r["s1_image_orientation_median"]) for r in rows],dtype=float)
+    if not np.isfinite(image_y).all():
+        raise ValueError("Missing actual same-taxon S1 continuous image presentation")
     lane=np.array([int(r["source"]==EA) for r in rows],dtype=int)
     exposure=np.array([[float(r["s1_five_climate_centroids"][axis])
                         for axis in EXPOSURES] for r in rows])
@@ -89,7 +93,7 @@ def cohort(rows):
                        else [np.ones(len(rows)),z]))
     if np.linalg.matrix_rank(X)!=X.shape[1] or np.linalg.cond(X)>1e6:
         raise ValueError("Unidentifiable five-environment source-adjusted model")
-    return {"names":names,"y":y,"lane":lane,"X":X,
+    return {"names":names,"y":y,"image_y":image_y,"lane":lane,"X":X,
             "predictor_offset":2 if has_region else 1,
             "n":len(rows),"n_nodding":int(y.sum()),
             "NA":{"n":int((lane==0).sum()),"D":int(y[lane==0].sum())},
@@ -135,6 +139,9 @@ def score(data,labels,covariance=None):
     columns=[data["predictor_offset"]+list(EXPOSURES).index(k) for k in AXES]
     weights=W[columns]
     observed=weights@data["y"]
+    # Same species and five predictors, but an independent measurement
+    # scale: frozen S1 image-relative angle (degrees), not botanical 0/1.
+    image_angle=weights@data["image_y"]
     null=labels@weights.T
     centered=null.mean(axis=0);std=null.std(axis=0)
     if np.any(std<1e-12):
@@ -149,10 +156,12 @@ def score(data,labels,covariance=None):
             "two_registered_precipitation_axes":list(AXES),
             "all_five_covariates_in_model":list(EXPOSURES),
             "estimated_linear_probability_coefficient_per_1SD":observed.tolist(),
-            "source_stratified_exact_sharp_null_two_sided_p":raw.tolist(),
-            "two_axis_maxT_source_stratified_exact_p":corrected.tolist(),
+            "same_cohort_S1_image_angle_deg_coefficient_per_1SD":image_angle.tolist(),
+            "source_stratified_sharp_null_descriptive_rank":raw.tolist(),
+            "two_axis_maxT_descriptive_reference_rank":corrected.tolist(),
             "null_maps":len(null),
-            "interpretation":"Conditional on source-lane counts under global sharp null of state/environment exchangeability; NOT axis-specific partial p if other exposure effects exist; no adaptation inference"}
+            "phylogeny_calibrated_p_status":"NOT_CALIBRATED_BY_SOURCE_LABEL_PERMUTATION",
+            "interpretation":"Comparison of two different phenotypes on identical taxa and five environmental predictors. Source-blocked label assignments preserve no phylogenetic covariance and hence are DESCRIPTIVE ranks only; not calibrated P values for partial climate effects or causality."}
 
 
 def tree_covariance_for(tree,names):
@@ -320,12 +329,16 @@ def run(joint,output,*,include_scenarios=True):
        "S1_frozen_model_refitted":False,
        "independent_evolutionary_origins_or_dates_estimated":False,
        "climate_dependent_transition_rates_estimated":False,
-       "null_type":"sharp no-climate-state-association conditioned on original source counts, NOT single-axis partial null",
+       "null_type":"source-blocked combinatorial reference; NOT calibrated phylogenetic P or single-axis partial null",
+       "same_46_and_NA42_S1_photo_angle_restricted_cohort_estimated":True,
+       "S1_full_244_and_194_models_not_refitted":True,
+       "botanical_0_1_vs_photo_angle_are_different_phenotypes":True,
        "not_prospective_independent_EAzami_validation":True}
     if results:
         for key in ("joined46","sameNA42"):
             for outcome in ("estimated_linear_probability_coefficient_per_1SD",
-                            "two_axis_maxT_source_stratified_exact_p"):
+                            "same_cohort_S1_image_angle_deg_coefficient_per_1SD",
+                            "two_axis_maxT_descriptive_reference_rank"):
                 for axis,i in (("BIO12",0),("BIO15",1)):
                     values=[r[key][outcome][i] for r in results]
                     summary[f"{key}_{axis}_{outcome}_scenario_range"]=[
