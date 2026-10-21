@@ -152,7 +152,14 @@ def compare_on_support(native:pd.DataFrame,introduced:pd.DataFrame,
             "independence_of_origins_or_photography_not_asserted":True,
             "not_equivalence_testing":True
         },
-        native_trained_transfer=transfer_against_native_baseline(n,i,scales),
+        native_trained_transfer={
+            **transfer_against_native_baseline(n,i,scales),
+            "climatic_overlap_gated":True,
+            "overlap_gate":"previously selected five-variable 5–95% marginal intersection"
+                if len(rectangle["predictors"])==5 else
+                "BIO12-only 5–95% marginal intersection: other climates may extrapolate",
+            "multivariate_joint_density_overlap_proven":False,
+        },
         support_does_not_remove_camera_technical_error=True
     )
     return out
