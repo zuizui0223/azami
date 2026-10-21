@@ -75,6 +75,38 @@
       "observer_cell_nested_residual_not_pure_camera": true,
       "original_same_observation_multiple_photos_n": 77977,
       "confirmed_same_head_remeasurement_n": 0
+    },
+    "precipitation_priority": {
+      "primary": "chelsa_bio12",
+      "primary_scale": "100 mm/year",
+      "between_image_angle_deg_per_increment": 0.4381991922885207,
+      "between_pointwise_95pct_interval": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "primary_status": "positive between-taxon association; measurement still image relative",
+      "secondary": "chelsa_bio15",
+      "secondary_scale": "10 units precipitation seasonality",
+      "secondary_between_image_angle_deg_per_increment": 0.7880825140436949,
+      "secondary_between_pointwise_95pct_interval": [
+        -0.2662791617924732,
+        1.8424441898798627
+      ],
+      "secondary_within_image_angle_deg_per_increment": -0.15339124857684425,
+      "secondary_within_pointwise_95pct_interval": [
+        -0.5267153435666101,
+        0.2199328464129216
+      ],
+      "secondary_status": "between effect trends positive but both between and within intervals include zero; do not call the precipitation seasonality association independently supported",
+      "joint_model_fixed_covariates": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "S2_primary_test": "BIO12 upper/native-q95 and within-introduction annual precipitation tercile image-angle contrast",
+      "S2_secondary_test": "BIO15 precipitation seasonality under the same climate-only source, reported as sensitivity/exploratory"
     }
   },
   "S2": {
@@ -225,7 +257,9 @@
         "no_original_pixels_not_equivalent_to_zero_sensitivity": true,
         "statement": "No supported continent-wide image-downshift. Warmer novel NA source pixels show positive image-angle point estimate but large zero-crossing cell-bootstrap range. Higher BIO15 SA/Africa photo-angle association remains unavailable due to missing original cached rasters.",
         "not_phylogenetic_evolution_or_true_gravity_angle": true
-      }
+      },
+      "primary_rain_axis": "chelsa_bio12",
+      "secondary_uncertain_seasonality_axis": "chelsa_bio15"
     },
     "all_350_source_species_screen": {
       "status": "SOURCE_VERIFIED_AND_COMPLETE_FOR_FROZEN_665115_WCVP_JUNE2026",
@@ -323,6 +357,7 @@
     "epistemic_status": "S1 OBSERVED AND SOURCE-OBSERVER-ROBUST; S2 PROVISIONAL OBSERVED WITH FIVE-CLIMATE SUPPORT LIMIT; T2/T3 NOT RUN",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
-    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md"
+    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
+    "primary_claim": "S1 between-species annual rain positive; S2 wet-vs-native-analogue original image orientation, no preclaimed response"
   }
 }
