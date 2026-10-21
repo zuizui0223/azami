@@ -32,6 +32,8 @@ on:
       - 'analysis/v4/run_native_abcde.py'
       - 'analysis/v4/native_density_robustness.py'
       - 'tests/test_v4_native_density_robustness.py'
+      - 'analysis/v4/orientation_observer_sensitivity.py'
+      - 'tests/test_v4_orientation_observer_sensitivity.py'
       - 'tests/test_v4_unified_abcde.py'
       - '.github/workflows/v4-native-integration.yml'
       - 'analysis/v4/SPACE_CONTRACT.md'
@@ -61,7 +63,7 @@ jobs:
       - name: Install numerical environment
         run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
       - name: Check decoding and cohort invariants
-        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py tests/test_v4_native_spatial.py tests/test_v4_unified_abcde.py tests/test_v4_native_density_robustness.py
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py tests/test_v4_native_spatial.py tests/test_v4_unified_abcde.py tests/test_v4_native_density_robustness.py tests/test_v4_orientation_observer_sensitivity.py
       - name: Restore authenticated native input
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -166,6 +168,14 @@ jobs:
             --baseline work/native-integration/output/unified_gate_abcde.json \
             --output work/native-integration/output \
             --reps 30 --null-reps 30 --bootstrap 1000 --scenario-reps 6
+      - name: Fit source-observer-aware rainfall sensitivities and nested repeat variance
+        run: |
+          python -m analysis.v4.orientation_observer_sensitivity \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --models work/native-integration/output/native_trait_models.json \
+            --observers work/native-integration/private/native-original-observers.csv.gz \
+            --mapping analysis/v4/results/20261020_native_phylogeny/taxon_mapping.json \
+            --output work/native-integration/output
       - name: Save aggregate evidence only
         if: always()
         uses: actions/upload-artifact@v4
