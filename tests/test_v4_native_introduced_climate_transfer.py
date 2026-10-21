@@ -27,7 +27,7 @@ def toy_focal(per_state=120):
                     "taxon_name":species,"range_state":state,"obs_id":f"{species}-{state}-{i}",
                     "user_id":f"person-{state}-{i%47}",
                     "latitude":latitude,"longitude":longitude,
-                    "observed_on":f"2023-{(i%12+1):02d}-05",
+                    "observed_on":f"{2017+(i%7)}-{(i%12+1):02d}-05",
                     "orientation_angle_degrees_median":float(y),
                 }
                 item.update(climate)
