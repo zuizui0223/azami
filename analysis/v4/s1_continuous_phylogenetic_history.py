@@ -126,8 +126,10 @@ def shared_path_matrix(tree,tips):
             row=path[node].copy()
             row[descendants[child]]+=edge
             path[child]=row
-    C=np.vstack([path[next(n for n in tree.get_terminals() if n.name==t)]
-                 for t in tips])
+    terminal_by_name={n.name:n for n in tree.get_terminals()}
+    if set(terminal_by_name)!=set(tips):
+        raise ValueError("Source tree taxa differ from authenticated S1 cohort")
+    C=np.vstack([path[terminal_by_name[t]] for t in tips])
     if not np.allclose(C,C.T,atol=1e-8):
         raise ValueError("BM shared-root covariance non-symmetric")
     if min(np.linalg.eigvalsh(C))<=0:
