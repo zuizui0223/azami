@@ -39,10 +39,11 @@ def test_equal_site_cell_weighting_changes_niche_fraction_and_has_native_baselin
         assert 0 < photo["introduced_outside_at_least_one_native_marginal_fraction"] < 1
         assert photo["introduced_outside_at_least_one_native_marginal_fraction"] > (
             geo["introduced_outside_at_least_one_native_marginal_fraction"])
-        assert (
+        assert abs(
             geo["introduced_outside_at_least_one_native_marginal_fraction"] -
-            (1-geo["native_own_fiveD_box_inside_fraction"])
-        )==geo["introduced_excess_outside_over_native_internal_reference"]
+            (1-geo["native_own_fiveD_box_inside_fraction"]) -
+            geo["introduced_excess_outside_over_native_internal_reference"]
+        ) < 1e-12
         assert set(geo["introduced_outside_native_5_to_95_per_axis"])=={
             "bio01","bio04","bio12","bio15","rsds_mean"
         }
