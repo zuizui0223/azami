@@ -172,6 +172,13 @@ jobs:
                   assert len(xs)==len(trace['all_introduced_empirical_cdf'])
                   assert trace['native_empirical_cdf'][-1]==1.0
                   assert trace['all_introduced_empirical_cdf'][-1]==1.0
+                  uncertainty=trace['whole_curve_spatial_uncertainty']
+                  assert uncertainty['status']=='EXPLORATORY_FULL_ECDF_GEOGRAPHIC_CELL_UNCERTAINTY'
+                  assert uncertainty['no_biological_tail_or_width_metric_selected']
+                  assert uncertainty['resamples_valid']>=.9*uncertainty['resamples_requested']
+                  assert len(uncertainty['introduced_minus_native_ECDF'])==len(xs)
+                  assert len(uncertainty['simultaneous_95pct_spatial_sensitivity_lower'])==len(xs)
+                  assert len(uncertainty['simultaneous_95pct_spatial_sensitivity_upper'])==len(xs)
           files=list(path.parent.iterdir())
           assert set(files)=={path,response,wet,trait,decomposition,distribution}, files
           for file in (path,response,wet,trait,decomposition,distribution):
