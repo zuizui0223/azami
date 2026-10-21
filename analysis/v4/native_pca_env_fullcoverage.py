@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -33,8 +34,10 @@ from analysis.v4.native_climate_source_archive import choose_url_paths, tile_win
 from analysis.v4.native_cached_climate import VARIABLES, digest_file
 from analysis.v4.native_introduced_opportunity import (
     ORIGINAL_SEALED_SHA, ORIGINAL_SHA, ORIGINAL_AAD,
-    decrypt_checked, source_photos, authority_source, source_roster
+    decrypt_checked, source_photos, authority_source, source_roster,
+    MEASUREMENT_SEALED_SHA, MEASUREMENT_SHA, MEASUREMENT_AAD
 )
+from analysis.v4.native_full_rain_head_response import analyse_photo_orientation
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -225,6 +228,47 @@ def apply_original_five_CHELSA(wild:pd.DataFrame,land:pd.DataFrame,
     return (wild,land,source_audit,photo_angles) if photo_angles is not None else (wild,land,source_audit)
 
 
+def prepare_verified_photo_angles(all_wild:pd.DataFrame,
+                                 sealed_measurement:Path,
+                                 secret_hex:str)->pd.DataFrame:
+    """Join original archive angle per OBSERVATION on the native+intro wild
+    population before geographic/photo-eligibility balancing.
+    Native niche estimation stays strictly phenotype-unselected.
+    """
+    clear=decrypt_checked(
+        sealed_measurement.read_bytes(),secret_hex,
+        MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA,MEASUREMENT_AAD
+    )
+    cols=[
+        "obs_id","orientation_angle_degrees_median",
+        "orientation_angle_degrees_n_usable_heads"
+    ]
+    measured=pd.read_csv(io.BytesIO(clear),usecols=cols,
+                         dtype={"obs_id":str},low_memory=False)
+    del clear
+    if (len(measured)!=406582 or measured.obs_id.isna().any()
+        or not measured.obs_id.is_unique):
+        raise ValueError("Original 406582-row measurement archive identity changed")
+    original=all_wild.merge(
+        measured,on="obs_id",how="left",validate="one_to_one"
+    )
+    angles=pd.to_numeric(original.orientation_angle_degrees_median,errors="coerce")
+    count=pd.to_numeric(original.orientation_angle_degrees_n_usable_heads,errors="coerce")
+    photo=original.loc[count.gt(0)&angles.between(0,180)].copy()
+    expected={
+        ("Cirsium arvense","native"):49072,
+        ("Cirsium arvense","introduced"):43195,
+        ("Cirsium vulgare","native"):33637,
+        ("Cirsium vulgare","introduced"):47833
+    }
+    observed={tuple(key):len(data) for key,data in photo.groupby(
+        ["taxon_name","range_state"],sort=True
+    )}
+    if observed!=expected or len(photo)!=173737:
+        raise ValueError("Both species' original native/introduced head-angle output changed")
+    return photo
+
+
 def _collect_background_result(wild:pd.DataFrame,land:pd.DataFrame,
                                 authority:dict)->dict:
     complete=np.isfinite(land[list(VARIABLES)].to_numpy(float)).all(axis=1)
@@ -299,17 +343,49 @@ def _collect_background_result(wild:pd.DataFrame,land:pd.DataFrame,
 
 
 def execute(original:Path,authority_archive:Path,source_meta:Path,
-            output:Path,work:Path,key:str)->dict:
-    wild,auth=prepare_original_wild_sources(original,authority_archive,key)
+            output:Path,work:Path,key:str,
+            *,measurements:Path|None=None,measurements_key:str="")->dict:
+    if measurements is None:
+        wild,auth=prepare_original_wild_sources(original,authority_archive,key)
+        photo=None
+    else:
+        wild,auth,all_wild=prepare_original_wild_sources(
+            original,authority_archive,key,keep_unbalanced=True)
+        photo=prepare_verified_photo_angles(
+            all_wild,measurements,measurements_key)
+        del all_wild
     land=background_mesh(auth)
-    wild,land,audit=apply_original_five_CHELSA(wild,land,
-                                                source_meta=source_meta,work=work)
+    if photo is None:
+        wild,land,audit=apply_original_five_CHELSA(
+            wild,land,source_meta=source_meta,work=work)
+    else:
+        wild,land,audit,photo=apply_original_five_CHELSA(
+            wild,land,source_meta=source_meta,work=work,photo_angles=photo)
     report=_collect_background_result(wild,land,auth)
     report["source_TIFF_provenance_per_variable"]=audit
     output.mkdir(parents=True,exist_ok=True)
     (output/"S2_two_species_full_background_PCA_env.json").write_text(
         json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False)+"\n",
         encoding="utf-8")
+    if photo is not None:
+        new=analyse_photo_orientation(photo,bootstrap=500)
+        new["five_original_CHELSA_SHA256_by_variable"]={
+            k:v["source_SHA256"] for k,v in audit.items()
+        }
+        new["frozen_photo_measurement_archive_sha256"]=MEASUREMENT_SHA
+        (output/"S2_two_species_full_rain_head_response.json").write_text(
+            json.dumps(new,ensure_ascii=False,indent=2,allow_nan=False)+"\n",
+            encoding="utf-8")
+        print(json.dumps({
+            "annual_BIO12_primary_head_image_response":{
+                name:{
+                    continent:{
+                        label:case["status"] for label,case in
+                        region["hypotheses"].items()
+                    } for continent,region in result["regions"].items()
+                } for name,result in new["focal"].items()
+            }
+        },ensure_ascii=False),flush=True)
     print(json.dumps({
         "status":report["status"],
         "native_background_coverage":{
@@ -335,9 +411,12 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ("original","authority_archive","source_meta","output","work"):
         p.add_argument("--"+name.replace("_","-"),required=True,type=Path)
+    p.add_argument("--measurements",type=Path)
     a=p.parse_args()
     execute(a.original,a.authority_archive,a.source_meta,a.output,a.work,
-            os.environ.get("AZAMI_METADATA_KEY",""))
+            os.environ.get("AZAMI_METADATA_KEY",""),
+            measurements=a.measurements,
+            measurements_key=os.environ.get("AZAMI_MEASUREMENTS_KEY",""))
 
 
 if __name__=="__main__":
