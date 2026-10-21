@@ -1,0 +1,139 @@
+{
+  "schema_version": "unified_native_abcde_real_execution_20261021_v1",
+  "scientific_scope": "Same source, trait definitions and observer-cell eligibility through a connected descriptive A-E analysis; not evolutionary causal inference",
+  "provenance": {
+    "github_run_id": 39520795277,
+    "artifact_id": 12310159543,
+    "artifact_name": "v4-native-integration-audit",
+    "artifact_zip_digest": "sha256:7bcdaf75b04908331366414741164c9d1459b2b3a2ac5c67b393a741a16a8908",
+    "unified_json_member_sha256": "7a0027d861b7f23dbb7a7379a2c7324c618c345a4054a45676f06478265542b0",
+    "source_decoded_native_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "phenotype_units": "uncalibrated image-relative",
+    "v3_numerical_replay_untouched": true,
+    "no_raw_observation_or_observer_identifier_in_receipt": true
+  },
+  "A": {
+    "original_native_observations": 313350,
+    "native_accepted_key_count": 306,
+    "full_nine_output_matched_observations": 157779,
+    "matched_accepted_key_count": 242,
+    "source_original_observers": 92839,
+    "matched_original_observers": 55241,
+    "source_identification_research_grade": 244570,
+    "matched_research_grade": 157779,
+    "accepted_key_with_multiple_source_names": 7,
+    "all_source_labels_collisions": 14,
+    "matched_rows_in_collided_keys": 429,
+    "retained_matched_accepted_keys_after_excluding_mixed_source": 235,
+    "at_least_5_equal_area_cells_taxa": 55,
+    "at_least_10_equal_area_cells_taxa": 29,
+    "at_least_20_equal_area_cells_taxa": 13,
+    "selected_taxa": 40,
+    "candidate_balanced_records": 79369,
+    "cohort_decision": "source observer×accepted taxon×5 degree equal-sin cell, one original observation per stratum; 5 cells, 10 observers, >=50 records, top 40 by spatial/observer support"
+  },
+  "B": {
+    "same_40_taxa_rarefied_observations": 2000,
+    "common_construct_pair_count": 28,
+    "distinct_module_pairs": 19,
+    "species_bootstrap_reps": 200,
+    "unadjusted_among_minus_within_RV_positive_point": 25,
+    "unadjusted_pointwise_interval_positive": 12,
+    "five_environment_adjusted_positive_point": 25,
+    "five_environment_adjusted_pointwise_interval_positive": 8,
+    "adjusted_cross_module_positive_point": 17,
+    "adjusted_cross_module_pointwise_interval_positive": 5,
+    "multiplicity_adjusted": false,
+    "independent_photo_accuracy_verified": false
+  },
+  "C": {
+    "taxa": 40,
+    "pairs_total_each_module": 780,
+    "pairs_with_both_within_species_null": 703,
+    "per_taxon_rarefaction": 50,
+    "replicates": 12,
+    "null_reference": "95th percentile of disjoint same-taxon 50+50 empirical W2; descriptive",
+    "presentation": {
+      "dimensions": 1,
+      "pca_retained": 1,
+      "median_KDE_overlap": 0.8509166744953671,
+      "median_W2": 0.3706616732436543,
+      "centred_W2_null_exceedances": 89
+    },
+    "colour": {
+      "dimensions": 3,
+      "pca_retained": 0.9215308375768918,
+      "median_KDE_overlap": 0.49994982370031227,
+      "median_W2": 1.6324523714108348,
+      "centred_W2_null_exceedances": 463
+    },
+    "outline": {
+      "dimensions": 3,
+      "pca_retained": 0.9650621142841485,
+      "median_KDE_overlap": 0.6726564799282913,
+      "median_W2": 1.182958857760094,
+      "centred_W2_null_exceedances": 67
+    },
+    "taxon_pair_nonindependence": "NOT resolved; exceedance proportions are not p-values",
+    "comparison_caveat": "KDE overlap depends on dimension, projection and bandwidth; photo measurement error unresolved"
+  },
+  "D": {
+    "primary_model": "five fixed climate variables BIO1 BIO4 BIO12 BIO15 RSDS, inherited PR144",
+    "phenospace_new_exploratory_regimes": [
+      "BIO12",
+      "RSDS"
+    ],
+    "within_taxon_low_high_split": "source-native taxon median with at least 3 cells on each side",
+    "taxa_with_both_rain_regimes": 40,
+    "taxa_with_both_radiation_regimes": 39,
+    "rain_low_high_median_W2": {
+      "presentation": 0.3031471963731116,
+      "colour": 1.014599466835275,
+      "outline": 1.2357253335233702
+    },
+    "radiation_low_high_median_W2": {
+      "presentation": 0.32713073632368334,
+      "colour": 0.9883667934344618,
+      "outline": 1.253301144806785
+    },
+    "spatial_transfer_independent_validation": false,
+    "environmental_causation_inferred": false,
+    "previous_phylogenetic_placements": 52,
+    "previous_conditional_covariance_fits": 104
+  },
+  "E": {
+    "eazami_source_taxon_concepts": 7,
+    "WCVP_name_collision_keys": 7,
+    "ryukyu_shared_key": true,
+    "focal_source_images": {
+      "Cirsium brevicaule": {
+        "source_observations": 33,
+        "eligible_colour": 25
+      },
+      "Cirsium irumtiense": {
+        "source_observations": 3,
+        "eligible_colour": 1
+      },
+      "Cirsium kawakamii": {
+        "source_observations": 56,
+        "eligible_colour": 21
+      },
+      "Cirsium tatakaense": {
+        "source_observations": 302,
+        "eligible_colour": 107
+      }
+    },
+    "focal_taxa_in_balanced_global40": 0,
+    "functional_and_genetic_gate_status": "NOT_COMPLETE: same-plant field/experimental endpoints absent",
+    "white_to_pink_reexpression_inferred": false
+  },
+  "warnings": [
+    "The 40-taxon comparison intentionally chooses widely geographically and observer-replicated original observations; it is not a taxonomically representative random sample of all 306 keys.",
+    "All photo-trait eligibility in this source frame occurs among research-grade source identifications; grade is not a true anatomical validation.",
+    "RV and KDE rely on imperfect images and observer × spatial-cell strata, not proof of distinct biological individuals.",
+    "Pointwise B intervals and C pairwise null exceedances are not multiple-testing-controlled ecological evidence.",
+    "Within-taxon D contrasts draw from the same A-eligible candidate frame but not the identical first B/C 50-record rarefaction.",
+    "Phylogenetic 52 placement scenarios and 104 PSD boundary fits do not identify genetic covariance or convergent adaptive history.",
+    "EAzami focal source labels must be reconciled by independent taxonomy; C. irumtiense has only one colour-eligible image in this source."
+  ]
+}
