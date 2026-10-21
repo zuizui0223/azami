@@ -42,7 +42,7 @@ def test_read_original_raster_pixels_exact_5degree_grouping_no_aggregation(tmp_p
     out=sample_original_pixels(original,frame)
     assert out[0]==float(values[39,29])
     assert out[1]==float(values[39,28])
-    assert out[2]==float(values[51,50])
+    assert np.isnan(out[2])  # exact nodata is never interpreted as a biological/climatic zero
     assert out[3]==float(values[51,49])
     assert out[4]==float(values[0,0])
     assert out[0]!=out[1]
