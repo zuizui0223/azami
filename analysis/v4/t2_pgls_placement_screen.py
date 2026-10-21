@@ -26,6 +26,8 @@ SOURCE_COMMIT = "c925d4af86160064448f794a9715f70b917a2786"
 SOURCE_REPO = "carol-siniscalchi/cirsium"
 SOURCE_PATH = "traits/traits.csv"
 SOURCE_GIT_BLOB = "fa127f0587b676e6e004ea121424d26069586bcb"
+AUTHOR_NUCLEAR_TREE_PATH = "traits/cirsium.phyluce95p.ultrametric.tre"
+AUTHOR_NUCLEAR_TREE_GIT_BLOB = "6417a38793427bc7c8562dc0e2cab59b74d8c316"
 SOURCE_DOI = "10.1086/724310"
 EXPECTED_AUTHOR_TAXA = 63
 EXPECTED_NODDING = 5
@@ -56,6 +58,47 @@ def download_author_states() -> tuple[dict[str, int], str]:
     with urllib.request.urlopen(url, timeout=90) as handle:
         raw = handle.read()
     return read_author_states(raw), hashlib.sha256(raw).hexdigest()
+
+
+def read_author_nuclear_tree(raw: bytes, expected_states: dict[str,int]):
+    if git_blob_sha(raw) != AUTHOR_NUCLEAR_TREE_GIT_BLOB:
+        raise ValueError("Published independent nuclear tree's pinned Git blob mismatch")
+    tree=Phylo.read(io.StringIO(raw.decode("utf-8-sig")), "newick")
+    tips=check_placement_tree(tree)
+    if tips != set(expected_states):
+        raise ValueError("Published nuclear tree tip set differs from original scored taxa")
+    heights=list(tree.depths()[t] for t in tree.get_terminals())
+    if max(heights)-min(heights)>0.001:
+        raise ValueError("Published reference tree is not effectively ultrametric")
+    return tree
+
+
+def nuclear_reference_summary(tree, states, common, draws=150, seed=20261021):
+    """Sequence-tree comparison for identical 44 (or N) taxa, not a global tree."""
+    matched=set(common)
+    if not matched <= set(states):
+        raise ValueError("Nuclear comparison contains unknown morphological states")
+    if matched != set(t.name for t in tree.get_terminals()):
+        phy=deepcopy(tree)
+        for tip in list(phy.get_terminals()):
+            if tip.name not in matched:
+                phy.prune(tip)
+    else:
+        phy=deepcopy(tree)
+    matched_states={t:states[t] for t in matched}
+    n_down=sum(matched_states.values())
+    result={"n_taxa":len(matched),"n_nodding":n_down,"n_erect":len(matched)-n_down,
+            "published_nuclear_tree_based":True,"cross_tree_same_tip_cohort":True,
+            "not_independent_morphology_reannotation":True,
+            "chronogram_absolute_dates_inferred":False}
+    result.update(parsimony(phy,matched_states))
+    if n_down>=2 and (len(matched)-n_down)>=2:
+        q,lnlike,boundary=rate_fit(phy,matched_states)
+        result.update(fitted_symmetric_Mk_rate=q, Mk_log_likelihood=lnlike,
+                      optimizer_near_boundary=boundary,
+                      conditional_mapping=stochastic_maps(phy,matched_states,q,
+                                                          draws=draws,seed=seed))
+    return result
 
 
 def parsimony(tree, observed) -> dict[str, int]:
@@ -91,7 +134,8 @@ def check_placement_tree(tree):
 
 
 def evaluate_placements(trees, states, source_sha, output, *, draws=150, min_scored=12,
-                        min_nodding=2, seed=20261021):
+                        min_nodding=2, seed=20261021,
+                        published_nuclear_tree=None, nuclear_tree_sha=None):
     if len(trees) != 52:
         raise ValueError("Expected the exact 52 archived PGLS placement scenarios")
     if len(states) != 63 or sum(states.values()) != 5:
@@ -173,6 +217,27 @@ def evaluate_placements(trees, states, source_sha, output, *, draws=150, min_sco
         summary["descriptive_only_unknown_root_min_steps_scenario_range"]=[
             min(r["unknown_root_min_steps"] for r in results if "unknown_root_min_steps" in r),
             max(r["unknown_root_min_steps"] for r in results if "unknown_root_min_steps" in r)]
+    if published_nuclear_tree is not None:
+        if first_tips is None:
+            raise ValueError("No PGLS taxa for nuclear comparison")
+        if not nuclear_tree_sha:
+            raise ValueError("Nuclear tree's original SHA256 must be stored")
+        shared=set(states) & first_tips
+        # Same original 63-tip publication tree is separately analysed with all
+        # published tips, but ONLY shared tips compare against PGLS 52 scenarios.
+        summary["independent_nuclear_reference"]={
+            "source_repo":SOURCE_REPO,"commit":SOURCE_COMMIT,
+            "path":AUTHOR_NUCLEAR_TREE_PATH,
+            "git_blob":AUTHOR_NUCLEAR_TREE_GIT_BLOB,
+            "source_sha256":nuclear_tree_sha,
+            "source_doi":SOURCE_DOI,
+            "common_tip_comparison":nuclear_reference_summary(
+                published_nuclear_tree,states,shared,draws=draws,seed=seed+52),
+            "complete_published_63_tip_context":nuclear_reference_summary(
+                published_nuclear_tree,states,set(states),draws=draws,seed=seed+53),
+            "not_global_cirsium_tree":True,
+            "not_a_confirmed_dated_origin_analysis":True,
+        }
     report = {"summary":summary, "placement_scenarios":results}
     target=Path(output)
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -192,7 +257,14 @@ def main():
     from analysis.v4.native_phylogeny import restore_trees
     states, source_sha=download_author_states()
     trees=restore_trees()
+    tree_url=(f"https://raw.githubusercontent.com/{SOURCE_REPO}/{SOURCE_COMMIT}/"
+              f"{AUTHOR_NUCLEAR_TREE_PATH}")
+    with urllib.request.urlopen(tree_url,timeout=90) as handle:
+        tree_raw=handle.read()
+    published_tree=read_author_nuclear_tree(tree_raw,states)
     results=evaluate_placements(trees,states,source_sha,opts.out,
+                                published_nuclear_tree=published_tree,
+                                nuclear_tree_sha=hashlib.sha256(tree_raw).hexdigest(),
                                 draws=opts.draws,min_scored=opts.min_scored,
                                 min_nodding=opts.min_nodding)
     print("T2_PGLS_PLACEMENT_SCREEN_AGGREGATE="+json.dumps(results["summary"],
