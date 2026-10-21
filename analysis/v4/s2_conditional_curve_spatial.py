@@ -89,6 +89,107 @@ def _aligned_source_joint(photo:pd.DataFrame,joint:dict)->pd.DataFrame:
     return balanced
 
 
+def _source_photo_sampling_profile_by_rain_bin(
+    frame:pd.DataFrame,rain_edges:np.ndarray,supported:np.ndarray
+)->list:
+    """Aggregate month, source grade, continent and cell leverage for all bins.
+
+    Record grade is NOT a camera/photographic clarity assessment. Linked
+    image counts do not establish that multiple photos show the same head.
+    """
+    weights=original_cell_weights(frame)
+    rain=frame[RAIN].to_numpy(float)
+    bi=np.clip(np.searchsorted(rain_edges,rain,side="right")-1,0,len(rain_edges)-2)
+    date=pd.to_datetime(frame.observed_on,errors="coerce",format="mixed")
+    months=date.dt.month.fillna(0).to_numpy(int)
+    grades=(frame.quality_grade.fillna("unknown").astype(str).to_numpy()
+            if "quality_grade" in frame else None)
+    photo_counts=(pd.to_numeric(frame.source_photo_count,errors="coerce").to_numpy(float)
+                  if "source_photo_count" in frame else None)
+    continents=(frame.tdwg1.fillna(0).astype(int).to_numpy()
+                if "tdwg1" in frame else None)
+    records=[]
+    for k,ok in enumerate(supported):
+        if not ok:
+            records.append(None)
+            continue
+        mask=bi==k
+        g=frame.loc[mask]
+        if not len(g) or weights[mask].sum()<=0:
+            raise ValueError("Supported source rainfall display bin has no photographs")
+        w=weights[mask]
+        w=w/w.sum()
+        cell=g._cell.to_numpy(int)
+        unique,inv=np.unique(cell,return_inverse=True)
+        cell_mass=np.bincount(inv,weights=w)
+        effective=float(1./np.sum(np.square(cell_mass)))
+        if not (1.<=effective<=len(unique)+1e-9):
+            raise ValueError("Source photo geographic-cell concentration inconsistent")
+        sample_months=months[mask]
+        month_mass=[float(w[sample_months==m].sum())
+                    for m in range(1,13)]
+        metadata={
+            "original_photo_n":int(len(g)),
+            "source_photo_observers":int(g.user_id.nunique()),
+            "source_5degree_cells":int(len(unique)),
+            "max_cell_fraction_within_rain_plot_bin":
+                float(cell_mass.max()),
+            "effective_cells_within_rain_plot_bin":
+                effective,
+            "observation_month_fractions_1_to_12":month_mass,
+            "date_month_known_fraction":float(w[sample_months>0].sum()),
+            "record_grade_is_NOT_photo_pose_or_clarity":True,
+        }
+        if grades is not None:
+            metadata["iNaturalist_research_grade_fraction_NOT_photo_quality"]=float(
+                w[grades[mask]=="research"].sum())
+        if photo_counts is not None:
+            data=photo_counts[mask]
+            metadata["two_or_more_source_photo_links_fraction_NOT_same_head"]=float(
+                w[np.isfinite(data)&(data>=2)].sum())
+        if continents is not None:
+            values=continents[mask]
+            metadata["original_TDWG1_continent_code_fraction"]={
+                str(code):float(w[values==code].sum())
+                for code in np.unique(values)}
+        records.append(metadata)
+    return records
+
+
+def _leave_one_original_cell_out(
+    native:tuple,introduced:tuple,supported:np.ndarray
+)->dict:
+    """Deterministic all-bin/all-angle sensitivity, not new trait effect."""
+    n_ids,n_cell_grid= native[:2]
+    i_ids,i_cell_grid= introduced[:2]
+    n_total=n_cell_grid.sum(axis=0)
+    i_total=i_cell_grid.sum(axis=0)
+    n_lookup={int(k):v for k,v in zip(n_ids,n_cell_grid)}
+    i_lookup={int(k):v for k,v in zip(i_ids,i_cell_grid)}
+    full_delta=_full_cdf(i_total)-_full_cdf(n_total)
+    lower=full_delta.copy()
+    upper=full_delta.copy()
+    for cell in np.union1d(n_ids,i_ids):
+        n=n_total-n_lookup[cell] if cell in n_lookup else n_total
+        i=i_total-i_lookup[cell] if cell in i_lookup else i_total
+        # In supported rain classes, at least five distinct spatial cells
+        # contributed before deletion, so no single cell can eliminate them.
+        if np.any(n.sum(axis=1)[supported]<=0) or np.any(i.sum(axis=1)[supported]<=0):
+            raise ValueError("Single original cell supplied whole supported rainfall bin")
+        delta=_full_cdf(i)-_full_cdf(n)
+        lower=np.minimum(lower,delta)
+        upper=np.maximum(upper,delta)
+    return {
+        "status":"FULL_CONDITIONAL_SURFACE_ALL_SINGLE_5DEG_CELL_DELETIONS",
+        "regions_native_cells":int(len(n_ids)),
+        "regions_all_introduced_cells":int(len(i_ids)),
+        "all_possible_union_cell_deletions":int(len(np.union1d(n_ids,i_ids))),
+        "observed_delta_min_over_one_cell_deletion_or_original":_nullable(lower,supported),
+        "observed_delta_max_over_one_cell_deletion_or_original":_nullable(upper,supported),
+        "technical_spatial_leverage_only_NOT_inference_of_genotype_or_camera":True
+    }
+
+
 def _species_surface(frame:pd.DataFrame,joint_species:dict,
                      *,label:str,draws:int=DRAWS)->dict:
     rain_edges=np.asarray(joint_species["display_climate_BIO12_edges_mm_year"],float)
@@ -185,6 +286,14 @@ def _species_surface(frame:pd.DataFrame,joint_species:dict,
             _nullable(pointwise[0],supported),
         "pointwise_95pct_sensitivity_upper":
             _nullable(pointwise[1],supported),
+        "photo_sample_metadata_for_every_supported_rain_plot_bin":{
+            "native":_source_photo_sampling_profile_by_rain_bin(
+                sample["native"],rain_edges,supported),
+            "introduced_all":_source_photo_sampling_profile_by_rain_bin(
+                sample["introduced"],rain_edges,supported),
+        },
+        "all_original_cells_removed_one_at_a_time_surface_sensitivity":
+            _leave_one_original_cell_out(part["native"],part["introduced"],supported),
         "native_original_photo_n_by_rain_display_bin":part["native"][3].tolist(),
         "introduced_original_photo_n_by_rain_display_bin":
             part["introduced"][3].tolist(),
