@@ -181,24 +181,26 @@ def wasserstein_parts(x:np.ndarray,y:np.ndarray)->tuple[float,float,float]:
 
 
 def _group_scores(candidate: pd.DataFrame,first:pd.DataFrame,fields,dimensions):
-    # Taxon-equal 50-record shared projection; no climate or effect used in PCA.
-    center,scales,loading,retained=_basis(
-        first.loc[:,list(fields)].to_numpy(float),dimensions)
-    raw=candidate.loc[:,list(fields)].to_numpy(float)
-    if len(fields)==4 and "corolla_hue_sin" in fields:
-        # Use one shared amplitude scaling for the circular hue embedding.
-        x,y=[list(fields).index(k) for k in ("corolla_hue_sin","corolla_hue_cos")]
-        common=np.sqrt((scales[x]**2+scales[y]**2)/2)
-        scales[x]=common;scales[y]=common
-        # Refit the fixed projection after imposing common hue unit geometry.
-        center,_,loading,retained=_basis((first.loc[:,list(fields)].to_numpy(float)-center)/scales,dimensions)
-        # The _basis centering/scaling above defines a second fixed standardization.
-        # This acts on all eligible specimens equally; not two separate hue tests.
-        nested=((raw - (
-            first.loc[:,list(fields)].to_numpy(float).mean(axis=0)))/scales-center)
-        return nested @ loading,retained
-    return ((raw-center)/scales)@loading,retained
-
+    # Shared PCA fit on equal numbers per taxon, never on environment response.
+    fields=list(fields)
+    v=first[fields].to_numpy(float)
+    centre=v.mean(axis=0)
+    scale=v.std(axis=0,ddof=0)
+    if "corolla_hue_sin" in fields:
+        ix,iy=[fields.index(q) for q in ("corolla_hue_sin","corolla_hue_cos")]
+        shared=np.sqrt((scale[ix]**2+scale[iy]**2)/2)
+        scale[ix]=scale[iy]=shared  # one circular colour unit, no double trait
+    if not np.isfinite(scale).all() or np.any(scale<=1e-12):
+        raise ValueError("Degenerate shared colour/outline coordinate scale")
+    z=(v-centre)/scale
+    if dimensions>=len(fields):
+        loadings=np.eye(len(fields)); retained=1.
+    else:
+        _,sv,vh=np.linalg.svd(z,full_matrices=False)
+        loadings=vh[:dimensions].T
+        retained=float((sv[:dimensions]**2).sum()/(sv**2).sum())
+    raw=candidate[fields].to_numpy(float)
+    return ((raw-centre)/scale)@loadings,retained
 
 def gate_c(candidate:pd.DataFrame,*,replicates:int=12,n:int=50,
            kde_draws:int=128,max_taxa:int=40)->dict:
@@ -246,7 +248,6 @@ def gate_c(candidate:pd.DataFrame,*,replicates:int=12,n:int=50,
                 vol.append(_kde_probability_volume(x,h,rng_for("vol",name,taxon,rep),
                                                     draws=kde_draws))
             all_volumes.append(float(np.median(vol)))
-            overlap=[],[]  # overwritten below on purpose? no
             for i,a in enumerate(taxa):
                 for b in taxa[i+1:]:
                     x,y=s[a],s[b]
@@ -326,8 +327,8 @@ def gate_d_same_sample(candidate:pd.DataFrame,full_native:pd.DataFrame,models:di
                     continue
                 nn=min(len(low),len(high),n//2)
                 a=rng_for("regime",var,name,taxon,0)
-                li=a.choice(low._basis_index.to_numpy(int),size=nn,replace=False)
-                hi=a.choice(high._basis_index.to_numpy(int),size=nn,replace=False)
+                li=a.choice(low["_basis_index"].to_numpy(int),size=nn,replace=False)
+                hi=a.choice(high["_basis_index"].to_numpy(int),size=nn,replace=False)
                 w,centre,shape=wasserstein_parts(x[li],x[hi])
                 contributions.append((w,centre,shape))
             per_module[name]={
