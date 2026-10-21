@@ -185,8 +185,6 @@ def match_without_angles(wet: pd.DataFrame, reference: pd.DataFrame,
         tree=cKDTree(xr[ridx])
         d, near=tree.query(xw[widx],k=NEIGHBOURS)
         for row,indices in enumerate(np.atleast_2d(near)):
-            if indices.ndim:
-                pass
             for j in indices:
                 ctrl=int(ridx[int(j)])
                 resid=np.abs(xw[widx[row]]-xr[ctrl])
@@ -326,7 +324,7 @@ def evaluate(source_wild:pd.DataFrame, photo:pd.DataFrame,
         ps=measured.loc[measured.taxon_name.eq(species) &
                         measured.range_state.eq("introduced")].copy()
         for tdwg,reg in ps.groupby("tdwg1",sort=True):
-            if not np.isfinite(tdwg) or int(tdwg) not in CONTINENTS:
+            if pd.isna(tdwg) or int(tdwg) not in CONTINENTS:
                 raise ValueError("Original TDWG continent not authoritative")
             name=CONTINENTS[int(tdwg)]
             subset=sp.loc[sp.range_state.eq("introduced") &
@@ -386,8 +384,9 @@ def evaluate(source_wild:pd.DataFrame, photo:pd.DataFrame,
                     "k":NEIGHBOURS},
         "focal":output,
         "source_five_original_CHELSA_SHA256":source_climate_sha or {},
-        "privacy":{"source_id":False,"user_id":False,"latitude":False,"longitude":False,
-                   "original_photo":False},
+        "privacy":{"any_individual_source_identifier_exported":False,
+                   "any_original_geo_coordinate_exported":False,
+                   "any_original_photo_exported":False},
         "limits":[
             "WCVP/TDWG native/introduced is not confirmed genetic provenance",
             "Photo vertical is not gravity, camera attitude unvalidated",
