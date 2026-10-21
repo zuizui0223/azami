@@ -67,7 +67,9 @@ def test_gate_a_excludes_shared_accepted_key_without_discarding_original_sources
     assert selected.duplicated(["accepted_key","_cell","user_id"]).sum()==0
     assert result["source_original_observers"]>0
     assert result["observation_month"]["status"].startswith("source_vs")
-    e=ae.gate_e(mapping)
+    e=ae.gate_e(mapping,native_frame=frame)
+    assert e["eazami_source_concepts"][2]["source_image_support"]["original_source_identification_observations"]==100
+    assert e["eazami_source_concepts"][3]["source_image_support"]["original_source_identification_observations"]==0
     assert e["ryukyu_pair_share_wcvp_key"]
     assert e["eazami_source_concepts"][2]["status"].startswith("COLLISION")
     assert e["eazami_source_concepts"][3]["status"].startswith("COLLISION")
@@ -180,5 +182,5 @@ def test_unified_gate_b_reuses_exact_same_images_and_all_five_model_axes():
     assert len(result["full_28_pair_descriptive"])==28
     assert len(result["cross_module_pairs"])==19
     assert result["status"]=="completed_exploratory_matched_native_gate_b"
-    assert result["same_sample_across_B_C_D"]
+    assert result["B_C_share_first_rarefaction_D_shares_same_candidate_frame"]
     assert result["not_genetic_or_functional_covariance"]
