@@ -71,7 +71,7 @@ def test_original_north_american_42_tree_same_tip_and_regional_joins():
     assert outcome["n_taxa"]==42
     assert outcome["model"].startswith("Brownian")
     assert outcome["null_maps"]==11480
-    with pytest.raises(ValueError,match="absent in the tree"):
+    with pytest.raises(ValueError,match="absent from tree"):
         m.tree_covariance_for(tree,na["names"]+["Cirsium_missing"])
 
 
