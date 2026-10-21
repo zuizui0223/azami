@@ -123,7 +123,7 @@ def test_no_source_pixels_in_introduced_Africa_means_no_wetness_response(monkeyp
 
 def test_no_cell_based_certainty_for_two_patch_introduction():
     toy=toy_source()
-    one=toy.loc[toy.tdwg1.eq(7)&toy.obs_id.str.contains("North America")==False].head(20).copy()
+    one=toy.loc[toy.tdwg1.eq(7)].head(20).copy()
     one["_cell"]=np.arange(len(one))%2
     assert site.cell_weighted_metrics(one)["status"]=="INSUFFICIENT_SOURCE_OBSERVERS_OR_SPATIAL_CELLS"
     lo=site._paired_cell_bootstrap(np.arange(20,dtype=float),np.arange(2,dtype=float),"test")
