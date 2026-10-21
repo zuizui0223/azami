@@ -11,6 +11,8 @@ on:
       - 'analysis/v4/s2_rainfall_occupancy_trait.py'
       - 'analysis/v4/native_rain_niche_trait_redistribution.py'
       - 'analysis/v4/s2_full_distribution_exploration.py'
+      - 'analysis/v4/s2_joint_rain_angle_landscape.py'
+      - 'tests/test_v4_s2_joint_rain_angle_landscape.py'
       - 'tests/test_v4_s2_full_distribution_exploration.py'
       - 'tests/test_v4_native_rain_niche_trait_redistribution.py'
       - 'tests/test_v4_s2_rainfall_occupancy_trait.py'
@@ -54,7 +56,8 @@ jobs:
             tests/test_v4_native_wet_edge.py \
             tests/test_v4_s2_rainfall_occupancy_trait.py \
             tests/test_v4_native_rain_niche_trait_redistribution.py \
-            tests/test_v4_s2_full_distribution_exploration.py
+            tests/test_v4_s2_full_distribution_exploration.py \
+            tests/test_v4_s2_joint_rain_angle_landscape.py
       - name: Recover original sealed 665115 source and WCVP350 authority, never publish originals
         run: |
           set -euo pipefail
@@ -179,9 +182,33 @@ jobs:
                   assert len(uncertainty['introduced_minus_native_ECDF'])==len(xs)
                   assert len(uncertainty['simultaneous_95pct_spatial_sensitivity_lower'])==len(xs)
                   assert len(uncertainty['simultaneous_95pct_spatial_sensitivity_upper'])==len(xs)
+          joint=path.parent/'S2_full_joint_rain_angle_landscape.json'
+          assert joint.is_file()
+          j=json.loads(joint.read_text())
+          assert j['status']=='ORIGINAL_S2_JOINT_RAIN_AND_IMAGE_ANGLE_ALL_INTRODUCED'
+          assert j['two_species_original_wild_source']==144178
+          assert j['two_species_original_angle_eligible']==173737
+          assert j['visualization_only_no_trait_width_or_tail_indices_selected']
+          assert j['all_introduced_remains_primary'] is True
+          assert set(j['source_raster_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert set(j['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(j['privacy'].values())
+          for species in j['species'].values():
+              xs=species['display_climate_BIO12_edges_mm_year']
+              ys=species['display_angle_edges_image_degrees']
+              assert len(xs)>10 and len(ys)==37
+              for region in ('native','all_introduced'):
+                  panel=species[region]
+                  assert panel['rain_and_angle_measured_on_same_photo_observation']
+                  assert len(panel['original_photo_joint_mass'])==len(xs)-1
+                  assert all(len(row)==len(ys)-1
+                             for row in panel['original_photo_joint_mass'])
+                  assert abs(sum(map(sum,panel['original_photo_joint_mass']))-1)<1e-7
+              assert species['introduced_continents_supplementary'][
+                  'all_introduced_joint_mass_recovered_exactly']
           files=list(path.parent.iterdir())
-          assert set(files)=={path,response,wet,trait,decomposition,distribution}, files
-          for file in (path,response,wet,trait,decomposition,distribution):
+          assert set(files)=={path,response,wet,trait,decomposition,distribution,joint}, files
+          for file in (path,response,wet,trait,decomposition,distribution,joint):
               content=file.read_text()
               for field in ('"obs_id"','"user_id"','"latitude"','"longitude"'):
                   assert field not in content
