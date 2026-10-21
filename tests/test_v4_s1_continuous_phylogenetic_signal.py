@@ -23,7 +23,8 @@ def test_pagel_profile_invariant_to_angle_origin_and_units():
     rows=[{"tip":name} for name in tips]
     C=sig.covariance_for(tree,rows)
     x=np.ones((len(rows),1))
-    y=np.array([55.+(0 if i<14 else 25)+i*.04 for i in range(len(rows))])
+    y=np.array([55.+(0 if int(name[1:])<14 else 25)+int(name[1:])*.04
+                for name in tips])
     fitted=sig.LambdaProfile(C,x,nugget=.05)
     result=fitted.fit(y)
     translated=fitted.fit(y+27)
