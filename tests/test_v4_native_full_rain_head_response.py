@@ -15,6 +15,7 @@ from analysis.v4.native_full_rain_head_response import (
     compare_within_continent, _bootstrap_shared_cells, MIN_INTERVAL_CELLS
 )
 from analysis.v4.native_introduced_climate_transfer import dated_and_balanced
+from analysis.v4.native_spatial import cells
 from analysis.v4.native_cached_climate import VARIABLES
 
 
@@ -48,7 +49,9 @@ def fake_native_intro_angles(*,ncell=40,each=4,seed=20261021):
                     }
                     row.update(clim)
                     records.append(row)
-    return pd.DataFrame(records)
+    result=pd.DataFrame(records)
+    result["_cell"]=cells(result.latitude.to_numpy(float),result.longitude.to_numpy(float))
+    return result
 
 
 def test_both_species_novel_wet_and_secondary_seasonality_labels_are_angle_blind():
