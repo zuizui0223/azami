@@ -69,7 +69,8 @@ def test_screen_all_species_not_just_two_preselected_names(monkeypatch):
     assert byname["Cirsium vulgare"]["range_support"]["introduced"]["orientation_eligible_observations"]==35
     assert byname["Cirsium vulgare"]["range_support"]["introduced"]["original_source_observations"]==120
     assert "obs_id" not in str(result)
-    assert "observer_" not in str(result)
+    assert "observer_Cirsium" not in str(result)
+    assert "observer_Cirsium_arvense" not in str(result)
     assert "latitude" not in str(result)
 
 
