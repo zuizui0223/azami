@@ -149,10 +149,14 @@ def cross_fitted_geographic_novelty(
                     w_intro @ i_out.astype(float) / w_intro.sum()
                 )
         for label, bucket in sums.items():
-            native_heldout = (
-                bucket["native_novel_weight"] / bucket["native_holdout_weight"]
-            )
-            introduced_novel = bucket["introduced_novel_rate_sum"] / folds
+            native_heldout = float(np.clip(
+                bucket["native_novel_weight"] / bucket["native_holdout_weight"],
+                0., 1.
+            ))
+            introduced_novel = float(np.clip(
+                bucket["introduced_novel_rate_sum"] / folds,
+                0., 1.
+            ))
             samples[label].append(
                 (introduced_novel, native_heldout, introduced_novel - native_heldout)
             )
