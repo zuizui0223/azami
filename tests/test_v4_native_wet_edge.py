@@ -75,7 +75,11 @@ def test_real_wet_edge_angle_distribution_not_population_mean():
         assert len(q["wet_Q10_Q50_Q90"])==3
         assert len(q["wet_minus_reference_Q10_Q50_Q90"])==3
         assert q["weighted_one_dimensional_wasserstein_W1_degrees"]>=0
-        assert q["no_bootstrap_confidence_interval_calculated"]
+        uncertainty=q["geographic_block_uncertainty"]
+        assert uncertainty["status"]=="GEOGRAPHIC_CELL_SENSITIVITY_INTERVAL_NOT_CAUSAL_OR_CAMERA_VALIDATED"
+        assert len(uncertainty["Q10_Q50_Q90_delta_95pct_intervals"])==3
+        assert 0<=uncertainty["Q90_positive_fraction_of_draws"]<=1
+        assert uncertainty["not_an_independent_population_confidence_interval"]
 
 
 def test_matching_is_independent_of_angle_and_bio12_amplitude():
