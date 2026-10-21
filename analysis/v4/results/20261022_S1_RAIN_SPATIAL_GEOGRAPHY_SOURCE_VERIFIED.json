@@ -1,0 +1,899 @@
+{
+  "schema": "v4_azami_S1_Original_170066_Precip12_15_Spatial_Control_3_Longitude_Sectors_Spherical_Degree2_20261022",
+  "result_status": "EXECUTED_REAL_SOURCE_S1_GLOBAL_BIO12_ASSOCIATION_LOSES_INDEPENDENT_POINTWISE_SUPPORT_AFTER_SPATIAL_ADJUSTMENT",
+  "source_GitHub_run_id": 39659502828,
+  "source_GitHub_job_id": 119428505026,
+  "source_url": "https://github.com/zuizui0223/azami/actions/runs/39659502828",
+  "source_artifact": {
+    "id": 12373246235,
+    "name": "v4-s1-native-geography-BIO12-5climate-sensitivity",
+    "digest": "sha256:bb1ec3b9bf4b0a998887fa0e61030335f50105e89b0da546bebfd177a0019115",
+    "size_bytes": 17459
+  },
+  "script": "analysis/v4/s1_rain_native_geographic_controls.py",
+  "tests": "tests/test_v4_s1_rain_native_geographic_controls.py",
+  "original_native_S1_decoded_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "source_count": 1,
+  "observation_source_audit": {
+    "five_selected_exposures": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "geography": "observed native S1 photo locations; no inferred national boundaries",
+    "n_S1_accepted_keys": 244,
+    "n_S1_five_climate_eligible": 170066,
+    "n_source_invalid_coordinates_excluded": 0,
+    "n_taxa_remaining_with_coordinates": 244,
+    "n_with_valid_source_coordinates": 170066
+  },
+  "models_compact": {
+    "equal_5deg_spatial_cell|clean_native": {
+      "n_taxa": 237,
+      "no_geo": {
+        "status": "estimated",
+        "coef": 0.38557026656059185,
+        "CI": [
+          0.056357936076352644,
+          0.714782597044831
+        ],
+        "BIO15": 0.44667620538451325,
+        "BIO15_CI": [
+          -1.0670996592240096,
+          1.9604520699930361
+        ]
+      },
+      "longitude_composition": {
+        "status": "estimated",
+        "coef": 0.20028495908177768,
+        "CI": [
+          -0.29250439940101114,
+          0.6930743175645665
+        ],
+        "BIO15": -0.186748625259741,
+        "BIO15_CI": [
+          -2.0176464868873665,
+          1.6441492363678845
+        ]
+      },
+      "spherical_second_order": {
+        "status": "estimated",
+        "coef": -0.09343801076207603,
+        "CI": [
+          -0.7463205860060661,
+          0.559444564481914
+        ],
+        "BIO15": -1.0177282090516346,
+        "BIO15_CI": [
+          -3.1543553071654618,
+          1.1188988890621925
+        ]
+      },
+      "leave_one_longitude_sector_out": {
+        "E060_E180": {
+          "n_held_out": 66,
+          "status": "estimated",
+          "coef": -0.04977683195160493,
+          "CI": [
+            -0.7837576045460302,
+            0.6842039406428202
+          ],
+          "BIO15": 0.11057322831523186,
+          "BIO15_CI": [
+            -1.9137363573074324,
+            2.134882813937896
+          ]
+        },
+        "W030_E060": {
+          "n_held_out": 68,
+          "status": "estimated",
+          "coef": 0.3873088605371335,
+          "CI": [
+            -0.03512288927422513,
+            0.8097406103484921
+          ],
+          "BIO15": 0.020816748476342073,
+          "BIO15_CI": [
+            -1.7516733869601606,
+            1.793306883912845
+          ]
+        },
+        "W180_W030": {
+          "n_held_out": 103,
+          "status": "estimated",
+          "coef": 0.3528942209636751,
+          "CI": [
+            -0.03918338822242967,
+            0.7449718301497799
+          ],
+          "BIO15": 0.8334835917522833,
+          "BIO15_CI": [
+            -1.7765068667498207,
+            3.4434740502543875
+          ]
+        }
+      },
+      "within_sector": {
+        "E060_E180": {
+          "n_taxa": 66,
+          "mean_native_source_BIO12_mm_per_year": 2517.087386103289,
+          "mean_original_image_angle_deg": 77.0440326108844,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.29764135467440217,
+            "CI": [
+              -0.5107329342921694,
+              1.1060156436409736
+            ],
+            "BIO15": -0.09120904100955313,
+            "BIO15_CI": [
+              -4.12306155350783,
+              3.9406434714887233
+            ]
+          }
+        },
+        "W030_E060": {
+          "n_taxa": 68,
+          "mean_native_source_BIO12_mm_per_year": 1228.4886245541345,
+          "mean_original_image_angle_deg": 69.56530128622626,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.9719486917202896,
+            "CI": [
+              -2.5504985415606236,
+              0.6066011581200444
+            ],
+            "BIO15": 0.7545388297754015,
+            "BIO15_CI": [
+              -4.393706702421186,
+              5.902784361971989
+            ]
+          }
+        },
+        "W180_W030": {
+          "n_taxa": 103,
+          "mean_native_source_BIO12_mm_per_year": 893.9296401136122,
+          "mean_original_image_angle_deg": 70.89794105164044,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.23568484736903533,
+            "CI": [
+              -0.7582347413711026,
+              1.2296044361091731
+            ],
+            "BIO15": -0.8149170014719607,
+            "BIO15_CI": [
+              -3.366366090588423,
+              1.7365320876445018
+            ]
+          }
+        }
+      }
+    },
+    "equal_5deg_spatial_cell|clean_tree": {
+      "n_taxa": 191,
+      "no_geo": {
+        "status": "estimated",
+        "coef": 0.5543941849455866,
+        "CI": [
+          0.3078407855416345,
+          0.8009475843495386
+        ],
+        "BIO15": 0.49261099783222323,
+        "BIO15_CI": [
+          -0.8814325247843875,
+          1.866654520448834
+        ]
+      },
+      "longitude_composition": {
+        "status": "estimated",
+        "coef": 0.4700237976869871,
+        "CI": [
+          0.08132357030300746,
+          0.8587240250709667
+        ],
+        "BIO15": 0.19632438699296495,
+        "BIO15_CI": [
+          -1.4135365475856698,
+          1.8061853215715997
+        ]
+      },
+      "spherical_second_order": {
+        "status": "estimated",
+        "coef": 0.10732776864537918,
+        "CI": [
+          -0.4012688099583044,
+          0.6159243472490628
+        ],
+        "BIO15": -0.7318122354218177,
+        "BIO15_CI": [
+          -2.419687119099825,
+          0.9560626482561894
+        ]
+      },
+      "leave_one_longitude_sector_out": {
+        "E060_E180": {
+          "n_held_out": 42,
+          "status": "estimated",
+          "coef": 0.11669967513249546,
+          "CI": [
+            -0.5707376759003561,
+            0.804137026165347
+          ],
+          "BIO15": 0.04252904346748809,
+          "BIO15_CI": [
+            -1.8725125900897632,
+            1.9575706770247394
+          ]
+        },
+        "W030_E060": {
+          "n_held_out": 56,
+          "status": "estimated",
+          "coef": 0.46947494818838065,
+          "CI": [
+            0.18419991323424795,
+            0.7547499831425133
+          ],
+          "BIO15": -0.16179543090333184,
+          "BIO15_CI": [
+            -1.7674234782054397,
+            1.443832616398776
+          ]
+        },
+        "W180_W030": {
+          "n_held_out": 93,
+          "status": "estimated",
+          "coef": 0.641896404720544,
+          "CI": [
+            0.3510353027145833,
+            0.9327575067265047
+          ],
+          "BIO15": 0.6408035722455199,
+          "BIO15_CI": [
+            -1.5756343389232748,
+            2.8572414834143145
+          ]
+        }
+      },
+      "within_sector": {
+        "E060_E180": {
+          "n_taxa": 42,
+          "mean_native_source_BIO12_mm_per_year": 2308.2206543527873,
+          "mean_original_image_angle_deg": 79.20077401074872,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.6457895440963624,
+            "CI": [
+              0.008182015745228699,
+              1.283397072447496
+            ],
+            "BIO15": -0.7090911145394154,
+            "BIO15_CI": [
+              -3.6372949390475933,
+              2.219112709968763
+            ]
+          }
+        },
+        "W030_E060": {
+          "n_taxa": 56,
+          "mean_native_source_BIO12_mm_per_year": 1284.0486869585918,
+          "mean_original_image_angle_deg": 71.06974982872529,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.15624024662220568,
+            "CI": [
+              -1.5569582620430402,
+              1.2444777687986288
+            ],
+            "BIO15": 2.636311666826434,
+            "BIO15_CI": [
+              -1.5863992325080059,
+              6.859022566160874
+            ]
+          }
+        },
+        "W180_W030": {
+          "n_taxa": 93,
+          "mean_native_source_BIO12_mm_per_year": 919.1962680828176,
+          "mean_original_image_angle_deg": 70.3746977195155,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.17032197550403871,
+            "CI": [
+              -1.1823546459980916,
+              0.841710694990014
+            ],
+            "BIO15": -1.3859957592631353,
+            "BIO15_CI": [
+              -3.5358996706825394,
+              0.7639081521562687
+            ]
+          }
+        }
+      }
+    },
+    "equal_5deg_spatial_cell|clean_tree_min10": {
+      "n_taxa": 143,
+      "no_geo": {
+        "status": "estimated",
+        "coef": 0.4811582834716912,
+        "CI": [
+          0.07429106544716096,
+          0.8880255014962215
+        ],
+        "BIO15": 0.6163556194453614,
+        "BIO15_CI": [
+          -0.7534151239542088,
+          1.9861263628449317
+        ]
+      },
+      "longitude_composition": {
+        "status": "estimated",
+        "coef": 0.3238856870292969,
+        "CI": [
+          -0.2197751565862497,
+          0.8675465306448434
+        ],
+        "BIO15": 0.1293137437953491,
+        "BIO15_CI": [
+          -1.3414001312136998,
+          1.600027618804398
+        ]
+      },
+      "spherical_second_order": {
+        "status": "estimated",
+        "coef": -0.026583632160321224,
+        "CI": [
+          -0.8335812196890837,
+          0.7804139553684413
+        ],
+        "BIO15": -0.4159803847414567,
+        "BIO15_CI": [
+          -1.9813706255030654,
+          1.149409856020152
+        ]
+      },
+      "leave_one_longitude_sector_out": {
+        "E060_E180": {
+          "n_held_out": 24,
+          "status": "estimated",
+          "coef": 0.0793170062078975,
+          "CI": [
+            -0.7739276484926825,
+            0.9325616609084775
+          ],
+          "BIO15": 0.03152341278547155,
+          "BIO15_CI": [
+            -1.5196021400566213,
+            1.5826489656275644
+          ]
+        },
+        "W030_E060": {
+          "n_held_out": 44,
+          "status": "estimated",
+          "coef": 0.39841784991232676,
+          "CI": [
+            -0.019782290959405258,
+            0.8166179907840587
+          ],
+          "BIO15": 0.058497334359387476,
+          "BIO15_CI": [
+            -1.6393867330882852,
+            1.7563814018070603
+          ]
+        },
+        "W180_W030": {
+          "n_held_out": 75,
+          "status": "estimated",
+          "coef": 0.6946325508540773,
+          "CI": [
+            -0.02385499653677925,
+            1.4131200982449337
+          ],
+          "BIO15": 0.24610597396485345,
+          "BIO15_CI": [
+            -2.6250405333422027,
+            3.11725248127191
+          ]
+        }
+      },
+      "within_sector": {
+        "E060_E180": {
+          "n_taxa": 24,
+          "mean_native_source_BIO12_mm_per_year": 1930.0166014665847,
+          "mean_original_image_angle_deg": 77.90064715382984,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 1.2547808182698124,
+            "CI": [
+              -0.10820938030184357,
+              2.617771016841468
+            ],
+            "BIO15": -2.021574759868199,
+            "BIO15_CI": [
+              -5.9968394346798615,
+              1.9536899149434634
+            ]
+          }
+        },
+        "W030_E060": {
+          "n_taxa": 44,
+          "mean_native_source_BIO12_mm_per_year": 1291.4188375143983,
+          "mean_original_image_angle_deg": 70.99223768328764,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.33413473924866965,
+            "CI": [
+              -2.1654784721022535,
+              1.4972089936049144
+            ],
+            "BIO15": 1.2302160303412166,
+            "BIO15_CI": [
+              -3.371452049916479,
+              5.831884110598912
+            ]
+          }
+        },
+        "W180_W030": {
+          "n_taxa": 75,
+          "mean_native_source_BIO12_mm_per_year": 877.5515205708422,
+          "mean_original_image_angle_deg": 68.63790217345884,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.3017177735808316,
+            "CI": [
+              -1.3131753793198748,
+              0.7097398321582116
+            ],
+            "BIO15": -0.7847133623016374,
+            "BIO15_CI": [
+              -2.70903523865789,
+              1.1396085140546155
+            ]
+          }
+        }
+      }
+    },
+    "photo_weighted|clean_native": {
+      "n_taxa": 237,
+      "no_geo": {
+        "status": "estimated",
+        "coef": 0.3621882377896445,
+        "CI": [
+          0.04853602669206236,
+          0.6758404488872266
+        ],
+        "BIO15": 0.3378412946358541,
+        "BIO15_CI": [
+          -1.1898819717989966,
+          1.865564561070705
+        ]
+      },
+      "longitude_composition": {
+        "status": "estimated",
+        "coef": 0.10957712205366205,
+        "CI": [
+          -0.35620765380125397,
+          0.5753618979085781
+        ],
+        "BIO15": -0.545611736187747,
+        "BIO15_CI": [
+          -2.3465171358260237,
+          1.2552936634505294
+        ]
+      },
+      "spherical_second_order": {
+        "status": "estimated",
+        "coef": -0.12229514648883688,
+        "CI": [
+          -0.7617335342096339,
+          0.5171432412319601
+        ],
+        "BIO15": -1.05786127974181,
+        "BIO15_CI": [
+          -3.2097862526588123,
+          1.0940636931751921
+        ]
+      },
+      "leave_one_longitude_sector_out": {
+        "E060_E180": {
+          "n_held_out": 64,
+          "status": "estimated",
+          "coef": -0.0339710918319282,
+          "CI": [
+            -0.6592012095789508,
+            0.5912590259150945
+          ],
+          "BIO15": -0.20085691109520787,
+          "BIO15_CI": [
+            -2.172592925723628,
+            1.770879103533212
+          ]
+        },
+        "W030_E060": {
+          "n_held_out": 70,
+          "status": "estimated",
+          "coef": 0.35583816155292963,
+          "CI": [
+            -0.06334882797452718,
+            0.7750251510803865
+          ],
+          "BIO15": -0.05234532900448874,
+          "BIO15_CI": [
+            -1.8801698471595207,
+            1.775479189150543
+          ]
+        },
+        "W180_W030": {
+          "n_held_out": 103,
+          "status": "estimated",
+          "coef": 0.333864624136524,
+          "CI": [
+            -0.045938965227000694,
+            0.7136682135000487
+          ],
+          "BIO15": 0.6105031015549706,
+          "BIO15_CI": [
+            -2.010054133372232,
+            3.2310603364821735
+          ]
+        }
+      },
+      "within_sector": {
+        "E060_E180": {
+          "n_taxa": 64,
+          "mean_native_source_BIO12_mm_per_year": 2581.476047153606,
+          "mean_original_image_angle_deg": 77.51805287734562,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.22626655828385855,
+            "CI": [
+              -0.6342915730742853,
+              1.0868246896420024
+            ],
+            "BIO15": -0.763367990100994,
+            "BIO15_CI": [
+              -4.924715746432112,
+              3.397979766230124
+            ]
+          }
+        },
+        "W030_E060": {
+          "n_taxa": 70,
+          "mean_native_source_BIO12_mm_per_year": 1212.24254578626,
+          "mean_original_image_angle_deg": 69.42590843994344,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.6333937577012662,
+            "CI": [
+              -2.090935639795013,
+              0.8241481243924805
+            ],
+            "BIO15": 0.7407312237466785,
+            "BIO15_CI": [
+              -4.361224697374305,
+              5.842687144867662
+            ]
+          }
+        },
+        "W180_W030": {
+          "n_taxa": 103,
+          "mean_native_source_BIO12_mm_per_year": 916.5474764487741,
+          "mean_original_image_angle_deg": 71.57567448208093,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.016741220188170036,
+            "CI": [
+              -0.8750568571999898,
+              0.8415744168236498
+            ],
+            "BIO15": -1.4620479037774117,
+            "BIO15_CI": [
+              -3.9369852391981746,
+              1.0128894316433512
+            ]
+          }
+        }
+      }
+    },
+    "photo_weighted|clean_tree": {
+      "n_taxa": 191,
+      "no_geo": {
+        "status": "estimated",
+        "coef": 0.5075715791859658,
+        "CI": [
+          0.2808224676541563,
+          0.7343206907177754
+        ],
+        "BIO15": 0.40521130210990663,
+        "BIO15_CI": [
+          -1.0255118536981827,
+          1.835934457917996
+        ]
+      },
+      "longitude_composition": {
+        "status": "estimated",
+        "coef": 0.3217862201649758,
+        "CI": [
+          -0.03145942826345055,
+          0.6750318685934023
+        ],
+        "BIO15": -0.26400899672438816,
+        "BIO15_CI": [
+          -1.8507747548157187,
+          1.3227567613669424
+        ]
+      },
+      "spherical_second_order": {
+        "status": "estimated",
+        "coef": 0.044477493217758735,
+        "CI": [
+          -0.4620745799342485,
+          0.551029566369766
+        ],
+        "BIO15": -0.9026471366159878,
+        "BIO15_CI": [
+          -2.6763447227004615,
+          0.8710504494684856
+        ]
+      },
+      "leave_one_longitude_sector_out": {
+        "E060_E180": {
+          "n_held_out": 40,
+          "status": "estimated",
+          "coef": 0.10463114388716976,
+          "CI": [
+            -0.4600144426562155,
+            0.669276730430555
+          ],
+          "BIO15": -0.2749597355830855,
+          "BIO15_CI": [
+            -2.0927593650388383,
+            1.5428398938726673
+          ]
+        },
+        "W030_E060": {
+          "n_held_out": 58,
+          "status": "estimated",
+          "coef": 0.38255013537811755,
+          "CI": [
+            0.10438678597039286,
+            0.6607134847858422
+          ],
+          "BIO15": -0.2225682663302516,
+          "BIO15_CI": [
+            -1.9693406184862203,
+            1.5242040858257173
+          ]
+        },
+        "W180_W030": {
+          "n_held_out": 93,
+          "status": "estimated",
+          "coef": 0.6047245790243829,
+          "CI": [
+            0.335604784127924,
+            0.8738443739208419
+          ],
+          "BIO15": 0.2544583443431486,
+          "BIO15_CI": [
+            -2.0455292049238323,
+            2.5544458936101297
+          ]
+        }
+      },
+      "within_sector": {
+        "E060_E180": {
+          "n_taxa": 40,
+          "mean_native_source_BIO12_mm_per_year": 2400.79917544577,
+          "mean_original_image_angle_deg": 80.06704350707992,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.44045795433334767,
+            "CI": [
+              -0.1941388761846824,
+              1.0750547848513778
+            ],
+            "BIO15": -2.0015577404927605,
+            "BIO15_CI": [
+              -5.454967747062361,
+              1.4518522660768403
+            ]
+          }
+        },
+        "W030_E060": {
+          "n_taxa": 58,
+          "mean_native_source_BIO12_mm_per_year": 1262.5254862937622,
+          "mean_original_image_angle_deg": 70.84963954726331,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.26222207406189146,
+            "CI": [
+              -0.8874110426862201,
+              1.411855190810003
+            ],
+            "BIO15": 2.6389230556675436,
+            "BIO15_CI": [
+              -1.6893045754375837,
+              6.967150686772671
+            ]
+          }
+        },
+        "W180_W030": {
+          "n_taxa": 93,
+          "mean_native_source_BIO12_mm_per_year": 944.2461298303627,
+          "mean_original_image_angle_deg": 71.12530571236893,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.44123728819387587,
+            "CI": [
+              -1.268054143273163,
+              0.3855795668854112
+            ],
+            "BIO15": -2.142373847834596,
+            "BIO15_CI": [
+              -4.16510915844141,
+              -0.1196385372277815
+            ]
+          }
+        }
+      }
+    },
+    "photo_weighted|clean_tree_min10": {
+      "n_taxa": 143,
+      "no_geo": {
+        "status": "estimated",
+        "coef": 0.45740548832095723,
+        "CI": [
+          0.0890501468971795,
+          0.825760829744735
+        ],
+        "BIO15": 0.8628556930976954,
+        "BIO15_CI": [
+          -0.6606183368641052,
+          2.3863297230594958
+        ]
+      },
+      "longitude_composition": {
+        "status": "estimated",
+        "coef": 0.1339599847562154,
+        "CI": [
+          -0.31555869715275486,
+          0.5834786666651857
+        ],
+        "BIO15": -0.08644880953128675,
+        "BIO15_CI": [
+          -1.6004084123162454,
+          1.427510793253672
+        ]
+      },
+      "spherical_second_order": {
+        "status": "estimated",
+        "coef": -0.12470467987198808,
+        "CI": [
+          -0.8035199878209717,
+          0.5541106280769955
+        ],
+        "BIO15": -0.30692552711966226,
+        "BIO15_CI": [
+          -2.0595687509408664,
+          1.4457176967015422
+        ]
+      },
+      "leave_one_longitude_sector_out": {
+        "E060_E180": {
+          "n_held_out": 22,
+          "status": "estimated",
+          "coef": 0.009291079148218417,
+          "CI": [
+            -0.604970875854514,
+            0.6235530341509508
+          ],
+          "BIO15": -0.4750305913154147,
+          "BIO15_CI": [
+            -1.9249789020508976,
+            0.9749177194200682
+          ]
+        },
+        "W030_E060": {
+          "n_held_out": 46,
+          "status": "estimated",
+          "coef": 0.28270364893481803,
+          "CI": [
+            -0.13776047246298057,
+            0.7031677703326167
+          ],
+          "BIO15": 0.36184571283666933,
+          "BIO15_CI": [
+            -1.6204668928457706,
+            2.3441583185191095
+          ]
+        },
+        "W180_W030": {
+          "n_held_out": 75,
+          "status": "estimated",
+          "coef": 0.7075215947939646,
+          "CI": [
+            0.08404480364827538,
+            1.3309983859396537
+          ],
+          "BIO15": 0.4991518233175183,
+          "BIO15_CI": [
+            -2.3981732986684747,
+            3.396476945303511
+          ]
+        }
+      },
+      "within_sector": {
+        "E060_E180": {
+          "n_taxa": 22,
+          "mean_native_source_BIO12_mm_per_year": 2043.7907627152524,
+          "mean_original_image_angle_deg": 80.94188263874634,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.7244078980782573,
+            "CI": [
+              -1.2788979443244202,
+              2.727713740480935
+            ],
+            "BIO15": -1.335848488591281,
+            "BIO15_CI": [
+              -7.227257240958122,
+              4.55556026377556
+            ]
+          }
+        },
+        "W030_E060": {
+          "n_taxa": 46,
+          "mean_native_source_BIO12_mm_per_year": 1267.9944882392708,
+          "mean_original_image_angle_deg": 70.32131088555595,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": 0.1552343553508051,
+            "CI": [
+              -1.39306518613312,
+              1.7035338968347302
+            ],
+            "BIO15": 1.108928794188554,
+            "BIO15_CI": [
+              -3.7008314709790024,
+              5.91868905935611
+            ]
+          }
+        },
+        "W180_W030": {
+          "n_taxa": 75,
+          "mean_native_source_BIO12_mm_per_year": 908.9148412012898,
+          "mean_original_image_angle_deg": 69.37424501080342,
+          "within_sector_5CHELSA_HC3": {
+            "status": "estimated",
+            "coef": -0.6707156225865404,
+            "CI": [
+              -1.3310693059060204,
+              -0.010361939267060305
+            ],
+            "BIO15": -1.8461837083224246,
+            "BIO15_CI": [
+              -3.5746564679761166,
+              -0.11771094866873288
+            ]
+          }
+        }
+      }
+    }
+  },
+  "inference_boundaries": {
+    "photos_continue_as_image_vertical_not_gravity": true,
+    "classifying_each_sector_as_biogeographic_realm": false,
+    "longitude_and_spherical_controls_selected_without_outcome": true,
+    "broad_geographic_covariation_challenges_unique_annual_rainfall_effect": true,
+    "spatial_adjustment_is_not_direct_evidence_of_geography_causation": true,
+    "original_S1_between_within_244_model_not_refitted": true,
+    "source_equal_5deg_cells_are_not_equal_area_geodesic_cells": true,
+    "region_slope_intervals_are_exploratory_unadjusted_for_multiple_regions": true,
+    "source_taxon_level_HC3_not_geographic_block_bootstrap": true,
+    "published_global_Cirsium_nuclear_historical_nodding_gains_inferred": false,
+    "original_EAzami_BIO15_direction_not_independently_confirmed": true
+  }
+}
