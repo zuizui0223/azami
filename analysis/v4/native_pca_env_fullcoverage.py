@@ -38,6 +38,7 @@ from analysis.v4.native_introduced_opportunity import (
     MEASUREMENT_SEALED_SHA, MEASUREMENT_SHA, MEASUREMENT_AAD
 )
 from analysis.v4.native_full_rain_head_response import analyse_photo_orientation
+from analysis.v4.native_wet_edge import save as save_wet_edge
 from analysis.v4.native_pca_env import (
     SPECIES_KEYS, SOURCE_COUNTS, CONTINENTS, background_mesh,
     _background_species_audit, _pca_env_2d, climatic_shift_summary,
@@ -376,6 +377,16 @@ def execute(original:Path,authority_archive:Path,source_meta:Path,
         (output/"S2_two_species_full_rain_head_response.json").write_text(
             json.dumps(new,ensure_ascii=False,indent=2,allow_nan=False)+"\n",
             encoding="utf-8")
+        # Outcome-blind source niche threshold; only then matched angle distributions.
+        # Existing original TIFFs/measurements are already in-memory: no new acquisition.
+        wet_report=save_wet_edge(
+            wild,photo,output,
+            source_climate_sha={k:v["source_SHA256"] for k,v in audit.items()})
+        print(json.dumps({
+            "wet_edge_source_complete":wet_report["source_wild_complete_climate_n"],
+            "wet_edge_angle_complete":wet_report["orientation_original_image_balanced_climate_complete_n"],
+            "status":wet_report["status"],
+        },ensure_ascii=False),flush=True)
         print(json.dumps({
             "annual_BIO12_primary_head_image_response":{
                 name:{
