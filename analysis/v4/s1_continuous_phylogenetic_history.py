@@ -318,6 +318,25 @@ def main():
     if sensitivity["summary"]["source_name_collisions_within_modeled_cohort"]!=0:
         raise ValueError("Collision-free ancestral sensitivity still includes merged names")
     results["collision_free_191_taxon_sensitivity"]=sensitivity["summary"]
+    # The original S1 cohort is unevenly sampled. Species means supported by
+    # only 1-4 photographs must never be treated as equally precise as those
+    # with hundreds; this exclusion ladder is a *sensitivity*, not a new S1.
+    sample_sensitivity={}
+    for minimum, expected_n in ((5,171),(10,143)):
+        selected=[record for record in clean
+                  if record["n_eligible_S1_images"]>=minimum]
+        if len(selected)!=expected_n:
+            raise ValueError(f"Original S1 image-count >= {minimum} cohort changed")
+        subset=analyze(selected,trees,expected_taxa=expected_n)
+        sample_sensitivity[str(minimum)]={
+          "n_original_S1_continuous_tips":expected_n,
+          "n_source_name_collisions":0,
+          "n_original_S1_images":int(sum(r["n_eligible_S1_images"] for r in selected)),
+          "conditioning":"same pinned S1 source and same 52 grafted scenario trees",
+          "not_independent_replication":True,
+          "summary":subset["summary"],
+        }
+    results["minimum_S1_image_count_sensitivity"]=sample_sensitivity
     results["source_audit"]={
        "source_sha256":SHA,"native_observation_source_authenticated":True,
        "source_selection_sha256":hashlib.sha256(MODEL_PATH.read_bytes()).hexdigest(),
