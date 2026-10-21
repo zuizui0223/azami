@@ -331,7 +331,7 @@ def conditional_distribution(wet:pd.DataFrame, ref:pd.DataFrame,
     quantiles=(.10,.50,.90)
     qa=weighted_quantiles(yw,ww,quantiles)
     qb=weighted_quantiles(yr,wr,quantiles)
-    return {
+    result = {
         "status":"EXPLORATORY_MATCHED_DISTRIBUTION_ESTIMATED_NOT_INDEPENDENT_CONFIRMED",
         "support":limits,
         "comparison":"Same-species and same introduced continent; novel wet-edge versus native q75-q95 rain analogue; nearest nonrain/season/year climate and equal quality grade",
@@ -350,6 +350,15 @@ def conditional_distribution(wet:pd.DataFrame, ref:pd.DataFrame,
         "geographic_block_uncertainty":geographic_block_uncertainty(wet,ref,matched),
         "no_gravity_calibration_or_causal_interpretation":True,
     }
+    # Geographic uncertainty stays separate from raw point estimates and
+    # treats the frozen climate-only matches as fixed; camera and matching
+    # model uncertainty are not incorporated.
+    from analysis.v4.native_wet_edge_uncertainty import geographic_block_bootstrap
+    result["geographic_cell_uncertainty"] = geographic_block_bootstrap(
+        a,b,ww,wr,
+        label=str(a.taxon_name.iloc[0])+"|"+str(a.tdwg1.iloc[0])+"|BIO12-native-q95",
+    )
+    return result
 
 
 def evaluate(source_wild:pd.DataFrame, photo:pd.DataFrame,
