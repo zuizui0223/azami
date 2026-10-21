@@ -101,7 +101,7 @@ def test_source_absence_cannot_count_as_zero_head_photo_response(monkeypatch):
     a=frames()
     monkeypatch.setattr(m,"SOURCE_ORIGINAL_ALL_HEADS",len(a))
     a.loc[a.index[0],"chelsa_bio15"]=np.nan
-    with pytest.raises(ValueError,match="source pixel"):
+    with pytest.raises(ValueError,match="Original BIO12 and BIO15 pixels missing"):
         m.run_angle_seasonality(a,{})
     a=frames()
     a.loc[a.index[0],"obs_id"]=a.loc[a.index[1],"obs_id"]
@@ -115,6 +115,9 @@ def test_tiny_region_and_no_native_reference_does_not_emit_fake_difference():
     tiny=x.loc[x.range_state.eq("introduced")&x.tdwg1.eq(2)&
                x.taxon_name.eq("Cirsium vulgare")].head(8).copy()
     from analysis.v4.native_intro_continent_orientation import hypothesis_within_continent
+    from analysis.v4.native_introduced_climate_transfer import dated_and_balanced
+    native=dated_and_balanced(native)
+    tiny=dated_and_balanced(tiny)
     case=hypothesis_within_continent(native,tiny,
           climate_variable="chelsa_bio15",scenario="strict-seasonality")
     assert case["status"].startswith("STOP_")
