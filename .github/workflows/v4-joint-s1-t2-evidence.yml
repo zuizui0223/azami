@@ -8,20 +8,13 @@ on:
       - 'tests/test_v4_joint_s1_t2_phylogeny.py'
       - 'tests/test_v4_s1_continuous_phylogenetic_history.py'
       - '.github/workflows/v4-joint-s1-t2-evidence.yml'
-  pull_request:
-    paths:
-      - 'analysis/v4/joint_s1_t2_phylogeny.py'
-      - 'analysis/v4/s1_continuous_phylogenetic_history.py'
-      - 'tests/test_v4_joint_s1_t2_phylogeny.py'
-      - 'tests/test_v4_s1_continuous_phylogenetic_history.py'
-      - '.github/workflows/v4-joint-s1-t2-evidence.yml'
   workflow_dispatch:
 permissions:
   contents: read
   actions: read
 concurrency:
   group: v4-joint-s1-t2-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   join-without-refit:
     runs-on: ubuntu-latest
