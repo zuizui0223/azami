@@ -78,7 +78,7 @@
     }
   },
   "S2": {
-    "status": "introduced_status_and_original_photo_cohorts_audited_climate_transfer_estimation_in_progress",
+    "status": "introduced_status_audited_and_provisional_five_climate_transfer_estimated; no evolutionary origin inference",
     "focal_source_names": [
       "Cirsium vulgare",
       "Cirsium arvense"
@@ -111,6 +111,30 @@
         "Cirsium vulgare": 47833
       },
       "both_focal_source_support_rules_pass": true
+    },
+    "climate_transfer": {
+      "run": 39539209624,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S2_NATIVE_INTRODUCED_CLIMATE_TRANSFER_20261021.json",
+      "report": "analysis/v4/results/20261021_unified_abcde/S2_NATIVE_INTRODUCED_TRANSFER_RESULT_JA.md",
+      "assessable_original_photo_orientation": 173737,
+      "all_five_original_raster_climate_complete": 163687,
+      "missing_original_cached_climate_pixels": 10050,
+      "native_versus_introduced_Cirsium_arvense": {
+        "native_rain_deg100mm": -0.1116191421353511,
+        "introduced_rain_deg100mm": 0.27825231318425475,
+        "both_intervals_include_zero": true,
+        "introduced_minus_native_ci_includes_zero": true,
+        "native_to_introduced_skill_vs_native_constant": -0.00897259179269927
+      },
+      "native_versus_introduced_Cirsium_vulgare": {
+        "native_rain_deg100mm": 0.6992058496429765,
+        "introduced_rain_deg100mm": -0.6119107212198934,
+        "both_intervals_include_zero": true,
+        "introduced_minus_native_ci_includes_zero": true,
+        "native_to_introduced_skill_vs_native_constant": -0.02026320808114135
+      },
+      "extrapolation_warning": "Climate pixels missing from 18.5% introduced vulgare; common support only audited in marginal climate ranges, not formally restricted model",
+      "evolutionary_conclusion_established": false
     }
   },
   "T2": {
@@ -162,7 +186,12 @@
     "photo_colour_composition_five_new_native_frame_fields_verified": false,
     "observer_cell_balancing_sensitivity_executed": true,
     "source_introduced_WCVP_classification_executed": true,
-    "camerapose_independent_gravity_calibration_finished": false
+    "camerapose_independent_gravity_calibration_finished": false,
+    "introduced_original_CHELSA_five_exposures_extracted": true,
+    "introduced_native_slopes_exploratorily_fitted": true,
+    "introduced_native_photo_angle_equal_error_verified": false,
+    "introduced_native_equivalence_hypothesis_verified": false,
+    "introduced_native_climate_common_support_transfer_validated": false
   },
   "publication_branches": {
     "fallback": "S1 with direct technical QC plus valid T2 transitions, optionally GEB. S1 alone is descriptive pattern, not evolutionary protection.",
