@@ -232,6 +232,69 @@ def match_without_angles(wet: pd.DataFrame, reference: pd.DataFrame,
     }
 
 
+def geographic_block_uncertainty(wet:pd.DataFrame, ref:pd.DataFrame,
+                                 matched:dict, *, replicates:int=400)->dict:
+    """A sensitivity interval from joint 5-degree cell resampling.
+
+    Keep outcome-blind matching links fixed; resample the UNION of geographic
+    cells shared by wet and reference. This captures geographic leverage in
+    the observed photo sample but NOT matching uncertainty, camera error,
+    separate introduction events or any causal estimand.
+    """
+    w=wet.iloc[matched["wet_indices"]]
+    r=ref.iloc[matched["control_indices"]]
+    yw=w[COL_ANGLE].to_numpy(float)
+    yr=r[COL_ANGLE].to_numpy(float)
+    ww=matched["wet_weights"]
+    wr=matched["control_weights"]
+    cells=np.unique(np.concatenate([
+        w._cell.to_numpy(int),r._cell.to_numpy(int)
+    ]))
+    wcell=np.searchsorted(cells,w._cell.to_numpy(int))
+    rcell=np.searchsorted(cells,r._cell.to_numpy(int))
+    rng=np.random.default_rng(SEED)
+    values=[]
+    for _ in range(replicates):
+        picks=rng.integers(len(cells),size=len(cells))
+        counts=np.bincount(picks,minlength=len(cells))
+        aw=ww*counts[wcell]
+        ar=wr*counts[rcell]
+        ok1=aw>0
+        ok2=ar>0
+        if ok1.sum()<MIN_ROWS or ok2.sum()<MIN_ROWS:
+            continue
+        if (len(np.unique(wcell[ok1]))<8
+            or len(np.unique(rcell[ok2]))<8):
+            continue
+        aw=aw[ok1]/aw[ok1].sum()
+        ar=ar[ok2]/ar[ok2].sum()
+        qw=weighted_quantiles(yw[ok1],aw,(.10,.50,.90))
+        qr=weighted_quantiles(yr[ok2],ar,(.10,.50,.90))
+        values.append([*(float(a-b) for a,b in zip(qw,qr)),
+                       float(wasserstein_distance(yw[ok1],yr[ok2],
+                                                  u_weights=aw,v_weights=ar))])
+    if len(values)<int(replicates*.90):
+        return {
+            "status":"NOT_ESTIMABLE_TOO_FEW_VALID_GEOGRAPHIC_BLOCK_DRAWS",
+            "valid_draws":len(values),"requested_draws":replicates
+        }
+    draws=np.asarray(values,float)
+    intervals=np.quantile(draws,[.025,.975],axis=0)
+    return {
+        "status":"GEOGRAPHIC_CELL_SENSITIVITY_INTERVAL_NOT_CAUSAL_OR_CAMERA_VALIDATED",
+        "method":"Joint 5-degree source-cell bootstrap; matched neighbour links held fixed",
+        "geographic_blocks":int(len(cells)),
+        "valid_draws":len(values),
+        "Q10_Q50_Q90_delta_95pct_intervals":[
+            [float(intervals[0,i]),float(intervals[1,i])] for i in range(3)],
+        "W1_95pct_sensitivity_interval":[float(intervals[0,3]),float(intervals[1,3])],
+        "Q90_positive_fraction_of_draws":float((draws[:,2]>0).mean()),
+        "not_adjusted_for_camera_and_measurement_error":True,
+        "matching_and_selection_variance_not_estimated":True,
+        "not_an_independent_population_confidence_interval":True,
+    }
+
+
 def conditional_distribution(wet:pd.DataFrame, ref:pd.DataFrame,
                              matched:dict)->dict:
     """Point estimates; independent camera calibration and cluster CI pending."""
@@ -284,7 +347,7 @@ def conditional_distribution(wet:pd.DataFrame, ref:pd.DataFrame,
             float(ww[yw>=90].sum()),
         "reference_image_horizontal_or_down_fraction":
             float(wr[yr>=90].sum()),
-        "no_bootstrap_confidence_interval_calculated":True,
+        "geographic_block_uncertainty":geographic_block_uncertainty(wet,ref,matched),
         "no_gravity_calibration_or_causal_interpretation":True,
     }
 
