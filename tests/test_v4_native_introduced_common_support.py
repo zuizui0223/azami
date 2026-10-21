@@ -77,7 +77,8 @@ def test_full_five_overlap_fit_is_conditional_and_not_evolutionary():
         assert report[state+"_support"]["unique_original_5degree_cells"]>=15
         assert report["refitted_models"][state]["status"]=="estimated_five_exposure_cell_cluster_WLS"
     assert report["slope_difference"]["not_equivalence_testing"]
-    assert report["native_trained_transfer"]["climatic_overlap_gated"] is False
+    assert report["native_trained_transfer"]["climatic_overlap_gated"] is True
+    assert report["native_trained_transfer"]["multivariate_joint_density_overlap_proven"] is False
     assert report["support_does_not_remove_camera_technical_error"] is True
 
 
