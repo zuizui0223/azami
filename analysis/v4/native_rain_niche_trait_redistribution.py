@@ -66,9 +66,12 @@ def _histogram(frame,cutpoints,*,angle=False):
     loc,idx=np.unique(frame._cell.to_numpy(),return_inverse=True)
     w=_cell_weight(frame)
     counts=np.zeros((len(loc),N_BINS),float)
+    raw=np.zeros((len(loc),N_BINS),int)
     np.add.at(counts,(idx,vals),w)
+    np.add.at(raw,(idx,vals),1)
     result={"cells":loc,"band_cell_mass":counts,
-            "band_n":np.bincount(vals,minlength=N_BINS).astype(int),
+            "band_cell_n":raw,
+            "band_n":raw.sum(axis=0),
             "band_cells":np.array([np.unique(loc[idx[vals==k]]).size
                                    for k in range(N_BINS)],int),
             "rows":int(len(frame))}
@@ -190,35 +193,46 @@ def _composition(native_source,intro_source,native_photo,intro_photo,
         "not_adjusted_for_four_other_climate_variables_or_camera":True,
     }
 
-def _resampled_hist(hist,rng):
-    n=len(hist["cells"])
-    multiplicity=np.bincount(rng.integers(n,size=n),minlength=n)
+def _resampled_hist(hist,multipliers):
+    m=np.asarray(multipliers,int)
+    if len(m)!=len(hist["cells"]) or (m<0).any():
+        raise ValueError("Same-region geographic block multipliers misaligned")
     out=dict(hist)
-    out["band_cell_mass"]=(hist["band_cell_mass"]*multiplicity[:,None])
+    out["band_cell_mass"]=hist["band_cell_mass"]*m[:,None]
+    out["band_cell_n"]=hist["band_cell_n"]*m[:,None]
+    out["band_n"]=out["band_cell_n"].sum(axis=0)
     if "angle_cell_band" in hist:
-        out["angle_cell_band"]=hist["angle_cell_band"]*multiplicity[:,None,None]
+        out["angle_cell_band"]=hist["angle_cell_band"]*m[:,None,None]
         out["band_cells"]=np.count_nonzero(
-            out["angle_cell_band"].sum(axis=2),axis=0
-        )
-        out["band_n"]=(out["band_cell_mass"]>0).sum(axis=0)*MIN_PHOTO_PER_BAND
+            out["band_cell_n"],axis=0)
     return out
 
+def _draw_source_photo_joint(source,photo,rng):
+    """Draw the same source 5° blocks for the species × establishment region."""
+    union=np.union1d(source["cells"],photo["cells"])
+    multiplicities=np.bincount(rng.integers(len(union),size=len(union)),
+                               minlength=len(union))
+    srcmult=multiplicities[np.searchsorted(union,source["cells"])]
+    phmult=multiplicities[np.searchsorted(union,photo["cells"])]
+    return (_resampled_hist(source,srcmult),
+            _resampled_hist(photo,phmult))
+
 def _bootstrap(native_source,intro_source,native_photo,intro_photo,*,label):
-    """Block source + photos in each region; held-fixed native rain cutpoints."""
+    """Exploratory 5°-cell intervals; rain edges and eligible bins frozen."""
     seed=int.from_bytes(hashlib.sha256(label.encode()).digest()[:8],"little") ^ SEED
     rng=np.random.default_rng(seed)
-    # Resampling independent region/cell draws across both source and photo
-    # would break source/photo relationships, so this bootstrap is a
-    # sensitivity to separately sampled source/angle cell panels, not a
-    # paired estimate of actual same-plant variation.
+    original=_composition(native_source,intro_source,native_photo,intro_photo)
+    if original["status"]!="SUPPORTED_DESCRIPTIVE_RAIN_MIXTURE_DECOMPOSITION":
+        return {"status":"STOP_NOT_IDENTIFIED_ORIGINAL_RAIN_BAND_COHORT"}
+    # Preserve the pre-phenotype-analysed band support in the sensitivity
+    # estimand. Resampling must not discover a more favorable set of bands.
+    common=np.array([b in original["supported_bands"] for b in BANDS],bool)
     diffs=[]
     blocked=0
     for _ in range(BOOTSTRAPS):
-        a=_resampled_hist(native_source,rng)
-        b=_resampled_hist(intro_source,rng)
-        c=_resampled_hist(native_photo,rng)
-        d=_resampled_hist(intro_photo,rng)
-        q=_composition(a,b,c,d)
+        a,c=_draw_source_photo_joint(native_source,native_photo,rng)
+        b,d=_draw_source_photo_joint(intro_source,intro_photo,rng)
+        q=_composition(a,b,c,d,common=common)
         if q["status"]!="SUPPORTED_DESCRIPTIVE_RAIN_MIXTURE_DECOMPOSITION":
             blocked+=1
             continue
@@ -240,6 +254,7 @@ def _bootstrap(native_source,intro_source,native_photo,intro_photo,*,label):
         },
         "not_independent_plant_confidence_intervals":True,
         "native_rain_bin_edges_fixed_before_resampling":True,
+        "geographic_resampling_joint_for_source_photo_same_region":True,
         "no_camera_genetic_or_climate_confounder_inference":True,
     }
 
