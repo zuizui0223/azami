@@ -182,6 +182,12 @@ def test_end_to_end_T2_and_T3_are_conditional_not_adaptation(tmp_path):
         assert result["transition_ages_estimated"] is False
         assert "rain_vs_temperature_evolutionary_association_fitted" in result
         assert json.loads(output.read_text()) == result
+        assert result["scored_tip_fraction"] == 1
+        assert result["unscored_tips_excluded_from_Mk_pilot"] == 0
+        if stage == "T3":
+            assert set(result["transitions"]["within_tribe_gain_distribution"]) == {"Cardueae", "Senecioneae"}
+            p = result["transitions"]["p_gains_in_two_or_more_tribes_conditional_Mk"]
+            assert 0 <= p <= 1
 
 
 def test_T3_requires_more_than_one_reviewed_tribe_and_homology(tmp_path):
@@ -211,3 +217,17 @@ def test_map_collisions_cannot_be_silently_pooled(tmp_path):
     rows[1]["concept_id"] = "a"
     with pytest.raises(EvidenceGateError, match="one-to-one"):
         audited_tips(tree, rows, states, "T2")
+
+def test_unscored_tips_are_excluded_not_given_free_stochastic_transitions(tmp_path):
+    scores, crosswalk, tree, manifest, _ = inputs(tmp_path)
+    rows = list(csv.DictReader(scores.open()))
+    for row in rows:
+        if row["concept_id"] == "e":
+            row["state"] = "unknown"
+    _write_csv(scores, rows, list(rows[0]))
+    result = execute(scores, crosswalk, tree, manifest, tmp_path / "reduced.json",
+                     stage="T2", min_scored=4, draws=100)
+    assert result["status"] == "conditional_trait_only_Mk_pilot"
+    assert result["scored_taxa"] == 5
+    assert result["unscored_tips_excluded_from_Mk_pilot"] == 1
+    assert result["scored_tip_fraction"] == pytest.approx(5/6)
