@@ -1,0 +1,43 @@
+name: V4 T2 T3 rain-orientation history gates
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/rain_history.py'
+      - 'analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md'
+      - 'analysis/v4/rain_history_templates/**'
+      - 'tests/test_v4_rain_history.py'
+      - '.github/workflows/v4-rain-history.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/rain_history.py'
+      - 'analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md'
+      - 'analysis/v4/rain_history_templates/**'
+      - 'tests/test_v4_rain_history.py'
+      - '.github/workflows/v4-rain-history.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evidence-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated ancestry-gate dependencies
+        run: python -m pip install 'biopython>=1.83,<2' 'numpy>=1.26' 'scipy>=1.11' 'pytest>=8'
+      - name: Validate blind scoring, phylogeny and conditional Mk controls
+        env:
+          PYTHONPATH: '.'
+        run: python -m pytest -q tests/test_v4_rain_history.py
+      - name: Prohibit empirical claims from empty intake templates
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ('scores.csv','crosswalk.csv','climate.csv'):
+              rows = (Path('analysis/v4/rain_history_templates')/name).read_text().splitlines()
+              assert len(rows)==1, f'{name} is no longer an empty template'
+          PY
