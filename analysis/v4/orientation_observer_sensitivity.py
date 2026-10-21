@@ -65,7 +65,10 @@ def residual_from_fixed_species_fit(frame:pd.DataFrame,component:dict,endpoint:s
         raise ValueError("Reference model is not fitted")
     predictors=selection["selected"]
     scales=selection["scales"]
-    sample=prepare(frame,predictors)
+    required={v+suffix for v in predictors for suffix in ("__between","__within")}
+    if not required<=set(frame):
+        raise ValueError("Original full-native species means and deviations required; refuse to recenter a QC-selected subset")
+    sample=frame
     prediction=np.full(len(sample),component["reference_prediction"],float)
     for variable in predictors:
         for scale in ("__between","__within"):
