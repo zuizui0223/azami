@@ -1,0 +1,44 @@
+name: V4 T2 reuse published PGLS placements
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_pgls_placement_screen.py'
+      - 'tests/test_v4_t2_pgls_placement_screen.py'
+      - '.github/workflows/v4-t2-pgls-placements.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: t2-pgls-placements-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned numerical prerequisites
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Run independent provenance and synthetic guard tests
+        run: python -m pytest -q tests/test_v4_t2_pgls_placement_screen.py tests/test_v4_rain_history.py
+      - name: Load authenticated published head states and V3 PGLS trees; evaluate 52 placements
+        run: |
+          python -m analysis.v4.t2_pgls_placement_screen \
+            --out work/t2-pgls-placement-screen/placement_screen.json \
+            --draws 150 --min-scored 12 --min-nodding 2
+      - name: Upload T2 exploratory coverage and placement sensitivity receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-pgls-52-tree-exploratory
+          path: work/t2-pgls-placement-screen/
+          if-no-files-found: warn
+          retention-days: 90
