@@ -90,3 +90,18 @@ def test_do_not_call_ancestral_degree_shifts_nodding_origins():
     assert "NOT independently originated nodding" in code or "not independently originated nodding" in code.lower()
     assert s1h.SHIFT_DEGREES==(5.,10.,20.)
     assert s1h.ENDPOINT=="orientation_image_vertical_angle"
+
+def test_original_194_tip_cohort_collision_free_191_secondary_gate():
+    # These source collision identities were audited in the successful real-data
+    # 194-tip reference; no new biological head orientation is manufactured.
+    receipt_path="analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_52_VERIFIED_20261021.json"
+    import json
+    from pathlib import Path
+    report=json.loads(Path(receipt_path).read_text())
+    summary=report["evidence"]
+    assert summary["source_name_collisions_within_194"]==3
+    assert set(summary["source_name_collision_tips"])=={
+        "Cirsium_parryi","Cirsium_setidens","Cirsium_yezoense"}
+    assert summary["measurement_is_continuous_not_binary"] is True
+    assert summary["evolutionary_nodding_gain_count_claimed"] is False
+    assert 194-3==191
