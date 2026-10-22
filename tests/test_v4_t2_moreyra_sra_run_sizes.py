@@ -43,5 +43,5 @@ def test_wrong_biosample_stops_even_when_run_size_present():
 
 
 def test_non_csv_response_fails_closed():
-    with pytest.raises(ValueError,match="no CSV"):
+    with pytest.raises(ValueError,match="no delimited"):
         mod.parse_runinfo("<html>unavailable</html>")
