@@ -1,0 +1,83 @@
+name: V4 T2 all251 original S1 plus EAzami294 actual 241-site-depth bridge
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_all244_real241_site_depth_coverage.py'
+      - 'analysis/v4/t2_s1_all251_eazami294_real241_crosswalk.py'
+      - 'tests/test_v4_t2_s1_all244_real241_site_depth_coverage.py'
+      - 'tests/test_v4_t2_s1_all251_eazami294_real241_crosswalk.py'
+      - '.github/workflows/v4-t2-all251-real241-empirical-bridge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  both-original-taxonomic-scopes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test 251 source-unit separation from 244 WCVP keys and 113 real nuclear taxa
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_s1_all244_real241_site_depth_coverage.py tests/test_v4_t2_s1_all251_eazami294_real241_crosswalk.py
+      - name: Restore 251 original names and all244 original S1 source rows
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-source/251 work/t2-source/244 work/t2-source/241 work/t2-source/294 work/t2-source/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/t2-source/251
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12399694421 --jq '.digest')" = 'sha256:902264668bfea47358fdc66bb85ef543f9be29f5a67266d4d1e248d14db146d1'
+          gh run download 39718386338 --repo zuizui0223/azami --name v4-t2-full-S1-244-all-species-public-taxonomic-census --dir work/t2-source/244
+          test -s work/t2-source/251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv
+          test -s work/t2-source/244/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv
+      - name: Restore source-authentic REAL 125-run × 241-locus callable-depth result
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12428421873 --jq '.digest')" = 'sha256:7021a75654d316a287d138208fceca28bba49fb3e7b5064cd913d7288a4040be'
+          gh run download 39783655030 --repo zuizui0223/azami --name t2-real125-author241-callable-breadth --dir work/t2-source/241
+          test -s work/t2-source/241/ALL113_TAXON_BEST_RUN_241_LOCUS_DEPTH.csv
+      - name: Restore actual EAzami294 deduplicated biological sample IDs
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12402389660 --jq '.digest')" = 'sha256:a86f975294d5e4a522ba732c9f85388a7ee8e99591ba6662bb5c5e62efbbe902'
+          gh run download 39726994533 --repo zuizui0223/azami --name v4-t2-EAzami294-global-real-nuclear-HPC-handoff --dir work/t2-source/294
+          test -s work/t2-source/294/sample_manifest.csv
+      - name: Restore 241-site-depth as missing/not-missing to all244 accepted keys
+        run: |
+          python -m analysis.v4.t2_s1_all244_real241_site_depth_coverage --s1-full244 work/t2-source/244/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv --author241-real-taxon-depth work/t2-source/241/ALL113_TAXON_BEST_RUN_241_LOCUS_DEPTH.csv --out-dir work/t2-source/out
+      - name: Restore 241-site-depth and EAzami294 samples to ALL original 251 names
+        run: |
+          python -m analysis.v4.t2_s1_all251_eazami294_real241_crosswalk --s1-source251 work/t2-source/251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv --real241-species work/t2-source/241/ALL113_TAXON_BEST_RUN_241_LOCUS_DEPTH.csv --eazami294-samples work/t2-source/294/sample_manifest.csv --out-dir work/t2-source/out
+      - name: Check both original scopes and no false nuclear tree claim
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          p=Path('work/t2-source/out')
+          a=json.loads((p/'S1_ALL251_REAL241_MATCHING_SUMMARY.json').read_text())
+          b=json.loads((p/'S1_ALL244_REAL241_SITE_DEPTH_COVERAGE_SUMMARY.json').read_text())
+          with (p/'S1_ALL251_SOURCE_NAME_294_EAZAMI_REAL241_CROSSWALK.csv').open() as f:
+              units=list(csv.DictReader(f))
+          assert len(units)==251 and len({x['accepted_key'] for x in units})==244
+          assert a['original_S1_units_with_real_241_depth']==113
+          assert a['total_original_photo_observations']==170066
+          assert b['original_source_photo_taxa']==244 and b['WCVP_accepted_alias_collisions']==7
+          assert not a['EAzami_global_nuclear_tree_reconstructed']
+          assert not b['all244_on_independent_nuclear_tree']
+          print('ALL_251_UNIT_AND_244_KEY_REAL_241_GENOMIC_COVERAGE_BRIDGE_DONE',a)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-all251-all244-EAzami294-real241-source-coverage
+          path: work/t2-source/out/
+          if-no-files-found: warn
+          retention-days: 90
