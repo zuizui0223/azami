@@ -13,6 +13,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from Bio import Phylo
 import numpy as np
 import pandas as pd
 from scipy.linalg import cho_factor, cho_solve
@@ -245,6 +246,63 @@ def white_noise_full_244(frame):
     return out
 
 
+def independent_tree_benchmarks(frame, groups):
+    """Same-S1-photo-angle true nuclear benchmark and EAzami 20-tip coverage.
+
+    The North American published 63-tip nuclear tree intersects 42 measured
+    S1 taxa and supports WN/BM/OU1 on the *identical* 42 taxa.  The East Asian
+    Comp1061 20-tip tree intersects only 5 S1 strict source concepts (4 tree
+    placed, 3 >=10 image observations); it cannot support a five-exposure
+    phylogenetic BM/OU comparison with adequate residual degrees of freedom.
+    """
+    original_na=author_nuclear_tree()
+    na_names={x.name for x in original_na.get_terminals()}
+    common_na=[r for r in groups["source194"] if r["tip"] in na_names]
+    if len(common_na)!=NUCLEAR_NA42_N or any(r["collision"] for r in common_na):
+        raise ValueError("Published NA63 nuclear/S1 exact 42 clean taxon overlap changed")
+    na_tips=sorted(r["tip"] for r in common_na)
+    na_tree,_=audited_pruned_tree(original_na,na_tips)
+    naC=shared_path_matrix(na_tree,na_tips)[0]
+    na_fits=[]
+    for phenotype,adjust,nugget in (
+        ("mean",False,.05),("mean",True,.05),
+        ("median",True,.05),("mean",True,.25)):
+        yy,X,scale=_design_and_values(common_na,phenotype,adjust)
+        ordered=sorted(common_na,key=lambda r:r["tip"])
+        yy,X,scale=_design_and_values(ordered,phenotype,adjust)
+        na_fits.append({
+            "tree":"Siniscalchi2023_independent_author_nuclear_63_pruned_42",
+            "nuclear_reference_DOI":"10.1086/724310",
+            "phenotype":phenotype,"five_climate_adjusted":adjust,
+            "independent_nuclear_tree":True,
+            **evaluate_models(yy,X,naC,scale,nugget),
+        })
+    east=Phylo.read(
+        "analysis/v4/public_niche_inputs/EAzami_full20_comp1061_primary_tree.nwk",
+        "newick")
+    east_names={t.name for t in east.get_terminals()}-{"OUTGROUP_saff"}
+    if len(east_names)!=20:
+        raise ValueError("EAzami Comp1061 east-Asia 20-taxon nuclear tipset changed")
+    in244=frame.loc[
+        (~frame.source_name_collision) &
+        frame.source_taxon_names.isin(east_names)].copy()
+    in194=in244.loc[in244.tree194_covered].copy()
+    n10=in194.loc[in194.n_source_orientation_photos>=10].copy()
+    if len(in244)!=5 or len(in194)!=4 or len(n10)!=3:
+        raise ValueError("EAzami20/S1 source overlap 5/4/3 changed")
+    return na_fits,{
+        "source_tree":"EAzami independently reconstructed Comp1061 east-Asia 20-tip tree",
+        "nuclear_tree_available":True,
+        "exact_S1_244_tips":len(in244),
+        "exact_S1_194_tips":len(in194),
+        "tree_covered_and_n10_tips":len(n10),
+        "original_photo_n_by_taxon":dict(zip(in244.source_taxon_names,
+                                           in244.n_source_orientation_photos.astype(int))),
+        "no_five_climate_BM_OU_fit":"Only 5 direct photo taxa, fewer than six fixed climate predictors plus intercept",
+        "EAzami_original_20_tip_source_not_global_tree":True,
+    }
+
+
 def analyse(table:Path, tree_limit=52):
     frame,groups=source_roster(table)
     if not (1<=tree_limit<=52):
@@ -316,6 +374,14 @@ def analyse(table:Path, tree_limit=52):
            "OU1_alpha_at_grid_upper_count":int(block.OU1_alpha_grid_edge.sum()),
            "not_independent_tree_replicates":True,
         }
+    na_fits,ea_coverage=independent_tree_benchmarks(frame,groups)
+    result["independent_NA42_nuclear_WN_BM_OU1"]=na_fits
+    result["EAzami20_nuclear_exact_photo_coverage"]=ea_coverage
+    result["independent_NA63_has_S2_vulgare_but_not_arvense"] = True
+    result["independent_tree_claim_boundary"]=(
+        "The 42-taxon published North American nuclear benchmark is distinct "
+        "from the 52 GBOTB placement scenarios; the global 244-taxon genus-wide "
+        "independent nuclear model is still unavailable.")
     result["comparison_by_case"]=summary
     result["n_placement_scenarios_used"]=tree_limit
     result["n_total_model_cases"]=len(model_rows)
