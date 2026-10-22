@@ -1,0 +1,710 @@
+{
+  "schema": "azami_v4_t2_public_Moreyra_all125_30k_ENA_read_mapping_verification_20261022",
+  "scope": "REAL PUBLIC read-to-original-1061-reference overlap, NOT reconstructed 241/350 orthologous sequences or independent genus nuclear tree",
+  "source_s1_accepted_keys": 244,
+  "source_s1_orientation_images": 170066,
+  "source_moreyra_name_matched_taxon_keys": 113,
+  "source_public_sra_runs": 125,
+  "source_biosamples_same_EAzami294": 125,
+  "original_compositae_reference_Git_blob_sha1": "4f89e234007f367ffa8aa5e2be536bc44f31f445",
+  "original_reference_loci": 1061,
+  "workflow_run_id": 39776442316,
+  "workflow_commit_sha": "87cc16a1c6f4ae25860a6d320d61426044846aa7",
+  "workflow_conclusion": "success",
+  "source_artifact": {
+    "id": 12425197524,
+    "name": "v4-t2-Moreyra-125-real-ENA-nuclear-coverage",
+    "digest": "sha256:208d3c551e24a89751aeb656f6e0453a5b0f5dfd7a8991caf5eb0ad92c399b25",
+    "size_bytes": 6350
+  },
+  "read_results": {
+    "mapped_run_count": 125,
+    "failed_run_count": 0,
+    "max_pairs_requested_per_run": 30000,
+    "total_real_paired_FASTQ_read_pairs": 3744694,
+    "min_pairs_per_run": 24694,
+    "max_pairs_per_run": 30000,
+    "loci_with_at_least_one_reference_alignment": {
+      "min": 191,
+      "q05": 817.2,
+      "q25": 908,
+      "median": 927,
+      "q75": 946,
+      "q95": 966.6,
+      "max": 985,
+      "mean": 906.144
+    },
+    "lowest_coverage_runs": [
+      {
+        "run": "SRR25265669",
+        "mapped_loci": 191,
+        "read_pairs": 30000
+      },
+      {
+        "run": "SRR30887248",
+        "mapped_loci": 368,
+        "read_pairs": 24694
+      },
+      {
+        "run": "SRR30887185",
+        "mapped_loci": 554,
+        "read_pairs": 30000
+      },
+      {
+        "run": "SRR30887311",
+        "mapped_loci": 589,
+        "read_pairs": 30000
+      }
+    ],
+    "s2_focal_run_evidence": [
+      {
+        "run": "SRR25265555",
+        "mapped_loci": 889,
+        "read_pairs": 30000
+      },
+      {
+        "run": "SRR25265662",
+        "mapped_loci": 940,
+        "read_pairs": 30000
+      }
+    ]
+  },
+  "stop_rules": {
+    "first_FASTQ_gzip_prefix_is_not_random": true,
+    "partial_FASTQ_MD5_not_full_file_verified": true,
+    "reference_hit_does_not_equal_validated_orthologous_gene": true,
+    "no_241_locus_ortholog_sequences_reconstructed": true,
+    "no_350_original_Moreyra_gene_matrix_recovered": true,
+    "no_113_or_294_taxon_nuclear_tree_inferred": true,
+    "photo_angle_is_not_gravity_referenced_nodding": true,
+    "SRA_runs_are_not_independent_evolutionary_lineages": true,
+    "FASTQ_or_BAM_files_not_committed": true
+  },
+  "per_original_public_run": [
+    {
+      "run": "SRR25265555",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 889
+    },
+    {
+      "run": "SRR25265556",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 926
+    },
+    {
+      "run": "SRR25265557",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 946
+    },
+    {
+      "run": "SRR25265560",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 876
+    },
+    {
+      "run": "SRR25265600",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 942
+    },
+    {
+      "run": "SRR25265605",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 815
+    },
+    {
+      "run": "SRR25265607",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 927
+    },
+    {
+      "run": "SRR25265609",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 877
+    },
+    {
+      "run": "SRR25265610",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 944
+    },
+    {
+      "run": "SRR25265611",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 928
+    },
+    {
+      "run": "SRR25265639",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 843
+    },
+    {
+      "run": "SRR25265647",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 914
+    },
+    {
+      "run": "SRR25265649",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 896
+    },
+    {
+      "run": "SRR25265650",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 962
+    },
+    {
+      "run": "SRR25265652",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 924
+    },
+    {
+      "run": "SRR25265654",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 913
+    },
+    {
+      "run": "SRR25265658",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 951
+    },
+    {
+      "run": "SRR25265660",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 949
+    },
+    {
+      "run": "SRR25265661",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 908
+    },
+    {
+      "run": "SRR25265662",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 940
+    },
+    {
+      "run": "SRR25265663",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 940
+    },
+    {
+      "run": "SRR25265665",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 985
+    },
+    {
+      "run": "SRR25265667",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 826
+    },
+    {
+      "run": "SRR25265668",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 943
+    },
+    {
+      "run": "SRR25265669",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 191
+    },
+    {
+      "run": "SRR25265675",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 839
+    },
+    {
+      "run": "SRR25265677",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 878
+    },
+    {
+      "run": "SRR25265678",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 923
+    },
+    {
+      "run": "SRR25265679",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 921
+    },
+    {
+      "run": "SRR25265682",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 923
+    },
+    {
+      "run": "SRR25265683",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 945
+    },
+    {
+      "run": "SRR25265685",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 910
+    },
+    {
+      "run": "SRR25265689",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 908
+    },
+    {
+      "run": "SRR25265694",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 946
+    },
+    {
+      "run": "SRR25265695",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 927
+    },
+    {
+      "run": "SRR25265699",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 838
+    },
+    {
+      "run": "SRR25265700",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 918
+    },
+    {
+      "run": "SRR25265704",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 950
+    },
+    {
+      "run": "SRR25265712",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 972
+    },
+    {
+      "run": "SRR25265715",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 866
+    },
+    {
+      "run": "SRR25265716",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 920
+    },
+    {
+      "run": "SRR25265719",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 899
+    },
+    {
+      "run": "SRR30887139",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 937
+    },
+    {
+      "run": "SRR30887148",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 941
+    },
+    {
+      "run": "SRR30887149",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 959
+    },
+    {
+      "run": "SRR30887150",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 933
+    },
+    {
+      "run": "SRR30887153",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 926
+    },
+    {
+      "run": "SRR30887154",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 846
+    },
+    {
+      "run": "SRR30887156",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 936
+    },
+    {
+      "run": "SRR30887158",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 950
+    },
+    {
+      "run": "SRR30887159",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 907
+    },
+    {
+      "run": "SRR30887160",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 940
+    },
+    {
+      "run": "SRR30887164",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 915
+    },
+    {
+      "run": "SRR30887165",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 917
+    },
+    {
+      "run": "SRR30887166",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 952
+    },
+    {
+      "run": "SRR30887167",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 968
+    },
+    {
+      "run": "SRR30887170",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 941
+    },
+    {
+      "run": "SRR30887174",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 938
+    },
+    {
+      "run": "SRR30887178",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 960
+    },
+    {
+      "run": "SRR30887180",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 965
+    },
+    {
+      "run": "SRR30887184",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 936
+    },
+    {
+      "run": "SRR30887185",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 554
+    },
+    {
+      "run": "SRR30887186",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 912
+    },
+    {
+      "run": "SRR30887188",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 947
+    },
+    {
+      "run": "SRR30887190",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 919
+    },
+    {
+      "run": "SRR30887191",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 890
+    },
+    {
+      "run": "SRR30887193",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 948
+    },
+    {
+      "run": "SRR30887194",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 952
+    },
+    {
+      "run": "SRR30887197",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 951
+    },
+    {
+      "run": "SRR30887198",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 917
+    },
+    {
+      "run": "SRR30887199",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 914
+    },
+    {
+      "run": "SRR30887200",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 957
+    },
+    {
+      "run": "SRR30887201",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 961
+    },
+    {
+      "run": "SRR30887202",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 955
+    },
+    {
+      "run": "SRR30887204",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 924
+    },
+    {
+      "run": "SRR30887206",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 896
+    },
+    {
+      "run": "SRR30887212",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 906
+    },
+    {
+      "run": "SRR30887214",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 954
+    },
+    {
+      "run": "SRR30887218",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 931
+    },
+    {
+      "run": "SRR30887220",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 932
+    },
+    {
+      "run": "SRR30887224",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 951
+    },
+    {
+      "run": "SRR30887228",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 787
+    },
+    {
+      "run": "SRR30887230",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 917
+    },
+    {
+      "run": "SRR30887232",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 973
+    },
+    {
+      "run": "SRR30887234",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 939
+    },
+    {
+      "run": "SRR30887235",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 947
+    },
+    {
+      "run": "SRR30887237",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 916
+    },
+    {
+      "run": "SRR30887238",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 921
+    },
+    {
+      "run": "SRR30887239",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 927
+    },
+    {
+      "run": "SRR30887243",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 873
+    },
+    {
+      "run": "SRR30887245",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 923
+    },
+    {
+      "run": "SRR30887246",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 935
+    },
+    {
+      "run": "SRR30887247",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 835
+    },
+    {
+      "run": "SRR30887248",
+      "pairs": 24694,
+      "reference_loci_at_least_one_alignment": 368
+    },
+    {
+      "run": "SRR30887251",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 899
+    },
+    {
+      "run": "SRR30887253",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 889
+    },
+    {
+      "run": "SRR30887254",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 872
+    },
+    {
+      "run": "SRR30887257",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 908
+    },
+    {
+      "run": "SRR30887260",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 917
+    },
+    {
+      "run": "SRR30887261",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 962
+    },
+    {
+      "run": "SRR30887263",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 939
+    },
+    {
+      "run": "SRR30887266",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 967
+    },
+    {
+      "run": "SRR30887268",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 883
+    },
+    {
+      "run": "SRR30887271",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 915
+    },
+    {
+      "run": "SRR30887272",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 943
+    },
+    {
+      "run": "SRR30887273",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 905
+    },
+    {
+      "run": "SRR30887280",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 959
+    },
+    {
+      "run": "SRR30887281",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 923
+    },
+    {
+      "run": "SRR30887282",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 921
+    },
+    {
+      "run": "SRR30887284",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 985
+    },
+    {
+      "run": "SRR30887288",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 945
+    },
+    {
+      "run": "SRR30887289",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 910
+    },
+    {
+      "run": "SRR30887292",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 925
+    },
+    {
+      "run": "SRR30887297",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 727
+    },
+    {
+      "run": "SRR30887298",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 936
+    },
+    {
+      "run": "SRR30887299",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 934
+    },
+    {
+      "run": "SRR30887300",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 948
+    },
+    {
+      "run": "SRR30887304",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 945
+    },
+    {
+      "run": "SRR30887305",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 931
+    },
+    {
+      "run": "SRR30887308",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 909
+    },
+    {
+      "run": "SRR30887311",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 589
+    },
+    {
+      "run": "SRR30887312",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 965
+    },
+    {
+      "run": "SRR30887313",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 976
+    },
+    {
+      "run": "SRR30887314",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 944
+    },
+    {
+      "run": "SRR30887316",
+      "pairs": 30000,
+      "reference_loci_at_least_one_alignment": 960
+    }
+  ]
+}
