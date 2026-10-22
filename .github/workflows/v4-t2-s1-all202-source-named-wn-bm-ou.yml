@@ -1,0 +1,73 @@
+name: V4 T2 source-name 202-tip original orientation WN BM OU across 52 trees
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_all202_source_name_bm_ou.py'
+      - 'tests/test_v4_t2_s1_all202_source_name_bm_ou.py'
+      - '.github/workflows/v4-t2-s1-all202-source-named-wn-bm-ou.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  full-original-source-name-phylo-sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies and test source-name case contracts
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt pytest
+          python -m pytest -q tests/test_v4_t2_s1_all202_source_name_bm_ou.py
+      - name: Verify original S1 real 251-source-tip phenotype and 170066-image SHA archive
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-all202/input work/t2-all202/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = "sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d"
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/t2-all202/input
+          test -s work/t2-all202/input/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv
+      - name: Fit 202 genuine original photographic source names on all 52 existing historical grafting scenarios
+        run: |
+          python -m analysis.v4.t2_s1_all202_source_name_bm_ou \
+            --source-251 work/t2-all202/input/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --out work/t2-all202/output/T2_ALL202_SOURCE_NAME_WN_BM_OU1_RESULTS.json \
+            --tree-limit 52
+      - name: Verify every 202 original source tip and all six required model cases on every placement
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-all202/output/T2_ALL202_SOURCE_NAME_WN_BM_OU1_RESULTS.json')
+          result=json.loads(p.read_text())
+          assert result['original_photo_observations']==170066
+          assert result['original_accepted_WCVP_keys']==244
+          assert result['original_source_name_operational_units']==251
+          assert result['exact_original_source_named_placement_tips']==202
+          assert result['previous_clean_no_collided_keys_191']==191
+          assert result['n_nonindependent_placement_hypotheses']==52
+          assert len(result['model_winner_summary'])==6
+          assert len(result['each_source_original_placement_model'])==312
+          assert result['model_winner_summary']['matched202_all_images_mean_five_climates']['n_tips']==202
+          assert result['model_winner_summary']['original191_noncollided_mean_five_climates']['n_tips']==191
+          for case,x in result['model_winner_summary'].items():
+              assert sum(x['wins'].values())==52
+          assert result['grafted_tree_not_independent_nuclear_species_phylogeny']
+          assert not result['no_new_real_nuclear_tip_added_to_EAzami294']==False
+          print('PASS source-verified all251 name census, 202 tips on 52 placements, six WN/BM/OU panels; no invented accepted species or nuclear phylogeny')
+          PY
+      - name: Preserve reproducible real aggregate source-named phylogenetic model fits only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S1-real-source-name-202-WN-BM-OU-52-placement-sensitivity
+          path: work/t2-all202/output/
+          if-no-files-found: error
+          retention-days: 90
