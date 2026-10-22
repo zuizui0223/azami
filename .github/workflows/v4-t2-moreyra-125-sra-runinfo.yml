@@ -1,0 +1,62 @@
+name: V4 T2 Moreyra 125 public SRA RunInfo size audit
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_moreyra_sra_run_sizes.py'
+      - 'tests/test_v4_t2_moreyra_sra_run_sizes.py'
+      - '.github/workflows/v4-t2-moreyra-125-sra-runinfo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  public-runinfo-size-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check source contracts and SRA metadata-only failure behavior
+        run: python -m pytest -q tests/test_v4_t2_moreyra_sra_run_sizes.py
+      - name: Download verified small metadata artifact only (not sequence reads)
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-sra-size/input work/t2-sra-size/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = "sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71"
+          gh run download 39721528204 --repo zuizui0223/azami \
+            --name v4-t2-all244-Moreyra-SRA-voucher-evidence \
+            --dir work/t2-sra-size/input
+          test -s work/t2-sra-size/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+      - name: Retrieve official NCBI PRJNA957074 runinfo and match all 125 archive sizes
+        run: |
+          python -m analysis.v4.t2_moreyra_sra_run_sizes \
+            --crosswalk work/t2-sra-size/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --output-dir work/t2-sra-size/out
+      - name: Verify source run size total and no claimed FASTQ extraction
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-sra-size/out/S1_MOREYRA_125_RUN_SIZE_SUMMARY.json')
+          v=json.loads(p.read_text(encoding='utf-8'))
+          assert v['source_matched_run_count']==125
+          assert v['source_matched_accepted_key_count']==113
+          assert v['compressed_SRA_size_total_GB_decimal']>0
+          assert not v['finished_original_350_locus_tree']
+          assert not v['all_125_fastq_downloaded']
+          print('PASS: 125 public run metadata sizes source-matched; zero raw reads downloaded')
+          PY
+      - name: Archive small public RunInfo summary and no raw sequencing data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-Moreyra-125-SRA-RunInfo-sizes
+          path: work/t2-sra-size/out/
+          retention-days: 90
+          if-no-files-found: warn
