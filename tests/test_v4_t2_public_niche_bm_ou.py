@@ -45,6 +45,15 @@ def test_ou_is_nested_gaussian_extension_of_brownian():
         assert fit["n_taxa"]==8
         assert np.isfinite(fit["OU_minus_BM_AICc"])
         assert fit["AICc_preferred"] in {"BM","OU"}
+        assert np.isfinite(fit["WN_independent_tip_AICc"])
+        assert fit["AICc_preferred_WN_BM_OU"] in {"WN","BM","OU"}
+        assert np.isclose(
+            fit["WN_minus_BM_AICc"],
+            fit["WN_independent_tip_AICc"]-fit["BM_AICc"],atol=1e-8)
+        if fit["AICc_preferred_WN_BM_OU"]=="BM":
+            assert fit["BM_AICc"]<=min(
+                fit["WN_independent_tip_AICc"],fit["OU_AICc"])+1e-8
+
 
 def test_real_fdt4_panel_is_not_all_global_taxa():
     result=analyse(DATA,PRIMARY,ALT)
@@ -58,6 +67,13 @@ def test_real_fdt4_panel_is_not_all_global_taxa():
         assert len(case["fits"])==7*len(AXES)*3
         assert case["nAICc_preferred_BM"]+case["nAICc_preferred_OU"]==len(case["fits"])
         assert set(x["axis"] for x in case["fits"])==set(AXES)
+        tally=case["three_model_AICc_preference_counts"]
+        assert set(tally)=={"WN","BM","OU"}
+        assert sum(tally.values())==len(case["fits"])
+        assert tally["OU"]==0
+        assert all(row["AICc_preferred_WN_BM_OU"] in {"WN","BM","OU"}
+                   for row in case["fits"])
+
 
 def test_taxon_membership_is_stopped_if_centroids_change(tmp_path):
     frame=pd.read_csv(DATA)
