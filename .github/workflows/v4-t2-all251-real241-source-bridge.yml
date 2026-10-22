@@ -1,0 +1,35 @@
+name: V4 T2 all S1 244 and 251 original-source nuclear depth join invariants
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_all244_real241_site_depth_coverage.py'
+      - 'analysis/v4/t2_s1_all251_eazami294_real241_crosswalk.py'
+      - 'tests/test_v4_t2_s1_all244_real241_site_depth_coverage.py'
+      - 'tests/test_v4_t2_s1_all251_eazami294_real241_crosswalk.py'
+      - '.github/workflows/v4-t2-all251-real241-source-bridge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-244-WCVP-251-names:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q \
+            tests/test_v4_t2_s1_all244_real241_site_depth_coverage.py \
+            tests/test_v4_t2_s1_all251_eazami294_real241_crosswalk.py
+      - run: |
+          python - <<'PY'
+          from analysis.v4.t2_s1_all251_eazami294_real241_crosswalk import N_SOURCE,N_ACCEPTED,N_PHOTOS,N_Q20_TAXA
+          assert (N_SOURCE,N_ACCEPTED,N_PHOTOS,N_Q20_TAXA)==(251,244,170066,113)
+          print('PASS original WCVP 244 and taxon-name 251 full population bridge gates')
+          PY
