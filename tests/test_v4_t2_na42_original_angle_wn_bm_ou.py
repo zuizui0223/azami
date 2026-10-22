@@ -31,7 +31,7 @@ def test_true_nuclear_model_receipt_preserves_full_s1_scope(monkeypatch):
         })
         original.append({
             "tip":tip,"accepted_key":str(j),
-            "n_eligible_images":12,"source_name_collision":False,
+            "n_eligible_images":12,"source_concept_collision":False,
             "image_mean_deg":mean,"image_median_deg":median,
             "S1_five_climate_means":five,
         })
