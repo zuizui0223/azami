@@ -36,10 +36,16 @@ jobs:
             --name v4-joint-s1-t2-exact-cohort-public-aggregate \
             --dir work/t2-na42/in
           test -s work/t2-na42/in/S1_T2_joint_244_194.json
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12343166776 --jq '.digest')" = 'sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb'
+          gh run download 39594257539 --repo zuizui0223/azami \
+            --name v4-s1-continuous-194-taxa-52-placement-history \
+            --dir work/t2-na42/in
+          test -s work/t2-na42/in/S1_CONTINUOUS_194_52_TREE_HISTORY.json
       - name: Refit WN BM OU1 on genuine Siniscalchi 63-nuclear tree pruned to 42 same original S1 angles
         run: |
           python -m analysis.v4.t2_na42_original_angle_wn_bm_ou \
             --joint work/t2-na42/in/S1_T2_joint_244_194.json \
+            --original-194 work/t2-na42/in/S1_CONTINUOUS_194_52_TREE_HISTORY.json \
             --out work/t2-na42/out/NA42_GENUINE_NUCLEAR_S1_ORIENTATION_WN_BM_OU1.json
       - name: Fail closed on cohort and inference mislabeling
         run: |
@@ -51,6 +57,8 @@ jobs:
           assert s['matched_independent_nuclear_taxa']==42
           assert s['source_original_S1_taxa']==244
           assert len(s['fits'])==4
+          assert s['n_taxa_with_distinct_original_image_mean_median']>0
+          assert s['source_S1_original_194_continuous_run']==39594257539
           assert not s['all_published_biological_nodding_scores_used_as_outcomes']
           assert all(r['best_model_AICc'] in {'WN','BM','OU1'} for r in s['fits'])
           assert all(r['n_species']==42 for r in s['fits'])
@@ -59,7 +67,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: v4-t2-S1-NA42-nuclear-wn-bm-ou
+          name: v4-t2-S1-NA42-nuclear-wn-bm-ou-true-means
           path: work/t2-na42/out/
           retention-days: 90
           if-no-files-found: error
