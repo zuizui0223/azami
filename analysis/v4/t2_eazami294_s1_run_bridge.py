@@ -65,7 +65,7 @@ def parse_eazami_panel(rows):
             by_name[name].append(row)
     if (len(rows)!=EXPECTED["eazami_samples"] or
         len(by_run)!=EXPECTED["eazami_runs"] or
-        counts!={"moreyra":256,"chang":38}):
+        counts!={"moreyra":EXPECTED["eazami_moreyra"],"chang":EXPECTED["eazami_chang"]}):
         raise ValueError("EAzami frozen 294/295, 256+38 inventory changed")
     return by_run,by_bio,by_name
 
@@ -114,7 +114,7 @@ def link(source_taxa, sra, panel):
         }
         per_run.append(indexed)
         index[x["accepted_key"]].append(indexed)
-    if len({x["run"] for x in per_run})!=125:
+    if len({x["run"] for x in per_run})!=EXPECTED["s1_sra_rows"]:
         raise ValueError("S1 Moreyra original source run unexpectedly repeated")
     taxon_rows=[]
     for row in source_taxa:
@@ -164,8 +164,8 @@ def link(source_taxa, sra, panel):
         "S1_original_photo_observations":sum(r["n_original_photo"] for r in taxon_rows),
         "EAzami_original_biological_samples":len(panel),
         "EAzami_original_run_accessions":len(by_run),
-        "EAzami_original_Moreyra_samples":256,
-        "EAzami_original_Chang_samples":38,
+        "EAzami_original_Moreyra_samples":counts["moreyra"],
+        "EAzami_original_Chang_samples":counts["chang"],
         "S1_source_candidate_Moreyra_run_rows":len(per_run),
         "source_run_identity_status":dict(stats),
         "taxon_level_status":dict(status),
