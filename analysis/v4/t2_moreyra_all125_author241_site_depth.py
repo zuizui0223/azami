@@ -80,11 +80,17 @@ def count_depth_stream(lines,lengths):
         if contig not in lengths:
             raise ValueError("Unrecognized nuclear target contig in depth")
         position=int(pos); depth=int(rawdp)
-        if not (1<=position<=lengths[contig] and depth>=1):
-            raise ValueError("Invalid aligned nuclear site depth")
+        if not (1<=position<=lengths[contig]) or depth<0:
+            raise ValueError(
+                f"Invalid samtools Q20 depth coordinate/count: {contig}:{position} "
+                f"depth={depth} reference_length={lengths[contig]}")
         if position<=previous.get(contig,0):
             raise ValueError("Duplicate/out-of-order site depth records")
         previous[contig]=position
+        # Quality filters can reduce a reported occupied reference position
+        # to zero passing bases. Such positions contribute NO callable sites.
+        if depth==0:
+            continue
         counter=summary[contig]
         for i,min_depth in enumerate(DEPTHS):
             if depth>=min_depth: counter[i]+=1
