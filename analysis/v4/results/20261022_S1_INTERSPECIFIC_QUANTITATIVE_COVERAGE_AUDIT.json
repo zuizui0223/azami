@@ -1,0 +1,351 @@
+{
+  "schema_version": "azami_v4_S1_between_species_quantitative_source_coverage_20261022_v1",
+  "scope": "Current native S1, exact original five-CHELSA and original WCVP accepted-key observational eligibility; no new image phenotypes inferred",
+  "source": {
+    "public_evidence": {
+      "audit": {
+        "path": "analysis/v4/results/20261020_native_integration/native_integration_audit.json",
+        "git_sha1": "a172947d60ceaecbf0cf838071d45d7081d7c98e"
+      },
+      "effects": {
+        "path": "analysis/v4/results/20261020_native_integration/native_trait_effects.csv",
+        "git_sha1": "d82fbe1e6340a137ccee0bfb32ca700ebddd6aba"
+      },
+      "env": {
+        "path": "analysis/v4/results/20261020_native_integration/environment_selection.json",
+        "git_sha1": "600b8a2b4a85ea6b390fa9c25c2d6a47ccba856d"
+      },
+      "phy": {
+        "path": "analysis/v4/results/20261020_native_phylogeny/coverage.json",
+        "git_sha1": "ae1067a3bd7d00e9393ce76b17e166b365dc821f"
+      },
+      "sampling": {
+        "path": "analysis/v4/results/20261021_unified_abcde/S1_OBSERVER_RAIN_SENSITIVITY_20261021.json",
+        "git_sha1": "7365f5406aef427ec79e8c389850489bd9900c4a"
+      },
+      "original": {
+        "path": "analysis/v4/results/20261021_unified_abcde/S2_INTRODUCED_SOURCE_AUDIT_20261021.json",
+        "git_sha1": "9767049c0350a03749c7b5799c607343183a4f06"
+      },
+      "georain": {
+        "path": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_SOURCE_VERIFIED.json",
+        "git_sha1": "1f3598fd9883d3fe5ad10eb16c979162f803cc39"
+      }
+    },
+    "native_original_observation_source_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
+  },
+  "S1_between_species_model": {
+    "unit": "original native-range iNaturalist observation, photo measurements already collapsed to observation-level scalar",
+    "response": "orientation_image_vertical_angle",
+    "grouping": "Kew WCVP accepted_key",
+    "original_native_total_observations": 313350,
+    "original_native_accepted_keys": 306,
+    "response_QC_eligible_observations": 170066,
+    "response_QC_eligible_accepted_keys": 244,
+    "response_excluded_native_observations": 143284,
+    "response_uncovered_native_accepted_keys": 62,
+    "climate_within_between_decomposition": "For each of 5 selected CHELSA variables: accepted_key mean across all native observations where finite; each eligible orientation observation contributes its deviation from this mean. Both species mean and within residual enter the same mixed regression.",
+    "regression_estimator": "response-specific species random intercept REML on all endpoint-eligible observations and complete 5-climate values; original observation weighting varies by observations/taxon, species-cluster uncertainty, not equal-weight 244-taxon OLS",
+    "climatological_variables": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "source_species_mean_uses_all_native_finite_exposures_not_only_orientation_eligible": true,
+    "spatial_adjustment_primary_model": false,
+    "phylogenetic_adjustment_primary_model": false,
+    "observer_random_effect_primary_model": false,
+    "image_relative_not_physical_gravity": true,
+    "response_eligible_N_fraction_of_native": 0.5427349609063348,
+    "input_photo_links_original_665115": 1122854,
+    "original_source_observations": 665115,
+    "native_with_any_preexisting_observation_measurements": 217104,
+    "original_analyzed_observations_have_multiple_photos_at_least_two": 77977,
+    "confirmed_same_head_repeat_pairs": 0,
+    "biological_result": {
+      "rainfall_100mm_between_image_degrees": 0.4381991922885207,
+      "rainfall_100mm_between_CI": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "rainfall_100mm_within_image_degrees": -0.044298210799959194,
+      "rainfall_100mm_within_CI": [
+        -0.21884898187399907,
+        0.13025256027408064
+      ]
+    },
+    "sampling_imbalance": {
+      "Cirsium_arvense_native_orientation_eligible": 49072,
+      "Cirsium_vulgare_native_orientation_eligible": 33637,
+      "combined_two_source_species_native_orientation_eligible": 82709,
+      "fraction_of_all_S1_orientation_observations_from_these_two_species": 0.48633471710982795
+    },
+    "sensitivity_with_source_concept_collisions_removed": {
+      "n_taxa": 237,
+      "n_observations": 169612,
+      "n_source_taxon_collisions": 7,
+      "observer_by_cell_single_sample_n": 91597,
+      "observer_by_cell_single_sample_n_taxa": 237,
+      "observer_by_cell_single_sample_BIO12_between": 0.38849173669129317
+    },
+    "original_52_grafted_scenario_tree_subset": {
+      "n_eligible_observations": 169912,
+      "n_eligible_accepted_keys": 194,
+      "observation_loss_from_S1": 154,
+      "taxon_key_loss_from_S1": 50,
+      "not_primary_S1_full_sample": true,
+      "not_independently_sequenced_cirsium_nuclear_phylogeny": true
+    }
+  },
+  "quantitative_endpoint_inventory": {
+    "declared_stored_endpoints": 27,
+    "endpoints_with_model_eligible_data": 18,
+    "endpoints_with_no_model_eligible_data": 9,
+    "endpoints_actually_fit_in_five_climate_native_trait_models": 11,
+    "available_but_not_part_of_s1_rain_angle_response": [
+      "corolla_lab_lightness",
+      "corolla_lab_chroma",
+      "corolla_hue_sin",
+      "corolla_hue_cos",
+      "capitulum_outline_aspect_ratio",
+      "capitulum_outline_circularity",
+      "capitulum_outline_solidity",
+      "capitulum_width_profile_cv",
+      "involucre_length_width_ratio",
+      "involucre_apical_taper_ratio",
+      "involucre_basal_taper_ratio",
+      "bract_projection_roughness",
+      "bract_projection_p95",
+      "bract_projection_maximum",
+      "bract_spread_fraction",
+      "bract_projection_peak_density",
+      "bract_projection_asymmetry"
+    ],
+    "measured_eligible_but_not_fitted_in_five_climate_native_models": [
+      "involucre_length_width_ratio",
+      "involucre_apical_taper_ratio",
+      "involucre_basal_taper_ratio",
+      "bract_projection_roughness",
+      "bract_projection_maximum",
+      "bract_projection_peak_density",
+      "bract_projection_asymmetry"
+    ],
+    "no_eligible_data": [
+      "visible_floret_fraction",
+      "corolla_white_pixel_fraction",
+      "corolla_redmagenta_pixel_fraction",
+      "corolla_purple_pixel_fraction",
+      "corolla_yellow_pixel_fraction",
+      "involucre_surface_edge_density",
+      "involucre_surface_lbp_entropy",
+      "involucre_surface_high_frequency_energy",
+      "involucre_surface_specular_fraction"
+    ],
+    "endpoint_counts": {
+      "orientation_image_vertical_angle": {
+        "finite": 170066,
+        "eligible": 170066,
+        "species": 244
+      },
+      "corolla_lab_lightness": {
+        "finite": 186439,
+        "eligible": 186439,
+        "species": 244
+      },
+      "corolla_lab_chroma": {
+        "finite": 186439,
+        "eligible": 186439,
+        "species": 244
+      },
+      "corolla_hue_sin": {
+        "finite": 186390,
+        "eligible": 186390,
+        "species": 244
+      },
+      "corolla_hue_cos": {
+        "finite": 186390,
+        "eligible": 186390,
+        "species": 244
+      },
+      "visible_floret_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "species": 0
+      },
+      "corolla_white_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "species": 0
+      },
+      "corolla_redmagenta_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "species": 0
+      },
+      "corolla_purple_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "species": 0
+      },
+      "corolla_yellow_pixel_fraction": {
+        "finite": 0,
+        "eligible": 0,
+        "species": 0
+      },
+      "capitulum_outline_aspect_ratio": {
+        "finite": 176048,
+        "eligible": 176048,
+        "species": 243
+      },
+      "capitulum_outline_circularity": {
+        "finite": 176048,
+        "eligible": 176048,
+        "species": 243
+      },
+      "capitulum_outline_solidity": {
+        "finite": 176048,
+        "eligible": 176048,
+        "species": 243
+      },
+      "capitulum_width_profile_cv": {
+        "finite": 176048,
+        "eligible": 176048,
+        "species": 243
+      },
+      "involucre_length_width_ratio": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "involucre_apical_taper_ratio": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "involucre_basal_taper_ratio": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "bract_projection_roughness": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "bract_projection_p95": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "bract_projection_maximum": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "bract_spread_fraction": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "bract_projection_peak_density": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "bract_projection_asymmetry": {
+        "finite": 1303,
+        "eligible": 1303,
+        "species": 111
+      },
+      "involucre_surface_edge_density": {
+        "finite": 570,
+        "eligible": 0,
+        "species": 0
+      },
+      "involucre_surface_lbp_entropy": {
+        "finite": 570,
+        "eligible": 0,
+        "species": 0
+      },
+      "involucre_surface_high_frequency_energy": {
+        "finite": 570,
+        "eligible": 0,
+        "species": 0
+      },
+      "involucre_surface_specular_fraction": {
+        "finite": 570,
+        "eligible": 0,
+        "species": 0
+      }
+    },
+    "endpoint_overlap_with_orientation": {
+      "colour_concurrent": {
+        "n": 164167,
+        "species": 243
+      },
+      "outline_concurrent": {
+        "n": 159967,
+        "species": 242
+      },
+      "bract_concurrent": {
+        "n": 1141,
+        "species": 108
+      },
+      "orientation_colour_outline_all": {
+        "n": 157779,
+        "species": 242
+      }
+    },
+    "caution": "Colour, outline and bract projection are different biological endpoints and should not be naively pooled as more observations of capitulum orientation; use endpoint-specific cohorts, matched controls or SI."
+  },
+  "environmental_inventory": {
+    "available_nine_native_environment_columns": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean",
+      "chelsa_vpd_mean",
+      "chelsa_sfcwind_mean",
+      "chelsa_gsp",
+      "chelsa_npp"
+    ],
+    "native_observations_with_all_nine_environment_columns_finite": 312001,
+    "input_native_species_with_all_nine_means_finite": 303,
+    "candidate_direct_climate_exposures": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean",
+      "chelsa_vpd_mean"
+    ],
+    "final_selected_joint_climates": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "candidate_removed": "chelsa_vpd_mean",
+    "candidate_removed_reason": "BIO1 and VPD pairwise original raw r0.9085 and among-taxon r0.8623 (selection>0.8); not biologically nonrelevant",
+    "noncandidate_columns": [
+      "chelsa_sfcwind_mean",
+      "chelsa_gsp",
+      "chelsa_npp"
+    ]
+  },
+  "conclusion": {
+    "all_original_native_QC_eligible_S1_orientation_values_included_in_primary_observation_regression": true,
+    "all_original_native_records_included_as_orientation_values": false,
+    "all_available_photo_links_individually_quantified_in_S1": false,
+    "all_available_quantitative_trait_endpoints_used_in_S1_main": false,
+    "all_measured_quantitative_trait_endpoints_entered_native_climate_models": false,
+    "all_environment_variables_entered": false,
+    "independently_assigned_equal_weight_per_taxon_in_main_mixed_model": false,
+    "all_244_taxa_retained_in_phylogenetic_sensitivity": false,
+    "more_photo_level_and_eligible_trait_data_remains_for_orthogonal_analysis": true
+  }
+}
