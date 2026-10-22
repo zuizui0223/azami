@@ -101,6 +101,12 @@ def compute(runs,joined120):
     if len(expected_loci)!=N_LOCI or any({z["locus"] for z in x["loci"]}!=expected_loci
          for x in runs.values()):
         raise ValueError("Mixed different original author low-paralog 241-locus sets")
+    # A malformed reference-copy quality claim in ANY one of the 125
+    # original runs must not be hidden by choosing a different 120k sample.
+    for original in runs.values():
+        for locus in original["loci"]:
+            if locus.get("reference_choice_maximizes_coverage_not_orthology") is not True:
+                raise ValueError("One-copy-per-target original reference safeguard violated")
     lookup={run:{l["locus"]:l for l in row["loci"]} for run,row in runs.items()}
     matrix=[]
     for locus in sorted(expected_loci):
