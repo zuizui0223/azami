@@ -188,6 +188,7 @@ def main():
           "n_accepted":v["WCVP_original_accepted_key"]["n_operational_rows"],
           "n_source":v["operational_original_source_name"]["n_operational_rows"]}
        for k,v in result["five_environment_regression"].items()},sort_keys=True),flush=True)
+    print("T2_S1_SOURCE_COLLAPSE_PAIRED_BOOTSTRAP="+json.dumps(result["paired_all_WCVP_key_bootstrap"],sort_keys=True),flush=True)
 
 
 if __name__=="__main__":
