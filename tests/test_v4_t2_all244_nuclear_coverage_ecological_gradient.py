@@ -28,7 +28,7 @@ def test_hc3_recovers_different_annual_rain_slopes_without_ou_claim():
     assert abs(r[0]["image_deg_per_100mm_BIO12"]-.3)<.03
     assert abs(r[1]["image_deg_per_100mm_BIO12"]-.8)<.03
     assert abs(r[2]["image_deg_per_100mm_BIO12"]-.5)<.03
-    assert out["n_species"] if False else True
+    assert out["n_taxa"]==80
     assert out["S1_original_photo_observation_level_model_not_refit"]
     assert out["not_geographically_or_phylogenetically_adjusted"]
 
