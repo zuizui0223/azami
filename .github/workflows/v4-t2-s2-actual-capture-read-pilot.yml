@@ -1,0 +1,137 @@
+name: V4 T2 S2 actual public nuclear capture short-read pilot
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s2_bounded_public_reads.py'
+      - 'tests/test_v4_t2_s2_bounded_public_reads.py'
+      - '.github/workflows/v4-t2-s2-actual-capture-read-pilot.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  actual-30000-sra-spots-per-s2-species:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test source evidence checks and no false species tree inference
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_s2_bounded_public_reads.py
+      - name: Verify the same exact S1 Moreyra public run and BioSample IDs
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-s2raw/source work/t2-s2raw/reference work/t2-s2raw/reads work/t2-s2raw/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = "sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71"
+          gh run download 39721528204 --repo zuizui0223/azami --name v4-t2-all244-Moreyra-SRA-voucher-evidence --dir work/t2-s2raw/source
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path("work/t2-s2raw/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv")
+          rows=list(csv.DictReader(p.open(encoding='utf-8')))
+          assert len(rows)==125
+          requested={
+            'SRR25265555':('SAMN34240259','Cirsium arvense','Cirsium_arvense'),
+            'SRR25265662':('SAMN34240353','Cirsium vulgare 1','Cirsium_vulgare'),
+          }
+          for run,(bio,tree,name) in requested.items():
+              one=[r for r in rows if r['run']==run]
+              assert len(one)==1 and one[0]['biosample']==bio
+              assert one[0]['original_tree_code']==tree
+              assert one[0]['S1_source_taxon']==name
+              assert one[0]['tree_code_vs_sra_name']=='exact'
+          print("PASS independent public SRA sources and specimen identities for S2 original taxa")
+          PY
+      - name: Install actual NCBI SRA and nuclear BWA mapping tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq sra-toolkit bwa samtools
+          fasterq-dump --version
+          samtools --version | head -n 2
+      - name: Authenticate original published Compositae1061 DNA reference
+        run: |
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/t2-s2raw/reference
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('work/t2-s2raw/reference/comp1061_original_reference_contract.json').read_text())
+          assert s['locus_count']==1061
+          assert s['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert s['moreyra_augmented_reference_recovered'] is False
+          PY
+          bwa index work/t2-s2raw/reference/comp1061_hybpiper_reference.fasta
+      - name: Retrieve bounded 30000 actual public SRA spots and map to nuclear reference
+        run: |
+          set -euo pipefail
+          REF=work/t2-s2raw/reference/comp1061_hybpiper_reference.fasta
+          for RUN in SRR25265555 SRR25265662; do
+            if [ "$RUN" = SRR25265555 ]; then
+              TAXON='Cirsium arvense'; BIO='SAMN34240259'
+            else
+              TAXON='Cirsium vulgare'; BIO='SAMN34240353'
+            fi
+            DIR="work/t2-s2raw/reads/$RUN"
+            mkdir -p "$DIR/fastq" "$DIR/temp"
+            echo "S2_NUCLEAR_READ_FETCH_START=$RUN"
+            timeout 480s fasterq-dump "$RUN" --split-files -N 1 -X 30000 -e 2 --temp "$DIR/temp" --outdir "$DIR/fastq"
+            test -s "$DIR/fastq/$RUN"_1.fastq
+            test -s "$DIR/fastq/$RUN"_2.fastq
+            python - "$DIR" "$RUN" "$TAXON" "$BIO" <<'PY'
+          import json,sys
+          from pathlib import Path
+          root=Path(sys.argv[1]); run,taxon,bio=sys.argv[2:]
+          def lines(path):
+              with path.open('rb') as f:
+                  return sum(1 for _ in f)
+          x=lines(root/'fastq'/f'{run}_1.fastq')
+          y=lines(root/'fastq'/f'{run}_2.fastq')
+          assert x%4==0 and y%4==0 and x>0 and y==x and x//4<=30000
+          receipt={"run":run,"taxon":taxon,"biosample":bio,"source":"Moreyra2025",
+                   "max_spots":30000,"forward_fastq_reads":x//4,"paired_fastq_reads":y//4}
+          (root/'extraction_metrics.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print('S2_REAL_SOURCE_PUBLIC_PAIRED_FASTQ='+json.dumps(receipt),flush=True)
+          PY
+            timeout 240s bash -c 'set -o pipefail; bwa mem -t 2 "$1" "$2" "$3" 2> "$4" | samtools sort -@ 2 -m 150M -o "$5" -' _ "$REF" "$DIR/fastq/$RUN"_1.fastq "$DIR/fastq/$RUN"_2.fastq "$DIR/bwa.log" "$DIR/mapped.sorted.bam"
+            samtools index "$DIR/mapped.sorted.bam"
+            samtools idxstats "$DIR/mapped.sorted.bam" > "$DIR/idxstats.tsv"
+            samtools view -c -q 20 -F 0x904 "$DIR/mapped.sorted.bam" > "$DIR/mapq20_primary_count.txt"
+            rm -rf "$DIR/fastq" "$DIR/temp" "$DIR/mapped.sorted.bam" "$DIR/mapped.sorted.bam.bai"
+            echo "S2_NUCLEAR_READ_FETCH_MAP_COMPLETE=$RUN"
+          done
+      - name: Verify distinct S2 run-to-locus real evidence receipts
+        run: |
+          python -m analysis.v4.t2_s2_bounded_public_reads --source-workdir work/t2-s2raw/reads --out-dir work/t2-s2raw/output
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-s2raw/output/S2_REAL_PUBLIC_READ_MAPPING_30000_SPOTS_RECEIPT.json')
+          x=json.loads(p.read_text())
+          assert len(x['S2_public_target_capture_run_results'])==2
+          assert not x['full_294_sample_EAzami_tree_estimated']
+          assert all(r['read_pairs_extracted']>0 for r in x['S2_public_target_capture_run_results'])
+          print("PASS actual SRA FASTQ access and nuclear reference mapping, NOT completed phylogeny")
+          PY
+      - name: Upload only public S2 aggregate pilot metrics (never FASTQ or BAM)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S2-actual-target-capture-30k-spot-pilot
+          path: work/t2-s2raw/output/
+          retention-days: 90
+          if-no-files-found: warn
