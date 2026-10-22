@@ -1,0 +1,102 @@
+name: V4 T2 seven actual 120k public specimens shared source-241 site depth
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_four_species_30k_120k_nuclear_depth.py'
+      - 'analysis/v4/t2_seven_120k_original241_shared_breadth.py'
+      - 'tests/test_v4_t2_seven_120k_original241_shared_breadth.py'
+      - '.github/workflows/v4-t2-seven-120k-shared-original241.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-seven-sample-120k-shared-depth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit-test same-run 120k depth and no false species tree promotion
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_seven_120k_original241_shared_breadth.py tests/test_v4_t2_four_species_30k_120k_nuclear_depth.py
+      - name: Restore original S1 full125 source, hash-authenticated author241 list
+        run: |
+          set -euo pipefail
+          mkdir -p work/seven/source work/seven/selected work/seven/nested work/seven/reference work/seven/scratch work/seven/results
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12428430410 --jq '.digest')" = 'sha256:16ef207ec02ee24ea3d214a9935ddc0d21e70003573935ffdf1132aa9bacc5a1'
+          gh run download 39783655030 --repo zuizui0223/azami --name t2-real241-original-source --dir work/seven/source
+          echo '1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/seven/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv' | sha256sum -c -
+          echo 'd561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/seven/source/loci/moreyra_conservative_241_no_warning_loci.txt' | sha256sum -c -
+      - name: Restore independently verified seven chosen original 120k public samples
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12459969354 --jq '.digest')" = 'sha256:4a689ce4b90d99a266936ad1a2794ab8b872f2e719f333b8b7bbd910a6bcde21'
+          gh run download 39860346124 --repo zuizui0223/azami --name v4-t2-113taxa-deep7-author241-30k-shared-locus-audit --dir work/seven/selected
+          test -s work/seven/selected/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12430551556 --jq '.digest')" = 'sha256:525e10d23276f21fea8453a56dac941b66c52d59e3ce76ffde859fbaa194602b'
+          gh run download 39787499085 --repo zuizui0223/azami --name t2-all125-original241-30k-vs-120k-Q20-coverage --dir work/seven/nested
+          test -s work/seven/nested/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv
+      - name: Install real sequence alignment and recover original reference
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/seven/reference
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('work/seven/reference/comp1061_original_reference_contract.json').read_text())
+          assert r['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert r['locus_count']==1061 and r['moreyra_augmented_reference_recovered'] is False
+          PY
+          bwa index work/seven/reference/comp1061_hybpiper_reference.fasta
+      - name: Re-fetch true 120k first paired reads for seven source-confirmed taxa and all 241 gene targets
+        run: |
+          python -m analysis.v4.t2_seven_120k_original241_shared_breadth \
+            --source work/seven/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --chosen work/seven/selected/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
+            --pair120k work/seven/nested/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv \
+            --loci work/seven/source/loci/moreyra_conservative_241_no_warning_loci.txt \
+            --reference work/seven/reference/comp1061_hybpiper_reference.fasta \
+            --scratch work/seven/scratch \
+            --out-dir work/seven/results
+      - name: Prove seven independent source runs and avoid making false gene tree claims
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          p=Path('work/seven/results')
+          r=json.loads((p/'SEVEN_REAL_120K_AUTHOR241_SHARED_LOCUS_SUMMARY.json').read_text())
+          samples=list(csv.DictReader((p/'SEVEN_AUTHENTIC_PUBLIC_SRA_120K_SAMPLES.csv').open()))
+          loci=list(csv.DictReader((p/'ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv').open()))
+          assert len(samples)==7 and len(loci)==241
+          assert len({x['run'] for x in samples})==7
+          assert r['unique_WCVP_taxon_keys']==7 and r['original_241_no_warning_target_names']==241
+          assert not r['nuclear_species_tree_constructed'] and not r['actual_allelic_genotypes_called']
+          print('SEVEN_REAL_120K_Q20_SHARED241_COMPLETED',r['n_original_target_loci_seven_taxa_ge25pct_Q20'],r['n_original_target_loci_seven_taxa_ge25pct_Q20_same_single_ref'])
+          PY
+      - name: Erase raw source reads and source BAM even on failure
+        if: always()
+        run: rm -rf work/seven/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-seven-real120k-author241-common-depth
+          path: work/seven/results/
+          if-no-files-found: warn
+          retention-days: 90
