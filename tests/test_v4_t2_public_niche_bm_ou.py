@@ -59,6 +59,9 @@ def test_real_fdt4_panel_is_not_all_global_taxa():
     result=analyse(DATA,PRIMARY,ALT)
     assert result["status"]=="EXECUTED_PUBLIC_CIRSIUM_EAST_ASIA_BM_VS_OU_LIMITED_NICHE_SCREEN"
     assert result["claim_stop"]["not_global_niche_radiation"]
+    assert result["inputs"]["original_Japan_actions_artifact"]==9516784077
+    assert result["inputs"]["original_Taiwan_actions_artifact"]==9706696624
+    assert "six_AU_alternative_tree_file_sha256" in result["inputs"]
     assert result["claim_stop"]["not_final_Moreyra_2025_350_locus_tree"]
     for panel_name,n in (("japan7",7),("east_asia9",9),("east_asia12",12)):
         case=result["panels"][panel_name]
