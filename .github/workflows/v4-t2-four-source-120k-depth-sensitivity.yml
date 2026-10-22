@@ -1,0 +1,93 @@
+name: V4 T2 four focal nuclear source 30k versus 120k real read depth
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_four_species_30k_120k_nuclear_depth.py'
+      - 'tests/test_v4_t2_four_species_30k_120k_nuclear_depth.py'
+      - '.github/workflows/v4-t2-four-source-120k-depth-sensitivity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-four-biological-source-30k-120k:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test nested FASTQ reading, source identity and deep-site-depth contract
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_four_species_30k_120k_nuclear_depth.py
+      - name: Restore actual 125 source accession registry and original fixed 241 no-warning loci
+        run: |
+          set -euo pipefail
+          mkdir -p work/pilot/source work/pilot/ref work/pilot/scratch work/pilot/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12428430410 --jq '.digest')" = 'sha256:16ef207ec02ee24ea3d214a9935ddc0d21e70003573935ffdf1132aa9bacc5a1'
+          gh run download 39783655030 --repo zuizui0223/azami --name t2-real241-original-source --dir work/pilot/source
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/pilot/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/pilot/source/loci/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+      - name: Re-authenticate original 1061 nuclear DNA reference and install real mapping executables
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/pilot/ref
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('work/pilot/ref/comp1061_original_reference_contract.json').read_text())
+          assert c['locus_count']==1061
+          assert c['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert c['moreyra_augmented_reference_recovered'] is False
+          PY
+          bwa index work/pilot/ref/comp1061_hybpiper_reference.fasta
+      - name: Download REAL nested paired FASTQ prefixes and compare site depth at same four run IDs
+        run: |
+          python -m analysis.v4.t2_four_species_30k_120k_nuclear_depth \
+            --source work/pilot/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --loci work/pilot/source/loci/moreyra_conservative_241_no_warning_loci.txt \
+            --reference work/pilot/ref/comp1061_hybpiper_reference.fasta \
+            --scratch work/pilot/scratch \
+            --output work/pilot/out/T2_FOUR_30K_VS_120K_REAL_NUCLEAR_DEPTH.json
+      - name: Erase source reads and validate no fabricated genes/trees
+        if: always()
+        run: |
+          rm -rf work/pilot/scratch
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/pilot/out/T2_FOUR_30K_VS_120K_REAL_NUCLEAR_DEPTH.json')
+          if p.is_file():
+              d=json.loads(p.read_text())
+              assert len(d['pilot_taxa'])==4
+              assert {r['run'] for r in d['pilot_taxa']}=={'SRR25265555','SRR25265662','SRR30887263','SRR30887312'}
+              assert all(r['small_first_30k']['input_read_pairs']==30000 and
+                  r['large_first_120k']['input_read_pairs']==120000
+                  for r in d['pilot_taxa'])
+              assert not d['full_EAzami_nuclear_species_tree_inferred']
+              assert d['all_source_reads_deleted_before_artifact']
+              print('ACTUAL_NESTED_30K_120K_SAME_BIOSAMPLE_DEPTH_Q20_COMPLETE')
+          PY
+      - name: Publish only actual per-run Q20 numeric depth information, not source reads
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-four-public-cirsium-30k-vs-120k-original241-depth
+          path: work/pilot/out/
+          if-no-files-found: warn
+          retention-days: 90
