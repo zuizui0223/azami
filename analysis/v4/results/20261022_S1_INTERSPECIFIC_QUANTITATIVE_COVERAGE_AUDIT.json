@@ -62,7 +62,6 @@
     "input_photo_links_original_665115": 1122854,
     "original_source_observations": 665115,
     "native_with_any_preexisting_observation_measurements": 217104,
-    "original_analyzed_observations_have_multiple_photos_at_least_two": 77977,
     "confirmed_same_head_repeat_pairs": 0,
     "biological_result": {
       "rainfall_100mm_between_image_degrees": 0.4381991922885207,
@@ -97,7 +96,9 @@
       "taxon_key_loss_from_S1": 50,
       "not_primary_S1_full_sample": true,
       "not_independently_sequenced_cirsium_nuclear_phylogeny": true
-    }
+    },
+    "original_analyzed_observations_have_multiple_photos_at_least_two_in_169612_collision_free_cohort": 77977,
+    "multiple_photo_observations_source_note": "Source observer audit reports 77,977 among the 169,612 angle-eligible native observations after seven ambiguous WCVP accepted keys were excluded; original photo multiplicity does not establish repeated measurements of the same capitulum."
   },
   "quantitative_endpoint_inventory": {
     "declared_stored_endpoints": 27,
