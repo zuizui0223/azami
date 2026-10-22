@@ -104,14 +104,25 @@ def source_roster(table: Path):
     return frame,{"source194":primary,"clean191":clean,"n10_143":ten}
 
 
+def _climate_vector(row):
+    """Existing S1 source stores these five exposures in a frozen ordered list."""
+    val=row["S1_five_climate_means"]
+    if isinstance(val,dict):
+        if set(val)!=set(EXPOSURES):
+            raise ValueError("Source climate dictionary not the frozen five axes")
+        return [float(val[e]) for e in EXPOSURES]
+    if isinstance(val,(list,tuple)) and len(val)==len(EXPOSURES):
+        return [float(x) for x in val]
+    raise ValueError("S1 source climate must have all five original axes")
+
+
 def regression_design(rows,adjust_climate):
     y=np.array([float(r["mean_S1_image_axis_deg"]) for r in rows])
     if not np.isfinite(y).all():
         raise ValueError("Nonfinite source angles")
     X=np.ones((len(rows),1))
     if adjust_climate:
-        original=np.array([[float(r["S1_five_climate_means"][e]) for e in EXPOSURES]
-                           for r in rows],dtype=float)
+        original=np.array([_climate_vector(r) for r in rows],dtype=float)
         sd=original.std(axis=0)
         if not np.isfinite(original).all() or np.any(sd<=1e-10):
             raise ValueError("Bad original five-climate design")
