@@ -22,7 +22,7 @@ def test_1061_contig_identity_and_depth_position_order():
     assert with_zero["lett-L0001"]==[1,1,0]
     with pytest.raises(ValueError,match="Duplicate/out-of-order"):
         m.count_depth_stream([base[0],base[0]],lengths)
-    with pytest.raises(ValueError,match="Invalid aligned"):
+    with pytest.raises(ValueError,match="Invalid samtools Q20 depth coordinate"):
         m.count_depth_stream(["lett-L0001\t999\t5\n"],lengths)
 
 
