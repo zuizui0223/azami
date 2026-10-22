@@ -91,9 +91,10 @@ jobs:
           set -euo pipefail
           mkdir -p work/alleles/source work/alleles/ref work/alleles/scratch work/alleles/out
           gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/alleles/source
-          test -s work/alleles/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
-          test -s work/alleles/source/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
-          test -s work/alleles/source/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+          find work/alleles/source -maxdepth 4 -type f | sort
+          test -s work/alleles/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+          test -s work/alleles/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
+          test -s work/alleles/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
       - name: Install original read mapping and conservative nucleotide pileup
         run: |
           sudo apt-get update -qq
@@ -113,10 +114,10 @@ jobs:
         run: |
           python -m analysis.v4.t2_seven_real120k_shared_sites \
             --mode one --run-id ${{ matrix.accession }} \
-            --source work/alleles/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
-            --chosen work/alleles/source/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
-            --targets work/alleles/source/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
-            --author-loci work/alleles/source/loci/moreyra_conservative_241_no_warning_loci.txt \
+            --source work/alleles/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --chosen work/alleles/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
+            --targets work/alleles/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --author-loci work/alleles/source/original/loci/moreyra_conservative_241_no_warning_loci.txt \
             --reference work/alleles/ref/comp1061_hybpiper_reference.fasta \
             --scratch work/alleles/scratch \
             --output work/alleles/out/${{ matrix.accession }}.json
@@ -152,7 +153,7 @@ jobs:
         run: |
           python -m analysis.v4.t2_seven_real120k_shared_sites \
             --mode combine \
-            --targets work/common/source/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --targets work/common/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
             --reports work/common/reports \
             --output work/common/out
       - name: Enforce no phylogeny or unverified genotype assertions
