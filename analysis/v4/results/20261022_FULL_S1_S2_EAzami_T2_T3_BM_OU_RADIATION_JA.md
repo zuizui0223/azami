@@ -23,6 +23,11 @@ S1に見えた年降水と頭花画像角度の種間相関は、独立した下
 
 候補名の一致は、アクセプトされた分類概念や同一voucherを分子標本レベルで照合済みという意味ではない。45+12+5+113を足し算してユニーク種数としない。S1で観測した種とS2の自生域に同じ原記録がある場合、独立試験として数えない。
 
+### 追補：全244キーから公開SRAの実行・標本まで到達
+
+[113分類キー／125公開SRA runのソース認証済み追加照合](20261022_T2_MOREYRA_244_SRA_VOUCHER_AUDIT_JA.md)で、S1の全244キーに元著者BioSample／run／voucherを接続するCSVと機械可読監査結果を作成した。[GitHub Actions #39721528204](https://github.com/zuizui0223/azami/actions/runs/39721528204) が**成功**し、入力のSHA・258件の原著public SRA台帳・元S1 244キー・170,066観察・113名一致の整合が完走。対応する125 public runのうち28件は元tree_codeと提出名に相違があり、accepted taxon/voucherを再審査する。S2のC. arvenseとC. vulgareは両方とも公開SRA標本が確認できた。**これは配列から113種の核系統樹を組んだ意味ではない。**
+
+
 ## T2：全191種×52配置樹の実測BM／OU1／WN
 
 [実行完走 #39718008687](https://github.com/zuizui0223/azami/actions/runs/39718008687)、成果artifact 12399309708、zip SHA256 1c581dab2f65fa59a9f1df098e9205147d45eea84ad9a558eae2105bb4255e02。[解析コード](../t2_full_species_bm_ou.py)／[検証テスト](../../../tests/test_v4_t2_full_species_bm_ou.py)。
