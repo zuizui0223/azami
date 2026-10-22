@@ -53,11 +53,20 @@ def load_source(path):
     if len({r["accepted_key"] for r in rows})!=SOURCE_TAXA:
         raise ValueError("Original S1-244 to Moreyra 113 taxon candidate coverage changed")
     for row in rows:
-        if (not re.fullmatch(r"SRR[0-9]+",row["run"]) or
-            not re.fullmatch(r"SAMN[0-9]+",row["biosample"]) or
-            not row["original_tree_code"].startswith("Cirsium ") or
-            not row["S1_source_taxon"].startswith("Cirsium_")):
-            raise ValueError("Unverified original Moreyra public SRA run identity")
+        # The frozen crosswalk may preserve source names with spaces or
+        # underscores; accession-level identity is checked independently.
+        invalid=[]
+        if not re.fullmatch(r"SRR[0-9]+",row["run"].strip()):
+            invalid.append("run")
+        if not re.fullmatch(r"(?:SAMN|SAMEA|SAMD)[0-9]+",row["biosample"].strip()):
+            invalid.append("biosample")
+        if not re.match(r"^Cirsium(?:[ _])",row["original_tree_code"].strip()):
+            invalid.append("author_tree_code")
+        if not re.match(r"^Cirsium(?:[ _])",row["S1_source_taxon"].strip()):
+            invalid.append("S1_original_name")
+        if invalid:
+            raise ValueError("Unverified original Moreyra source fields for "+
+                             row["run"]+": "+",".join(invalid))
     byrun={r["run"]:r for r in rows}
     for run,(bio,taxon) in S2_REFERENCE.items():
         if byrun[run]["biosample"]!=bio or byrun[run]["S1_source_taxon"]!=taxon:
