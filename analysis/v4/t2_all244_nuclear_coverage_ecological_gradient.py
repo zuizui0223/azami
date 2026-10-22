@@ -157,7 +157,7 @@ def analyse(original,bridge):
     if len(clean)!=CLEAN:
         raise ValueError("Source clean 237-WCVP corpus drifted")
     result={
-        "schema":"azami_S1_all244_to_EAzami294_113_SRA_coverage_gradient_diagnostic_v1",
+        "schema":"azami_S1_all244_to_EAzami294_113_SRA_coverage_gradient_diagnostic_v2",
         "status":"SOURCE_VERIFIED_ECOLOGICAL_COHORT_REPRESENTATIVENESS_NOT_EVOLUTIONARY_CAUSATION",
         "total_original_photo_taxa":ORIGINAL_S1,
         "total_original_photos":170066,
@@ -169,6 +169,7 @@ def analyse(original,bridge):
             scope:{response:run_panel(subset,response) for response in RESPONSE}
             for scope,subset in (("all244_sensitivity",source),("clean237_primary",clean))
         },
+        "measurement_depth_sensitivity":{},
         "inference_limit":{
             "source_run_name_match_is_nonrandom_phylogenetic_coverage":True,
             "original_S1_was_170066_observation_level_not_equal_species":True,
@@ -178,6 +179,21 @@ def analyse(original,bridge):
             "environment_and_observer_spatial_confounding_unremoved":True,
         },
     }
+    for threshold in (5,10):
+        retained=[x for x in clean if x["n_images"]>=threshold]
+        n_matched=sum(x["Moreyra_exact_run_candidate"] for x in retained)
+        n_unmatched=len(retained)-n_matched
+        if min(n_matched,n_unmatched)<10 or len(retained)<25:
+            result["measurement_depth_sensitivity"][f"n_ge_{threshold}"]={
+                "status":"blocked_not_enough_taxa_in_both_SRA_coverage_groups",
+                "n_taxa":len(retained),"n_matched":n_matched,"n_unmatched":n_unmatched,
+            }
+        else:
+            result["measurement_depth_sensitivity"][f"n_ge_{threshold}"]={
+                "n_taxa":len(retained),"n_matched":n_matched,"n_unmatched":n_unmatched,
+                "mean_photo_angle":run_panel(retained,RESPONSE[0]),
+                "median_photo_angle":run_panel(retained,RESPONSE[1]),
+            }
     return result
 
 
@@ -207,6 +223,8 @@ def main():
         "n_clean":result["primary_clean_taxa"],
         "n_Moreyra":result["matched_SRA_name_candidate_taxa"],
         "clean237_mean_angle":result["panels"]["clean237_primary"][RESPONSE[0]],
+        "n_ge_5_mean_angle":result["measurement_depth_sensitivity"]["n_ge_5"],
+        "n_ge_10_mean_angle":result["measurement_depth_sensitivity"]["n_ge_10"],
     },ensure_ascii=False,sort_keys=True),flush=True)
 
 
