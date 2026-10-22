@@ -16,6 +16,10 @@ def test_1061_contig_identity_and_depth_position_order():
     depth=m.count_depth_stream(base,lengths)
     assert depth["lett-L0000"]==[3,2,1]
     assert depth["lett-L0001"]==[1,1,0]
+    # Q20 filtering may report zero accepted bases at occupied positions.
+    # That position is tracked for ordering but never counted as callable.
+    with_zero=m.count_depth_stream(base+["lett-L0001\t4\t0\n"],lengths)
+    assert with_zero["lett-L0001"]==[1,1,0]
     with pytest.raises(ValueError,match="Duplicate/out-of-order"):
         m.count_depth_stream([base[0],base[0]],lengths)
     with pytest.raises(ValueError,match="Invalid aligned"):
