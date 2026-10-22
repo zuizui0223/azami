@@ -96,6 +96,19 @@ def slope_fit(df):
             "spatial_and_true_nuclear_phylogeny_not_adjusted":True}
 
 
+def point_slope(df):
+    """Same equal-unit five-CHELSA point estimate, without expensive robust SE."""
+    raw=df[list(EXPOSURES)].to_numpy(float)
+    mean=raw.mean(axis=0); sd=raw.std(axis=0)
+    if (sd<=1e-9).any():
+        raise ValueError("Degenerate source CHELSA environmental design")
+    x=np.column_stack((np.ones(len(df)),(raw-mean)/sd))
+    if np.linalg.matrix_rank(x)!=len(EXPOSURES)+1:
+        raise ValueError("No full rank five-environment phylo-coverage design")
+    b=np.linalg.lstsq(x,df.mean_image_angle_deg.to_numpy(float),rcond=None)[0]
+    return float(100*b[3]/sd[2])
+
+
 def bootstrap_difference(oper,accepted,draws=BOOT,seed=SEED):
     if draws<100:
         raise ValueError("Require enough paired resamples")
@@ -113,8 +126,7 @@ def bootstrap_difference(oper,accepted,draws=BOOT,seed=SEED):
         many=pd.concat([oper_by[k] for k in sampled],ignore_index=True)
         few=pd.concat([key_by[k] for k in sampled],ignore_index=True)
         try:
-            diff=slope_fit(many)["BIO12_image_angle_deg_per_100mm"]-\
-                 slope_fit(few)["BIO12_image_angle_deg_per_100mm"]
+            diff=point_slope(many)-point_slope(few)
         except ValueError:
             continue
         values.append(diff)
