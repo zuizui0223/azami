@@ -1,0 +1,65 @@
+name: V4 T2 real7 nuclear Q20 pilot vs independent NA63 quartet
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real7_NA63_quartet_crosscheck.py'
+      - 'tests/test_v4_t2_real7_NA63_quartet_crosscheck.py'
+      - '.github/workflows/v4-t2-real7-na63-quartet.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  strict-independent-original-nuclear-quartet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test quartet split calculations and no adaptation or root assumptions
+        run: |
+          python -m pip install 'biopython>=1.83,<1.90' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real7_NA63_quartet_crosscheck.py
+      - name: Authenticate real seven public SRA source 101-locus diagnostic
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-nuclear-compare/in work/t2-nuclear-compare/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12464634621 --jq '.digest')" = 'sha256:e169d63fc490258c993f85b666e8505522acc80c93505dd16ca44f8a6331c529'
+          gh run download 39868882212 --repo zuizui0223/azami \
+            --name v4-t2-seven-original110-real120k-Q20-technical-NJ \
+            --dir work/t2-nuclear-compare/in
+          test -s work/t2-nuclear-compare/in/SEVEN_REAL_Q20_101_LOCUS_NJ_DIAGNOSTIC.json
+          test -s work/t2-nuclear-compare/in/SEVEN_REAL_Q20_101_LOCUS_NJ_TECHNICAL.nwk
+      - name: Compare exact quartet with published source SHA-authenticated NA63 tree
+        run: |
+          python -m analysis.v4.t2_real7_NA63_quartet_crosscheck \
+            --pilot-json work/t2-nuclear-compare/in/SEVEN_REAL_Q20_101_LOCUS_NJ_DIAGNOSTIC.json \
+            --pilot-newick work/t2-nuclear-compare/in/SEVEN_REAL_Q20_101_LOCUS_NJ_TECHNICAL.nwk \
+            --technical-branches work/t2-nuclear-compare/in/SEVEN_REAL_Q20_101_LOCUS_NJ_BOOTSTRAP_SPLITS.csv \
+            --out-dir work/t2-nuclear-compare/out
+      - name: Keep quartet match and true original nuclear scope separate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-nuclear-compare/out/NA63_AND_7_REAL_Q20_SOURCE_QUARTET_CONCORDANCE.json')
+          x=json.loads(p.read_text())
+          assert x['independent_published_nuclear_tree_taxa']==63
+          assert len(x['exact_name_matched_taxa'])==4
+          assert x['unrooted_four_tip_topology_match']
+          assert not x['no_BM_OU_or_rain_adaptive_radiation_result'] is False
+          assert x['seven_taxa_NJ_not_accepted_as_genus_species_tree']
+          print('PUBLISHED_NA63_REAL7_FOUR_TIP_NUCLEAR_TOPOLOGY_QC_CONCORDANT_NOT_ACCEPTED_GENUS_TREE')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-real7-published-NA63-exact-quartet-Q20-validation
+          path: work/t2-nuclear-compare/out/
+          retention-days: 90
+          if-no-files-found: error
