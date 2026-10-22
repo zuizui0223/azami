@@ -81,7 +81,7 @@ def test_sample_120k_original_241_index_totals_must_agree_with_independent_run()
 def test_no_missing_taxa_and_no_different_reference_copy_declared_same():
     src,chosen,old,genes,reads=fixture()
     a=m.validate_sources(src,chosen,old)
-    with pytest.raises(ValueError,match="seven"):
+    with pytest.raises(ValueError,match="Seven"):
         m.combine(a,genes,reads[:-1])
     # Never conflate same target identifier with identical original ref copy.
     _,matrix,_=m.combine(a,genes,reads)
