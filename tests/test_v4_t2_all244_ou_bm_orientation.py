@@ -52,7 +52,7 @@ def test_missing_climate_or_nonpositive_bm_covariance_fails_closed():
     with pytest.raises(ValueError,match="positive rooted"):
         evaluate_models(y,X,broken,float(y.std()),0.05)
     badX=np.ones((len(y),3))
-    with pytest.raises(ValueError,match="Rank deficient"):
+    with pytest.raises(ValueError,match="Bad original five-climate design"):
         regression_design([{
            "mean_S1_image_axis_deg":float(i),
            "S1_five_climate_means":{e:1.0 for e in
