@@ -9,7 +9,8 @@ def original(monkeypatch):
     monkeypatch.setattr(mod,"TAXA",3)
     monkeypatch.setattr(mod,"SHARDS",2)
     return [{"run":f"SRR00000{i}","biosample":f"SAMN00000{i}",
-             "accepted_key":f"K{i%3}","S1_source_taxon":f"Cirsium_taxon{i%3}"}
+             "accepted_key":f"K{i%3}","S1_source_taxon":f"Cirsium_taxon{i%3}",
+             "original_tree_code":f"Cirsium taxon{i%3}"}
             for i in range(4)]
 
 
