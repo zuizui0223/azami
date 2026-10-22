@@ -80,7 +80,7 @@ def parse_runinfo(text):
 
 
 def download_project_runinfo(requested,fetch=None):
-    """Fetch explicit accessions in six bounded batches; never full public reads."""
+    """Fetch explicit accessions in bounded batches; never full public reads."""
     if fetch is None:
         def fetch(url):
             req=urllib.request.Request(url,headers={
