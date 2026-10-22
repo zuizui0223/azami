@@ -242,6 +242,36 @@
       "source_S1_observation_within_between_model_refitted": false,
       "location_coordinates_shared_in_output": false,
       "independent_downward_nodding_origins_or_rain_selection_identified": false
+    },
+    "quantitative_source_use_audit_20261022": {
+      "status": "EXISTING_SOURCE_USAGE_AUDITED_NO_MAIN_S1_REESTIMATE",
+      "diagnostic_JSON": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT.json",
+      "explanation_JA": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT_JA.md",
+      "original_WCVP_native_observations": 313350,
+      "original_native_accepted_keys": 306,
+      "original_QC_eligible_continuous_image_orientation_observations_used_in_main": 170066,
+      "original_QC_eligible_continuous_image_orientation_taxa_used_in_main": 244,
+      "original_WCVP_collisions_removed_native_observations": 169612,
+      "original_WCVP_collisions_removed_native_taxa": 237,
+      "two_focal_arvense_vulgare_native_orientation_observations": 82709,
+      "two_focal_species_fraction_of_original_S1": 0.48633471710982795,
+      "species_unequal_observation_weighting_implicit_in_original_mixed_model": true,
+      "main_S1_exactly_244_species_equal_weight_OLS": false,
+      "species_means_from_all_native_finite_environment_rows_not_only_photo_eligible": true,
+      "stored_quantitative_trait_endpoints": 27,
+      "eligible_endpoints": 18,
+      "endpoints_modelled_with_five_climate": 11,
+      "eligible_but_not_modelled_bract_endpoints": 7,
+      "endpoints_without_eligible_data": 9,
+      "native_environment_source_fields": 9,
+      "main_selected_environment_exposures": 5,
+      "grafted_tree_sensitivity_taxa": 194,
+      "grafted_tree_sensitivity_observations": 169912,
+      "original_photo_links": 1122854,
+      "all_photo_links_individually_measured_as_S1_head_angles": false,
+      "does_not_infer_missing_orientation_zero": false,
+      "extra_trait_endpoints_separately_analyzed_not_pooled_into_angle_response": true,
+      "original_S1_and_frozen_V3_numerics_unchanged": true
     }
   },
   "S2": {
@@ -607,7 +637,9 @@
     "S1_S2_main_scale_contrast_count_ledger": "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json",
     "S1_S2_main_scientific_summary": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md",
     "S2_equivalence_status": "Not formally tested because an independently ecologically justified SESOI for 0–180-degree camera-axis measurement or full CDF is not available. Existing whole-CDF 399-cell bands permit an exploratory minimum margin: 12.35pp/11.46pp by taxon. Do NOT retrofit ±15pp to claim formal equivalence.",
-    "S2_equivalence_precision_receipt": "analysis/v4/results/20261022_S2_ECDF_EQUIVALENCE_FRONTIER_VERIFIED.json"
+    "S2_equivalence_precision_receipt": "analysis/v4/results/20261022_S2_ECDF_EQUIVALENCE_FRONTIER_VERIFIED.json",
+    "S1_exact_data_use_audit_JSON": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT.json",
+    "S1_exact_data_use_audit_JA": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT_JA.md"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
