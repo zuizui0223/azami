@@ -63,6 +63,7 @@ def test_unsampled_source_run_remains_in_125_source_queue(monkeypatch):
           "accepted_key":f"K{i%113:03d}"} for i in range(125)]
     def mock(row,ref,loci,scratch):
         return {"run":row["run"],"biosample":row["biosample"],
+                "real_ena_read_pairs":30000,
                 "status":"real_ENA_reference_site_depth_q20_Q20",
                 "n_loci_dp3_ge25pct":3,"n_loci_dp3_ge50pct":1}
     output=m.collect(src,["L1"],None,None,4,10,runner=mock)
