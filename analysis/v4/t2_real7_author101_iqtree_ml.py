@@ -53,8 +53,8 @@ def read_csv(path):
 def build_matrices(original125,chosen,refs,receipts):
     if len(original125)!=source.N_ORIGINAL_RUNS or len(chosen)!=EXPECTED_7:
         raise ValueError("Original125+7 EAzami SRA biological-sample scope changed")
-    if set(refs)!={x["locus"] for x in refs.values()}:
-        raise ValueError("Original 110 target reference has incorrect keys")
+    if len(refs)!=EXPECTED_110 or len(set(refs.values()))!=EXPECTED_110:
+        raise ValueError("Original source 110 unique target reference copies lost")
     records=nj.load_original_receipts(receipts,original125,chosen,refs)
     names,loci=nj.loci_from_original_base_calls(records,refs)
     primary=[x for x in loci if x["eligible_primary"]]
