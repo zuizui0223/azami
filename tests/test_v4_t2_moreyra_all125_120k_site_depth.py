@@ -15,6 +15,7 @@ def original(monkeypatch):
 
 def test_four_sample_scaling_treats_unavailable_as_not_zero_genes(monkeypatch,tmp_path):
     source=original(monkeypatch)
+    monkeypatch.setattr(mod.depth,"LOCUS_COUNT",1)
     def acquire(row):
         if row["run"]=="SRR000002":
             raise ValueError("ENA source prefix cannot provide 120k")
