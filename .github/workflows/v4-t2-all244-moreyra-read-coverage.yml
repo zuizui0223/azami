@@ -1,0 +1,64 @@
+name: V4 T2 all244 Moreyra real nuclear read evidence mapping
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_all244_eazami_moreyra_read_crosswalk.py'
+      - 'tests/test_v4_t2_all244_eazami_moreyra_read_crosswalk.py'
+      - '.github/workflows/v4-t2-all244-moreyra-read-coverage.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-public-reads-for-all244:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Prohibit mistaken WCVP/synonym/variety or fake nuclear placement
+        run: python -m pytest -q tests/test_v4_t2_all244_eazami_moreyra_read_crosswalk.py
+      - name: Download source-proven all244 S1 accepted-name and photo-angle coverage
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401001041 --jq '.digest')" = 'sha256:60740a808f856ca68fcf96bdffd06b4b79954b18c7d824ef52e3cc99d9ef5c46'
+          mkdir -p work/moreyra244/in work/moreyra244/out
+          gh run download 39720452379 --repo zuizui0223/azami \
+            --name v4-t2-S1-all244-wn-bm-ou1-placement-screen \
+            --dir work/moreyra244/in
+          test -s work/moreyra244/in/S1_ALL244_TAXON_COVERAGE.csv
+      - name: Authenticate 258 public original Moreyra SRA samples via pinned EAzami split files
+        run: |
+          python -m analysis.v4.t2_all244_eazami_moreyra_read_crosswalk \
+            --all244 work/moreyra244/in/S1_ALL244_TAXON_COVERAGE.csv \
+            --out-dir work/moreyra244/out
+      - name: Validate all species included and S2 carried through
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          root=Path('work/moreyra244/out')
+          d=json.loads((root/'S1_ALL244_MOREYRA_PUBLIC_READ_COVERAGE.json').read_text())
+          with (root/'S1_ALL244_MOREYRA_PUBLIC_READ_CROSSWALK.csv').open() as h:
+              rows=list(csv.DictReader(h))
+          assert len(rows)==244 and d['source_original_S1_native_taxa']==244
+          assert d['source_Moreyra_public_Cirsium_SRA_sample_rows']==258
+          assert len(d['S2_two_species'])==2
+          assert all('n_public_nuclear_reads' in s for s in d['S2_two_species'])
+          assert d['n_S1_taxa_with_public_raw_read_name_match']+d['n_S1_taxa_without_Moreyra_public_raw_name_match']==244
+          assert all(row['sample_name_match_is_validated_tree_tip']=='False' for row in rows)
+          print('PASS all 244 S1 accepted taxon keys audited against 258 original Moreyra public SRA run records')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S1-all244-Moreyra-SRA-nuclear-overlap
+          path: work/moreyra244/out
+          if-no-files-found: error
+          retention-days: 90
