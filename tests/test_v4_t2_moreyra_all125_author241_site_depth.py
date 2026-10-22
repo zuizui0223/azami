@@ -1,5 +1,4 @@
 """Synthetic numerical parser tests only; real samples run in source-verified CI."""
-import numpy as np
 import pytest
 
 from analysis.v4 import t2_moreyra_all125_author241_site_depth as m
