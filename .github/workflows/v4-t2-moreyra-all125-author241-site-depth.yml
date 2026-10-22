@@ -1,0 +1,147 @@
+name: V4 T2 all125 real original241 locus site-depth audit
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_moreyra_all125_author241_site_depth.py'
+      - 'analysis/v4/t2_moreyra_author241_depth_aggregate.py'
+      - 'tests/test_v4_t2_moreyra_all125_author241_site_depth.py'
+      - 'tests/test_v4_t2_moreyra_author241_depth_aggregate.py'
+      - '.github/workflows/v4-t2-moreyra-all125-author241-site-depth.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_moreyra_all125_author241_site_depth.py tests/test_v4_t2_moreyra_author241_depth_aggregate.py
+      - name: Reconstruct 125 genuine source runs and SHA-pinned original Moreyra 241 loci
+        run: |
+          set -euo pipefail
+          mkdir -p work/source/a work/source/loci
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = 'sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71'
+          gh run download 39721528204 --repo zuizui0223/azami --name v4-t2-all244-Moreyra-SRA-voucher-evidence --dir work/source
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          python external/EAzami/analysis/recover_moreyra_author_repository.py --outdir work/source/a
+          python external/EAzami/analysis/summarize_moreyra_locus_filter.py --audit-dir work/source/a
+          python external/EAzami/analysis/export_moreyra_locus_manifests.py --input work/source/a/paralog_locus_filter_reconstruction.csv --outdir work/source/loci
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/source/loci/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t2-real241-original-source
+          path: |
+            work/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+            work/source/loci/moreyra_conservative_241_no_warning_loci.txt
+          if-no-files-found: error
+          retention-days: 90
+
+  real-depth:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recover original run and locus evidence, never unverified source
+        run: |
+          set -euo pipefail
+          mkdir -p work/real/input work/real/ref work/real/scratch work/real/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-real241-original-source --dir work/real/input
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/real/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/real/input/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+      - run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/real/ref
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/real/ref/comp1061_original_reference_contract.json').read_text())
+          assert x['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445' and x['locus_count']==1061
+          PY
+          bwa index work/real/ref/comp1061_hybpiper_reference.fasta
+      - name: Count actual Q20 reads and callable sites for all 241 original loci
+        run: |
+          python -m analysis.v4.t2_moreyra_all125_author241_site_depth --source work/real/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --loci work/real/input/moreyra_conservative_241_no_warning_loci.txt --reference work/real/ref/comp1061_hybpiper_reference.fasta --scratch work/real/scratch --shard-id ${{ matrix.shard }} --out work/real/out/shard_${{ matrix.shard }}.json
+      - if: always()
+        run: rm -rf work/real/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real241-shard-${{ matrix.shard }}
+          path: work/real/out/
+          if-no-files-found: warn
+          retention-days: 90
+
+  aggregate:
+    needs: [source,real-depth]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -euo pipefail
+          mkdir -p work/summary/shards work/summary/source work/summary/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --pattern 't2-real241-shard-*' --dir work/summary/shards
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-real241-original-source --dir work/summary/source
+          python -m analysis.v4.t2_moreyra_author241_depth_aggregate --source work/summary/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --shards work/summary/shards --out-dir work/summary/out
+      - name: Verify full source scope and no fabricated genetic reconstruction
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          p=Path('work/summary/out')
+          j=json.loads((p/'ALL125_AUTHOR241_REAL_DEPTH_SUMMARY.json').read_text())
+          for f,n in [('ALL125_SOURCE_241_LOCUS_DEPTH_RUNS.csv',125),('ALL113_TAXON_BEST_RUN_241_LOCUS_DEPTH.csv',113),('AUTHOR241_LOCI_ACROSS125_REAL_RUNS.csv',241)]:
+              with (p/f).open() as h: assert sum(1 for _ in csv.DictReader(h))==n
+          assert j['source_S1_original_WCVP_accepted_keys']==244
+          assert not j['strict_241_ortholog_alignments_completed']
+          assert not j['eazami294_astral_species_tree_completed']
+          print('SOURCE241_SITE_DEPTH_SUCCESS_ALL125',j['dp3_ge50pct_loci_per_run'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real125-author241-callable-breadth
+          path: work/summary/out/
+          if-no-files-found: warn
+          retention-days: 90
