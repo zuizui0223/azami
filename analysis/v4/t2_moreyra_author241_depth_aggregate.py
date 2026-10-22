@@ -142,7 +142,7 @@ def summarize(source,results):
         return {"min":min(x),"q25":x[int((len(x)-1)*.25)],
                 "median":statistics.median(x),"q75":x[int((len(x)-1)*.75)],
                 "max":max(x)}
-    name_index={x["S1_source_taxon"].replace(" ","_"):x for x in species}
+    name_index={x["source_taxon"].replace(" ","_"):x for x in species}
     critical={name: {k:name_index[name][k] for k in (
         "n_independent_public_runs","maximum_per_run_loci_dp3_ge25pct",
         "maximum_per_run_loci_dp3_ge50pct","maximum_per_run_loci_dp3_100bp")}
