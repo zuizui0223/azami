@@ -72,3 +72,14 @@ def test_unverified_or_incomplete_original_read_data_cannot_pass():
     src["read_results"]["mapped_run_count"]=124
     with pytest.raises(ValueError,match="125-run empirical"):
         g.evaluate(src,orig,states)
+
+
+def test_unscored_ambiguous_SRA_is_retained_as_conflict_not_falsely_assigned():
+    src,orig,states=synthetic()
+    last=src["per_original_public_run"][-1]["run"]
+    orig[last].append({"tree_code":"Cirsium unscored_different"})
+    result=g.evaluate(src,orig,states)
+    assert result["n_unassignable_source_conflict_runs"]==1
+    assert result["multiple_source_tree_code_conflict_runs"][0]["run"]==last
+    assert result["multiple_source_tree_code_conflict_runs"][0]["read_mapping_success_preserved"]
+    assert result["n_original_na_nodding_taxa_with_exact_named_runs"]==2
