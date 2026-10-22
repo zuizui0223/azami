@@ -1,0 +1,199 @@
+name: V4 T2 all125 Moreyra actual ENA nuclear capture 30k-read coverage
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_moreyra_all125_ena_read_mapping.py'
+      - 'tests/test_v4_t2_moreyra_all125_ena_read_mapping.py'
+      - '.github/workflows/v4-t2-moreyra-all125-real-ena-mapping.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-t2-125-real-ena-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test source-pinned bounded ENA run retrieval and failure reporting
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q \
+            tests/test_v4_t2_moreyra_all125_ena_read_mapping.py \
+            tests/test_v4_t2_s2_ena_partial_fastq.py \
+            tests/test_v4_t2_s2_bounded_public_reads.py
+      - name: Check all 125 original SRA runs / 113 source taxon candidates
+        run: |
+          set -euo pipefail
+          mkdir -p work/source
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = "sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71"
+          gh run download 39721528204 --repo zuizui0223/azami \
+            --name v4-t2-all244-Moreyra-SRA-voucher-evidence \
+            --dir work/source
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          python - <<'PY'
+          from analysis.v4.t2_moreyra_all125_ena_read_mapping import load_source
+          rows=load_source("work/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv")
+          assert len(rows)==125 and len({x['accepted_key'] for x in rows})==113
+          print("Authenticated all 125 source SRA runs, all 113 source taxon candidates")
+          PY
+
+  map-real-reads:
+    needs: verify-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore same SHA-authenticated complete Moreyra run crosswalk
+        run: |
+          set -euo pipefail
+          mkdir -p work/real125/source work/real125/reference work/real125/scratch work/real125/results
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = "sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71"
+          gh run download 39721528204 --repo zuizui0223/azami \
+            --name v4-t2-all244-Moreyra-SRA-voucher-evidence \
+            --dir work/real125/source
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/real125/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+      - name: Install actual BWA and samtools (not NCBI SRA Toolkit)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+      - name: Hash-verify original 1061-target public nuclear reference
+        run: |
+          set -euo pipefail
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py \
+            --outdir work/real125/reference
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/real125/reference/comp1061_original_reference_contract.json').read_text())
+          assert x['locus_count']==1061
+          assert x['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert x['moreyra_augmented_reference_recovered'] is False
+          PY
+          bwa index work/real125/reference/comp1061_hybpiper_reference.fasta
+      - name: Fetch ACTUAL 30k ENA paired-end reads and map one complete 1/10 source shard
+        run: |
+          python -m analysis.v4.t2_moreyra_all125_ena_read_mapping \
+            --source work/real125/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --reference work/real125/reference/comp1061_hybpiper_reference.fasta \
+            --shard-id ${{ matrix.shard }} --shard-count 10 \
+            --scratch work/real125/scratch \
+            --output work/real125/results/shard_${{ matrix.shard }}.json
+      - name: Verify aggregate is strictly source-aligned and remove all raw reads
+        if: always()
+        run: |
+          rm -rf work/real125/scratch
+          python - <<'PY'
+          import json,pathlib
+          n=int("${{ matrix.shard }}")
+          p=pathlib.Path(f"work/real125/results/shard_{n}.json")
+          if p.exists():
+            result=json.loads(p.read_text())
+            assert result["shard_id"]==n
+            assert len(result["outcomes"])==result["requested_run_count"]
+            assert all(not item.get("tip_can_enter_nuclear_species_tree",False) for item in result["outcomes"])
+            print("Sharded real public nuclear read screen",result["mapped_run_count"],result["failed_run_count"])
+          PY
+      - name: Upload only source-run count and locus overlap metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-Moreyra-125-real-30k-nuclear-shard-${{ matrix.shard }}
+          path: work/real125/results/
+          if-no-files-found: warn
+          retention-days: 90
+
+  aggregate-all125:
+    needs: [verify-source,map-real-reads]
+    runs-on: ubuntu-latest
+    if: always()
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gather all ten shard receipts, not raw FASTQ or BAM
+        run: |
+          mkdir -p work/aggregate/input work/aggregate/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami \
+            --pattern 'v4-t2-Moreyra-125-real-30k-nuclear-shard-*' \
+            --dir work/aggregate/input
+      - name: Check no original SRA runs were lost, and no nuclear tree was invented
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          base=pathlib.Path('work/aggregate/input')
+          paths=sorted(base.rglob('shard_*.json'))
+          byrun={}
+          for p in paths:
+            report=json.loads(p.read_text())
+            assert report['rooted_global_nuclear_species_tree_inferred'] is False
+            assert report['sequence_data_uploaded'] is False
+            for result in report['outcomes']:
+              if result['run'] in byrun:
+                raise SystemExit('Duplicated original SRA run')
+              byrun[result['run']]=result
+          mapped=sum(x['status'].startswith('mapped_real') for x in byrun.values())
+          failed=len(byrun)-mapped
+          summary={
+            'source':'original S1 full244 x EAzami294 113 taxon / 125 run panel',
+            'shard_receipts_collected':len(paths),
+            'total_source_runs_reported':len(byrun),
+            'matched_taxon_keys':len({x['accepted_key'] for x in byrun.values()}),
+            'mapped_real_public_runs':mapped,'failed_real_public_runs':failed,
+            'all_244_original_source_species_remain_in_frozen_census':True,
+            'full_350_locus_ortholog_recovery':False,
+            'independent_global_nuclear_species_tree_created':False,
+            'source_prefix_spots_are_not_random':True,
+            'raw_fastq_or_bam_uploaded':False,
+            'per_run':[x for _,x in sorted(byrun.items())],
+          }
+          target=pathlib.Path('work/aggregate/out/T2_MOREYRA_125_REAL_30K_READ_NUCLEAR_COVERAGE.json')
+          target.write_text(json.dumps(summary,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
+          print('T2_ALL125_REAL_NUCLEAR_COVERAGE=',json.dumps({
+            k:summary[k] for k in ('shard_receipts_collected','total_source_runs_reported',
+                 'matched_taxon_keys','mapped_real_public_runs','failed_real_public_runs')
+          },sort_keys=True),flush=True)
+          if len(paths)!=10 or len(byrun)!=125:
+            raise SystemExit('One or more of 125 original runs or 10 shards unavailable')
+          if mapped<100:
+            raise SystemExit('Predeclared pilot information gate failed: fewer than 100 source runs mapped')
+          PY
+      - name: Archive 125-run actual nuclear read coverage manifest (never reads)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-Moreyra-125-real-ENA-nuclear-coverage
+          path: work/aggregate/out/
+          if-no-files-found: warn
+          retention-days: 90
