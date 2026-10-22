@@ -1,0 +1,67 @@
+name: V4 T2 real EAzami niche BM versus OU on public Comp1061 trees
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_public_niche_bm_ou.py'
+      - 'analysis/v4/public_niche_inputs/**'
+      - 'tests/test_v4_t2_public_niche_bm_ou.py'
+      - '.github/workflows/v4-t2-public-niche-bm-ou.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verified-public-niche:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen current numerical environment
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt pytest
+          python -m pip check
+      - name: Assert two source pedigrees and BM-OU unit/reproduction tests
+        run: |
+          python -m pytest -q tests/test_v4_t2_public_niche_bm_ou.py
+      - name: Execute public 7/9/12-tip niches on ML and six AU nuclear trees
+        run: |
+          mkdir -p work/t2-public-niche
+          python -m analysis.v4.t2_public_niche_bm_ou \
+            --centroids analysis/v4/public_niche_inputs/EAzami_JP_TW_CHELSA_species_centroids_source_20261022.csv \
+            --primary-tree analysis/v4/public_niche_inputs/EAzami_full20_comp1061_primary_tree.nwk \
+            --alternative-trees analysis/v4/public_niche_inputs/EAzami_comp1061_nine_AU_tree_scenarios.nwk \
+            --out work/t2-public-niche/T2_EAzami_EastAsia_niche_BM_OU_pilot.json
+      - name: Verify real-data summary and no false global evolution claims
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          p=pathlib.Path('work/t2-public-niche/T2_EAzami_EastAsia_niche_BM_OU_pilot.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='EXECUTED_PUBLIC_CIRSIUM_EAST_ASIA_BM_VS_OU_LIMITED_NICHE_SCREEN'
+          assert d['claim_stop']['not_final_Moreyra_2025_350_locus_tree']
+          assert d['claim_stop']['not_global_niche_radiation']
+          assert set(d['panels'])=={'japan7','east_asia9','east_asia12'}
+          for key,n in [('japan7',7),('east_asia9',9),('east_asia12',12)]:
+              panel=d['panels'][key]
+              assert panel['n_taxa']==n
+              assert panel['tree_scenarios']==7
+              assert len(panel['fits'])==7*4*3
+              for row in panel['fits']:
+                  assert row['n_taxa']==n
+                  assert row['AICc_preferred'] in ('BM','OU')
+                  assert row['OU_alpha_times_median_root_tip_substitution_distance']>=0
+          print('Real EAzami source-backed 3 panel × 7 real nuclear tree × 4 niche axes × 3 nugget BM OU complete')
+          PY
+      - name: Upload public source-derived aggregate only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-eazami-niche-bm-ou-real-public
+          path: work/t2-public-niche/T2_EAzami_EastAsia_niche_BM_OU_pilot.json
+          retention-days: 90
+          if-no-files-found: error
