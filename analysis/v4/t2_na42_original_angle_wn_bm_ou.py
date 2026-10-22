@@ -90,6 +90,10 @@ def run(source:Path,original_194:Path):
         if scale<=0:
             raise ValueError("NA42 measured image angle lacks biological spread")
         fit=evaluate_models((y-y.mean())/scale,X,C,scale,nugget)
+        # Shared numerical helper is also used on 52 *placement* scenarios;
+        # this particular fit is on the author's genuine NUCLEAR tree.
+        fit["branch_units_are_phylogenetic_placement_not_calendar_years"]=False
+        fit["source_is_original_published_NA_nuclear_tree_not_calendar_calibrated"]=True
         results.append({
             "endpoint":"S1_original_taxon_"+endpoint+"_EXIF_vertical_image_angle",
             "simultaneous_five_climates":bool(adjust),
