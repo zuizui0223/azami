@@ -44,6 +44,8 @@ jobs:
           assert a['n_original_na_erect_taxa_with_exact_named_runs']==24
           assert a['n_exact_mapped_runs_with_author_botanical_state']==32
           assert a['n_runs_nodding']==3
+          assert a['n_unassignable_source_conflict_runs']==1
+          assert a['multiple_source_tree_code_conflict_runs'][0]['run']=='SRR30887230'
           assert a['cannot_infer_four_independent_nodding_origins_from_two_nodding_taxa']
           print('PASS: real mapped 125 source panel intersects author botanical 63 only at 26 taxa, of which 2 nodding; do not claim global evolution.')
           PY
