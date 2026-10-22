@@ -1,0 +1,117 @@
+name: V4 T2 S2 actual ENA mirrored bounded nuclear FASTQ read mapping
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s2_ena_partial_fastq.py'
+      - 'analysis/v4/t2_s2_bounded_public_reads.py'
+      - 'tests/test_v4_t2_s2_ena_partial_fastq.py'
+      - 'tests/test_v4_t2_s2_bounded_public_reads.py'
+      - '.github/workflows/v4-t2-s2-ena-real-read-mapping.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  bounded-two-species-real-nuclear-reads:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test official ENA source and bounded original Compositae1061 read evidence
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_s2_ena_partial_fastq.py tests/test_v4_t2_s2_bounded_public_reads.py
+      - name: Reuse original source-verified S1/EAzami run and BioSample crosswalk
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-s2raw/source work/t2-s2raw/reference work/t2-s2raw/reads work/t2-s2raw/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = "sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71"
+          gh run download 39721528204 --repo zuizui0223/azami --name v4-t2-all244-Moreyra-SRA-voucher-evidence --dir work/t2-s2raw/source
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path("work/t2-s2raw/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv")
+          rows=list(csv.DictReader(p.open(encoding='utf-8')))
+          assert len(rows)==125
+          requested={
+            'SRR25265555':('SAMN34240259','Cirsium arvense','Cirsium_arvense'),
+            'SRR25265662':('SAMN34240353','Cirsium vulgare 1','Cirsium_vulgare'),
+          }
+          for run,(bio,tree,name) in requested.items():
+              one=[r for r in rows if r['run']==run]
+              assert len(one)==1 and one[0]['biosample']==bio
+              assert one[0]['original_tree_code']==tree
+              assert one[0]['S1_source_taxon'].replace('_',' ').strip()==name.replace('_',' ').strip()
+              assert one[0]['tree_code_vs_sra_name']=='exact'
+          print('PASS exact original S1 / Moreyra source accessions and biological vouchers')
+          PY
+      - name: Install reference alignment utilities (no SRA remote endpoint dependency)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          samtools --version | head -n 2
+      - name: Recover official original Compositae1061 reference with independent Git blob audit
+        run: |
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/t2-s2raw/reference
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('work/t2-s2raw/reference/comp1061_original_reference_contract.json').read_text())
+          assert s['locus_count']==1061
+          assert s['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert s['moreyra_augmented_reference_recovered'] is False
+          PY
+          bwa index work/t2-s2raw/reference/comp1061_hybpiper_reference.fasta
+      - name: Retrieve ACTUAL ENA file-reported gzipped FASTQ prefixes for both focal S2 species
+        run: |
+          python -m analysis.v4.t2_s2_ena_partial_fastq --out-dir work/t2-s2raw/reads
+      - name: Align real bounded public S2 reads to 1061 nuclear target reference genes
+        run: |
+          set -euo pipefail
+          REF=work/t2-s2raw/reference/comp1061_hybpiper_reference.fasta
+          for RUN in SRR25265555 SRR25265662; do
+            DIR="work/t2-s2raw/reads/$RUN"
+            test -s "$DIR/fastq/$RUN"_1.fastq
+            test -s "$DIR/fastq/$RUN"_2.fastq
+            timeout 180s bash -c 'set -o pipefail; bwa mem -t 2 "$1" "$2" "$3" 2> "$4" | samtools sort -@ 2 -m 150M -o "$5" -' _ "$REF" "$DIR/fastq/$RUN"_1.fastq "$DIR/fastq/$RUN"_2.fastq "$DIR/bwa.log" "$DIR/mapped.sorted.bam"
+            samtools index "$DIR/mapped.sorted.bam"
+            samtools idxstats "$DIR/mapped.sorted.bam" > "$DIR/idxstats.tsv"
+            samtools view -c -q 20 -F 0x904 "$DIR/mapped.sorted.bam" > "$DIR/mapq20_primary_count.txt"
+            rm -rf "$DIR/fastq" "$DIR/mapped.sorted.bam" "$DIR/mapped.sorted.bam.bai"
+            echo "S2_ENA_REAL_PUBLIC_NUCLEAR_MAPPING_COMPLETE=$RUN"
+          done
+      - name: Validate source-authentic actual read counts, 1061 reference names and no original tree claims
+        run: |
+          python -m analysis.v4.t2_s2_bounded_public_reads --source-workdir work/t2-s2raw/reads --out-dir work/t2-s2raw/output
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-s2raw/output/S2_REAL_PUBLIC_READ_MAPPING_30000_SPOTS_RECEIPT.json')
+          o=json.loads(p.read_text())
+          assert o['run_count']==2 and o['n_raw_fastq_or_bam_files_uploaded']==0
+          assert not o['full_294_sample_EAzami_tree_estimated']
+          assert all(z['read_pairs_extracted']>0 for z in o['S2_public_target_capture_run_results'])
+          print('PASS two authentic public paired FASTQ prefixes and nuclear locus-overlap mapping; no inferred species tree')
+          PY
+      - name: Upload only public source run aggregates, never raw FASTQ/BAM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S2-real-ENA-prefix-target-capture-mapping
+          path: work/t2-s2raw/output/
+          if-no-files-found: warn
+          retention-days: 90
