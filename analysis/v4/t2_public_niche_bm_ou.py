@@ -137,9 +137,22 @@ def fit_BM_OU(y,depth,mrca,nugget,grid_points=150):
     def aicc(ll,k):
         return 2*ll+2*k+2*k*(k+1)/(n-k-1)
     difference=aicc(nll_ou,3)-aicc(nll_bm,2)
+    # Independent-tip Gaussian WN avoids falsely concluding that BM is
+    # supported merely because an underidentified OU loses to BM.
+    # Exactly the same fitted intercept/diffusion parameters as BM (k=2).
+    wn_sigma2=float(np.mean(np.square(y-y.mean())))
+    wn_nll=.5*n*(np.log(2*np.pi)+1+np.log(wn_sigma2))
+    wn_aicc=aicc(wn_nll,2)
+    bm_aicc=aicc(nll_bm,2)
+    ou_aicc=aicc(nll_ou,3)
+    all_models={"WN":wn_aicc,"BM":bm_aicc,"OU":ou_aicc}
+    three_way=min(all_models,key=all_models.get)
     return {
         "n_taxa":n,
         "tip_nugget_relative_to_median_root_tip":nugget,
+        "WN_independent_tip_AICc":float(wn_aicc),
+        "WN_minus_BM_AICc":float(wn_aicc-bm_aicc),
+        "AICc_preferred_WN_BM_OU":three_way,
         "BM_logLik":float(-nll_bm),
         "OU_logLik":float(-nll_ou),
         "BM_AICc":float(aicc(nll_bm,2)),
@@ -188,6 +201,10 @@ def analyse(centroids:Path,primary:Path,alternate:Path):
             "fits":out,
             "nAICc_preferred_OU":int(sum(x["AICc_preferred"]=="OU" for x in out)),
             "nAICc_preferred_BM":int(sum(x["AICc_preferred"]=="BM" for x in out)),
+            "three_model_AICc_preference_counts":{
+                model:int(sum(x["AICc_preferred_WN_BM_OU"]==model for x in out))
+                for model in ("WN","BM","OU")
+            },
         }
     return {
         "schema_version":"azami_v4_public_EAzami_niche_BM_OU_20261022_v1",
@@ -204,7 +221,7 @@ def analyse(centroids:Path,primary:Path,alternate:Path):
         },
         "model":"single-optimum stationary-target OU with fixed starting optimum, nested BM at alpha=0",
         "branch_units":"substitutions per site, NOT years; alpha reported in dimensionless median-root-to-tip scale",
-        "selection":"AICc with kBM=2 and kOU=3; Gaussian maximum likelihood conditional on frozen source niches, tree and nugget",
+        "selection":"AICc for WN independent-tips(k=2), BM(k=2), OU single-optimum(k=3), Gaussian ML conditional on frozen present-day GBIF niche means and branch lengths",
         "trait_measurement":"species present-day climatic occupancy centroid, not measured physiological niche or plant morphology",
         "panels":panels,
         "claim_stop":{
