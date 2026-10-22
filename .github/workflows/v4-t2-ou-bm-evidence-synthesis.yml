@@ -20,13 +20,13 @@ jobs:
         run: |
           set -euo pipefail
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401001041 --jq .digest)" = 'sha256:60740a808f856ca68fcf96bdffd06b4b79954b18c7d824ef52e3cc99d9ef5c46'
-          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401100349 --jq .digest)" = 'sha256:f47f82cd12527aec735a9c190c431c95fc9902da6330dfb3e465106ccaacb4fd'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401560444 --jq .digest)" = 'sha256:2ade40b835d6f2655ff7c7c2c51533544d63d9ee2df3176bdc3a530a076fcbac'
           mkdir -p work/t2-evidence/all244 work/t2-evidence/nuclear work/t2-evidence/summary
           gh run download 39720452379 --repo zuizui0223/azami \
             --name v4-t2-S1-all244-wn-bm-ou1-placement-screen \
             --dir work/t2-evidence/all244
-          gh run download 39720362402 --repo zuizui0223/azami \
-            --name v4-t2-S1-NA42-nuclear-wn-bm-ou \
+          gh run download 39721344262 --repo zuizui0223/azami \
+            --name v4-t2-S1-NA42-nuclear-wn-bm-ou-true-means \
             --dir work/t2-evidence/nuclear
       - name: Freeze six main sensitivity cases and independent nuclear model preferences
         run: |
@@ -45,6 +45,7 @@ jobs:
           assert all244['main_collision_free']==191
           assert len(all244['comparison_by_case'])==6
           assert len(nuclear['fits'])==4 and nuclear['matched_independent_nuclear_taxa']==42
+          assert nuclear['n_taxa_with_distinct_original_image_mean_median']>0
           for label,summary in sorted(all244['comparison_by_case'].items()):
               print('FULL244_' + label + '=' + json.dumps(summary,sort_keys=True))
           for k,v in all244['all244_equal_taxon_WN_five_climate_baselines'].items():
@@ -55,8 +56,8 @@ jobs:
             'schema':'v4_S1_all244_ML_phylogenetic_sensitivity_two_original_action_receipts_v1',
             'all244_verified_run':39720452379,
             'all244_verified_artifact':12401001041,
-            'independent_NA42_verified_run':39720362402,
-            'independent_NA42_verified_artifact':12401100349,
+            'independent_NA42_verified_run':39721344262,
+            'independent_NA42_verified_artifact':12401560444,
             'source_taxon_count':244,
             'phylo_coverage_194':194,
             'strict_191':191,
