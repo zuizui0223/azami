@@ -9,6 +9,8 @@ This does not infer independent nodding origins or adaptive optimum shifts.
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 from collections import Counter
 from copy import deepcopy
 import hashlib
@@ -201,7 +203,16 @@ def analyze_independent_na63():
     author_states,trait_sha=download_author_states()
     tree_raw,tree_sha=fetch_author(AUTHOR_NUCLEAR_TREE_PATH,AUTHOR_NUCLEAR_TREE_GIT_BLOB)
     climate_raw,climate_sha=fetch_author(ENV_PATH,ENV_GIT_BLOB)
-    climate=read_published_climate(climate_raw)
+    climate=read_published_climate(climate_raw) # authenticates all 63 rows and BIO12/BIO1/Elevation
+    expanded=list(csv.DictReader(io.StringIO(climate_raw.decode('utf-8-sig'))))
+    if len(expanded)!=63 or set(row['taxa'] for row in expanded)!=set(climate):
+        raise ValueError('Original source climate rows changed')
+    for row in expanded:
+        for axis in ('BIO4','BIO15'):
+            v=float(row[axis])
+            if not np.isfinite(v):
+                raise ValueError('Missing original climate niche component')
+            climate[row['taxa']][axis]=v
     tree=read_author_nuclear_tree(tree_raw,author_states)
     names=sorted(author_states)
     if len(names)!=NUCLEAR_N or len(climate)!=NUCLEAR_N:
