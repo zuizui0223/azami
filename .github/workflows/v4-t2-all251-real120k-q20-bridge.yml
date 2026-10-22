@@ -1,0 +1,75 @@
+name: V4 T2 full251 original S1 taxa linked to actual 120k nuclear Q20 coverage
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_all251_real120k_q20_bridge.py'
+      - 'tests/test_v4_t2_s1_all251_real120k_q20_bridge.py'
+      - '.github/workflows/v4-t2-all251-real120k-q20-bridge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-120k-to-original-full251:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test source-frozen WCVP and BioSample metrics without taxonomy merges
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_s1_all251_real120k_q20_bridge.py
+      - name: Restore original all251 real30k Q20 EAzami294 source verified output
+        run: |
+          set -euo pipefail
+          mkdir -p work/251/source30k work/251/source120k work/251/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12428347508 --jq '.digest')" = 'sha256:6e6b46002610e68f5112ebc70339f23cd23dc7075e5661ed0afe0fca29704968'
+          gh run download 39784988765 --repo zuizui0223/azami --name v4-t2-all251-all244-EAzami294-real241-source-coverage --dir work/251/source30k
+          test -s work/251/source30k/S1_ALL251_SOURCE_NAME_294_EAZAMI_REAL241_CROSSWALK.csv
+      - name: Restore original real 120k Q20 for all 125 SRA runs including two short archives
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12430551556 --jq '.digest')" = 'sha256:525e10d23276f21fea8453a56dac941b66c52d59e3ce76ffde859fbaa194602b'
+          gh run download 39787499085 --repo zuizui0223/azami --name t2-all125-original241-30k-vs-120k-Q20-coverage --dir work/251/source120k
+          test -s work/251/source120k/T2_ALL113_TAXON_SINGLE_RUN_30K_VS_120K.csv
+          test -s work/251/source120k/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv
+          test -s work/251/source120k/T2_125_SOURCE_30K120K_Q20_SUMMARY.json
+      - name: Perform actual source-name-resolved 251 rows including all original 244 WCVP keys
+        run: |
+          python -m analysis.v4.t2_s1_all251_real120k_q20_bridge \
+            --source251 work/251/source30k/S1_ALL251_SOURCE_NAME_294_EAZAMI_REAL241_CROSSWALK.csv \
+            --taxon120k work/251/source120k/T2_ALL113_TAXON_SINGLE_RUN_30K_VS_120K.csv \
+            --run125 work/251/source120k/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv \
+            --summary120k work/251/source120k/T2_125_SOURCE_30K120K_Q20_SUMMARY.json \
+            --out-dir work/251/out
+      - name: Fail if 7 source taxonomic pairs or technical missingness are lost
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          base=Path('work/251/out')
+          r=json.loads((base/'S1_ALL251_REAL_120K_Q20_NUCLEAR_SOURCE_RESULT.json').read_text(encoding='utf-8'))
+          with (base/'S1_ALL251_ORIGINAL_NAMES_REAL_120K_Q20_SOURCE_COVERAGE.csv').open() as fp:
+              rows=list(csv.DictReader(fp))
+          assert len(rows)==251 and len({x['accepted_key'] for x in rows})==244
+          assert sum(int(x['original_S1_photo_count']) for x in rows)==170066
+          assert r['S1_source_taxa_with_any_120k']==111
+          assert r['source_complete_exact_run_depth120k']==123
+          assert r['short_public_SRA_read_archives']==2
+          assert r['S1_source_taxa_with_at_least100_loci_dp3_half_length']==7
+          assert not r['homolog_consensus_sequences_created']
+          print('PASS_FULL251_ALL244_REAL120K_SOURCE',r['qualified_source_units'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-all251-all244-source-name-real120k-Q20-breadth
+          path: work/251/out/
+          if-no-files-found: error
+          retention-days: 90
