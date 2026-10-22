@@ -93,6 +93,7 @@ def evaluate(receipt,original,states):
         receipt.get("source_moreyra_name_matched_taxon_keys")!=113):
         raise ValueError("125-run empirical source mapping proof missing")
     join=[]
+    source_conflicts=[]
     for row in receipt["per_original_public_run"]:
         run=row["run"]
         orig=original.get(run)
@@ -100,7 +101,14 @@ def evaluate(receipt,original,states):
             raise ValueError("S1 real mapped run missing from Moreyra original SRA")
         names={normalize_author_name(z["tree_code"]) for z in orig}
         if len(names)!=1:
-            raise ValueError("One SRA run has ambiguous original tree-code taxon concepts")
+            if any(name in states for name in names):
+                raise ValueError("One SRA run has ambiguous original tree-code botanical HeadPosition")
+            source_conflicts.append({
+                "run":run,"original_tree_code_names":sorted(names),
+                "botanical_state_attribution":"blocked_ambiguous_source_labels",
+                "read_mapping_success_preserved":True
+            })
+            continue
         name=next(iter(names))
         if name not in states:
             continue
@@ -141,6 +149,8 @@ def evaluate(receipt,original,states):
         "original_author_scored_north_american_taxa":N_TAXA,
         "original_botanical_nodding_scored_taxa":N_NODDING,
         "all_125_original_sra_runs_have_real_mappings":True,
+        "multiple_source_tree_code_conflict_runs":source_conflicts,
+        "n_unassignable_source_conflict_runs":len(source_conflicts),
         "n_original_na_taxa_with_exact_named_S1_Moreyra_mapped_runs":len(taxa),
         "n_original_na_nodding_taxa_with_exact_named_runs":len(down),
         "n_original_na_erect_taxa_with_exact_named_runs":len(up),
