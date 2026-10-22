@@ -5,7 +5,8 @@ import pytest
 from analysis.v4 import t2_seven_120k_original241_shared_breadth as m
 
 
-def fixture():
+def fixture(monkeypatch):
+    monkeypatch.setattr(m,"N_SOURCE",7)
     source=[];selected=[];paired=[];results=[]
     taxa=sorted(m.TAXA)
     genes=[f"L{j:03d}" for j in range(241)]
@@ -42,8 +43,8 @@ def fixture():
     return source,selected,paired,genes,results
 
 
-def test_all_seven_source_vouchers_and_actual_joint_q20_breadth():
-    src,chosen,old,genes,reads=fixture()
+def test_all_seven_source_vouchers_and_actual_joint_q20_breadth(monkeypatch):
+    src,chosen,old,genes,reads=fixture(monkeypatch)
     approved=m.validate_sources(src,chosen,old)
     taxa,shared,report=m.combine(approved,genes,reads)
     assert len(approved)==7 and len(taxa)==7 and len(shared)==241
@@ -56,30 +57,30 @@ def test_all_seven_source_vouchers_and_actual_joint_q20_breadth():
     assert report["same_reference_is_not_single_copy_paralog_audit"]
 
 
-def test_voucher_changed_between_two_read_depth_experiments_rejected():
-    src,chosen,old,genes,reads=fixture()
+def test_voucher_changed_between_two_read_depth_experiments_rejected(monkeypatch):
+    src,chosen,old,genes,reads=fixture(monkeypatch)
     chosen[0]["biosample"]="SAMN_INVALID"
     with pytest.raises(ValueError,match="BioSample"):
         m.validate_sources(src,chosen,old)
 
 
-def test_seven_source_120k_depth_threshold_cannot_be_relaxed():
-    src,chosen,old,genes,reads=fixture()
+def test_seven_source_120k_depth_threshold_cannot_be_relaxed(monkeypatch):
+    src,chosen,old,genes,reads=fixture(monkeypatch)
     chosen[0]["same_run_120k_dp3_ge50pct"]="90"
     with pytest.raises(ValueError,match="selection"):
         m.validate_sources(src,chosen,old)
 
 
-def test_sample_120k_original_241_index_totals_must_agree_with_independent_run():
-    src,chosen,old,genes,reads=fixture()
+def test_sample_120k_original_241_index_totals_must_agree_with_independent_run(monkeypatch):
+    src,chosen,old,genes,reads=fixture(monkeypatch)
     a=m.validate_sources(src,chosen,old)
     reads[0]["n_loci_dp3_ge50pct"]=0
     with pytest.raises(ValueError,match="differs"):
         m.combine(a,genes,reads)
 
 
-def test_no_missing_taxa_and_no_different_reference_copy_declared_same():
-    src,chosen,old,genes,reads=fixture()
+def test_no_missing_taxa_and_no_different_reference_copy_declared_same(monkeypatch):
+    src,chosen,old,genes,reads=fixture(monkeypatch)
     a=m.validate_sources(src,chosen,old)
     with pytest.raises(ValueError,match="Seven"):
         m.combine(a,genes,reads[:-1])
@@ -88,8 +89,8 @@ def test_no_missing_taxa_and_no_different_reference_copy_declared_same():
     assert matrix[12]["best_reference_copy_identical_all7"] is False
 
 
-def test_actual_run_depth_must_have_all_241_named_loci():
-    src,chosen,old,genes,reads=fixture()
+def test_actual_run_depth_must_have_all_241_named_loci(monkeypatch):
+    src,chosen,old,genes,reads=fixture(monkeypatch)
     a=m.validate_sources(src,chosen,old)
     reads[0]["loci"].pop()
     with pytest.raises(ValueError,match="241"):
