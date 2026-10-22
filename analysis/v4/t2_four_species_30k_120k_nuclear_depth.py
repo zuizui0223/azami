@@ -110,7 +110,7 @@ def validate_sources(original):
     return selected
 
 
-def map_read_pairs(row,reference,loci,reads,path):
+def map_read_pairs(row,reference,loci,reads,path,*,include_per_locus=False):
     """Reuse the same original 241-locus site depth functionality."""
     path.mkdir(parents=True,exist_ok=True)
     fastqs=[]
@@ -151,6 +151,7 @@ def map_read_pairs(row,reference,loci,reads,path):
     detail=dp.summarize_loci(loci,lengths,refs,depth)
     return {"input_read_pairs":len(reads[0])//4,
             **dp.per_run_metrics(detail),
+            **({"per_locus_241":detail} if include_per_locus else {}),
             "read_depth_not_orthology":True,
             "individual_locus_reference_choice_is_optimistic":True}
 
