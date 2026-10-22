@@ -1,0 +1,80 @@
+name: V4 T2 reusable EAzami294 full nuclear HPC handoff for all S1 source taxa
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-t2-eazami294-global-hpc-handoff.yml'
+      - 'analysis/v4/t2_eazami294_s1_run_bridge.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  build-authentic-294-tip-nuclear-handoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recover source-authenticated S1 full244 crosswalk and EAzami sample-level bridge
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-global/s1 work/t2-global/bridge work/t2-global/panel work/t2-global/hpc
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12399694421 --jq '.digest')" = "sha256:902264668bfea47358fdc66bb85ef543f9be29f5a67266d4d1e248d14db146d1"
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12402464126 --jq '.digest')" = "sha256:3c185e535ecddf80ae18c2d1feee67cfc8c537f6618950eecfe92c1d939b9716"
+          gh run download 39718386338 --repo zuizui0223/azami --name v4-t2-full-S1-244-all-species-public-taxonomic-census --dir work/t2-global/s1
+          gh run download 39726717449 --repo zuizui0223/azami --name v4-t2-all244-EAzami294-exact-sample-bridge --dir work/t2-global/bridge
+          echo "d32e58258a8f98e6e1210ef1733b23402b1bad7277cd6a552148325c40fce021  work/t2-global/s1/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv" | sha256sum -c -
+      - name: Construct original deduplicated 294-tip 241-locus HPC bundle from pinned EAzami
+        working-directory: external/EAzami
+        run: |
+          set -euo pipefail
+          python analysis/materialize_frozen_moreyra_reconciliation.py --output ../../work/t2-global/panel/moreyra_source.csv
+          echo "cf3af71a1a77eee5bd177cef9cf8106b749b949eaacc0ad82bbb331978084505  ../../work/t2-global/panel/moreyra_source.csv" | sha256sum -c -
+          python analysis/build_japan_origin_global_public_panel_v2.py --moreyra-reconciliation ../../work/t2-global/panel/moreyra_source.csv --outdir ../../work/t2-global/panel
+          echo "159d992f0e3e4c5eea54fdeb3de30c12818b2834423cbcee5a314047b8014216  ../../work/t2-global/panel/japan_origin_global_public_panel_v2.csv" | sha256sum -c -
+          python analysis/build_japan_origin_global_hpc_bundle_v2.py --panel ../../work/t2-global/panel/japan_origin_global_public_panel_v2.csv --outdir ../../work/t2-global/hpc
+      - name: Link all 244 source taxa and verified 125 original run links into handoff
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-global/hpc/azami_S1_exact244_bridge
+          cp work/t2-global/s1/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv work/t2-global/hpc/azami_S1_exact244_bridge/
+          cp work/t2-global/bridge/T2_ALL244_TO_EAzami294_TAXON_COVERAGE.csv work/t2-global/hpc/azami_S1_exact244_bridge/
+          cp work/t2-global/bridge/T2_ALL125_MOREYRA_TO_EAzami294_EXACT_RUNS.csv work/t2-global/hpc/azami_S1_exact244_bridge/
+          cp work/t2-global/bridge/T2_EAzami294_S1_244_BRIDGE_SUMMARY.json work/t2-global/hpc/azami_S1_exact244_bridge/
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          p=Path('work/t2-global/hpc')
+          e=json.loads((p/'execution_manifest.json').read_text())
+          assert e['bundle_version']=='japan_origin_global_hpc_bundle_v2'
+          assert e['biological_samples']==294 and e['public_runs']==295
+          assert e['frozen_primary_locus_universe']==241
+          assert e['tree_completed'] is False
+          assert e['automatic_filter_relaxation_allowed'] is False
+          assert '294-tip concatenated IQ-TREE ML tree' in e['tree_products']
+          assert 'source-label ASTRAL-III 5.7.8 species tree' in e['tree_products']
+          b=p/'azami_S1_exact244_bridge'
+          f=list(csv.DictReader((b/'S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv').open()))
+          exact=list(csv.DictReader((b/'T2_ALL125_MOREYRA_TO_EAzami294_EXACT_RUNS.csv').open()))
+          assert len(f)==244 and len(exact)==125
+          assert {r['sample_run_identity_status'] for r in exact}=={'exact_run_BioSample_tree_code'}
+          print('AUTHENTIC_EAZAMI_294_HPC_BUNDLE_WITH_S1_244_BRIDGE_READY; no reads or 294-tip tree yet')
+          PY
+      - name: Publish reusable original HPC submission scripts and S1 linkage
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-EAzami294-global-real-nuclear-HPC-handoff
+          path: work/t2-global/hpc/
+          if-no-files-found: error
+          retention-days: 90
