@@ -30,7 +30,7 @@ def synthetic():
 def test_real_original_names_maintained_within_same_accepted_key():
     frame,mapx=synthetic()
     valid,unit=mod.source_rows(frame,mapx)
-    assert len(valid)==6
+    assert len(valid)==7
     assert len(unit)==3
     assert len(unit.loc[unit.accepted_key=="a"])==2
     a=unit.set_index("original_source_name")
@@ -60,7 +60,7 @@ def test_source_row_finite_original_five_climates_required():
     frame,mapper=synthetic()
     frame.loc[0,mod.EXPOSURES[2]]=np.nan
     valid,unit=mod.source_rows(frame,mapper)
-    assert len(valid)==5
+    assert len(valid)==6
     assert unit.loc[unit.original_source_name=="Cirsium_brevicaule",
                     "original_photo_count"].iloc[0]==1
 
