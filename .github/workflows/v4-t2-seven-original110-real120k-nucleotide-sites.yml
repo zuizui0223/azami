@@ -37,7 +37,7 @@ jobs:
       - name: Restore published independently verified exact seven samples and 110 targets
         run: |
           set -euo pipefail
-          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12459969354 --jq '.digest')" = 'sha256:4a689ce4b90d99a266936ad1a2794ab8b872f2e719f333b8bbd910a6bcde21'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12459969354 --jq '.digest')" = 'sha256:4a689ce4b90d99a266936ad1a2794ab8b872f2e719f333b8b7bbd910a6bcde21'
           gh run download 39860346124 --repo zuizui0223/azami --name v4-t2-113taxa-deep7-author241-30k-shared-locus-audit --dir work/source/seven
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12461423454 --jq '.digest')" = 'sha256:0d889125536d4a0d3512c80ba3b4406ba2a170a84645a71e15ad0e83cb07061b'
           gh run download 39861236007 --repo zuizui0223/azami --name v4-t2-seven-real120k-author241-common-depth --dir work/source/targets
