@@ -69,3 +69,15 @@ def test_source_guard_does_not_recode_photo_angle_as_botanical_downward():
         "source194","clean191","n10_143"}
     assert 0==ALPHA_GRID[0]
     assert ALPHA_GRID[-1]==250
+
+
+def test_frozen_ordered_climate_array_and_named_climate_dict_both_supported():
+    from analysis.v4.t2_all244_ou_bm_orientation import _climate_vector
+    axes=("chelsa_bio01","chelsa_bio04","chelsa_bio12",
+          "chelsa_bio15","chelsa_rsds_mean")
+    values=[12.0,300.0,1800.0,40.0,120.0]
+    named={"S1_five_climate_means":dict(zip(axes,values))}
+    ordered={"S1_five_climate_means":values}
+    assert _climate_vector(named)==_climate_vector(ordered)==values
+    with pytest.raises(ValueError,match="all five original axes"):
+        _climate_vector({"S1_five_climate_means":[1.,2.]})
