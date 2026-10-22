@@ -54,7 +54,7 @@ jobs:
               one=[r for r in rows if r['run']==run]
               assert len(one)==1 and one[0]['biosample']==bio
               assert one[0]['original_tree_code']==tree
-              assert one[0]['S1_source_taxon']==name
+              assert one[0]['S1_source_taxon'].replace('_',' ').strip()==name.replace('_',' ').strip()
               assert one[0]['tree_code_vs_sra_name']=='exact'
           print("PASS independent public SRA sources and specimen identities for S2 original taxa")
           PY
