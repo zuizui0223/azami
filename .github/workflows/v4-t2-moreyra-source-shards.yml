@@ -1,0 +1,66 @@
+name: V4 T2 Moreyra all113 taxa 125-run source-size sharding
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_moreyra_capacity_shards.py'
+      - 'tests/test_v4_t2_moreyra_capacity_shards.py'
+      - '.github/workflows/v4-t2-moreyra-source-shards.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-pinned-storage-plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install test runner
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Test taxon run retention and oversize detection
+        run: python -m pytest -q tests/test_v4_t2_moreyra_capacity_shards.py
+      - name: Verify source of 125 NCBI reported run sizes
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-shard/input work/t2-shard/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401018730 --jq '.digest')" = "sha256:8060532eec0d2638a58f53f72303a476e50004c1dedd8b771e2921122b913472"
+          gh run download 39722668728 --repo zuizui0223/azami \
+            --name v4-t2-Moreyra-125-SRA-RunInfo-sizes \
+            --dir work/t2-shard/input
+          test -s work/t2-shard/input/S1_MOREYRA_125_PUBLIC_RUN_SIZE_METADATA.csv
+      - name: Partition all 125 run accessions into taxon-preserving archive-capacity jobs
+        run: |
+          python -m analysis.v4.t2_moreyra_capacity_shards \
+            --ncbi-sizes work/t2-shard/input/S1_MOREYRA_125_PUBLIC_RUN_SIZE_METADATA.csv \
+            --out-dir work/t2-shard/out \
+            --group-compressed-cap-mb 4000
+      - name: Verify no taxon silently dropped or raw reads falsely claimed
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path('work/t2-shard/out')
+          manifest=json.loads((root/'T2_MOREYRA_SHARD_PLAN_RECEIPT.json').read_text())
+          groups=list(csv.DictReader((root/'T2_MOREYRA_113_SPECIES_COMPRESSION_SHARDS.csv').open()))
+          runs=list(csv.DictReader((root/'T2_MOREYRA_125_SRA_RUN_EXECUTION_QUEUE.csv').open()))
+          assert len(groups)==113 and len(runs)==125
+          assert int(manifest['compressed_SRA_size_total_MB'])==57630
+          assert not manifest['full_244_independent_tree_completed']
+          assert all(x['FASTQ_processed']=='False' for x in runs)
+          print('PASS: all 113 public candidate taxon groups/125 runs retained; compressed-size cap not equated to real scratch capacity')
+          PY
+      - name: Upload source-verified source-size accession plan only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-Moreyra-125-SRA-run-shard-plan
+          path: work/t2-shard/out/
+          retention-days: 90
+          if-no-files-found: warn
