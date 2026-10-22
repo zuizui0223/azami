@@ -69,8 +69,11 @@ def load_source(path):
                              row["run"]+": "+",".join(invalid))
     byrun={r["run"]:r for r in rows}
     for run,(bio,taxon) in S2_REFERENCE.items():
-        if byrun[run]["biosample"]!=bio or byrun[run]["S1_source_taxon"]!=taxon:
-            raise ValueError("S2 source reference voucher drift")
+        original=byrun[run]
+        source_name=" ".join(original["S1_source_taxon"].replace("_"," ").split())
+        expected_name=" ".join(taxon.replace("_"," ").split())
+        if original["biosample"]!=bio or source_name!=expected_name:
+            raise ValueError("S2 source reference run, BioSample or name drift: "+run)
     return sorted(rows,key=lambda r:r["run"])
 
 
