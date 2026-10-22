@@ -67,7 +67,7 @@ def parse_eazami_panel(rows):
         len(by_run)!=EXPECTED["eazami_runs"] or
         counts!={"moreyra":EXPECTED["eazami_moreyra"],"chang":EXPECTED["eazami_chang"]}):
         raise ValueError("EAzami frozen 294/295, 256+38 inventory changed")
-    return by_run,by_bio,by_name
+    return by_run,by_bio,by_name,counts
 
 def link(source_taxa, sra, panel):
     if (len(source_taxa)!=EXPECTED["s1_taxa"] or
@@ -77,7 +77,7 @@ def link(source_taxa, sra, panel):
     if (len(sra)!=EXPECTED["s1_sra_rows"] or
         len({x["accepted_key"] for x in sra})!=EXPECTED["s1_sra_taxa"]):
         raise ValueError("Original 125-run / 113-source candidate SRA table changed")
-    by_run,by_bio,by_name=parse_eazami_panel(panel)
+    by_run,by_bio,by_name,counts=parse_eazami_panel(panel)
     # Keep sample-level and run-level match separate: impossible mappings fail.
     per_run=[]
     index=defaultdict(list)
