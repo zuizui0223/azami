@@ -74,7 +74,7 @@ def read_manifest_and_samples(fetch=download_bytes):
         label=generic_taxon_label(stem)
         if label:
             labelled[label].append(row)
-    return manifest,labelled,part_digests
+    return manifest,labelled,part_digests,hashlib.sha256(manifest_raw).hexdigest()
 
 
 def source_census(path):
@@ -147,7 +147,8 @@ def reconcile(census, samples):
             })
     if matched!=EXPECTED_MATCH_N:
         raise ValueError("113 source-eligible name-matched S1 taxa changed")
-    s2={row["S1_source_taxon"]:row for row in output if row["is_S2_focal"]}
+    s2={generic_taxon_label(row["S1_source_taxon"]):row
+        for row in output if row["is_S2_focal"]}
     if set(s2)!=S2_NAMES or any(not x["sra_name_candidate"] for x in s2.values()):
         raise ValueError("Both S2 comparison species must retain source-vouched SRA candidates")
     if len({(r["accepted_key"],r["biosample"],r["run"]) for r in per_run})!=len(per_run):
@@ -185,13 +186,12 @@ def main():
     p.add_argument("--all244",type=Path,required=True)
     p.add_argument("--out-dir",type=Path,required=True)
     args=p.parse_args()
-    manifest,sra,parts=read_manifest_and_samples()
+    manifest,sra,parts,manifest_sha256=read_manifest_and_samples()
     roster=source_census(args.all244)
     output,per_run,summary=reconcile(roster,sra)
     summary["EAzami_source_run"]=manifest["source_workflow_run"]
     summary["source_parts"]=parts
-    summary["source_manifest_sha256"]=hashlib.sha256(
-        json.dumps(manifest,sort_keys=True).encode("utf-8")).hexdigest()
+    summary["source_manifest_sha256"]=manifest_sha256
     args.out_dir.mkdir(parents=True,exist_ok=True)
     write_csv(args.out_dir/"S1_244_MOREYRA_SRA_NAME_CROSSWALK.csv",
               OUTPUT_FIELDS,output)
