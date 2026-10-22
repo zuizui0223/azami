@@ -33,6 +33,7 @@ EXPECTED_ALL_VARIABLE_POSITIONS=542
 EXPECTED_ALL_INFORMATIVE_POSITIONS=86
 EXPECTED_TARGETS_GE100=101
 MIN_COMMON_SITE_PER_TARGET=100
+MIN_PRIMARY_LOCI=30
 BOOTSTRAP_REPLICATES=300
 BOOTSTRAP_SEED=20261023
 
@@ -178,7 +179,7 @@ def infer(records,refs,boot=BOOTSTRAP_REPLICATES,seed=BOOTSTRAP_SEED):
         raise ValueError(
             "Real same-position seven SRA source Q20 29270/542/86/101 receipt drift")
     primary=[x for x in loci if x["eligible_primary"]]
-    if len(primary)<30 or boot<100:
+    if len(primary)<MIN_PRIMARY_LOCI or boot<100:
         raise ValueError("Pilot loci or locus bootstrap count insufficient")
     # A tree on complete-case observed positions is a technical distance
     # sensitivity only, NOT a phylogenomic acceptance.
