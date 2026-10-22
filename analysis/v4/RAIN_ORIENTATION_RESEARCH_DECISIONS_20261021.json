@@ -40,7 +40,7 @@
     "source_name_collision_keys": 7
   },
   "S1": {
-    "status": "Original 244-key native head-image-angle × annual rainfall BIO12 between-taxon association positive, but real-source geographic sensitivity 237/191/143 shows effect can be explained by species' broad geographic composition; globally unique annual-rain effect not supported under flexible spatial adjustment",
+    "status": "SOURCE-VERIFIED MAIN: native Cirsium 244 taxa/170066 measured images show positive annual BIO12 among-taxon angle association; within-taxon annual BIO12 not supported. Spatial analyses retained only as supplementary confounding caveat; not a geography-independent/causal selection claim.",
     "model": "five previously selected CHELSA covariates BIO1 BIO4 BIO12 BIO15 RSDS, species between/within separately",
     "annual_bio12_between_deg_per_100mm": 0.4381991922885207,
     "annual_bio12_between_95pct_interval": [
@@ -245,7 +245,7 @@
     }
   },
   "S2": {
-    "status": "introduced_status_all350_source_species_screened_exactly_two_eligible; five_covar_transfer_and_niche_overlap_exploratory_only; no_evolutionary_origin_or_equivalence_inference",
+    "status": "SOURCE-VERIFIED MAIN: all original WCVP native vs introduced wild observations for two adequately sampled Cirsium species; both introduced occurrence BIO12 medians wetter, but median head photo angles 68→67 and 64→63 and >=90° shares lack consistent increase; shape fixity/equivalence and adaptive niche shift not established.",
     "focal_source_names": [
       "Cirsium arvense",
       "Cirsium vulgare"
@@ -549,11 +549,11 @@
   },
   "contracts": {
     "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
-    "epistemic_status": "S1 original BIO12 image-angle association positive across 244 keys, stable to single-taxon removal but not independent of broad native geographic composition: 237/191/143 original-source continuous taxon panels all include zero under spherical 2nd-order. BIO15 and within-species BIO12 unsupported. S1 true gravitational posture, nodding-origin dates, causation and T3 remain untested.",
+    "epistemic_status": "S1+S2 MAIN: source verified positive between-taxon rainfall-image-axis head-angle association in native 244 taxa/170066; absent established within-taxon S1 gradient; in two source-supported introduced Cirsium species, introduced occurrence rainfall medians +217/+293mm but photo-angle median change −1° each and >90° difference confidence intervals cross zero. Wet climate OCCUPANCY is positive, absence of a uniform angle shift is observational non-confirmation (not evidence of equality or genetic fixation). Past geographic, phylogenetic and observer sensitivity data retained in SI; biological nodding origins/rain adaptation not proven.",
     "no_new_inferred_fitness_or_origin_count": true,
     "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
-    "latest_source_evidence_report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
-    "primary_claim": "Positive native S1 BIO12 vs species-level continuous image-angle association; source-authenticated geography audit indicates no globally independent BIO12-specific effect after spherical control. S2 occupancy shift not trait causation. Do not claim rain-adaptive evolution.",
+    "latest_source_evidence_report": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md",
+    "primary_claim": "S1 (+): across 244 native Cirsium taxon keys, annual rainfall BIO12 corresponds positively to continuous photographed capitulum angle between taxa (+0.4382°/100mm); within-taxon slope unconfirmed. S2 (+ niche, not phenotype): C. arvense and C. vulgare have wetter observed WCVP-introduced ranges (+217/+293 mm median BIO12) but no common larger photographed head-angle shift (68→67°, 64→63°). This is an observational scale contrast, not proof of fixed orientation or rain-adaptive evolution.",
     "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
     "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING",
     "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
@@ -566,7 +566,9 @@
     "S1_continuous_NA42_independent_nuclear_comparison": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json",
     "S1_continuous_rain_single_taxon_robustness": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json",
     "S1_precipitation_spatial_caveat_receipt": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_SOURCE_VERIFIED.json",
-    "S1_precipitation_spatial_caveat_ja": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_RESULT_JA.md"
+    "S1_precipitation_spatial_caveat_ja": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_RESULT_JA.md",
+    "S1_S2_main_scale_contrast_count_ledger": "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json",
+    "S1_S2_main_scientific_summary": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md"
   },
   "S1_T2_shared_phylogenetic_evidence_20261021": {
     "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
@@ -865,5 +867,85 @@
       "phylogenetic_photo_angle_lack_of_signal_not_proof_of_no_heritability": true,
       "causal_historical_rain_selection_not_tested": true
     }
+  },
+  "S1_S2_primary_positive_between_species_native_introduced_contrast_20261022": {
+    "status": "SOURCE_VERIFIED_DESCRIPTIVE_2_SCALE_ECOLOGY_FROZEN_S1_BETWEEN_BIO12_POSITIVE__S2_WETTER_INTRODUCED_OCCURRENCES_BOTH_SPECIES_WITHOUT_CONSISTENT_PHOTO_ANGLE_INCREASE",
+    "primary_japanese_report": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md",
+    "numeric_source_locked_receipt": "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json",
+    "source_S1": {
+      "study": "native_244_accepted_Cirsium_taxa__170066_actual_photographs",
+      "response": "continuous_EXIF_image_vertical_capitulum_angle",
+      "joint_predictors": [
+        "BIO1",
+        "BIO4",
+        "BIO12",
+        "BIO15",
+        "RSDS"
+      ],
+      "annual_precipitation_BIO12_between_degrees_per_100mm": 0.4381991922885207,
+      "between_interval": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "annual_precipitation_BIO12_within_degrees_per_100mm": -0.044298210799959194,
+      "within_interval": [
+        -0.21884898187399907,
+        0.13025256027408064
+      ],
+      "different_between_and_within_findings": true
+    },
+    "source_S2": {
+      "two_focal_species": [
+        "Cirsium arvense",
+        "Cirsium vulgare"
+      ],
+      "original_native_wild_two_species": 141014,
+      "original_introduced_wild_two_species": 156608,
+      "native_original_orientation_eligible_two_species": 82709,
+      "introduced_original_orientation_eligible_two_species": 91028,
+      "native_climate_niche_comparison_observer_cell_unique_two_species": 56684,
+      "introduced_climate_niche_comparison_observer_cell_unique_two_species": 87494,
+      "native_balanced_head_angle_two_species": 38116,
+      "introduced_balanced_head_angle_two_species": 55944,
+      "median_annual_rainfall_mm_arvense": [
+        658.5982622830617,
+        876
+      ],
+      "median_annual_rainfall_mm_vulgare": [
+        666,
+        959
+      ],
+      "median_image_angle_arvense": [
+        68,
+        67
+      ],
+      "median_image_angle_vulgare": [
+        64,
+        63
+      ],
+      "rain_median_wetter_introduced_for_both": true,
+      "photo_head_angle_increased_downward_consistently_for_both": false,
+      "head_angle_exact_zero_shift_established": false
+    },
+    "original_all_species_WCVP_screen": {
+      "original_observations": 665115,
+      "original_photo_links": 1122854,
+      "native_wild_observations": 313350,
+      "introduced_wild_observations": 156750,
+      "native_orientation_eligible": 170066,
+      "introduced_orientation_eligible": 91106,
+      "other_not_eligible_for_range_comparison": 195015,
+      "species_with_both_status": 7,
+      "species_with_predeclared_replicate_support": 2
+    },
+    "main_claim": "Between-taxon annual rainfall correlation in S1 (native Cirsium) contrasts with the two well-supported same-species native-to-all-introduced wetter occupancy shifts without common larger photographed angle in S2.",
+    "user_requested_no_geographic_reanalysis_in_main": true,
+    "previously_executed_geographic_sensitivity_preserved_supplementary": true,
+    "not_a_direct_Cirsium_nodding_fitness_test": true,
+    "photo_angle_not_gravity": true,
+    "wet_occurrence_niche_shift_not_proven_genetically_adaptive_niche_evolution": true,
+    "S2_non_significant_no_angle_difference_not_a_verified_equivalence": true,
+    "S1_and_S2_native_samples_are_from_same_source_not_independent_replications": true,
+    "frozen_V3_and_original_S1_models_unchanged": true
   }
 }
