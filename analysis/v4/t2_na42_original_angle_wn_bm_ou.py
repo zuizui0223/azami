@@ -36,7 +36,7 @@ def prepare(source:Path,original_194:Path):
     rows=[]
     for row in bridge:
         item=verified194.get(row["tip"])
-        if item is None or item["source_name_collision"]:
+        if item is None or item["source_concept_collision"]:
             raise ValueError("Independent 42-tip S1 original measured source concept missing")
         if (str(item["accepted_key"])!=str(row["accepted_key"])
             or int(item["n_eligible_images"])!=int(row["n_eligible_images"])
