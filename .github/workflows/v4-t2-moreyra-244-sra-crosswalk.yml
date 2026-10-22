@@ -1,0 +1,70 @@
+name: V4 T2 all244 Moreyra public SRA voucher crosswalk
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_moreyra_244_sra_crosswalk.py'
+      - 'tests/test_v4_t2_moreyra_244_sra_crosswalk.py'
+      - '.github/workflows/v4-t2-moreyra-244-sra-crosswalk.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  preserve-all-original-taxa-and-public-vouchers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install current source-validation environment
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Verify taxon-rank and SRA evidence safeguards
+        run: python -m pytest -q tests/test_v4_t2_moreyra_244_sra_crosswalk.py
+      - name: Restore previously authenticated 244 original S1 taxa without observations
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-moreyra/input work/t2-moreyra/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12399694421 --jq '.digest')" = "sha256:902264668bfea47358fdc66bb85ef543f9be29f5a67266d4d1e248d14db146d1"
+          gh run download 39718386338 --repo zuizui0223/azami \
+            --name v4-t2-full-S1-244-all-species-public-taxonomic-census \
+            --dir work/t2-moreyra/input
+          test -s work/t2-moreyra/input/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv
+      - name: Match every S1 taxon to original Moreyra 2025 public SRA runs and vouchers
+        run: |
+          python -m analysis.v4.t2_moreyra_244_sra_crosswalk \
+            --all244 work/t2-moreyra/input/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv \
+            --out-dir work/t2-moreyra/out
+      - name: Fail closed on name coverage or inventing 350-locus species phylogeny
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          root=Path('work/t2-moreyra/out')
+          src=json.loads((root/'S1_244_MOREYRA_SRA_CROSSWALK_SUMMARY.json').read_text())
+          taxa=pd.read_csv(root/'S1_244_MOREYRA_SRA_NAME_CROSSWALK.csv')
+          sample=pd.read_csv(root/'S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv')
+          assert len(taxa)==244
+          assert int(taxa.n_S1_photo.sum())==170066
+          assert int(taxa.sra_name_candidate.sum())==113
+          assert len(sample)==src['matching_public_SRA_sample_records']
+          assert not src['reconstructed_113_tip_nuclear_tree']
+          assert not src['original_350_locus_Moreyra_tree_recovered']
+          assert not src['accepted_taxonomic_concept_and_same_voucher_verified']
+          assert set(taxa.loc[taxa.is_S2_focal,'accepted_key']) <= set(sample.accepted_key)
+          print('PASS: all244 native-image concepts, 113 public-name-matched taxa and source-linked run/vouchers; no invented phylogeny')
+          PY
+      - name: Preserve only public taxon and public SRA voucher evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-all244-Moreyra-SRA-voucher-evidence
+          path: work/t2-moreyra/out/
+          retention-days: 90
+          if-no-files-found: warn
