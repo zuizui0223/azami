@@ -68,7 +68,13 @@ def test_no_imagined_introduction_or_ancestral_origin_dates():
         "T2 Cirsium transitions",
         "T3 Asteraceae cross-tribe convergence"
     ]
-    assert b["S2"]["status"].startswith("introduced_status_")
+    # Original registry first described merely checking establishment
+    # status; S2 has since executed and authenticated all-introduced
+    # comparisons. Refuse a return to an unexecuted-only status while still
+    # rejecting fabricated introduction dates or adaptation claims.
+    assert "SOURCE-VERIFIED MAIN" in b["S2"]["status"]
+    assert "WCVP native vs introduced" in b["S2"]["status"]
+    assert "adaptive niche shift not established" in b["S2"]["status"]
     assert b["S2"]["introduction_age_inferred_from_photograph_date"] is False
     assert b["T2"]["existing_52_trees_sufficient_for_dated_origin_counts"] is False
     assert b["T3"]["cross_tribe_convergence_inferred"] is False
