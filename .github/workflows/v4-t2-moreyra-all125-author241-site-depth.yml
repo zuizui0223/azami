@@ -83,7 +83,7 @@ jobs:
           mkdir -p work/real/input work/real/ref work/real/scratch work/real/out
           gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-real241-original-source --dir work/real/input
           echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/real/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
-          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/real/input/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/real/input/loci/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
       - run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
@@ -97,7 +97,7 @@ jobs:
           bwa index work/real/ref/comp1061_hybpiper_reference.fasta
       - name: Count actual Q20 reads and callable sites for all 241 original loci
         run: |
-          python -m analysis.v4.t2_moreyra_all125_author241_site_depth --source work/real/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --loci work/real/input/moreyra_conservative_241_no_warning_loci.txt --reference work/real/ref/comp1061_hybpiper_reference.fasta --scratch work/real/scratch --shard-id ${{ matrix.shard }} --out work/real/out/shard_${{ matrix.shard }}.json
+          python -m analysis.v4.t2_moreyra_all125_author241_site_depth --source work/real/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --loci work/real/input/loci/moreyra_conservative_241_no_warning_loci.txt --reference work/real/ref/comp1061_hybpiper_reference.fasta --scratch work/real/scratch --shard-id ${{ matrix.shard }} --out work/real/out/shard_${{ matrix.shard }}.json
       - if: always()
         run: rm -rf work/real/scratch
       - uses: actions/upload-artifact@v4
