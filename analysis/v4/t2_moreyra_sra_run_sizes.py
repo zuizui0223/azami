@@ -18,7 +18,7 @@ import urllib.request
 
 BIOPROJECT="PRJNA957074"
 RUN_N=125
-URL="https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi"
+URL="https://trace.ncbi.nlm.nih.gov/Traces/sra-db-be/runinfo"
 FIELDS=("accepted_key","S1_source_taxon","original_tree_code","biosample","run",
         "experiment","voucher_and_herbarium","scope_class",
         "name_reconciliation_priority","tree_code_vs_sra_name",
@@ -37,33 +37,37 @@ def source_runs(path):
 
 
 def parse_runinfo(text):
+    """Official SRA backend runinfo is plain text; CSV or TSV headers are valid."""
     text=text.lstrip("\ufeff").strip()
     if not text or text.startswith("<") or text.startswith("{"):
-        raise ValueError("NCBI returned no CSV RunInfo metadata")
-    stream=io.StringIO(text)
-    parsed=list(csv.DictReader(stream))
+        raise ValueError("NCBI returned no delimited RunInfo metadata")
+    first=text.splitlines()[0]
+    delimiter="\t" if first.count("\t")>first.count(",") else ","
+    parsed=list(csv.DictReader(io.StringIO(text),delimiter=delimiter))
     if not parsed:
-        raise ValueError("NCBI RunInfo returned header-only response")
-    required={"Run","BioSample","size_MB"}
-    if not required<=set(parsed[0]):
-        raise ValueError("NCBI RunInfo lacks required public run/size metadata")
+        raise ValueError("NCBI RunInfo returned a header-only response")
+    keyset=set(parsed[0])
+    runfield="Run" if "Run" in keyset else "run" if "run" in keyset else "acc"
+    biofield="BioSample" if "BioSample" in keyset else "biosample"
+    sizefield="size_MB" if "size_MB" in keyset else "MBytes"
+    if {runfield,biofield,sizefield}-keyset:
+        raise ValueError("NCBI backend runinfo lacks run/BioSample/size columns: "+
+                         ",".join(sorted(keyset)))
     result={}
     for row in parsed:
-        run=row["Run"].strip()
+        run=(row.get(runfield) or "").strip()
         if not run or not run.startswith(("SRR","ERR","DRR")):
             continue
         if run in result:
             raise ValueError("Duplicate public SRA RunInfo run accession")
         try:
-            size=float(row["size_MB"])
+            size=float(row[sizefield])
         except (ValueError,TypeError):
-            # Non-target project records may contain incomplete size cells.
-            # audit() below fails if any one of the 125 requested runs is absent.
             continue
         if not 0<size<1e8:
             continue
         result[run]={
-            "Run":run,"BioSample":row["BioSample"].strip(),
+            "Run":run,"BioSample":(row.get(biofield) or "").strip(),
             "size_MB":size,
             "spots":row.get("spots",""),
             "bases":row.get("bases",""),
@@ -75,26 +79,51 @@ def parse_runinfo(text):
     return result
 
 
-def download_project_runinfo(fetch=None):
+def download_project_runinfo(requested,fetch=None):
+    """Fetch explicit accessions in six bounded batches; never full public reads."""
     if fetch is None:
         def fetch(url):
             req=urllib.request.Request(url,headers={
                 "User-Agent":"azami-source-verified-public-SRA-run-size-audit/1.0",
-                "Accept":"text/csv,text/plain,*/*"})
-            with urllib.request.urlopen(req,timeout=160) as response:
+                "Accept":"text/plain,text/csv,*/*"})
+            with urllib.request.urlopen(req,timeout=90) as response:
                 return response.read().decode("utf-8-sig")
-    url=URL+"?"+urllib.parse.urlencode({
-        "save":"efetch","db":"sra","rettype":"runinfo","term":BIOPROJECT})
-    errors=[]
-    for attempt in range(3):
-        try:
-            return parse_runinfo(fetch(url)),url
-        except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError,ValueError) as e:
-            errors.append(str(e))
+    accessions=sorted(set(requested))
+    if len(accessions)!=RUN_N or not all(x.startswith("SRR") for x in accessions):
+        raise ValueError("Only 125 original public runs can enter the size screen")
+    allruns={}
+    attempts=[]
+    for start in range(0,len(accessions),20):
+        batch=accessions[start:start+20]
+        url=URL+"?"+urllib.parse.urlencode({"acc":",".join(batch)})
+        errors=[]
+        rows=None
+        for attempt in range(3):
+            try:
+                rows=parse_runinfo(fetch(url))
+                break
+            except urllib.error.HTTPError as err:
+                errors.append(f"HTTP {err.code}")
+                if err.code in (400,401,403,404):
+                    break
+            except (urllib.error.URLError,TimeoutError,ValueError) as err:
+                errors.append(str(err))
             if attempt<2:
-                time.sleep(2*(attempt+1))
-    raise RuntimeError("Public NCBI project RunInfo unavailable after bounded retries: "+
-                       " / ".join(errors))
+                time.sleep(attempt+1)
+        if rows is None:
+            raise RuntimeError(
+                f"NCBI official backend runinfo failed on batch {start//20}: "+
+                " / ".join(errors))
+        unexpected=set(rows)-set(batch)
+        if unexpected:
+            raise ValueError("NCBI backend returned unexpected SRA run accessions")
+        allruns.update(rows)
+        attempts.append({"batch":start//20,"requested":len(batch),
+                         "returned":len(rows)})
+    if set(allruns)!=set(accessions):
+        raise ValueError("NCBI backend lacks requested runs: "+
+                         str(sorted(set(accessions)-set(allruns))[:6]))
+    return allruns,URL,attempts
 
 
 def audit(source,records):
@@ -150,9 +179,10 @@ def main():
     p.add_argument("--output-dir",type=Path,required=True)
     a=p.parse_args()
     src=source_runs(a.crosswalk)
-    allrun,url=download_project_runinfo()
+    allrun,url,batches=download_project_runinfo([r["run"] for r in src])
     rows,summary=audit(src,allrun)
-    summary["NCBI_documented_project_RunInfo_CGI"]=url
+    summary["NCBI_documented_SRA_backend_RunInfo"]=url
+    summary["bounded_size_batches"]=batches
     a.output_dir.mkdir(parents=True,exist_ok=True)
     with (a.output_dir/"S1_MOREYRA_125_PUBLIC_RUN_SIZE_METADATA.csv").open(
             "w",newline="",encoding="utf-8") as f:
