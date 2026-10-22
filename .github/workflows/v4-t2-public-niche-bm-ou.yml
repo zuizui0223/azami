@@ -52,11 +52,19 @@ jobs:
               assert panel['n_taxa']==n
               assert panel['tree_scenarios']==7
               assert len(panel['fits'])==7*4*3
+              tally=panel['three_model_AICc_preference_counts']
+              assert set(tally)=={'WN','BM','OU'}
+              assert sum(tally.values())==len(panel['fits'])
+              assert tally['OU']==0
               for row in panel['fits']:
                   assert row['n_taxa']==n
                   assert row['AICc_preferred'] in ('BM','OU')
+                  assert row['AICc_preferred_WN_BM_OU'] in ('WN','BM','OU')
                   assert row['OU_alpha_times_median_root_tip_substitution_distance']>=0
-          print('Real EAzami source-backed 3 panel × 7 real nuclear tree × 4 niche axes × 3 nugget BM OU complete')
+                  assert row['WN_independent_tip_AICc']>0
+                  assert abs(row['WN_minus_BM_AICc']-(
+                      row['WN_independent_tip_AICc']-row['BM_AICc']))<1e-7
+          print('Real EAzami source-backed 3 panel × 7 real nuclear tree × 4 niche axes × 3 nugget WN/BM/OU complete')
           PY
       - name: Upload public source-derived aggregate only
         uses: actions/upload-artifact@v4
