@@ -85,7 +85,7 @@ def source_sample(original125,chosen,accession):
     return row
 
 def majority_base_call(raw_bases):
-    bases=[str(x).upper() for x in raw_bases if str(x).upper() in "ACGT"]
+    bases=[str(x).upper() for x in raw_bases if str(x).upper() in {"A","C","G","T"}]
     if len(bases)<MIN_SUPPORT:
         return None
     common,count=Counter(bases).most_common(1)[0]
@@ -141,7 +141,7 @@ def call_sites_from_pysam(bam,contigs):
         raise ValueError("Original source accepted 110 reference targets lost")
     return outcome
 
-def fetch_align_and_call(src,ref,contigs,scratch):
+def fetch_align_and_call(src,ref,contigs,original241,scratch):
     accession=src["run"]
     folder=Path(scratch)/accession
     folder.mkdir(parents=True,exist_ok=True)
@@ -151,8 +151,9 @@ def fetch_align_and_call(src,ref,contigs,scratch):
             raise ValueError("Source public run did not yield exact first120k paired reads")
         # Full original author241 depth check is a baseline identity check;
         # no genotype or variant sites are silently filled by the reference.
-        original_loci=list(contigs)
-        stats=readops.map_read_pairs(src,ref,original_loci,mates,folder)
+        if len(original241)!=241 or not set(contigs).issubset(set(original241)):
+            raise ValueError("Original author241 panel must contain 110 shared reference targets")
+        stats=readops.map_read_pairs(src,ref,original241,mates,folder)
         if stats.get("input_read_pairs")!=READ_PAIRS:
             raise ValueError("Incorrect original source nested read count")
         calls=call_sites_from_pysam(folder/"aligned.sorted.bam",contigs)
@@ -265,6 +266,7 @@ def main():
     ap.add_argument("--run-id")
     ap.add_argument("--source",type=Path)
     ap.add_argument("--chosen",type=Path)
+    ap.add_argument("--author-loci",type=Path)
     ap.add_argument("--targets",type=Path)
     ap.add_argument("--reference",type=Path)
     ap.add_argument("--scratch",type=Path)
@@ -272,13 +274,14 @@ def main():
     ap.add_argument("--output",type=Path,required=True)
     a=ap.parse_args()
     if a.mode=="one":
-        if not all((a.run_id,a.source,a.chosen,a.targets,a.reference,a.scratch)):
+        if not all((a.run_id,a.source,a.chosen,a.targets,a.author_loci,a.reference,a.scratch)):
             raise ValueError("Real one-run mode requires frozen source and original ref inputs")
         allrows=original.load_source(a.source)
         chosen=read_csv(a.chosen)
         candidates=targets(read_csv(a.targets))
         sample=source_sample(allrows,chosen,a.run_id)
-        result=fetch_align_and_call(sample,a.reference,candidates,a.scratch)
+        original241=depth.loci_from_pinned_author_list(a.author_loci)
+        result=fetch_align_and_call(sample,a.reference,candidates,original241,a.scratch)
         validate_single(result,sample,candidates)
         a.output.parent.mkdir(parents=True,exist_ok=True)
         a.output.write_text(json.dumps(result,sort_keys=True,ensure_ascii=False)+"\n",encoding="utf-8")
