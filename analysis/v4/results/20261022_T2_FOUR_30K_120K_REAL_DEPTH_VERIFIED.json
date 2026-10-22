@@ -1,0 +1,59 @@
+{
+  "schema": "azami_T2_four_source_30k_vs_120k_real_Q20_author241_20261022",
+  "source": "real public ENA source run first paired FASTQ nested prefixes",
+  "workflow_run_id": 39785957701,
+  "workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39785957701",
+  "workflow_commit": "b5b6155f382414e21cc9b1e2acb81bb055c83d5e",
+  "artifact_id": 12428309365,
+  "artifact_digest": "sha256:0391308f0a6c045c4f49a7e7eccc6e2e442d27b29a700ffa818b75eccfe94b33",
+  "source_eazami_commit": "c9870e91604ed1514344ddc8f765eae5237dbf27",
+  "source_original_reference_git_blob": "4f89e234007f367ffa8aa5e2be536bc44f31f445",
+  "source_author_241_loci_sha256": "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73",
+  "quality": "samtools depth -q20 baseQ20 -Q20 mapQ20; best single original reference per locus",
+  "read_count_per_run_pair": [
+    30000,
+    120000
+  ],
+  "per_run": [
+    {
+      "taxon": "Cirsium arvense",
+      "run": "SRR25265555",
+      "biosample": "SAMN34240259",
+      "dp3_25pct_30k": 73,
+      "dp3_25pct_120k": 180,
+      "dp3_50pct_30k": 16,
+      "dp3_50pct_120k": 61
+    },
+    {
+      "taxon": "Cirsium vulgare",
+      "run": "SRR25265662",
+      "biosample": "SAMN34240353",
+      "dp3_25pct_30k": 72,
+      "dp3_25pct_120k": 187,
+      "dp3_50pct_30k": 7,
+      "dp3_50pct_120k": 73
+    },
+    {
+      "taxon": "Cirsium conspicuum",
+      "run": "SRR30887263",
+      "biosample": "SAMN44017833",
+      "dp3_25pct_30k": 94,
+      "dp3_25pct_120k": 181,
+      "dp3_50pct_30k": 20,
+      "dp3_50pct_120k": 76
+    },
+    {
+      "taxon": "Cirsium scopulorum",
+      "run": "SRR30887312",
+      "biosample": "SAMN44017912",
+      "dp3_25pct_30k": 162,
+      "dp3_25pct_120k": 200,
+      "dp3_50pct_30k": 51,
+      "dp3_50pct_120k": 102
+    }
+  ],
+  "interpretation": "four exemplar taxa only; not globally representative of full 125 runs; same-run sequence depth generally improves coverage but none of these are verified orthologous full genes",
+  "real_nuclear_species_tree_estimated": false,
+  "fitness_adaptation_or_rain_causality_inferred": false,
+  "no_raw_fastq_bam_in_artifact": true
+}
