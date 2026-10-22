@@ -16,6 +16,7 @@ import numpy as np
 
 from analysis.v4.s1_continuous_na_nuclear_signal import source_rows
 from analysis.v4.s1_continuous_phylogenetic_history import shared_path_matrix
+from analysis.v4.s1_continuous_phylogenetic_signal import verify_source
 from analysis.v4.t2_source_blocked_five_climate import author_nuclear_tree
 from analysis.v4.t2_all244_ou_bm_orientation import evaluate_models
 from analysis.v4.joint_s1_t2_phylogeny import EXPOSURES
@@ -23,12 +24,35 @@ from analysis.v4.joint_s1_t2_phylogeny import EXPOSURES
 NA_TIPS_EXPECTED=42
 
 
-def prepare(source:Path):
-    rows=source_rows(source)
+def prepare(source:Path,original_194:Path):
+    """Bridge exact 42 concepts, but NEVER reuse a median as a mean."""
+    bridge=source_rows(source)
+    continuous=verify_source(original_194)
+    verified194={row["tip"]:row for row in continuous}
     tree=author_nuclear_tree()
-    source_by={row["tip"]:row for row in rows}
-    if len(rows)!=NA_TIPS_EXPECTED or len(source_by)!=NA_TIPS_EXPECTED:
+    if (len(bridge)!=NA_TIPS_EXPECTED or
+        len({x["tip"] for x in bridge})!=NA_TIPS_EXPECTED):
         raise ValueError("Published nuclear 42-tip S1 overlap drifted")
+    rows=[]
+    for row in bridge:
+        item=verified194.get(row["tip"])
+        if item is None or item["source_name_collision"]:
+            raise ValueError("Independent 42-tip S1 original measured source concept missing")
+        if (str(item["accepted_key"])!=str(row["accepted_key"])
+            or int(item["n_eligible_images"])!=int(row["n_eligible_images"])
+            or abs(float(item["image_median_deg"])-float(row["image_median_deg"]))>1e-6):
+            raise ValueError("Exact source median/observation/concept mismatch")
+        orig=item["S1_five_climate_means"]
+        bridge_climate=row["S1_five_climate_means"]
+        if set(orig)!=set(EXPOSURES) or set(bridge_climate)!=set(EXPOSURES) or any(
+            abs(float(orig[e])-float(bridge_climate[e]))>1e-6 for e in EXPOSURES):
+            raise ValueError("Independent 194-source five-climate crosswalk mismatch")
+        rows.append({
+            **row,
+            "image_mean_deg":float(item["image_mean_deg"]),
+            "image_median_deg":float(item["image_median_deg"]),
+        })
+    source_by={row["tip"]:row for row in rows}
     nuclear=copy.deepcopy(tree)
     for tip in list(nuclear.get_terminals()):
         if tip.name not in source_by:
@@ -41,8 +65,8 @@ def prepare(source:Path):
     return rows,C
 
 
-def run(source:Path):
-    rows,C=prepare(source)
+def run(source:Path,original_194:Path):
+    rows,C=prepare(source,original_194)
     ymean=np.array([float(r["image_mean_deg"]) for r in rows])
     ymedian=np.array([float(r["image_median_deg"]) for r in rows])
     assert 0<=ymean.min()<=ymean.max()<=180
@@ -73,8 +97,10 @@ def run(source:Path):
             **fit,
         })
     return {
-        "schema":"azami_V4_S1_NA42_PUBLISHED_NUCLEAR_WN_BM_OU1_20261022",
+        "schema":"azami_V4_S1_NA42_PUBLISHED_NUCLEAR_TRUE_MEAN_AND_MEDIAN_WN_BM_OU1_20261022_v2",
         "source_S1_joint_run":39584744194,
+        "source_S1_original_194_continuous_run":39594257539,
+        "n_taxa_with_distinct_original_image_mean_median":int(np.sum(abs(ymean-ymedian)>1e-9)),
         "published_nuclear_tree_DOI":"10.1086/724310",
         "source_original_S1_taxa":244,
         "matched_independent_nuclear_taxa":42,
@@ -96,9 +122,10 @@ def run(source:Path):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--joint",required=True,type=Path)
+    p.add_argument("--original-194",required=True,type=Path)
     p.add_argument("--out",required=True,type=Path)
     a=p.parse_args()
-    result=run(a.joint)
+    result=run(a.joint,a.original_194)
     a.out.parent.mkdir(parents=True,exist_ok=True)
     a.out.write_text(json.dumps(result,indent=2,ensure_ascii=False,
                                 sort_keys=True,allow_nan=False)+"\n")
