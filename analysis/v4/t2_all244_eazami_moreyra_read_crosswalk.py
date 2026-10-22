@@ -52,8 +52,10 @@ def load_moreyra():
         part_digests.append(meta["sha256"])
     if len(combined)!=EXPECTED_RECONCILIATION_ROWS:
         raise ValueError("258 public SRA-linked Cirsium sample scope drift")
-    if len(set(row["run"] for row in combined))!=len(combined):
-        raise ValueError("Duplicate public raw run ID in Moreyra sample ledger")
+    # Source ledger has one reused SRA run ID across two tree-code rows.
+    # Track this as source reuse, not two genetically independent libraries.
+    if any(not row["run"].strip() for row in combined):
+        raise ValueError("A source-linked sample has no public SRA run")
     if any(row["sra_link_status"]!="linked_runinfo" for row in combined):
         raise ValueError("Moreyra sample row without an original SRA link")
     return manifest,combined,hashlib.sha256(manifest_raw).hexdigest()
@@ -133,6 +135,11 @@ def analyse(coverage:pd.DataFrame,moreyra):
         "source_S1_current_tree_covered":194,
         "source_S1_strict_clean_tree":191,
         "source_Moreyra_public_Cirsium_SRA_sample_rows":258,
+        "source_Moreyra_unique_SRA_run_ids":int(len({r["run"] for r in moreyra})),
+        "source_Moreyra_reused_SRA_run_ids":sorted({
+            run for run in {r["run"] for r in moreyra}
+            if sum(q["run"]==run for q in moreyra)>1
+        }),
         "n_S1_taxa_with_public_raw_read_name_match":int(len(hasreads)),
         "n_S1_taxa_with_grafted_tree_and_Moreyra_public_reads":
            int((hasreads.original_grafted_194_tree_covered).sum()),
