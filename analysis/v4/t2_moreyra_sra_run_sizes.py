@@ -56,10 +56,12 @@ def parse_runinfo(text):
             raise ValueError("Duplicate public SRA RunInfo run accession")
         try:
             size=float(row["size_MB"])
-        except (ValueError,TypeError) as err:
-            raise ValueError("Invalid NCBI archived SRA size") from err
+        except (ValueError,TypeError):
+            # Non-target project records may contain incomplete size cells.
+            # audit() below fails if any one of the 125 requested runs is absent.
+            continue
         if not 0<size<1e8:
-            raise ValueError("Missing/nonpositive or unreasonable SRA archived size_MB")
+            continue
         result[run]={
             "Run":run,"BioSample":row["BioSample"].strip(),
             "size_MB":size,
