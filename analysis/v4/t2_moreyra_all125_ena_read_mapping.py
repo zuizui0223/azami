@@ -142,8 +142,6 @@ def align_and_count(row,ref,workdir,*,fetch=ena.request_bytes,report=authoritati
             ["bwa","mem","-t","2",str(ref),str(fastq[0]),str(fastq[1])],
             stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         try:
-            sort=run_commands(["samtools","sort","-@","2","-m","128M",
-                               "-o",str(bam),"-"],timeout=240) if False else None
             # Use one bounded stream: BWA stdout must feed samtools stdin.
             proc=subprocess.Popen(
                 ["samtools","sort","-@","2","-m","128M","-o",str(bam),"-"],
