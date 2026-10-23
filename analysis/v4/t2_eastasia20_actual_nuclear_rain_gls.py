@@ -76,6 +76,12 @@ def read_sources(*,fetch=fetch_fixed,climate=LOCAL_CLIMATE):
         raise ValueError("True East Asia 20 published morphology changed")
     tree.root_with_outgroup(TREE_OUTGROUP)
     tree.prune(TREE_OUTGROUP)
+    # Biopython joins the LONG outgroup edge to the ingroup's root edge on
+    # reroot+prune. It is NOT shared ingroup evolutionary history; retaining
+    # it adds a spurious common covariance term to all 20 terminal taxa.
+    # The true ingroup split lengths remain unchanged when we clear ONLY
+    # the root stem that has no parent within the studied tree.
+    tree.root.branch_length=0.0
     if set(coded)-{z.name for z in tree.get_terminals()}:
         raise ValueError("Outgroup pruning lost original botanical source tip")
     climate_bytes=Path(climate).read_bytes()
