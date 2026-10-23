@@ -57,6 +57,8 @@ OU alphaが検索上限に到達：気候未調整23/52、調整後27/52。OUは
 
 ただし**MLのUFBoot>=95は4枝中2つだけ**。*C. flodmanii*＋*C. tracyi* の枝はUFBoot80%、全7分類群のNJ座位再標本化225/300=75%。*C. flodmanii*＋*C. scopulorum*＋*C. tracyi* の枝はUFBoot55%、SH-aLRT31.8%。**トポロジーの一致を完全な枝確証にしない**。これは不連続な共通Q20位置からの技術的核MLであり、元著者Moreyra350座位完成種樹、全294標本樹、頭花のU→D転換数や降水による適応を再構築したものではない。
 
+**さらに実核候補101座位を丸ごと置換付きで再標本化する最尤推定を300回完走**（[実行 #39876618341](https://github.com/zuizui0223/azami/actions/runs/39876618341)／[結果JSON](20261023_T2_REAL7_GTRG4_ML_SOURCE_VERIFIED.json)）。無根分割の再現頻度は *C. italicum*＋*C. vulgare* **292/300**、*C. flodmanii*＋*C. tracyi* **246/300**、*C. italicum*＋*C. latifolium*＋*C. vulgare* **300/300**、*C. flodmanii*＋*C. scopulorum*＋*C. tracyi* **177/300**。真正NA63核系統の厳密4-tip分割一致も**246/300（82%）**。これらは同じ7実SRA試料の限られた共通Q20塩基位置に関する技術的ML座位再標本化で、独立な適応的起源や全294種樹の確立を示さない。
+
 ## 独立の植物学的姿勢・変化回数：BM/OUと区別する
 
 - **EAzami日本放散38分類群**では独立植物誌で採点が解決した19概念の**最節約総変化6**、UFBoot系統仮説1,000本では**4～6**。根や各枝の転換位置には未解明が残る。
