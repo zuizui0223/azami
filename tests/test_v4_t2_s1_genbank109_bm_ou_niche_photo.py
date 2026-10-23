@@ -39,6 +39,11 @@ def test_true_rooted_common_phylogeny_BM_and_two_OU_hypotheses(monkeypatch):
         assert np.allclose(np.diag(stat),np.repeat(1.05,8))
         assert set(obs["photo_mean_angle_deg"])=={float(30+5*i) for i in range(8)}
         assert len(obs["log_BIO12"])==8
+        rho=m.joint_BM_whitened_niche_head_photo_correlation(obs,h,C,D,.05)
+        assert -1<=rho["log_BIO12_vs_S1_photo_angle_BM_whitened_r"]<=1
+        assert 0<=rho["conditional_fixed_BM_covariance_approx_two_sided_p"]<=1
+        assert rho["only_same_109_ITS_taxa_original_photo_angle"]
+        assert rho["not_an_independent_ancestral_transitions_or_adaptive_selection_test"]
 
 def test_OU_stationary_covariance_root_invariance_unlike_fixed_root():
     tree=tiny()
