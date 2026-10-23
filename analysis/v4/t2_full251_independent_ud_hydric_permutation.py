@@ -276,7 +276,7 @@ def main():
          "scored":report["known_independent_botanical_U_D_source_names"],
          "cases":{name:{"scored":case["n_authority_scored"],
                        "down":case["n_D_nodding"],
-                       "BIO12":case.get("axes",{}).get(LABELS["chelsa_bio12"],{})}
+                       "axes":case.get("axes",{})}
                   for name,case in report["cases"].items()},
         },sort_keys=True,ensure_ascii=False),flush=True)
 
