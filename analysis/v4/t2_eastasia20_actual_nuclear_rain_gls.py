@@ -54,6 +54,19 @@ def fetch_fixed(path, blob):
     return payload
 
 
+def rooted_ingroup(tree,outgroup):
+    """Source nuclear root with correct removal of outgroup-only long stem."""
+    if outgroup not in {t.name for t in tree.get_terminals()}:
+        raise ValueError("Published original nuclear outgroup was lost")
+    tree.root_with_outgroup(outgroup)
+    tree.prune(outgroup)
+    # Biopython joins the long outgroup edge to the ingroup root edge.
+    # A removed outgroup is NOT an ancestral ingroup branch and must not
+    # inflate Brownian shared-ancestry covariance across ingroup tips.
+    tree.root.branch_length=0.0
+    return tree
+
+
 def read_sources(*,fetch=fetch_fixed,climate=LOCAL_CLIMATE):
     tree_bytes=fetch(TREE_FILE,TREE_BLOB)
     trait_bytes=fetch(TRAIT_FILE,TRAIT_BLOB)
@@ -74,14 +87,7 @@ def read_sources(*,fetch=fetch_fixed,climate=LOCAL_CLIMATE):
     count=Counter(r["analysis_state"] for r in original)
     if count!={"U":9,"D":SOURCE_DOWN,"?":SOURCE_UNKNOWN} or len(coded)!=SOURCE_OBSERVED:
         raise ValueError("True East Asia 20 published morphology changed")
-    tree.root_with_outgroup(TREE_OUTGROUP)
-    tree.prune(TREE_OUTGROUP)
-    # Biopython joins the LONG outgroup edge to the ingroup's root edge on
-    # reroot+prune. It is NOT shared ingroup evolutionary history; retaining
-    # it adds a spurious common covariance term to all 20 terminal taxa.
-    # The true ingroup split lengths remain unchanged when we clear ONLY
-    # the root stem that has no parent within the studied tree.
-    tree.root.branch_length=0.0
+    tree=rooted_ingroup(tree,TREE_OUTGROUP)
     if set(coded)-{z.name for z in tree.get_terminals()}:
         raise ValueError("Outgroup pruning lost original botanical source tip")
     climate_bytes=Path(climate).read_bytes()
