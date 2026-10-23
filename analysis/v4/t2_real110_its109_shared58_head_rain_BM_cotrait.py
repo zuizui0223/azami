@@ -36,7 +36,7 @@ NUISANCE_TIP_FRACTIONS=(0.,.05)
 
 
 def phylogenetic_pair_correlation(names,K,byname,nugget):
-    if not (12<=len(names)<=110 or 0<=nugget<=.20):
+    if not (12<=len(names)<=110 and 0<=nugget<=.20):
         raise ValueError("Original source species or noise assumptions outside contract")
     if len(set(names))!=len(names) or K.shape!=(len(names),len(names)):
         raise ValueError("One-to-one original source S1 photo and gene tree taxon tips required")
