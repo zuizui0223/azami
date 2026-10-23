@@ -15,7 +15,7 @@ def synthetic(monkeypatch):
     run=r.RUN
     samples=[{
         "run":run,"biosample":r.ORIGINAL_BIO,"accepted_key":r.ORIGINAL_SOURCE_ACCEPTED,
-        "taxon_name":r.TAXON,
+        "taxon_name":"Cirsium flodmanii",
         "phylogenetic_tip":"WCVP"+r.ORIGINAL_SOURCE_ACCEPTED},
         {"run":"SRR100","biosample":"SAMN100","accepted_key":"100",
          "taxon_name":"Cirsium example100","phylogenetic_tip":"WCVP100"},
