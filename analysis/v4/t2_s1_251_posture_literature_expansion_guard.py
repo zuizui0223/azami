@@ -62,7 +62,8 @@ def checked_summary(all_rows, external, queue):
             continue
         seen.add(taxon)
         if original != "?" or new["source_review_level"] not in (
-            "single_authority_direct_capitulum", "single_authority_variable_state"):
+            "single_authority_direct_capitulum", "single_authority_variable_state",
+            "single_authority_developmental_state"):
             raise ValueError("New literature must not replace already scored traits")
         if (new["strict_dual_blind_taxon_concept_checked"] != "no"
             or not new["primary_source_url"].startswith("https://")
