@@ -1,0 +1,147 @@
+name: V4 T3 authentic 131 Senecioneae GenBank linked ITS ETS own nuclear ML tree
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_2025_real_genbank_its_ets_tree.py'
+      - 'analysis/v4/results/20261023_T3_REN2021_TRUE_SRA_ORIGINAL_POSTURE_SUPPLEMENT.csv'
+      - 'analysis/v4/results/20261023_T3_TAIWANIA2025_ORIGINAL163_ITS_ETS_GENBANK_ACCESSIONS.csv'
+      - 'tests/test_v4_t3_2025_real_genbank_its_ets_tree.py'
+      - '.github/workflows/v4-t3-2025-actual-131taxon-nuclear-rDNA-ML.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_2025_real_genbank_its_ets_tree.py'
+      - 'analysis/v4/results/20261023_T3_REN2021_TRUE_SRA_ORIGINAL_POSTURE_SUPPLEMENT.csv'
+      - 'analysis/v4/results/20261023_T3_TAIWANIA2025_ORIGINAL163_ITS_ETS_GENBANK_ACCESSIONS.csv'
+      - 'tests/test_v4_t3_2025_real_genbank_its_ets_tree.py'
+      - '.github/workflows/v4-t3-2025-actual-131taxon-nuclear-rDNA-ML.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: t3-2025-genbank-original-ITS-ETS-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  original-2025-public-nuclear-rDNA-tree:
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install MAFFT IQ-TREE2 and original publication GenBank compatibility tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq -y mafft iqtree
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+          command -v iqtree2 || command -v iqtree
+      - name: Validate linked rDNA and stage-specific published morph
+        run: |
+          python -m pytest -q tests/test_v4_t3_2025_real_genbank_its_ets_tree.py \
+            tests/test_v4_t3_public_2025_its_ets_genbank_reconstruct.py \
+            tests/test_v4_t3_ren2021_real_sra_capitulum_tip_crosswalk.py
+      - name: Restore REAL GenBank ITS ETS metadata and sequence FASTAs recovered for all published 163 source rows
+        run: |
+          set -euo pipefail
+          mkdir -p work/T3/2025-real-source work/T3/2025-msa work/T3/2025-tree
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12504855926 --jq '.digest')" = \
+            'sha256:64419785872135e4232eae8f96d6976f22da958300764209619951223fd9a55e'
+          gh run download 39960458391 --repo zuizui0223/azami \
+            --name t3-published2025-163-source-genbank-ITS-ETS-154names-exact-original \
+            --dir work/T3/2025-real-source
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/T3/2025-real-source/T3_2025_TRUE_SOURCE_GENBANK_ITS_ETS_RECOVERY_STATUS.json').read_text())
+          assert x['source_rows_queried']==163
+          assert x['n_unique_taxa_with_exact_published_organism_ITS']==131
+          assert x['n_unique_taxa_with_exact_published_organism_both_ITS_and_ETS']==73
+          assert not x['source_failure_batches_not_ITS_absence']
+          assert x['original_ITS_ETS_rDNA_spacers_physically_linked_not_independent_nuclear_orthologs']
+          PY
+      - name: Align ITS and ETS independently from real GenBank nucleotides, no copied reference bases
+        run: |
+          set -euo pipefail
+          mafft --auto --adjustdirectionaccurately --thread 2 \
+            work/T3/2025-real-source/T3_2025_ORIGINAL_GENBANK_ITS_SEQUENCE.fasta \
+            > work/T3/2025-msa/T3_ORIGINAL_ITS_MAFFT.fasta \
+            2> work/T3/2025-msa/T3_ITS_MAFFT.stderr.log
+          mafft --auto --adjustdirectionaccurately --thread 2 \
+            work/T3/2025-real-source/T3_2025_ORIGINAL_GENBANK_ETS_SEQUENCE.fasta \
+            > work/T3/2025-msa/T3_ORIGINAL_ETS_MAFFT.fasta \
+            2> work/T3/2025-msa/T3_ETS_MAFFT.stderr.log
+          python -m analysis.v4.t3_2025_real_genbank_its_ets_tree --stage prepare \
+            --mapping work/T3/2025-real-source/T3_2025_NUCLEAR_rDNA_SOURCE_ACCESSION_TAXON_MAPPING.csv \
+            --source-receipt work/T3/2025-real-source/T3_2025_TRUE_SOURCE_GENBANK_ITS_ETS_RECOVERY_STATUS.json \
+            --ITS-msa work/T3/2025-msa/T3_ORIGINAL_ITS_MAFFT.fasta \
+            --ETS-msa work/T3/2025-msa/T3_ORIGINAL_ETS_MAFFT.fasta \
+            --outdir work/T3/2025-msa
+      - name: Infer actual 2025 Senecioneae 131-species linked rDNA maximum likelihood tree (not a species tree)
+        run: |
+          set -euo pipefail
+          status="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/T3/2025-msa/T3_2025_AUTHENTIC_ITS_ETS_MSA_QC_RECEIPT.json').read_text())
+          print(d['status'])
+          PY
+          )"
+          if [[ "$status" != "T3_REAL_2025_LINKED_ITS_ETS_RIBOSOMAL_QC_READY" ]]; then
+            echo "STOP insufficient authentic overlap: $status"
+            exit 0
+          fi
+          bin="$(command -v iqtree2 || command -v iqtree)"
+          "$bin" -s work/T3/2025-msa/T3_2025_AUTHENTIC_GENBANK_LINKED_ITS_ETS_CONCAT.fasta \
+            -m GTR+G4 -B 1000 -alrt 1000 -T 2 -seed 20261023 \
+            -pre work/T3/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML
+          test -s work/T3/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile
+          python -m analysis.v4.t3_2025_real_genbank_its_ets_tree --stage tree \
+            --mapping work/T3/2025-real-source/T3_2025_NUCLEAR_rDNA_SOURCE_ACCESSION_TAXON_MAPPING.csv \
+            --prepared work/T3/2025-msa/T3_2025_AUTHENTIC_ITS_ETS_MSA_QC_RECEIPT.json \
+            --tree work/T3/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile \
+            --outdir work/T3/2025-tree
+          cp work/T3/2025-msa/T3_2025_AUTHENTIC_ITS_ETS_MSA_QC_RECEIPT.json work/T3/2025-tree/
+          git rev-parse HEAD > work/T3/2025-tree/ANALYSIS_GITHUB_COMMIT.txt
+      - name: Verify real source and avoid pseudoreplicated original names or unsupported U to D adaptation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/T3/2025-msa')
+          a=json.loads((root/'T3_2025_AUTHENTIC_ITS_ETS_MSA_QC_RECEIPT.json').read_text())
+          assert a['source_original_163_rows']==163
+          assert a['source_original_154_distinct_scientific_names']==154
+          assert a['source_selected_authenticated_ITS_taxa']==131
+          assert a['source_selected_authenticated_ETS_taxa']==73
+          assert not a['same_original_ITS_ETS_marker_record_ITS_ETS_genes_independent']
+          assert not a['species_level_U_D_fixed_ancestral_transition_rate_computable']
+          if a['status']=='T3_REAL_2025_LINKED_ITS_ETS_RIBOSOMAL_QC_READY':
+              b=json.loads(Path('work/T3/2025-tree/T3_2025_OWN_REAL_NUCLEAR_rDNA_ANCESTRY_AND_POSTURE.json').read_text())
+              assert b['original_2025_genbank_linked_ITS_ETS_source_biological_tips']==131
+              assert b['source_documented_nodding_tip_genera'].get('Cremanthodium',0)>=2
+              assert b['source_documented_nodding_tip_genera'].get('Parasenecio',0)>=2
+              assert b['no_erect_morphology_control_on_source_genuine_rDNA_genealogy_proven']
+              assert not b['phylogenetic_replicate_independent_gene_trees']
+              assert b['two_genera_are_not_proof_of_multiple_U_to_D_independent_origins']
+              print("T3_EXECUTED_PUBLIC_GENBANK_ITS_ETS_131_SOURCE_ML_NO_HISTORICAL_ORIGIN_INFLATION")
+          else:
+              print("T3_SOURCE_QC_STOP",a['marker_site_occupancy'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-2025-actual-131-GenBank-linked-ITS-ETS-original-ML-nuclear-phylogeny
+          path: |
+            work/T3/2025-msa/T3_2025_AUTHENTIC_ITS_ETS_MSA_QC_RECEIPT.json
+            work/T3/2025-msa/T3_2025_AUTHENTIC_GENBANK_LINKED_ITS_ETS_CONCAT.fasta
+            work/T3/2025-msa/T3_2025_NUCLEAR_rDNA_SOURCE_PARTITIONS.txt
+            work/T3/2025-tree/
+          if-no-files-found: warn
+          retention-days: 90
