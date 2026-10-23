@@ -11,11 +11,11 @@ def toy():
 def test_true_pair_distance_uses_all_original_tree_edges_and_never_invents_gain():
     t=toy()
     data={
-        "A":{"botanical_U_D_state":"D","taxon_name":"A","chelsa_bio12":"1000"},
-        "B":{"botanical_U_D_state":"U","taxon_name":"B","chelsa_bio12":"1400"},
-        "C":{"botanical_U_D_state":"?","taxon_name":"C","chelsa_bio12":"600"},
-        "D":{"botanical_U_D_state":"D","taxon_name":"D","chelsa_bio12":"2100"},
-        "E":{"botanical_U_D_state":"U","taxon_name":"E","chelsa_bio12":"700"},
+        "A":{"botanical_U_D_state":"D","taxon_name":"A","chelsa_bio12":"1000","chelsa_bio15":"52","chelsa_bio01":"8"},
+        "B":{"botanical_U_D_state":"U","taxon_name":"B","chelsa_bio12":"1400","chelsa_bio15":"42","chelsa_bio01":"9"},
+        "C":{"botanical_U_D_state":"?","taxon_name":"C","chelsa_bio12":"600","chelsa_bio15":"45","chelsa_bio01":"11"},
+        "D":{"botanical_U_D_state":"D","taxon_name":"D","chelsa_bio12":"2100","chelsa_bio15":"65","chelsa_bio01":"5"},
+        "E":{"botanical_U_D_state":"U","taxon_name":"E","chelsa_bio12":"700","chelsa_bio15":"70","chelsa_bio01":"6"},
     }
     # For the toy tree, override the number-of-D check only in this scope.
     old=m.D
