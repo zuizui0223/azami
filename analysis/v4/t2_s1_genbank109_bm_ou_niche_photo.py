@@ -270,9 +270,12 @@ def run(s1,accessions,tree_file,discovery,alignment,*,n_perm=999):
     master,_,tree,_,_=source.load_evidence(
         s1,accessions,tree_file,discovery,alignment)
     if len(master)!=N_S1:raise ValueError("Original S1 photo source has unexpected size")
+    master_by_original_source={row["original_source_name"]:row for row in master}
+    if len(master_by_original_source)!=N_S1:
+        raise ValueError("Original S1 species-name entries not unique")
     results={}
     for rooting in ("midpoint","source_Newick"):
-        names,age,M,D,vals,med=prepare_data(tree,master,rooting)
+        names,age,M,D,vals,med=prepare_data(tree,master_by_original_source,rooting)
         noises=(("tip_nugget5percent",.05),("tip_nugget_zero",0.0)) if rooting=="midpoint" else (("tip_nugget5percent",.05),)
         for label,noise in noises:
             outcome={}
