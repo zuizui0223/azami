@@ -40,7 +40,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq -y mafft iqtree
-          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'requests>=2.31,<3' 'pytest>=8,<10'
           command -v iqtree2 || command -v iqtree
       - name: Validate linked rDNA and stage-specific published morph
         run: |
