@@ -88,5 +88,5 @@ def test_no_fictitious_genotype_species_gravity_by_value_threshold():
     s={"Cirsium_foo":{"mean_image_angle_deg":"85","median_image_angle_deg":"86","chelsa_bio12":"1200"}}
     assert m.phenotype(["Cirsium_foo"],s,"S1_photo_mean_image_head_angle").tolist()==[85.]
     assert np.log(1200)==pytest.approx(m.phenotype(["Cirsium_foo"],s,"log_BIO12")[0])
-    with pytest.raises(ValueError,match="fictitious"):
+    with pytest.raises(ValueError,match="fictional"):
         m.phenotype(["Cirsium_foo"],s,"nodding_or_not")
