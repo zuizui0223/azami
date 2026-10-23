@@ -1,0 +1,114 @@
+name: V4 T2 real seven source nuclear IQ-TREE ML 101 versus 110 loci
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real7_author101_iqtree_ml.py'
+      - 'tests/test_v4_t2_real7_author101_iqtree_ml.py'
+      - '.github/workflows/v4-t2-real7-iqtree-ml.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  authentic-seven-source-technical-maximum-likelihood:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test no DNA imputation, exact source labels and unrooted quartet
+        run: |
+          python -m pip install 'biopython>=1.83,<1.90' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real7_author101_iqtree_ml.py
+      - name: Verify same immutable seven real120k source Q20 receipts and prior technical NJ
+        run: |
+          set -euo pipefail
+          mkdir -p work/7ml/source work/7ml/receipts work/7ml/nj work/7ml/stage work/7ml/trees work/7ml/results
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12465191431 --jq '.digest')" = 'sha256:b9969337e3cf4bc971bf97058b47ecb7daaab563505593fb83f2cb8b8bb6e3d2'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12464634621 --jq '.digest')" = 'sha256:e169d63fc490258c993f85b666e8505522acc80c93505dd16ca44f8a6331c529'
+          gh run download 39868141961 --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/7ml/source
+          gh run download 39868141961 --repo zuizui0223/azami --pattern 't2-real120k-source-original110-Q20-sites-*' --dir work/7ml/receipts
+          gh run download 39868882212 --repo zuizui0223/azami --name v4-t2-seven-original110-real120k-Q20-technical-NJ --dir work/7ml/nj
+          test "$(find work/7ml/receipts -name 'SRR*.json' | wc -l)" -eq 7
+          test -s work/7ml/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+          test -s work/7ml/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+          test -s work/7ml/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
+          test -s work/7ml/nj/SEVEN_REAL_Q20_101_LOCUS_NJ_DIAGNOSTIC.json
+          test -s work/7ml/nj/SEVEN_REAL_Q20_101_LOCUS_NJ_TECHNICAL.nwk
+      - name: Rebuild ML inputs from genuine observed complete-case Q20 bases, no reference fill
+        run: |
+          python -m analysis.v4.t2_real7_author101_iqtree_ml --mode prepare \
+            --sra-source work/7ml/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --chosen work/7ml/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
+            --targets work/7ml/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --receipts work/7ml/receipts \
+            --out-dir work/7ml/stage
+      - name: Install system packaged IQ-TREE version 2 and audit version
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq iqtree
+          command -v iqtree2
+          iqtree2 --version | tee work/7ml/results/IQTREE_VERSION.txt
+      - name: Infer primary 101 observed-only source loci GTR+G4 1000 UFBoot and SH-aLRT
+        run: |
+          iqtree2 -s work/7ml/stage/primary101.fasta \
+            -m GTR+G4 -B 1000 --alrt 1000 -T 2 --seed 20261023 \
+            -pre work/7ml/trees/primary101
+          test -s work/7ml/trees/primary101.treefile
+      - name: Infer sensitivity all 110 original copy-matched loci without site imputation
+        run: |
+          iqtree2 -s work/7ml/stage/all110_sensitivity.fasta \
+            -m GTR+G4 -B 1000 --alrt 1000 -T 2 --seed 20261023 \
+            -pre work/7ml/trees/all110
+          test -s work/7ml/trees/all110.treefile
+      - name: Independently compare published NA63 4-tip quartet, ML versus prior NJ
+        run: |
+          python -m analysis.v4.t2_real7_author101_iqtree_ml --mode verify \
+            --ml-manifest work/7ml/stage/REAL7_SOURCE_Q20_ML_INPUT_MANIFEST.json \
+            --nj-report work/7ml/nj/SEVEN_REAL_Q20_101_LOCUS_NJ_DIAGNOSTIC.json \
+            --nj-tree work/7ml/nj/SEVEN_REAL_Q20_101_LOCUS_NJ_TECHNICAL.nwk \
+            --ml-primary work/7ml/trees/primary101.treefile \
+            --ml-all work/7ml/trees/all110.treefile \
+            --output work/7ml/results/REAL7_OBSERVED_ONLY_IQTREE_GTRG4_NA63_QUARTET.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/7ml/results/REAL7_OBSERVED_ONLY_IQTREE_GTRG4_NA63_QUARTET.json')
+          z=json.loads(p.read_text())
+          assert z['primary_loci']==101 and z['primary_observed_only_Q20_positions']==28726
+          assert z['sensitivity_loci']==110 and z['sensitivity_observed_only_Q20_positions']==29270
+          assert not z['intact_orthologous_sequences_or_copy_number_verified']
+          assert not z['EAzami_294sample_global_species_tree_reconstructed']
+          for k in ['primary_101','sensitivity_110']:
+              assert z['results'][k]['n_real_sra_tips']==7
+              assert z['results'][k]['n_unrooted_binary_splits']==4
+              assert z['results'][k]['not_species_tree_nor_rooted_nor_dated']
+          print('REAL SOURCE SEVEN DNA IQ-TREE TECHNICAL ML PASS')
+          PY
+      - name: Preserve tree topology and sample-level source hashes but not assembled FASTA or reads
+        if: always()
+        run: |
+          if test -s work/7ml/trees/primary101.treefile; then
+            cp work/7ml/trees/primary101.treefile work/7ml/results/REAL7_101_Q20_IQTREE_UNROOTED_TECHNICAL.nwk
+            sha256sum work/7ml/trees/primary101.treefile >> work/7ml/results/IQTREE_TREE_SHA256.txt
+          fi
+          if test -s work/7ml/trees/all110.treefile; then
+            cp work/7ml/trees/all110.treefile work/7ml/results/REAL7_110_Q20_IQTREE_UNROOTED_TECHNICAL.nwk
+            sha256sum work/7ml/trees/all110.treefile >> work/7ml/results/IQTREE_TREE_SHA256.txt
+          fi
+          rm -rf work/7ml/stage work/7ml/receipts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-real7-source-observed101-110-IQTREE-ML-technical
+          path: work/7ml/results/
+          if-no-files-found: warn
+          retention-days: 90
