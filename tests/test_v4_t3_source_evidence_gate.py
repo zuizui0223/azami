@@ -23,7 +23,7 @@ def test_real_ten_botanical_records_not_mk_transitions():
     assert report["qualified_uncertain_species"] == 1
     assert report["ontogenetically_variable_species"] == 2
     assert report["qualified_age_dependent_nonbinary_species"] == 1
-    assert report["source_taxon_concept_contests"] == 1
+    assert report["source_taxon_concept_contests"] == 2
     assert set(report["source_genus_counts"]) == {
         "Cremanthodium", "Ligularia", "Senecio", "Xenophyllum"
     }
@@ -88,3 +88,19 @@ def test_age_tendency_is_not_misclassified_as_fixed_nodding(tmp_path):
     write_rows(fp, rows)
     with pytest.raises(ValueError, match="Age-related tendency"):
         gate.read_evidence(fp)
+
+def test_cremanthodium_ligularia_competing_2016_2026_concepts_stay_separate(tmp_path):
+    rows = gate.read_evidence(REAL)
+    target = next(r for r in rows if r["taxon"] == "Cremanthodium spathulifolium")
+    assert target["source_posture"] == "D"
+    assert target["taxonomic_status"] == "contested_2016_2026"
+    assert "Ligularia lagotis" in target["coding_limit"]
+    target["life_stage_scope"] = "anthesis_independently_verified"
+    target["taxon_concept_independently_reviewed"] = "yes"
+    target["blind_double_annotation_completed"] = "yes"
+    target["same_tip_rooted_nuclear_tree_verified"] = "yes"
+    target["strict_T3_admissible"] = "yes"
+    outfile = tmp_path / "taxonomy_conflict.csv"
+    write_rows(outfile, rows)
+    with pytest.raises(ValueError, match="Contested author taxon concept"):
+        gate.read_evidence(outfile)
