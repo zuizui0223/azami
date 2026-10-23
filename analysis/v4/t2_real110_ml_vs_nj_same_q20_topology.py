@@ -85,7 +85,6 @@ def source_checks(ml_tree,nj_tree,original_receipt,ml_na63,nj_na63,ml_verified,n
         raise ValueError("Insufficient observed internal splits for real110 topology screen")
     shared=splits_m&splits_n
     union=splits_m^splits_n
-    a=sum(na_ml.get("n_resolved_same_quartets",0) for _ in range(1))
     return {
         "schema":"azami_T2_real110_originalQ20_same_DNA_ML_NJ_unrooted_sensitivity_v1",
         "status":"SOURCE_AUTHENTIC_110_ML_VS_NJ_UNROOTED_ROBUSTNESS_NOT_EVOLUTIONARY_SPECIES_TREE",
