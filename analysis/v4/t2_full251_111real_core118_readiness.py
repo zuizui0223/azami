@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from collections import Counter,defaultdict
 from pathlib import Path
 import statistics
@@ -51,9 +52,7 @@ def compile_coverage(original,chosen,matrix,source_loci):
         raise ValueError("111 original source Q20 public BioSamples not unique/complete")
     if len(source_loci)!=N_LOCI or len({x["locus"] for x in source_loci})!=N_LOCI:
         raise ValueError("Frozen original author241 locus copy panel missing")
-    minimum=89  # ceil(0.8*111) source 120k/Q20 copy breadth gate
-    if N_MEASURED!=111:
-        raise ValueError("80-percent common copy criterion refers to original 111 taxa")
+    minimum=math.ceil(.80*N_MEASURED) # in original data: ceil(0.80*111)=89
     qualifying={}
     for r in source_loci:
         if int(r["taxa_120k_dp3_ge25pct_same_ref"])>=minimum:
