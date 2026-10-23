@@ -52,6 +52,9 @@ ITS_TREE_ARTIFACT=12484282607
 ROOT_SCENARIOS=("midpoint_ITS_unrooted","original_unrooted_Newick_display")
 SUBCOHORTS=("full109","without_four_original_WCVP_concept_collisions")
 SEED=20261023
+# Exploratory measurement-error robustness from original S1 5%-tip-nugget
+# convention, not an estimated photo/gravity calibration error.
+BROWNIAN_TIP_NUGGET_FRAC=.05
 
 
 def sha256(path):
@@ -184,6 +187,14 @@ def fit_models(y,X,brownian):
     no_relation=fit_gls(y,X,np.eye(n),0,structure="IID_equal_species_weight")
     no_covariance=fit_gls(y,X,brownian,0,structure="Pagel_lambda0_nonultrametric_tip_specific_variance")
     bm=fit_gls(y,X,brownian,1,structure="Brownian_ITS_shared_ancestry")
+    # Full Brownian on an ITS gene tree with ~1e-6 terminal edges can be
+    # overconfident about images measured with camera-relative technical noise.
+    # Keep the unregularized result, but separately audit exactly 5% diagonal
+    # measurement nugget; do not tune the amount using rainfall association.
+    C_meas=brownian + np.eye(n)*(
+        BROWNIAN_TIP_NUGGET_FRAC*np.median(np.diag(brownian)))
+    bm_measurement=fit_gls(
+        y,X,C_meas,1,structure="Brownian_ITS_plus_5pct_image_measurement_nugget")
     def loss(val):
         try:return -fit_gls(y,X,brownian,float(val),structure="fitted_Pagel_lambda")["loglikelihood"]
         except (linalg.LinAlgError,ValueError):return float("inf")
@@ -197,12 +208,15 @@ def fit_models(y,X,brownian):
         "IID_equal_species_weight":no_relation,
         "Pagel_lambda0_diagonal_nonultrametric":no_covariance,
         "fixed_Brownian_lambda1":bm,
+        "fixed_Brownian_plus_5pct_photo_measurement_nugget":bm_measurement,
         "estimated_Pagel_lambda":ml,
         "estimated_lambda_as_additional_parameter_in_AIC":float(
             2*(X.shape[1]+2)-2*ml["loglikelihood"]),
         "IID_AIC":float(2*(X.shape[1]+1)-2*no_relation["loglikelihood"]),
         "fixed_Brownian_AIC":float(2*(X.shape[1]+1)-2*bm["loglikelihood"]),
         "photos_do_not_measure_absolute_gravity_direction":True,
+        "technical_tip_nugget_is_5pct_of_median_root_tip_depth":BROWNIAN_TIP_NUGGET_FRAC,
+        "technical_nugget_was_not_tuned_to_observed_climate_signal":True,
     }
 
 
