@@ -12,7 +12,7 @@ TREE=(
  "(Cirsium_scopulorum:0.1,Cirsium_vulgare:0.1)75.1/84:0.02)"
  "92.3/96:0.03,(Cirsium_italicum:0.1,"
  "(Cirsium_latifolium:0.1,Cirsium_pulcherrimum:0.1)"
- "99/100:0.02)88.4/91:0.08);"
+ "99/100:0.02)92.3/96:0.08);"
 )
 
 def test_real_support_pairs_are_separately_named_SHaLRT_then_UFBOOT():
