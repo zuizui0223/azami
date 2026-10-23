@@ -1,0 +1,72 @@
+name: V4 T2 real 63-tip nuclear phylogeny nodding-rain GLS and ancestor Mk
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_na63_actual_tree_rain_gls.py'
+      - 'tests/test_v4_t2_na63_actual_tree_rain_gls.py'
+      - '.github/workflows/v4-t2-na63-actual-tree-gls-rain.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_na63_actual_tree_rain_gls.py'
+      - 'tests/test_v4_t2_na63_actual_tree_rain_gls.py'
+      - '.github/workflows/v4-t2-na63-actual-tree-gls-rain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  true-original-source-tree-comparative-estimand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual phylogenetic GLS and plotting environment
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Test true nuclear branch covariance and ancestral state likelihood
+        run: |
+          python -m pytest -q tests/test_v4_t2_na63_actual_tree_rain_gls.py
+      - name: Fetch IMMUTABLE published author original nuclear tree, flora and environmental table; fit exact 63
+        run: |
+          mkdir -p work/true-phylogeny
+          python -m analysis.v4.t2_na63_actual_tree_rain_gls --out-dir work/true-phylogeny
+          git rev-parse HEAD > work/true-phylogeny/AUDITED_COMMIT_SHA.txt
+      - name: Gate all original taxonomy, true tree inference and no invented photo state
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path("work/true-phylogeny/T2_NA63_REAL_NUCLEAR_PHYLOGENETIC_RAIN_ASSOCIATION.json").read_text())
+          s=d["source"]
+          assert s["author_tree_blob"]=="6417a38793427bc7c8562dc0e2cab59b74d8c316"
+          assert s["author_original_trait_blob"]=="fa127f0587b676e6e004ea121424d26069586bcb"
+          assert s["author_original_climate_blob"]=="6ca878423881db13f2af4624380bdce342afdf1b"
+          assert d["original_scoped_taxa"]["n_tips"]==63
+          assert d["original_scoped_taxa"]["D"]==5
+          assert d["original_scoped_taxa"]["n_terminal_pure_nodding_clades"]==4
+          assert sum(x["nodding_minus_sister_erect_BIO12_mm"]>0
+                     for x in d["author_phylogenetic_sister_clades"])==2
+          for key in ("unadjusted_BIO12_as_response_mm","BIO1_and_elevation_adjusted_BIO12_as_response_mm"):
+              assert set(d[key])=={"no_phylogeny","Brownian_complete_phylogeny","estimated_lambda"}
+              assert all(0<=v["beta_nodding_two_sided_t_p"]<=1
+                         for v in d[key].values())
+          assert len(d["symmetric_Mk_ancestral_edge_state_posteriors"])==2
+          assert d["source_root_Fitch_Sankoff_change_bounds"]["root_erect_min_steps"]==4
+          assert not d["interpretation"]["individual_origin_events_identified"]
+          assert not d["interpretation"]["precipitation_dependent_U_to_D_rate_fitted"]
+          assert not d["interpretation"]["photos_or_exif_angles_used"]
+          assert Path("work/true-phylogeny/T2_NA63_REAL_NUCLEAR_TREE_POSTURE_RAIN.png").stat().st_size > 10000
+          print("SUCCESS_GENUINE_63_PUBLISHED_NUCLEAR_NODDING_RAIN_GLS_AND_ANCESTRAL_STATE_REVIEW")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-original-na63-actual-tree-BIO12-pgls-mk-annotated-figure
+          path: work/true-phylogeny/
+          if-no-files-found: warn
+          retention-days: 90
