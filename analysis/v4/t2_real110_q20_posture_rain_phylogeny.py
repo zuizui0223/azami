@@ -186,6 +186,12 @@ def nearest_U(tree,coded):
             "original_nodding_source_species":d["taxon_name"],
             "nearest_flora_erect_source_species":u["taxon_name"],
             "D_minus_nearest_U_BIO12_mm":float(d["chelsa_bio12"])-float(u["chelsa_bio12"]),
+            "D_minus_nearest_U_BIO15":float(d["chelsa_bio15"])-float(u["chelsa_bio15"]),
+            "D_minus_nearest_U_BIO1_C":float(d["chelsa_bio01"])-float(u["chelsa_bio01"]),
+            "EAzami_original_H1_present_regime_BIO15_up_and_BIO1_down":(
+                float(d["chelsa_bio15"])>float(u["chelsa_bio15"]) and
+                float(d["chelsa_bio01"])<float(u["chelsa_bio01"])),
+            "not_climate_at_actual_ancestral_transition":True,
             "patristic_nuclear_gene_tree_distance":float(tree.distance(x,best)),
             "matched_original_D_BIO12_mm":float(d["chelsa_bio12"]),
             "nearest_erect_may_be_reused":True,
@@ -196,6 +202,11 @@ def nearest_U(tree,coded):
         "pairs":sorted(pairs,key=lambda x:x["original_nodding_source_species"]),
         "n_nodding_with_nearest_erect_wetter":sum(x["D_minus_nearest_U_BIO12_mm"]>0 for x in pairs),
         "n_nodding_with_nearest_erect_drier":sum(x["D_minus_nearest_U_BIO12_mm"]<0 for x in pairs),
+        "EAzami_original_H1_BIO15_higher_BIO1_lower_directional_pairs":sum(
+            x["EAzami_original_H1_present_regime_BIO15_up_and_BIO1_down"] for x in pairs),
+        "n_BIO15_D_higher":sum(x["D_minus_nearest_U_BIO15"]>0 for x in pairs),
+        "n_BIO1_D_lower":sum(x["D_minus_nearest_U_BIO1_C"]<0 for x in pairs),
+        "not_independent_transition_events_or_preregistered_EAzami_replication":True,
         "nearest_tip_comparisons_not_independent_gain_events":True,
     }
 
@@ -253,6 +264,7 @@ def main():
         "U":result["n_observed_U_original_flora"],
         "nearest_D_wetter":result["root_independent_nearest_known_erect_nuclear_relatives"]["n_nodding_with_nearest_erect_wetter"],
         "nearest_D_drier":result["root_independent_nearest_known_erect_nuclear_relatives"]["n_nodding_with_nearest_erect_drier"],
+        "EAzami_compound_BIO15_up_BIO1_down_pairs":result["root_independent_nearest_known_erect_nuclear_relatives"]["EAzami_original_H1_BIO15_higher_BIO1_lower_directional_pairs"],
         "root_hypothesis_adjusted_BM":{k:r["all38_biologically_scored"]["BIO1_BIO15_adjusted"]["Brownian_fixed_tree"]["coefficient_D_minus_U_mm"]
                for k,r in result["alternative_arbitrary_root_placement_sensitivities"].items()},
     },ensure_ascii=False,sort_keys=True),flush=True)
