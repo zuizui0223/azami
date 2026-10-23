@@ -1,0 +1,57 @@
+name: V4 T3 independent Senecioneae capitulum posture source audit
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_source_evidence_gate.py'
+      - 'analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv'
+      - 'analysis/v4/results/20261023_T3_SENECIONEAE_REAL_POSTURE_EVIDENCE_JA.md'
+      - 'tests/test_v4_t3_source_evidence_gate.py'
+      - '.github/workflows/v4-t3-senecioneae-posture-source.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-only-stage-and-taxonomy-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated source audit tests
+        run: python -m pip install 'pytest>=8,<10'
+      - name: Test actual published-source stage labels and taxonomic conflict stop rules
+        run: python -m pytest -q tests/test_v4_t3_source_evidence_gate.py
+      - name: Summarize real morphological source screening
+        run: |
+          mkdir -p work/t3-audit
+          python -m analysis.v4.t3_source_evidence_gate --output work/t3-audit/T3_SENECIONEAE_POSTURE_SOURCE_GATE.json
+          cp analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv work/t3-audit/
+          git rev-parse HEAD > work/t3-audit/SOURCE_REPOSITORY_COMMIT.txt
+      - name: Require exactly real evidence but no invented independent gains
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("work/t3-audit/T3_SENECIONEAE_POSTURE_SOURCE_GATE.json")
+          d=json.loads(p.read_text())
+          assert d["source_taxa"]==10
+          assert d["nodding_species_descriptions_not_independent_gains"]==6
+          assert d["erect_species_descriptions_not_ancestral_states"]==1
+          assert d["qualified_uncertain_species"]==1
+          assert d["ontogenetically_variable_species"]==2
+          assert d["qualified_age_dependent_nonbinary_species"]==1
+          assert d["source_taxon_concept_contests"]==1
+          assert d["strict_reviewed_same_tip_phenotypes"]==0
+          assert not d["historical_repeated_nodding_origins_estimated"]
+          assert not d["rain_adaptation_supported_by_this_screen"]
+          print("T3_REAL_SOURCE_SCREEN_PASS__NO_CROSS_TRIBE_EVOLUTIONARY_INFERENCE")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t3-senecioneae-real-botanical-posture-stages-taxonomy-scope
+          path: work/t3-audit/
+          if-no-files-found: error
+          retention-days: 90
