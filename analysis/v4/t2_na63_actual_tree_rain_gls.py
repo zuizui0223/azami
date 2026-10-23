@@ -120,6 +120,22 @@ def gls(y, design, brownian, lam):
     }
 
 
+def equal_variance_independent_OLS(y, design):
+    """Truly unrelated species with IID residual covariance, not Pagel lambda=0.
+
+    On an NON-ultrametric molecular tree, lambda=0 keeps unequal tip
+    variances inherited from the branch diagonal and is NOT ordinary OLS.
+    This explicit identity-covariance control isolates that difference.
+    """
+    y=np.asarray(y,dtype=float)
+    design=np.asarray(design,dtype=float)
+    model=gls(y,design,np.eye(len(y)),0.0)
+    model["correlation_structure"]="identity_independent_equal_variance"
+    model["no_nuclear_branch_length_information_in_covariance"]=True
+    model["Pagel_lambda_0_on_nonultrametric_tree_is_not_IID"]=True
+    return model
+
+
 def fit_models(y, matrix, true_cov):
     models={}
     for label,lam in (("no_phylogeny",0.),("Brownian_complete_phylogeny",1.)):
@@ -236,6 +252,10 @@ def analyze(tree,states,climate, *,original_shas=None):
         "original_scoped_taxa":desc,
         "unadjusted_BIO12_as_response_mm":fit_models(y,basic,true_cov),
         "BIO1_and_elevation_adjusted_BIO12_as_response_mm":fit_models(y,full,true_cov),
+        "IID_species_effect_same_taxa_as_PGLS":{
+            "BIO12_only":equal_variance_independent_OLS(y,basic),
+            "BIO1_and_elevation_adjusted":equal_variance_independent_OLS(y,full),
+        },
         "author_phylogenetic_sister_clades":subset["comparisons"],
         "source_root_Fitch_Sankoff_change_bounds":{
             **parsimony(tree,states),
