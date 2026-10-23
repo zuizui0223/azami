@@ -40,11 +40,34 @@
 - ***Parasenecio cyclotus***（種の頭花が下垂と直接記載）と ***P. koualapensis***（花柄が初め横向きに広がり、後に下垂する）は、131種核rDNA樹で**2種のみからなる姉妹クレード**。原IQ-TREEの支持**SH-aLRT=96.9／UFBoot=100**、原枝長による末端間遺伝距離**0.0020977353 substitutions/site**。
 - **両種とも別ソースの2021年ターゲットキャプチャー核DNA配列あり**：*P. cyclotus* `SRR12967040`／`SAMN16588858`、*P. koualapensis* `SRR12967039`／`SAMN16588859`。2025年の原ITS/ETSアクセッションもそれぞれ `KY979028/KY978948`、`KY979045/KY978965` と照合。**同一個体DNAと実際の開花頭花を観察したものではない**。この2種が2021年の低コピー遺伝子樹でも姉妹になるかは未検証。
 - [Flora of China: P. koualapensis](https://efloras.org/florataxon.aspx?flora_id=2&taxon_id=250097691) は、頭花を支えるpeduncleが「spreading, pendulous later」と直接記載。[P. cyclotus](https://efloras.org/florataxon.aspx?flora_id=2&taxon_id=250097697) は頭花自体が下垂と記載する一方、**発達時の変化なしとは記載していない**。両種で「固定下垂 vs 可塑的下垂」という対立までは立てない。
-- 131元末端に新たな発達段階変化`V`を追加した**形態根拠の状態は D8・V1・U0・未判定122**。未判定を直立に置き換えず、直立祖先・独立下垂化獲得・雨による選択の回数は推定しない。
-- 機能実験種 *Cremanthodium campanulatum* は131核rDNA樹にあるが、最寄り末端は *Ligularia purdomii*。この植物誌には**茎 erect**と記載するものの「capitula erect」とは書かれていないため、直立姉妹種として採点できない（[Flora of China](https://efloras.org/florataxon.aspx?flora_id=2&taxon_id=200024274)）。
+- 当初の2025核rDNA 131tip形態台帳はD8・V1・U0・未判定122だったが、今回の**原版中国植物誌 FRPSでLigularia purdomiiの頭花下垂を直接確認**したため、**D9・V1・U0・未判定121**へ拡張した。以前のD8は別出所として保存し、未判定をUへ変換しない。
+- 雨よけ操作実験種 *Cremanthodium campanulatum* の131tip ITS/ETS最尤遺伝子樹での最寄り末端は *Ligularia purdomii*。英語版[Flora of China](https://efloras.org/florataxon.aspx?flora_id=2&taxon_id=200024274)は**茎が直立**と記すだけで頭花の向きを述べない。一方、原版[中国植物誌FRPS](https://www.iflora.cn/search_result.aspx?p=AA797647D57B0EB4C1FABEBC584460E8)は**頭状花序多数，盤状，下垂**と明記。よって新しい下垂D候補と確認したが、DNA個体と花形態voucherは未照合。両種だけの姉妹群でなく、他2tipを含む**4tipクレード**（SH-aLRT80.4、UFBoot100）。
 - 植物誌で頭花が直立と明記される *Parasenecio begoniifolius* と *P. lancifolius* は、今回の131核rDNA樹に**含まれない**（[Parasenecio 属のFlora of China検索表](https://www.efloras.org/florataxon.aspx?flora_id=2&taxon_id=124000)）。2026-10-24時点で試したNCBI検索では後者の**4配列がすべてプラスチド**、前者の該当nuccore登録0である。**核ITS/ETSに混ぜない**。将来の標本取得／追加配列収集の優先対象とする。
 
 **T3の重要な進化生態学的示唆**：同じ終末の下垂表現型を持つ別種が、発達過程の異なる記載を持ちながら高支持の核rDNA姉妹対を作る。これは**頭花向きの進化が最終状態U/Dだけでなく発達上の姿勢変化のタイミングに現れるか**という検証可能な仮説につながる。ただし現段階ではVの発達現象が同一頭花を追跡した実験ではなく、雨よけの利益・反復獲得も未証明。
+
+## 今回の追加実証：同一58種に固定した頭花写真角度・BIO12の系統共変動
+
+[核108候補座位110／ITS109の同一58種・Brownian白色化CI #40029158626](https://github.com/zuizui0223/azami/actions/runs/40029158626) は9テスト成功。[再計算コード](../t2_real110_its109_shared58_head_rain_BM_cotrait.py)。測定形質はS1自身の連続画像頭花角度と現生log(BIO12)で、植物誌の二値U/Dは不使用。
+
+| 公開DNA系統樹と分類群 | 0%技術的tipノイズ：系統白色化r | **5%固定tipノイズ：r** | 5%の近似両側p |
+|---|---:|---:|---:|
+| 元核108座位候補・110 | +0.261 | +0.089 | 0.355 |
+| GenBank ITS・109 | −0.173 | −0.081 | 0.403 |
+| **真正共通58・核108座位候補** | +0.091 | **+0.016** | 0.906 |
+| **同一58・ITS** | −0.103 | **−0.187** | 0.159 |
+
+未較正の5%技術誤差を仮定すると、同じ58種の系統条件付き相関はいずれも弱く、一方向の強い雨ニッチ×頭花角度の共変動は未確認。0%から5%への値の変動は推定枝長と撮影誤差への感度を意味する。p値は固定樹・固定共分散の近似で、地域構成・樹の不確実性を調整した適応形質の共進化率ではない。
+
+## 今回の追加実証：T3・原版中国植物誌の頭花D9と3種類の同一配列系統樹
+
+[原版中国植物誌×131核rDNA実配列 CI #40028268684](https://github.com/zuizui0223/azami/actions/runs/40028268684) と [最尤／UFBoot合意／初期BioNJ感度 CI #40029159037](https://github.com/zuizui0223/azami/actions/runs/40029159037) がともに成功。[解析コード](../t3_131_direct_head_two_source_tree_topology_sensitivity.py)・[原形態出所CSV](20261024_T3_LIGULARIA_PURDOMII_ORIGINAL_CHINESE_FLORA_HEAD.csv)。
+
+**D9はCremanthodium 2種、Ligularia 1種、Parasenecio 6種。発達途中に姿勢変化が明記されたParasenecio koualapensisは別のV1。残121種は不明、直立が明記された核DNA一致のUは0。**
+
+- 雨よけ機能実験種Cremanthodium campanulatumと新たに頭花Dが確認できたLigularia purdomiiの4tip無根分割は最尤樹・UFBoot合意樹で確認。しかし同一配列の初期BioNJでは6tipの大きな分岐となり、最近傍種も未採点のLigularia yunnanensisに交代。3つは**独立した遺伝子解析ではなく、同じリンク核rDNA配列の再構成感度**。
+- Dとして採点されたParasenecio cyclotusと発達に伴って姿勢が変わるP. koualapensisの2tip姉妹分割は、3つの樹ですべて確認。最尤樹ではSH-aLRT96.9・UFBoot100。両種は別研究の低コピー核DNA実SRA標本もあるが、2021核遺伝子樹の同系統性は未検証。
+- Ligularia purdomiiにGenBank元ITS AY723257はあるがETS元配列はない。さらに実験個体とDNA voucherは一致していない。**3属で下垂が確認されたという系統分布と、独立3起源という歴史仮説を混同しない。**
 
 ## 次の本線／停止条件
 
