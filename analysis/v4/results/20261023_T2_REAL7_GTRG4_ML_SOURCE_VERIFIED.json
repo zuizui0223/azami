@@ -95,5 +95,41 @@
     "branch_weakness_propagation_required": true,
     "original_photo_angle_not_gravity_nodding_state": true,
     "NA63_4tip_concordance_not_rainfall_adaptation": true
+  },
+  "true_source_whole_locus_ML_bootstrap": {
+    "workflow_run": 39876618341,
+    "artifact_id": 12468369938,
+    "artifact_zip_sha256": "9b7793ace54fa6bcef4896af6ca78286d7a0ff104225826af9add626f6285d5f",
+    "model": "IQ-TREE 2.0.7 GTR+G4",
+    "original_sample_count": 7,
+    "original_Q20_nuclear_locus_candidates": 101,
+    "locus_block_resamples": 300,
+    "independently_reestimated_ML_trees": 300,
+    "number_absent_or_duplicate_replicates": 0,
+    "exact_NA63_4tip_quartet_concordant_ML_replicates": 246,
+    "quartet_concordance_fraction": 0.82,
+    "unrooted_primary_splits": [
+      {
+        "side": "Cirsium_italicum|Cirsium_vulgare",
+        "n_replicates": 292,
+        "fraction": 0.9733333333333334
+      },
+      {
+        "side": "Cirsium_flodmanii|Cirsium_tracyi",
+        "n_replicates": 246,
+        "fraction": 0.82
+      },
+      {
+        "side": "Cirsium_italicum|Cirsium_latifolium|Cirsium_vulgare",
+        "n_replicates": 300,
+        "fraction": 1
+      },
+      {
+        "side": "Cirsium_flodmanii|Cirsium_scopulorum|Cirsium_tracyi",
+        "n_replicates": 177,
+        "fraction": 0.59
+      }
+    ],
+    "interpretation_limit": "Whole-original-candidate-locus ML bootstrap frequencies on seven source-vouched SRA Q20 read prefixes are not species tree posterior support, orthology validation, transition count or rainfall-driven adaptive radiation"
   }
 }
