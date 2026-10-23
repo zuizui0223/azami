@@ -8,12 +8,13 @@ import zipfile
 
 import pandas as pd
 import pytest
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+# AESGCM is an optional private-data dependency; keep generic suite importable.
 
 from analysis.v4 import phenology_private_original_date_merge as m
 
 
 def generate(tmp_path,monkeypatch,*,meta_date=True,native_date=False,conflict=False):
+    AESGCM=pytest.importorskip('cryptography.hazmat.primitives.ciphers.aead').AESGCM
     dataset=pd.DataFrame({
         "obs_id":["o1","o1","o2","o3","o4"],
         "user_id":["u1","u1","u2","u3","u3"],
