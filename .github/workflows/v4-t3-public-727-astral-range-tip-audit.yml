@@ -1,0 +1,69 @@
+name: V4 T3 original published 727 nuclear ASTRAL tree strict-range source-tip audit
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_ren2024_tree_range_tip_audit.py'
+      - 'analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv'
+      - 'tests/test_v4_t3_ren2024_tree_range_tip_audit.py'
+      - '.github/workflows/v4-t3-public-727-astral-range-tip-audit.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_ren2024_tree_range_tip_audit.py'
+      - 'analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv'
+      - 'tests/test_v4_t3_ren2024_tree_range_tip_audit.py'
+      - '.github/workflows/v4-t3-public-727-astral-range-tip-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  authentic-published-small-range-phylogeny:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install independent public data audit dependencies
+        run: python -m pip install 'pytest>=8,<10' 'requests>=2.31,<3' 'biopython>=1.83,<2'
+      - name: Audit no-full-download ZIP protocol with synthetic tree tests
+        run: python -m pytest -q tests/test_v4_t3_ren2024_tree_range_tip_audit.py tests/test_v4_t3_source_evidence_gate.py
+      - name: Fetch source-authentic Dryad metadata and only byte-range tree member
+        run: |
+          mkdir -p work/t3-range
+          python -m analysis.v4.t3_ren2024_tree_range_tip_audit \
+            --candidate-table analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv \
+            --output work/t3-range/T3_PUBLISHED_2024_AST_TREE_SOURCE_TIP_RECEIPT.json
+          git rev-parse HEAD > work/t3-range/COMMIT.txt
+      - name: Verify scientific stop rules and bounded traffic outcome
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("work/t3-range/T3_PUBLISHED_2024_AST_TREE_SOURCE_TIP_RECEIPT.json").read_text())
+          status=d["status"]
+          assert status in {
+            "EMPIRICAL_SOURCE_NUCLEAR_TIPS_VERIFIED_STRICT_RANGE",
+            "NO_AUTHENTIC_RANGE_ASTRAL_TREE_EXTRACTED_STOP",
+            "PUBLIC_SOURCE_METADATA_UNAVAILABLE_FAIL_CLOSED",
+          }
+          if status=="EMPIRICAL_SOURCE_NUCLEAR_TIPS_VERIFIED_STRICT_RANGE":
+              t=d["tree"]
+              assert t["zip_bytes_downloaded_via_206"]<=32*1024*1024
+              assert not t["downloaded_entire_original_zip"]
+              assert d["source"]["published_sha_verified_against_live_dryad_metadata"]
+              x=d["taxon_comparison"]
+              assert not x["sufficient_tree_and_traits_to_infer_independent_evolutionary_gains"]
+              assert not x["rooted_tribal_species_tree_provenance_verified"]
+          else:
+              assert "T3" not in str(d.get("biological_evolutionary_conclusion",""))
+          print("ORIGINAL_T3_PHYLO_SOURCE_FATE:",status)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-ren2024-727locus-published-astral-exact-public-tip-coverage-or-failclosed
+          path: work/t3-range/
+          if-no-files-found: warn
+          retention-days: 90
