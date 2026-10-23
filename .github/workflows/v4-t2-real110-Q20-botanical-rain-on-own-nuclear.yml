@@ -39,7 +39,7 @@ jobs:
           mkdir -p work/T2/auth work/T2/tree work/T2/trait work/T2/output
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
-          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
           gh run download 39902959690 --repo zuizui0223/azami \
             --name t2-original111-posthoc110-authentic-Q20-ML-input \
             --dir work/T2/auth
