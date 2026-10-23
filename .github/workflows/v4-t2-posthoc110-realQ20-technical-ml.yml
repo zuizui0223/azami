@@ -35,7 +35,7 @@ jobs:
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473338546 --jq '.digest')" = 'sha256:0b339c095fad6e63be68cac4dc8c9cc8e77484a96e1058390b71f808a8079ff2'
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474482248 --jq '.digest')" = 'sha256:df69f9489481600c9b90b9aef0f9a5fb80333363bb2739006576ce7c35d5d876'
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474176966 --jq '.digest')" = 'sha256:d18bec8c526022a1d51c27cf83cf8a033bd9db79da4a6ee0f33e5dd8f009ac40'
-          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474068451 --jq '.digest')" = 'sha256:ba8c6976771fb17bc5b00ab04a2df370b7328cce566b68f16cdeafcb155be5c'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474068451 --jq '.digest')" = 'sha256:ba8c6976771fbf17bc5b00ab04a2df370b7328cce566b68f16cdeafcb155be5c'
           gh run download 39888192062 --repo zuizui0223/azami --name real111-source-118-verified --dir work/posthoc/input
           gh run download 39888192062 --repo zuizui0223/azami --pattern 'real111-118-Q20-call-shard-*' --dir work/posthoc/original
           gh run download 39889925464 --repo zuizui0223/azami --pattern 'original111-ENA-retry-*' --dir work/posthoc/repairs
