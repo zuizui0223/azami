@@ -1,0 +1,182 @@
+name: V4 T2 111 real source BioSamples 118 nuclear original-copy Q20 shared sites
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_original118_Q20_nucleotide_calls.py'
+      - 'analysis/v4/t2_real111_original118_shared_Q20_aggregate.py'
+      - 'tests/test_v4_t2_real111_original118_Q20_site_calling.py'
+      - '.github/workflows/v4-t2-real111-original118-Q20-basecalls.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: real111-Q20-sources-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests for source sample / same reference coordinate Q20/zero-imputation
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real111_original118_Q20_site_calling.py
+      - name: Source-validate 111 selected samples and 118 nuclear loci from successful prior analyses
+        run: |
+          set -euo pipefail
+          mkdir -p work/input/111 work/input/241 work/input/packet
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473316663 --jq '.digest')" = 'sha256:2f61604a74e7c4a4f36850a7361089dcfc4c86e5bcccfc8ec2b360d6875f3813'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12472561101 --jq '.digest')" = 'sha256:0a22d8468106672d1897929301618bc57f0ef6360126a470b6fd6244095dfc0b'
+          gh run download 39887166776 --repo zuizui0223/azami --name v4-t2-real111-original118-shared-copy-preflight --dir work/input/111
+          gh run download 39885604460 --repo zuizui0223/azami --name t2-real120k-125-source241-identities --dir work/input/241
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/input/241/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/input/241/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          root=Path('work/input/111')
+          d=json.loads((root/'S1_111_REAL_ORIGINAL241_GLOBAL_PHYLO_PREFLIGHT.json').read_text())
+          assert d['source_120k_BioSamples']==111 and d['candidate_80pct_original_reference_loci']==118
+          assert d['source_taxon_number_for_gate']==89
+          for file,n in [('S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv',111),('AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv',118)]:
+              with (root/file).open() as f:
+                  assert sum(1 for _ in csv.DictReader(f))==n
+          PY
+          cp work/input/111/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv work/input/packet/
+          cp work/input/111/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv work/input/packet/
+          cp work/input/241/moreyra_conservative_241_no_warning_loci.txt work/input/packet/
+          cp work/input/241/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv work/input/packet/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: real111-source-118-verified
+          path: work/input/packet/
+          if-no-files-found: error
+          retention-days: 90
+
+  real-calls:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download source-verified biological run/locus IDs only
+        run: |
+          set -euo pipefail
+          mkdir -p work/real/source work/real/reference work/real/scratch work/real/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name real111-source-118-verified --dir work/real/source
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/real/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/real/source/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+      - name: Install verified BWA samtools and pysam Q20 pileup dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python -m pip install 'pysam>=0.22,<0.25'
+      - name: Recover original reference 1061 nuclear targets (NOT published Moreyra augmented)
+        run: |
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/real/reference
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/real/reference/comp1061_original_reference_contract.json').read_text())
+          assert d['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert d['locus_count']==1061 and not d['moreyra_augmented_reference_recovered']
+          PY
+          bwa index work/real/reference/comp1061_hybpiper_reference.fasta
+      - name: Obtain ACTUAL first120k paired ENA reads and 118 original-ref-copy Q20 bases
+        run: |
+          python -m analysis.v4.t2_real111_original118_Q20_nucleotide_calls \
+            --source work/real/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --sample-panel work/real/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --target-panel work/real/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv \
+            --author241 work/real/source/moreyra_conservative_241_no_warning_loci.txt \
+            --reference work/real/reference/comp1061_hybpiper_reference.fasta \
+            --scratch work/real/scratch --shard ${{ matrix.shard }} \
+            --out work/real/out/shard_${{ matrix.shard }}.json
+      - name: Always erase raw reads and BAM scratch
+        if: always()
+        run: rm -rf work/real/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real111-118-Q20-call-shard-${{ matrix.shard }}
+          path: work/real/out/
+          if-no-files-found: warn
+          retention-days: 90
+
+  aggregate:
+    needs: [source,real-calls]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore 10 empirical DNA Q20 shards and original source panel
+        run: |
+          set -euo pipefail
+          mkdir -p work/summary/shards work/summary/source work/summary/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --pattern 'real111-118-Q20-call-shard-*' --dir work/summary/shards
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name real111-source-118-verified --dir work/summary/source
+      - name: Count actual identical nucleotide reference positions supported in 89 or more taxa
+        run: |
+          python -m analysis.v4.t2_real111_original118_shared_Q20_aggregate \
+            --samples work/summary/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --targets work/summary/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv \
+            --shards work/summary/shards --outdir work/summary/out
+      - name: Enforce 111 tips 118 nuclear targets, and no reference imputation/false orthology
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          p=Path('work/summary/out')
+          s=json.loads((p/'REAL111_SHARED_Q20_NUCLEOTIDE_SITE_SUMMARY.json').read_text())
+          for f,n in [('REAL111_ORIGINAL118_NUCLEAR_SAME_COPY_80PCT_SITE_CENSUS.csv',118),('REAL111_Q20_80PCT_ALIGNMENT_TAXON_MISSINGNESS.csv',111)]:
+              with (p/f).open() as h:
+                  assert sum(1 for _ in csv.DictReader(h))==n
+          assert s['original_S1_WCVP_keys_retained']==244
+          assert s['original_S1_source_name_operational_units_retained']==251
+          assert s['predeclared_site_occupancy_taxa']==89
+          assert s['missing_values_are_N_not_original_reference_base']
+          assert not s['strict_single_copy_orthology_gate_passed']
+          assert not s['orientation_evolution_rainfall_test_permitted']
+          if s['technical_ML_alignment_source_gate_passed']:
+              assert (p/'REAL111_80PCT_SOURCE_118_ORIGINAL_REF_Q20_ALIGNMENT.fasta').is_file()
+          print('PASS REAL111 same-position nucleotide occupancy',s['n_full111_alignable_positions_called_by_80pct_taxa'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real111-original118-Q20-shared-site-census
+          path: work/summary/out/
+          if-no-files-found: warn
+          retention-days: 90
