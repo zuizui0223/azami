@@ -39,3 +39,15 @@
 真正の独立著者形態資料10件を保持したうえで、固定下垂記載6件、固定直立記載1件、弱い年齢依存傾向で二値化不能1件、発生段階でU→Dと記載された2件に分けた。**少なくとも2件の分類概念の不一致（*Senecio eliseae*、*Cremanthodium spathulifolium*）**がある。複数種の同じ属・異名があっても独立系統イベントへ数えない。
 
 [機械可読の監査コード](../t3_source_evidence_gate.py) は、(i) 年齢依存・開花段階変化のレコードを固定U/Dに転記、(ii) 著者間の異名論争を無視して同一tipのaccepted conceptへ昇格、(iii) 盲検二重採点・種concept・根付き独立核樹の照合前にT3の厳密比較へ昇格、をエラーで停止する。この追加は**実在する形態知識の適切な入力整理**であり、同じ頭花の経時的姿勢を実測した結果、古気候を復元した結果、独立反復を同定した結果ではない。
+
+## 2026-10-23追加：核系統データベースの実在証明・標本密度の判断
+
+[出典・アクセッション・公開ファイルSHAを凍結した機械可読台帳](20261023_T3_PUBLIC_SENECIONEAE_NUCLEAR_SOURCE_SELECTION.json)を保存した。2021年 [Ren et al., Molecular Phylogenetics and Evolution](https://doi.org/10.1016/j.ympev.2021.107202) は48分類群のうち**Ligularia–Cremanthodium–Parasenecio（LCP）群27標本**を含むと後続研究が明記している。配列アラインメントと系統樹成果は [Mendeley Data DOI 10.17632/bkm34wgc3n.1](https://data.mendeley.com/datasets/bkm34wgc3n/1) で公開される。**LCP群内の独立下垂化**を調べる第一候補であるが、今回の10種と厳密に一致する末端名・DNA voucherは未照合。
+
+これに対して2024年 [Ren et al., Systematic Biology](https://doi.org/10.1093/sysbio/syae046) は76標本・727厳選核遺伝子で、2021年の27 LCP標本を意図的に**5標本へ縮小**している。これは科・連の基幹配置、亜ゲノムを含む網状歴史の理解には強いが、LCP群内で多数の独立した頭花姿勢転換を示すための末端密度とはみなせない。**核データが多い方が姿勢進化の独立反復も多く識別できるとは限らない**という標本設計上の重要な教訓。
+
+2024年の真正公開成果は [Dryad DOI 10.5061/dryad.573n5tbf7](https://datadryad.org/dataset/doi:10.5061/dryad.573n5tbf7)、API固定dataset id **121570**／version id **340361**。中核ZIPの公式SHA256は `962495cf8131fadd3a1cdf1ea88204432f2aaa81c9e6c0a97435756f0ad88139`、1,583,779,312 bytes。公開READMEの階層で `1_G727_hyb/2_astral_analysis/astral.tre` と `1_G727_hyb/3_supermatrix_analysis/RAxML_bipartitions.G727_hyb_supermatrix` の存在が記載される。**1.58GBのarchive自体と実Newickはこの解析ターンでは取得・展開していない**ため、根・枝長・対象種一致を完了済みとしない。
+
+特に2024年論文はTussilagininaeの**複数回の異質倍数化と亜ゲノム網状関係**を示すので、得られた一本の二分岐核樹が全種の単純な祖先分岐を表す前提は避ける。まず2021年の実系統末端と原名10候補の厳密な対応、同じ頭花の開花段階、分類概念の異説2件を確認し、2024年の異質倍数性・系統仮説を感度に組み込む。
+
+**停止位置：** T3の公開DNA資料は具体的な所在・樹ファイル内部パス・サイズ・公開SHAまで固定した。一方、当該10種の核tip上の連続した系統系列と異連を一括した独立根付き樹は**未確認**。従って下垂化起源数・適応収斂の数理検定は未実行。
