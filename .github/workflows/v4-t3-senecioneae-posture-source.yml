@@ -6,6 +6,7 @@ on:
       - 'analysis/v4/t3_source_evidence_gate.py'
       - 'analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv'
       - 'analysis/v4/results/20261023_T3_SENECIONEAE_REAL_POSTURE_EVIDENCE_JA.md'
+      - 'analysis/v4/results/20261023_T3_PUBLIC_SENECIONEAE_NUCLEAR_SOURCE_SELECTION.json'
       - 'tests/test_v4_t3_source_evidence_gate.py'
       - '.github/workflows/v4-t3-senecioneae-posture-source.yml'
   workflow_dispatch:
@@ -29,6 +30,7 @@ jobs:
           mkdir -p work/t3-audit
           python -m analysis.v4.t3_source_evidence_gate --output work/t3-audit/T3_SENECIONEAE_POSTURE_SOURCE_GATE.json
           cp analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv work/t3-audit/
+          cp analysis/v4/results/20261023_T3_PUBLIC_SENECIONEAE_NUCLEAR_SOURCE_SELECTION.json work/t3-audit/
           git rev-parse HEAD > work/t3-audit/SOURCE_REPOSITORY_COMMIT.txt
       - name: Require exactly real evidence but no invented independent gains
         run: |
