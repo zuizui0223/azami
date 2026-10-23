@@ -56,6 +56,9 @@ jobs:
           assert not d["true_external_species_concept_to_same_voucher_phenotype_confirmed"]
           assert d["phenotype_scores_source_morphology_not_image"]
           assert d["climate_source_independent_GBIF_CHELSA_not_photo_occurrence"]
+          assert d["pagel_lambda_zero_is_weighted_diagonal_Brownian_not_IID_for_unscaled_EA_tree"]
+          assert len(d["exact_same_14tip_equal_variance_independent_OLS"])==3
+          assert all(abs(x["beta_nodding_BIO12_mm"])<10000 for x in d["exact_same_14tip_equal_variance_independent_OLS"].values())
           assert not d["reconstructed_ancestral_BIO12_at_U_D_origins"]
           assert d["trait_rain_correlations_not_evidence_of_historical_rain_selection"]
           for k,x in d["GLS_on_same14_tip_covariate_panels"].items():
