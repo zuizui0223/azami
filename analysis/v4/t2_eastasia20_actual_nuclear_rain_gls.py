@@ -25,7 +25,8 @@ from Bio import Phylo
 
 from analysis.v4.t2_pgls_placement_screen import git_blob_sha, parsimony
 from analysis.v4.t2_na63_actual_tree_rain_gls import (
-    brownian_shared_ancestry, fit_models, internal_marginals
+    brownian_shared_ancestry, fit_models, internal_marginals,
+    equal_variance_independent_OLS,
 )
 
 EA_REPO="zuizui0223/EAzami"
@@ -151,12 +152,17 @@ def analyze(tree,coded,climate,checks):
     true_cov=brownian_shared_ancestry(pruned,tips)
     ztemp=(temp-temp.mean())/temp.std(ddof=0)
     X=np.column_stack((np.ones(len(D)),D))
+    X_temp=np.column_stack((X,ztemp))
+    X_full=np.column_stack((X,ztemp,region))
     models={
         "unadjusted_BIO12_mm":fit_models(rain,X,true_cov),
-        "BIO1_adjusted_BIO12_mm":fit_models(
-            rain,np.column_stack((X,ztemp)),true_cov),
-        "BIO1_and_Taiwan_indicated_BIO12_mm":fit_models(
-            rain,np.column_stack((X,ztemp,region)),true_cov)
+        "BIO1_adjusted_BIO12_mm":fit_models(rain,X_temp,true_cov),
+        "BIO1_and_Taiwan_indicated_BIO12_mm":fit_models(rain,X_full,true_cov),
+    }
+    unrelated_IID={
+        "unadjusted_BIO12_mm":equal_variance_independent_OLS(rain,X),
+        "BIO1_adjusted_BIO12_mm":equal_variance_independent_OLS(rain,X_temp),
+        "BIO1_and_Taiwan_indicated_BIO12_mm":equal_variance_independent_OLS(rain,X_full),
     }
     topology=fitted_tip_subtree(tree,set(coded))
     # Three unresolved phenotypes NOT included in the 17-tip parsimony;
@@ -182,6 +188,8 @@ def analyze(tree,coded,climate,checks):
         "root_outgroup_original_safflower_used_before_pruning":True,
         "tree_branch_length_unit":"substitutions/site; NOT calibrated absolute time",
         "GLS_on_same14_tip_covariate_panels":models,
+        "exact_same_14tip_equal_variance_independent_OLS":unrelated_IID,
+        "pagel_lambda_zero_is_weighted_diagonal_Brownian_not_IID_for_unscaled_EA_tree":True,
         "author_botanical_17_tip_minimal_total_changes_not_acquisition_count":mpo,
         "conditional_two_state_Mk_ancestral_state_marginals_17_tips":ancestor,
         "true_external_species_concept_to_same_voucher_phenotype_confirmed":False,
