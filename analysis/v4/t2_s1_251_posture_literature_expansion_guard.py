@@ -43,6 +43,8 @@ def checked_summary(all_rows, external, queue):
     if len({r["original_source_name"] for r in external}) != 8:
         raise ValueError("Duplicated additional botanical literature taxon")
     evidence = {r["original_source_name"]:r for r in external}
+    if not set(evidence).issubset({r["original_source_name"] for r in all_rows}):
+        raise ValueError("Published sources not matched to EXACT original source taxa")
     seen = set()
     for record in all_rows:
         taxon = record["original_source_name"]
