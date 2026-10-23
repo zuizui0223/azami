@@ -47,9 +47,9 @@ def read_evidence(path):
             raise ValueError("Developmental posture switch must not be fixed-tip binary")
         if r["life_stage_scope"] == "age_dependent_tendency" and r["source_posture"] != "?":
             raise ValueError("Age-related tendency cannot become a fixed-tip U/D state")
-        if r["taxonomic_status"] not in ("no_conflict_identified", "contested_2018_2022"):
+        if r["taxonomic_status"] not in ("no_conflict_identified", "contested_2018_2022", "contested_2016_2026"):
             raise ValueError("Unreviewed or malformed botanical taxonomy status")
-        if r["taxonomic_status"] == "contested_2018_2022" and r["strict_T3_admissible"] == "yes":
+        if r["taxonomic_status"] != "no_conflict_identified" and r["strict_T3_admissible"] == "yes":
             raise ValueError("Contested author taxon concept cannot enter independent T3 phylogeny")
         if r["strict_T3_admissible"] == "yes":
             valid = (
@@ -80,7 +80,7 @@ def summarize(rows):
             r["life_stage_scope"] == "age_dependent_tendency" for r in rows
         ),
         "source_taxon_concept_contests": sum(
-            r["taxonomic_status"] == "contested_2018_2022" for r in rows
+            r["taxonomic_status"] != "no_conflict_identified" for r in rows
         ),
         "source_genus_counts": {k: dict(sorted(v.items())) for k,v in sorted(genus.items())},
         "strict_reviewed_same_tip_phenotypes": len(strict),
