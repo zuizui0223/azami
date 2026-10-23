@@ -219,9 +219,28 @@ def execute(table:Path,observer:Path,mapping:Path,output:Path,private_output:Pat
         raise ValueError("Frozen native source census changed")
     if len(obs)!=len(frame) or obs.obs_id.duplicated().any() or set(obs.obs_id)!=set(frame.obs_id):
         raise ValueError("Original observer IDs not one-to-one with native sample")
-    frame=frame.merge(obs[["obs_id","user_id"]],how="left",on="obs_id",validate="one_to_one")
+    original_observed_on_native=frame.get("observed_on")
+    observer_columns=["obs_id","user_id"]
+    if "observed_on" in obs.columns:
+        observer_columns.append("observed_on")
+    frame=frame.merge(obs[observer_columns],how="left",on="obs_id",
+                      validate="one_to_one",suffixes=("_native","_archive"))
     if frame.user_id.isna().any():
         raise ValueError("Source observer missing")
+    if {"observed_on_native","observed_on_archive"} <= set(frame):
+        from_native=pd.to_datetime(frame["observed_on_native"],format="mixed",errors="coerce")
+        from_archive=pd.to_datetime(frame["observed_on_archive"],format="mixed",errors="coerce")
+        unequal=(from_native.notna() & from_archive.notna()
+                 & (from_native.dt.date!=from_archive.dt.date))
+        if unequal.any():
+            raise ValueError("Original archived and native observation dates disagree")
+        frame["observed_on"]=from_native.fillna(from_archive)
+    elif "observed_on_archive" in frame:
+        frame["observed_on"]=frame["observed_on_archive"]
+    elif "observed_on_native" in frame:
+        frame["observed_on"]=frame["observed_on_native"]
+    if "observed_on" not in frame:
+        raise ValueError("Actual original source observed_on missing; do not infer upload dates")
     mapping_rows=authority_mapping(mapping)
     results,season=flowering_windows(frame,mapping_rows)
     results["native_source_sha256"]=digest
