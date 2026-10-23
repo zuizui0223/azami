@@ -46,3 +46,19 @@ def test_gravity_botanical_original_17_states_not_all20_made_up():
     assert ea.TRAIT_BLOB=="f655544e77f1659323c1e915567dacbb51b01cc3"
     assert "photo" not in str(ea.LOCAL_CLIMATE).lower()
     assert "TRUE" not in ea.TREE_FILE
+
+def test_no_fake_shared_ancestral_stem_from_dropped_long_outgroup():
+    from analysis.v4.t2_na63_actual_tree_rain_gls import brownian_shared_ancestry
+    t=Phylo.read(StringIO(
+        "(((A:0.001,B:0.002):0.001,C:0.003):0.004,OUTGROUP_saff:0.221);"),
+        "newick")
+    ingroup=ea.rooted_ingroup(t,"OUTGROUP_saff")
+    tips=[x.name for x in ingroup.get_terminals()]
+    assert set(tips)=={"A","B","C"}
+    assert ingroup.root.branch_length==0.0
+    C=brownian_shared_ancestry(ingroup,tips)
+    assert abs(max(C.diagonal())-0.003)<1e-6
+    names={name:i for i,name in enumerate(tips)}
+    assert abs(C[names["A"],names["B"]]-0.001)<1e-6
+    assert abs(C[names["A"],names["C"]])<1e-9
+    # The outgroup's 0.221 branch must NOT inflate every ingroup root depth.
