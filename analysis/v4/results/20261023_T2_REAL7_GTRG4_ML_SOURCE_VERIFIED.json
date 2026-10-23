@@ -1,0 +1,99 @@
+{
+  "schema": "azami_v4_t2_real7_genuine_Q20_IQTREE_and_support_verified_20261023",
+  "source_s1": {
+    "photo_observations": 170066,
+    "wcvp_accepted_keys": 244,
+    "original_source_name_units": 251,
+    "public_moreyra_candidate_keys": 113,
+    "authentic_public_sra_runs_with_mapping": 125
+  },
+  "primary_real7_source": {
+    "public_source_biosamples": 7,
+    "original_241_no_warning_loci_candidate_universe": 241,
+    "all7_same_original_reference_copy_candidates": 110,
+    "complete_case_loci_with_at_least100_Q20_positions": 101,
+    "primary_Q20_observed_only_alignment_positions": 28726,
+    "all110_Q20_shared_positions": 29270,
+    "all110_variable_sites": 542,
+    "all110_parsimony_informative_sites": 86,
+    "fastq_prefix_pairs_per_run": 120000,
+    "orthology_copy_number_voucher_verified": false
+  },
+  "source_Q20_NJ": {
+    "workflow_run": 39868882212,
+    "ml_comparison_nonindependent": true,
+    "n_original_unrooted_internal_splits": 4,
+    "n_locus_resamples": 300
+  },
+  "true_ML": {
+    "workflow_run": 39875423290,
+    "commit_sha": "0ae58b7be773474b67b7bde24b474054c877b879",
+    "artifact_id": 12468516402,
+    "artifact_zip_sha256": "5479eab9f36a010343594844956f17b48fff96a59ff31aee910b1506b48aeb84",
+    "method": "IQ-TREE 2.0.7 GTR+G4 observed complete-case sites, 1000 UFBoot and 1000 SH-aLRT",
+    "seed": 20261023,
+    "n_real_source_samples": 7,
+    "primary_101_unrooted_splits_identical_to_NJ": 4,
+    "sensitivity_110_unrooted_splits_identical_to_NJ": 4,
+    "primary_101_exact_4tip_quartet_concordant_with_published_NA63": true,
+    "sensitivity_110_exact_4tip_quartet_concordant_with_published_NA63": true
+  },
+  "true_support": {
+    "workflow_run": 39876043977,
+    "artifact_id": 12468855248,
+    "artifact_zip_sha256": "bf0ffa884b041ac1744477e9285410659ab7f3c707b49b18ce86cd2eeb37ff13",
+    "n_primary_splits": 4,
+    "n_iqtree_UFBOOT_ge95": 2,
+    "n_NJ_300_locus_boot_fraction_ge0_95": 1,
+    "by_unrooted_side": [
+      {
+        "side": "Cirsium_italicum|Cirsium_vulgare",
+        "IQTREE_SHaLRT_percent": 99,
+        "IQTREE_UFBOOT_percent": 99,
+        "NJ_300_locus_bootstrap_fraction": 0.9166666666666666
+      },
+      {
+        "side": "Cirsium_flodmanii|Cirsium_tracyi",
+        "IQTREE_SHaLRT_percent": 85.5,
+        "IQTREE_UFBOOT_percent": 80,
+        "NJ_300_locus_bootstrap_fraction": 0.75
+      },
+      {
+        "side": "Cirsium_italicum|Cirsium_latifolium|Cirsium_vulgare",
+        "IQTREE_SHaLRT_percent": 100,
+        "IQTREE_UFBOOT_percent": 100,
+        "NJ_300_locus_bootstrap_fraction": 1
+      },
+      {
+        "side": "Cirsium_flodmanii|Cirsium_scopulorum|Cirsium_tracyi",
+        "IQTREE_SHaLRT_percent": 31.8,
+        "IQTREE_UFBOOT_percent": 55,
+        "NJ_300_locus_bootstrap_fraction": 0.7033333333333334
+      }
+    ]
+  },
+  "independent_NA63": {
+    "original_author_git_commit": "c925d4af86160064448f794a9715f70b917a2786",
+    "NA63_nuclear_tree_git_blob": "6417a38793427bc7c8562dc0e2cab59b74d8c316",
+    "exact_four_labels": [
+      "Cirsium_flodmanii",
+      "Cirsium_scopulorum",
+      "Cirsium_tracyi",
+      "Cirsium_vulgare"
+    ],
+    "unrooted_quartet_side": [
+      "Cirsium_flodmanii",
+      "Cirsium_tracyi"
+    ]
+  },
+  "interpretation_limits": {
+    "ML_and_NJ_same_underlying_real_seven_samples": true,
+    "all110_partially_observed_reference_candidates_not_verified_orthologs": true,
+    "site_UFBOOT_not_whole_gene_locus_independence": true,
+    "global_EAzami294_species_tree_completed": false,
+    "original_Moreyra350_locus_phylogeny_recovered": false,
+    "branch_weakness_propagation_required": true,
+    "original_photo_angle_not_gravity_nodding_state": true,
+    "NA63_4tip_concordance_not_rainfall_adaptation": true
+  }
+}
