@@ -43,7 +43,7 @@ jobs:
           assert d["qualified_uncertain_species"]==1
           assert d["ontogenetically_variable_species"]==2
           assert d["qualified_age_dependent_nonbinary_species"]==1
-          assert d["source_taxon_concept_contests"]==1
+          assert d["source_taxon_concept_contests"]==2
           assert d["strict_reviewed_same_tip_phenotypes"]==0
           assert not d["historical_repeated_nodding_origins_estimated"]
           assert not d["rain_adaptation_supported_by_this_screen"]
