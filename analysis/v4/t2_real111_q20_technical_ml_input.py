@@ -78,6 +78,8 @@ def validate(data,genes,samples,sequences):
         expected_len!=data["n_full111_alignable_positions_called_by_80pct_taxa"] or
         len(selected)<MIN_GENE_LOCI or expected_len<MIN_DNA_SITES):
         raise ValueError("Technical ML alignment genomic position gate changed")
+    if any(set(seq)-set("ACGTN") for seq in sequences.values()):
+        raise ValueError("Invalid original Q20 nucleotide or unknown reference-imputation code")
     if any(len(seq)!=expected_len for seq in sequences.values()):
         raise ValueError("Source Q20 callable FASTA coordinate count drift")
     if min(len(z)-z.count("N") for z in sequences.values())<MIN_SOURCE_TAXON_CALLS:
