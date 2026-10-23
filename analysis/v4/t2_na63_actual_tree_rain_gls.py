@@ -193,8 +193,11 @@ def analyze(tree,states,climate, *,original_shas=None):
         or sum(states.values())!=N_NODDING
         or any(v not in (0,1) for v in states.values())):
         raise ValueError("Original 63 nuclear tree / 5 genuine botanical posture / climate set changed")
-    if not tree.rooted:
-        raise ValueError("Source nuclear tree must be rooted for Mk ancestral state")
+    if len(tree.root.clades)!=2:
+        raise ValueError("Original author nuclear Newick has no source-bifurcated root")
+    # The published Newick has an authored root split even when Bio.Phylo
+    # conservatively marks its Newick rooted flag false. The root itself is a
+    # working phylogenetic hypothesis and is tested in two Mk prior modes.
     true_cov=brownian_shared_ancestry(tree,tip_names)
     y=np.array([climate[t]["BIO12"] for t in tip_names],float)
     D=np.array([states[t] for t in tip_names],float)
