@@ -1,0 +1,137 @@
+name: V4 T2 original111 one-sparse-source posthoc110 REAL Q20 IQTREE ML
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real110_posthoc_one_sparse_source_sensitivity.py'
+      - 'analysis/v4/t2_real110_posthoc_technical_ml_verify.py'
+      - 'tests/test_v4_t2_real110_posthoc_one_sparse_source_sensitivity.py'
+      - 'tests/test_v4_t2_real110_posthoc_technical_ml_verify.py'
+      - '.github/workflows/v4-t2-posthoc110-realQ20-technical-ml.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-110-original111-mask:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm posthoc one-tip source quality guards and real-ML verification tests
+        run: |
+          python -m pip install 'pytest>=8,<10' 'biopython>=1.83,<2'
+          python -m pytest -q tests/test_v4_t2_real110_posthoc_one_sparse_source_sensitivity.py tests/test_v4_t2_real110_posthoc_technical_ml_verify.py tests/test_v4_t2_real111_only3_transient_ENA_retry.py
+      - name: Retrieve immutable original111 source DNA and only three separately repaired ENA transport failures
+        run: |
+          set -euo pipefail
+          mkdir -p work/posthoc/original work/posthoc/repairs work/posthoc/input work/posthoc/repaired work/posthoc/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473338546 --jq '.digest')" = 'sha256:0b339c095fad6e63be68cac4dc8c9cc8e77484a96e1058390b71f808a8079ff2'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474482248 --jq '.digest')" = 'sha256:df69f9489481600c9b90b9aef0f9a5fb80333363bb2739006576ce7c35d5d876'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474176966 --jq '.digest')" = 'sha256:d18bec8c526022a1d51c27cf83cf8a033bd9db79da4a6ee0f33e5dd8f009ac40'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474068451 --jq '.digest')" = 'sha256:ba8c6976771fb17bc5b00ab04a2df370b7328cce566b68f16cdeafcb155be5c'
+          gh run download 39888192062 --repo zuizui0223/azami --name real111-source-118-verified --dir work/posthoc/input
+          gh run download 39888192062 --repo zuizui0223/azami --pattern 'real111-118-Q20-call-shard-*' --dir work/posthoc/original
+          gh run download 39889925464 --repo zuizui0223/azami --pattern 'original111-ENA-retry-*' --dir work/posthoc/repairs
+          test -s work/posthoc/input/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv
+          test -s work/posthoc/input/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv
+          test "$(find work/posthoc/original -name 'shard_*.json' | wc -l)" -eq 10
+          test "$(find work/posthoc/repairs -name 'SRR*.json' | wc -l)" -eq 3
+      - name: Rebuild original 111 without modifying 108 successful public DNA sources
+        run: |
+          python -m analysis.v4.t2_real111_merge_only_three_ENA_retries --original work/posthoc/original --repairs work/posthoc/repairs --samples work/posthoc/input/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv --targets work/posthoc/input/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv --out-dir work/posthoc/repaired
+      - name: Keep original 89-of-111 site gate and exactly 108 original same-reference candidate loci
+        run: |
+          python -m analysis.v4.t2_real110_posthoc_one_sparse_source_sensitivity --original-shards work/posthoc/original --repaired-shards work/posthoc/repaired --source-samples work/posthoc/input/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv --source-targets work/posthoc/input/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv --outdir work/posthoc/out
+          cp work/posthoc/input/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv work/posthoc/out/ORIGINAL111_PUBLIC_SRA_WCVP_PROVENANCE.csv
+      - name: Require all 110 source BioSamples, no altered original111 failed gate
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/posthoc/out')
+          x=json.loads((root/'REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json').read_text())
+          assert x['original_all111_Q20_successful_real_SRA_BioSamples']==111
+          assert x['original111_technical_gate_passed'] is False
+          assert x['posthoc_sensitivity_taxa']==110
+          assert x['original_111_predeclared_89_of111_quorum_unmodified']==89
+          assert x['original_111_source_108_retained_loci']==108
+          assert x['observed_Q20_reference_positions_reused_unchanged']==29310
+          assert x['source111_single_species_Q20_outlier']['tip']=='WCVP206740970'
+          assert not x['copy_number_paralogy_polyploidy_review_completed']
+          assert x['technical_GTRG4_ML_source_sensitivity_permitted']
+          print('ORIGINAL111_FAILED_GATE_PRESERVED; ORIGINAL_108_29310_Q20_SOURCE_POSTHOC110_READY')
+          PY
+      - name: Archive derived nuclear Q20 source only, not original FASTQ or BAM
+        uses: actions/upload-artifact@v4
+        with:
+          name: t2-original111-posthoc110-authentic-Q20-ML-input
+          path: work/posthoc/out/
+          if-no-files-found: error
+          retention-days: 90
+
+  real110-technical-ml:
+    needs: source-110-original111-mask
+    runs-on: ubuntu-latest
+    timeout-minutes: 145
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '4'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Read only original evidence/Q20-derived nuclear alignment
+        run: |
+          mkdir -p work/ml/input work/ml/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/ml/input
+          test -s work/ml/input/REAL110_POSTHOC_ORIGINAL111_Q20_SITE_ALIGNMENT.fasta
+          test -s work/ml/input/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json
+          test -s work/ml/input/ORIGINAL111_PUBLIC_SRA_WCVP_PROVENANCE.csv
+      - name: Infer actual GTR+G4 unrooted tree from observed public nuclear data
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq iqtree
+          python -m pip install 'biopython>=1.83,<2'
+          iqtree2 --version > work/ml/out/IQTREE2_VERSION.txt
+          timeout 7800s iqtree2 -s work/ml/input/REAL110_POSTHOC_ORIGINAL111_Q20_SITE_ALIGNMENT.fasta -m GTR+G4 -T 4 --seed 20261023 --prefix work/ml/out/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML
+          test -s work/ml/out/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile
+      - name: Verify 110 exact source BioSamples, original failed111 provenance and substitutions per site
+        run: |
+          python -m analysis.v4.t2_real110_posthoc_technical_ml_verify --tree work/ml/out/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile --original-receipt work/ml/input/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json --source-samples work/ml/input/REAL110_SOURCE_TAXON_BIOSAMPLE_TECHNICAL_SENSITIVITY.csv --iqtree-report work/ml/out/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.iqtree --output work/ml/out/REAL110_POSTHOC_ACTUAL_IQTREE_SOURCE_VERIFIED.json
+      - name: Compare 110 public DNA technical topology with independent published NA63 actual nuclear tree
+        run: |
+          python -m analysis.v4.t2_real111_independent_na63_tree_concordance --technical-tree work/ml/out/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile --source-samples work/ml/input/ORIGINAL111_PUBLIC_SRA_WCVP_PROVENANCE.csv --output work/ml/out/REAL110_POSTHOC_VS_INDEPENDENT_NA63_NUCLEAR_TOPOLOGY.json
+      - name: Require all technical caveats and source-backed exact original names in final audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/ml/out')
+          ml=json.loads((root/'REAL110_POSTHOC_ACTUAL_IQTREE_SOURCE_VERIFIED.json').read_text())
+          na=json.loads((root/'REAL110_POSTHOC_VS_INDEPENDENT_NA63_NUCLEAR_TOPOLOGY.json').read_text())
+          assert ml['recovered_technical_ML_tree_tip_count']==110
+          assert ml['original_real_source_independent_BioSamples']==111
+          assert ml['unrooted_substitutions_per_site_not_clock']
+          assert not ml['precipitation_driven_adaptive_radiation_tested']
+          assert na['exact_original_taxon_overlap']>=4
+          assert not na['adaptive_radiation_or_environmental_causality_tested']
+          print('POSTHOC110_ACTUAL_Q20_IQTREE_GTRG4_AND_INDEPENDENT_NA63=',{'nucleotide_positions':29310,'shared_NA63_taxa':na['exact_original_taxon_overlap'],'quartet_concordance':na.get('resolved_quartet_concordance_fraction')})
+          PY
+      - name: Archive source-validated unrooted technical ML and original nuclear reference comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63
+          path: work/ml/out/
+          if-no-files-found: warn
+          retention-days: 90
