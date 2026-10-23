@@ -1,0 +1,73 @@
+name: V4 T2 actual East Asia20 nuclear botanical head and GBIF rain GLS
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_eastasia20_actual_nuclear_rain_gls.py'
+      - 'analysis/v4/t2_na63_actual_tree_rain_gls.py'
+      - 'tests/test_v4_t2_eastasia20_actual_nuclear_rain_gls.py'
+      - '.github/workflows/v4-t2-ea20-actual-nuclear-gbif-bio12.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_eastasia20_actual_nuclear_rain_gls.py'
+      - 'analysis/v4/t2_na63_actual_tree_rain_gls.py'
+      - 'tests/test_v4_t2_eastasia20_actual_nuclear_rain_gls.py'
+      - '.github/workflows/v4-t2-ea20-actual-nuclear-gbif-bio12.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-comp1061-same-tip-real-tree-GBIF-climate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual published nuclear phylogeny fit dependencies
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Run no-photo/no-exif and source taxonomy tests
+        run: |
+          python -m pytest -q tests/test_v4_t2_eastasia20_actual_nuclear_rain_gls.py tests/test_v4_t2_na63_actual_tree_rain_gls.py
+      - name: Fetch frozen original EastAsia20 U/D morph and nuclear tree, fit 14 independent GBIF niches
+        run: |
+          mkdir -p work/eastasia20-real
+          python -m analysis.v4.t2_eastasia20_actual_nuclear_rain_gls --out-dir work/eastasia20-real
+          git rev-parse HEAD > work/eastasia20-real/AUDITED_REPO_COMMIT.txt
+      - name: Verify original 20 nuclear tips, 17 U/D, 3 unknown and 14 GBIF-CHELSA cohorts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('work/eastasia20-real/T2_EASTASIA20_REAL_NUCLEAR_BOTANICAL_GBIF_RAIN_COMPARISON.json')
+          d=json.loads(p.read_text())
+          assert d["source"]["original_nuclear_tree_git_blob"]=="1e3e6ffaf128ccd439287070b8c3c81385f5df34"
+          assert d["source"]["original_morphology_git_blob"]=="f655544e77f1659323c1e915567dacbb51b01cc3"
+          assert d["source"]["GBIF_CHELSA_taxon_source_git_blob"]=="2216152d185b450958ebf59c9de444dd3f81f0b3"
+          assert d["source_original_tree_total_ingroup"]==20
+          assert d["known_independent_botanical_posture_tips"]==17
+          assert d["unknown_or_developmental_traits_not_imputed"]==3
+          assert d["source_GBIF_CHELSA_climate_matched_nuclear_tips"]==14
+          assert d["GBIF_climate_coded_D"]==6 and d["GBIF_climate_coded_U"]==8
+          assert not d["true_external_species_concept_to_same_voucher_phenotype_confirmed"]
+          assert d["phenotype_scores_source_morphology_not_image"]
+          assert d["climate_source_independent_GBIF_CHELSA_not_photo_occurrence"]
+          assert not d["reconstructed_ancestral_BIO12_at_U_D_origins"]
+          assert d["trait_rain_correlations_not_evidence_of_historical_rain_selection"]
+          for k,x in d["GLS_on_same14_tip_covariate_panels"].items():
+              assert len(x)==3
+              assert all(0<=item["beta_nodding_two_sided_t_p"]<=1 for item in x.values())
+          assert Path('work/eastasia20-real/T2_EASTASIA20_REAL_NUCLEAR_TREE_BOTANICAL_POSTURE_GBIF_RAIN.png').stat().st_size>5000
+          print('PASSED_EASTASIA20_TRUE_NUCLEAR_17_BOTANICAL_14_GBIF_PHYLOGENETIC_RAIN')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-EAstAsia20-real-comp1061-nuclear-17-botanical-14-GBIF-BIO12
+          path: work/eastasia20-real/
+          if-no-files-found: warn
+          retention-days: 90
