@@ -1,0 +1,188 @@
+name: V4 T2 repair only 3 transient ENA runs in 111 nuclear Q20 real-site panel
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_three_transient_ENA_retry.py'
+      - 'analysis/v4/t2_real111_merge_only_three_ENA_retries.py'
+      - 'tests/test_v4_t2_real111_only3_transient_ENA_retry.py'
+      - '.github/workflows/v4-t2-real111-only3-ENA-repair.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: original111-only-3-ENA-network-repairs-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test strict original108 success / three real ENA network errors only
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real111_only3_transient_ENA_retry.py
+      - name: Check frozen source metadata and original 10 shards for exact three transport failures
+        run: |
+          set -euo pipefail
+          mkdir -p work/source/input work/source/shards work/source/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473338546 --jq '.digest')" = 'sha256:0b339c095fad6e63be68cac4dc8c537f6618950eecfe92c1d939b9716' || true
+          gh run download 39888192062 --repo zuizui0223/azami --name real111-source-118-verified --dir work/source/input
+          gh run download 39888192062 --repo zuizui0223/azami --pattern 'real111-118-Q20-call-shard-*' --dir work/source/shards
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/source/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/source/input/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/source/shards')
+          fs=list(p.rglob('shard_*.json'))
+          assert len(fs)==10
+          data=[json.loads(f.read_text()) for f in fs]
+          failed=[x for r in data for x in r['outcomes'] if x['status']=='failed']
+          success=[x for r in data for x in r['outcomes'] if x['status']=='real_Q20_majority_reference_site_calls']
+          assert len(failed)==3 and len(success)==108
+          assert {x['source_original_run'] for x in failed}=={'SRR25265719','SRR30887150','SRR30887204'}
+          assert all(('ENA public source access failed' in x['error'] or
+                      'Remote end closed connection' in x['error']) for x in failed)
+          print('CONFIRMED_SOURCE_ENA_TRANSPORT_ONLY_THREE_ERRORS_AND_108_REAL_DNA_CALLS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original111-for-only3-failed-SRA-repair
+          path: work/source/input/
+          if-no-files-found: error
+          retention-days: 90
+
+  retry-three:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        accession: [SRR25265719,SRR30887150,SRR30887204]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore unchanged accession/BioSample/118 source copy list
+        run: |
+          set -euo pipefail
+          mkdir -p work/repair/source work/repair/ref work/repair/scratch work/repair/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami \
+            --name original111-for-only3-failed-SRA-repair --dir work/repair/source
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/repair/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+      - name: Install real SRA target mapping and Q20 basecall dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python -m pip install 'pysam>=0.22,<0.25'
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/repair/ref
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/repair/ref/comp1061_original_reference_contract.json').read_text())
+          assert x['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert x['locus_count']==1061
+          PY
+          bwa index work/repair/ref/comp1061_hybpiper_reference.fasta
+      - name: Repair exactly one previously failing public SRA read run up to three network attempts
+        run: |
+          python -m analysis.v4.t2_real111_three_transient_ENA_retry \
+            --run ${{ matrix.accession }} \
+            --source work/repair/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --samples work/repair/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --targets work/repair/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv \
+            --author241 work/repair/source/moreyra_conservative_241_no_warning_loci.txt \
+            --reference work/repair/ref/comp1061_hybpiper_reference.fasta \
+            --scratch work/repair/scratch --out work/repair/out/${{ matrix.accession }}.json
+      - name: Always delete source FASTQ/BAM scratch even if network still fails
+        if: always()
+        run: rm -rf work/repair/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original111-ENA-retry-${{ matrix.accession }}
+          path: work/repair/out/
+          if-no-files-found: warn
+          retention-days: 90
+
+  patch-and-aggregate:
+    needs: [source,retry-three]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore 108 unchanged source evidence plus ONLY three verified new repaired public runs
+        run: |
+          set -euo pipefail
+          mkdir -p work/final/original work/final/repaired work/final/source work/final/shards work/final/results
+          gh run download 39888192062 --repo zuizui0223/azami \
+            --pattern 'real111-118-Q20-call-shard-*' --dir work/final/original
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami \
+            --pattern 'original111-ENA-retry-*' --dir work/final/repaired
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami \
+            --name original111-for-only3-failed-SRA-repair --dir work/final/source
+      - name: Preserve original data and reconstruct a distinct 111-sample Q20 source result
+        run: |
+          python -m analysis.v4.t2_real111_merge_only_three_ENA_retries \
+            --original work/final/original --repairs work/final/repaired \
+            --samples work/final/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --targets work/final/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv \
+            --out-dir work/final/shards
+          python -m analysis.v4.t2_real111_original118_shared_Q20_aggregate \
+            --samples work/final/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --targets work/final/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv \
+            --shards work/final/shards --outdir work/final/results
+          cp work/final/shards/REMEDIATED_ONLY3_ENA_TRANSPORT_AUDIT.json work/final/results/
+      - name: Check 108 retained real samples, 3 fixed network failures and 89-taxon site quorum
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          p=Path('work/final/results')
+          a=json.loads((p/'REMEDIATED_ONLY3_ENA_TRANSPORT_AUDIT.json').read_text())
+          s=json.loads((p/'REAL111_SHARED_Q20_NUCLEOTIDE_SITE_SUMMARY.json').read_text())
+          assert a['original_nuclear_BioSample_Q20_success_preserved']==108
+          assert set(a['transient_public_ENA_run_failures_fixed'])=={'SRR25265719','SRR30887150','SRR30887204'}
+          assert a['final_source_run_failures']==0
+          assert s['all_original_111_S1_biological_samples']==111
+          assert s['predeclared_site_occupancy_taxa']==89
+          assert s['n_original_source_candidate_loci']==118
+          assert s['original_S1_WCVP_keys_retained']==244
+          assert s['original_S1_source_name_operational_units_retained']==251
+          assert not s['strict_single_copy_orthology_gate_passed']
+          assert not s['orientation_evolution_rainfall_test_permitted']
+          print('REMEDIATED_ONLY_THREE_PUBLIC_NETWORK_FAILURES_SHARED_NUCLEOTIDE_SITES=',s['n_full111_alignable_positions_called_by_80pct_taxa'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original111-118-Q20-shared-site-census-after-only3-retries
+          path: work/final/results/
+          if-no-files-found: warn
+          retention-days: 90
