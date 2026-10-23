@@ -45,7 +45,7 @@ jobs:
           tree=work/t3-131/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile
           echo 'fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310  '"$tree" | sha256sum -c -
           test -s work/t3-131/source/2025-tree/T3_2025_OWN_REAL_LINKED_ITS_ETS_GENBANK_TREE_TIP_EVIDENCE.csv
-      - name: Audit source-exact 131 tree tips six D, unknown 125, node support and nearest source taxa
+      - name: Audit original 131 tree D6 then 2025-only two source Flora D additions (D8, unknown123), real node support
         run: |
           python -m analysis.v4.t3_2025_real_nuclear_rDNA_phylogeny_posture_topology \
             --tree work/t3-131/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile \
@@ -68,7 +68,7 @@ jobs:
           assert d["root_direction_species_tree_and_ancestral_D_origins_not_identified"]
           assert d["linked_multicopy_ITS_ETS_not_independent_coalescent_genes"]
           assert d["rainfall_at_original_head_transition_or_fitness_not_measured"]
-          assert len(d["nodding_specimen_nearest_real_genealogical_tip"])==6
+          assert len(d["nodding_specimen_nearest_real_genealogical_tip"])==8
           print('GENUINE_131_SOURCE_LINKED_RDNA_TOPOLOGY_DONE_NO_FALSE_INDEPENDENT_GAINS')
           PY
       - uses: actions/upload-artifact@v4
