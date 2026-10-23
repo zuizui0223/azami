@@ -29,4 +29,4 @@ def test_actual_published_genealogy_provenance_boundaries():
     assert m.TREE_SHA=="fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310"
     assert m.TREE_RUN==39961377067
     assert "NOT a published whole-nuclear coalescent species tree" in m.__doc__
-    assert "NO independent" in m.__doc__
+    assert "independent origins" in m.__doc__
