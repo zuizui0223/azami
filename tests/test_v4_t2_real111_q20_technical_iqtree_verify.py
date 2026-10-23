@@ -34,7 +34,7 @@ def test_four_reconstructed_real_test_tips_preserved(tmp_path,monkeypatch):
     assert result["real_original_SRA_BioSamples"]==4
     assert result["real_source_GTRG4_tree_tips"]==4
     assert not result["nuclear_copy_identity_and_paralog_homeolog_review_completed"]
-    assert not result["global_EAzami294_species_tree_accepted"]
+    assert not result["EAzami294_independent_species_tree_completed"]
     assert not result["BIO12_BIO15_ancient_rain_adaptation_inferred"]
 
 
