@@ -243,6 +243,33 @@ def null_lambda_permutation(y,age,M,dist,nugget,n_perm=999,seed=SEED):
             "not_a_geographic_or_ancestral_rain_selection_control":True}
 
 
+def joint_BM_whitened_niche_head_photo_correlation(vals,age,M,dist,nugget):
+    """Approximate correlation of standardized BM independent contrasts.
+
+    This tests whether CURRENT logBIO12 and S1 camera-frame angle covary on
+    the same gene-tree covariance; not a true inferred adaptive gain or a
+    jointly fitted pair of BM/OU evolutionary process rates.
+    """
+    K=kernel(age,M,dist,"BM",nugget=nugget)
+    L=linalg.cholesky(K,lower=True)
+    inter=linalg.solve_triangular(L,np.ones(len(age)),lower=True)
+    def whiten(observed):
+        z=linalg.solve_triangular(L,observed,lower=True)
+        return z-inter*(inter@z)/(inter@inter)
+    a=whiten(vals["log_BIO12"])
+    b=whiten(vals["photo_mean_angle_deg"])
+    rho=float((a@b)/np.sqrt((a@a)*(b@b)))
+    n=len(a)
+    t=rho*np.sqrt((n-2)/max(1-rho*rho,1e-14))
+    return {
+        "log_BIO12_vs_S1_photo_angle_BM_whitened_r":rho,
+        "conditional_fixed_BM_covariance_approx_two_sided_p":float(2*stats.t.sf(abs(t),n-2)),
+        "only_same_109_ITS_taxa_original_photo_angle":True,
+        "not_an_independent_ancestral_transitions_or_adaptive_selection_test":True,
+        "taxon_and_phylogeny_uncertainty_not_integrated":True,
+    }
+
+
 def climate_regression(vals,age,M,dist,nugget):
     rain=vals["BIO12_mm"]
     angle=vals["photo_mean_angle_deg"]
@@ -298,6 +325,7 @@ def run(s1,accessions,tree_file,discovery,alignment,*,n_perm=999):
                 "tip_noise_assumption":noise,
                 "evolutionary_model_selection_per_trait":outcome,
                 "photo_angle_vs_annual_rain_5covariates":climate_regression(vals,age,M,D,noise),
+                "BM_whitened_joint_continuous_trait_association":joint_BM_whitened_niche_head_photo_correlation(vals,age,M,D,noise),
             }
     return {
         "schema":"azami_T2_true_original109_genbank_ITS_BM_OU_own_S1_photo_niche_v1",
