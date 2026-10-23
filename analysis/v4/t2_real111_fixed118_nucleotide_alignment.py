@@ -125,7 +125,9 @@ def site_and_taxa_alignment(data,refs):
             if len(calls)!=len(src["q20_majority_bases_1based"]):
                 raise ValueError("Duplicate observed source base calls")
             observed[r["phylogenetic_tip"]]=calls
-            coords.update(calls)
+            # Counter.update(dict) would treat nucleotide letters as counts!
+            # Count taxon presence once per genuinely observed source coordinate.
+            coords.update(calls.keys())
         positions=sorted(pos for pos,k in coords.items() if k>=need)
         valid=len(positions)>=MIN_SITES_PER_LOCUS
         var=info=0
