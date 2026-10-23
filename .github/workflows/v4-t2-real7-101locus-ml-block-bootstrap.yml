@@ -1,0 +1,138 @@
+name: V4 T2 real7 observed Q20 101 nuclear locus-block 300 ML bootstrap
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real7_source101_locus_block_ml_bootstrap.py'
+      - 'tests/test_v4_t2_real7_source101_locus_block_ml_bootstrap.py'
+      - '.github/workflows/v4-t2-real7-101locus-ml-block-bootstrap.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  test-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install 'biopython>=1.83,<1.90' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real7_source101_locus_block_ml_bootstrap.py
+      - name: Check unchanged original 7 SRA 120k Q20 sequencing receipt inputs
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12465191431 --jq '.digest')" = 'sha256:b9969337e3cf4bc971bf97058b47ecb7daaab563505593fb83f2cb8b8bb6e3d2'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12468516402 --jq '.digest')" = 'sha256:5479eab9f36a010343594844956f17b48fff96a59ff31aee910b1506b48aeb84'
+          mkdir -p work/real7/source work/real7/nucleotide
+          gh run download 39868141961 --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/real7/source
+          gh run download 39868141961 --repo zuizui0223/azami --pattern 't2-real120k-source-original110-Q20-sites-*' --dir work/real7/nucleotide
+          test "$(find work/real7/nucleotide -name 'SRR*.json' | wc -l)" -eq 7
+
+  draw-blocks:
+    needs: test-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        shard: [0,1]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Get Biopython and IQ-TREE2 for actual 150 ML reconstructions per shard
+        run: |
+          python -m pip install 'biopython>=1.83,<1.90'
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq iqtree
+          command -v iqtree2
+      - name: Restore immutable seven original public SRA nucleotide observations only
+        run: |
+          set -euo pipefail
+          mkdir -p work/7boot/source work/7boot/reads work/7boot/scratch work/7boot/out
+          gh run download 39868141961 --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/7boot/source
+          gh run download 39868141961 --repo zuizui0223/azami --pattern 't2-real120k-source-original110-Q20-sites-*' --dir work/7boot/reads
+          test "$(find work/7boot/reads -name 'SRR*.json' | wc -l)" -eq 7
+          test -s work/7boot/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+          test -s work/7boot/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+          test -s work/7boot/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
+      - name: Fit 150 genuine Q20 observed site maximum-likelihood locus-block bootstrap trees
+        run: |
+          python -m analysis.v4.t2_real7_source101_locus_block_ml_bootstrap \
+            --mode shard \
+            --sra-source work/7boot/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --chosen work/7boot/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
+            --targets work/7boot/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --receipts work/7boot/reads \
+            --shard ${{ matrix.shard }} \
+            --scratch work/7boot/scratch \
+            --output work/7boot/out/blockML_${{ matrix.shard }}.json
+      - if: always()
+        run: rm -rf work/7boot/scratch work/7boot/reads
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-source-seven-observed101-ML-locus-block-${{ matrix.shard }}
+          path: work/7boot/out/
+          if-no-files-found: warn
+          retention-days: 90
+
+  aggregate:
+    needs: [test-source,draw-blocks]
+    runs-on: ubuntu-latest
+    if: always()
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'biopython>=1.83,<1.90'
+      - name: Recover both ML locus-block bootstrap shards and original 101 observed-only ML tree
+        run: |
+          set -euo pipefail
+          mkdir -p work/7boot/parts work/7boot/ml work/7boot/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --pattern 't2-source-seven-observed101-ML-locus-block-*' --dir work/7boot/parts
+          gh run download 39875423290 --repo zuizui0223/azami --name v4-t2-real7-source-observed101-110-IQTREE-ML-technical --dir work/7boot/ml
+          test -s work/7boot/ml/REAL7_101_Q20_IQTREE_UNROOTED_TECHNICAL.nwk
+      - name: Audit all300 empirical block-ML repeats and exact independent author quartet frequency
+        run: |
+          python -m analysis.v4.t2_real7_source101_locus_block_ml_bootstrap \
+            --mode aggregate \
+            --shard-dir work/7boot/parts \
+            --original-ml work/7boot/ml/REAL7_101_Q20_IQTREE_UNROOTED_TECHNICAL.nwk \
+            --output work/7boot/out/REAL7_REAL_Q20_101_LOCUS_BLOCK_ML_300.json
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          x=json.loads(Path('work/7boot/out/REAL7_REAL_Q20_101_LOCUS_BLOCK_ML_300.json').read_text())
+          assert x['n_total_independently_reestimated_ML_replicates']==300
+          assert x['n_shared_candidate_nuclear_loci']==101
+          assert len(x['whole_locus_ML_branch_frequency'])==4
+          assert not x['uncertainty']['global_EAzami294_species_phylogeny_completed']
+          assert not x['uncertainty']['species_phylogeny_rooted_or_dated']
+          print('PASS 300 REAL SOURCE Q20 whole-locus ML replicates, no invented species tree')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-real7-Q20-101locus-whole-block-300-ML-support
+          path: work/7boot/out/
+          if-no-files-found: warn
+          retention-days: 90
