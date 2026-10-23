@@ -52,14 +52,14 @@ jobs:
           assert a['source_bioproject']=='PRJNA672812'
           assert a['source_original_48_SRA_runs']==48
           assert a['source_original_48_distinct_BioSamples']==48
-          assert a['source_reconciled_direct_morphology_states']=={'D':3,'V':1,'unknown':44,'U':0}
+          assert a['source_reconciled_direct_morphology_states']=={'D':5,'V':1,'unknown':42,'U':0}
           assert a['Cremanthodium_original_nuclear_SRA_species']==4
           assert a['original_T3_10_species_exact_target_capture_overlap']==1
           assert a['experimental_other_tribe_posture_species_in_actual_nuclear_dataset']=='Cremanthodium campanulatum'
           assert not a['published_nuclear_tree_Newick_directly_retrieved']
           assert not a['DNA_FASTQ_reads_downloaded']
           assert not a['rooted_independent_U_to_D_evolutionary_gains_established']
-          assert sum(x['T3_documented_head_state_D_U_V_or_unknown']=='D' for x in t)==3
+          assert sum(x['T3_documented_head_state_D_U_V_or_unknown']=='D' for x in t)==5
           assert all(x['identical_DNA_voucher_and_flowering_phenotype_confirmed']=='False' for x in t)
           print('TRUE_T3_REN2021_PRJNA672812_48_SRA_3_REAL_NODDING_1_DEVELOPMENTAL')
           PY
