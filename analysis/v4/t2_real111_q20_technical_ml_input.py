@@ -22,6 +22,7 @@ N_QUORUM=89
 MIN_GENE_LOCI=30
 MIN_DNA_SITES=10000
 MIN_INFORMATIVE_SITES=50
+MIN_SOURCE_TAXON_CALLS=1000
 NA63_COMMON=("Cirsium flodmanii","Cirsium scopulorum",
               "Cirsium tracyi","Cirsium vulgare")
 
@@ -79,7 +80,7 @@ def validate(data,genes,samples,sequences):
         raise ValueError("Technical ML alignment genomic position gate changed")
     if any(len(seq)!=expected_len for seq in sequences.values()):
         raise ValueError("Source Q20 callable FASTA coordinate count drift")
-    if min(len(z)-z.count("N") for z in sequences.values())<1000:
+    if min(len(z)-z.count("N") for z in sequences.values())<MIN_SOURCE_TAXON_CALLS:
         raise ValueError("Some original SRA taxa have fewer than 1000 real callable bases")
     variable=informative=0
     for pos in range(expected_len):
