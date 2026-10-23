@@ -37,6 +37,7 @@ RECOVERED_LOCI=108
 ORIGINAL_SHARED_SITES=29310
 ORIGINAL_PARSIMONY_SITES=1438
 MIN_TIP_Q20_CALLABLE=1000
+MIN_INFORMATIVE_Q20_SITES=50
 EXCLUDED_TIP="WCVP206740970"
 EXCLUDED_NAME="Cirsium tioganum"
 EXCLUDED_ORIGINAL_Q20_BASES=119
@@ -102,7 +103,7 @@ def sensitivity(rows,data,genes,aligned,breadth,report):
         counts[k]+=1
         info+=sum(v>=2 for v in bases.values())>=2
         var+=len(bases)>1
-    if info<50:
+    if info<MIN_INFORMATIVE_Q20_SITES:
         raise ValueError("Posthoc 110 real original position alignment lacks independent SNP signal")
     sample_rows=[]
     for tip,seq in sorted(kept.items()):
