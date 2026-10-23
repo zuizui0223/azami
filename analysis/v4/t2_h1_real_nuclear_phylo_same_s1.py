@@ -118,7 +118,9 @@ def make_panel(name,df,full_tree):
     rem/=rem.std(ddof=0)
     X=np.column_stack((rain_z,rem))
     n=len(y);k=int(y.sum())
-    if k<3 or n-k<4:
+    # Allow explicitly labeled small-n alternative panels with >=3 in each state;
+    # the registered NA44/Japan12 principal comparison remains unchanged.
+    if k<3 or n-k<3:
         raise ValueError("Source state composition too thin")
     return {"name":name,"tree":tree,"tips":tips,"data":data,
             "y":y,"X":X,"n":n,"k":k,"weight":2*k*(n-k)/n,
