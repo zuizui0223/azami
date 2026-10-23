@@ -67,7 +67,7 @@ def test_refuse_vouchered_nonhomologous_or_fabricated_source_codes():
         m.validate_ena(rows,old,rec)
     bad=[x.copy() for x in rows]
     next(x for x in bad if x["scientific_name"]=="Cremanthodium campanulatum")["run_accession"]="SRR00000000"
-    with pytest.raises(ValueError,match="original real SRA"):
+    with pytest.raises(ValueError,match="Original real SRA"):
         m.validate_ena(bad,old,extra)
 
 
