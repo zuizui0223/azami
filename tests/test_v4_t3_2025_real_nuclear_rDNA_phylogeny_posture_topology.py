@@ -24,7 +24,7 @@ def test_genus_mixing_breaks_root_invariant_genus_split_without_falsifying_morph
 
 def test_actual_published_genealogy_provenance_boundaries():
     assert m.N_GENUINE_GB_ITS_ETS==131
-    assert m.D_N==6 and m.UNKNOWN_N==125
+    assert m.D_N==8 and m.UNKNOWN_N==123
     assert m.STRONG_ALRT==80.0 and m.STRONG_UFBOOT==95.0
     assert m.TREE_SHA=="fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310"
     assert m.TREE_RUN==39961377067
