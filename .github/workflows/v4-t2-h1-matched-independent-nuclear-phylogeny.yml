@@ -1,0 +1,77 @@
+name: V4 T2 H1 genuine NA44 Japan12 phylogeny-matched original-rain comparison
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_h1_real_nuclear_phylo_same_s1.py'
+      - '.github/workflows/v4-t2-h1-matched-independent-nuclear-phylogeny.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-verified-same-climate-independent-nuclear:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install conditional Mk null numerical environment
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'pandas>=2,<4' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Validate original nuclear Mk controls and botanical state files
+        run: |
+          python -m pytest -q tests/test_v4_t2_phylogenetic_climate_null.py tests/test_v4_t2_full251_independent_ud_hydric_permutation.py
+      - name: Restore exact real 251-source image-climate/independent-botanical U-D phenotype
+        run: |
+          set -euo pipefail
+          mkdir -p work/T2-H1/source work/T2-H1/results
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
+          gh run download 39890812308 --repo zuizui0223/azami --name v4-t2-original251-author-head-UD-observed-hydric-association --dir work/T2-H1/source
+          test -s work/T2-H1/source/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv
+      - name: Evaluate H1 matched real independent North American and Japanese nuclear tips
+        run: |
+          python -m analysis.v4.t2_h1_real_nuclear_phylo_same_s1 \
+            --original251 work/T2-H1/source/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv \
+            --out work/T2-H1/results/T2_H1_REAL_S1_NA44_JAPAN12_NUCLEAR_PHYLO_EFFECT_VERIFIED.json \
+            --draws 30000
+      - name: Preserve positive original effect, but never overclaim independent rain-driven gains
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/T2-H1/results/T2_H1_REAL_S1_NA44_JAPAN12_NUCLEAR_PHYLO_EFFECT_VERIFIED.json')
+          x=json.loads(p.read_text())
+          assert x['n_exact_nuclear_S1_joint']==56
+          assert x['number_of_all_66_author_scored_unmatched_to_these_two_trees']==10
+          assert x['regions']['NA44']['nuclear_tips_matched']==44
+          assert x['regions']['Japan12']['nuclear_tips_matched']==12
+          assert x['regions']['NA44']['D']==3
+          assert x['regions']['Japan12']['D']==5
+          for c in ['NA44','Japan12']:
+              assert x['regions'][c]['rain_mm_down_minus_erect']>0
+              for root in ['erect','stationary']:
+                  assert x['regions'][c]['phylogeny_symmetric_Mk_conditional'][root]['n_conditioned_states']==30000
+          summary=x['separately_phylogeny_calibrated_combination']
+          assert summary['nonphylo_exact_joint_permutations']==10489248
+          assert summary['estimated_effect'][0]>0
+          for item in summary['phylo_Mk_H1_root_sensitivity'].values():
+              assert item['n_joint_conditional_null']==30000
+              assert all(0<=p<=1 for p in item['H1_one_sided_p'])
+          assert x['limitations']['not_full66_global_phylogeny']
+          assert x['limitations']['no_independent_origin_number_or_ancestral_precipitation_inferred']
+          assert x['limitations']['posthoc_directional_H1_sensitivity_not_confirmation']
+          print('PASS_REAL_S1_NA44_JAPAN12_H1_BOTANICAL_PHYLOGENY_SAME_CLIMATE')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-h1-matched-real-NA44-Japan12-nuclear-phylogenetic-climate-comparison
+          path: work/T2-H1/results/
+          if-no-files-found: warn
+          retention-days: 90
