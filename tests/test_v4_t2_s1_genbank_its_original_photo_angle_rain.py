@@ -43,7 +43,8 @@ def test_all_five_original_S1_axes_return_photo_orientation_not_external_flora()
     }
     assert set(k for k in r if isinstance(r[k],dict))=={
         "IID_equal_species_weight","Pagel_lambda0_diagonal_nonultrametric",
-        "fixed_Brownian_lambda1","estimated_Pagel_lambda"
+        "fixed_Brownian_lambda1","estimated_Pagel_lambda",
+        "fixed_Brownian_plus_5pct_photo_measurement_nugget"
     }
     beta=r["IID_equal_species_weight"]["source_yearly_rain_BIO12_beta_image_degrees_per100mm"]
     assert np.isfinite(beta)
@@ -104,3 +105,22 @@ def test_five_axis_exposure_cannot_be_relabelled_or_omitted():
     for x in r.values():x["chelsa_bio12"]="200"
     with pytest.raises(ValueError,match="collinear|invariant"):
         m.source_design(r,tips)
+
+def test_Brownian_measurement_nugget_preserves_photo_variance_uncertainty():
+    rows=source()
+    tips=list(rows)
+    X,_=m.source_design(rows,tips)
+    y=np.array([float(rows[t]["mean_image_angle_deg"]) for t in tips])
+    # Short but positive phylogenetic branches: the explicit five-percent
+    # technical effect cannot be described as proof of a genetic U/D transition.
+    rng=np.random.default_rng(1234)
+    Z=rng.standard_normal((len(tips),len(tips)))
+    C=0.05*np.eye(len(tips))+0.002*Z@Z.T
+    results=m.fit_models(y,X,C)
+    strict=results["fixed_Brownian_lambda1"]
+    nug=results["fixed_Brownian_plus_5pct_photo_measurement_nugget"]
+    assert strict["residual_covariance"]=="Brownian_ITS_shared_ancestry"
+    assert nug["residual_covariance"]=="Brownian_ITS_plus_5pct_image_measurement_nugget"
+    assert results["technical_tip_nugget_is_5pct_of_median_root_tip_depth"]==.05
+    assert results["technical_nugget_was_not_tuned_to_observed_climate_signal"]
+    assert 0<=nug["BIO12_two_sided_t_p_conditional_on_fixed_lambda"]<=1
