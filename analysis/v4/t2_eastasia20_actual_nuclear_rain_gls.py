@@ -183,57 +183,71 @@ def analyze(tree,coded,climate,checks):
 
 
 def render_phylogram(tree,coded,climate,path):
+    """Actual branch-proportional topology; separate columns for names and rain."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     tips=tree.get_terminals()
     coords=tree.depths()
-    positions={z:float(i) for i,z in enumerate(tips)}
-    for z in tree.find_clades(order="postorder"):
-        if not z.is_terminal():
-            positions[z]=sum(positions[child] for child in z.clades)/len(z.clades)
-    mx=max(float(coords[t]) for t in tips)
-    bar_start=mx*.98+0.012
-    bar_width=.006
-    maxrain=max(x["BIO12"] for x in climate.values())
-    fig,ax=plt.subplots(figsize=(15,11),dpi=180)
-    for node in tree.find_clades(order="preorder"):
-        x=float(coords[node])
+    positions={t:float(i) for i,t in enumerate(tips)}
+    for node in tree.find_clades(order="postorder"):
         if not node.is_terminal():
-            yval=[positions[c] for c in node.clades]
-            ax.plot([x,x],[min(yval),max(yval)],c="#95a0a8",lw=.9,zorder=1)
+            positions[node]=sum(positions[c] for c in node.clades)/len(node.clades)
+    longest=max(float(coords[t]) for t in tips)
+    if not longest>0:
+        raise ValueError("Original EAzami nuclear branch lengths not positive")
+    scaled_x=lambda node: 5.0*float(coords[node])/longest
+    label_col=5.30
+    rain_start=10.65
+    rain_width=4.2
+    maxrain=max(rec["BIO12"] for rec in climate.values())
+    fig,ax=plt.subplots(figsize=(17,12),dpi=180)
+    for node in tree.find_clades(order="preorder"):
+        x=scaled_x(node)
+        if not node.is_terminal():
+            ys=[positions[c] for c in node.clades]
+            ax.plot([x,x],[min(ys),max(ys)],c="#87959b",lw=.85,zorder=1)
         for child in node.clades:
-            ax.plot([x,coords[child]],[positions[child],positions[child]],c="#95a0a8",lw=.9,zorder=1)
+            ax.plot([x,scaled_x(child)],[positions[child],positions[child]],
+                    c="#87959b",lw=.85,zorder=1)
     for t in tips:
         name=t.name.replace("Cirsium_","C. ").replace("_"," ")
         state=coded.get(t.name,None)
-        color="#b8583e" if state==1 else "#6f8793" if state==0 else "#a8a8a8"
-        label=("D" if state==1 else "U" if state==0 else "?")
+        color="#b8583e" if state==1 else "#577688" if state==0 else "#999999"
         y=positions[t]
-        ax.scatter([coords[t]],[y],s=30,c=color,zorder=5)
-        ax.text(mx+.0005,y,name,fontsize=9,weight="bold" if state==1 else "normal",
-                color=color,va="center")
+        ax.scatter([scaled_x(t)],[y],s=28,c=color,zorder=5)
+        ax.text(label_col,y,name,fontsize=9,
+                fontweight="bold" if state==1 else "normal",
+                color=color,va="center",clip_on=False)
         if t.name in climate:
             mm=climate[t.name]["BIO12"]
-            ax.barh(y,bar_width*mm/maxrain,left=bar_start,height=.68,color=color,alpha=.75,zorder=3)
-            ax.text(bar_start+bar_width+.0002,y,f"{mm:,.0f}",fontsize=8,va="center")
+            ax.barh(y,rain_width*mm/maxrain,left=rain_start,height=.65,
+                    color=color,alpha=.72,zorder=3)
+            ax.text(rain_start+rain_width+.23,y,f"{mm:,.0f}",
+                    fontsize=8,va="center")
         else:
-            ax.text(bar_start+.0003,y,"no GBIF source",fontsize=8,va="center",color="#9a9a9a")
-    ax.set_xlim(-.001,bar_start+bar_width+.002)
-    ax.set_ylim(len(tips)+.7,-2)
+            ax.text(rain_start+.15,y,"no GBIF niche",fontsize=8,
+                    va="center",color="#999999")
+    ax.axvline(rain_start-.18,c="#dddddd",lw=0.8)
+    ax.set_xlim(-.3,rain_start+rain_width+1.6)
+    ax.set_ylim(len(tips)+.35,-1.7)
     ax.set_yticks([])
     ax.set_xticks([])
     ax.set_frame_on(False)
-    ax.text(0,-1.4,"True East Asian 20-tip nuclear tree",fontsize=17,weight="bold")
-    ax.text(0,-.35,"EAzami public nuclear Comp1061, independently described capitulum U/D",fontsize=10)
-    ax.text(bar_start,-.3,"GBIF-CHELSA BIO12 (mm/y)",fontsize=10,weight="bold")
+    ax.text(0,-1.2,"Genuine East Asian 20-tip nuclear phylogeny",
+            fontsize=16,fontweight="bold")
+    ax.text(0,-.38,"Author botanical capitulum posture • original Comp1061 nuclear branches",
+            fontsize=9)
+    ax.text(rain_start,-.35,"GBIF-CHELSA BIO12 (mm/year)",
+            fontsize=9,fontweight="bold")
     ax.legend(handles=[
-        Line2D([0],[0],marker="o",c="#b8583e",lw=0,label="Nodding (D): 8"),
-        Line2D([0],[0],marker="o",c="#6f8793",lw=0,label="Erect (U): 9"),
-        Line2D([0],[0],marker="o",c="#a8a8a8",lw=0,label="Unknown: 3")
-    ],loc="lower left",frameon=False,fontsize=9)
-    fig.text(.1,.02,"Only 14 tips have authenticated independent GBIF climatology; no camera-derived trait, no ancestral rainfall.",
+        Line2D([0],[0],marker="o",color="#b8583e",linestyle="none",label="Nodding (D): 8"),
+        Line2D([0],[0],marker="o",color="#577688",linestyle="none",label="Erect (U): 9"),
+        Line2D([0],[0],marker="o",color="#999999",linestyle="none",label="Unknown: 3"),
+    ],loc="lower left",frameon=False,fontsize=9,
+      bbox_to_anchor=(0.01,.03))
+    fig.text(.10,.02,"BIO12: modern taxon range niche, not ancestral rain. No photographs or EXIF classification.",
              fontsize=9)
     fig.savefig(path,bbox_inches="tight",dpi=180)
     plt.close(fig)
