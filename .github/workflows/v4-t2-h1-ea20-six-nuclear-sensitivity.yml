@@ -3,11 +3,13 @@ on:
   pull_request:
     paths:
       - 'analysis/v4/t2_h1_eastasia20_alternative_phylogeny.py'
+      - 'analysis/v4/t2_h1_real_nuclear_phylo_same_s1.py'
       - '.github/workflows/v4-t2-h1-ea20-six-nuclear-sensitivity.yml'
   push:
     branches: [codex/v4-native-integration-workflow]
     paths:
       - 'analysis/v4/t2_h1_eastasia20_alternative_phylogeny.py'
+      - 'analysis/v4/t2_h1_real_nuclear_phylo_same_s1.py'
       - '.github/workflows/v4-t2-h1-ea20-six-nuclear-sensitivity.yml'
   workflow_dispatch:
 permissions:
