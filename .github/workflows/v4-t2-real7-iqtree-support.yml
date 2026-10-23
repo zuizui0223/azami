@@ -1,0 +1,68 @@
+name: V4 T2 real seven source IQ-TREE branch supports versus locus bootstrap
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real7_iqtree_support_audit.py'
+      - 'tests/test_v4_t2_real7_iqtree_support_audit.py'
+      - '.github/workflows/v4-t2-real7-iqtree-support.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-source-technical-confidence-contrast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify SH-aLRT UFBoot and unrooted canonical branch numerical code
+        run: |
+          python -m pip install 'biopython>=1.83,<1.90' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real7_iqtree_support_audit.py
+      - name: Verify original seven actual sequence artifacts and copy both ML trees and locus resampling
+        run: |
+          set -euo pipefail
+          mkdir -p work/7support/iq work/7support/nj work/7support/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12468516402 --jq '.digest')" = 'sha256:5479eab9f36a010343594844956f17b48fff96a59ff31aee910b1506b48aeb84'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12464634621 --jq '.digest')" = 'sha256:e169d63fc490258c993f85b666e8505522acc80c93505dd16ca44f8a6331c529'
+          gh run download 39875423290 --repo zuizui0223/azami --name v4-t2-real7-source-observed101-110-IQTREE-ML-technical --dir work/7support/iq
+          gh run download 39868882212 --repo zuizui0223/azami --name v4-t2-seven-original110-real120k-Q20-technical-NJ --dir work/7support/nj
+          test -s work/7support/iq/REAL7_OBSERVED_ONLY_IQTREE_GTRG4_NA63_QUARTET.json
+          test -s work/7support/iq/REAL7_101_Q20_IQTREE_UNROOTED_TECHNICAL.nwk
+          test -s work/7support/iq/REAL7_110_Q20_IQTREE_UNROOTED_TECHNICAL.nwk
+          test -s work/7support/nj/SEVEN_REAL_Q20_101_LOCUS_NJ_BOOTSTRAP_SPLITS.csv
+      - name: Independently audit real-site IQ-TREE support against 300 whole-locus NJ resamplings
+        run: |
+          python -m analysis.v4.t2_real7_iqtree_support_audit \
+            --primary-tree work/7support/iq/REAL7_101_Q20_IQTREE_UNROOTED_TECHNICAL.nwk \
+            --sensitivity-tree work/7support/iq/REAL7_110_Q20_IQTREE_UNROOTED_TECHNICAL.nwk \
+            --nj-locus-support work/7support/nj/SEVEN_REAL_Q20_101_LOCUS_NJ_BOOTSTRAP_SPLITS.csv \
+            --ml-verified work/7support/iq/REAL7_OBSERVED_ONLY_IQTREE_GTRG4_NA63_QUARTET.json \
+            --output work/7support/out/REAL7_IQTREE_SITE_VERSUS_NJ_LOCUS_SUPPORT.json
+      - name: Do not elevate same-seven read technical branch confidence to adaptive species tree
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('work/7support/out/REAL7_IQTREE_SITE_VERSUS_NJ_LOCUS_SUPPORT.json')
+          x=json.loads(p.read_text())
+          assert x['source_real_SRA_specimens']==7
+          assert x['primary_internal_binary_unrooted_splits']==4
+          assert x['primary_and_sensitivity_topology_equal']
+          assert not x['source_public_read_nucleotide_copy_homeology_validated']
+          assert x['same_empirical_7_run_ML_vs_NJ_not_independent']
+          print('REAL7_101_110_PHYLOGENY_TECHNICAL_BRANCH_AUDIT_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-real7-IQTREE-site-support-NJ-locus-resampling-audit
+          path: work/7support/out/
+          if-no-files-found: error
+          retention-days: 90
