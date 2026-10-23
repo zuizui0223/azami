@@ -13,10 +13,10 @@ def tiny():
     return tree
 
 
-def test_true_rooted_common_phylogeny_BM_and_two_OU_hypotheses():
+def test_true_rooted_common_phylogeny_BM_and_two_OU_hypotheses(monkeypatch):
     tree=tiny()
     from Bio import Phylo
-    m.N_TREE=8
+    monkeypatch.setattr(m,'N_TREE',8)
     rows={}
     for j,name in enumerate("ABCDEFGH"):
         rows[name]={"original_photo_count":str(j+1),
@@ -37,10 +37,8 @@ def test_true_rooted_common_phylogeny_BM_and_two_OU_hypotheses():
         stat=m.kernel(h,C,D,"OU_stationary",alpha=.2,nugget=.05)
         assert np.linalg.eigvalsh(stat).min()>0
         assert np.allclose(np.diag(stat),np.repeat(1.05,8))
-        assert obs["photo_mean_angle_deg"][0]==30
+        assert set(obs["photo_mean_angle_deg"])=={float(30+5*i) for i in range(8)}
         assert len(obs["log_BIO12"])==8
-    m.N_TREE=109
-
 
 def test_OU_stationary_covariance_root_invariance_unlike_fixed_root():
     tree=tiny()
