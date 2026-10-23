@@ -1,0 +1,176 @@
+name: V4 T2 original S1 251 GenBank nuclear ITS source-to-own-tree climate
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_s1_genbank_its_discovery.py'
+      - 'analysis/v4/t2_s1_genbank_its_tree_rain.py'
+      - 'analysis/v4/results/20261023_T2_S1_ALL251_66_TO72_PROVISIONAL_POSTURE_OVERLAY.csv'
+      - 'tests/test_v4_t2_s1_genbank_its_discovery.py'
+      - 'tests/test_v4_t2_s1_genbank_its_tree_rain.py'
+      - '.github/workflows/v4-t2-s1-all251-genbank-own-nuclear-its-tree.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_genbank_its_discovery.py'
+      - 'analysis/v4/t2_s1_genbank_its_tree_rain.py'
+      - 'analysis/v4/results/20261023_T2_S1_ALL251_66_TO72_PROVISIONAL_POSTURE_OVERLAY.csv'
+      - 'tests/test_v4_t2_s1_genbank_its_discovery.py'
+      - 'tests/test_v4_t2_s1_genbank_its_tree_rain.py'
+      - '.github/workflows/v4-t2-s1-all251-genbank-own-nuclear-its-tree.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: S1-genbank-all-original251-source-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  source-contract-and-NCBI-12-original-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install GenBank INSDC source and immutable original taxonomy test environment
+        run: python -m pip install 'biopython>=1.83,<2' 'requests>=2.31,<3' 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'pytest>=8,<10'
+      - name: Validate 251 exact S1 genus-source names and strict GenBank record requirements
+        run: |
+          python -m pytest -q tests/test_v4_t2_s1_genbank_its_discovery.py tests/test_v4_t2_s1_genbank_its_tree_rain.py
+      - name: Pilot bounded NCBI requests for first 12 actual S1 taxa
+        run: |
+          mkdir -p work/s1-genbank-pilot
+          python -m analysis.v4.t2_s1_genbank_its_discovery \
+            --s1 analysis/v4/results/20261023_T2_S1_ALL251_66_TO72_PROVISIONAL_POSTURE_OVERLAY.csv \
+            --outdir work/s1-genbank-pilot --limit 12
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s1-genbank-12-original-taxon-ncbi-ITS-public-transport-pilot
+          path: work/s1-genbank-pilot/
+          if-no-files-found: warn
+          retention-days: 60
+
+  obtain-all-251-original-genbank-ITS-sequences:
+    needs: [source-contract-and-NCBI-12-original-pilot]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install NCBI source-data retrieval environment
+        run: python -m pip install 'biopython>=1.83,<2' 'requests>=2.31,<3'
+      - name: Download authentic INSDC GenBank ITS records for every one of 251 original S1 names
+        run: |
+          mkdir -p work/s1-genbank-full
+          python -m analysis.v4.t2_s1_genbank_its_discovery \
+            --s1 analysis/v4/results/20261023_T2_S1_ALL251_66_TO72_PROVISIONAL_POSTURE_OVERLAY.csv \
+            --outdir work/s1-genbank-full
+      - name: Require complete all251 audit even when zero public sequences are available
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path('work/s1-genbank-full/S1_GENBANK_SOURCE_COVERAGE_RECEIPT.json').read_text())
+          assert o["scope"]=="S1_ALL251"
+          assert o["source_names_actually_queried"]==251
+          assert o["source_original_WCVP_accepted_keys"]==244
+          assert o["all251_queries_completed_without_network_failures"]
+          assert o["original_S1_bio12_centroids_are_present_distribution_not_evolutionary_histories"]
+          assert not o["whole_S1_251_tip_verified_true_nuclear_species_tree_completed"]
+          print('COMPLETED_TRUE_S1_ALL251_NCBI_GENBANK_ACCESSION_AUDIT',o["accepted_exact_species_nuclear_ITS_accessions"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-original-S1-251-exact-ncbi-GenBank-nuclear-ITS-source-accessions
+          path: work/s1-genbank-full/
+          if-no-files-found: warn
+          retention-days: 90
+
+  construct-authentic-GenBank-ITS-ML-tree-and-test-rain:
+    needs: [obtain-all-251-original-genbank-ITS-sequences]
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual multiple sequence alignment, IQ-TREE and biology inference dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mafft iqtree
+          python -m pip install 'biopython>=1.83,<2' 'numpy>=1.26,<3' 'scipy>=1.11,<2'
+          mafft --version || true
+          command -v iqtree2 || command -v iqtree
+      - name: Restore only accession-verified original S1 GenBank results from same workflow
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1-genbank/full work/s1-genbank/tree
+          gh run download "$GITHUB_RUN_ID" \
+            --repo zuizui0223/azami \
+            --name t2-original-S1-251-exact-ncbi-GenBank-nuclear-ITS-source-accessions \
+            --dir work/s1-genbank/full
+      - name: Align all exact-source authentic GenBank ITS taxa, then gate real shared-site quality
+        run: |
+          set -euo pipefail
+          input=work/s1-genbank/full/S1_GENBANK_ITS_EXACT_ORGANISM_SEQUENCE.fasta
+          n="$(grep -c '^>' "$input" || true)"
+          echo "S1 exact original GenBank species with selected nuclear ITS: $n"
+          if (( n < 12 )); then
+            echo '{"status":"BLOCKED_TOO_FEW_EXACT_S1_GENBANK_ITS_ACCESSIONS","no_species_tree_claim":true}' > work/s1-genbank/tree/BLOCKED_GENBANK_COVERAGE.json
+            exit 0
+          fi
+          mafft --auto --adjustdirectionaccurately --thread 2 "$input" \
+            > work/s1-genbank/tree/S1_GENBANK_ITS_MAFFT_FULL.fasta \
+            2> work/s1-genbank/tree/MAFFT_ALIGNMENT.stderr.log
+          python -m analysis.v4.t2_s1_genbank_its_tree_rain --stage prepare \
+            --accessions work/s1-genbank/full/S1_GENBANK_ITS_EXACT_SPECIES_ACCESSIONS.csv \
+            --source-receipt work/s1-genbank/full/S1_GENBANK_SOURCE_COVERAGE_RECEIPT.json \
+            --msa work/s1-genbank/tree/S1_GENBANK_ITS_MAFFT_FULL.fasta \
+            --outdir work/s1-genbank/tree
+      - name: Fit actual source-reconstructed ITS maximum likelihood and compare same tree rainfall
+        run: |
+          set -euo pipefail
+          if test -f work/s1-genbank/tree/BLOCKED_GENBANK_COVERAGE.json; then
+            echo 'No tree: public GenBank ITS coverage too thin for defensible S1 Cirsium tree'
+            exit 0
+          fi
+          state="$(python - <<'PY'
+          import json
+          p='work/s1-genbank/tree/S1_GENBANK_ITS_ML_PREPARATION.json'
+          print(json.load(open(p))["sequence_quality"]["status"])
+          PY
+          )"
+          if [[ "$state" != PASS_TO_GENBANK_ITS_IQTREE_EXPLORATORY_ML ]]; then
+            echo "Sequence QC fail-closed: $state"
+            exit 0
+          fi
+          bin="$(command -v iqtree2 || command -v iqtree)"
+          "$bin" -s work/s1-genbank/tree/S1_ITS_ACTUAL_GENBANK_MAFFT_QC_NUCLEAR_ALIGNMENT.fasta \
+            -m MFP -B 1000 -alrt 1000 -T 2 -seed 20261023 \
+            -pre work/s1-genbank/tree/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML
+          python -m analysis.v4.t2_s1_genbank_its_tree_rain --stage report \
+            --accessions work/s1-genbank/full/S1_GENBANK_ITS_EXACT_SPECIES_ACCESSIONS.csv \
+            --source-receipt work/s1-genbank/full/S1_GENBANK_SOURCE_COVERAGE_RECEIPT.json \
+            --qc work/s1-genbank/tree/S1_GENBANK_ITS_ML_PREPARATION.json \
+            --tree work/s1-genbank/tree/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --outdir work/s1-genbank/tree
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block
+          path: work/s1-genbank/tree/
+          if-no-files-found: warn
+          retention-days: 90
