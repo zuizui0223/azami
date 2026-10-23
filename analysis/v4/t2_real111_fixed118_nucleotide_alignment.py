@@ -43,7 +43,9 @@ def source_csv(path):
 
 
 def source_targets(samples,targets):
-    if len(samples)!=FULL or len({z["run"] for z in samples})!=FULL:
+    if (len(samples)!=FULL or len({z["run"] for z in samples})!=FULL or
+        any(not z["run"].startswith("SRR") or not z["run"][3:].isdigit() or
+            not str(z["accepted_key"]).isdigit() for z in samples)):
         raise ValueError("Original Q20 111 source sample inventory changed")
     if len(targets)!=LOCI or len({z["locus"] for z in targets})!=LOCI:
         raise ValueError("Predeclared 118 author target references missing")
