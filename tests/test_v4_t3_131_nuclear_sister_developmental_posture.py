@@ -25,7 +25,6 @@ def test_species_direct_flora_V_is_NOT_falsely_erect_or_always_nodding():
     assert row["source_posture"]=="V"
     assert row["developmental_scope"]=="early_spreading_later_pendulous"
     assert "pendulous later" in row["capitulum_bearing_peduncle_source_phrase"]
-    assert row["same_GenBank_voucher_flowering_stage_verified"] if False else True
     for name in ("DNA_voucher_equals_morphological_flora_specimen",
                  "is_true_fixed_flowering_erect_control",
                  "ancestral_state_or_rain_shelter_fitness_proven"):
