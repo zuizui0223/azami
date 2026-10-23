@@ -1,5 +1,9 @@
 name: V4 T2 H1 genuine NA44 Japan12 phylogeny-matched original-rain comparison
 on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_h1_real_nuclear_phylo_same_s1.py'
+      - '.github/workflows/v4-t2-h1-matched-independent-nuclear-phylogeny.yml'
   push:
     branches: [codex/v4-native-integration-workflow]
     paths:
