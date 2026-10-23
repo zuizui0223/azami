@@ -339,7 +339,7 @@ def plot_phylogeny(tree,master,out):
     mx=max(float(master[t.name]["chelsa_bio12"]) for t in tips)
     for leaf in tips:
         row=master[leaf.name];y=positions[leaf]
-        angle=float(row["mean_image_angle_deg"])
+        angle=float(row["photographic_orientation_mean_deg"])
         rain=float(row["chelsa_bio12"])
         ax.text(4.4,y,leaf.name.replace("Cirsium_","C. "),fontsize=6.4,
                 color="#253645",va="center")
