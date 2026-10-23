@@ -19,7 +19,7 @@ def fake_runinfo():
              "experiment_accession":f"SRX94200{i+10}",
              "fastq_ftp":f"ftp.sra.ebi.ac.uk/vol1/fastq/SRR129/fake/{i}_1.fastq.gz",
              "fastq_bytes":"23423"})
-    for i in range(41):
+    for i in range(39):
         genus=("Ligularia" if i%2 else "Parasenecio")
         samples.append({"run_accession":f"SRR12969{i:03}",
              "scientific_name":f"{genus} fake_source_species{i}",
@@ -35,7 +35,7 @@ def test_source_direct_additions_keep_species_critical_head_stage_unknown():
     original=m.csv_rows(ORIG)
     additional=m.csv_rows(EXTRA)
     assert len(original)==10
-    assert len(additional)==7
+    assert len(additional)==9
     assert {r["taxon"]:r["source_posture"] for r in additional}==m.FOCAL_SOURCE_STATES
     humile=next(x for x in additional if x["taxon"]=="Cremanthodium humile")
     assert humile["source_posture"]=="?"
@@ -49,7 +49,7 @@ def test_synthetic_exact_48_has_only_three_direct_nodding_and_no_erect():
     rows=fake_runinfo()
     scored, counts=m.validate_ena(rows,m.csv_rows(ORIG),m.csv_rows(EXTRA))
     assert len(scored)==48
-    assert counts=={"D":5,"V":1,"?":42}
+    assert counts=={"D":7,"V":1,"?":40}
     c={x["original_species_name_exact_from_ENA"]:x for x in scored}
     assert c["Cremanthodium humile"]["T3_documented_head_state_D_U_V_or_unknown"]=="?"
     assert c["Emilia sonchifolia"]["ontogenetic_direction_not_phylogenetic_event"]=="D_before_to_U_later"
