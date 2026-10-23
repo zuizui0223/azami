@@ -35,6 +35,7 @@ def test_fail_closed_when_pairwise_overlap_has_only_missing_N():
 
 def test_true_four_source_NJ_has_no_added_source_tip(monkeypatch):
     monkeypatch.setattr(mod,"N_TIPS",4)
+    monkeypatch.setattr(mod,"MIN_PAIRED_CALLABLE",10)
     tree,dist,summary=mod.audit_nj(four(),{})
     assert {x.name for x in tree.get_terminals()}==set(four())
     assert summary["n_original_public_BioSample_pairs"]==6
