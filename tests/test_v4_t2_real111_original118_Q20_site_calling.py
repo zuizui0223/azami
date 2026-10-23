@@ -59,7 +59,7 @@ def test_full111_shard_preserves_every_original_sample_without_sequence_imputati
             "n_targets_at_least100_Q20_called_sites":0,
             "loci":{l:{"reference":ref} for l,ref in contigs.items()},
         }
-    result=s.collect(original,samples,targets,["L0","L1","L2"],None,None,0,runner=mock)
+    result=s.collect(original,samples,targets,[f"L{i}" for i in range(241)],None,None,0,runner=mock)
     assert result["requested"]==11 and result["success"]==11
     assert result["failure"]==0
     assert not result["genus_species_phylogeny_inferred"]
