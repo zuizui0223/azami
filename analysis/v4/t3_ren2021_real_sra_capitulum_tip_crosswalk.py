@@ -40,6 +40,8 @@ FOCAL_SOURCE_STATES={
     "Cremanthodium thomsonii":"D",
     "Cremanthodium humile":"?",
     "Emilia sonchifolia":"V",
+    "Parasenecio latipes":"D",
+    "Parasenecio cyclotus":"D",
 }
 SOURCE_FOCAL_BY_SRR={
     "Cremanthodium campanulatum":"SRR12967014",
@@ -47,6 +49,8 @@ SOURCE_FOCAL_BY_SRR={
     "Cremanthodium thomsonii":"SRR12967057",
     "Cremanthodium humile":"SRR12967013",
     "Emilia sonchifolia":"SRR12967055",
+    "Parasenecio latipes":"SRR12967038",
+    "Parasenecio cyclotus":"SRR12967040",
 }
 OTHER_TRIBE_PROOF_ONLY_IF_CIRS_CIRSIUM_INDEPENDENT_TREE=True
 
@@ -124,7 +128,7 @@ def validate_ena(rows, original, supplemental):
             "nuclear_homeolog_reticulation_and_polyploid_orthology_audited":False,
         })
     counts=Counter(x["T3_documented_head_state_D_U_V_or_unknown"] for x in outputs)
-    if counts!={"D":3,"V":1,"?":44}:
+    if counts!={"D":5,"V":1,"?":42}:
         raise ValueError("Source-authenticated 48-tip available morphology coverage changed")
     return outputs,counts
 
@@ -158,7 +162,7 @@ def emit(ena_data,original,supplemental,outdir):
     # byte-level FASTQ URLs and original sample coordinates need not be exposed.
     receipt={
         "schema":"azami_T3_Ren2021_PRJNA672812_actual_public48_nuclear_SRA_flora_crosswalk_v1",
-        "status":"ORIGINAL_48_REAL_NUCLEAR_SRA_SAMPLES_PROVEN_WITH_THREE_NODDING_AND_ONE_STAGE_VARIABLE",
+        "status":"ORIGINAL_48_REAL_NUCLEAR_SRA_SAMPLES_PROVEN_WITH_FIVE_NODDING_TWO_GENERA_AND_ONE_STAGE_VARIABLE",
         "source_paper_doi":"10.1016/j.ympev.2021.107202",
         "source_bioproject":"PRJNA672812",
         "source_original_48_SRA_runs":len(rows),
@@ -166,8 +170,9 @@ def emit(ena_data,original,supplemental,outdir):
         "source_original_48_distinct_species_names":len({z["scientific_name"] for z in rows}),
         "Cremanthodium_original_nuclear_SRA_species":EXPECTED_CREMANTHODIUM,
         "independent_original_morphology_10_ever_matching_2021_nuclear_specimens":1,
-        "source_reconciled_direct_morphology_states":{"D":3,"V":1,"unknown":44,"U":0},
-        "new_direct_flora_nodding_species":["Cremanthodium lineare","Cremanthodium thomsonii"],
+        "source_reconciled_direct_morphology_states":{"D":5,"V":1,"unknown":42,"U":0},
+        "new_direct_flora_nodding_species":["Cremanthodium lineare","Cremanthodium thomsonii",
+                                             "Parasenecio latipes","Parasenecio cyclotus"],
         "experimental_other_tribe_posture_species_in_actual_nuclear_dataset":"Cremanthodium campanulatum",
         "documented_during_development_opposite_direction":"Emilia sonchifolia: pendulous before anthesis, erect later",
         "one_documented_genus_only_not_species_Cremanthodium_humile_retained_unknown":True,
