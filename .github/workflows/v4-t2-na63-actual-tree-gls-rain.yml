@@ -47,6 +47,7 @@ jobs:
           assert s["author_original_trait_blob"]=="fa127f0587b676e6e004ea121424d26069586bcb"
           assert s["author_original_climate_blob"]=="6ca878423881db13f2af4624380bdce342afdf1b"
           assert d["original_scoped_taxa"]["n_tips"]==63
+          assert d["IID_species_effect_same_taxa_as_PGLS"]["BIO1_and_elevation_adjusted"]["no_nuclear_branch_length_information_in_covariance"]
           assert d["original_scoped_taxa"]["D"]==5
           assert d["original_scoped_taxa"]["n_terminal_pure_nodding_clades"]==4
           assert sum(x["nodding_minus_sister_erect_BIO12_mm"]>0
