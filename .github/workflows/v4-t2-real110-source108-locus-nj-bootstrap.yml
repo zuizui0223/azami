@@ -1,0 +1,68 @@
+name: V4 T2 real110 original111 108-locus NJ block bootstrap versus ML
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real110_source108_locus_block_nj_bootstrap.py'
+      - 'tests/test_v4_t2_real110_source108_locus_block_nj_bootstrap.py'
+      - '.github/workflows/v4-t2-real110-source108-locus-nj-bootstrap.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-fixed-108-locus-replicate-topology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate whole-locus resampling is not independent site or whole-gene orthology proof
+        run: |
+          python -m pip install 'pytest>=8,<10' 'biopython>=1.83,<2' 'numpy>=1.26,<3'
+          python -m pytest -q tests/test_v4_t2_real110_source108_locus_block_nj_bootstrap.py
+      - name: Reuse exact original source111 mask and real110 IQTREE/NJ estimates
+        run: |
+          set -euo pipefail
+          mkdir -p work/orig work/ml work/nj work/result
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12480041628 --jq '.digest')" = 'sha256:b8a741c83179fe8b8049050efed6f3f80dd75d4671c1459d71c3a791f0c1e10f'
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/orig
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63 --dir work/ml
+          gh run download 39903659219 --repo zuizui0223/azami --name t2-real110-original111-mask-pairwise-nj-NA63-diagnostics --dir work/nj
+      - name: Recompute exact source-Q20 pairwise loci and run 200 whole-locus NJ replicates
+        run: |
+          python -m analysis.v4.t2_real110_source108_locus_block_nj_bootstrap --fasta work/orig/REAL110_POSTHOC_ORIGINAL111_Q20_SITE_ALIGNMENT.fasta --partitions work/orig/REAL110_ORIGINAL111_LOCUS_108_Q20_PARTITIONS.csv --original-nj-pairs work/nj/REAL110_PUBLIC_SOURCE_Q20_PAIRWISE_DISTANCES.csv --ml-tree work/ml/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile --nj-tree work/nj/REAL110_SOURCE_NUCLEAR_ORIGINALMASK_UNROOTED_NJ.nwk --out-dir work/result
+      - name: Check full source scope and no made-up 110-species adaptive history
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path('work/result')
+          report=json.loads((root/'REAL110_WHOLE_REFERENCE_LOCUS_NJ_200_SOURCE_Q20_BOOTSTRAP.json').read_text())
+          with (root/'REAL110_ML_BRANCH_SUPPORT_BY_WHOLE_Q20_CANDIDATE_LOCUS_NJ.csv').open() as fp:
+              rows=list(csv.DictReader(fp))
+          assert len(rows)==107
+          assert report['n_whole_locus_resampled_NJ_trees']==200
+          assert report['posthoc110_source_tips']==110
+          assert report['original_same_copy_Q20_loci']==108
+          assert report['original_masked_Q20_sites']==29310
+          assert report['all_5995_original_NJ_pair_distances_reproduced_with_absolute_error_le1e_12']
+          assert not report['EAzami294_whole_genus_nuclear_species_tree_completed']
+          assert not report['U_to_D_events_or_rainfall_adaptive_radiation_tested']
+          print('REAL110_NUCLEAR_BLOCK_Q20_ML_SPLIT_SUPPORT=',{'n_ML_splits':107,'>=75pct':report['ML_splits_ge75pct_whole_locus_NJ_resamples'],'>=95pct':report['ML_splits_ge95pct_whole_locus_NJ_resamples'],'median':report['median_ML_split_locus_resample_NJ_frequency']})
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t2-real110-source108-whole-locus-NJ-200-bootstrap-ML-branch-support
+          path: work/result/
+          if-no-files-found: error
+          retention-days: 90
