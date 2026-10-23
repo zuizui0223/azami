@@ -1,5 +1,6 @@
 """T3 source audit tests: anatomy is not the same as evolutionary origins."""
 import csv
+import json
 from pathlib import Path
 
 import pytest
@@ -104,3 +105,24 @@ def test_cremanthodium_ligularia_competing_2016_2026_concepts_stay_separate(tmp_
     write_rows(outfile, rows)
     with pytest.raises(ValueError, match="Contested author taxon concept"):
         gate.read_evidence(outfile)
+
+def test_external_phylogenomics_public_source_selection_does_not_impute_tips():
+    manifest = json.loads((
+        REAL.parent / "20261023_T3_PUBLIC_SENECIONEAE_NUCLEAR_SOURCE_SELECTION.json"
+    ).read_text(encoding="utf-8"))
+    a = manifest["source_evidence"]["Ren2021"]
+    b = manifest["source_evidence"]["Ren2024"]
+    assert a["reported_Ligularia_Cremanthodium_Parasenecio_samples"] == 27
+    assert b["reported_Ligularia_Cremanthodium_Parasenecio_representatives"] == 5
+    assert b["retained_nuclear_loci"] == 727
+    assert b["published_dataset_zip_sha256"] == (
+        "962495cf8131fadd3a1cdf1ea88204432f2aaa81c9e6c0a97435756f0ad88139"
+    )
+    assert b["published_dataset_zip_size_bytes"] == 1583779312
+    assert b["published_tree_member"].endswith("2_astral_analysis/astral.tre")
+    assert not a["sample_names_and_exact_T3_tip_overlap_verified"]
+    assert not b["sample_names_and_exact_T3_tip_overlap_verified"]
+    assert not b["direct_tree_ingested"]
+    assert not manifest["selection"]["joint_Cardueae_Senecioneae_independently_rooted_species_tree_available"]
+    assert not manifest["selection"]["independent_nodding_gains_inferred"]
+    assert not manifest["selection"]["rain_by_transition_model_fitted"]
