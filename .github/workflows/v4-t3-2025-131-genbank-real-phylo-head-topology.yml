@@ -4,12 +4,14 @@ on:
     paths:
       - 'analysis/v4/t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
       - 'tests/test_v4_t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
+      - 'analysis/v4/results/20261023_T3_2025_ORIGINAL_GENBANK_FLORA_ONLY_ADDED_HEAD_STATES.csv'
       - '.github/workflows/v4-t3-2025-131-genbank-real-phylo-head-topology.yml'
   push:
     branches: [codex/v4-native-integration-workflow]
     paths:
       - 'analysis/v4/t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
       - 'tests/test_v4_t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
+      - 'analysis/v4/results/20261023_T3_2025_ORIGINAL_GENBANK_FLORA_ONLY_ADDED_HEAD_STATES.csv'
       - '.github/workflows/v4-t3-2025-131-genbank-real-phylo-head-topology.yml'
   workflow_dispatch:
 permissions:
@@ -57,9 +59,9 @@ jobs:
           from pathlib import Path
           d=json.loads(Path('work/t3-131/output/T3_ACTUAL_NUCLEAR_RDNA_131_FROZEN_HEAD_TOPOLOGY_SOURCE.json').read_text())
           assert d["original_2025_genbank_linked_rDNA_sequence_taxa"]==131
-          assert d["original_D_sequenced_taxa"]==6
-          assert d["head_orientation_unknown_taxa"]==125
-          assert d["documented_downward_ITS_ETS_taxa_by_genus"]=={"Cremanthodium":2,"Parasenecio":4}
+          assert d["original_D_sequenced_taxa"]==8
+          assert d["head_orientation_unknown_taxa"]==123
+          assert d["documented_downward_ITS_ETS_taxa_by_genus"]=={"Cremanthodium":2,"Parasenecio":6}
           assert d["actual_IQTREE_internal_nodes_with_support_labels"]==128
           assert d["actual_node_with_SHaLRT_atleast80_and_UFBoot_atleast95"]>0
           assert d["genuinely_sequenced_but_head_orientation_unknown_not_counted_as_erect"]
