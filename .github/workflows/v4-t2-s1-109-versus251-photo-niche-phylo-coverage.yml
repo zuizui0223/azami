@@ -1,0 +1,84 @@
+name: V4 T2 source S1 251 vs ITS109 phylogenetic discordance and selection diagnosis
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_s1_109_vs251_phylogenetic_sampling_explanation.py'
+      - 'tests/test_v4_t2_s1_109_vs251_phylogenetic_sampling_explanation.py'
+      - '.github/workflows/v4-t2-s1-109-versus251-photo-niche-phylo-coverage.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_109_vs251_phylogenetic_sampling_explanation.py'
+      - 'tests/test_v4_t2_s1_109_vs251_phylogenetic_sampling_explanation.py'
+      - '.github/workflows/v4-t2-s1-109-versus251-photo-niche-phylo-coverage.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original251-versus-GenBank109-equal-scope-photo-rain-diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source-matched S1 HC3 and gene-tree branch confidence requirements
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Validate no gravity-binary claim and robust five-S1-axis model
+        run: |
+          python -m pytest -q tests/test_v4_t2_s1_109_vs251_phylogenetic_sampling_explanation.py
+      - name: Retrieve immutable S1 original 251 photo means and actual 109 GenBank ITS tree
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1 work/tree work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/s1
+          gh run download 39914024548 --repo zuizui0223/azami \
+            --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/tree
+      - name: Contrast all251, independently sequenced109 and 142 non-ITS source records without inventing biological interpretation
+        run: |
+          python -m analysis.v4.t2_s1_109_vs251_phylogenetic_sampling_explanation \
+            --original251 work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --new_its109_tree work/tree/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --out work/output/S1_109_VS251_PHYLOGENY_GAP_SOURCE_VERIFIED.json
+          git rev-parse HEAD > work/output/REPRODUCIBILITY_COMMIT.txt
+      - name: Ensure conclusions are from exact original source and never claimed adaptive radiation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/output/S1_109_VS251_PHYLOGENY_GAP_SOURCE_VERIFIED.json').read_text())
+          c=d['cohorts']
+          assert d['master_S1_original_source_taxa']==251
+          assert d['actual_GenBank_ITS_ML_original_taxa']==109
+          assert d['all_S1_170066_owner_measured_photo_angles_kept']==170066
+          assert c['GenBank_ITS109']['n_original_owner_photo_angle_observations']==162146
+          assert c['unsequenced_S1_142']['n_original_owner_photo_angle_observations']==7920
+          assert d['ITS_nuclear_source_coverage_by_wet_quartile']['n_true_ITS_taxa_among_wettest_quartile']==16
+          assert d['ITS_ML_branch_support']['supported_internal_shalrt_and_UFBoot_count']==17
+          original=c['S1_full251']['equal_taxon_weight_HC3_photo_angle_vs_BIO12']['mean_image_angle_deg']
+          molecular=c['GenBank_ITS109']['equal_taxon_weight_HC3_photo_angle_vs_BIO12']['mean_image_angle_deg']
+          assert 0.40<original['BIO12_effect_original_photo_angle_degrees_per100mm']<0.41
+          assert 0.25<molecular['BIO12_effect_original_photo_angle_degrees_per100mm']<0.26
+          assert original['HC3_95percent_normal_ci'][0]>0
+          assert molecular['HC3_95percent_normal_ci'][0]<0<molecular['HC3_95percent_normal_ci'][1]
+          assert not d['claim_stop']['independent_adaptation_convergence_or_adaptive_radiation_proven']
+          assert d['claim_stop']['low_phylogenetic_signal_does_not_test_short_term_phenotypic_plasticity']
+          print('PASS_SOURCE_ITS109_VS_ALL251_TAXON_BIAS_AND_HEAD_PHOTO_RAIN_SCOPE')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s1-251-photo-vs-new109-ITS-niche-sampling-bias-and-node-support
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90
