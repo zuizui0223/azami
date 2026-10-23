@@ -1,0 +1,97 @@
+name: V4 T2 own original photo head angle on real S1 GenBank109 ITS tree
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_genbank_its_original_photo_angle_rain.py'
+      - 'tests/test_v4_t2_s1_genbank_its_original_photo_angle_rain.py'
+      - '.github/workflows/v4-t2-s1-genbank109-actual-photo-angle-five-climate.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_s1_genbank_its_original_photo_angle_rain.py'
+      - 'tests/test_v4_t2_s1_genbank_its_original_photo_angle_rain.py'
+      - '.github/workflows/v4-t2-s1-genbank109-actual-photo-angle-five-climate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  only-S1-photo-phenotype-109-real-GenBank-ITS:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual nuclear phylogenetic regression environment
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Test continuous photo phenotypes and prevent flora coding
+        run: python -m pytest -q tests/test_v4_t2_s1_genbank_its_original_photo_angle_rain.py
+      - name: Restore original S1 source 251 photos and all five exact climate axes
+        run: |
+          set -euo pipefail
+          mkdir -p work/input/s1 work/input/genbank work/input/tree work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/input/s1
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/input/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+      - name: Restore 109 independently identified NCBI ITS accessions for exact S1 original names
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12483849333 --jq '.digest')" = 'sha256:74690cc9e7d34bacd9e227471a6defd0fa8cbd54fd6df110b93d7a921b65febd'
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-S1-251-exact-ncbi-GenBank-nuclear-ITS-source-accessions --dir work/input/genbank
+          echo '1c778aa75b723f6af6f57f7f741ca0bccd65d3cbc14a6745531eb4596703f6f1  work/input/genbank/S1_GENBANK_ITS_EXACT_SPECIES_ACCESSIONS.csv' | sha256sum -c -
+      - name: Restore newly inferred real 109-species ITS nuclear sequence ML tree and verified alignment sites
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/input/tree
+          echo '8fd10d299b4d520ce08f2552993b02d3cc1b10350f0fb68ea24874dbb9ccfe92  work/input/tree/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile' | sha256sum -c -
+      - name: Direct photo-angle x true ITS tree x same S1 five climate model for all 109
+        run: |
+          python -m analysis.v4.t2_s1_genbank_its_original_photo_angle_rain \
+            --s1-251 work/input/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --its-accessions work/input/genbank/S1_GENBANK_ITS_EXACT_SPECIES_ACCESSIONS.csv \
+            --source-receipt work/input/genbank/S1_GENBANK_SOURCE_COVERAGE_RECEIPT.json \
+            --its-tree work/input/tree/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --alignment-receipt work/input/tree/S1_GENBANK_ITS_ML_PREPARATION.json \
+            --outdir work/output
+          git rev-parse HEAD > work/output/COMMIT.txt
+      - name: Validate the result is the photographic continuous trait, not botanical binary U D
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/output/S1_PHOTO_109_NEW_GENBANK_ITS_PHYLO_BIO12_5_COVARIATE_RESULTS.json').read_text())
+          assert d['original_S1_source_name_operational_units']==251
+          assert d['real_GenBank_nuclear_ITS_one_original_S1_name_tip']==109
+          assert d['original_frozen_S1_170066_eligible_observations']==170066
+          assert d['biological_input_S1_photo_or_flora']=='S1_owner_measured_continuous_photo_angle_ONLY'
+          assert d['previous_flora_binary_3D_36U_analyses_excluded_from_primary']
+          assert len(d['original_S1_five_covariates_unchanged'])==5
+          assert d['no_photo_orientation_to_gravity_U_D_conversion']
+          assert d['independent_evolutionary_origins_of_botanical_nodding_not_counted']
+          assert len(d['groups'])==4
+          for v in d['groups'].values():
+              assert v['taxon_count'] in (105,109)
+              assert set(v['angle_models'])=={'mean_image_angle_deg','median_image_angle_deg'}
+              assert v['model_does_not_use_botanical_flora_U_D_or_species_label_classifier']
+              for x in v['angle_models'].values():
+                  rr=x['rain_gradient']
+                  assert 0<=rr['estimated_Pagel_lambda']['Pagel_lambda']<=1
+                  assert len(rr['IID_equal_species_weight']['BIO12_95pct_CI_image_degrees_per100mm'])==2
+          assert Path('work/output/S1_PHOTO109_GENBANK_ITS_TREE_HEAD_ANGLE_AND_BIO12.png').stat().st_size>10000
+          print('PASS_EXACT_109_OWN_S1_PHOTO_ANGLE_GENBANK_ITS_NUCLEAR_BIO12')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-s1-photo-original109-own-GenBank-ITS-phylo-five-climate-angle-rain
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90
