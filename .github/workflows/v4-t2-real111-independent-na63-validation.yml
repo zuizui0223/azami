@@ -1,0 +1,26 @@
+name: V4 T2 real111 preliminary nuclear ML versus independent NA63 source test
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_independent_na63_tree_concordance.py'
+      - 'tests/test_v4_t2_real111_independent_na63_tree_concordance.py'
+      - '.github/workflows/v4-t2-real111-independent-na63-validation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-matching-unit-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Independent topology, species-name and quartet mathematical safeguards
+        run: |
+          python -m pip install 'biopython>=1.83,<1.90' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real111_independent_na63_tree_concordance.py
