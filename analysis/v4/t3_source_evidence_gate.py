@@ -11,7 +11,7 @@ SCHEMA = (
     "source_kind", "brief_source_phrase", "source_url", "evidence_basis",
     "taxon_concept_independently_reviewed", "blind_double_annotation_completed",
     "same_tip_rooted_nuclear_tree_verified", "strict_T3_admissible",
-    "coding_limit"
+    "coding_limit", "taxonomic_status"
 )
 STATES = frozenset(("U", "D", "?", "V"))
 
@@ -45,6 +45,12 @@ def read_evidence(path):
                 raise ValueError("Invalid independent evidence flag")
         if r["source_posture"] == "V" and r["life_stage_scope"] != "developmentally_changes":
             raise ValueError("Developmental posture switch must not be fixed-tip binary")
+        if r["life_stage_scope"] == "age_dependent_tendency" and r["source_posture"] != "?":
+            raise ValueError("Age-related tendency cannot become a fixed-tip U/D state")
+        if r["taxonomic_status"] not in ("no_conflict_identified", "contested_2018_2022"):
+            raise ValueError("Unreviewed or malformed botanical taxonomy status")
+        if r["taxonomic_status"] == "contested_2018_2022" and r["strict_T3_admissible"] == "yes":
+            raise ValueError("Contested author taxon concept cannot enter independent T3 phylogeny")
         if r["strict_T3_admissible"] == "yes":
             valid = (
                 r["source_posture"] in ("U", "D")
@@ -70,6 +76,12 @@ def summarize(rows):
         "erect_species_descriptions_not_ancestral_states": states["U"],
         "qualified_uncertain_species": states["?"],
         "ontogenetically_variable_species": states["V"],
+        "qualified_age_dependent_nonbinary_species": sum(
+            r["life_stage_scope"] == "age_dependent_tendency" for r in rows
+        ),
+        "source_taxon_concept_contests": sum(
+            r["taxonomic_status"] == "contested_2018_2022" for r in rows
+        ),
         "source_genus_counts": {k: dict(sorted(v.items())) for k,v in sorted(genus.items())},
         "strict_reviewed_same_tip_phenotypes": len(strict),
         "ready_tribes": sorted({r["tribe"] for r in strict}),
