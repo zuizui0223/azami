@@ -167,6 +167,15 @@ def compile_coverage(original,chosen,matrix,source_loci):
            "n_taxa_ge100":sum(x>=100 for x in q),
            "n_taxa_ge80":sum(x>=80 for x in q),
         },
+        "measured_source_taxa_below80_of118_compatible_loci":[
+            {"source_name":r["S1_original_source_name"],
+             "accepted_key":r["accepted_key"],
+             "n_Q20_dp3_ge25pct_same_original_ref_core118":
+                 r["shared_original_reference_118_loci_dp3_ge25pct"]}
+            for r in outputs
+            if r["nuclear120k_source_observation_status"]=="measured_real_Q20_source_read_prefix"
+            and r["shared_original_reference_118_loci_dp3_ge25pct"]<80
+        ],
         "source_focus":focal,
         "n_original_source_photo_units_dropped":0,
         "no_missing_sequences_mislabeled_as_zero":True,
