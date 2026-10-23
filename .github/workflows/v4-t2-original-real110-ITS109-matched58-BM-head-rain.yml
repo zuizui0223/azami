@@ -1,0 +1,90 @@
+name: V4 T2 true nuclear 108-locus versus ITS head rain BM shared58 correlation
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real110_its109_shared58_head_rain_BM_cotrait.py'
+      - 'tests/test_v4_t2_real110_its109_shared58_head_rain_BM_cotrait.py'
+      - '.github/workflows/v4-t2-original-real110-ITS109-matched58-BM-head-rain.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_real110_its109_shared58_head_rain_BM_cotrait.py'
+      - 'tests/test_v4_t2_real110_its109_shared58_head_rain_BM_cotrait.py'
+      - '.github/workflows/v4-t2-original-real110-ITS109-matched58-BM-head-rain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-bound-two-original-nuclear-same58-phylogeny:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install actual original S1 continuous photo and nuclear gene-tree scientific dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Test same-tip Brownian source covariance and no imputed head U or D
+        run: |
+          python -m pytest -q tests/test_v4_t2_real110_its109_shared58_head_rain_BM_cotrait.py \
+            tests/test_v4_t2_110_multilocus_vs_109_its_photo_niche.py
+      - name: Restore immutable original S1 251 continuous measured photo trait and independent source DNA gene trees
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1 work/q20 work/nuclear110 work/ITS work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/S1
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/q20
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63 --dir work/nuclear110
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/ITS
+      - name: Quantify source-verified paired S1 head angle and log BIO12 contrasts on same genuine 58 species
+        run: |
+          python -m analysis.v4.t2_real110_its109_shared58_head_rain_BM_cotrait \
+            --s1 work/S1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --source110 work/q20/REAL110_SOURCE_TAXON_BIOSAMPLE_TECHNICAL_SENSITIVITY.csv \
+            --receipt work/q20/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json \
+            --Q20-tree work/nuclear110/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile \
+            --ITS-tree work/ITS/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --out work/output/T2_REAL110_ITS109_SAME58_ORIGINAL_S1_PHOTO_HEAD_BIO12_COTRAIT.json
+          git rev-parse HEAD > work/output/SOURCE_COMMIT.txt
+      - name: Stop adaptive interpretation; confirm original 111 failed gate and biological same58 estimand
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/output/T2_REAL110_ITS109_SAME58_ORIGINAL_S1_PHOTO_HEAD_BIO12_COTRAIT.json').read_text())
+          assert d['original_frozen_S1_251_name_concepts']==251
+          assert d['original_111_Q20_primary_technical_gate_success'] is False
+          assert d['Q20_original_nuclear_candidate_loci']==108
+          assert d['n_public_real_nuclear_ITS_taxa']==109
+          assert d['n_public_real_posthoc110_nuclear_candidates']==110
+          assert len(d['shared_58_original_S1_same_biological_taxon_names'])==58
+          groups=d['results']
+          for name,n in (('nuclear108_posthoc110',110),('GenBankITS109',109),
+                         ('nuclear108_same58',58),('GenBankITS_same58',58)):
+              x=groups[name]
+              assert x['same_original_S1_photographic_taxon_names']==n
+              assert set(x['sensitivity'])=={'nugget0pct','nugget5pct'}
+              assert x['sensitivity']['nugget5pct']['not_BM_joint_evolutionary_rate_or_independent_gain_count']
+              assert x['sensitivity']['nugget5pct']['head_angle_is_original_S1_camera_relative_not_gravity']
+              assert abs(x['sensitivity']['nugget5pct']['S1_original_own_photo_vs_logBIO12_BM_whitened_correlation'])<1
+          assert not d['phylogenetic_ancestral_nodding_origins_inferred']
+          assert not d['rain_shield_fitness_causality_estimated']
+          print('PASSED_T2_SHARED58_CONTINUOUS_S1_OWN_PHOTO_TWO_ORIGINAL_GENETIC_TREES_COTRAIT')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-nuclear-110-vs-its109-exact58-S1-original-photo-rain-BM-contrast
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90
