@@ -1,0 +1,72 @@
+name: V4 T3 Ren 2021 true 48 Senecioneae nuclear SRA posture stage crosswalk
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_ren2021_real_sra_capitulum_tip_crosswalk.py'
+      - 'analysis/v4/results/20261023_T3_REN2021_TRUE_SRA_ORIGINAL_POSTURE_SUPPLEMENT.csv'
+      - 'tests/test_v4_t3_ren2021_real_sra_capitulum_tip_crosswalk.py'
+      - '.github/workflows/v4-t3-ren2021-real-nuclear-sra-head-stage.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_ren2021_real_sra_capitulum_tip_crosswalk.py'
+      - 'analysis/v4/results/20261023_T3_REN2021_TRUE_SRA_ORIGINAL_POSTURE_SUPPLEMENT.csv'
+      - 'tests/test_v4_t3_ren2021_real_sra_capitulum_tip_crosswalk.py'
+      - '.github/workflows/v4-t3-ren2021-real-nuclear-sra-head-stage.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-48-SRA-specimens-instead-of-unknown-archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install authenticated public ENA SRA source and independent botanical metadata check
+        run: python -m pip install 'requests>=2.31,<3' 'pytest>=8,<10'
+      - name: Test exact 48 source samples, three D, one developmental reversal, no invented modern uplift phenotype
+        run: |
+          python -m pytest -q tests/test_v4_t3_ren2021_real_sra_capitulum_tip_crosswalk.py tests/test_v4_t3_source_evidence_gate.py
+      - name: Fetch PRJNA672812 REAL 2021 nuclear-target SRA metadata only, no large DNA FASTQ
+        run: |
+          mkdir -p work/real2021
+          python -m analysis.v4.t3_ren2021_real_sra_capitulum_tip_crosswalk \
+            --original-10 analysis/v4/results/20261023_T3_SENECIONEAE_POSTURE_SOURCE_CANDIDATES.csv \
+            --added-5 analysis/v4/results/20261023_T3_REN2021_TRUE_SRA_ORIGINAL_POSTURE_SUPPLEMENT.csv \
+            --outdir work/real2021
+          git rev-parse HEAD > work/real2021/AUDITED_COMMIT.txt
+      - name: Verify actual DNA samples and stage-specific non-adaptive claims
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path('work/real2021')
+          a=json.loads((root/'T3_REN2021_48_ORIGINAL_SRA_DIRECT_TIP_BOTANICAL_CROSSWALK.json').read_text())
+          with (root/'T3_REN2021_PRJNA672812_ORIGINAL_NUCLEAR_SRA_48_TIP_HEAD_STATE_CROSSWALK.csv').open() as z:
+              t=list(csv.DictReader(z))
+          assert a['source_bioproject']=='PRJNA672812'
+          assert a['source_original_48_SRA_runs']==48
+          assert a['source_original_48_distinct_BioSamples']==48
+          assert a['source_reconciled_direct_morphology_states']=={'D':3,'V':1,'unknown':44,'U':0}
+          assert a['Cremanthodium_original_nuclear_SRA_species']==4
+          assert a['original_T3_10_species_exact_target_capture_overlap']==1
+          assert a['experimental_other_tribe_posture_species_in_actual_nuclear_dataset']=='Cremanthodium campanulatum'
+          assert not a['published_nuclear_tree_Newick_directly_retrieved']
+          assert not a['DNA_FASTQ_reads_downloaded']
+          assert not a['rooted_independent_U_to_D_evolutionary_gains_established']
+          assert sum(x['T3_documented_head_state_D_U_V_or_unknown']=='D' for x in t)==3
+          assert all(x['identical_DNA_voucher_and_flowering_phenotype_confirmed']=='False' for x in t)
+          print('TRUE_T3_REN2021_PRJNA672812_48_SRA_3_REAL_NODDING_1_DEVELOPMENTAL')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-Ren2021-original48-nuclear-SRA-exact-head-state-verified
+          path: work/real2021/
+          if-no-files-found: warn
+          retention-days: 90
