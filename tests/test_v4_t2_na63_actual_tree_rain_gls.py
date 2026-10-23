@@ -47,6 +47,10 @@ def test_gls_lambda_zero_is_same_original_tip_ols_not_photo_angle():
     assert np.allclose(actual["beta_nodding_BIO12_mm"],ols[1])
     assert 0<=actual["beta_nodding_one_sided_positive_t_p"]<=1
     assert actual["degrees_of_freedom"]==6
+    IID=m.equal_variance_independent_OLS(rain,X)
+    assert np.allclose(IID["beta_nodding_BIO12_mm"],ols[1])
+    assert IID["no_nuclear_branch_length_information_in_covariance"]
+    assert IID["correlation_structure"]=="identity_independent_equal_variance"
     full=m.gls(rain,X,C,1)
     assert full["beta_nodding_ci95_mm"][0]<full["beta_nodding_ci95_mm"][1]
     assert full["n_original_nuclear_tips"]==10
