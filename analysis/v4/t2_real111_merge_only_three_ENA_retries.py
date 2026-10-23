@@ -19,8 +19,8 @@ from analysis.v4 import t2_real111_three_transient_ENA_retry as fix
 
 def patch(original,repairs,samples,targets):
     shards=agg.load_shards(original)
-    samples=nuc.read_csv(samples)
-    targets=nuc.read_csv(targets)
+    samples=nuc.read_csv(samples) if isinstance(samples,(str,Path)) else list(samples)
+    targets=nuc.read_csv(targets) if isinstance(targets,(str,Path)) else list(targets)
     allowed={x["run"]:x for x in samples}
     if len(allowed)!=111 or len(targets)!=118:
         raise ValueError("One of 111 original source nuclear samples or 118 loci missing")
