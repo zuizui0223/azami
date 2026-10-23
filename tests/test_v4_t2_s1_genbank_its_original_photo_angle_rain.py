@@ -89,7 +89,7 @@ def test_unrooted_ITS_109_is_exploratory_not_an_authenticated_species_origin():
     assert m.EXPECTED_PHOTOS==170066
     assert m.EXPECTED_ITS_REF_SITES==645
     assert m.EXPECTED_ITS_INFORMATIVE==103
-    assert "S1_photo" in m.__doc__
+    assert "S1 photographic orientation" in m.__doc__
     assert "gravity-calibrated tilt" in m.__doc__
     assert m.ITS_ML_TREE_SHA256=="8fd10d299b4d520ce08f2552993b02d3cc1b10350f0fb68ea24874dbb9ccfe92"
 
