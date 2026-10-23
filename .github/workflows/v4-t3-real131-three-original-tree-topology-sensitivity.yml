@@ -1,0 +1,91 @@
+name: V4 T3 real131 original gene tree topology sensitivity D9 plus developmental V1
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_131_direct_head_two_source_tree_topology_sensitivity.py'
+      - 'tests/test_v4_t3_131_direct_head_two_source_tree_topology_sensitivity.py'
+      - '.github/workflows/v4-t3-real131-three-original-tree-topology-sensitivity.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_131_direct_head_two_source_tree_topology_sensitivity.py'
+      - 'tests/test_v4_t3_131_direct_head_two_source_tree_topology_sensitivity.py'
+      - '.github/workflows/v4-t3-real131-three-original-tree-topology-sensitivity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-three-source-131-tip-taxon-same-ITS-ETS:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install genuine nuclear sequence topology and original flora contract testing dependencies
+        run: python -m pip install 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Test unrooted split retention and original genus-level biological stop rules
+        run: |
+          python -m pytest -q \
+            tests/test_v4_t3_131_direct_head_two_source_tree_topology_sensitivity.py \
+            tests/test_v4_t3_131_chinese_flora_new_Ligularia_nodding.py \
+            tests/test_v4_t3_131_nuclear_sister_developmental_posture.py
+      - name: Restore actual same 131 GenBank ITS ETS nuclear gene-alignment ML consensus and BioNJ trees
+        run: |
+          set -euo pipefail
+          mkdir -p work/source work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12505750735 --jq '.digest')" = \
+            'sha256:55e67249c9873d31562c75157cf57accd45a5cd349e92ace89dce474e03ba9aa'
+          gh run download 39961377067 --repo zuizui0223/azami \
+            --name t3-2025-actual-131-GenBank-linked-ITS-ETS-original-ML-nuclear-phylogeny \
+            --dir work/source
+          echo 'fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310  work/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile' | sha256sum -c -
+          echo '6f674d4a256f3eefc3ec840458fed328adda0896d71dc76b47a2cad206b00761  work/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.contree' | sha256sum -c -
+          echo '719239a205533ebc1f18b07bc9f84548761c56da3f24c7a3a73b4959b0b26a27  work/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.bionj' | sha256sum -c -
+      - name: Compare physical source morphologically D9, developmental V1 in true same DNA starting-consensus-likelihood trees
+        run: |
+          python -m analysis.v4.t3_131_direct_head_two_source_tree_topology_sensitivity \
+            --ML-tree work/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile \
+            --consensus-tree work/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.contree \
+            --BioNJ-tree work/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.bionj \
+            --original131 work/source/2025-tree/T3_2025_OWN_REAL_LINKED_ITS_ETS_GENBANK_TREE_TIP_EVIDENCE.csv \
+            --genbank163 analysis/v4/results/20261023_T3_TAIWANIA2025_ORIGINAL163_ITS_ETS_GENBANK_ACCESSIONS.csv \
+            --chinese-flora analysis/v4/results/20261024_T3_LIGULARIA_PURDOMII_ORIGINAL_CHINESE_FLORA_HEAD.csv \
+            --stage-flora analysis/v4/results/20261024_T3_REAL131_KOUALAPENSIS_HEAD_STAGE_SOURCE.csv \
+            --out work/output/T3_REAL131_THREE_TOPOLOGIES_NUCLEAR_LINKED_ITS_ETS_D9_V1.json
+          git rev-parse HEAD > work/output/SOURCE_COMMIT_SHA.txt
+      - name: Verify ecology and topology conclusions without pseudoreplication or fabricated independent transitions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('work/output/T3_REAL131_THREE_TOPOLOGIES_NUCLEAR_LINKED_ITS_ETS_D9_V1.json').read_text())
+          assert a["original_real_sequence_phylogeny_taxa"]==131
+          assert a["documented_published_direct_species_head_down"]==9
+          assert a["documented_direct_D_genera"]=={"Cremanthodium":2,"Parasenecio":6,"Ligularia":1}
+          assert a["documented_developmental_V"]==1
+          assert a["unreviewed_true_head_states"]==121
+          assert a["botanically_erect_species_U"]==0
+          assert a["unrooted_between_genus_D_D_clade_split_in_ML_and_consensus_but_not_BioNJ"]
+          assert a["D_V_Parasenecio_two_tip_split_in_all_three_true_rDNA_topologies"]
+          assert a["all_real_tree_topologies_from_exact_same_ITS_ETS_alignment_not_independent_replicates"]
+          assert a["n_nodding_origin_events_estimated"] is False
+          assert not a["phenotypic_rain_water_protection_in_Ligularia_experimentally_measured"]
+          s=a["source_authentic_tree_sensitivity"]
+          assert list(s)==sorted(s) or len(s)==3
+          assert s["max_likelihood"]["experiment_species_closest_GenBank_tip"]["species"]=="Ligularia purdomii"
+          assert s["BioNJ_initial_distance_tree"]["experiment_species_closest_GenBank_tip"]["species"]=="Ligularia yunnanensis"
+          print("PASSED_T3_SOURCE131_D9_V1_REAL_ML_CONSENSUS_BIONJ_UNROOTED_TOPOLOGY_SENSITIVITY")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-original131-GenBank-ML-UFBoot-consensus-BioNJ-real-nuclear-D9-V1
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90
