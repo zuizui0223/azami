@@ -2,7 +2,7 @@
 
 Reads newly computed original GenBank ITS+ETS IQ-TREE from GitHub Actions
 39961377067 (NOT a published whole-nuclear coalescent species tree). Compares
-genuinely observed D6 and 125 UNKNOWN, exact source original taxa, nearest
+genuinely observed D8 and 123 UNKNOWN, exact source original taxa, nearest
 molecular neighbor, root-independent genus exclusivity and node confidence.
 
 Crucially no independently scored flowering-stage upright heads were matched
@@ -25,8 +25,8 @@ from Bio import Phylo
 TREE_SHA="fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310"
 TREE_RUN=39961377067
 N_GENUINE_GB_ITS_ETS=131
-D_N=6
-UNKNOWN_N=125
+D_N=8
+UNKNOWN_N=123
 STRONG_ALRT=80.
 STRONG_UFBOOT=95.
 
@@ -46,8 +46,30 @@ def read_source(treefile,crosswalk):
            r["DNA_voucher_equals_flora_specimen"]!="False" for r in table):
         raise ValueError("ITS ETS nuclear linkage or DNA vs flora vouchers were falsely called independent")
     state={r["GenBank_original_published_species"]:r["original_species_morphology_state"] for r in table}
+    if Counter(state.values())!={"D":6,"?":125}:
+        raise ValueError("Authentic first 131 SRA crosswalk D6 / unknown125 drifted")
+    # A SEPARATE 2025-only flora addendum adds exactly two directly described
+    # *Parasenecio* species in this SAME original 131-tip GenBank genealogy.
+    # They are absent from 2021 PRJNA672812, so never mutate its 48-sample
+    # source-specific head-state roster or retrospectively edit 2025 ML input.
+    addendum=Path(__file__).resolve().parent/"results"/"20261023_T3_2025_ORIGINAL_GENBANK_FLORA_ONLY_ADDED_HEAD_STATES.csv"
+    with addendum.open(encoding="utf-8-sig",newline="") as h:
+        extra=list(csv.DictReader(h))
+    expected_extra={"Parasenecio hastatus","Parasenecio forrestii"}
+    if len(extra)!=2 or {r["original_2025_genbank_source_species"] for r in extra}!=expected_extra:
+        raise ValueError("Two original 2025-only flora postures must remain source-traced")
+    for row in extra:
+        taxon=row["original_2025_genbank_source_species"]
+        if (taxon not in state or state[taxon]!="?" or
+            row["source_flora_posture"]!="D" or
+            not row["direct_species_flora_url"].startswith("https://")
+            or any(row[k]!="no" for k in ("same_GenBank_voucher_flowering_stage_verified",
+                "species_concept_synonym_controls_verified",
+                "evolutionary_independent_gain_established"))):
+            raise ValueError("T3 source missing direct D evidence or molecular voucher is overclaimed")
+        state[taxon]="D"
     if Counter(state.values())!={"D":D_N,"?":UNKNOWN_N}:
-        raise ValueError("Direct head posture must remain only six D, 125 unmeasured")
+        raise ValueError("Post-phylogeny two-authority source addendum not applied to original 131")
     return tree,state
 
 def root_independent_split_is_exclusive(tree,original_genus):
@@ -66,9 +88,9 @@ def audit(tree,state):
     D=[name.replace(" ","_") for name,v in state.items() if v=="D"]
     D.sort()
     if len(D)!=D_N or not set(D)<=set(tips):
-        raise ValueError("Six truly documented Senecioneae head postures not mapped to 131 nuclear sequence labels")
+        raise ValueError("Eight truly documented Senecioneae head postures not mapped to 131 nuclear sequence labels")
     genera=Counter(x.split("_")[0] for x in D)
-    if genera!={"Parasenecio":4,"Cremanthodium":2}:
+    if genera!={"Parasenecio":6,"Cremanthodium":2}:
         raise ValueError("Original published direct flora-matched two genera marker coverage drift")
     scores=[]
     for internal in tree.get_nonterminals():
@@ -99,9 +121,10 @@ def audit(tree,state):
         })
     return {
         "schema":"azami_T3_2025_real_genbank_linked_ITS_ETS_genealogy_senecioneae_D_posture_structure_v1",
-        "status":"REAL_131_SOURCE_GENBANK_LINKED_RDNA_TOPOLOGY_6_D_125_UNKNOWN_NOT_ORIGIN_TEST",
+        "status":"REAL_131_SOURCE_GENBANK_LINKED_RDNA_TOPOLOGY_8_D_123_UNKNOWN_NOT_ORIGIN_TEST",
         "original_2025_genbank_linked_rDNA_sequence_taxa":N_GENUINE_GB_ITS_ETS,
         "original_D_sequenced_taxa":D_N,
+        "2025_only_two_direct_D_added_after_original_ML_tree_build":True,
         "head_orientation_unknown_taxa":UNKNOWN_N,
         "documented_downward_ITS_ETS_taxa_by_genus":dict(genera),
         "genus_scoped_marker_tip_count":{
