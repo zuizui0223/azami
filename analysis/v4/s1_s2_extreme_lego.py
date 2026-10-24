@@ -404,6 +404,8 @@ def analyse_s1(native):
     raw_three_way=test_three_way(vals,common.accepted_key,499,SEED)
     raw_within,raw_among,*_=split_covariances(vals,common.accepted_key)
     original=rv_rows(raw_within,raw_among)
+    from analysis.v4.s1_s2_lego_triple import analyze_triad
+    raw_triad_scale=analyze_triad(vals, common.accepted_key.to_numpy(), replicates=400)
     model_results={}
     for name,choice in outcome_blind.items():
         if choice["status"]!="SELECTED":
@@ -419,6 +421,7 @@ def analyse_s1(native):
             residual, coefficients, groups, design=residualize(common,vals,variables)
             within,among,*_=split_covariances(residual,groups)
             edges=rv_rows(within,among)
+            triad_scale=analyze_triad(residual,groups,replicates=400)
             nboot=equal_n_stats(vals,residual,groups,replicates=500)
             gradients=fit_environment_trait_gradients(common,vals,variables)
         except (ValueError,np.linalg.LinAlgError) as exc:
@@ -439,6 +442,7 @@ def analyse_s1(native):
              "median_among_RV":float(np.median([v["among_rv"] for v in edges])),
              "module_summary":lego_module_summary(edges)},
           "equal_n_sensitivity":nboot,
+          "within_and_among_three_domain_configurations":triad_scale,
           "three_way_phenotype_after_environment":test_three_way(
               residual,groups,199,SEED+len(name)),
           "pairs":edges,
@@ -456,6 +460,7 @@ def analyse_s1(native):
       "all_12_predictor_collinearity":diagnostics,
       "selection_by_scenario":outcome_blind,
       "raw_28_pairs":original,
+      "raw_within_and_among_three_domain_configurations":raw_triad_scale,
       "raw_three_way_phenotype":raw_three_way,
       "scenario_results":model_results
     }
