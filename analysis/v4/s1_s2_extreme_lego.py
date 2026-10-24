@@ -387,7 +387,15 @@ def fit_environment_trait_gradients(frame,values,selected):
 
 
 def analyse_s1(native):
-    common=complete_lego_cohort(native)
+    trait_only=complete_lego_cohort(native)
+    # Every annual/warm/dry comparison must use the exact same observations.
+    # Retain the pre-climate trait cohort separately for transparent coverage.
+    complete_climate=np.isfinite(trait_only[ALL_ENV].to_numpy(float)).all(axis=1)
+    common=trait_only.loc[complete_climate].copy()
+    counts=common.groupby("accepted_key").size()
+    common=common.loc[common.accepted_key.isin(counts[counts>=MIN_TAXON_N].index)].copy()
+    require(common.accepted_key.nunique()>=MIN_PAIR_TAXA,
+            "INSUFFICIENT_JOINT_TRAIT_CLIMATE_COHORT")
     diagnostics=all_diagnostics(native,ALL_ENV)
     outcome_blind={}
     for name,scenario in SCENARIOS.items():
@@ -436,6 +444,8 @@ def analyse_s1(native):
         }
     return {
       "native_original_population":COHORT_ORIGINAL_S1,
+      "all_eight_trait_before_climate_n":len(trait_only),
+      "all_eight_trait_before_climate_taxa":int(trait_only.accepted_key.nunique()),
       "common_all_eight_trait_n":len(common),
       "common_all_eight_trait_taxa":int(common.accepted_key.nunique()),
       "common_complete12_environment_n":int(
