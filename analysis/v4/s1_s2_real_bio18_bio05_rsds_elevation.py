@@ -161,6 +161,7 @@ def proper_s1(frame,reference):
         raise ValueError("Original S1 eligible population drifted")
     if s.obs_id.duplicated().any() or not s[S1_ENDPOINT].between(0,180).all():
         raise ValueError("S1 original native observation or camera angle invalid")
+    s["obs_id"]=s.obs_id.astype(str)
     s["accepted_key"]=s.accepted_key.astype(str)
     s["source_name"]=s.taxon_name.astype(str).str.strip().str.replace(" ","_",regex=False)
     if len(s.groupby(["accepted_key","source_name"]))!=OUTPUT_SPECIES:
