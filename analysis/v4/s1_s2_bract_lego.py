@@ -113,8 +113,8 @@ def evaluate(native,all_env,scenario_selected):
     v=normalize(cohort)
     groups=cohort.accepted_key
     w,a,*_=group_covariances(v,groups)
-    result={"status":"SOURCE_LINKED_BRACHT_PROXY_EXPLORATORY",
-            **receipt,"raw_bract_pair_relations":bract_edges(w,a),
+    result={**receipt,"status":"SOURCE_LINKED_BRACHT_PROXY_EXPLORATORY",
+            "raw_bract_pair_relations":bract_edges(w,a),
             "raw_visible_triad_beyond_pairwise":triple_configuration(v,groups),
             "adjusted_scenarios":{},
             "distinct_population_from_eight_core_constructs":True}
