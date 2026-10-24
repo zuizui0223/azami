@@ -1,0 +1,71 @@
+name: V4 joint S1 S2 T2 five-axis botanical nuclear niche
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_s2_multiniche_phylo_bridge.py'
+      - 'tests/test_v4_t2_s1_s2_multiniche_phylo_bridge.py'
+      - '.github/workflows/v4-s1-s2-t2-multiniche-nuclear.yml'
+      - 'analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json'
+      - 'analysis/v4/results/20261021_unified_abcde/S2_NATIVE_INTRODUCED_CLIMATE_TRANSFER_20261021.json'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-verified-scale-and-nuclear-omnibus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Dependencies and synthetic/statistical guard tests
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'pandas>=2,<4' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_s1_s2_multiniche_phylo_bridge.py tests/test_v4_t2_full251_independent_ud_hydric_permutation.py tests/test_v4_t2_phylogenetic_climate_null.py
+      - name: Restore original S1 251 source units with author-coded U D
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1 work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
+          gh run download 39890812308 --repo zuizui0223/azami --name v4-t2-original251-author-head-UD-observed-hydric-association --dir work/S1
+          test -s work/S1/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv
+      - name: Run no-preferred-sign five-climate Mk null independently on NA44 and Japan12
+        run: |
+          python -m analysis.v4.t2_s1_s2_multiniche_phylo_bridge \
+            --original251 work/S1/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv \
+            --out work/out/S1_S2_T2_5D_NUCLEAR_POSTURE_CLIMATE_BRIDGE.json \
+            --draws 10000
+      - name: Check completed real results and scope boundaries
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("work/out/S1_S2_T2_5D_NUCLEAR_POSTURE_CLIMATE_BRIDGE.json").read_text())
+          assert x["S1_S2"]["S1"]["n_native_source_images"]==170066
+          assert set(x["S1_S2"]["S2"]["species"])=={"Cirsium arvense","Cirsium vulgare"}
+          for v in x["S1_S2"]["S2"]["species"].values():
+              assert v["same_original_native_source_as_S1"]
+              assert v["introduced_minus_native_occurrence_BIO12_median_mm"]>0
+          q=x["T2_56_authentic_nuclear_botanical_states"]
+          assert q["panels"]==[{"name":"NA44","n":44,"D":3,"U":41},{"name":"Japan12","n":12,"D":5,"U":7}]
+          assert len(q["axes_fixed_from_existing_S1"])==5
+          for key,z in q["root_sensitivities"].items():
+              assert 0 <= z["omnibus_nondirectional_Mk_conditional_mc_P"] <= 1
+              assert len(z["candidate_axis_contrasts_are_secondary_not_preferred_signs"])==5
+              assert z["n_Mk_conditioned_draws"]==10000
+          assert x["T3_cross_tribe"]["status"]=="NOT_INGESTED_NO_FALSE_CROSS_TRIBE_REPLICATION"
+          print("SOURCE_VERIFIED_S1_S2_T2_FIVE_AXIS_OBSERVATIONAL_OMNIBUS_DONE")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-S1-S2-T2-5D-multiniche-real-nuclear-no-preferred-sign
+          path: work/out/
+          if-no-files-found: warn
+          retention-days: 90
