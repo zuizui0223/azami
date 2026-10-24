@@ -550,14 +550,24 @@ def main():
     else:
         baseline_receipt={"status":"FIVE_NATIVE_S2_SOURCE_CLIMATES_ALREADY_PRESENT"}
     from analysis.v4.s1_s2_extreme_range_models import analyse_s2_range_models
+    s1_result=analyse_s1(native)
+    # Preserve a legitimate source-only S1 aggregate if the S2 model later
+    # fails. This file contains no original user IDs, obs IDs or coordinates.
+    (args.out_public/"S1_extreme_LEGO_aggregate.json").write_text(
+        json.dumps({"analysis_id":"azami_V4_S1_extreme_LEGO_20261024",
+                    "status":"S1_FINISHED_S2_NOT_YET_CERTIFIED",
+                    "S1":s1_result},ensure_ascii=False,indent=2,allow_nan=False)+"\n",
+        encoding="utf-8")
+    s2_result=aggregate_s2(focal)
+    s2_models=analyse_s2_range_models(focal)
     source={"analysis_id":"azami_v4_S1_S2_extreme_climate_and_phenotypic_LEGO_20261024",
             "status":"SOURCE_VERIFIED_V4_EXTENSION_EXPLORATORY",
             "input_source":"V4 original encrypted source, WCVP-native/introduced, original-pixel rasters",
             "not_V3_reanalysis":True,
             "not_aza3_molecular_gene_or_functional_test":True,
             "S2_original_five_CHELSA_provenance":baseline_receipt,
-            "S1":analyse_s1(native),"S2":aggregate_s2(focal),
-            "S2_environmental_models":analyse_s2_range_models(focal),
+            "S1":s1_result,"S2":s2_result,
+            "S2_environmental_models":s2_models,
             "limits":{"gravity_calibrated_orientation":False,
                       "true_phyllary_spines_and_stickiness":False,
                       "molecular_Lego_functional_resource_test":False,
