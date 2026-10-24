@@ -1,0 +1,84 @@
+name: V4 T3 131 real rDNA sister Parasenecio head stage and Ren2021 lowcopy voucher
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_131_nuclear_sister_developmental_posture.py'
+      - 'analysis/v4/results/20261024_T3_REAL131_KOUALAPENSIS_HEAD_STAGE_SOURCE.csv'
+      - 'tests/test_v4_t3_131_nuclear_sister_developmental_posture.py'
+      - '.github/workflows/v4-t3-real131-sister-stage-2021-lowcopy.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_131_nuclear_sister_developmental_posture.py'
+      - 'analysis/v4/results/20261024_T3_REAL131_KOUALAPENSIS_HEAD_STAGE_SOURCE.csv'
+      - 'tests/test_v4_t3_131_nuclear_sister_developmental_posture.py'
+      - '.github/workflows/v4-t3-real131-sister-stage-2021-lowcopy.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-2025-its-ets-supported-pair-2021-separate-lowcopy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install only genuine Newick source and test dependencies
+        run: python -m pip install 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Test original GenBank accession, independent original 2021 SRA and real flora life-stage variable
+        run: python -m pytest -q tests/test_v4_t3_131_nuclear_sister_developmental_posture.py
+      - name: Restore actual 2025 publicly sequenced 131 ITS ETS molecular tree and Ren2021 true 48 original BioSamples
+        run: |
+          set -euo pipefail
+          mkdir -p work/tree work/2021 work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12505750735 --jq '.digest')" = 'sha256:55e67249c9873d31562c75157cf57accd45a5cd349e92ace89dce474e03ba9aa'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12492411080 --jq '.digest')" = 'sha256:b8d854db9a1c123dcba265e661267b937929d508af18e9e1a1e965951bfa9869'
+          gh run download 39961377067 --repo zuizui0223/azami \
+            --name t3-2025-actual-131-GenBank-linked-ITS-ETS-original-ML-nuclear-phylogeny \
+            --dir work/tree
+          gh run download 39932031113 --repo zuizui0223/azami \
+            --name t3-Ren2021-original48-nuclear-SRA-exact-head-state-verified \
+            --dir work/2021
+          echo 'fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310  work/tree/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile' | sha256sum -c -
+      - name: Inspect real sister clade support with two source authentic DNA panels and developmental stage source
+        run: |
+          python -m analysis.v4.t3_131_nuclear_sister_developmental_posture \
+            --tree work/tree/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile \
+            --source131 work/tree/2025-tree/T3_2025_OWN_REAL_LINKED_ITS_ETS_GENBANK_TREE_TIP_EVIDENCE.csv \
+            --source2021 work/2021/T3_REN2021_PRJNA672812_ORIGINAL_NUCLEAR_SRA_48_TIP_HEAD_STATE_CROSSWALK.csv \
+            --GenBank163 analysis/v4/results/20261023_T3_TAIWANIA2025_ORIGINAL163_ITS_ETS_GENBANK_ACCESSIONS.csv \
+            --stage-source analysis/v4/results/20261024_T3_REAL131_KOUALAPENSIS_HEAD_STAGE_SOURCE.csv \
+            --output work/output/T3_REAL_SISTER_PARASENECIO_2021_2025_NUCLEAR_MORPHOLOGICAL_STAGE.json
+          git rev-parse HEAD > work/output/COMMIT_SHA.txt
+      - name: No false fixed erect or invented independent adaptive origin and true supported molecular pair
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('work/output/T3_REAL_SISTER_PARASENECIO_2021_2025_NUCLEAR_MORPHOLOGICAL_STAGE.json').read_text())
+          assert a['real_2025_ITS_ETS_molecular_original_taxa']==131
+          assert a['reconciled_flowering_morphology_states']=={'D':8,'V':1,'unknown':122,'U':0}
+          assert abs(a['actual_original_IQTREE_sister_node_SHaLRT']-96.9)<1e-7
+          assert a['actual_original_IQTREE_sister_node_UFBoot']==100
+          assert 0<a['gene_tree_cherry_pair_phylogenetic_distance_substitutions_per_site']<.01
+          assert a['P_cyclotus_documented_head_pendulous_ontogeny_unmeasured']
+          assert a['no_true_erect_species_tips_described_in_131']
+          assert a['unscored_source_taxa_are_NOT_erect']
+          assert a['no_inferred_U_to_D_independent_gains']
+          assert not a['original_genealogy_is_rooted_2021_coalescent_species_tree']
+          assert a['technical_same_sibling_pair_2025_only_not_confirmed_in_Ren2021_tree']
+          print('SUCCESS_TRUE_T3_DIRECT_REN2021_SRA_AND_2025_NUCLEAR_CHERRY_SHALRT96.9_UFBOOT100')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-two-real-source-nuclear-samples-stage-head-sister-clade
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90

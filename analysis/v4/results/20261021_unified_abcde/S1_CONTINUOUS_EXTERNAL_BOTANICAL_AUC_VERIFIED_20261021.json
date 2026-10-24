@@ -1,0 +1,70 @@
+{
+  "schema": "V4_S1_CONTINUOUS_EXTERNAL_BOTANICAL_HEAD_POSTURE_SOURCE_BLOCKED_AUC_20261021_v1",
+  "status": "EMPIRICAL_OBSERVATIONAL_CONSTRUCT_COMPARISON_NOT_GRAVITY_CALIBRATION",
+  "run_id": 39592398003,
+  "job_id": 119196351452,
+  "run_url": "https://github.com/zuizui0223/azami/actions/runs/39592398003",
+  "artifact": {
+    "id": 12342760719,
+    "name": "v4-s1-photo-to-botanical-source-stratified-AUC",
+    "sha256": "sha256:f003f65ea27ef5e837ce0759b1228c152685921177c4c26c6667445167cf3e99"
+  },
+  "original_source_run_id": 39584744194,
+  "original_source_artifact_SHA": "sha256:aa5a9ac298b8e36c9e96da6f1eb96319733136e2e3a105305092f7da2ca97bff",
+  "input_mode": "46 independently botanically-coded taxa match the 194 S1 continuous image-angle source; no U/D threshold fitted or imposed on remaining taxa",
+  "code": "analysis/v4/s1_angle_external_morphology_check.py",
+  "tests": "tests/test_v4_s1_angle_external_morphology_check.py",
+  "result": {
+    "cannot_convert_194_image_angle_to_true_nodding_independent_gain_counts": true,
+    "direction_convention": "AUC>0.5 means independent botanical nodding tips have larger IMAGE-vertical angles within the original source lane",
+    "external_binary_states_not_derived_from_image_angle": true,
+    "image_angle_measurement": "EXIF_image_vertical_not_gravity",
+    "independent_morphological_coding_sources": [
+      "Siniscalchi2023_author_scored",
+      "EAzami_FDT4_existing_authority"
+    ],
+    "n_S1_angle_taxa": 46,
+    "n_S1_eligible_image_taxon_keys_total": 244,
+    "n_S1_tree_taxa_with_continuous_angle": 194,
+    "n_botanical_nodding": 6,
+    "original_source_artifact_digest": "sha256:aa5a9ac298b8e36c9e96da6f1eb96319733136e2e3a105305092f7da2ca97bff",
+    "original_source_run_id": 39584744194,
+    "pooled_mixture_AUC_descriptive_not_source_adjusted": 0.8458333333333333,
+    "sample_selection_and_external_taxonomic_source_not_independent_validation_of_rainfall_causation": true,
+    "source_prevalence_exact_assignments": 45920,
+    "source_strata": {
+      "East_Asian_EAzami_curated": {
+        "exact_null_2sided_around_half_p": 0.5,
+        "exact_null_upper_p": 1,
+        "n_erect": 1,
+        "n_nodding": 3,
+        "n_taxa": 4,
+        "observed_AUC": 0,
+        "source_specific_total_possible_assignments": 4
+      },
+      "North_American_published_author": {
+        "exact_null_2sided_around_half_p": 0.11149825783972125,
+        "exact_null_upper_p": 0.05574912891986063,
+        "n_erect": 39,
+        "n_nodding": 3,
+        "n_taxa": 42,
+        "observed_AUC": 0.7863247863247863,
+        "source_specific_total_possible_assignments": 11480
+      }
+    },
+    "status": "EMPIRICAL_EXTERNAL_SOURCE_MORPHOLOGY_IMAGE_ANGLE_RANK_CHECK",
+    "within_source_equal_weight_AUC": 0.39316239316239315,
+    "within_source_equal_weight_two_sided_p": 0.6858885017421603,
+    "within_source_pair_weighted_AUC": 0.7666666666666667,
+    "within_source_pair_weighted_source_blocked_two_sided_p": 0.13066202090592335,
+    "within_source_pair_weighted_upper_p": 0.06533101045296168
+  },
+  "interpretation_boundary": {
+    "pooled_AUC_confounded_by_nonuniform_source_prevalence": true,
+    "region_stratified_signal_not_confirmed_at_alpha_0_05": true,
+    "East_Asian_n_four_and_n_erect_one_limited": true,
+    "EXIF_camera_image_angle_not_validated_gravity": true,
+    "S1_continuous_194_as_main_remains_recommended": true,
+    "number_of_independent_botanical_downward_origins_estimated": false
+  }
+}

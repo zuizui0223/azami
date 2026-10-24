@@ -1,0 +1,480 @@
+{
+  "schema_version": "azami_v4_S1_T2_joint_20261021_source_verified_v1",
+  "status": "SUCCESS_EMPIRICAL_FIVE_EXPOSURES_S1_PLUS_EXPLORATORY_T2_PHYLOGENY",
+  "workflow_run_id": 39584744194,
+  "workflow_job_id": 119171032564,
+  "workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39584744194",
+  "workflow_artifact_id": 12339413151,
+  "workflow_artifact_name": "v4-joint-s1-t2-exact-cohort-public-aggregate",
+  "workflow_artifact_digest": "sha256:aa5a9ac298b8e36c9e96da6f1eb96319733136e2e3a105305092f7da2ca97bff",
+  "code": "analysis/v4/joint_s1_t2_phylogeny.py",
+  "tests": "tests/test_v4_joint_s1_t2_phylogeny.py",
+  "source_provenance": {
+    "native_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "EAzami_commit": "c9870e91604ed1514344ddc8f765eae5237dbf27",
+    "EAzami_fdt4_git_blob": "f12ce3f1665c2a4d3de01cd34dea5741812e2af1",
+    "NA_commit": "c925d4af86160064448f794a9715f70b917a2786",
+    "NA_head_position_git_blob": "fa127f0587b676e6e004ea121424d26069586bcb",
+    "S1_fixed_exposures": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ]
+  },
+  "results": {
+    "model_scope": {
+      "grafted_placement_scenarios": 52,
+      "native_accepted_keys": 306,
+      "orientation_eligible_accepted_keys": 244,
+      "orientation_eligible_observations": 170066,
+      "placement_tree_covered_keys": 194,
+      "placement_tree_covered_observations": 169912
+    },
+    "BIO12_between": {
+      "S1_effect_image_degrees": 0.4381991922885207,
+      "S1_full_accepted_keys": 244,
+      "S1_full_n": 170066,
+      "S1_interval": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "S1_tree_covered_keys": 194,
+      "S1_tree_covered_n": 169912,
+      "exposure": "chelsa_bio12",
+      "increment": 100,
+      "phenotype": "EXIF_image_vertical_angle_NOT_gravitational_head_tilt",
+      "placement_95pct_model_interval_envelope": [
+        0.20507194527021,
+        0.7748302939599
+      ],
+      "placement_effect_max": 0.50783961361187,
+      "placement_effect_min": 0.47221559875652,
+      "placement_pointwise_negative_interval_count": 0,
+      "placement_pointwise_positive_interval_count": 52,
+      "placement_scenario_count": 52,
+      "scale": "between",
+      "selection_boundary": "same five co-adjusted predictors, no post-hoc EAzami axis selection",
+      "supported_across_52_pointwise": "all_positive",
+      "term": "chelsa_bio12__between"
+    },
+    "BIO15_between": {
+      "S1_effect_image_degrees": 0.7880825140436949,
+      "S1_full_accepted_keys": 244,
+      "S1_full_n": 170066,
+      "S1_interval": [
+        -0.2662791617924732,
+        1.8424441898798627
+      ],
+      "S1_tree_covered_keys": 194,
+      "S1_tree_covered_n": 169912,
+      "exposure": "chelsa_bio15",
+      "increment": 10,
+      "phenotype": "EXIF_image_vertical_angle_NOT_gravitational_head_tilt",
+      "placement_95pct_model_interval_envelope": [
+        -0.2901447566706689,
+        1.980929676713418
+      ],
+      "placement_effect_max": 0.917400954196298,
+      "placement_effect_min": 0.767915417608882,
+      "placement_pointwise_negative_interval_count": 0,
+      "placement_pointwise_positive_interval_count": 0,
+      "placement_scenario_count": 52,
+      "scale": "between",
+      "selection_boundary": "same five co-adjusted predictors, no post-hoc EAzami axis selection",
+      "supported_across_52_pointwise": "no_uniform_pointwise_support",
+      "term": "chelsa_bio15__between"
+    },
+    "botanical_state_inventory": {
+      "EAzami_resolved_states": 17,
+      "EAzami_source_concept_state_rows": 20,
+      "EastAsia_exact_S1_194_tree_matches": 4,
+      "EastAsia_exact_S1_244_matches": 5,
+      "NA_exact_S1_194_tree_matches": 42,
+      "NA_exact_S1_244_matches": 42,
+      "NA_original_author_states": 63,
+      "NA_original_nodding_states": 5,
+      "exactly_joined_taxa_by_source": [
+        {
+          "accepted_key": "206742945",
+          "source": "EAzami_FDT4_existing_authority",
+          "state": "nodding",
+          "taxon": "Cirsium kamtschaticum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744933",
+          "source": "EAzami_FDT4_existing_authority",
+          "state": "nodding",
+          "taxon": "Cirsium kawakamii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206738938",
+          "source": "EAzami_FDT4_existing_authority",
+          "state": "erect",
+          "taxon": "Cirsium morii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206740495",
+          "source": "EAzami_FDT4_existing_authority",
+          "state": "nodding",
+          "taxon": "Cirsium suffultum",
+          "tree194": false
+        },
+        {
+          "accepted_key": "206738470",
+          "source": "EAzami_FDT4_existing_authority",
+          "state": "nodding",
+          "taxon": "Cirsium tatakaense",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206745745",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium andersonii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206745778",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium andrewsii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206745763",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium brevifolium",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744679",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium canescens",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744481",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium centaureae",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744512",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium ciliolatum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744505",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium clavatum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744165",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium clokeyi",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206741431",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium coloradense",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206745439",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "nodding",
+          "taxon": "Cirsium conspicuum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "209721671",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium culebraense",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744391",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium cymosum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744192",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium douglasii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744126",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium eatonii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744003",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium edule",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206743972",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium engelmannii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206743475",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium flodmanii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "209721670",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "nodding",
+          "taxon": "Cirsium funkiae",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206743377",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium grahamii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744091",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium hesperium",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206743186",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium hookerianum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206743043",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium inamoenum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742996",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium joannae",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206743688",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium lecontei",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742606",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium longistylum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742857",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium mohavense",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742403",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium neomexicanum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742291",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium nuttallii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742138",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium ochrocentrum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206742007",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium ownbeyi",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744085",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium peckii",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206741358",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium remotifolium",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206741347",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium repandum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206741026",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium scariosum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206744108",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "nodding",
+          "taxon": "Cirsium scopulorum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206741673",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium texanum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206740712",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium tracyi",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206740341",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium turneri",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206740278",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium undulatum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206738422",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium viperinum",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206739917",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium vulgare",
+          "tree194": true
+        },
+        {
+          "accepted_key": "206739803",
+          "source": "Siniscalchi2023_author_scored",
+          "state": "erect",
+          "taxon": "Cirsium wheeleri",
+          "tree194": true
+        }
+      ],
+      "not_all_244_have_validated_botanical_U_D": true,
+      "s1_join_exclusion_status_counts": {
+        "blocked_WCVP_source_name_collision": 5,
+        "exact_S1_and_tree": 46,
+        "exact_S1_only_tree_uncovered": 1,
+        "not_in_S1_orientation_cohort": 28
+      },
+      "same_photo_derived_state_or_inferred_threshold_used": false
+    },
+    "T2_PGLS_52_exploratory": {
+      "EAzami_and_Siniscalchi_states_only_no_photo_threshold": true,
+      "Mk_erect_to_nodding_median_scenario_range": [
+        5,
+        7
+      ],
+      "Mk_nodding_to_erect_median_scenario_range": [
+        0,
+        1
+      ],
+      "S1_history_194_unchanged_no_redundant_environment_refit": true,
+      "erect_root_minimum_steps_scenario_range": [
+        5,
+        6
+      ],
+      "independent_molecular_Cirsium_tree_event_support": false,
+      "n_erect": 40,
+      "n_nodding": 6,
+      "nodding_root_minimum_steps_scenario_range": [
+        5,
+        20
+      ],
+      "number_of_independent_real_biological_origins_estimated": false,
+      "rain_climate_dependent_transition_rate_estimated": false,
+      "status": "exploratory_grafted_placement_52_scenario_history_only",
+      "taxa_with_independent_botanical_U_D_and_actual_S1_angle_and_tree": 46,
+      "unknown_root_minimum_steps_scenario_range": [
+        5,
+        6
+      ]
+    }
+  },
+  "not_derived_claims": [
+    "independent_downward_origin_events_5_to_6_confirmed",
+    "climatic_causation",
+    "photo_angle_equivalent_to_gravity",
+    "52_phylogenetic_placement_scenarios_are_independent_lineages",
+    "BIO15_specific_driver_identified",
+    "EAzami_as_independent_prospective_replication",
+    "all_244_botanical_orientation_states_scored"
+  ],
+  "old_S1_and_frozen_V3_not_refitted": true
+}

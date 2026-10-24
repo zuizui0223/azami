@@ -1,0 +1,216 @@
+name: V4 native capitulum integration
+on:
+  workflow_dispatch:
+    inputs:
+      report_run:
+        description: 'Completed numerical run to render; leave empty for numerical execution'
+        type: string
+        default: ''
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/decode_environment.py'
+      - 'analysis/v4/environment_source_metadata.json'
+      - 'analysis/v4/native_integration_audit.py'
+      - 'tests/test_v4_environment_decoding.py'
+      - 'tests/test_v4_native_integration_audit.py'
+      - 'analysis/v4/select_native_environment.py'
+      - 'analysis/v4/ENVIRONMENT_CONTRACT.md'
+      - 'tests/test_v4_select_native_environment.py'
+      - 'analysis/v4/native_trait_models.py'
+      - 'analysis/v4/observation_models.py'
+      - 'analysis/v4/environment_gradients.py'
+      - 'analysis/v4/MODEL_CONTRACT.md'
+      - 'tests/test_v4_observation_models.py'
+      - 'analysis/v4/native_integration.py'
+      - 'analysis/v4/INTEGRATION_CONTRACT.md'
+      - 'tests/test_v4_native_integration.py'
+      - 'analysis/v4/native_spatial.py'
+      - 'analysis/v4/native_observers.py'
+      - 'analysis/v4/native_gates_ae.py'
+      - 'analysis/v4/native_gates_bcd.py'
+      - 'analysis/v4/run_native_abcde.py'
+      - 'analysis/v4/native_density_robustness.py'
+      - 'tests/test_v4_native_density_robustness.py'
+      - 'analysis/v4/orientation_observer_sensitivity.py'
+      - 'tests/test_v4_orientation_observer_sensitivity.py'
+      - 'tests/test_v4_unified_abcde.py'
+      - '.github/workflows/v4-native-integration.yml'
+      - 'analysis/v4/SPACE_CONTRACT.md'
+      - 'tests/test_v4_native_spatial.py'
+permissions:
+  # GitHub requires write-scoped repository access to READ draft-release
+  # metadata assets. This workflow never publishes, changes or uploads releases.
+  contents: write
+  actions: read
+concurrency:
+  group: v4-native-integration-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  input-audit:
+    if: ${{ !inputs.report_run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical environment
+        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+      - name: Check decoding and cohort invariants
+        run: python -m pytest -q tests/test_v4_environment_decoding.py tests/test_v4_native_integration_audit.py tests/test_v4_select_native_environment.py tests/test_v4_observation_models.py tests/test_v4_native_integration.py tests/test_v4_native_spatial.py tests/test_v4_unified_abcde.py tests/test_v4_native_density_robustness.py tests/test_v4_orientation_observer_sensitivity.py
+      - name: Restore authenticated native input
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/native-integration/private work/native-integration/receipt
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/native-integration/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/native-integration/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/native-integration')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Private observation input authentication failed.') from None
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Apply verified environmental decoding
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/native-integration/private/observations.csv.gz \
+            --receipt work/native-integration/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/native-integration/decoded
+      - name: Restore original human-observer and image-QC strata privately
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm
+          echo "dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm" | sha256sum -c -
+          python -m analysis.v4.native_observers \
+            --sealed work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm \
+            --native work/native-integration/decoded/observations.csv.gz \
+            --out-private work/native-integration/private/native-original-observers.csv.gz
+          rm work/native-integration/private/original-metadata-665115-dfa98fa162a8029c.aesgcm
+      - name: Audit trait overlap and environment structure
+        run: |
+          python -m analysis.v4.native_integration_audit \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --output work/native-integration/output
+          cp work/native-integration/decoded/measurement_receipt.json work/native-integration/output/environment_decoding_receipt.json
+      - name: Select environmental set without reading trait outcomes
+        run: |
+          python -m analysis.v4.select_native_environment \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --output work/native-integration/output
+      - name: Fit the common environmental model on endpoint-specific observations
+        run: |
+          python -m analysis.v4.native_trait_models \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --selection work/native-integration/output/environment_selection.json \
+            --output work/native-integration/output
+      - name: Compare integration before and after environmental adjustment
+        run: |
+          python -m analysis.v4.native_integration \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --models work/native-integration/output/native_trait_models.json \
+            --output work/native-integration/output
+      - name: Evaluate fixed spatial concentration and residual diagnostics
+        run: |
+          python -m analysis.v4.native_spatial \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --models work/native-integration/output/native_trait_models.json \
+            --output work/native-integration/output
+      - name: Execute unified source-gated A -> B -> C -> D -> E screen
+        run: |
+          python -m analysis.v4.run_native_abcde \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --models work/native-integration/output/native_trait_models.json \
+            --integration work/native-integration/output/native_integration.json \
+            --spatial work/native-integration/output/native_spatial.json \
+            --mapping analysis/v4/results/20261020_native_phylogeny/taxon_mapping.json \
+            --observers work/native-integration/private/native-original-observers.csv.gz \
+            --output work/native-integration/output \
+            --b-bootstrap 200 --c-replicates 12 --max-taxa 40
+      - name: Verify 30-fold same-taxon W2, KDE bandwidth and observer-region robustness
+        run: |
+          python -m analysis.v4.native_density_robustness \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --receipt work/native-integration/decoded/measurement_receipt.json \
+            --models work/native-integration/output/native_trait_models.json \
+            --integration work/native-integration/output/native_integration.json \
+            --spatial work/native-integration/output/native_spatial.json \
+            --mapping analysis/v4/results/20261020_native_phylogeny/taxon_mapping.json \
+            --observers work/native-integration/private/native-original-observers.csv.gz \
+            --baseline work/native-integration/output/unified_gate_abcde.json \
+            --output work/native-integration/output \
+            --reps 30 --null-reps 30 --bootstrap 1000 --scenario-reps 6
+      - name: Fit source-observer-aware rainfall sensitivities and nested repeat variance
+        run: |
+          python -m analysis.v4.orientation_observer_sensitivity \
+            --table work/native-integration/decoded/observations.csv.gz \
+            --models work/native-integration/output/native_trait_models.json \
+            --observers work/native-integration/private/native-original-observers.csv.gz \
+            --mapping analysis/v4/results/20261020_native_phylogeny/taxon_mapping.json \
+            --output work/native-integration/output
+      - name: Save aggregate evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-integration-audit
+          path: work/native-integration/output/
+          if-no-files-found: error
+          retention-days: 90
+  report:
+    if: ${{ inputs.report_run != '' && github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: ${{ inputs.report_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install renderer environment
+        run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8 pytest
+      - name: Verify report provenance guards
+        run: python -m pytest -q tests/test_v4_native_report.py
+      - name: Verify and retrieve completed aggregate evidence
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_RUN" =~ ^[0-9]+$ ]]
+          test "$(gh run view "$SOURCE_RUN" --repo zuizui0223/azami --json conclusion --jq .conclusion)" = success
+          gh run download "$SOURCE_RUN" --repo zuizui0223/azami --name v4-native-integration-audit --dir work/report-source
+      - name: Render without refitting
+        run: python -m analysis.v4.render_native_report --source work/report-source --output work/native-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-integration-report
+          path: work/native-report/
+          if-no-files-found: error
+          retention-days: 90

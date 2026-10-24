@@ -1,0 +1,66 @@
+name: V4 T2 actual 110 original111-Q20-pair distance NJ robustness
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real110_same_Q20_nj_robustness.py'
+      - 'tests/test_v4_t2_real110_same_Q20_nj_robustness.py'
+      - '.github/workflows/v4-t2-real110-sameQ20-nj-robustness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  observed-only-real110-nj:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify pairwise missing-data deletion, exact sample labels and provenance
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'biopython>=1.83,<2' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real110_same_Q20_nj_robustness.py
+      - name: Reuse immutable original111 posthoc110 Q20 source artifact and source provenance
+        run: |
+          set -euo pipefail
+          mkdir -p work/input work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/input
+          test -s work/input/REAL110_POSTHOC_ORIGINAL111_Q20_SITE_ALIGNMENT.fasta
+          test -s work/input/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json
+          test -s work/input/ORIGINAL111_PUBLIC_SRA_WCVP_PROVENANCE.csv
+      - name: Infer independent site-pair deletion NJ on exactly same actual 29,310 Q20 positions
+        run: |
+          python -m analysis.v4.t2_real110_same_Q20_nj_robustness --fasta work/input/REAL110_POSTHOC_ORIGINAL111_Q20_SITE_ALIGNMENT.fasta --original-receipt work/input/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json --out-dir work/out
+      - name: Compare no-synthetic 110-tip NJ against published independent genuine NA63 tree
+        run: |
+          python -m analysis.v4.t2_real111_independent_na63_tree_concordance --technical-tree work/out/REAL110_SOURCE_NUCLEAR_ORIGINALMASK_UNROOTED_NJ.nwk --source-samples work/input/ORIGINAL111_PUBLIC_SRA_WCVP_PROVENANCE.csv --output work/out/REAL110_Q20_NJ_VS_PUBLISHED_NA63_SOURCE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/out')
+          x=json.loads((p/'REAL110_NJ_SOURCE_ROBUSTNESS_SUMMARY.json').read_text())
+          na=json.loads((p/'REAL110_Q20_NJ_VS_PUBLISHED_NA63_SOURCE.json').read_text())
+          assert x['source_posthoc_Q20_BioSamples']==110
+          assert x['n_original_public_BioSample_pairs']==5995
+          assert x['original_Q20_reference_positions']==29310
+          assert x['original_failed111_quality_gate_relabelled_as_success'] is False
+          assert not x['global_EAzami294_true_tree_ready']
+          assert na['exact_original_taxon_overlap']>=4
+          assert not na['adaptive_radiation_or_environmental_causality_tested']
+          print('REAL110_SITEPAIR_NJ_Q20_VS_INDEPENDENT_NA63',{'pairs':5995,'na_shared':na['exact_original_taxon_overlap'],'na_quartet_concordance':na.get('resolved_quartet_concordance_fraction')})
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real110-original111-mask-pairwise-nj-NA63-diagnostics
+          path: work/out/
+          if-no-files-found: warn
+          retention-days: 90

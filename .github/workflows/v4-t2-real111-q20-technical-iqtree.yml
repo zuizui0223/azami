@@ -1,0 +1,138 @@
+name: V4 T2 conditional technical IQ-TREE on real 111 BioSamples shared Q20 loci
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_q20_technical_ml_input.py'
+      - 'analysis/v4/t2_real111_q20_technical_iqtree_verify.py'
+      - 'tests/test_v4_t2_real111_q20_technical_ml_input.py'
+      - 'tests/test_v4_t2_real111_q20_technical_iqtree_verify.py'
+      - '.github/workflows/v4-t2-real111-q20-technical-iqtree.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-real111-Q20-technical-ML-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  validate-observed-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test genuine original111 Q20 DNA and technical tree source-stop rules
+        run: |
+          python -m pip install 'pytest>=8,<10' 'biopython>=1.83,<2'
+          python -m pytest -q tests/test_v4_t2_real111_q20_technical_ml_input.py tests/test_v4_t2_real111_q20_technical_iqtree_verify.py
+      - name: Confirm all original 108 successful specimens and three ENA-only Q20 repairs completed
+        run: |
+          gh run watch 39889925464 --repo zuizui0223/azami --exit-status --interval 10
+          test "$(gh api repos/zuizui0223/azami/actions/runs/39889925464 --jq '.conclusion')" = success
+      - name: Retrieve source actual shared Q20 nucleotide sites and original111 chosen BioSamples
+        run: |
+          set -euo pipefail
+          mkdir -p work/111ml/source work/111ml/samples work/111ml/out
+          gh run download 39889925464 --repo zuizui0223/azami \
+            --name original111-118-Q20-shared-site-census-after-only3-retries --dir work/111ml/source
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473316663 --jq '.digest')" = 'sha256:2f61604a74e7c4a4f36850a7361089dcfc4c86e5bcccfc8ec2b360d6875f3813'
+          gh run download 39887166776 --repo zuizui0223/azami \
+            --name v4-t2-real111-original118-shared-copy-preflight --dir work/111ml/samples
+          test -s work/111ml/source/REAL111_SHARED_Q20_NUCLEOTIDE_SITE_SUMMARY.json
+          test -s work/111ml/source/REAL111_ORIGINAL118_NUCLEAR_SAME_COPY_80PCT_SITE_CENSUS.csv
+          test -s work/111ml/samples/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv
+      - name: Stop instead of inventing a species tree if original source Q20 coverage insufficient
+        id: check
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path('work/111ml/source/REAL111_SHARED_Q20_NUCLEOTIDE_SITE_SUMMARY.json')
+          d=json.loads(p.read_text())
+          assert d['all_original_111_S1_biological_samples']==111
+          assert d['n_original_source_candidate_loci']==118
+          assert d['original_S1_WCVP_keys_retained']==244
+          assert d['original_S1_source_name_operational_units_retained']==251
+          assert d['predeclared_site_occupancy_taxa']==89
+          assert not d['strict_single_copy_orthology_gate_passed']
+          assert not d['orientation_evolution_rainfall_test_permitted']
+          ready=bool(d['technical_ML_alignment_source_gate_passed'])
+          if ready:
+              assert Path('work/111ml/source/REAL111_80PCT_SOURCE_118_ORIGINAL_REF_Q20_ALIGNMENT.fasta').is_file()
+          Path(os.environ['GITHUB_OUTPUT']).open('a').write('ready='+str(ready).lower()+'\n')
+          print('REAL111_PRELIMINARY_ML_ADMISSION',ready, 'observed_sites',d['n_full111_alignable_positions_called_by_80pct_taxa'])
+          PY
+      - name: Prepare 111-tip masked actual site matrix only after empirical source gates
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          python -m analysis.v4.t2_real111_q20_technical_ml_input \
+            --site-summary work/111ml/source/REAL111_SHARED_Q20_NUCLEOTIDE_SITE_SUMMARY.json \
+            --loci work/111ml/source/REAL111_ORIGINAL118_NUCLEAR_SAME_COPY_80PCT_SITE_CENSUS.csv \
+            --samples work/111ml/samples/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --fasta work/111ml/source/REAL111_80PCT_SOURCE_118_ORIGINAL_REF_Q20_ALIGNMENT.fasta \
+            --out-dir work/111ml/out
+      - name: Archive stage and technical DNA-only inputs, not original FASTQ/BAM
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-real111-Q20-technically-admitted-IQTREE-source
+          path: work/111ml/out
+          if-no-files-found: warn
+          retention-days: 90
+
+  infer-original111-technical-ML:
+    needs: validate-observed-source
+    if: needs.validate-observed-source.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Get exactly source-admitted 111 real Q20 public DNA alignment
+        run: |
+          mkdir -p work/ml/source work/ml/audit work/ml/results
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami \
+            --name v4-t2-real111-Q20-technically-admitted-IQTREE-source --dir work/ml/source
+          gh run download 39887166776 --repo zuizui0223/azami \
+            --name v4-t2-real111-original118-shared-copy-preflight --dir work/ml/audit
+          test -s work/ml/source/REAL111_OBSERVED_Q20_TECHNICAL_IQTREE_INPUT.fasta
+          test -s work/ml/source/REAL111_TECHNICAL_IQTREE_INPUT_RECEIPT.json
+          test -s work/ml/audit/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv
+      - name: Use actual IQ-TREE 2 GTR+G4, 1000 UFBoot and 1000 SHaLRT
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq iqtree
+          python -m pip install 'biopython>=1.83,<2'
+          iqtree2 --version | tee work/ml/results/IQTREE2_VERSION.txt
+          timeout 7800s iqtree2 \
+            -s work/ml/source/REAL111_OBSERVED_Q20_TECHNICAL_IQTREE_INPUT.fasta \
+            -m GTR+G4 -B 1000 --alrt 1000 -T 4 --seed 20261023 \
+            --prefix work/ml/results/REAL111_REALQ20_ORIGINALREF_TECHNICAL_GTRG4
+          test -s work/ml/results/REAL111_REALQ20_ORIGINALREF_TECHNICAL_GTRG4.treefile
+      - name: Reject invented taxon labels, negative branches or unwarranted trait adaptation
+        run: |
+          python -m analysis.v4.t2_real111_q20_technical_iqtree_verify \
+            --input-manifest work/ml/source/REAL111_TECHNICAL_IQTREE_INPUT_RECEIPT.json \
+            --samples work/ml/audit/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --tree work/ml/results/REAL111_REALQ20_ORIGINALREF_TECHNICAL_GTRG4.treefile \
+            --output work/ml/results/REAL111_SOURCE_Q20_TECHNICAL_ML_VERIFIED.json
+      - name: Archive tree and source reproducibility, do not distribute raw SRA reads
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-real111-118source-realQ20-IQTREE-technical-tree
+          path: work/ml/results/
+          if-no-files-found: warn
+          retention-days: 90

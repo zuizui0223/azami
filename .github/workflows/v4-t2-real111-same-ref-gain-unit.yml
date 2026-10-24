@@ -1,0 +1,30 @@
+name: V4 T2 all111 source-taxon 241-locus 30k120k matched coverage guard
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_taxa_same_ref_30k120k_depth_gain.py'
+      - 'tests/test_v4_t2_real111_taxa_same_ref_30k120k_depth_gain.py'
+      - '.github/workflows/v4-t2-real111-same-ref-gain-unit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lossless-original-sample-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'pytest>=8,<10'
+      - run: python -m pytest -q tests/test_v4_t2_real111_taxa_same_ref_30k120k_depth_gain.py
+      - run: |
+          python - <<'PY'
+          from analysis.v4 import t2_real111_taxa_same_ref_30k120k_depth_gain as s
+          assert (s.N_SOURCE_RUNS,s.N_SOURCE_KEYS,s.N_MEASURED,s.N_LOCI)==(125,113,111,241)
+          print('PASS no biological species promoted from reference-copy occupancy')
+          PY

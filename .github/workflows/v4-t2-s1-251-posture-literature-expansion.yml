@@ -1,0 +1,63 @@
+name: V4 T2 exact 251 source names six literature posture additions and 177 unknown preserved
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_s1_251_posture_literature_expansion_guard.py'
+      - 'analysis/v4/results/20261023_T2_S1_8_EXTERNAL_BOTANICAL_POSTURE_CANDIDATES.csv'
+      - 'analysis/v4/results/20261023_T2_S1_ALL251_66_TO72_PROVISIONAL_POSTURE_OVERLAY.csv'
+      - 'analysis/v4/results/20261023_T2_S1_177_UNKNOWN_FLORA_ANNOTATION_PRIORITY.csv'
+      - 'tests/test_v4_t2_s1_251_posture_literature_expansion_guard.py'
+      - '.github/workflows/v4-t2-s1-251-posture-literature-expansion.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_251_posture_literature_expansion_guard.py'
+      - 'analysis/v4/results/20261023_T2_S1_8_EXTERNAL_BOTANICAL_POSTURE_CANDIDATES.csv'
+      - 'analysis/v4/results/20261023_T2_S1_ALL251_66_TO72_PROVISIONAL_POSTURE_OVERLAY.csv'
+      - 'analysis/v4/results/20261023_T2_S1_177_UNKNOWN_FLORA_ANNOTATION_PRIORITY.csv'
+      - 'tests/test_v4_t2_s1_251_posture_literature_expansion_guard.py'
+      - '.github/workflows/v4-t2-s1-251-posture-literature-expansion.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  exact-source-state-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test no-loss 244/251/170066 source names and explicit V/unknown boundaries
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_s1_251_posture_literature_expansion_guard.py
+      - name: Produce empirical primary 66 vs new single-source 72 audited status
+        run: |
+          mkdir -p work/posture-expansion
+          python -m analysis.v4.t2_s1_251_posture_literature_expansion_guard --out work/posture-expansion/T2_SOURCE_POSTURE_SIX_LITERATURE_ADDENDUM.json
+          git rev-parse HEAD > work/posture-expansion/SOURCE_COMMIT.txt
+      - name: Fail closed on pretend phylogenetic/categorical overclaim
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("work/posture-expansion/T2_SOURCE_POSTURE_SIX_LITERATURE_ADDENDUM.json").read_text())
+          x=d["source_authority_cohorts"]
+          assert d["original_total_taxon_source_name_units"]==251
+          assert d["new_binary_candidates"]==6
+          assert x["original_independent_authorities_66"]["n_D"]==12
+          assert x["expanded_single_authority_sensitivity_72"]["n_D"]==15
+          assert d["remaining_original_source_name_units_unscored"]==177
+          assert d["external_authorities_not_double_blind_or_voucher_matched"]
+          assert d["global_independent_molecular_species_tree_not_constructed"]
+          assert d["rain_induced_evolutionary_transition_not_inferred"]
+          print("T2_SOURCE_EVIDENCE_SIX_NEW_CAPITULA_TWO_VARIABLE_WITHOUT_PHYLOGENETIC_OVERCLAIM")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t2-s1-all251-litreview-66-to72-preserved-audit
+          path: work/posture-expansion/
+          if-no-files-found: error
+          retention-days: 90

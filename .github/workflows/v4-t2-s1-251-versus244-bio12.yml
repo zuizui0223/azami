@@ -1,0 +1,65 @@
+name: V4 T2 source-name split 251 vs WCVP244 BIO12 sensitivity
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_251_vs244_bio12_taxonomy_sensitivity.py'
+      - 'tests/test_v4_t2_s1_251_vs244_bio12_taxonomy_sensitivity.py'
+      - '.github/workflows/v4-t2-s1-251-versus244-bio12.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-species-name-versus-accepted-key-ecology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned numerical analysis tools and exercise source taxon bootstrap
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt pytest
+          python -m pytest -q tests/test_v4_t2_s1_251_vs244_bio12_taxonomy_sensitivity.py
+      - name: Download SHA-verified 251 original source taxon units from 170066 photos
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-taxonomy/input work/t2-taxonomy/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = "sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d"
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/t2-taxonomy/input
+          test -s work/t2-taxonomy/input/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv
+      - name: Compare full 244 original accepted keys with 251 source-level head-angle slopes at BIO12
+        run: |
+          python -m analysis.v4.t2_s1_251_vs244_bio12_taxonomy_sensitivity \
+            --source-251 work/t2-taxonomy/input/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --out work/t2-taxonomy/output/T2_S1_251_VS244_BIO12_SOURCE_NAME_COLLAPSE_EFFECT.json
+      - name: Verify six models and 999 paired accepted-key bootstrap samples
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-taxonomy/output/T2_S1_251_VS244_BIO12_SOURCE_NAME_COLLAPSE_EFFECT.json')
+          d=json.loads(p.read_text())
+          assert d['original_source_photos']==170066
+          assert d['original_WCVP_keys']==244
+          assert d['source_name_nested_in_key_units']==251
+          assert d['mixed_original_WCVP_keys']==7
+          assert len(d['five_environment_regression'])==3
+          assert d['paired_all_WCVP_key_bootstrap']['paired_resamples']>=950
+          assert not d['nuclear_294_tip_tree_claimed']
+          assert not d['biologically_distinct_251_species_claimed']
+          print('PASS all244 accepted and all251 source-named BIO12 comparisons with key-cluster robust errors and 999 bootstrap draws')
+          PY
+      - name: Archive derived source-taxonomic sensitivity only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S1-251vs244-real-BIO12-taxonomy-sensitivity
+          path: work/t2-taxonomy/output/
+          if-no-files-found: error
+          retention-days: 90

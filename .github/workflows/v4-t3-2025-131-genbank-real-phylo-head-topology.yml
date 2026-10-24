@@ -1,0 +1,80 @@
+name: V4 T3 real 131 Senecioneae GenBank nuclear rDNA head topology and support
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
+      - 'tests/test_v4_t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
+      - 'analysis/v4/results/20261023_T3_2025_ORIGINAL_GENBANK_FLORA_ONLY_ADDED_HEAD_STATES.csv'
+      - '.github/workflows/v4-t3-2025-131-genbank-real-phylo-head-topology.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
+      - 'tests/test_v4_t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py'
+      - 'analysis/v4/results/20261023_T3_2025_ORIGINAL_GENBANK_FLORA_ONLY_ADDED_HEAD_STATES.csv'
+      - '.github/workflows/v4-t3-2025-131-genbank-real-phylo-head-topology.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-nuclear-gene-tree-131-tip-comparative-head-posture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install independent real nuclear genealogy and tests
+        run: python -m pip install 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Test genuine root-free genus splits and prohibited adaptive gain claims
+        run: python -m pytest -q tests/test_v4_t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py
+      - name: Restore SHA-authenticated 2025 GenBank original ITS ETS 131-taxon ML nuclear genealogy
+        run: |
+          set -euo pipefail
+          mkdir -p work/t3-131/source work/t3-131/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12505750735 --jq '.digest')" = \
+            'sha256:55e67249c9873d31562c75157cf57accd45a5cd349e92ace89dce474e03ba9aa'
+          gh run download 39961377067 --repo zuizui0223/azami \
+            --name t3-2025-actual-131-GenBank-linked-ITS-ETS-original-ML-nuclear-phylogeny \
+            --dir work/t3-131/source
+          tree=work/t3-131/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile
+          echo 'fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310  '"$tree" | sha256sum -c -
+          test -s work/t3-131/source/2025-tree/T3_2025_OWN_REAL_LINKED_ITS_ETS_GENBANK_TREE_TIP_EVIDENCE.csv
+      - name: Audit original 131 tree D6 then 2025-only two source Flora D additions (D8, unknown123), real node support
+        run: |
+          python -m analysis.v4.t3_2025_real_nuclear_rDNA_phylogeny_posture_topology \
+            --tree work/t3-131/source/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile \
+            --head-crosswalk work/t3-131/source/2025-tree/T3_2025_OWN_REAL_LINKED_ITS_ETS_GENBANK_TREE_TIP_EVIDENCE.csv \
+            --out work/t3-131/output/T3_ACTUAL_NUCLEAR_RDNA_131_FROZEN_HEAD_TOPOLOGY_SOURCE.json
+          git rev-parse HEAD > work/t3-131/output/CI_SOURCE_COMMIT.txt
+      - name: Require original SH-aLRT UFBoot node supports and biological stop rules
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/t3-131/output/T3_ACTUAL_NUCLEAR_RDNA_131_FROZEN_HEAD_TOPOLOGY_SOURCE.json').read_text())
+          assert d["original_2025_genbank_linked_rDNA_sequence_taxa"]==131
+          assert d["original_D_sequenced_taxa"]==8
+          assert d["head_orientation_unknown_taxa"]==123
+          assert d["documented_downward_ITS_ETS_taxa_by_genus"]=={"Cremanthodium":2,"Parasenecio":6}
+          assert d["actual_IQTREE_internal_nodes_with_support_labels"]==128
+          assert d["actual_node_with_SHaLRT_atleast80_and_UFBoot_atleast95"]>0
+          assert d["genuinely_sequenced_but_head_orientation_unknown_not_counted_as_erect"]
+          assert d["root_direction_species_tree_and_ancestral_D_origins_not_identified"]
+          assert d["linked_multicopy_ITS_ETS_not_independent_coalescent_genes"]
+          assert d["rainfall_at_original_head_transition_or_fitness_not_measured"]
+          assert len(d["nodding_specimen_nearest_real_genealogical_tip"])==8
+          print('GENUINE_131_SOURCE_LINKED_RDNA_TOPOLOGY_DONE_NO_FALSE_INDEPENDENT_GAINS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-2025-actual131-nuclear-linked-rDNA-sourced-nodding-topology
+          path: work/t3-131/output/
+          if-no-files-found: warn
+          retention-days: 90

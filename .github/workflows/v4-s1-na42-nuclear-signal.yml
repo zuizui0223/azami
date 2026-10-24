@@ -1,0 +1,54 @@
+name: V4 S1 continuous NA42 nuclear versus grafted signal
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s1-na42-nuclear-signal.yml'
+      - 'analysis/v4/s1_continuous_na_nuclear_signal.py'
+      - 'tests/test_v4_s1_continuous_na_nuclear_signal.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-s1-na42-real-nuclear-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  signal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned S1 numerical packages
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Test original 42-tip continuous nuclear comparator
+        run: python -m pytest -q tests/test_v4_s1_continuous_na_nuclear_signal.py
+      - name: Restore previously SHA-audited public taxon-only S1 joint aggregate
+        run: |
+          mkdir -p work/s1-na42/input work/s1-na42/output
+          gh run download 39584744194 --repo zuizui0223/azami \
+            --name v4-joint-s1-t2-exact-cohort-public-aggregate \
+            --dir work/s1-na42/input
+          test -s work/s1-na42/input/S1_T2_joint_244_194.json
+      - name: Fit same S1 photo angle and five CHELSA on published molecular nuclear tree versus 52 grafted trees
+        run: |
+          python -m analysis.v4.s1_continuous_na_nuclear_signal \
+            --joint work/s1-na42/input/S1_T2_joint_244_194.json \
+            --out work/s1-na42/output/S1_NA42_NUCLEAR_VS_PLACEMENT_SIGNAL.json \
+            --bootstrap-reps 399
+      - name: Archive phylogenetic-signal report without original personal imagery or location
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-na42-independent-nuclear-vs-52-placements
+          path: work/s1-na42/output/
+          if-no-files-found: warn
+          retention-days: 90

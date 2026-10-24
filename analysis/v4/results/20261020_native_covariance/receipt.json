@@ -1,0 +1,25 @@
+{
+  "run_id": "39437849165",
+  "git_sha": "0ab9de7a6a173188689bc64ed98e2990df191c1d",
+  "input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "n": 157561,
+  "species": 170,
+  "original_common_n": 157654,
+  "original_common_species": 174,
+  "columns": [
+    "orientation_image_vertical_angle",
+    "corolla_lab_lightness",
+    "corolla_lab_chroma",
+    "corolla_hue_sin",
+    "corolla_hue_cos",
+    "capitulum_outline_aspect_ratio",
+    "capitulum_outline_circularity",
+    "capitulum_outline_solidity",
+    "capitulum_width_profile_cv"
+  ],
+  "replicates": 200,
+  "seed": 20261021,
+  "estimator": "PSD-constrained quadratic method of moments, not REML",
+  "interval_scope": "Conditional Gaussian parametric bootstrap, pointwise",
+  "contract_sha256": "9a8b82292c0005ce36f6e84550e8a24def7d1d178eb3634422c6508df7abe70c"
+}

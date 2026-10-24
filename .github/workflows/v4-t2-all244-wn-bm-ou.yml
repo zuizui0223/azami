@@ -1,0 +1,109 @@
+name: V4 T2 all-244 original-photo orientation WN BM OU1 coverage
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_all244_ou_bm_orientation.py'
+      - 'tests/test_v4_t2_all244_ou_bm_orientation.py'
+      - '.github/workflows/v4-t2-all244-wn-bm-ou.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-t2-all244-wn-bm-ou-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  whole-original-species-and-phylogenetic-sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen numerical environment and private source decoder
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+          python -m pip check
+      - name: Synthetic tests of source coverage and likelihood models
+        run: python -m pytest -q tests/test_v4_t2_all244_ou_bm_orientation.py
+      - name: Authenticate frozen native S1 input (never upload original observations)
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-all244/private work/t2-all244/receipt work/t2-all244/output
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted \
+            --dir work/t2-all244/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate \
+            --dir work/t2-all244/receipt
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/t2-all244')
+          rbytes=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(rbytes).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(rbytes)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Frozen source decryption/authentication gate failed') from None
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Decode exact native original CHELSA raster exposure units
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/t2-all244/private/observations.csv.gz \
+            --receipt work/t2-all244/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/t2-all244/decoded
+      - name: Assemble all 244 and evaluate 52 grafted tree hypotheses WN BM OU1
+        run: |
+          python -m analysis.v4.t2_all244_ou_bm_orientation \
+            --native-table work/t2-all244/decoded/observations.csv.gz \
+            --out-dir work/t2-all244/output \
+            --tree-limit 52
+      - name: Verify complete all-species coverage and prohibit false adaptation claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          root=Path('work/t2-all244/output')
+          data=json.loads((root/'S1_ALL244_NUCLEAR_COVERAGE_AND_BM_OU_SUMMARY.json').read_text())
+          coverage=pd.read_csv(root/'S1_ALL244_TAXON_COVERAGE.csv')
+          fits=pd.read_csv(root/'S1_191_PHYLOGENETIC_WN_BM_OU1_ALL_PLACEMENTS.csv')
+          assert len(coverage)==244 and coverage.n_source_orientation_photos.sum()==170066
+          assert coverage.tree194_covered.sum()==194
+          assert coverage.strict_phylogenetic_eligible.sum()==191
+          assert set(coverage.loc[coverage.s2_focal,'source_taxon_names'])=={'Cirsium_arvense','Cirsium_vulgare'}
+          assert data['n_placement_scenarios_used']==52
+          assert len(fits)==312 and data['n_total_model_cases']==312
+          assert set(fits.best_model_AICc) <= {'WN','BM','OU1'}
+          assert data['claims_not_supported']['OU1_support_proves_adaptive_radiation']
+          assert data['claims_not_supported']['same_full_244_in_phylogenetic_comparison']
+          forbidden={'obs_id','user_id','photographer_id','photo_id','latitude','longitude','coordinates','url'}
+          assert not forbidden.intersection(set(coverage.columns))
+          print('PASS all 244 exact source taxa + 194/191/143 coverage + 312 WN/BM/OU placement fits; original observation records not redistributed.')
+          PY
+      - name: Upload ONLY taxon-level derived summary/coverage and model receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S1-all244-wn-bm-ou1-placement-screen
+          path: work/t2-all244/output/
+          if-no-files-found: warn
+          retention-days: 90

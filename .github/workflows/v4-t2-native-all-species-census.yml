@@ -1,0 +1,80 @@
+name: V4 T2 full 244 S1 species census and candidate nuclear coverage
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_native_s1_all_taxa_registry.py'
+      - 'tests/test_v4_t2_native_s1_all_taxa_registry.py'
+      - '.github/workflows/v4-t2-native-all-species-census.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-t2-all-S1-244-source-registry-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  source-authenticated-native-full-244-census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original decoder and taxonomic audit dependencies
+        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+      - name: Do not collapse varieties or invent missing nuclear species
+        run: python -m pytest -q tests/test_v4_t2_native_s1_all_taxa_registry.py
+      - name: Restore private S1 665115 original acquisition and authenticate frozen source
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-all-native/private work/t2-all-native/receipt work/t2-all-native/export
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/t2-all-native/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/t2-all-native/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          base=Path('work/t2-all-native')
+          raw=(base/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          meta=json.loads(raw)
+          sealed=(base/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==meta['encrypted_table_sha256']
+          secret=os.environ.get('AZAMI_METADATA_KEY','')
+          assert secret, 'Owner-held metadata key required for original 244 S1 roster'
+          data=AESGCM(bytes.fromhex(secret)).decrypt(
+               sealed[:12],sealed[12:],meta['encrypted_table_aad'].encode())
+          assert hashlib.sha256(data).hexdigest()==meta['prepared_table_sha256']
+          (base/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Decode authenticated CHELSA source into private local workspace
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/t2-all-native/private/observations.csv.gz \
+            --receipt work/t2-all-native/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/t2-all-native/decoded
+      - name: Export ALL S1 native 244 accepted taxa and check candidate nuclear sources
+        run: |
+          python -m analysis.v4.t2_native_s1_all_taxa_registry \
+            --decoded-native-table work/t2-all-native/decoded/observations.csv.gz \
+            --out-dir work/t2-all-native/export
+      - name: Upload only public taxon-level full-244 census and gap accounting
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-full-S1-244-all-species-public-taxonomic-census
+          path: work/t2-all-native/export/
+          if-no-files-found: warn
+          retention-days: 90

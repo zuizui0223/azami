@@ -1,0 +1,63 @@
+name: V4 T2 111 real Cirsium phylogeny fixed-copy preflight
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_original241_phylo_preflight.py'
+      - 'tests/test_v4_t2_real111_original241_phylo_preflight.py'
+      - '.github/workflows/v4-t2-real111-source-copy-phylo-preflight.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  preflight-for-observed-nucleotide-alignment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test fixed reference, sample/run conservation and all original taxa
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real111_original241_phylo_preflight.py
+      - name: Recover all111 authentic 120k Q20 original author241 locus matrix
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-111/source work/t2-111/out
+          test "$(gh api repos/zuizui0223/azami/actions/runs/39885604460 --jq '.conclusion')" = success
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12472932541 --jq '.digest')" = 'sha256:90667c75234ba14e8e5f5378defc9bfc54fb3cecf9f51e59b74b2651b6d384fb'
+          gh run download 39885604460 --repo zuizui0223/azami --name t2-real120k-all111-original241-shared-locus-occupancy --dir work/t2-111/source
+          test -s work/t2-111/source/T2_ALL113_SOURCE_TAXA_REAL120K_BEST_SINGLE_RUN.csv
+          test -s work/t2-111/source/T2_AUTHOR241_SHARED_Q20_120K_ACROSS111_TAXA.csv
+      - name: Fix data-derived 80 percent identical reference-copy target panel BEFORE base-call inference
+        run: |
+          python -m analysis.v4.t2_real111_original241_phylo_preflight --taxa work/t2-111/source/T2_ALL113_SOURCE_TAXA_REAL120K_BEST_SINGLE_RUN.csv --loci work/t2-111/source/T2_AUTHOR241_SHARED_Q20_120K_ACROSS111_TAXA.csv --outdir work/t2-111/out
+      - name: Verify complete taxon coverage and 118 actual source-verified candidate copies
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          root=Path('work/t2-111/out')
+          a=json.loads((root/'S1_111_REAL_ORIGINAL241_GLOBAL_PHYLO_PREFLIGHT.json').read_text())
+          names=[('S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv',111),('S1_TWO_SHORT_SOURCE_TAXA_NOT_GENETIC_ABSENCE.csv',2),('AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv',118)]
+          for fname,count in names:
+              with (root/fname).open() as h: assert sum(1 for _ in csv.DictReader(h))==count
+          assert a['source_taxon_number_for_gate']==89
+          assert a['technical_ML_source_locus_gate_passed']
+          assert a['source_Moreyra_name_candidates']==113
+          assert a['original_S1_accepted_taxa_master']==244 and a['original_S1_named_taxa_master']==251
+          assert a['no_nuclear_species_tree'] and a['same_original_reference_not_single_copy_orthology']
+          print('PASS: 111 actual BioSamples, 118 fixed identical-reference nuclear candidate loci, two unmeasured original taxa')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-real111-118-fixed-source-reference-phylogeny-preflight
+          path: work/t2-111/out/
+          retention-days: 90
+          if-no-files-found: error

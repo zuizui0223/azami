@@ -1,0 +1,9 @@
+{
+  "run_id": "39435174409",
+  "git_sha": "c1266ec807f83b60e111a5d9125e7b14abc29786",
+  "input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "tree_bundle_sha256": "be57e9ba80773c97afdc200f9a3982eaa85044cfc6791b62187ccfcd41f54438",
+  "failures": [],
+  "intervals": "model-based normal conditional on fitted variances",
+  "scope": "Historical-placement sensitivity; no molecular-tree or joint-colour claim"
+}

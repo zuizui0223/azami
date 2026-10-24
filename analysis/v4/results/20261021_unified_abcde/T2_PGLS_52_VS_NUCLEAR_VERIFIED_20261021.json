@@ -1,0 +1,147 @@
+{
+  "schema": "azami_v4_T2_real_PGLS_52_vs_published_independent_NA_nuclear_20261021_v1",
+  "status": "EXECUTED_EXPLORATORY_NOT_GLOBAL_CAUSAL_EVOLUTIONARY_INFERENCE",
+  "source_repository": "zuizui0223/azami",
+  "pull_request": 144,
+  "workflow_run_id": 39579878018,
+  "workflow_job_id": 119154711261,
+  "workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39579878018",
+  "code_path": "analysis/v4/t2_pgls_placement_screen.py",
+  "test_path": "tests/test_v4_t2_pgls_placement_screen.py",
+  "github_artifact_name": "v4-t2-pgls-52-tree-exploratory",
+  "pgls_archive_Zenodo_DOI": "10.5281/zenodo.22703215",
+  "published_morphological_source_DOI": "10.1086/724310",
+  "empirical_aggregate_from_successful_actions_log": {
+    "ancestral_state_independent_nuclear_confirmation": false,
+    "author_evidence": {
+      "annotation_basis": "original_publication_taxon_scored_head_position_not_camera_vertical",
+      "commit": "c925d4af86160064448f794a9715f70b917a2786",
+      "doi": "10.1086/724310",
+      "git_blob": "fa127f0587b676e6e004ea121424d26069586bcb",
+      "n_nodding": 5,
+      "n_taxa": 63,
+      "path": "traits/traits.csv",
+      "repo": "carol-siniscalchi/cirsium",
+      "source_sha256": "b135425cdd01ab18723d4ce582788efb9fcb011465363f957bf786e827718a8c"
+    },
+    "empirical_transition_dates_estimated": false,
+    "erect_to_nodding_q025_median_q975_scenario_median_range": [
+      3,
+      3
+    ],
+    "independent_nuclear_reference": {
+      "commit": "c925d4af86160064448f794a9715f70b917a2786",
+      "common_tip_comparison": {
+        "Mk_log_likelihood": -11.890345929520903,
+        "chronogram_absolute_dates_inferred": false,
+        "conditional_mapping": {
+          "draws": 150,
+          "erect_to_nodding_q025_median_q975": [
+            3,
+            3,
+            4
+          ],
+          "nodding_to_erect_q025_median_q975": [
+            0,
+            0,
+            1.2750000000000057
+          ],
+          "p_at_least_two_erect_to_nodding": 1,
+          "root_nodding_p": 0.02,
+          "seed": 20261073,
+          "warning": "Conditional on one reviewed tree, binary-only tip scores, symmetric Mk and rate point estimate; NOT climate-dependent transitions, independent origin times, or fitness selection."
+        },
+        "cross_tree_same_tip_cohort": true,
+        "fitted_symmetric_Mk_rate": 0.0421792321789922,
+        "n_erect": 41,
+        "n_nodding": 3,
+        "n_taxa": 44,
+        "not_independent_morphology_reannotation": true,
+        "optimizer_near_boundary": false,
+        "published_nuclear_tree_based": true,
+        "root_erect_min_steps": 3,
+        "root_nodding_min_steps": 5,
+        "unknown_root_min_steps": 3
+      },
+      "complete_published_63_tip_context": {
+        "Mk_log_likelihood": -18.297571914670144,
+        "chronogram_absolute_dates_inferred": false,
+        "conditional_mapping": {
+          "draws": 150,
+          "erect_to_nodding_q025_median_q975": [
+            4.725,
+            5,
+            7
+          ],
+          "nodding_to_erect_q025_median_q975": [
+            0,
+            0,
+            3
+          ],
+          "p_at_least_two_erect_to_nodding": 1,
+          "root_nodding_p": 0.08666666666666667,
+          "seed": 20261074,
+          "warning": "Conditional on one reviewed tree, binary-only tip scores, symmetric Mk and rate point estimate; NOT climate-dependent transitions, independent origin times, or fitness selection."
+        },
+        "cross_tree_same_tip_cohort": true,
+        "fitted_symmetric_Mk_rate": 0.050558618390085915,
+        "n_erect": 58,
+        "n_nodding": 5,
+        "n_taxa": 63,
+        "not_independent_morphology_reannotation": true,
+        "optimizer_near_boundary": false,
+        "published_nuclear_tree_based": true,
+        "root_erect_min_steps": 4,
+        "root_nodding_min_steps": 6,
+        "unknown_root_min_steps": 4
+      },
+      "git_blob": "6417a38793427bc7c8562dc0e2cab59b74d8c316",
+      "not_a_confirmed_dated_origin_analysis": true,
+      "not_global_cirsium_tree": true,
+      "path": "traits/cirsium.phyluce95p.ultrametric.tre",
+      "source_doi": "10.1086/724310",
+      "source_repo": "carol-siniscalchi/cirsium",
+      "source_sha256": "4040a46f5b35e9b84e550d363f168c445cc1477a9fc9dc0a4bf2254e06297709"
+    },
+    "matched_nodding_n_range": [
+      3,
+      3
+    ],
+    "matched_taxa_n_range": [
+      44,
+      44
+    ],
+    "n_scenario_results": 52,
+    "nodding_to_erect_q025_median_q975_scenario_median_range": [
+      0,
+      0
+    ],
+    "not_independent_repeated_selection": true,
+    "pgls_tree_evidence": {
+      "backbone_used_for_placement": true,
+      "doi": "GBOTB.extended.LCVP/V.PhyloMaker2 archived in azami Zenodo record 22703215",
+      "n_scenarios": 52,
+      "not_independent_phylogenetic_replicates": true,
+      "root_and_branch_scaling_not_revalidated_for_Cirsium_events": true
+    },
+    "rain_temperature_evolutionary_test_executed": false,
+    "root_erect_min_steps_scenario_range": [
+      2,
+      3
+    ],
+    "root_nodding_min_steps_scenario_range": [
+      3,
+      21
+    ],
+    "scientific_status": "placement_sensitivity_only_NOT_independent_origins_or_dates_or_rain_causation",
+    "source_photo_orientation_as_true_biological_posture": false,
+    "stage": "T2_PGLS_52_TREE_EXPLORATORY",
+    "status_counts": {
+      "conditional_placement_Mk_sensitivity_NOT_independent_history": 52
+    },
+    "unknown_root_min_steps_scenario_range": [
+      2,
+      3
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+name: V4 T2 true NA63 botanical orientation against all125 nuclear real reads
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_na63_posture_real_sra_sampling_gate.py'
+      - 'tests/test_v4_t2_na63_posture_real_sra_sampling_gate.py'
+      - '.github/workflows/v4-t2-na63-posture-real-sra-coverage.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  original-botanical-trait-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify independent-author U/D, strict taxon matching and true SRA gap
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_na63_posture_real_sra_sampling_gate.py
+      - name: Rejoin 125 real Moreyra SRA run mappings with NA63 author's genuine botanical head states
+        run: |
+          mkdir -p work/t2-na-read-coverage
+          python -m analysis.v4.t2_na63_posture_real_sra_sampling_gate \
+            --source-receipt analysis/v4/results/20261022_T2_ALL125_REAL_ENA_NUCLEAR_READ_MAPPING_VERIFIED.json \
+            --out work/t2-na-read-coverage/NA63_S1_125_REAL_SOURCE_HEAD_POSITION_JOIN.json
+      - name: Confirm 5 published nodding states but only two in exact shared source
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          f=Path('work/t2-na-read-coverage/NA63_S1_125_REAL_SOURCE_HEAD_POSITION_JOIN.json')
+          a=json.loads(f.read_text())
+          assert a['original_author_scored_north_american_taxa']==63
+          assert a['original_botanical_nodding_scored_taxa']==5
+          assert a['n_original_na_taxa_with_exact_named_S1_Moreyra_mapped_runs']==26
+          assert a['n_original_na_nodding_taxa_with_exact_named_runs']==2
+          assert a['n_original_na_erect_taxa_with_exact_named_runs']==24
+          assert a['n_exact_mapped_runs_with_author_botanical_state']==32
+          assert a['n_runs_nodding']==3
+          assert a['n_unassignable_source_conflict_runs']==1
+          assert a['multiple_source_tree_code_conflict_runs'][0]['run']=='SRR30887230'
+          assert a['cannot_infer_four_independent_nodding_origins_from_two_nodding_taxa']
+          print('PASS: real mapped 125 source panel intersects author botanical 63 only at 26 taxa, of which 2 nodding; do not claim global evolution.')
+          PY
+      - name: Archive public source taxon / phenotype / nuclear-read evidence gate only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-NA63-author-head-vs-all125-real-SRA-coverage
+          path: work/t2-na-read-coverage/
+          if-no-files-found: error
+          retention-days: 90

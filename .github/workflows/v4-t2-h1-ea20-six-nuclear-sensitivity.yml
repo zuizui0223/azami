@@ -1,0 +1,84 @@
+name: V4 T2 H1 six original EastAsia20 nuclear alternatives same S1 BIO12
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_h1_eastasia20_alternative_phylogeny.py'
+      - 'analysis/v4/t2_h1_real_nuclear_phylo_same_s1.py'
+      - '.github/workflows/v4-t2-h1-ea20-six-nuclear-sensitivity.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_h1_eastasia20_alternative_phylogeny.py'
+      - 'analysis/v4/t2_h1_real_nuclear_phylo_same_s1.py'
+      - '.github/workflows/v4-t2-h1-ea20-six-nuclear-sensitivity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-correct-eight-photo-taxa-six-nuclear-scenarios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install precise molecular Mt-rate state and climate simulation requirements
+        run: python -m pip install 'numpy>=1.26,<3' 'pandas>=2,<4' 'scipy>=1.11,<2' 'biopython>=1.83,<2'
+      - name: Recover original actual-photo CHELSA atlas and six original accepted nuclear AU topology cases
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-h1-ea/source work/t2-h1-ea/au work/t2-h1-ea/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9492453273 --jq '.digest')" = 'sha256:04bad63dafae6bf3f91e0b44be8cd5977eb30f14ca2294cd783a3b0f660c9b74'
+          gh run download 39890812308 --repo zuizui0223/azami --name v4-t2-original251-author-head-UD-observed-hydric-association --dir work/t2-h1-ea/source
+          gh run download 32636509465 --repo zuizui0223/EAzami --name orientation-comp1061-posttree-32636509465 --dir work/t2-h1-ea/au
+          test -s work/t2-h1-ea/source/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv
+          test "$(find work/t2-h1-ea/au/orientation_trees -name '*.nwk' | wc -l)" = 6
+      - name: Evaluate original 8 matched taxonomy / nuclear states without double counting Japan38
+        run: |
+          python -m analysis.v4.t2_h1_eastasia20_alternative_phylogeny \
+            --original251 work/t2-h1-ea/source/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv \
+            --author-crosswalk external/EAzami/data/evidence/orientation_comp1061_20tip_source_crosswalk_v1.csv \
+            --au-tree-directory work/t2-h1-ea/au/orientation_trees \
+            --out work/t2-h1-ea/out/T2_EA20_REAL8_ORIGINAL_S1_BIO12_SIX_NUCLEAR_TREE_SENSITIVITY.json \
+            --draws 30000
+      - name: Demand real 6 scenario negative rainfall contrast and prohibit fabricated causal conclusions
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("work/t2-h1-ea/out/T2_EA20_REAL8_ORIGINAL_S1_BIO12_SIX_NUCLEAR_TREE_SENSITIVITY.json")
+          obj=json.loads(p.read_text())
+          assert obj["exact_matched_original_photo_taxa"]==8
+          assert obj["actual_source_N_AU_topologies"]==6
+          assert len(obj["outcomes"])==6
+          assert all(x["n_D"]==5 and x["n_U"]==3 for x in obj["outcomes"])
+          assert all(x["mean_BIO12_D_minus_U"]<0 for x in obj["outcomes"])
+          for x in obj["outcomes"]:
+              for root in ("erect","stationary"):
+                  rr=x["phylo_Mk"][root]
+                  assert rr["n_conditional_prevalence_matched_null"]==30000
+                  assert all(0<=p<=1 for p in rr["one_sided_positive_H1_p"])
+          assert obj["boundaries"]["alternative_8_overlaps_original_Japan12"]
+          assert obj["boundaries"]["do_not_add_as_eight_independent_taxa_to_japan12"]
+          assert obj["boundaries"]["no_causal_rain_protection_or_ancestral_state_reconstruction"]
+          print("PASS_EAZAMI20_REAL6_TREE_8_PHOTO_TRAIT_NICHE_SCOPE")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-ea20-six-verified-nuclear-s1-8-taxa-rain-sensitivity
+          path: work/t2-h1-ea/out/
+          if-no-files-found: warn
+          retention-days: 90

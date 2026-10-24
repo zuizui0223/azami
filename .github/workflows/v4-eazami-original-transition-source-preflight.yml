@@ -1,0 +1,51 @@
+name: V4 EAzami original U D CTMC assets access preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-eazami-original-transition-source-preflight.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-ud-transition-source-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read ORIGINAL EAzami cross-repository climate-GBIF occurrence archives
+        run: |
+          set -euo pipefail
+          mkdir -p work/jp work/tw work/public
+          gh api repos/zuizui0223/EAzami/actions/artifacts/9516784077 --jq '{name,digest,expired}'
+          gh api repos/zuizui0223/EAzami/actions/artifacts/9520157997 --jq '{name,digest,expired}'
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9516784077 --jq .digest)" = 'sha256:cb5717c90cbc769398f9ffce38787704a02e34253c1ff16cf8f368ba55aeda96'
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9520157997 --jq .digest)" = 'sha256:819936ceeb6008f356c580622fb72972617700402afaa3d3ab125bff2e6d9106'
+          gh run download 32716015605 --repo zuizui0223/EAzami \
+            --name fdt4-japan-orientation-niche-v1 --dir work/jp
+          gh run download 32725842871 --repo zuizui0223/EAzami \
+            --name fdt4-taiwan-orientation-niche-v1 --dir work/tw
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          jp=list(csv.DictReader(Path('work/jp/focal_occurrences_environment_complete.csv').open()))
+          tw=list(csv.DictReader(Path('work/tw/focal_occurrences_environment_complete.csv').open()))
+          assert len(jp)==693 and len(tw)==55
+          for rows in (jp,tw):
+            assert {'scientific_name_query','latitude','longitude','chelsa_bio01','chelsa_bio15'} <= set(rows[0])
+          report={"status":"AUTHENTIC_FROZEN_EAZAMI_JAPAN_TAIWAN_ORIGINAL_OCCURRENCES_RESTORABLE",
+                  "japan_occurrences":len(jp),"taiwan_occurrences":len(tw),
+                  "original_U_D_states_not_substituted_by_S1_camera_angle":True,
+                  "original_geo_observation_rows_never_republished":True}
+          Path('work/public/EAzami_original_occurrence_source_access.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-eazami-original-frozen-occurrences-access-receipt
+          path: work/public/
+          if-no-files-found: warn

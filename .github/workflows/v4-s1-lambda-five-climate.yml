@@ -1,0 +1,55 @@
+name: V4 source-verified S1 five-climate free lambda sensitivity
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s1-lambda-five-climate.yml'
+      - 'analysis/v4/s1_lambda_profiled_five_climate_effects.py'
+      - 'tests/test_v4_s1_lambda_profiled_five_climate_effects.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-s1-lambda-climate-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  profile-same-s1-continuous-five-climate-effects:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned numerical source
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Test actual units and λ0-vs-λfit-vs-λ1 numerical consistency
+        run: python -m pytest -q tests/test_v4_s1_lambda_profiled_five_climate_effects.py
+      - name: Reuse existing source-hashed 194 S1 image angle and original five climate centroids
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1-lambda-climate/input work/s1-lambda-climate/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12343166776 --jq '.digest')" = "sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb"
+          gh run download 39594257539 --repo zuizui0223/azami \
+            --name v4-s1-continuous-194-taxa-52-placement-history \
+            --dir work/s1-lambda-climate/input
+          test -s work/s1-lambda-climate/input/S1_CONTINUOUS_194_52_TREE_HISTORY.json
+      - name: Test S1 BIO12 and BIO15 effect stability on identical taxa, all five climatic controls and 52 trees under estimated phylogenetic lambda
+        run: |
+          python -m analysis.v4.s1_lambda_profiled_five_climate_effects \
+            --source work/s1-lambda-climate/input/S1_CONTINUOUS_194_52_TREE_HISTORY.json \
+            --out work/s1-lambda-climate/out/S1_FIVE_CLIMATE_LAMBDA_PROFILED_194_191_171_143.json
+      - name: Archive all corrected continuous S1 coefficients, no raw private photos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-continuous-five-climate-free-lambda
+          path: work/s1-lambda-climate/out/
+          if-no-files-found: warn
+          retention-days: 90

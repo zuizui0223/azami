@@ -1,0 +1,66 @@
+{
+  "schema": "v4_T2_verified_genuine_multilocus_NA42_Japan12_S1_photo_angle_clustering_summary_20261024",
+  "source_pipeline_run": "https://github.com/zuizui0223/azami/actions/runs/40061260105",
+  "workflow_conclusion": "success",
+  "source_commit": "cecd6d7d16b89933ca33249a448211f20abc6ac7",
+  "artifact": {
+    "id": 12547631332,
+    "name": "v4-t2-real-S1-photo-NA42-Japan12-authentic-nuclear-clustering-figures",
+    "sha256": "a2370828068206c7ad77cb0ac3fda3ec0b2fc361c2ef1d49a1a1e6bffdb59578",
+    "inner_json_sha256": "f6bcbe46dea131c7d1c8b9be35ce2ac5676c179de3bee6fc0ff3978bf7767fb8"
+  },
+  "frozen_sources": {
+    "original_S1_sha256": "47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1",
+    "all_original_S1_source_names": 251,
+    "all_original_S1_photos": 170066,
+    "NA_nuclear_tree_git_blob": "6417a38793427bc7c8562dc0e2cab59b74d8c316",
+    "Japan176_nuclear_tree_sha256": "ba592d3a9f52b5481314ab20e3202048505cdf72a3fc15134d5dca261b9d9b7e"
+  },
+  "method": "Within each separate authentic nuclear species tree, average absolute difference between nearest patristic neighbor tips; 9999 fixed-seed species-label permutations test smaller-than-null phylogenetic clustering; four primary null p-values (angle mean, log BIO12 in each tree) BH-adjusted.",
+  "nuclear_primary": [
+    {
+      "tree": "Siniscalchi2023_NA63_pruned42",
+      "n_exact_S1_taxa": 42,
+      "n_original_S1_photos": 59917,
+      "n_with_10plus_photos": 40,
+      "angle_mean_deg_nn_observed": 13.443372492515177,
+      "angle_mean_nn_null": 13.715277207003794,
+      "angle_mean_clustering_p": 0.432,
+      "angle_mean_clustering_BH_q": 0.864,
+      "angle_median_clustering_p": 0.5401,
+      "logBIO12_nn_observed": 0.495788991215842,
+      "logBIO12_nn_null": 0.5701236455239954,
+      "logBIO12_clustering_p": 0.124,
+      "logBIO12_BH_q": 0.496,
+      "n10_angle_mean_p": 0.5802
+    },
+    {
+      "tree": "EAzami_Japan38_176_nuclear_loci_pruned12",
+      "n_exact_S1_taxa": 12,
+      "n_original_S1_photos": 600,
+      "n_with_10plus_photos": 6,
+      "angle_mean_deg_nn_observed": 49.24424568165,
+      "angle_mean_nn_null": 36.04085852509977,
+      "angle_mean_clustering_p": 0.9204,
+      "angle_mean_clustering_BH_q": 0.9204,
+      "angle_median_clustering_p": 0.9477,
+      "logBIO12_nn_observed": 0.5500005848726283,
+      "logBIO12_nn_null": 0.5161118969146845,
+      "logBIO12_clustering_p": 0.6649,
+      "logBIO12_BH_q": 0.8865333333333334,
+      "n10_angle_mean_p": null,
+      "n10_cannot_test_min8": true
+    }
+  ],
+  "inference": {
+    "angle_phylogenetic_clustering_confirmed": false,
+    "rainfall_phylogenetic_clustering_confirmed": false,
+    "separate_published_nuclear_trees_not_stitched": true,
+    "no_chloroplast_plastid_used": true,
+    "no_flora_upright_nodding_used": true,
+    "ITS109_and_failed_original111_Q20_not_primary": true,
+    "source_image_angle_is_image_not_gravity": true,
+    "not_dated_tree_or_adaptive_gain_count": true,
+    "S1_all251_and_sequence_candidate_union161_positive_BIO12_species_slope_retained_but_not_proven_independent_of_phylogeny": true
+  }
+}

@@ -1,0 +1,85 @@
+name: V4 T2 shared nuclear 241 loci across all113 taxa and seven deep specimens
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_113taxa_author241_shared_locus_screen.py'
+      - 'tests/test_v4_t2_113taxa_author241_shared_locus_screen.py'
+      - '.github/workflows/v4-t2-113taxa-shared-original241-loci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  authentic-shared-target-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify original same-run and no false orthology assumptions
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_113taxa_author241_shared_locus_screen.py
+      - name: Restore complete source 30k 125-run locus-site quality matrix
+        run: |
+          set -euo pipefail
+          mkdir -p work/shared241/original30k work/shared241/paired120k work/shared241/out work/shared241/original_registry
+          gh run download 39783655030 --repo zuizui0223/azami \
+            --pattern 't2-real241-shard-*' --dir work/shared241/original30k
+          test "$(find work/shared241/original30k -name 'shard_*.json' | wc -l)" -eq 10
+      - name: Restore independently archived same-run 30k to 120k comparisons
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12430551556 --jq '.digest')" = 'sha256:525e10d23276f21fea8453a56dac941b66c52d59e3ce76ffde859fbaa194602b'
+          gh run download 39787499085 --repo zuizui0223/azami \
+            --name t2-all125-original241-30k-vs-120k-Q20-coverage \
+            --dir work/shared241/paired120k
+          test -s work/shared241/paired120k/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv
+      - name: Authenticate all public run names against original Moreyra S1 evidence
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = 'sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71'
+          gh run download 39721528204 --repo zuizui0223/azami \
+            --name v4-t2-all244-Moreyra-SRA-voucher-evidence \
+            --dir work/shared241/original_registry
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/shared241/original_registry/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+      - name: Audit actual cross-taxon shared locus names and specimen references
+        run: |
+          python -m analysis.v4.t2_113taxa_author241_shared_locus_screen \
+            --source-shards work/shared241/original30k \
+            --paired120k work/shared241/paired120k/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv \
+            --out-dir work/shared241/out
+      - name: Assert original 125 identities match exact BioSample from independent source
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          from analysis.v4.t2_113taxa_author241_shared_locus_screen import read_perrun
+          p=Path('work/shared241')
+          rows=list(csv.DictReader((p/'original_registry/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv').open()))
+          byrun=read_perrun(p/'original30k')
+          assert len(rows)==125 and len(byrun)==125
+          for row in rows:
+              m=byrun[row['run']]
+              assert m['biosample']==row['biosample']
+              assert m['accepted_key']==row['accepted_key']
+          result=json.loads((p/'out/AUTHOR241_SHARED_DEPTH_READYNESS.json').read_text())
+          assert result['original_source_taxa']==113
+          assert result['n_seven_deep_source_taxa']==7
+          assert result['all_original_candidate_loci']==241
+          assert not result['nuclear_tree_fit_allowed_from_breadth_only']
+          assert result['all7_real120k_locus_overlap_not_calculated']
+          print('PASS 241 real loci x 125 public source runs x 113 unique names and seven 120k deep samples; shared 30k only')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-113taxa-deep7-author241-30k-shared-locus-audit
+          path: work/shared241/out/
+          if-no-files-found: error
+          retention-days: 90

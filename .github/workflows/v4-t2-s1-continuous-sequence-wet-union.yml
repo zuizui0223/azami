@@ -1,0 +1,77 @@
+name: V4 T2 S1 continuous true nuclear wet-tail source union
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_continuous_sequence_source_coverage.py'
+      - 'tests/test_v4_t2_s1_continuous_sequence_source_coverage.py'
+      - '.github/workflows/v4-t2-s1-continuous-sequence-wet-union.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-photo-sequence-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original S1 source statistics deps
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Verify original source union and S1 continuous-only restrictions
+        run: |
+          python -m pytest -q tests/test_v4_t2_s1_continuous_sequence_source_coverage.py tests/test_v4_t2_110_multilocus_vs_109_its_photo_niche.py tests/test_v4_t2_s1_109_vs251_phylogenetic_sampling_explanation.py
+      - name: Restore source-SHA-verified S1 and genuine DNA sequence original files
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1 work/q work/qtree work/its work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/s1
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/q
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63 --dir work/qtree
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/its
+      - name: Quantify S1 original photo angle wet-tail coverage all 251 source species
+        run: |
+          python -m analysis.v4.t2_s1_continuous_sequence_source_coverage \
+            --original251 work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --source110 work/q/REAL110_SOURCE_TAXON_BIOSAMPLE_TECHNICAL_SENSITIVITY.csv \
+            --receipt work/q/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json \
+            --Q20-tree work/qtree/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile \
+            --ITS-tree work/its/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --out work/out/T2_S1_CONTINUOUS_REAL_NUCLEAR_WETTAIL_UNION.json \
+            --ledger work/out/T2_ALL251_S1_CONTINUOUS_NUCLEAR_COVERAGE.csv \
+            --bootstraps 2000
+      - name: Assert original Q20 failure and NO fictional merged 161 phylogeny
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/out/T2_S1_CONTINUOUS_REAL_NUCLEAR_WETTAIL_UNION.json').read_text())
+          assert x['cohorts']['source_union161']['n_source_names']==161
+          assert x['cohorts']['source_union161']['wettest_original_251_quartile_names']==27
+          assert len(x['new_wet_taxa_on_Q20_candidates_not_in_ITS109'])==11
+          assert x['unmatched_high_rainfall_source_names']==36
+          assert x['not_an_inferred_161_tip_tree']
+          assert x['Q20_original111_primary_QC_passed'] is False
+          assert x['no_botanical_U_D_or_Mk'] and x['S1_camera_vertical_not_gravity']
+          assert len(x['paired_source_selection_bootstrap']['union_minus_nested_its_slope_q025_median_q975'])==3
+          assert sum(1 for _ in Path('work/out/T2_ALL251_S1_CONTINUOUS_NUCLEAR_COVERAGE.csv').open())==252
+          print('T2_REAL_S1_CONTINUOUS_WET_TAIL_COHORT_COMPLETE')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-real-S1-photo-nuclear-ITS109-Q20110-wet-source-union
+          path: work/out/
+          retention-days: 90
+          if-no-files-found: warn

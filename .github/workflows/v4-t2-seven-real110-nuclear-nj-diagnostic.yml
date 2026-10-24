@@ -1,0 +1,79 @@
+name: V4 T2 seven-source empirical Q20 nuclear distance NJ pilot
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_seven_original110_Q20_nj_diagnostic.py'
+      - 'tests/test_v4_t2_seven_original110_Q20_nj_diagnostic.py'
+      - '.github/workflows/v4-t2-seven-real110-nuclear-nj-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-source-seven-run-NJ:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install reproducible biopython NJ and synthetic mathematical checks
+        run: |
+          python -m pip install 'biopython>=1.83,<1.90' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_seven_original110_Q20_nj_diagnostic.py
+      - name: Verify source-authentic 7-run nucleotide call and shared site archive digest
+        run: |
+          set -euo pipefail
+          mkdir -p work/7seq/source work/7seq/receipts work/7seq/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12465191431 --jq '.digest')" = 'sha256:b9969337e3cf4bc971bf97058b47ecb7daaab563505593fb83f2cb8b8bb6e3d2'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12464374708 --jq '.digest')" = 'sha256:4838006f0b8a935f16d3db00a2ae1fa6ba118a1ee1658d71b987a0dddb56f392'
+          gh run download 39868141961 --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/7seq/source
+          gh run download 39868141961 --repo zuizui0223/azami --pattern 't2-real120k-source-original110-Q20-sites-*' --dir work/7seq/receipts
+          test "$(find work/7seq/receipts -name 'SRR*.json' | wc -l)" -eq 7
+          test -s work/7seq/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+          test -s work/7seq/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+          test -s work/7seq/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
+      - name: Compute source-verified real seven-taxon 101-locus distance and unrooted technical NJ
+        run: |
+          python -m analysis.v4.t2_seven_original110_Q20_nj_diagnostic \
+            --run-receipts work/7seq/receipts \
+            --sra-source work/7seq/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --chosen work/7seq/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
+            --targets work/7seq/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --out-dir work/7seq/out
+      - name: Enforce full-source 29270/542/86 and no species-tree acceptance
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          p=Path('work/7seq/out')
+          s=json.loads((p/'SEVEN_REAL_Q20_101_LOCUS_NJ_DIAGNOSTIC.json').read_text())
+          assert s['n_original_public_SRA_biosamples']==7
+          assert s['n_original_same_copy_candidate_loci']==110
+          assert s['n_primary_loci_shared_atleast_100_Q20_sites']==101
+          assert s['source_shared_Q20_positions_all_targets']==29270
+          assert s['source_shared_variable_Q20_positions']==542
+          assert s['source_shared_parsimony_informative_Q20_positions']==86
+          assert s['primary_p_distance_pair_count']==21
+          assert not s['copy_state_orthology_homeology_and_taxonomy_concepts_verified']
+          assert s['no_reused_technical_NJ_as_OU_BM_species_tree']
+          assert not s['EAzami_294_tip_species_tree_constructed']
+          for file,expected in [
+              ('SEVEN_REAL_Q20_101_LOCUS_PAIRWISE_PDIST.csv',21),
+              ('SEVEN_REAL_Q20_110_ORIGINAL_LOCUS_SITE_COUNTS.csv',110)]:
+              with (p/file).open() as f:
+                  assert sum(1 for _ in csv.DictReader(f))==expected
+          print('PASS seven original SRA specimens 101 high-quality common locus unrooted NJ source diagnostic, not Cirsium species tree')
+          PY
+      - name: Archive public-source quantitative genetics only, never original FASTQ/BAM
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-seven-original110-real120k-Q20-technical-NJ
+          path: work/7seq/out/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,102 @@
+name: V4 native covariance decomposition
+on:
+  workflow_dispatch:
+    inputs:
+      report_run:
+        description: 'Completed covariance run to render; empty executes numerical work'
+        type: string
+        default: ''
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/native_covariance.py'
+      - 'tests/test_v4_native_covariance.py'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  phylogeny:
+    if: ${{ !inputs.report_run }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+      - name: Verify covariance recovery and identifiability gates
+        run: python -m pytest -q tests/test_v4_native_covariance.py
+      - name: Restore authenticated native input
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/native-integration/private work/native-integration/receipt
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/native-integration/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/native-integration/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/native-integration')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Private observation input authentication failed.') from None
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Apply verified environmental decoding
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/native-integration/private/observations.csv.gz \
+            --receipt work/native-integration/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/native-integration/decoded
+      - name: Decompose multivariate covariance across historical placements
+        run: python -m analysis.v4.native_covariance --table work/native-integration/decoded/observations.csv.gz --output work/covariance-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-native-covariance
+          path: work/covariance-output/
+          if-no-files-found: error
+          retention-days: 90
+  report:
+    if: ${{ inputs.report_run != '' && github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: ${{ inputs.report_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r reproducibility/requirements-current.txt matplotlib==3.10.8
+      - name: Retrieve completed covariance evidence
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_RUN" =~ ^[0-9]+$ ]]
+          test "$(gh run view "$SOURCE_RUN" --repo zuizui0223/azami --json conclusion --jq .conclusion)" = success
+          gh run download "$SOURCE_RUN" --repo zuizui0223/azami --name v4-native-covariance --dir work/covariance-source
+      - name: Render all components without refitting
+        run: python -m analysis.v4.render_covariance_report --source work/covariance-source --output work/covariance-report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-native-covariance-report
+          path: work/covariance-report/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,92 @@
+name: V4 T2 original 110 real nuclear Q20 botanical orientation rain history
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real110_q20_posture_rain_phylogeny.py'
+      - 'tests/test_v4_t2_real110_q20_posture_rain_phylogeny.py'
+      - '.github/workflows/v4-t2-real110-Q20-botanical-rain-on-own-nuclear.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_real110_q20_posture_rain_phylogeny.py'
+      - 'tests/test_v4_t2_real110_q20_posture_rain_phylogeny.py'
+      - '.github/workflows/v4-t2-real110-Q20-botanical-rain-on-own-nuclear.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  authentic-nuclear110-morphology38-rain-clade-compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install minimal real nuclear morphology analysis dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Validate no camera U D and strict Q20 posthoc source gates
+        run: python -m pytest -q tests/test_v4_t2_real110_q20_posture_rain_phylogeny.py
+      - name: Restore original 108-locus 110 source BioSamples and authentic ML tree
+        run: |
+          set -euo pipefail
+          mkdir -p work/T2/auth work/T2/tree work/T2/trait work/T2/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
+          gh run download 39902959690 --repo zuizui0223/azami \
+            --name t2-original111-posthoc110-authentic-Q20-ML-input \
+            --dir work/T2/auth
+          gh run download 39902959690 --repo zuizui0223/azami \
+            --name t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63 \
+            --dir work/T2/tree
+          gh run download 39890812308 --repo zuizui0223/azami \
+            --name v4-t2-original251-author-head-UD-observed-hydric-association \
+            --dir work/T2/trait
+          echo '541f21801d79a7dda872a020835e6838ea0fd002668324a157d24bca16b9fa08  work/T2/tree/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile' | sha256sum -c -
+      - name: Execute source same 110/38 morphology nuclear branch rooted sensitivities and rain
+        run: |
+          python -m analysis.v4.t2_real110_q20_posture_rain_phylogeny \
+            --tree work/T2/tree/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile \
+            --samples work/T2/auth/REAL110_SOURCE_TAXON_BIOSAMPLE_TECHNICAL_SENSITIVITY.csv \
+            --receipt work/T2/auth/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json \
+            --botanical work/T2/trait/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv \
+            --out work/T2/output/T2_REAL110_MULTILOCUS_NUCLEAR_ORIGINAL_FLORA_U_D_BIO12_PHYLOGENY.json
+          git rev-parse HEAD > work/T2/output/REPRODUCIBLE_COMMIT.txt
+      - name: Verify exact 110 original nuclear Q20 108 candidate loci and 6 real nodding, 32 erect; no adaptive gain inflation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/T2/output/T2_REAL110_MULTILOCUS_NUCLEAR_ORIGINAL_FLORA_U_D_BIO12_PHYLOGENY.json').read_text())
+          assert d['n_original_nuclear_source_tip']==110
+          assert d['n_original_nuclear_reference_candidate_loci']==108
+          assert d['n_real_original111_Q20_masked_nucleotide_sites']==29310
+          assert (d['n_observed_D_original_flora'],d['n_observed_U_original_flora'],
+                  d['n_unresolved_botanical_phenotypes_kept_unknown'])==(6,32,72)
+          assert not d['original_108_loci_single_copy_orthology_accepted']
+          assert d['original111_quality_gate_was_not_passed']
+          assert not d['photo_CAMERA_angle_used_to_infer_D_U']
+          assert not d['species_root_and_internal_branch_gain_events_inferred']
+          assert not d['rainfall_selection_mediating_pollen_fitness_measured']
+          x=d['root_independent_nearest_known_erect_nuclear_relatives']
+          assert len(x['pairs'])==6
+          assert x['n_nodding_with_nearest_erect_wetter']+x['n_nodding_with_nearest_erect_drier']==6
+          for root,g in d['alternative_arbitrary_root_placement_sensitivities'].items():
+              assert g['all38_biologically_scored']['n_morphology_scored_source_tips']==38
+              assert g['posthoc_without_C_norikurense_single_site_climate']['n_morphology_scored_source_tips']==37
+          print('TRUE_REAL110_NUCLEAR_POSTHOC38_U_D_RAIN_NO_ADAPTIVE_EVENT')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real110-108-locus-original-botanical-rain-root-sister-controls
+          path: work/T2/output/
+          if-no-files-found: warn
+          retention-days: 90

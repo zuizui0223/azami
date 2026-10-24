@@ -1,0 +1,73 @@
+name: V4 T2 all251 independently authored head U-D versus original CHELSA hydric axes
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_full251_independent_ud_hydric_permutation.py'
+      - 'tests/test_v4_t2_full251_independent_ud_hydric_permutation.py'
+      - '.github/workflows/v4-t2-full251-botanical-ud-hydric-permutation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-backed-observational-hydric-patterns:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test source key/lane integrity, all251 U-D and blocked permutation
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_full251_independent_ud_hydric_permutation.py
+      - name: Download original S1 named head-angle and five-climate aggregates only
+        run: |
+          set -euo pipefail
+          mkdir -p work/botany/photos work/botany/authority work/botany/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/botany/photos
+          test -s work/botany/photos/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv
+      - name: Download 251 original named taxa with source-hash-verified independent botanical U-D
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473912251 --jq '.digest')" = 'sha256:76720dae26b476de87c60d70d3dd8fbf5d0eef1dc122700d6bd024f90ea357db'
+          gh run download 39889083806 --repo zuizui0223/azami --name v4-t2-full251-real111-independent-botanical-posture-scope --dir work/botany/authority
+          test -s work/botany/authority/S1_ALL251_ORIGINAL_NAMES_BOTANICAL_UD_SOURCE_SCOPE.csv
+      - name: Compute BIO12 BIO15 BIO1 across real U-D taxa conditional on authority lane
+        run: |
+          python -m analysis.v4.t2_full251_independent_ud_hydric_permutation --original251 work/botany/photos/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv --botanical251 work/botany/authority/S1_ALL251_ORIGINAL_NAMES_BOTANICAL_UD_SOURCE_SCOPE.csv --out-dir work/botany/out --permutations 4999
+      - name: Verify six true nodding nuclear and all unscored missingness kept
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          root=Path('work/botany/out')
+          d=json.loads((root/'FULL251_BOTANICAL_U_D_CLIMATE_COMPARISONS.json').read_text())
+          names=list(csv.DictReader((root/'S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv').open()))
+          assert len(names)==251 and len({x['accepted_key'] for x in names})==244
+          assert sum(int(x['original_photo_count']) for x in names)==170066
+          assert sum(x['botanical_U_D_state']=='?' for x in names)==185
+          assert d['known_independent_botanical_U_D_source_names']==66
+          assert d['cases']['all_251_authority_scored']['n_D_nodding']==12
+          assert d['cases']['same_real111_public_SRA_taxa']['n_D_nodding']==6
+          assert not d['phylogenetic_regimes_and_orientation_gain_count_fitted']
+          for case in d['cases'].values():
+              if 'axes' in case:
+                  for val in case['axes'].values():
+                      assert 0<val['maxT_three_climate_axes_adjusted_p']<=1
+                      assert val['maxT_three_climate_axes_adjusted_p']>=val['permutation_two_sided_p']
+          print('PASS original full251, 66 independent U-D with 185 missing; observed-climate association only')
+          PY
+      - name: Save original 251 complete states and independent hydric comparisons only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-original251-author-head-UD-observed-hydric-association
+          path: work/botany/out/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,110 @@
+name: V4 T2 S1 all251 original taxon-name units from 244 accepted keys
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_source_name_resolved_all251.py'
+      - 'tests/test_v4_t2_s1_source_name_resolved_all251.py'
+      - '.github/workflows/v4-t2-s1-all251-source-name-resolution.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-t2-s1-all251-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  whole-original-species-and-phylogenetic-sensitivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen numerical environment and private source decoder
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' pytest
+          python -m pip check
+      - name: Confirm original source-name nested-key guards
+        run: python -m pytest -q tests/test_v4_t2_s1_source_name_resolved_all251.py
+      - name: Authenticate frozen native S1 input (never upload original observations)
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-all244/private work/t2-all244/receipt work/t2-all244/output
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted \
+            --dir work/t2-all244/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate \
+            --dir work/t2-all244/receipt
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/t2-all244')
+          rbytes=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(rbytes).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(rbytes)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Frozen source decryption/authentication gate failed') from None
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Decode exact native original CHELSA raster exposure units
+        run: |
+          python -m analysis.v4.decode_environment \
+            --table work/t2-all244/private/observations.csv.gz \
+            --receipt work/t2-all244/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/t2-all244/decoded
+      - name: Recover all 251 original source-name operational units directly from authenticated S1 photo observations
+        run: |
+          python -m analysis.v4.t2_s1_source_name_resolved_all251 \
+            --native-table work/t2-all244/decoded/observations.csv.gz \
+            --out-dir work/t2-all244/output
+      - name: Verify all244 WCVP accepted keys, original 251 source-name units and 7 mixed-key contrasts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          root=Path('work/t2-all244/output')
+          data=json.loads((root/'S1_ALL244_ACCEPTED_KEYS_SEVEN_MIXED_SOURCE_SPLITS.json').read_text())
+          resolved=pd.read_csv(root/'S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv')
+          assert data['original_S1_observation_n']==170066
+          assert data['original_WCVP_accepted_key_count']==244
+          assert data['retained_source_name_within_accepted_key_units']==251
+          assert data['original_multi_source_WCVP_keys']==7
+          assert len(resolved)==251 and resolved.accepted_key.nunique()==244
+          assert int(resolved.original_photo_count.sum())==170066
+          assert len(data['original_seven_source_mixture_pairs'])==7
+          focal=data['C_brevicaule_C_irumtiense_distinct_source_measurements']
+          assert {x['original_source_name'] for x in focal}=={'Cirsium_brevicaule','Cirsium_irumtiense'}
+          assert all(x['original_photo_count']>=1 for x in focal)
+          assert data['number_biological_accepted_species_proven'] is False
+          assert data['nuclear_species_phylogeny_added'] is False
+          forbidden={'obs_id','photo_id','photographer_id','latitude','longitude','user_id'}
+          assert not forbidden.intersection(set(resolved.columns))
+          print('PASS 170066 source photos in 244 WCVP keys split into 251 observed source-name units; Cirsium brevicaule/irumtiense separately resolved without taxonomic or gravity claims')
+          PY
+      - name: Upload ONLY original source-name/accepted-key trait/climate aggregates and source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S1-all251-original-source-name-resolved
+          path: work/t2-all244/output/
+          if-no-files-found: warn
+          retention-days: 90

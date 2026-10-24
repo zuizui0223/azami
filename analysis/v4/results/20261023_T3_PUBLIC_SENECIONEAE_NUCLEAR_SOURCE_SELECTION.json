@@ -1,0 +1,50 @@
+{
+  "schema": "azami_T3_published_Senecioneae_public_nuclear_source_selection_20261023_v1",
+  "scientific_target": "Cirsium Cardueae -> other tribe Senecioneae verified independent capitulum orientation shifts and rain relationship",
+  "source_evidence": {
+    "Ren2021": {
+      "article_doi": "10.1016/j.ympev.2021.107202",
+      "archive_doi": "10.17632/bkm34wgc3n.1",
+      "archive_url": "https://data.mendeley.com/datasets/bkm34wgc3n/1",
+      "archive_declared_contents": "all alignments used and corresponding tree files",
+      "reported_total_source_taxa": 48,
+      "reported_Ligularia_Cremanthodium_Parasenecio_samples": 27,
+      "sample_names_and_exact_T3_tip_overlap_verified": false,
+      "usable_role": "first priority for denser intracomplex taxon sampling; actual tree file and tip overlap require verification",
+      "direct_tree_ingested": false
+    },
+    "Ren2024": {
+      "article_doi": "10.1093/sysbio/syae046",
+      "archive_doi": "10.5061/dryad.573n5tbf7",
+      "archive_url": "https://datadryad.org/dataset/doi:10.5061/dryad.573n5tbf7",
+      "dryad_dataset_id": 121570,
+      "dryad_version_id": 340361,
+      "published_dataset_zip_file_id": 3337673,
+      "published_dataset_zip_size_bytes": 1583779312,
+      "published_dataset_zip_sha256": "962495cf8131fadd3a1cdf1ea88204432f2aaa81c9e6c0a97435756f0ad88139",
+      "published_readme_file_id": 3337685,
+      "published_readme_size_bytes": 9544,
+      "published_readme_sha256": "d3de4c6cb9da758cb0727d532316aa23cb7d423842d6a9ac7ed83bbcd1634301",
+      "published_tree_member": "1_G727_hyb/2_astral_analysis/astral.tre",
+      "published_supermatrix_tree_member": "1_G727_hyb/3_supermatrix_analysis/RAxML_bipartitions.G727_hyb_supermatrix",
+      "reported_total_source_taxa": 76,
+      "reported_Ligularia_Cremanthodium_Parasenecio_representatives": 5,
+      "retained_nuclear_loci": 727,
+      "study_identified_multiple_allopolyploid_origins": true,
+      "sample_names_and_exact_T3_tip_overlap_verified": false,
+      "usable_role": "tribal nuclear backbone, paralog/homeolog/network sensitivity; inadequate by itself to count focal within-complex independent gains",
+      "original_large_zip_downloaded": false,
+      "direct_tree_ingested": false
+    }
+  },
+  "selection": {
+    "intracomplex_Cremanthodium_Ligularia_first_candidate": "Ren2021",
+    "senecioneae_tribal_backbone_and_reticulation_first_candidate": "Ren2024",
+    "comparison_rule": "Require exact original sample codes, same species concepts, anthesis head stage, independently reviewed U/D, rooted tree, and documented copy/homeolog uncertainty",
+    "reported_species_count_is_not_Mk_usable_tips": true,
+    "joint_Cardueae_Senecioneae_independently_rooted_species_tree_available": false,
+    "independent_nodding_gains_inferred": false,
+    "rain_by_transition_model_fitted": false,
+    "status": "SOURCE_IDENTIFIED_AND_ARCHIVE_SHA_PINNED_BUT_T3_EMPIRICAL_PHYLOGENY_BLOCKED"
+  }
+}

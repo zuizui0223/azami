@@ -1,0 +1,49 @@
+name: V4 T2 published climate phylogenetic null
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_phylogenetic_climate_null.py'
+      - 'tests/test_v4_t2_phylogenetic_climate_null.py'
+      - '.github/workflows/v4-t2-phylogenetic-climate-null.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_phylogenetic_climate_null.py'
+      - 'tests/test_v4_t2_phylogenetic_climate_null.py'
+      - '.github/workflows/v4-t2-phylogenetic-climate-null.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: v4-t2-rain-temp-null-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  test-and-empirical-null:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependencies
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Verify conditional null and climate-source separation
+        run: python -m pytest -q tests/test_v4_t2_phylogenetic_climate_null.py tests/test_v4_t2_pgls_placement_screen.py tests/test_v4_rain_history.py
+      - name: Run empirical rain-and-temperature comparison on real head states and PGLS trees
+        run: |
+          python -m analysis.v4.t2_phylogenetic_climate_null \
+            --out work/t2-rain-temp-source/climate_phylogenetic_null.json \
+            --draws 600 --max-proposals 100000
+      - name: Upload reproducible full null distributions, root and tree sensitivity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: t2-rain-temp-real-phylogenetic-null
+          path: work/t2-rain-temp-source/
+          if-no-files-found: warn
+          retention-days: 90

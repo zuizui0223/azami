@@ -1,0 +1,76 @@
+name: V4 T2 full251 original thistle head U-D authority evidence to real111 nuclear
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_botanical_posture_authority_coverage.py'
+      - 'tests/test_v4_t2_real111_botanical_posture_authority_coverage.py'
+      - '.github/workflows/v4-t2-full251-real111-botanical-UD-authorities.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-authority-photo-real111-crosswalk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test botanical ontology, cross-author conflict and all251 photo source-keys
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real111_botanical_posture_authority_coverage.py
+      - name: Recover original all251 named photo taxa and 111 real source sample identities
+        run: |
+          set -euo pipefail
+          mkdir -p work/traits/photo work/traits/nuclear work/traits/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12461101999 --jq '.digest')" = 'sha256:c4d3923d6c53578bede1529bc4241770a42c9169639c1882d2dd0d1839b1f91f'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473316663 --jq '.digest')" = 'sha256:2f61604a74e7c4a4f36850a7361089dcfc4c86e5bcccfc8ec2b360d6875f3813'
+          gh run download 39859507880 --repo zuizui0223/azami --name v4-t2-all251-all244-source-name-real120k-Q20-breadth --dir work/traits/photo
+          gh run download 39887166776 --repo zuizui0223/azami --name v4-t2-real111-original118-shared-copy-preflight --dir work/traits/nuclear
+          test -s work/traits/photo/S1_ALL251_ORIGINAL_NAMES_REAL_120K_Q20_SOURCE_COVERAGE.csv
+          test -s work/traits/nuclear/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv
+      - name: Source-hash verify North American HeadPosition and Japan-Taiwan-China botanical authorities
+        run: |
+          python -m analysis.v4.t2_real111_botanical_posture_authority_coverage \
+            --source251 work/traits/photo/S1_ALL251_ORIGINAL_NAMES_REAL_120K_Q20_SOURCE_COVERAGE.csv \
+            --real111-sample-source work/traits/nuclear/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv \
+            --eazami-checkout external/EAzami \
+            --out-dir work/traits/out
+      - name: Keep every 251 real original-name unit and 111 nuclear samples without inventing posture
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path('work/traits/out')
+          s=json.loads((root/'S1_ALL251_REAL111_BOTANICAL_UD_SCOPE_SUMMARY.json').read_text())
+          with (root/'S1_ALL251_ORIGINAL_NAMES_BOTANICAL_UD_SOURCE_SCOPE.csv').open() as fp:
+              rows=list(csv.DictReader(fp))
+          assert len(rows)==251 and len({r['accepted_key'] for r in rows})==244
+          assert sum(int(r['original_S1_photo_count']) for r in rows)==170066
+          assert sum(r['nuclear_real120k_sample_in_111']=='True' for r in rows)==111
+          assert s['nuclear111_with_erect']+s['nuclear111_with_nodding']+s['nuclear111_without_verified_taxon_concept_state']==111
+          assert s['nuclear111_with_nodding']>=2
+          assert not s['molecular_BioSample_photophenotype_same_voucher_assessed']
+          assert not s['real_source111_118_ortho_certified_nuclear_tree_completed']
+          assert s['U_D_missing_taxa_not_imputed_from_rainfall']
+          print('PASS ALL251 PHOTO TAXA, 111 PUBLIC NUCLEAR SAMPLES, TAXON-ONLY U/D SCOPES:',s['nuclear111_with_nodding'],s['nuclear111_with_erect'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-full251-real111-independent-botanical-posture-scope
+          path: work/traits/out/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,1022 @@
+{
+  "schema_version": "azami_v4_rain_shelter_S1_S2_T2_T3_plan_20261021_v1",
+  "primary_question_ja": "雨はアザミの頭花の向きを形づくってきたか",
+  "hypothesis": "Head nodding protects exposed reproductive tissue from rain and may favour recurrent evolutionary transitions in wetter climates.",
+  "primary_response": "orientation_image_vertical_angle",
+  "response_reference": "EXIF corrected image vertical, NOT true gravitational inclination, pollen wetting or fitness",
+  "scientific_owner": "zuizui0223/azami PR #144",
+  "study_structure": [
+    "S1 global native spatial pattern",
+    "S2 native-to-introduced within-species transfer",
+    "T2 Cirsium transitions",
+    "T3 Asteraceae cross-tribe convergence"
+  ],
+  "modules_retired_from_main": [
+    "28-pair RV head integration",
+    "colour-outline KDE/Wasserstein differentiation",
+    "27-trait independent climatic effects"
+  ],
+  "modules_retain_in_SI": [
+    "colour-light radiative association",
+    "outline technical robustness",
+    "colour-outline density distinctiveness",
+    "same-image photo measurement specificity controls"
+  ],
+  "frozen_v3_reference": {
+    "stages": 8,
+    "outputs": 16,
+    "unchanged": true,
+    "submission_replacement_decision": "conditional_after_new_v4_validation"
+  },
+  "source_frame": {
+    "original_observations": 665115,
+    "original_photo_links": 1122854,
+    "native_primary_observations": 313350,
+    "native_accepted_keys": 306,
+    "native_orientation_eligible": 170066,
+    "native_orientation_taxa": 244,
+    "original_source_sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "native_corrected_input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_name_collision_keys": 7
+  },
+  "S1": {
+    "status": "SOURCE-VERIFIED MAIN: native Cirsium 244 taxa/170066 measured images show positive annual BIO12 among-taxon angle association; within-taxon annual BIO12 not supported. Spatial analyses retained only as supplementary confounding caveat; not a geography-independent/causal selection claim.",
+    "model": "five previously selected CHELSA covariates BIO1 BIO4 BIO12 BIO15 RSDS, species between/within separately",
+    "annual_bio12_between_deg_per_100mm": 0.4381991922885207,
+    "annual_bio12_between_95pct_interval": [
+      0.2058063239224483,
+      0.6705920606545931
+    ],
+    "annual_bio12_between_holm_p": 0.00531,
+    "bio12_within_deg_per_100mm": -0.044298210799959194,
+    "bio12_within_interval_crosses_zero": true,
+    "phylogeny_placement_trees": 52,
+    "phylogeny_covered_orientation_observations": 169912,
+    "phylogeny_between_effect_scenario_range": [
+      0.4722,
+      0.5078
+    ],
+    "phylogeny_scenarios_are_independent_evolutionary_events": false,
+    "required_controls": [
+      "original observer mixed effects",
+      "orientation repeated photos same-head identity audit",
+      "camera pose and pixel quality",
+      "fixed spatial heldouts",
+      "taxon-name WCVP collisions"
+    ],
+    "independent_rain_functional_effect_established": false,
+    "observer_source_robustness": {
+      "run": 39537702876,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S1_OBSERVER_RAIN_SENSITIVITY_20261021.json",
+      "exclude_taxon_concept_collisions_deg_per100mm": 0.4178153874411991,
+      "observer_cell_single_sample_deg_per100mm": 0.38849173669129317,
+      "remove_top_1pct_original_posters_deg_per100mm": 0.3929428496585995,
+      "all_between_ci_positive": true,
+      "observer_cell_nested_residual_not_pure_camera": true,
+      "original_same_observation_multiple_photos_n": 77977,
+      "confirmed_same_head_remeasurement_n": 0
+    },
+    "precipitation_priority": {
+      "primary": "chelsa_bio12",
+      "primary_scale": "100 mm/year",
+      "between_image_angle_deg_per_increment": 0.4381991922885207,
+      "between_pointwise_95pct_interval": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "primary_status": "positive between-taxon association; measurement still image relative",
+      "secondary": "chelsa_bio15",
+      "secondary_scale": "10 units precipitation seasonality",
+      "secondary_between_image_angle_deg_per_increment": 0.7880825140436949,
+      "secondary_between_pointwise_95pct_interval": [
+        -0.2662791617924732,
+        1.8424441898798627
+      ],
+      "secondary_within_image_angle_deg_per_increment": -0.15339124857684425,
+      "secondary_within_pointwise_95pct_interval": [
+        -0.5267153435666101,
+        0.2199328464129216
+      ],
+      "secondary_status": "between effect trends positive but both between and within intervals include zero; do not call the precipitation seasonality association independently supported",
+      "joint_model_fixed_covariates": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "S2_primary_test": "BIO12 upper/native-q95 and within-introduction annual precipitation tercile image-angle contrast",
+      "S2_secondary_test": "BIO15 precipitation seasonality under the same climate-only source, reported as sensitivity/exploratory"
+    },
+    "source_verified_BIO12_BIO15_taxon_influence_20261021": {
+      "status": "EMPIRICAL_191_AND_143_SPECIES_NESTED_FIVE_S1_CLIMATE_HC3_LOO_BOOTSTRAP_COMPLETED",
+      "source_verification_run_id": 39598389991,
+      "source_sha_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json",
+      "interpretation_ja": "analysis/v4/results/20261021_unified_abcde/S1_RAIN_CONTINUOUS_ANGLE_ASSOCIATION_SYNTHESIS_20261021_JA.md",
+      "code": "analysis/v4/s1_annual_rain_taxon_influence.py",
+      "taxon_191_BIO12_degree_per100mm": 0.5075715791859674,
+      "taxon_191_BIO12_HC3_95pct": [
+        0.2808224676541581,
+        0.7343206907177767
+      ],
+      "taxon_191_BIO12_all_leave_one_out_191_positive": true,
+      "taxon_191_BIO12_all_leave_one_out_HC3_lower95_positive": true,
+      "taxon_191_BIO12_leave_one_out_slope_range": [
+        0.4750222168950582,
+        0.5448891110384733
+      ],
+      "taxon_191_BIO12_bootstrap_1999_percentile95": [
+        0.2729592433282237,
+        0.7383870608208122
+      ],
+      "taxon_143_BIO12_degree_per100mm": 0.45740548832095634,
+      "taxon_143_BIO12_HC3_95pct": [
+        0.08905014689717838,
+        0.8257608297447343
+      ],
+      "taxon_143_BIO12_all_leave_one_out_143_HC3_lower95_positive": true,
+      "taxon_143_BIO12_leave_one_out_slope_range": [
+        0.367178278581187,
+        0.5214663683085056
+      ],
+      "taxon_143_BIO12_bootstrap_1999_percentile95": [
+        0.08841377014737017,
+        0.817170880026526
+      ],
+      "taxon_191_BIO15_effect_hc3": [
+        0.40521130210990863,
+        -1.0255118536981813,
+        1.8359344579179986
+      ],
+      "taxon_143_BIO15_effect_hc3": [
+        0.8628556930976913,
+        -0.66061833686411,
+        2.3863297230594926
+      ],
+      "BIO15_independent_effect_confirmed": false,
+      "original_S1_observation_level_between_within_model_refitted": false,
+      "independent_botanical_downward_origins_inferred": false,
+      "within_species_BIO12_signal_significant": false,
+      "geographic_spatial_grouping_not_explicitly_resolved_by_LOO": true,
+      "no_taxon_level_bootstrap_proves_rain_selection": true
+    },
+    "source_verified_native_geographical_confounds_20261022": {
+      "status": "REAL_SOURCE_SPATIAL_SENSITIVITY_SUCCESS__GLOBAL_BIO12_INDEPENDENT_EFFECT_NOT_SUPPORTED_AFTER_FLEXIBLE_GEOGRAPHY",
+      "original_244_S1_native_observations": 170066,
+      "native_location_coordinates_valid": 170066,
+      "native_invalid_coordinate_count": 0,
+      "clean_native_taxon_keys": 237,
+      "tree_strict_taxon_keys": 191,
+      "minimum10_photos_strict_taxon_keys": 143,
+      "fixed5_original_CHELSA": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "run_id": 39659502828,
+      "numeric_receipt": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_SOURCE_VERIFIED.json",
+      "scientific_summary_ja": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_RESULT_JA.md",
+      "script": "analysis/v4/s1_rain_native_geographic_controls.py",
+      "photo237_BIO12_original_per100mm": [
+        0.3621882377896445,
+        0.04853602669206236,
+        0.6758404488872266
+      ],
+      "photo237_BIO12_geo_sector_per100mm": [
+        0.10957712205366205,
+        -0.35620765380125397,
+        0.5753618979085781
+      ],
+      "photo237_BIO12_spherical_per100mm": [
+        -0.12229514648883688,
+        -0.7617335342096339,
+        0.5171432412319601
+      ],
+      "photo191_BIO12_original_per100mm": [
+        0.5075715791859658,
+        0.2808224676541563,
+        0.7343206907177754
+      ],
+      "photo191_BIO12_geo_sector_per100mm": [
+        0.3217862201649758,
+        -0.03145942826345055,
+        0.6750318685934023
+      ],
+      "photo191_BIO12_spherical_per100mm": [
+        0.044477493217758735,
+        -0.4620745799342485,
+        0.551029566369766
+      ],
+      "photo143_BIO12_spherical_per100mm": [
+        -0.12470467987198808,
+        -0.8035199878209717,
+        0.5541106280769955
+      ],
+      "all_six_spherical_adjusted_cohort_HC3_BIO12_interval_includes_zero": true,
+      "east_longitude_sector_of_photo191": {
+        "n_taxa": 40,
+        "mean_annual_BIO12_mm": 2400.79917544577,
+        "mean_photo_angle_deg": 80.06704350707992
+      },
+      "west_longitude_sector_of_photo191": {
+        "n_taxa": 93,
+        "mean_annual_BIO12_mm": 944.2461298303627,
+        "mean_photo_angle_deg": 71.12530571236893
+      },
+      "photo191_east_longitude_sector_heldout_BIO12_per100mm": [
+        0.1046311438871696,
+        -0.46001444265621544,
+        0.6692767304305547
+      ],
+      "cell5deg191_within_east_longitude_sector_BIO12_per100mm": [
+        0.6457895440963624,
+        0.008182015745228699,
+        1.283397072447496
+      ],
+      "within_east_region_photo_mean_191_interval_contains_zero": true,
+      "cell_weighting_can_change_local_sector_significance": true,
+      "global_annual_rainfall_and_image_angle_association_observed": true,
+      "independent_annual_precipitation_effect_after_spatial_controls_confirmed": false,
+      "source_S1_observation_within_between_model_refitted": false,
+      "location_coordinates_shared_in_output": false,
+      "independent_downward_nodding_origins_or_rain_selection_identified": false
+    },
+    "quantitative_source_use_audit_20261022": {
+      "status": "EXISTING_SOURCE_USAGE_AUDITED_NO_MAIN_S1_REESTIMATE",
+      "diagnostic_JSON": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT.json",
+      "explanation_JA": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT_JA.md",
+      "original_WCVP_native_observations": 313350,
+      "original_native_accepted_keys": 306,
+      "original_QC_eligible_continuous_image_orientation_observations_used_in_main": 170066,
+      "original_QC_eligible_continuous_image_orientation_taxa_used_in_main": 244,
+      "original_WCVP_collisions_removed_native_observations": 169612,
+      "original_WCVP_collisions_removed_native_taxa": 237,
+      "two_focal_arvense_vulgare_native_orientation_observations": 82709,
+      "two_focal_species_fraction_of_original_S1": 0.48633471710982795,
+      "species_unequal_observation_weighting_implicit_in_original_mixed_model": true,
+      "main_S1_exactly_244_species_equal_weight_OLS": false,
+      "species_means_from_all_native_finite_environment_rows_not_only_photo_eligible": true,
+      "stored_quantitative_trait_endpoints": 27,
+      "eligible_endpoints": 18,
+      "endpoints_modelled_with_five_climate": 11,
+      "eligible_but_not_modelled_bract_endpoints": 7,
+      "endpoints_without_eligible_data": 9,
+      "native_environment_source_fields": 9,
+      "main_selected_environment_exposures": 5,
+      "grafted_tree_sensitivity_taxa": 194,
+      "grafted_tree_sensitivity_observations": 169912,
+      "original_photo_links": 1122854,
+      "all_photo_links_individually_measured_as_S1_head_angles": false,
+      "does_not_infer_missing_orientation_zero": false,
+      "extra_trait_endpoints_separately_analyzed_not_pooled_into_angle_response": true,
+      "original_S1_and_frozen_V3_numerics_unchanged": true
+    }
+  },
+  "S2": {
+    "status": "SOURCE-VERIFIED MAIN: all original WCVP native vs introduced wild observations for two adequately sampled Cirsium species; both introduced occurrence BIO12 medians wetter, but median head photo angles 68→67 and 64→63 and >=90° shares lack consistent increase; shape fixity/equivalence and adaptive niche shift not established.",
+    "focal_source_names": [
+      "Cirsium arvense",
+      "Cirsium vulgare"
+    ],
+    "not_introduced": "all_non_native_original_observations",
+    "invasion_definition": "WCVP unique accepted source species and TDWG3 explicit establishmentMeans INTRODUCED, wild nonobscured observations, with quality and source-image measurement exclusions separately reported",
+    "minimal_per_species_per_range_support": {
+      "orientation_eligible": 30,
+      "distinct_spatial_cells": 5,
+      "distinct_original_observers": 10
+    },
+    "estimand": "difference in within-species precipitation slope between native and introduced range under equal measurement and sampling definitions, plus external native-trained prediction transfer",
+    "false_null_evidence": "a nonsignificant introduced slope does not demonstrate no plasticity, evolutionary origin, or adaptation; require independently justified equivalence precision",
+    "introduction_age_inferred_from_photograph_date": false,
+    "source_file": "analysis/v4/native_range_status.py",
+    "source_range_audit": {
+      "run": 39537559204,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S2_INTRODUCED_SOURCE_AUDIT_20261021.json",
+      "original_observations": 665115,
+      "native_wild": 313350,
+      "explicit_WCVP_introduced_wild": 156750,
+      "unresolved_and_other": 195015,
+      "introduced_orientation_eligible": 91106,
+      "focal_native_orientation": {
+        "Cirsium arvense": 49072,
+        "Cirsium vulgare": 33637
+      },
+      "focal_introduced_orientation": {
+        "Cirsium arvense": 43195,
+        "Cirsium vulgare": 47833
+      },
+      "both_focal_source_support_rules_pass": true
+    },
+    "climate_transfer": {
+      "run": 39539209624,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S2_NATIVE_INTRODUCED_CLIMATE_TRANSFER_20261021.json",
+      "report": "analysis/v4/results/20261021_unified_abcde/S2_NATIVE_INTRODUCED_TRANSFER_RESULT_JA.md",
+      "assessable_original_photo_orientation": 173737,
+      "all_five_original_raster_climate_complete": 163687,
+      "missing_original_cached_climate_pixels": 10050,
+      "native_versus_introduced_Cirsium_arvense": {
+        "native_rain_deg100mm": -0.1116191421353511,
+        "introduced_rain_deg100mm": 0.27825231318425475,
+        "both_intervals_include_zero": true,
+        "introduced_minus_native_ci_includes_zero": true,
+        "native_to_introduced_skill_vs_native_constant": -0.00897259179269927
+      },
+      "native_versus_introduced_Cirsium_vulgare": {
+        "native_rain_deg100mm": 0.6992058496429765,
+        "introduced_rain_deg100mm": -0.6119107212198934,
+        "both_intervals_include_zero": true,
+        "introduced_minus_native_ci_includes_zero": true,
+        "native_to_introduced_skill_vs_native_constant": -0.02026320808114135
+      },
+      "extrapolation_warning": "Native-to-introduced skill from full observed climate is negative without overlap restriction; the five-exposure 5–95% rectangle retains only 2.74%/7.37% of the balanced native arvense/vulgare photographic observations, not a validated 5D density common support",
+      "evolutionary_conclusion_established": false,
+      "common_support_robustness": {
+        "run": 39543173995,
+        "receipt": "analysis/v4/results/20261021_unified_abcde/S2_FIVE_EXPOSURE_COMMON_SUPPORT_VERIFIED_20261021.json",
+        "report": "analysis/v4/results/20261021_unified_abcde/S2_FIVE_EXPOSURE_COMMON_SUPPORT_RESULT_JA.md",
+        "original_source_hash_matches": true,
+        "common_support": "all five fixed native/introduced climatic 5th–95th marginal intersections",
+        "not_proof_of_joint_climate_density_overlap": true,
+        "arvense": {
+          "native_support_observations": 600,
+          "introduced_support_observations": 6428,
+          "native_fraction": 0.027434842249657063,
+          "delta_deg_100mm": 0.3295218734347314,
+          "delta_95pct": [
+            -4.408539960734997,
+            5.067583707604459
+          ],
+          "skill_vs_native_constant": 0.003236531722855318
+        },
+        "vulgare": {
+          "native_support_observations": 1198,
+          "introduced_support_observations": 10011,
+          "native_fraction": 0.07374122861011942,
+          "delta_deg_100mm": -1.911378787601412,
+          "delta_95pct": [
+            -4.974311707619215,
+            1.1515541324163903
+          ],
+          "skill_vs_native_constant": -0.06200938706327741
+        },
+        "adequately_sampled_introduced_region": "North America only under existing original-pixel 316 native-occupied cell caches",
+        "strong_focal_evolutionary_fixed_trait_evidence": false,
+        "all_slope_difference_intervals_cross_zero": true
+      },
+      "climate_niche_occupancy": {
+        "status": "OBSERVATIONAL_SOURCE_PHOTO_CLIMATIC_NOVELTY_ESTIMATED_NOT_REALIZED_NICHE_ADAPTATION_OR_RATE",
+        "github_actions_run": 39545903306,
+        "receipt": "analysis/v4/results/20261021_unified_abcde/S2_CLIMATE_NICHE_NOVELTY_20261021.json",
+        "report": "analysis/v4/results/20261021_unified_abcde/S2_CLIMATE_NICHE_NOVELTY_RESULT_JA.md",
+        "evaluation": "Introduced records outside native 5th–95th marginal percentile along any fixed BIO1 BIO4 BIO12 BIO15 RSDS predictor, using same source orientation-eligible photographs",
+        "Cirsium arvense": {
+          "introduced_outside_native_fraction_photo_observation_weight": 0.7338916493027728,
+          "introduced_outside_native_fraction_equal_total_cell_weight": 0.3915979114132539,
+          "native_outside_own_fraction_equal_total_cell_weight": 0.3504546835767436,
+          "cell_equal_excess_over_native_baseline": 0.04114322783651031
+        },
+        "Cirsium vulgare": {
+          "introduced_outside_native_fraction_photo_observation_weight": 0.5982146368319635,
+          "introduced_outside_native_fraction_equal_total_cell_weight": 0.48284054033186696,
+          "native_outside_own_fraction_equal_total_cell_weight": 0.3722561954408918,
+          "cell_equal_excess_over_native_baseline": 0.11058434489097513
+        },
+        "per_original_geo_cell_weighting_changes_magnitude": true,
+        "novel_climate_adaptive_evolution": false,
+        "photography_detection_effort_bias_unresolved": true,
+        "continent_global_invasion_conclusion_supported": false
+      },
+      "direct_region_head_photo_orientation": {
+        "status": "EXECUTED_EXPLORATORY_IMAGE_ANGLE_BY_INTRODUCED_CONTINENT; no_causal_evolution_or_gravity_validation",
+        "source_action": 39550930196,
+        "original_artifact_id": 12323896390,
+        "receipt": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_ACTUAL_CONTINENT_ORIENTATION_20261021.json",
+        "report": "analysis/v4/results/20261021_unified_abcde/S2_VULGARE_CONTINENT_IMAGE_ANGLE_RESULT_JA.md",
+        "source_image_axis_0up_90horizontal_180down": true,
+        "native_vulgare_cell_mean_angle_deg": 66.61232596450459,
+        "introduced_vulgare_cell_mean_angle_deg": {
+          "North America": 66.265,
+          "Africa": 66.265,
+          "South America": 66.03,
+          "Australasia": 67.907
+        },
+        "introduced_minus_native_cell_bootstrap_interval_crosses_zero_all_four": true,
+        "within_north_america_above_native_BIO1_q95": {
+          "original_BIO1_native_q95": 17.354378404351078,
+          "above_observations": 507,
+          "above_original_cells": 16,
+          "other_observations": 24839,
+          "other_original_cells": 75,
+          "mean_image_degree_difference": 3.9412022962940227,
+          "cell_bootstrap_q025_q50_q975": [
+            -12.839807936426048,
+            3.8999205215916817,
+            24.776581100381215
+          ],
+          "interval_includes_zero": true
+        },
+        "introduced_africa_BIO15_available_original_pixel_photos": 72,
+        "introduced_south_america_BIO15_available_original_pixel_photos": 0,
+        "no_original_pixels_not_equivalent_to_zero_sensitivity": true,
+        "statement": "No supported continent-wide image-downshift. Warmer novel NA source pixels show positive image-angle point estimate but large zero-crossing cell-bootstrap range. Higher BIO15 SA/Africa photo-angle association remains unavailable due to missing original cached rasters.",
+        "not_phylogenetic_evolution_or_true_gravity_angle": true
+      },
+      "primary_rain_axis": "chelsa_bio12",
+      "secondary_uncertain_seasonality_axis": "chelsa_bio15"
+    },
+    "all_350_source_species_screen": {
+      "status": "SOURCE_VERIFIED_AND_COMPLETE_FOR_FROZEN_665115_WCVP_JUNE2026",
+      "github_run": 39544849439,
+      "artifact_id": 12321361815,
+      "receipt": "analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json",
+      "report": "analysis/v4/results/20261021_unified_abcde/S2_ALL_SPECIES_RANGE_SUPPORT_RESULT_JA.md",
+      "total_original_species_rank_names": 350,
+      "source_native_only": 306,
+      "source_introduced_only": 0,
+      "source_both_WCVP_region_status": 7,
+      "neither_accepted_wild": 37,
+      "both_support_30_photo_5_cells_10_observers": 2,
+      "both_support_100_photo_15_cells_10_observers": 2,
+      "only_two_qualified_names": [
+        "Cirsium arvense",
+        "Cirsium vulgare"
+      ],
+      "other_five_both_ranges_but_insufficient": [
+        "Cirsium esculentum",
+        "Cirsium heterophyllum",
+        "Cirsium mexicanum",
+        "Cirsium oleraceum",
+        "Cirsium undulatum"
+      ],
+      "sources_partially_unlisted_not_absent_worldwide": true,
+      "independent_new_introduced_source_data_needed_to_expand_species": true
+    },
+    "source_verified_photo_angle_equivalence_feasibility_20261022": {
+      "status": "SOURCE_VERIFIED_EXISTING_399_SPATIAL_CELL_ECDF_EQUIVALENCE_PRECISION_FRONTIER__NO_FORMAL_EQUIVALENCE_DECLARATION",
+      "original_ECDF_source_run": 39592586205,
+      "actual_frontier_run": 39711427699,
+      "source_original_S2_photo_angles_same_species_native_and_all_introduced": true,
+      "source_distribution_grid_n_knots": 401,
+      "Cirsium_arvense_photo_n_native_introduced": [
+        21870,
+        25657
+      ],
+      "Cirsium_vulgare_photo_n_native_introduced": [
+        16246,
+        30287
+      ],
+      "max_observed_ECDF_difference_probability": {
+        "Cirsium arvense": 0.046184870442695036,
+        "Cirsium vulgare": 0.044243156739647405
+      },
+      "min_95pct_ESS_band_containment_margin_probability": {
+        "Cirsium arvense": 0.12346166441399255,
+        "Cirsium vulgare": 0.11459217572205463
+      },
+      "hypothetical_5_percentage_points_equivalence_band_containment_both": false,
+      "hypothetical_10_percentage_points_equivalence_band_containment_both": false,
+      "hypothetical_15_percentage_points_band_containment_both": true,
+      "previously_specified_SESOI_margin_from_biology_exists": false,
+      "biological_photo_angle_degree_SESOI_established": false,
+      "true_formal_equivalence_TOST_completed": false,
+      "evidence_summary": "analysis/v4/results/20261022_S2_ECDF_EQUIVALENCE_DESIGN_AND_FRONTIER_JA.md",
+      "evidence_receipt": "analysis/v4/results/20261022_S2_ECDF_EQUIVALENCE_FRONTIER_VERIFIED.json",
+      "numerical_analysis_script": "analysis/v4/s2_ecdf_equivalence_frontier.py",
+      "original_S2_wetter_introduced_occurrence_niche_positive_kept": true,
+      "weak_angle_difference_evidence_is_not_proof_of_unchanged_posture": true,
+      "full_distribution_curve_grid_not_raw_all_CDF_jumps": true,
+      "exploratory_cell_bootstrap_not_measurement_or_population_level_equivalence": true,
+      "genus_wide_niche_adaptation_or_genetic_invariance_supported": false
+    }
+  },
+  "T2": {
+    "status": "S1_FULL_244_CONTINUOUS_PRIMARY_PLUS_194_TREE_ANOTHER_SCALE_REAL_EXECUTED_GLOBAL_INDEPENDENT_ORIGINS_NOT_IDENTIFIED",
+    "flora_state_vocabulary": [
+      "erect",
+      "nodding",
+      "variable",
+      "unknown"
+    ],
+    "flora_ground_truth_protocol": "two botanically qualified assessors blinded to climate and study effect, third adjudicator",
+    "weather_covariates": [
+      "BIO12 precipitation",
+      "BIO1 temperature"
+    ],
+    "alternative_climate": "BIO15 and flowering-season rain after independently audited phenology",
+    "tree_requirement": "validated source taxon-tip mapping, independently supported branch lengths, root, and dating calibration to estimate transition timing",
+    "existing_52_trees_sufficient_for_dated_origin_counts": false,
+    "existing_EAzami_conclusion": "BIO1/BIO15 causal axis not identified; reciprocal climatic associations are only contextual priors",
+    "scientific_output_if_pass": "posterior independent transition count and direction; rain vs temperature controls",
+    "technical_implementation": {
+      "status": "CODE_AND_SYNTHETIC_TESTS_IMPLEMENTED; NO REAL_BLIND_FLORA_SCORES_OR_REVIEWED_NEWICK_INGESTED",
+      "script": "analysis/v4/rain_history.py",
+      "contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
+      "templates": "analysis/v4/rain_history_templates",
+      "test": "tests/test_v4_rain_history.py",
+      "execution_method": "dual_blind_source_scores + exact_taxon_concept_crosswalk + verified_sha_nuclear_species_tree + conditional_two_state_symmetric_Mk_stochastic_maps",
+      "unscored_tips_excluded_from_transition_count": true,
+      "posterior_uncertainty_scope": "fixed_tree_and_MLE_rate_not_calibration_or_topology_integrated",
+      "evolutionary_rain_temperature_model_executed": false,
+      "estimated_origin_events_from_real_trees": false
+    },
+    "exploratory_real_tree_and_author_trait_evidence": {
+      "status": "EXECUTED_SOURCE_VERIFIED_NOT_FULL_T2_TRANSITION_PROOF",
+      "report": "analysis/v4/results/20261021_unified_abcde/T2_PGLS_PHYLOGENETIC_REUSE_20261021_JA.md",
+      "source_verified_receipt": "analysis/v4/results/20261021_unified_abcde/T2_PGLS_52_VS_NUCLEAR_VERIFIED_20261021.json",
+      "reproducible_runner": "analysis/v4/t2_pgls_placement_screen.py",
+      "github_run": 39579878018,
+      "pgls_grafted_placement_trees": 52,
+      "independent_published_author_head_scores": 63,
+      "overlapping_pgls_and_published_score_taxa": 44,
+      "overlapping_nodding_taxa": 3,
+      "pgls_unknown_root_parsimony_steps_scenarios": [
+        2,
+        3
+      ],
+      "independent_nuclear_same_taxa_parsimony_steps": 3,
+      "independent_nuclear_full_63_parsimony_steps": 4,
+      "same_taxa_conditional_Mk_median_e2n_pgls_scenario_range": [
+        3,
+        3
+      ],
+      "same_taxa_conditional_Mk_median_e2n_nuclear": 3,
+      "full_63_conditional_Mk_median_e2n_nuclear": 5,
+      "scores_are_original_published_not_new_dual_blinded": true,
+      "pgls_trees_are_not_independent_molecular_species_trees": true,
+      "original_published_nuclear_tree_only_North_America": true,
+      "origin_dating_or_rain_temperature_model_completed": false,
+      "cannot_claim_repeated_adaptation_from_this_screen": true
+    },
+    "exploratory_five_exposure_climate_null": {
+      "status": "REAL NA/EAST source-composition sharp-null 46, independent NA42 molecular-Mk phylogenetic-null executed; no BIO12 or BIO15 signal specific to binary head posture",
+      "run": 39587904816,
+      "report": "analysis/v4/results/20261021_unified_abcde/T2_FIVE_CLIMATE_SOURCE_BLOCKED_NUCLEAR_MK_RESULT_JA.md",
+      "does_not_replace_S1_original_Spatial_Model": true,
+      "T3_not_executed": true
+    }
+  },
+  "T3": {
+    "status": "not_started_requires_T2_and_cross_tribe_comparable_measurement",
+    "phylogenetic_scope": [
+      "Cirsium",
+      "Cardueae other genera",
+      "Asteraceae other tribes including Cremanthodium"
+    ],
+    "required_controls": [
+      "gravitational measurement comparability",
+      "independent molecular phylogenies and dating",
+      "simultaneous rainfall and temperature",
+      "elevation geographical confound",
+      "anthesis head stage",
+      "trait/photo availability"
+    ],
+    "cross_tribe_convergence_inferred": false,
+    "technical_implementation": {
+      "status": "CROSS_TRIBE_HOMOLOGY_AND_TWO_TRIBE_GATE_PLUS_CONDITIONAL_WITHIN_TRIBE_Mk_CODE_IMPLEMENTED; NO EMPIRICAL_CROSS_TRIBE_EVENTS_ESTIMATED",
+      "script": "analysis/v4/rain_history.py",
+      "required_tip_fields": [
+        "tribe",
+        "phenotype_reference",
+        "head_stage",
+        "homology_reviewed"
+      ],
+      "conditional_posterior_event_summary_not_rain_convergence": true,
+      "real_asteraceae_species_tree_ingested": false,
+      "evolutionary_rain_temperature_model_executed": false
+    }
+  },
+  "quality_controls": {
+    "photographer_random_effect_fitted": false,
+    "same_observation_is_same_head_verified": false,
+    "pixel_measurement_error_model_fitted": false,
+    "same_photo_colour_outline_are_complete_negative_controls": false,
+    "historical_technical_orientation_bbox_shift_5pct_abs_error_p95_deg": 54.1,
+    "historical_frozen_outline_half_resolution_spearman_approx": 0.69,
+    "historical_automated_audit_human_ground_truth": false,
+    "floral_background_colour_control_remeasured": false,
+    "monthly_climate_precipitation_12_rasters_joined": false,
+    "photo_colour_composition_five_new_native_frame_fields_verified": false,
+    "observer_cell_balancing_sensitivity_executed": true,
+    "source_introduced_WCVP_classification_executed": true,
+    "camerapose_independent_gravity_calibration_finished": false,
+    "introduced_original_CHELSA_five_exposures_extracted": true,
+    "introduced_native_slopes_exploratorily_fitted": true,
+    "introduced_native_photo_angle_equal_error_verified": false,
+    "introduced_native_equivalence_hypothesis_verified": false,
+    "introduced_native_climate_common_support_transfer_validated": false,
+    "introduced_native_five_exposure_overlap_falsification_executed": true,
+    "introduced_original_pixel_cache_completeness_all_continents": false
+  },
+  "publication_branches": {
+    "fallback": "S1 with direct technical QC plus valid T2 transitions, optionally GEB. S1 alone is descriptive pattern, not evolutionary protection.",
+    "extension": "S2 independently interpretable transfer and/or T3 demonstrable convergence plus technical validation; assess New Phytologist or Ecology Letters fit without guaranteeing acceptance.",
+    "parallel_repositories": "EAzami JEB v10 independent and not asserted submitted; aza3 genetics and same-plant exposure/reproductive experiments independent mechanism validation."
+  },
+  "contracts": {
+    "design_document": "analysis/v4/RAIN_ORIENTATION_SPATIAL_INTRO_EVOLUTION_20261021_JA.md",
+    "epistemic_status": "S1+S2 MAIN: 244 native taxa/170066 S1 images show positive between-taxon annual rain head photo-axis association (+0.4382deg/100mm) but S1 within-taxon rain not confirmed. S2 two WCVP-documented well-sampled species occupy wetter all-introduced occurrence climates (+217/+293mm median BIO12), photo angle distributions lack a common clear directional shift (68→67, 64→63 degrees) but remain NOT EQUIVALENT by default: formal equivalence margin lacks independently justified SESOI; existing source 399-cell ECDF simultaneous envelope requires >12.35pp arvense / >11.46pp vulgare for conservative whole-grid band containment. Neither zero evolutionary response nor genetic fixation shown.",
+    "no_new_inferred_fitness_or_origin_count": true,
+    "scientific_predictions_locked_before_new_S2_T2_T3_outputs": true,
+    "latest_source_evidence_report": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md",
+    "primary_claim": "S1 (+): across 244 native Cirsium taxon keys, annual rainfall BIO12 corresponds positively to continuous photographed capitulum angle between taxa (+0.4382°/100mm); within-taxon slope unconfirmed. S2 (+ niche, not phenotype): C. arvense and C. vulgare have wetter observed WCVP-introduced ranges (+217/+293 mm median BIO12) but no common larger photographed head-angle shift (68→67°, 64→63°). This is an observational scale contrast, not proof of fixed orientation or rain-adaptive evolution.",
+    "T2_T3_implementation_contract": "analysis/v4/T2_T3_HISTORY_CONTRACT_20261021_JA.md",
+    "T2_T3_evidence_status": "T2_REAL_EXPLORATORY_52_PGLS_AND_PUBLISHED_NA_NUCLEAR_TREE_COMPARISON_SUCCESS; T2_PRIMARY_T3_EMPIRICAL_PENDING",
+    "S1_T2_joint_evidence_source": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
+    "S1_T2_region_and_nuclear_null_result": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json",
+    "S1_T2_primary_continuous_source_verified": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
+    "S1_T2_continuous_scientific_result_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md",
+    "S1_T2_external_morphology_construct_check": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json",
+    "S1_continuous_phylogenetic_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
+    "S1_continuous_phylogenetic_signal_registry": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json",
+    "S1_continuous_NA42_independent_nuclear_comparison": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json",
+    "S1_continuous_rain_single_taxon_robustness": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_BIO12_BIO15_TAXON_INFLUENCE_VERIFIED_20261021.json",
+    "S1_precipitation_spatial_caveat_receipt": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_SOURCE_VERIFIED.json",
+    "S1_precipitation_spatial_caveat_ja": "analysis/v4/results/20261022_S1_RAIN_SPATIAL_GEOGRAPHY_RESULT_JA.md",
+    "S1_S2_main_scale_contrast_count_ledger": "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json",
+    "S1_S2_main_scientific_summary": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md",
+    "S2_equivalence_status": "Not formally tested because an independently ecologically justified SESOI for 0–180-degree camera-axis measurement or full CDF is not available. Existing whole-CDF 399-cell bands permit an exploratory minimum margin: 12.35pp/11.46pp by taxon. Do NOT retrofit ±15pp to claim formal equivalence.",
+    "S2_equivalence_precision_receipt": "analysis/v4/results/20261022_S2_ECDF_EQUIVALENCE_FRONTIER_VERIFIED.json",
+    "S1_exact_data_use_audit_JSON": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT.json",
+    "S1_exact_data_use_audit_JA": "analysis/v4/results/20261022_S1_INTERSPECIFIC_QUANTITATIVE_COVERAGE_AUDIT_JA.md"
+  },
+  "S1_T2_shared_phylogenetic_evidence_20261021": {
+    "status": "REAL_NATIVE_SOURCE_JOIN_AND_52_PLACEMENT_T2_EXPLORATORY_SUCCESS",
+    "source_verified_GitHub_Actions_run": 39584744194,
+    "source_verified_aggregate_receipt": "analysis/v4/results/20261021_unified_abcde/S1_T2_JOINT_244_194_VERIFIED_20261021.json",
+    "single_shared_runner": "analysis/v4/joint_s1_t2_phylogeny.py",
+    "exact_original_native_accepted_keys": 306,
+    "S1_image_vertical_orientation_eligible_accepted_keys": 244,
+    "S1_image_vertical_observations": 170066,
+    "S1_tree_matched_accepted_keys": 194,
+    "S1_tree_matched_observations": 169912,
+    "same_five_env_variables_across_S1_and_taxon_summaries": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "T2_known_botanical_state_source_lanes": {
+      "EAzami_resolved": 17,
+      "Siniscalchi2023": 63,
+      "total_unpooled_source_rows": 80
+    },
+    "exact_join_S1_image_and_independent_states": {
+      "EAzami": 5,
+      "Siniscalchi2023": 42
+    },
+    "exact_join_S1_image_and_52_tree_and_independent_states": {
+      "EAzami": 4,
+      "Siniscalchi2023": 42,
+      "total": 46,
+      "n_nodding": 6,
+      "n_erect": 40
+    },
+    "WCVP_multi_source_name_collision_excluded_rows": 5,
+    "T2_parsimony_unknown_root_change_minimum_52_placements": [
+      5,
+      6
+    ],
+    "T2_parsimony_erect_root_change_minimum_52_placements": [
+      5,
+      6
+    ],
+    "T2_parsimony_nodding_root_change_minimum_52_placements": [
+      5,
+      20
+    ],
+    "T2_symmetric_Mk_erect_to_nodding_median_sensitivity": [
+      5,
+      7
+    ],
+    "BIO12_S1_between_deg_100mm": 0.4381991922885207,
+    "BIO12_S1_between_pointwise_interval": [
+      0.2058063239224483,
+      0.6705920606545931
+    ],
+    "BIO12_52_placement_pointwise_positive_intervals": 52,
+    "BIO15_S1_between_deg_10units": 0.7880825140436949,
+    "BIO15_S1_between_pointwise_interval": [
+      -0.2662791617924732,
+      1.8424441898798627
+    ],
+    "BIO15_52_placement_positive_pointwise_intervals": 0,
+    "EAzami_v10_BIO15_axis_specificity_confirmed": false,
+    "independent_Cirsium_origin_events_proven": false,
+    "independent_full_global_nuclear_tree_available_for_194": false,
+    "gravitational_angle_inferred_from_S1_image_axis": false,
+    "any_additional_climate_predictor_chosen_after_EAzami_results": false,
+    "frozen_S1_and_V3_reestimated": false,
+    "not_treat_EAzami_as_independent_out_of_sample_replication": true,
+    "source_stratified_five_climate_and_nuclear_null": {
+      "status": "EMPIRICAL_VALIDATED; five_CHELSA_S1_covar_binary_posture_source_stratification_positive_support_NOT_FOUND",
+      "run_id": 39587904816,
+      "summary_receipt": "analysis/v4/results/20261021_unified_abcde/T2_SOURCE_BLOCKED_FIVE_CLIMATE_AND_MK_VERIFIED_20261021.json",
+      "scientific_report": "analysis/v4/results/20261021_unified_abcde/T2_FIVE_CLIMATE_SOURCE_BLOCKED_NUCLEAR_MK_RESULT_JA.md",
+      "script": "analysis/v4/t2_source_blocked_five_climate.py",
+      "NA42_EA4_nodding_rates": {
+        "NA42": 3,
+        "EA4": 3
+      },
+      "source_stratified_label_null_enumerations": 45920,
+      "sameNA42_label_null_enumerations": 11480,
+      "full46_five_covariate_gls_BIO12_coef": -0.07106796800422621,
+      "full46_five_covariate_gls_BIO15_coef": -0.04499973354640135,
+      "full46_sharpnull_maxT_two_axis_p_BIO12": 0.8390897212543554,
+      "full46_sharpnull_maxT_two_axis_p_BIO15": 0.6535714285714286,
+      "independent_author_nuclear_NA42_BIO12_coef": 0.016783856155216534,
+      "independent_author_nuclear_NA42_BIO15_coef": -0.020790158532731272,
+      "independent_author_nuclear_NA42_labelshuffle_maxT_p_BIO12": 0.9529616724738676,
+      "independent_author_nuclear_NA42_labelshuffle_maxT_p_BIO15": 0.9023519163763066,
+      "independent_nuclear_Mk_NA42_two_axis_maxT_BIO12_erect_stationary": [
+        0.9213857428381079,
+        0.938707528314457
+      ],
+      "independent_nuclear_Mk_NA42_two_axis_maxT_BIO15_erect_stationary": [
+        0.8807461692205196,
+        0.9100599600266489
+      ],
+      "region_blocked_null_is_not_phylogeny_correlated": true,
+      "markov_nuclear_null_phylogeny_correlated": true,
+      "sharpnull_not_specific_conditional_axis_test": true,
+      "covariates_fixed_before_state_source_test": true,
+      "S1_orientation_is_image_vertical_not_gravity": true,
+      "no_true_independent_evolutionary_origins_estimated": true,
+      "no_historical_climate_dependent_rate_estimated": true
+    }
+  },
+  "S1_T2_primary_continuous_head_history": {
+    "status": "REAL_194_191_MEASURED_S1_CONTINUOUS_ANCESTRY_WEAK_PHYLOGENETIC_SIGNAL_ON_GRAFTS_AND_NA42_ORIGINAL_NUCLEAR_REFERENCE",
+    "source_run_id": 39591120377,
+    "real_source_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_52_VERIFIED_20261021.json",
+    "continuous_history_runner": "analysis/v4/s1_continuous_phylogenetic_history.py",
+    "native_S1_eligible_observations": 170066,
+    "native_S1_taxon_keys_with_measured_image_orientation": 244,
+    "historical_placement_matched_taxon_keys": 194,
+    "historical_GBOTB_VPhyloMaker_scenarios": 52,
+    "original_S1_image_angle_used_as_continuous_primary": true,
+    "frozen_original_5_climate_variables": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "same194_BIO12_image_deg_per_100mm_scenario_range": [
+      0.31187868516713924,
+      0.7649943527011548
+    ],
+    "same194_BIO15_image_deg_per_10units_scenario_range": [
+      -0.4868122939801925,
+      1.429258375848951
+    ],
+    "real_194_taxon_name_collisions": [
+      "Cirsium_parryi",
+      "Cirsium_setidens",
+      "Cirsium_yezoense"
+    ],
+    "191_taxon_collision_free_sensitivity_code_in_place": true,
+    "191_taxon_collision_free_empirical_run_result_verified": true,
+    "literature_botanical_46_binary_states_role": "external_construct_validation_and_complementary_categorical_historical_sensitivity_not_primary_S1",
+    "photographic_axis_is_gravitational_head_orientation": false,
+    "true_independent_biological_downward_origins_estimated": false,
+    "absolute_origin_dates_estimated": false,
+    "rain_driven_causal_transition_rates_estimated": false,
+    "frozen_V3_and_existing_S1_mixed_model_changed": false,
+    "previous_194_only_source_run_id": 39590112876,
+    "scientific_summary_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_194_191_PHYLOGENETIC_HISTORY_RESULT_JA.md",
+    "standalone_ci": ".github/workflows/v4-s1-continuous-ancestry.yml",
+    "original_194_with_alias_collision": 3,
+    "collision_free_191_taxon_sensitivity_code_in_place": true,
+    "same191_BIO12_image_deg_per_100mm_scenario_range": [
+      0.29670774840841135,
+      0.7549624280788562
+    ],
+    "same191_BIO15_image_deg_per_10units_scenario_range": [
+      -0.5515565053237328,
+      1.4249350781458259
+    ],
+    "BM_mean_194_all_edge_positive_ge10_expected_range": [
+      43.518257014727126,
+      48.6842861925713
+    ],
+    "BM_mean_191_all_edge_positive_ge10_expected_range": [
+      42.876073028232994,
+      47.9350385995627
+    ],
+    "BM_mean_194_internal_only_positive_ge10_expected_range": [
+      0.303215426516423,
+      4.185200165530188
+    ],
+    "BM_mean_191_internal_only_positive_ge10_expected_range": [
+      0.3225760975367542,
+      4.2475585108847
+    ],
+    "BM_mean_internal_only_ge10_prob095_branch_count_for_all_52": 0,
+    "ge10_increasing_image_angle_branch_expected_counts_are_not_independent_nodding_origin_counts": true,
+    "species_mean_five_covariate_BIO15_effect_sign_consistent": false,
+    "species_mean_five_covariate_BIO12_effect_positive_all_52_both194_and191": true,
+    "collision_excluded_191_BIO12_pointwise_CI_positive_all_52": false,
+    "biological_gravity_recalibration_done": false,
+    "nuclear_194_species_tree_verified": false,
+    "real_independent_evolutionary_nodding_gains_measured": false,
+    "external_botanical_state_photo_angle_construct_check": {
+      "status": "EMPIRICAL_SOURCE_BLOCKED_46_TAXA_AUC_COMPLETED_NOT_UNIVERSAL_BINARY_GRAVITY_VALIDATION",
+      "source_run_id": 39592398003,
+      "source_verified_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_EXTERNAL_BOTANICAL_AUC_VERIFIED_20261021.json",
+      "original_S1_photo_angle_valid_244_194_continuous": true,
+      "external_botanical_states_covered_46": true,
+      "NA42_nodding3_AUC": 0.7863247863247863,
+      "EA4_nodding3_AUC": 0,
+      "pooled_AUC_confounded_by_source": 0.8458333333333333,
+      "source_blocked_pair_weighted_AUC": 0.7666666666666667,
+      "source_blocked_two_sided_exact_p": 0.13066202090592335,
+      "source_blocked_exact_label_assignments": 45920,
+      "cannot_use_image_angle_threshold_to_proclaim_independent_nodding_origins": true
+    },
+    "phylogenetic_signal_source_verified": {
+      "status": "REAL_S1_CONTINUOUS_194_191_171_143_PAGEL_LAMBDA_WEAK_AFTER_SAME_FIVE_CHELSA_COVARIATES",
+      "run_id": 39594257539,
+      "original_source_run_id": 39591120377,
+      "numerical_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
+      "interpretive_report_ja": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_RESULT_JA.md",
+      "input_cohorts_n": {
+        "S1_SpeciesFullOriginal": 194,
+        "WCVP_collision_free": 191,
+        "collision_free_min5_photos": 171,
+        "collision_free_min10_photos": 143
+      },
+      "unchanged_S1_five_CHELSA": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "strict191_mean_raw_Pagel_lambda_median_52": 0,
+      "strict191_mean_raw_Pagel_lambda_range_52": [
+        0,
+        0.377046632468365
+      ],
+      "strict191_mean_climate_adjusted_Pagel_lambda_median_52": 0,
+      "strict191_mean_climate_adjusted_Pagel_lambda_range_52": [
+        0,
+        0.31901088460861526
+      ],
+      "strict191_mean_climate_adjusted_n_52_lambda_ge_0_1": 4,
+      "strict191_mean_climate_adjusted_n_52_deltaAIC_gt2": 0,
+      "strict191_mean_climate_adjusted_first_tree_bootstrap_p": 0.1775,
+      "min10_photos_mean_climate_adjusted_Pagel_lambda_median_52": 0,
+      "min10_photos_mean_climate_adjusted_Pagel_lambda_range_52": [
+        0,
+        0.2919903302330273
+      ],
+      "min10_photos_mean_climate_adjusted_n_52_deltaAIC_gt2": 0,
+      "min10_photos_mean_climate_adjusted_first_tree_bootstrap_p": 1,
+      "bootstraps_per_first_tree_model": 399,
+      "trees_52_are_placement_scenarios_not_independent_replicates": true,
+      "no_credible_independent_evolutionary_nodding_gain_count_from_prior_bm_branch_expectations": true,
+      "no_phylogenetic_signal_detected_is_not_proof_of_zero_heritable_evolution": true,
+      "should_use_original_S1_BIO12_spatial_pattern_as_main_positive_evidence": true,
+      "origin_dates_or_climate_dependent_evolution_rates_estimated": false
+    },
+    "phylogenetic_signal_empirically_verified": {
+      "status": "WEAK_PAGEL_LAMBDA_ON_S1_IMAGE_ANGLE_ON_52_GRAFTED_SCENARIOS_AND_MATCHED_TRUE_NA_NUCLEAR_REFERENCE",
+      "global_GBOTB_signal_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_PHYLOGENETIC_SIGNAL_VERIFIED_20261021.json",
+      "global_signal_run_id": 39594257539,
+      "source_clean191_five_climate_lambda_ML_scenario_median": 0,
+      "source_clean191_five_climate_lambda_ML_scenario_range": [
+        0,
+        0.31901088460861526
+      ],
+      "source_clean191_52_scenarios_with_AIC_gain_gt2": 0,
+      "clean191_first_scenario_lambda0_bootstrap_p": 0.1775,
+      "source_clean143_min10photos_five_climate_lambda_ML_scenario_median": 0,
+      "NA_true_nuclear_vs_52_grafts_receipt": "analysis/v4/results/20261021_unified_abcde/S1_NA42_NUCLEAR_VS_GRAFTED_CONTINUOUS_SIGNAL_VERIFIED_20261021.json",
+      "NA_nuclear_real_run_id": 39595992874,
+      "published_NA_nuclear_original_tip_count": 63,
+      "published_NA_nuclear_identical_S1_measured_tip_count": 42,
+      "published_NA_nuclear_42_mean_photo_angle_lambda_ML_noclimate": 0,
+      "published_NA_nuclear_42_mean_photo_angle_lambda_ML_adjusted_five_S1": 0,
+      "published_NA_nuclear_42_lambda0_bootstrap_p_noclimate": 1,
+      "published_NA_nuclear_42_lambda0_bootstrap_p_adjusted_five_S1": 1,
+      "matched_NA42_grafted_52_fiveclimate_lambda_median": 0,
+      "matched_NA42_grafted_52_placement_AIC_gt2_count": 0,
+      "independent_nuclear_phylogeny_is_regional_only": true,
+      "global_194_ancestral_history_not_confirmed_as_true_independent_evolutionary_nodding_origins": true,
+      "does_not_prove_zero_evolutionary_inertia": true,
+      "no_photo_to_gravity_angle_calibration": true
+    },
+    "independently_published_NA42_nuclear_same_S1_angle_signal_20261021": {
+      "status": "REAL_NA42_SAME_CONTINUOUS_PHOTO_ANGLE_NUCLEAR_VS_PGLS52_LAMBDA_ZERO",
+      "source_run_id": 39596484704,
+      "source_verified_receipt": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_VS_GRAFTED_SIGNAL_VERIFIED_20261021.json",
+      "scientific_report": "analysis/v4/results/20261021_unified_abcde/S1_CONTINUOUS_NA42_NUCLEAR_COMPARISON_RESULT_JA.md",
+      "nuclear_phylogeny_author_DOI": "10.1086/724310",
+      "NA_original_S1_image_median_taxa": 42,
+      "original_S1_five_CHELSA": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean"
+      ],
+      "independent_author_nuclear_Pagel_lambda_original_angle_unadjusted": 0,
+      "independent_author_nuclear_Pagel_lambda_original_angle_fiveclimate_adjusted": 0,
+      "independent_author_nuclear_first_tree_null_bootstrap_p": 1,
+      "same_NA42_GBOTB_52_tree_Pagel_lambda_median": 0,
+      "same_NA42_GBOTB_52_tree_Pagel_lambda_range": [
+        0,
+        0.44419565891063845
+      ],
+      "same_NA42_GBOTB_52_tree_number_AIC_gain_gt2": 0,
+      "original_52_trees_not_independently_replicated": true,
+      "nuclear_tree_not_global_independent_species_history_for_194": true,
+      "underlying_true_gravity_relative_nodding_histories_not_identified": true,
+      "phylogenetic_photo_angle_lack_of_signal_not_proof_of_no_heritability": true,
+      "causal_historical_rain_selection_not_tested": true
+    }
+  },
+  "S1_S2_primary_positive_between_species_native_introduced_contrast_20261022": {
+    "status": "SOURCE_VERIFIED_DESCRIPTIVE_2_SCALE_ECOLOGY_FROZEN_S1_BETWEEN_BIO12_POSITIVE__S2_WETTER_INTRODUCED_OCCURRENCES_BOTH_SPECIES_WITHOUT_CONSISTENT_PHOTO_ANGLE_INCREASE",
+    "primary_japanese_report": "analysis/v4/results/20261022_S1_S2_SCALE_CONTRAST_AND_SAMPLE_COUNTS_JA.md",
+    "numeric_source_locked_receipt": "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json",
+    "source_S1": {
+      "study": "native_244_accepted_Cirsium_taxa__170066_actual_photographs",
+      "response": "continuous_EXIF_image_vertical_capitulum_angle",
+      "joint_predictors": [
+        "BIO1",
+        "BIO4",
+        "BIO12",
+        "BIO15",
+        "RSDS"
+      ],
+      "annual_precipitation_BIO12_between_degrees_per_100mm": 0.4381991922885207,
+      "between_interval": [
+        0.2058063239224483,
+        0.6705920606545931
+      ],
+      "annual_precipitation_BIO12_within_degrees_per_100mm": -0.044298210799959194,
+      "within_interval": [
+        -0.21884898187399907,
+        0.13025256027408064
+      ],
+      "different_between_and_within_findings": true
+    },
+    "source_S2": {
+      "two_focal_species": [
+        "Cirsium arvense",
+        "Cirsium vulgare"
+      ],
+      "original_native_wild_two_species": 141014,
+      "original_introduced_wild_two_species": 156608,
+      "native_original_orientation_eligible_two_species": 82709,
+      "introduced_original_orientation_eligible_two_species": 91028,
+      "native_climate_niche_comparison_observer_cell_unique_two_species": 56684,
+      "introduced_climate_niche_comparison_observer_cell_unique_two_species": 87494,
+      "native_balanced_head_angle_two_species": 38116,
+      "introduced_balanced_head_angle_two_species": 55944,
+      "median_annual_rainfall_mm_arvense": [
+        658.5982622830617,
+        876
+      ],
+      "median_annual_rainfall_mm_vulgare": [
+        666,
+        959
+      ],
+      "median_image_angle_arvense": [
+        68,
+        67
+      ],
+      "median_image_angle_vulgare": [
+        64,
+        63
+      ],
+      "rain_median_wetter_introduced_for_both": true,
+      "photo_head_angle_increased_downward_consistently_for_both": false,
+      "head_angle_exact_zero_shift_established": false
+    },
+    "original_all_species_WCVP_screen": {
+      "original_observations": 665115,
+      "original_photo_links": 1122854,
+      "native_wild_observations": 313350,
+      "introduced_wild_observations": 156750,
+      "native_orientation_eligible": 170066,
+      "introduced_orientation_eligible": 91106,
+      "other_not_eligible_for_range_comparison": 195015,
+      "species_with_both_status": 7,
+      "species_with_predeclared_replicate_support": 2
+    },
+    "main_claim": "Between-taxon annual rainfall correlation in S1 (native Cirsium) contrasts with the two well-supported same-species native-to-all-introduced wetter occupancy shifts without common larger photographed angle in S2.",
+    "user_requested_no_geographic_reanalysis_in_main": true,
+    "previously_executed_geographic_sensitivity_preserved_supplementary": true,
+    "not_a_direct_Cirsium_nodding_fitness_test": true,
+    "photo_angle_not_gravity": true,
+    "wet_occurrence_niche_shift_not_proven_genetically_adaptive_niche_evolution": true,
+    "S2_non_significant_no_angle_difference_not_a_verified_equivalence": true,
+    "S1_and_S2_native_samples_are_from_same_source_not_independent_replications": true,
+    "frozen_V3_and_original_S1_models_unchanged": true
+  }
+}

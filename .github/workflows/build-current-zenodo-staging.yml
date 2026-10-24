@@ -26,9 +26,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    env:
-      GH_TOKEN: ${{ github.token }}
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,24 +41,18 @@ jobs:
           echo "INPUT_DIR=${RUNNER_TEMP}/azami-release-inputs" >> "$GITHUB_ENV"
           echo "OUT_DIR=${RUNNER_TEMP}/azami-zenodo-data-staging" >> "$GITHUB_ENV"
 
-      - name: Fetch frozen numerical input archives
+      - name: Reuse frozen numerical inputs from published Zenodo
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$INPUT_DIR"
-          fetch_artifact () {
-            local id="$1"
-            local role="$2"
-            echo "Fetching artifact $id ($role)"
-            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" > "$INPUT_DIR/artifact-${id}-${role}.zip"
-          }
-          fetch_artifact 9612943217 continuous
-          fetch_artifact 9633419268 environment
-          fetch_artifact 8983877726 spatial
-          fetch_artifact 8227254443 historical
-          # Used only to recover the exact native-status input; this full artifact
-          # is NOT copied into the Zenodo data package.
-          fetch_artifact 10292140117 taxonomy
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from reproducibility.run_current_analysis import restore_zenodo
+          inputs = Path(os.environ['INPUT_DIR'])
+          restore_zenodo(inputs, inputs)
+          PY
 
       - name: Build data-only Zenodo staging bundle
         shell: bash
@@ -70,6 +61,7 @@ jobs:
           mkdir -p "$OUT_DIR"
           python -m reproducibility.build_current_release_bundle \
             --input-dir "$INPUT_DIR" \
+            --native-status "$INPUT_DIR/native_status.csv" \
             --expected-head "$GITHUB_SHA" \
             --out "$OUT_DIR/azami_ch1_v3_analysis_inputs.zip" \
             > "$OUT_DIR/build_receipt.json"

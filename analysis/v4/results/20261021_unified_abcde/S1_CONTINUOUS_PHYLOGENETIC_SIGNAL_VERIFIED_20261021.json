@@ -1,0 +1,146 @@
+{
+  "schema_version": "v4_s1_actual_continuous_photo_angle_pagel_lambda_source_fiveclimate_194_191_171_143_20261021",
+  "status": "EMPIRICAL_SOURCE_VERIFIED__NO_STRONG_PAGEL_LAMBDA_SIGNAL_ON_GRAFTED_52_SCENARIOS",
+  "run_id": 39594257539,
+  "job_id": 119202544280,
+  "workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39594257539",
+  "archive": {
+    "id": 12343166776,
+    "name": "v4-s1-continuous-194-taxa-52-placement-history",
+    "sha256": "sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb",
+    "size_bytes": 56515
+  },
+  "code": "analysis/v4/s1_continuous_phylogenetic_signal.py",
+  "tests": "tests/test_v4_s1_continuous_phylogenetic_signal.py",
+  "workflow": ".github/workflows/v4-s1-continuous-ancestry.yml",
+  "source_authenticated_original_native_S1_SHA256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "hypothesis_climate_covariates_fixed": [
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_rsds_mean"
+  ],
+  "original_52_GBOTB_VPhyloMaker2_trees_are_not_independent_species_histories": true,
+  "measured_angle_is_not_gravity_referenced": true,
+  "main_observational_BIO12_effect_244_not_reestimated": true,
+  "no_proven_independent_downward_capitulum_origins": true,
+  "no_historical_rainfall_causation": true,
+  "failed_to_establish_phylogenetic_signal_does_not_prove_absence_of_evolution": true,
+  "explanatory_status": "AIC and fixed-scenario bootstrap diagnostics only; strong lineage inheritance not identified in historical placement sensitivity",
+  "verified_summary": {
+    "first_scenario_bootstrap": {
+      "collision_free191__S1_five_climate_adjusted__species_mean": {
+        "boundary_calibrated_bootstrap_p": 0.1775,
+        "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+        "null_lrt_q50_q95_q99": [
+          0,
+          1.8568002235216907,
+          4.69383539424326
+        ],
+        "observed_lambda_ML": 0.31901088460861526,
+        "observed_lrt": 0.24439934340489344,
+        "requested_draws": 399,
+        "scope": "fixed one V.PhyloMaker2/GBOTB topology, one fixed nugget, normal residuals; does not cover history across 52 placement hypotheses or observer-level photo variance",
+        "seed": 20261022
+      },
+      "collision_free191__intercept_only__species_mean": {
+        "boundary_calibrated_bootstrap_p": 0.0625,
+        "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+        "null_lrt_q50_q95_q99": [
+          0,
+          2.2113856970202503,
+          4.023549697678489
+        ],
+        "observed_lambda_ML": 0.377046632468365,
+        "observed_lrt": 1.9611951382789812,
+        "requested_draws": 399,
+        "scope": "fixed one V.PhyloMaker2/GBOTB topology, one fixed nugget, normal residuals; does not cover history across 52 placement hypotheses or observer-level photo variance",
+        "seed": 20261021
+      },
+      "collision_free_at_least10__S1_five_climate_adjusted__species_mean": {
+        "boundary_calibrated_bootstrap_p": 1,
+        "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+        "null_lrt_q50_q95_q99": [
+          0,
+          1.8599479917798354,
+          6.001532350545565
+        ],
+        "observed_lambda_ML": 0,
+        "observed_lrt": 0,
+        "requested_draws": 399,
+        "scope": "fixed one V.PhyloMaker2/GBOTB topology, one fixed nugget, normal residuals; does not cover history across 52 placement hypotheses or observer-level photo variance",
+        "seed": 20261023
+      }
+    },
+    "result_panels": {
+      "collision_free191|species_mean|S1_five_climate_adjusted|nugget0.05": {
+        "lambda_ML_median": 0,
+        "lambda_ML_range": [
+          0,
+          0.31901088460861526
+        ],
+        "lambda_values_not_independent_evolutionary_replicates": true,
+        "lrt_range": [
+          0,
+          1.6945070724193556
+        ],
+        "n_deltaAIC_favours_lambda_more_than_2": 0,
+        "n_lambda_ML_at_least_0_1": 4,
+        "n_nonindependent_placement_scenarios": 52
+      },
+      "collision_free191|species_mean|intercept_only|nugget0.05": {
+        "lambda_ML_median": 0,
+        "lambda_ML_range": [
+          0,
+          0.377046632468365
+        ],
+        "lambda_values_not_independent_evolutionary_replicates": true,
+        "lrt_range": [
+          0,
+          2.092743158871599
+        ],
+        "n_deltaAIC_favours_lambda_more_than_2": 0,
+        "n_lambda_ML_at_least_0_1": 3,
+        "n_nonindependent_placement_scenarios": 52
+      },
+      "collision_free_at_least10|species_mean|S1_five_climate_adjusted|nugget0.05": {
+        "lambda_ML_median": 0,
+        "lambda_ML_range": [
+          0,
+          0.2919903302330273
+        ],
+        "lambda_values_not_independent_evolutionary_replicates": true,
+        "lrt_range": [
+          0,
+          0.7861856179404185
+        ],
+        "n_deltaAIC_favours_lambda_more_than_2": 0,
+        "n_lambda_ML_at_least_0_1": 1,
+        "n_nonindependent_placement_scenarios": 52
+      },
+      "collision_free_at_least10|species_mean|intercept_only|nugget0.05": {
+        "lambda_ML_median": 0,
+        "lambda_ML_range": [
+          0,
+          0.18429070621798174
+        ],
+        "lambda_values_not_independent_evolutionary_replicates": true,
+        "lrt_range": [
+          0,
+          0.43607514940526926
+        ],
+        "n_deltaAIC_favours_lambda_more_than_2": 0,
+        "n_lambda_ML_at_least_0_1": 1,
+        "n_nonindependent_placement_scenarios": 52
+      }
+    },
+    "source_cohorts": {
+      "collision_free191": 191,
+      "collision_free_at_least10": 143,
+      "collision_free_at_least5": 171,
+      "original194": 194
+    },
+    "status": "EMPIRICAL_S1_IMAGE_ANGLE_PHYLOGENETIC_SIGNAL_SENSITIVITY"
+  }
+}

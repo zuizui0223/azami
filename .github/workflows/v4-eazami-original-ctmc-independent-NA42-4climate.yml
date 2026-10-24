@@ -1,0 +1,99 @@
+name: V4 EAzami exact U D CTMC independent NA nuclear BIO18 BIO5 RSDS elev
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_na_author_UD_eazami_true_nuclear_fourclimate_exact.py'
+      - 'tests/test_v4_t2_na_author_UD_eazami_true_nuclear_fourclimate_exact.py'
+      - '.github/workflows/v4-eazami-original-ctmc-independent-NA42-4climate.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-NA-published-multilocus-CTMC-exact-state-maps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source-authenticated original phylogenetic statistical tools
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' \
+            'biopython>=1.83,<2' 'pandas>=2.1,<3' 'requests>=2.31,<3' pytest
+      - name: Verify all predeclared source taxon and finite null method invariants
+        run: |
+          python -m pytest -q \
+            tests/test_v4_t2_na_author_UD_eazami_true_nuclear_fourclimate_exact.py
+      - name: Restore frozen ORIGINAL S1 251 photographic species and same S1 S2 actual four climates
+        run: |
+          set -euo pipefail
+          mkdir -p work/NA/source251 work/NA/four work/NA/EAzami work/NA/result
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq .digest)" = \
+            'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12548594169 --jq .digest)" = \
+            'sha256:8b19d76a695f3773d54885c637fcf7ed52445f615e9dae8501305a40e05327f5'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/NA/source251
+          gh run download 40064998009 --repo zuizui0223/azami \
+            --name v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation --dir work/NA/four
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/NA/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+          echo '823ecb8442eb03598253cb33f3e16bac86538c6c2652f48ca2dc0886d0e19626  work/NA/four/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv' | sha256sum -c -
+      - name: Pin and restore EAzami ORIGINAL 2026-09-04 symmetric CTMC + Brownian source code
+        run: |
+          curl -fsSL --retry 3 --max-time 45 \
+            https://raw.githubusercontent.com/zuizui0223/EAzami/c9870e91604ed1514344ddc8f765eae5237dbf27/analysis/run_chapter2_orientation_transition_regime_hypothesis_v1.py \
+            > work/NA/EAzami/run_chapter2_orientation_transition_regime_hypothesis_v1.py
+          python - <<'PY'
+          from pathlib import Path
+          from analysis.v4.eazami_ud_real_four_environment_transition_regime import blob,EA_CORE_GIT_BLOB
+          a=Path("work/NA/EAzami/run_chapter2_orientation_transition_regime_hypothesis_v1.py").read_bytes()
+          assert blob(a)==EA_CORE_GIT_BLOB
+          print("VERIFIED_ACTUAL_OLD_EAZAMI_SYMMETRIC_CTMC_PLUS_BROWNIAN_SOURCE")
+          PY
+      - name: Run EAzami original EXACT finite U D transitions on author NA42 and NA40 nuc species tree
+        run: |
+          python -m analysis.v4.t2_na_author_UD_eazami_true_nuclear_fourclimate_exact \
+            --original251 work/NA/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --newfour251 work/NA/four/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv \
+            --EAzami-original-method work/NA/EAzami/run_chapter2_orientation_transition_regime_hypothesis_v1.py \
+            --outdir work/NA/result
+          git rev-parse HEAD > work/NA/result/ORIGINAL_GITHUB_CODE_COMMIT.txt
+      - name: Verify independently published U D contrasts and climate sources WITHOUT PHOTO U D
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          root=Path("work/NA/result")
+          data=json.loads((root/"EAzami_NA42_NA40_INDEPENDENT_TRUE_NUCLEAR_CTMC_NEW_FOUR_CLIMATE.json").read_text())
+          assert data["original_S1_251_photo_angles_used_as_an_environmental_cohort_not_for_U_D_classification"]
+          assert data["source_photo_angle_is_NOT_true_gravity_U_D"]
+          assert data["one_independent_author_nuclear_tree_not_52_phylogenetic_grafts"]
+          assert data["NA42_strict_full"]["n_authentic_NA_nuclear_species"]==42
+          assert data["NA42_strict_full"]["n_original_author_biological_D"]==3
+          assert data["NA42_strict_full"]["n_combinatorial_count_preserving_exact_maps"]==math.comb(42,3)
+          assert data["NA40_at_least10_S1_photos"]["n_authentic_NA_nuclear_species"]==40
+          for label in ("NA42_strict_full","NA40_at_least10_S1_photos"):
+              p=data[label]
+              assert p["all_possible_count_preserving_maps_refitted_original_CTMC_q"]
+              assert p["observed_map_included_once"]
+              assert set(p["four_environment"])=={"chelsa_bio18","chelsa_bio05","chelsa_rsds_mean","elevation_m"}
+              assert p["no_photographic_head_angles_dichotomised"]
+              assert 0<p["four_environment"]["chelsa_bio18"]["BIO18_positive_U_to_D_state_map_exact_fraction"]<=1
+              assert 0<p["four_axis_omnibus_maxT_exact_fraction"]<=1
+          print("PASS_INDEPENDENT_TRUE_NA_NUCLEAR_AUTHOR_UD_FULL_EXACT_EAZAMI_CTMC_FOUR_AXIS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-EAzami-NA42-NA40-original-author-U-D-true-nuclear-four-axes-exact-maps
+          path: work/NA/result/
+          retention-days: 90
+          if-no-files-found: warn

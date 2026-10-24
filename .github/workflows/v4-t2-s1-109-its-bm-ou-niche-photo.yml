@@ -1,0 +1,101 @@
+name: V4 T2 actual S1 109 GenBank ITS niche BIO12 vs own photo orientation BM OU
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_genbank109_bm_ou_niche_photo.py'
+      - 'tests/test_v4_t2_s1_genbank109_bm_ou_niche_photo.py'
+      - '.github/workflows/v4-t2-s1-109-its-bm-ou-niche-photo.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_s1_genbank109_bm_ou_niche_photo.py'
+      - 'tests/test_v4_t2_s1_genbank109_bm_ou_niche_photo.py'
+      - '.github/workflows/v4-t2-s1-109-its-bm-ou-niche-photo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-pin-109-BM-OU-OWN-S1-PHOTO-TRAIT:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install phylogenetic evolutionary OU BM and original S1 photo models
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Verify fixed-root and stationary-root OU mathematically distinct
+        run: |
+          python -m pytest -q tests/test_v4_t2_s1_genbank109_bm_ou_niche_photo.py tests/test_v4_t2_s1_genbank_its_original_photo_angle_rain.py
+      - name: Recover actual owner-S1 251-source continuous photo angle and five environmental axes
+        run: |
+          set -euo pipefail
+          mkdir -p work/inputs/s1 work/inputs/genbank work/inputs/its work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/inputs/s1
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/inputs/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+      - name: Restore original all251 NCBI ITS real accessions and their 109-tip source roster
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12483849333 --jq '.digest')" = 'sha256:74690cc9e7d34bacd9e227471a6defd0fa8cbd54fd6df110b93d7a921b65febd'
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-S1-251-exact-ncbi-GenBank-nuclear-ITS-source-accessions --dir work/inputs/genbank
+      - name: Restore uniquely reconstructed 109-tip GenBank nuclear ITS ML tree with MAFFT/QC certificate
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/inputs/its
+          echo '8fd10d299b4d520ce08f2552993b02d3cc1b10350f0fb68ea24874dbb9ccfe92  work/inputs/its/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile' | sha256sum -c -
+      - name: Actually fit 109 GENBANK ITS niche logBIO12 and own head mean/median WN/BM/fixed-root OU/stationary OU
+        run: |
+          python -m analysis.v4.t2_s1_genbank109_bm_ou_niche_photo \
+            --S1-source work/inputs/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --accessions work/inputs/genbank/S1_GENBANK_ITS_EXACT_SPECIES_ACCESSIONS.csv \
+            --ITS-tree work/inputs/its/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --discovery work/inputs/genbank/S1_GENBANK_SOURCE_COVERAGE_RECEIPT.json \
+            --alignment work/inputs/its/S1_GENBANK_ITS_ML_PREPARATION.json \
+            --out-dir work/output \
+            --permutations 999
+          git rev-parse HEAD > work/output/AUDITED_CODE_GIT_COMMIT.txt
+      - name: Verify no substituted original flora U D and tree-root/nugget scenario coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/output/S1_ORIGINAL_109_ITS_BM_OU_NICHE_PHOTO_RESULT.json')
+          d=json.loads(p.read_text())
+          assert d['original_S1_251_photo_name_units']==251
+          assert d['original_S1_WCVP_accepted_keys']==244
+          assert d['new_true_ITS_sequence_tree_species']==109
+          assert d['source_original_photo_angle_observation_universe']==170066
+          assert d['outside_flora_botanical_U_D_not_used']
+          assert d['owner_photo_measurement_is_image_vertical_not_gravity']
+          assert not d['species_evolutionary_tree_verified_from_single_copy_multilocus_data']
+          assert len(d['results'])==3
+          for sample in d['results'].values():
+              assert sample['n_original_s1_genbank_its_photo_taxa']==109
+              assert set(sample['evolutionary_model_selection_per_trait'])=={
+                  'log_BIO12','photo_mean_angle_deg','photo_median_angle_deg'}
+              for trait in sample['evolutionary_model_selection_per_trait'].values():
+                  assert set(trait['models'])=={'WN','BM','OU_stationary','OU_fixedroot'}
+                  assert trait['Pagel_lambda_correlated_tip_diagnostic']['not_BM_or_OU_evolutionary_process']
+          main=d['results']['midpoint__tip_nugget5percent']
+          for test in main['evolutionary_model_selection_per_trait'].values():
+              assert test['Pagel_lambda_permutation']['n_original_taxon_label_permutations']==999
+          assert main['photo_angle_vs_annual_rain_5covariates']['same_109_taxa_original_five_S1_climate_axes']
+          assert Path('work/output/S1_109_ITS_BM_OU_NICHE_VS_PHOTO_AICc.png').stat().st_size>10000
+          print('PASS_ACTUAL_ORIGINAL_109_S1_GENBANK_ITS_BM_OU_NICHE_AND_PHOTO_ANGLE')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: s1-genbank109-source-photos-BM-OU-BIO12-niche-orientation-evolution
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90

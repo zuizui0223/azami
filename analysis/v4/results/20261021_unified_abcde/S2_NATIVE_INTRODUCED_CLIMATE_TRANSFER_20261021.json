@@ -1,0 +1,189 @@
+{
+  "schema_version": "v4_s2_actual_native_vs_introduced_cirsium_climate_cline_receipt_20261021_v1",
+  "source": {
+    "run_id": 39539209624,
+    "artifact_id": 12317764638,
+    "artifact_digest": "sha256:dad25a10ec658d386699829cfce702701523d79aa50e12afc0ef70a2803c9300",
+    "member": "S2_native_introduced_climate_transfer.json",
+    "member_sha256": "a95e0eaa085cc4cbd55a8302f5d527e26e3800761f7bb043ae9e65bfecdbdb26",
+    "native_introduced_original_wcvp_snapshot_sha256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
+    "source_species_status": "previous source-only run 39537559204",
+    "climate_input": "Previously verified original-pixel CHELSA v2.1 rasters (BIO1 BIO4 BIO12 BIO15 RSDS), annual 1981-2010",
+    "source_climate_metadata_sha256": "905dd41d987a742761d9bb5c8de23e908b730ea70691491483840b998e1ca342",
+    "preexisting_archived_original_photo_values": true,
+    "independent_new_photographic_assessment": false
+  },
+  "method": {
+    "target_species": [
+      "Cirsium arvense",
+      "Cirsium vulgare"
+    ],
+    "response": "orientation_angle_degrees_median; image vertical, NOT gravitational",
+    "native_vs_introduced": "WCVP explicitly introduced vs native, only source-wild/nonobscured/georeferenced",
+    "fixed_predictors": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "time_covariates": [
+      "month_sin",
+      "month_cos",
+      "observation_year"
+    ],
+    "sample": "one per original human observer×5 degree equal-sin cell×species×range state, each cell equal total weight",
+    "uncertainty": "cell-cluster sandwich, original-cell conditional 95% intervals; status difference approximated as independent ranges",
+    "rainfall_units": "image-angle degrees per 100 mm per year",
+    "transfers": "native-trained all-climate+time model directly predicts introduced region, R² against native constant and introduced local mean",
+    "null_equivalence_test": false
+  },
+  "original_pixel_focal_coverage": {
+    "target_orientation_observations": 173737,
+    "all_five_climate_complete": 163687,
+    "all_five_climate_missing": 10050,
+    "source_cache_tiles_per_raster": 316,
+    "new_climate_rasters_downloaded": 0,
+    "non_native_climate_imputed": 0
+  },
+  "species": {
+    "Cirsium arvense": {
+      "native": {
+        "original_orientation": 49072,
+        "environment_complete": 49072,
+        "balanced_observer_cell_n": 21870,
+        "cells": 186,
+        "observers": 18989,
+        "bio12_deg_100mm": -0.1116191421353511,
+        "cluster_ci95": [
+          -1.1306005929560614,
+          0.9073623086853592
+        ],
+        "cluster_se": 0.5198884953166889,
+        "weighted_rmse_deg": 42.65917186183067
+      },
+      "introduced": {
+        "original_orientation": 43195,
+        "environment_complete": 41995,
+        "environment_coverage": 0.9722190068294941,
+        "balanced_observer_cell_n": 24956,
+        "cells": 71,
+        "observers": 22414,
+        "bio12_deg_100mm": 0.27825231318425475,
+        "cluster_ci95": [
+          -0.2634727368006064,
+          0.8199773631691158
+        ],
+        "cluster_se": 0.27639033162492915,
+        "weighted_rmse_deg": 41.189602726091735
+      },
+      "introduced_minus_native": {
+        "delta_deg100mm": 0.3898714553196059,
+        "approximate_cluster_ci95": [
+          -0.7641602716696394,
+          1.5439031823088512
+        ]
+      },
+      "climate_support": {
+        "native_bio12_q05q95": [
+          524,
+          1403.5499999999993
+        ],
+        "introduced_bio12_q05q95": [
+          394,
+          1428
+        ],
+        "common_central_bio12": [
+          524,
+          1403.5499999999993
+        ],
+        "fraction_native_in_common": 0.900182898948331,
+        "fraction_introduced_in_common": 0.763103061388043
+      },
+      "predictive_transfer": {
+        "native_trained_skill_relative_to_native_constant": -0.00897259179269927,
+        "native_trained_skill_relative_to_introduced_local_mean": -0.010981443042486827,
+        "climate_overlap_gated": false
+      }
+    },
+    "Cirsium vulgare": {
+      "native": {
+        "original_orientation": 33637,
+        "environment_complete": 33637,
+        "balanced_observer_cell_n": 16246,
+        "cells": 124,
+        "observers": 14211,
+        "bio12_deg_100mm": 0.6992058496429765,
+        "cluster_ci95": [
+          -0.347689299402661,
+          1.746100998688614
+        ],
+        "cluster_se": 0.5341301780845089,
+        "weighted_rmse_deg": 40.26210312519594
+      },
+      "introduced": {
+        "original_orientation": 47833,
+        "environment_complete": 38983,
+        "environment_coverage": 0.8149812890682165,
+        "balanced_observer_cell_n": 25429,
+        "cells": 88,
+        "observers": 23148,
+        "bio12_deg_100mm": -0.6119107212198934,
+        "cluster_ci95": [
+          -1.432583283546696,
+          0.2087618411069091
+        ],
+        "cluster_se": 0.4187104909830625,
+        "weighted_rmse_deg": 41.231168607120075
+      },
+      "introduced_minus_native": {
+        "delta_deg100mm": -1.31111657086287,
+        "approximate_cluster_ci95": [
+          -2.6413394498013307,
+          0.019106308075590883
+        ]
+      },
+      "climate_support": {
+        "native_bio12_q05q95": [
+          546,
+          1529.75
+        ],
+        "introduced_bio12_q05q95": [
+          412,
+          1568.5999999999985
+        ],
+        "common_central_bio12": [
+          546,
+          1529.75
+        ],
+        "fraction_native_in_common": 0.900529361073495,
+        "fraction_introduced_in_common": 0.8193794486609777
+      },
+      "predictive_transfer": {
+        "native_trained_skill_relative_to_native_constant": -0.02026320808114135,
+        "native_trained_skill_relative_to_introduced_local_mean": -0.020404238867123503,
+        "climate_overlap_gated": false
+      }
+    }
+  },
+  "scientific_boundary": {
+    "supports": "Cross-range source-specific conditional annual-rain slopes are weak/imprecise in the two most numerous species and native-trained climate/time model has no positive introduced predictive skill on tested cells.",
+    "not_supports": [
+      "Evolution caused the globally positive among-species rain-angle association",
+      "Introduced populations genetically fixed head orientation",
+      "Species lack plasticity",
+      "Evolutionary reversal occurred in C. vulgare (delta CI includes 0)",
+      "True rain shielding or reproductive fitness quantified",
+      "All introduced-region climate pixels available",
+      "Reproducible space- and observer-independent species history"
+    ],
+    "important_unresolved": [
+      "Historical CHELSA cache omits 18.5% introduced vulgare-angle source",
+      "Response is EXIF photo vertical not true gravity",
+      "Observer/site and climate confounding remain",
+      "Native vs introduced common-support and independent region/block holdouts pending",
+      "Two species are not independent macroevolutionary replications",
+      "Equivalent zero slope needs predeclared margin and measurement error model"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+name: V4 S2 whole-angle distribution equivalence feasibility
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s2-ecdf-equivalence.yml'
+      - 'analysis/v4/s2_ecdf_equivalence_frontier.py'
+      - 'tests/test_v4_s2_ecdf_equivalence_frontier.py'
+      - 'tests/test_v4_s2_ecdf_equivalence_verified_receipt.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: s2-equivalence-frontier-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  source-locked-ecdf-equivalence-frontier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical and test dependencies
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Verify full-CDF equivalence feasibility and stop absent independent SESOI
+        run: python -m pytest -q tests/test_v4_s2_ecdf_equivalence_frontier.py tests/test_v4_s2_ecdf_equivalence_verified_receipt.py
+      - name: Retrieve ONLY original public aggregated S2 ECDF and 399-cell bootstrap
+        run: |
+          set -euo pipefail
+          mkdir -p work/s2-equiv/input work/s2-equiv/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12341964253 --jq '.digest')" = "sha256:f892cd15cbf8be0232e9ec5286d98b168ae47f813685bb1480ed6c53e638a910"
+          gh run download 39592586205 --repo zuizui0223/azami \
+            --name v4-two-species-PCA-env-full-original-background \
+            --dir work/s2-equiv/input
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          root=Path('work/s2-equiv/input')
+          found=list(root.rglob('S2_unselected_full_rain_and_head_angle_distributions.json'))
+          assert len(found)==1, f'exactly one source S2 ECDF required: {len(found)}'
+          raw=found[0].read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='765742c0a2fdaef094f26de7999c9c322e5397a3c74ac0912edec4c2d09d9e4f'
+          (root/'verified_ECDF_original.json').write_bytes(raw)
+          PY
+      - name: Compute smallest hypothetical full-curve CDF equivalence margin consistent with existing spatial bands
+        run: |
+          python -m analysis.v4.s2_ecdf_equivalence_frontier \
+            --source work/s2-equiv/input/verified_ECDF_original.json \
+            --out work/s2-equiv/output/S2_ECDF_ANGLE_EQUIVALENCE_MARGIN_FRONTIER.json
+      - name: Archive only aggregated source-based frontiers, never original observers or images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s2-source-ecdf-equivalence-feasibility
+          path: work/s2-equiv/output
+          if-no-files-found: warn
+          retention-days: 90

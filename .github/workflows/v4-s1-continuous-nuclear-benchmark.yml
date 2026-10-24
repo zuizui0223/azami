@@ -1,0 +1,59 @@
+name: V4 original S1 continuous NA nuclear vs same-tip grafted history
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s1-continuous-nuclear-benchmark.yml'
+      - 'analysis/v4/s1_continuous_nuclear_vs_grafted_signal.py'
+      - 'tests/test_v4_s1_continuous_nuclear_vs_grafted_signal.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: s1-nuclear-signal-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  compare-same-S1-continuous-42-nuclear-and-grafted:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install reproducible numerical dependencies
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Validate same-tip continuous S1 and phylogenetic null
+        run: |
+          python -m pytest -q \
+            tests/test_v4_s1_continuous_nuclear_vs_grafted_signal.py \
+            tests/test_v4_s1_continuous_phylogenetic_signal.py
+      - name: Restore only source-authenticated 194 original S1 taxon means and five climates
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1-nuclear/input work/s1-nuclear/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12343166776 --jq '.digest')" = "sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb"
+          gh run download 39594257539 --repo zuizui0223/azami \
+            --name v4-s1-continuous-194-taxa-52-placement-history \
+            --dir work/s1-nuclear/input
+          test -s work/s1-nuclear/input/S1_CONTINUOUS_194_52_TREE_HISTORY.json
+      - name: Run actual NA nuclear and 52 exactly matched GBOTB grafted trees on S1 continuous mean median under five fixed climate axes
+        run: |
+          python -m analysis.v4.s1_continuous_nuclear_vs_grafted_signal \
+            --source work/s1-nuclear/input/S1_CONTINUOUS_194_52_TREE_HISTORY.json \
+            --out work/s1-nuclear/output/S1_NA42_NUCLEAR_VS_52_GRAFTED_CONTINUOUS_SIGNAL.json \
+            --bootstrap-reps 399
+      - name: Archive real same-tip nuclear signal and null simulations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-NA42-continuous-nuclear-v-grafted-pagel-signal
+          path: work/s1-nuclear/output/
+          if-no-files-found: warn
+          retention-days: 90

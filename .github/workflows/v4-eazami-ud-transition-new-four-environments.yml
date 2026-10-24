@@ -1,0 +1,140 @@
+name: V4 EAzami genuine U-D CTMC new BIO18 BIO5 RSDS elevation
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/eazami_ud_real_four_environment_transition_regime.py'
+      - 'tests/test_v4_eazami_ud_real_four_environment_transition_regime.py'
+      - '.github/workflows/v4-eazami-ud-transition-new-four-environments.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-frozen-ud-ctmc-four-real-environments:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install EAzami original CTMC and S1 S2 climate raster dependencies
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'pandas>=2.1,<3' \
+             'biopython>=1.83,<2' 'rasterio>=1.4,<2' 'requests>=2.32,<3' 'pytest>=8,<10'
+      - name: Unit-test branchwise CTMC, fixed panel census and four new axes only
+        run: |
+          python -m pytest -q \
+            tests/test_v4_eazami_ud_real_four_environment_transition_regime.py \
+            tests/test_v4_s1_s2_bio18_bio05_rsds_elevation_source_preflight.py
+      - name: Retrieve exact original EAzami nuclear six AU trees and U-D states, not old BIO1/BIO15 results
+        run: |
+          set -euo pipefail
+          mkdir -p work/eazami/frozen work/eazami/Japan work/eazami/Taiwan work/eazami/new-source work/eazami/rsds/chelsa_rsds_mean work/out
+          for spec in \
+            'analysis/run_chapter2_orientation_transition_regime_hypothesis_v1.py' \
+            'data/evidence/chapter2_orientation_transition_regime_hypothesis_contract_v1.json' \
+            'data/evidence/chapter2_orientation_occurrence_coverage_audit_result_v1.json' \
+            'data/evidence/orientation_comp1061_20tip_source_crosswalk_v1.csv' \
+            'data/evidence/comp1061_six_au_nonrejected_trees_v1.nwk'; do
+              curl -fsSL --retry 3 --connect-timeout 15 \
+                "https://raw.githubusercontent.com/zuizui0223/EAzami/c9870e91604ed1514344ddc8f765eae5237dbf27/$spec" \
+                -o "work/eazami/frozen/$(basename "$spec")"
+          done
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          root=Path('work/eazami/frozen')
+          needed={
+          'run_chapter2_orientation_transition_regime_hypothesis_v1.py':'09731b563907b3ec2778ea04086d729771376f7e',
+          'chapter2_orientation_transition_regime_hypothesis_contract_v1.json':'59acc74cbcace6da78226c62fc976c0e543f0225',
+          'chapter2_orientation_occurrence_coverage_audit_result_v1.json':'47e97cb35d241c0dcba8cb9c844038b568db03d5',
+          'orientation_comp1061_20tip_source_crosswalk_v1.csv':'f655544e77f1659323c1e915567dacbb51b01cc3',
+          'comp1061_six_au_nonrejected_trees_v1.nwk':'d7f8c0b96ee9c257c815db06a5a0aa9fdae4841e'
+          }
+          for name,expected in needed.items():
+              raw=(root/name).read_bytes()
+              actual=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+              assert actual==expected,(name,actual)
+          print('PASS_EAZAMI_6_NUCLEAR_TREES_AND_U_D_STATES_AUTHENTIC_NOT_BIO1_BIO15_REPRODUCTION')
+          PY
+      - name: Restore EAzami frozen 693 JP plus 55 TW occurrence SOURCE locations
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9516784077 --jq .digest)" = \
+            'sha256:cb5717c90cbc769398f9ffce38787704a02e34253c1ff16cf8f368ba55aeda96'
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9520157997 --jq .digest)" = \
+            'sha256:819936ceeb6008f356c580622fb72972617700402afaa3d3ab125bff2e6d9106'
+          gh run download 32716015605 --repo zuizui0223/EAzami \
+            --name fdt4-japan-orientation-niche-v1 --dir work/eazami/Japan
+          gh run download 32725842871 --repo zuizui0223/EAzami \
+            --name fdt4-taiwan-orientation-niche-v1 --dir work/eazami/Taiwan
+          echo 'd115635f57e11d8a9f5c417bf28992a3d2a00f2a4d02ebb710c96d892ad0a9b2  work/eazami/Japan/focal_occurrences_environment_complete.csv' | sha256sum -c -
+          echo '63b43b670f55a16b5557e414e37297a9ee18942f06714094fc1b5788ec07c70c  work/eazami/Taiwan/focal_occurrences_environment_complete.csv' | sha256sum -c -
+      - name: Recover physically identical S1/S2 BIO18 BIO05 and WorldClim elevation, original RSDS source tiles
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_s2_real_bio18_bio05_rsds_elevation \
+            --stage download --source-root work/eazami/new-source
+          echo '90078d99eeb0b08dd1a115a5ffa60b7c19e5849686854db950283cbac9d3817d  work/eazami/new-source/CHELSA_bio05_1981-2010_V.2.1.tif' | sha256sum -c -
+          echo '68b0b1cb905cdf6972364e947e137f714a68d287f38863b1516161a2a4bbd7ec  work/eazami/new-source/CHELSA_bio18_1981-2010_V.2.1.tif' | sha256sum -c -
+          echo '1d57ce9fd3584cea6a227396bc75ef88522fd5346e8487c17370885c0499716e  work/eazami/new-source/wc2.1_30s_elev.tif' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12242917323/zip \
+            > work/eazami/rsds-original-cache.zip
+          echo '2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4  work/eazami/rsds-original-cache.zip' | sha256sum -c -
+          unzip -q work/eazami/rsds-original-cache.zip -d work/eazami/rsds/chelsa_rsds_mean
+      - name: Compute EAzami EXACT U to D CTMC posterior plus Brownian environmental ancestor shifts and 792/126/1716 state-map rankings for ONLY BIO18 BIO5 RSDS elevation
+        run: |
+          python -m analysis.v4.eazami_ud_real_four_environment_transition_regime \
+            --original-eazami-algorithm work/eazami/frozen/run_chapter2_orientation_transition_regime_hypothesis_v1.py \
+            --eazami-six-trees work/eazami/frozen/comp1061_six_au_nonrejected_trees_v1.nwk \
+            --eazami-crosswalk work/eazami/frozen/orientation_comp1061_20tip_source_crosswalk_v1.csv \
+            --eazami-coverage work/eazami/frozen/chapter2_orientation_occurrence_coverage_audit_result_v1.json \
+            --eazami-contract work/eazami/frozen/chapter2_orientation_transition_regime_hypothesis_contract_v1.json \
+            --japan-occurrences work/eazami/Japan/focal_occurrences_environment_complete.csv \
+            --taiwan-occurrences work/eazami/Taiwan/focal_occurrences_environment_complete.csv \
+            --raster-root work/eazami/new-source \
+            --rsds-cache-root work/eazami/rsds \
+            --rsds-metadata analysis/v4/environment_source_metadata.json \
+            --out work/out/EAzami_REAL_U_D_CTMC_BIO18_BIO05_RSDS_ELEVATION.json
+          git rev-parse HEAD > work/out/SOURCE_CODE_COMMIT.txt
+      - name: Verify new four climate transition evidence and no old BIO1 or BIO15 results
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          file=Path('work/out/EAzami_REAL_U_D_CTMC_BIO18_BIO05_RSDS_ELEVATION.json')
+          d=json.loads(file.read_text())
+          assert d['original_BIO1_BIO15_hypothesis_not_retested'] is True
+          assert d['EAzami_method_structure_pinned_without_repeating_BIO1_BIO15_results'] is True
+          assert d['same_4_axis_environment_definitions_as_S1_S2']==['chelsa_bio18','chelsa_bio05','chelsa_rsds_mean','elevation_m']
+          assert d['no_independent_molecular_UD_origins_counted'] is True
+          assert d['no_trait_photo_measurement_or_true_gravity_conflation'] is True
+          assert d['null_is_exact_finite_state_map_rank_not_independent_replicate_P_value'] is True
+          for key,n,N in [('n5_primary',12,792),('n10_strict_sensitivity',9,126),('n3_resolution_sensitivity',13,1716)]:
+              result=d['panels'][key]
+              if result['status'].startswith('STOP_'):continue
+              assert result['status']=='EAzami_AUTHENTIC_BRANCHWISE_UD_CTMC_FOUR_CLIMATE_EXACT_MAP_COMPLETED'
+              assert result['original_EAzami_frozen_tip_count']==n
+              assert result['state_maps_exhaustively_enumerated']==N
+              assert result['same_EAzami_6_accepted_nuclear_topologies']
+              assert set(result['new_four_axes'])=={'chelsa_bio18','chelsa_bio05','chelsa_rsds_mean','elevation_m'}
+          assert d['panels']['n5_primary']['status'].startswith('EAzami_AUTHENTIC_BRANCHWISE')
+          assert 'obs_id' not in file.read_text()
+          assert '"latitude"' not in file.read_text()
+          assert '"longitude"' not in file.read_text()
+          print('PASS_TRUE_EAZAMI_TRANSITION_METHOD_NEW_FOUR_CLIMATE_AXES_NOT_OLD_CLIMATE_REPRODUCTION')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-EAzami-actual-U-to-D-six-nuclear-CTMC-BIO18-BIO5-RSDS-elevation
+          path: work/out/
+          if-no-files-found: warn
+          retention-days: 90

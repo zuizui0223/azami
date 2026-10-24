@@ -1,0 +1,83 @@
+name: V4 T2 bridge all 244 S1 species into EAzami 294-sample nuclear panel
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_eazami294_s1_run_bridge.py'
+      - 'tests/test_v4_t2_eazami294_s1_run_bridge.py'
+      - '.github/workflows/v4-t2-eazami294-s1-run-bridge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  exact-original-public-biological-sample-reuse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test S1 accepted-key and per-run exact identity rules
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_eazami294_s1_run_bridge.py
+      - name: Download only authenticated original S1 taxon-level records (no image bytes)
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-eazami294/s1 work/t2-eazami294/sra work/t2-eazami294/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12399694421 --jq '.digest')" = "sha256:902264668bfea47358fdc66bb85ef543f9be29f5a67266d4d1e248d14db146d1"
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq '.digest')" = "sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71"
+          gh run download 39718386338 --repo zuizui0223/azami --name v4-t2-full-S1-244-all-species-public-taxonomic-census --dir work/t2-eazami294/s1
+          gh run download 39721528204 --repo zuizui0223/azami --name v4-t2-all244-Moreyra-SRA-voucher-evidence --dir work/t2-eazami294/sra
+          test -s work/t2-eazami294/s1/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv
+          test -s work/t2-eazami294/sra/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+      - name: Reconstruct frozen authentic EAzami 294 biological-sample panel without reads
+        working-directory: external/EAzami
+        run: |
+          set -euo pipefail
+          mkdir -p ../../work/t2-eazami294/source ../../work/t2-eazami294/panel
+          python analysis/materialize_frozen_moreyra_reconciliation.py --output ../../work/t2-eazami294/source/moreyra2025_all_sample_reconciliation.csv
+          echo "cf3af71a1a77eee5bd177cef9cf8106b749b949eaacc0ad82bbb331978084505  ../../work/t2-eazami294/source/moreyra2025_all_sample_reconciliation.csv" | sha256sum -c -
+          python analysis/build_japan_origin_global_public_panel_v2.py --moreyra-reconciliation ../../work/t2-eazami294/source/moreyra2025_all_sample_reconciliation.csv --outdir ../../work/t2-eazami294/panel
+      - name: Strictly join source samples and native S1 taxon concepts
+        run: |
+          python -m analysis.v4.t2_eazami294_s1_run_bridge \
+            --s1-census work/t2-eazami294/s1/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv \
+            --s1-sra work/t2-eazami294/sra/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --eazami-panel work/t2-eazami294/panel/japan_origin_global_public_panel_v2.csv \
+            --out-dir work/t2-eazami294/out
+      - name: Check total retained cohort and independently created EAzami source
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          source=Path('work/t2-eazami294/out')
+          result=json.loads((source/'T2_EAzami294_S1_244_BRIDGE_SUMMARY.json').read_text())
+          s1=list(csv.DictReader((source/'T2_ALL244_TO_EAzami294_TAXON_COVERAGE.csv').open()))
+          matched=list(csv.DictReader((source/'T2_ALL125_MOREYRA_TO_EAzami294_EXACT_RUNS.csv').open()))
+          assert len(s1)==244 and sum(int(r['n_original_photo']) for r in s1)==170066
+          assert len(matched)==125 and len({r['run'] for r in matched})==125
+          assert result['EAzami_original_biological_samples']==294
+          assert result['EAzami_original_run_accessions']==295
+          assert not result['EAzami_294_global_nuclear_tree_completed']
+          assert not result['accepted_taxonomic_concept_and_voucher_verified']
+          print('T2_EAZAMI294_ALL244_STRICT_IDENTITY_PASS',result['source_run_identity_status'],result['taxon_level_status'])
+          PY
+      - name: Archive public sample and species-level crosswalk only
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-all244-EAzami294-exact-sample-bridge
+          path: work/t2-eazami294/out/
+          retention-days: 90
+          if-no-files-found: error

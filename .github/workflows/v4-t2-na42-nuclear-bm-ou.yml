@@ -1,0 +1,73 @@
+name: V4 T2 genuine NA42 nuclear BM OU image-angle benchmark
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_na42_original_angle_wn_bm_ou.py'
+      - 'tests/test_v4_t2_na42_original_angle_wn_bm_ou.py'
+      - '.github/workflows/v4-t2-na42-nuclear-bm-ou.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-nuclear-42:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install reproducible phylogenetic numerical environment
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Tests for separate nuclear versus grafted interpretation
+        run: python -m pytest -q tests/test_v4_t2_na42_original_angle_wn_bm_ou.py tests/test_v4_t2_all244_ou_bm_orientation.py
+      - name: Restore exact previous original S1 taxon-level source without individual source records
+        run: |
+          mkdir -p work/t2-na42/in work/t2-na42/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12339413151 --jq '.digest')" = 'sha256:aa5a9ac298b8e36c9e96da6f1eb96319733136e2e3a105305092f7da2ca97bff'
+          gh run download 39584744194 --repo zuizui0223/azami \
+            --name v4-joint-s1-t2-exact-cohort-public-aggregate \
+            --dir work/t2-na42/in
+          test -s work/t2-na42/in/S1_T2_joint_244_194.json
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12343166776 --jq '.digest')" = 'sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb'
+          gh run download 39594257539 --repo zuizui0223/azami \
+            --name v4-s1-continuous-194-taxa-52-placement-history \
+            --dir work/t2-na42/in
+          test -s work/t2-na42/in/S1_CONTINUOUS_194_52_TREE_HISTORY.json
+      - name: Refit WN BM OU1 on genuine Siniscalchi 63-nuclear tree pruned to 42 same original S1 angles
+        run: |
+          python -m analysis.v4.t2_na42_original_angle_wn_bm_ou \
+            --joint work/t2-na42/in/S1_T2_joint_244_194.json \
+            --original-194 work/t2-na42/in/S1_CONTINUOUS_194_52_TREE_HISTORY.json \
+            --out work/t2-na42/out/NA42_GENUINE_NUCLEAR_S1_ORIENTATION_WN_BM_OU1.json
+      - name: Fail closed on cohort and inference mislabeling
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/t2-na42/out/NA42_GENUINE_NUCLEAR_S1_ORIENTATION_WN_BM_OU1.json')
+          s=json.loads(p.read_text())
+          assert s['matched_independent_nuclear_taxa']==42
+          assert s['source_original_S1_taxa']==244
+          assert len(s['fits'])==4
+          assert s['n_taxa_with_distinct_original_image_mean_median']>0
+          assert s['source_S1_original_194_continuous_run']==39594257539
+          assert not s['all_published_biological_nodding_scores_used_as_outcomes']
+          assert all(r['best_model_AICc'] in {'WN','BM','OU1'} for r in s['fits'])
+          assert all(r['n_species']==42 for r in s['fits'])
+          assert s['claim_stop']['no_adaptive_radiation_or_rain_protection_causality_proven']
+          print('PASS exactly same S1 continuous angle 42 published independent nuclear tips and five climate covariates.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-S1-NA42-nuclear-wn-bm-ou-true-means
+          path: work/t2-na42/out/
+          retention-days: 90
+          if-no-files-found: error

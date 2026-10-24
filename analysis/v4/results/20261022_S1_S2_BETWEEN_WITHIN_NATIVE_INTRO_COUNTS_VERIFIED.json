@@ -1,0 +1,181 @@
+{
+  "schema_version": "V4_S1_S2_between_species_vs_same_species_native_introduced_descriptive_cohort_20261022_v1",
+  "status": "SOURCE_VERIFIED_REORGANIZATION_OF_EXISTING_POSITIVE_PATTERN_AND_DESCRIPTIVE_NO_UNIFORM_ANGLE_SHIFT",
+  "target_narrative": {
+    "S1": "Between accepted Cirsium taxa at original native-range photographic observations, annual precipitation BIO12 positively associates with continuous image-vertical capitulum angle; within-taxon slope unconfirmed.",
+    "S2": "For BOTH source-supported original species C. arvense and C. vulgare, all introduced WCVP wild occurrence medians are wetter than corresponding native records, but image-angle medians differ only -1 degree, and there is no consistent increase in >=90-degree angles; no equivalence/fixity/rapid evolution claim.",
+    "S1_and_S2_joint": "Scale contrast: broad between-taxon image-angle/climate covariance versus two within-species native-to-introduced wetter occurrence-niche shifts without consistently directional measured angle distributions.",
+    "not_reframed_as_geography_adjusted_S1_primary": true,
+    "no_cross_region_direct_causal_or_evolutionary_inference": true
+  },
+  "sources": {
+    "source": {
+      "path": "analysis/v4/results/20261021_unified_abcde/S2_INTRODUCED_SOURCE_AUDIT_20261021.json",
+      "Git_blob_sha1": "9767049c0350a03749c7b5799c607343183a4f06"
+    },
+    "niche": {
+      "path": "analysis/v4/results/20261021_unified_abcde/S2_TWO_SPECIES_FULL_WCVP_NICHE_VERIFIED_20261021.json",
+      "Git_blob_sha1": "46b7055d85d9927486b595b57edf6ae2b3ae82fe"
+    },
+    "s2": {
+      "path": "analysis/v4/results/20261021_unified_abcde/S2_ALL_INTRODUCED_DIRECT_COMPARISON_20261021_JA.md",
+      "Git_blob_sha1": "2a2bfb8cb9725d094749ab2aeba92ddd31813e33"
+    },
+    "s1": {
+      "path": "analysis/v4/results/20261021_unified_abcde/S1_OBSERVER_RAIN_SENSITIVITY_20261021.json",
+      "Git_blob_sha1": "7365f5406aef427ec79e8c389850489bd9900c4a"
+    },
+    "s2_original_full_ECDF": {
+      "path": "analysis/v4/results/20261021_unified_abcde/S2_FULL_DISTRIBUTIONS_BEFORE_METRICS_20261021_JA.md",
+      "Git_blob_sha1": "4fc8a0fbe8ede0b593889a970ee3f0a7b0c336f4",
+      "original_source_successful_run": 39592586205
+    }
+  },
+  "original_population_all350": {
+    "source_original_observations": 665115,
+    "source_original_photo_links": 1122854,
+    "source_species_rank_observations": 580066,
+    "S1_native_wild_original_observations": 313350,
+    "S1_native_orientation_eligible": 170066,
+    "S1_native_orientation_eligible_accepted_keys": 244,
+    "S2_explicit_WCVP_introduced_wild_observations": 156750,
+    "S2_explicit_WCVP_introduced_orientation_eligible": 91106,
+    "unresolved_other_original_observations": 195015,
+    "native_and_introduced_are_disjoint_range_states_but_share_the_same_original_dataset": true
+  },
+  "S1": {
+    "source_original_native_5_climate_model": "BIO1/BIO4/BIO12/BIO15/RSDS",
+    "native_244_between_species_BIO12_degrees_per_100mm": 0.4381991922885207,
+    "between_95pct_interval": [
+      0.2058063239224483,
+      0.6705920606545931
+    ],
+    "source_native_244_within_species_BIO12_degrees_per_100mm": -0.044298210799959194,
+    "within_95pct_interval": [
+      -0.21884898187399907,
+      0.13025256027408064
+    ],
+    "n_observations": 170066,
+    "n_accepted_keys": 244,
+    "originally_observed_between_direction_positive": true,
+    "within_species_annual_precipitation_significant": false
+  },
+  "S2": {
+    "source_species_with_both_WCVP_wild_statuses": 7,
+    "source_species_with_sufficient_photo_observer_cell_support": 2,
+    "same_species_comparisons": {
+      "Cirsium arvense": {
+        "native": {
+          "original_explicit_WCVP_wild_observations": 78646,
+          "original_orientation_eligible_observations": 49072,
+          "observer_by_5deg_cell_unique_climate_observations": 30523,
+          "orientation_balanced_observations": 21870,
+          "five_CHELSA_cached_original_pixel_complete_oriented_observations": 49072,
+          "five_CHELSA_cached_balanced_model_observations": 21870,
+          "median_annual_BIO12_mm": 658.5982622830617,
+          "median_photo_vertical_angle_degrees_1deg_bin": 68,
+          "fraction_photo_vertical_angle_ge90deg": 0.3507
+        },
+        "introduced": {
+          "original_explicit_WCVP_wild_observations": 70964,
+          "original_orientation_eligible_observations": 43195,
+          "observer_by_5deg_cell_unique_climate_observations": 38406,
+          "orientation_balanced_observations": 25657,
+          "five_CHELSA_cached_original_pixel_complete_oriented_observations": 41995,
+          "five_CHELSA_cached_balanced_model_observations": 24956,
+          "median_annual_BIO12_mm": 876,
+          "median_photo_vertical_angle_degrees_1deg_bin": 67,
+          "fraction_photo_vertical_angle_ge90deg": 0.3124
+        },
+        "differences": {
+          "introduced_minus_native_median_BIO12_mm": 217.4017,
+          "introduced_minus_native_photo_angle_median_degrees": -1,
+          "introduced_minus_native_photo_angle_ge90deg_percentage_points": -3.82,
+          "photo_angle_ge90deg_spatial_cell_bootstrap_95pct_interval_points": [
+            -8.9,
+            0.36
+          ]
+        },
+        "source_climate_niche_from_full_WCVP_background_not_intrinsic_preference": true,
+        "full_introduced_explicit_WCVP_regions_not_only_NorthAmerica": true
+      },
+      "Cirsium vulgare": {
+        "native": {
+          "original_explicit_WCVP_wild_observations": 62368,
+          "original_orientation_eligible_observations": 33637,
+          "observer_by_5deg_cell_unique_climate_observations": 26161,
+          "orientation_balanced_observations": 16246,
+          "five_CHELSA_cached_original_pixel_complete_oriented_observations": 33637,
+          "five_CHELSA_cached_balanced_model_observations": 16246,
+          "median_annual_BIO12_mm": 666,
+          "median_photo_vertical_angle_degrees_1deg_bin": 64,
+          "fraction_photo_vertical_angle_ge90deg": 0.2538
+        },
+        "introduced": {
+          "original_explicit_WCVP_wild_observations": 85644,
+          "original_orientation_eligible_observations": 47833,
+          "observer_by_5deg_cell_unique_climate_observations": 49088,
+          "orientation_balanced_observations": 30287,
+          "five_CHELSA_cached_original_pixel_complete_oriented_observations": 38983,
+          "five_CHELSA_cached_balanced_model_observations": 25429,
+          "median_annual_BIO12_mm": 959,
+          "median_photo_vertical_angle_degrees_1deg_bin": 63,
+          "fraction_photo_vertical_angle_ge90deg": 0.2592
+        },
+        "differences": {
+          "introduced_minus_native_median_BIO12_mm": 293,
+          "introduced_minus_native_photo_angle_median_degrees": -1,
+          "introduced_minus_native_photo_angle_ge90deg_percentage_points": 0.54,
+          "photo_angle_ge90deg_spatial_cell_bootstrap_95pct_interval_points": [
+            -3.59,
+            4.46
+          ]
+        },
+        "source_climate_niche_from_full_WCVP_background_not_intrinsic_preference": true,
+        "full_introduced_explicit_WCVP_regions_not_only_NorthAmerica": true
+      }
+    },
+    "focal2_totals": {
+      "native": {
+        "original_explicit_WCVP_wild_observations": 141014,
+        "original_orientation_eligible_observations": 82709,
+        "observer_by_5deg_cell_unique_climate_observations": 56684,
+        "orientation_balanced_observations": 38116,
+        "five_CHELSA_cached_original_pixel_complete_oriented_observations": 82709,
+        "five_CHELSA_cached_balanced_model_observations": 38116
+      },
+      "introduced": {
+        "original_explicit_WCVP_wild_observations": 156608,
+        "original_orientation_eligible_observations": 91028,
+        "observer_by_5deg_cell_unique_climate_observations": 87494,
+        "orientation_balanced_observations": 55944,
+        "five_CHELSA_cached_original_pixel_complete_oriented_observations": 80978,
+        "five_CHELSA_cached_balanced_model_observations": 50385
+      }
+    },
+    "introduced_wild_share_focal2_of_all_introduced": 0.9990940988835726,
+    "introduced_orientation_share_focal2_of_all_introduced": 0.999143854411345,
+    "all_species_does_not_justify_multi_species_evolutionary_transfer_generalization": true,
+    "note_climate_unique_and_angle_balanced_N_are_distinct_nonidentical_sample_definitions": true,
+    "five_CHELSA_cached_pixel_complete_intro_is_not_full_intro_available_for_niche_medians": true,
+    "full_ECDF_descriptive_support": {
+      "original_399_resamples_completed_for_both_species": 399,
+      "both_introduced_BIO12_distributions_right_shifted_over_broad_source_ranges": true,
+      "both_full_photo_angle_ECDF_difference_simultaneous_source_cell_bands_contain_zero_at_all_display_points": true,
+      "not_a_proof_of_no_phenotypic_response_or_no_genetic_evolution": true,
+      "source_sampled_observer_cell_balanced_photo_native": 38116,
+      "source_sampled_observer_cell_balanced_photo_introduced": 55944,
+      "original_meaning": "Exploratory simultaneous entire-axis 5-degree cell resampling of separately sampled occurrence-BIO12 and angle-eligible photo ECDFs"
+    }
+  },
+  "interpretation_stop_rules": {
+    "descriptive_wetter_introduced_occurrence_not_heritable_niche_evolution": true,
+    "non_significant_photo_angle_movement_is_not_proof_of_no_angle_change": true,
+    "original_photo_image_vertical_not_gravitational_angle": true,
+    "two_introduced_species_not_multi_species_macroecology_replication": true,
+    "S1_and_S2_native_observations_are_overlapping_source_not_two_independent_datasets": true,
+    "prior_spatial_sensitivity_retained_as_secondary_not_deleted_or_declared_false": true,
+    "no_new_analysis_claimed": true,
+    "original_V3_and_S1_frozen_unchanged": true
+  }
+}

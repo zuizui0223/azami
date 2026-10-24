@@ -1,0 +1,288 @@
+{
+  "schema_version": "native_first_27_endpoint_coverage_20261020_v2",
+  "provenance": {
+    "source": "GitHub Actions native-first aggregate receipt; no observation-level private data",
+    "run_id": 39408603488,
+    "artifact_id": 12257893990,
+    "receipt": "measurement_receipt.json",
+    "receipt_sha256": "246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6",
+    "receipt_code_commit": "e6be824ffe7c37a5711c1430d0671d6e85de2bf7",
+    "original_metadata_snapshot": "2026-07-03",
+    "existing_joint_model_run_id": 39416125522,
+    "existing_joint_model_artifact_id": 12261727387,
+    "existing_joint_model_response_sha256": "707e3cf0041d127e085bfa47ef83a6ff89a1ad84740cd4ec6c09a893bbe1c517"
+  },
+  "denominators": {
+    "original_pre_detector_observations": 665115,
+    "original_photo_rows": 1122854,
+    "native_primary_observations": 313350,
+    "native_photo_rows": 534186,
+    "native_wcvp_accepted_keys": 306,
+    "native_climate_all_nine_complete": 313240,
+    "native_climate_four_anchor_complete": 313244,
+    "native_with_inherited_measurement_row": 217104,
+    "native_without_inherited_measurement_row": 96246
+  },
+  "status_summary": {
+    "registered_endpoints": 27,
+    "have_any_numeric_native": 22,
+    "currently_computationally_eligible_native": 18,
+    "finite_but_zero_eligible": 4,
+    "unexecuted_no_measurement": 5
+  },
+  "notes": [
+    "No native observation is required to have all 27 endpoints.",
+    "All endpoint counts are counts of native observation rows; not independent heads, photographs, species, or validated functional traits.",
+    "Image-reference orientation is not gravity angle; floral JPEG colour is not calibrated reflectance; contour protrusion is not anatomical phyllary opening/spine length.",
+    "Surface technical values are finite for 570 native observations per endpoint but all four endpoint eligibility flags are false.",
+    "Five unexecuted endpoints are not biological zeros. Raw-photo/mask remeasurement is not undertaken in this PR.",
+    "The native-first coverage ledger itself is not a native-only ecological model result.",
+    "Per-endpoint n_eligible_native_taxa is independently joined from the archived native-only model reuse_inventory on the same frozen 313,350-native-observation source; it is NOT the number of local populations.",
+    "A positive measurement eligibility count is not proof of accuracy. Native-only model scientific claims need explicit estimator, correction family and regional-transfer limits."
+  ],
+  "endpoints": [
+    {
+      "endpoint_id": "orientation_image_vertical_angle",
+      "n_finite_native": 170066,
+      "n_eligible_native": 170066,
+      "n_eligible_with_four_climate": 170066,
+      "source": "full_archived_observation_table",
+      "status": "eligible_image_reference_proxy",
+      "n_eligible_native_taxa": 244
+    },
+    {
+      "endpoint_id": "corolla_lab_lightness",
+      "n_finite_native": 186439,
+      "n_eligible_native": 186439,
+      "n_eligible_with_four_climate": 186439,
+      "source": "full_archived_observation_table",
+      "status": "eligible_uncalibrated_colour",
+      "n_eligible_native_taxa": 244
+    },
+    {
+      "endpoint_id": "corolla_lab_chroma",
+      "n_finite_native": 186439,
+      "n_eligible_native": 186439,
+      "n_eligible_with_four_climate": 186439,
+      "source": "full_archived_observation_table",
+      "status": "eligible_uncalibrated_colour",
+      "n_eligible_native_taxa": 244
+    },
+    {
+      "endpoint_id": "corolla_hue_sin",
+      "n_finite_native": 186390,
+      "n_eligible_native": 186390,
+      "n_eligible_with_four_climate": 186390,
+      "source": "full_archived_observation_table",
+      "status": "eligible_one_joint_circular_hue",
+      "n_eligible_native_taxa": 244
+    },
+    {
+      "endpoint_id": "corolla_hue_cos",
+      "n_finite_native": 186390,
+      "n_eligible_native": 186390,
+      "n_eligible_with_four_climate": 186390,
+      "source": "full_archived_observation_table",
+      "status": "eligible_one_joint_circular_hue",
+      "n_eligible_native_taxa": 244
+    },
+    {
+      "endpoint_id": "visible_floret_fraction",
+      "n_finite_native": 0,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "unexecuted_no_measurement",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "corolla_white_pixel_fraction",
+      "n_finite_native": 0,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "unexecuted_no_measurement",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "corolla_redmagenta_pixel_fraction",
+      "n_finite_native": 0,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "unexecuted_no_measurement",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "corolla_purple_pixel_fraction",
+      "n_finite_native": 0,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "unexecuted_no_measurement",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "corolla_yellow_pixel_fraction",
+      "n_finite_native": 0,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "unexecuted_no_measurement",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "capitulum_outline_aspect_ratio",
+      "n_finite_native": 176048,
+      "n_eligible_native": 176048,
+      "n_eligible_with_four_climate": 176048,
+      "source": "full_archived_observation_table",
+      "status": "eligible_viewpoint_dependent_outline",
+      "n_eligible_native_taxa": 243
+    },
+    {
+      "endpoint_id": "capitulum_outline_circularity",
+      "n_finite_native": 176048,
+      "n_eligible_native": 176048,
+      "n_eligible_with_four_climate": 176048,
+      "source": "full_archived_observation_table",
+      "status": "eligible_viewpoint_dependent_outline",
+      "n_eligible_native_taxa": 243
+    },
+    {
+      "endpoint_id": "capitulum_outline_solidity",
+      "n_finite_native": 176048,
+      "n_eligible_native": 176048,
+      "n_eligible_with_four_climate": 176048,
+      "source": "full_archived_observation_table",
+      "status": "eligible_viewpoint_dependent_outline",
+      "n_eligible_native_taxa": 243
+    },
+    {
+      "endpoint_id": "capitulum_width_profile_cv",
+      "n_finite_native": 176048,
+      "n_eligible_native": 176048,
+      "n_eligible_with_four_climate": 176048,
+      "source": "full_archived_observation_table",
+      "status": "eligible_viewpoint_dependent_outline",
+      "n_eligible_native_taxa": 243
+    },
+    {
+      "endpoint_id": "involucre_length_width_ratio",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "involucre_apical_taper_ratio",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "involucre_basal_taper_ratio",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "bract_projection_roughness",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "bract_projection_p95",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "bract_projection_maximum",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "bract_spread_fraction",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "bract_projection_peak_density",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "bract_projection_asymmetry",
+      "n_finite_native": 1303,
+      "n_eligible_native": 1303,
+      "n_eligible_with_four_climate": 1303,
+      "source": "zenodo_endpoint_table",
+      "status": "computationally_eligible_anatomy_unvalidated",
+      "n_eligible_native_taxa": 111
+    },
+    {
+      "endpoint_id": "involucre_surface_edge_density",
+      "n_finite_native": 570,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "technical_validation_only_not_analysis_eligible",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "involucre_surface_lbp_entropy",
+      "n_finite_native": 570,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "technical_validation_only_not_analysis_eligible",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "involucre_surface_high_frequency_energy",
+      "n_finite_native": 570,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "technical_validation_only_not_analysis_eligible",
+      "n_eligible_native_taxa": 0
+    },
+    {
+      "endpoint_id": "involucre_surface_specular_fraction",
+      "n_finite_native": 570,
+      "n_eligible_native": 0,
+      "n_eligible_with_four_climate": 0,
+      "source": "zenodo_endpoint_table",
+      "status": "technical_validation_only_not_analysis_eligible",
+      "n_eligible_native_taxa": 0
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+name: V4 T2 all matching S1 taxa on EAzami Japan38 independent nuclear tree
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_japan38_all_s1_nuclear_bm_ou.py'
+      - 'tests/test_v4_t2_japan38_all_s1_nuclear_bm_ou.py'
+      - '.github/workflows/v4-t2-japan38-all-s1-nuclear-bm-ou.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-t2-japan38-all-s1-nuclear-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  all-exact-source-name-candidates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install phylogenetic analyses
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Test rank-aware exact naming and Japanese multi-sample/identity exclusions
+        run: python -m pytest -q tests/test_v4_t2_japan38_all_s1_nuclear_bm_ou.py
+      - name: Download frozen all-244 authentic S1 source-census artifact
+        run: |
+          set -euo pipefail
+          mkdir -p work/t2-japan38/input work/t2-japan38/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12399694421 --jq '.digest')" = "sha256:902264668bfea47358fdc66bb85ef543f9be29f5a67266d4d1e248d14db146d1"
+          gh run download 39718386338 --repo zuizui0223/azami \
+            --name v4-t2-full-S1-244-all-species-public-taxonomic-census \
+            --dir work/t2-japan38/input
+          test -s work/t2-japan38/input/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv
+      - name: Run complete source-name matched EAzami Japan38 nuclear BM OU WN comparison
+        run: |
+          python -m analysis.v4.t2_japan38_all_s1_nuclear_bm_ou \
+            --s1-full244 work/t2-japan38/input/S1_ALL_244_ACCEPTED_TAXON_CENSUS.csv \
+            --output work/t2-japan38/output/T2_JAPAN38_S1_COMPLETE_NAME_MATCH_BM_OU_WN.json
+      - name: Archive all 38 original concept dispositions and conditional model results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-japan38-all-original-S1-nuclear-overlap-BM-OU
+          path: work/t2-japan38/output/
+          if-no-files-found: warn
+          retention-days: 90

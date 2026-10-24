@@ -1,0 +1,181 @@
+{
+  "schema_version": "v4_two_species_native_intro_pca_env_cached_background_20261021_v1",
+  "source": {
+    "action_run": 39555119369,
+    "artifact_id": 12325311774,
+    "artifact_zip_sha256": "9a427ba5a6350b519490a1908061b3042f947dbc75bd2bac5e2d539505a0b157",
+    "file_member": "S2_two_species_native_introduced_pca_env.json",
+    "file_member_sha256": "0cac0de25d9f63407f39e86b1483aee131edaa1fa8bbb9d7c087c123c85c3cda",
+    "private_wild_source_original_observations": 297622,
+    "full_665115_original_source_sightings_and_WCVP_TDWG_source_pinned": true,
+    "original_HEAD_image_orientation_values_used_for_niche_selection": false,
+    "source_dates_or_photographic_eligibility_used_for_niche_occurrence_filter": false,
+    "source_phenotype_raw_rows_or_original_human_ids_in_receipt": false
+  },
+  "method": {
+    "climatic_axes": [
+      "CHELSA_bio01",
+      "CHELSA_bio04",
+      "CHELSA_bio12",
+      "CHELSA_bio15",
+      "CHELSA_rsds_mean"
+    ],
+    "region_definition": "WCVP TDWG3 species-native and explicitly introduced wild original status",
+    "availability_background": "0.5 degree world mesh clipped to WCVP polygons, environmental background climate from cached original ~1km CHELSA pixel without resampling",
+    "geographic_surface_area_weights": "cosine(latitude) on deterministic 0.5 degree mesh",
+    "data_supported_accessible_background_fraction_full_threshold": 0.8,
+    "sampling": "one original source observation per taxon×status×5° equal-sin(latitude) cell×original observer, no phenotype eligibility conditioning",
+    "analysis": "Two common-background climate principal components (balanced native/introduced available environments), 80x80 common grid, Gaussian-smoothed density divided by within-region available background density, Schoener D and 95% probability-content exclusive mass",
+    "not_exact_ecospat": "Román et al. (2021) ecospat 100x100 PCA-env with 10 km data, Rad_sd and Human Footprint; current V4 uses 80x80 and original ~1km RSDS mean, no Human Footprint, no equivalency or similarity permutations",
+    "cannot_compare_Schoener_D_directly_to_Roman": true
+  },
+  "source_available_climate_background": {
+    "global_land_0p5deg_TDWG_mesh": 85414,
+    "cached_5variable_climate_candidate_mesh": 23296,
+    "all_5variable_complete_background_mesh": 23296,
+    "number_5degree_cached_storage_tiles": 316
+  },
+  "species": {
+    "Cirsium arvense": {
+      "status": "PARTIAL_RASTER_BACKGROUND_NOT_FULL_WCVP_NICHE",
+      "native": {
+        "original_observer_cell_balanced_wild_sightings": 30523,
+        "complete_CHELSA": 30516,
+        "potential_background_points": 24644,
+        "cached_background_points": 15898,
+        "area_weighted_background_coverage": 0.6745689097851836
+      },
+      "introduced": {
+        "original_observer_cell_balanced_wild_sightings": 38406,
+        "complete_CHELSA": 37418,
+        "potential_background_points": 18788,
+        "cached_background_points": 5768,
+        "area_weighted_background_coverage": 0.3563709086006828
+      },
+      "cell_weighted_median_climate": {
+        "BIO1_C": [
+          6.25,
+          6.85
+        ],
+        "BIO4": [
+          939.4048118817302,
+          900.6
+        ],
+        "BIO12_mm": [
+          659,
+          845
+        ],
+        "BIO15": [
+          41.5,
+          38.1
+        ],
+        "RSDS_mean": [
+          13.060045656814339,
+          14.035
+        ]
+      },
+      "pca_background_corrected_Schoener_D": 0.40548011625855396,
+      "pca_uncorrected_photo_density_Schoener_D": 0.5253146620375055,
+      "introduced_occupancy_mass_outside_native_95pct_content": 0.19477815476594293,
+      "introduced_regions": {
+        "North America": {
+          "available_background_fraction": 0.5822086644063883,
+          "original_climate_complete_sightings": 37418,
+          "background_points": 5696,
+          "exploratory_D": 0.3839600575708939
+        },
+        "Africa": {
+          "available_background_fraction": 0,
+          "background_points": 0,
+          "status": "NOT_ESTIMABLE"
+        },
+        "South America": {
+          "available_background_fraction": 0,
+          "background_points": 0,
+          "status": "NOT_ESTIMABLE"
+        },
+        "Australasia": {
+          "available_background_fraction": 0,
+          "background_points": 0,
+          "status": "NOT_ESTIMABLE"
+        }
+      }
+    },
+    "Cirsium vulgare": {
+      "status": "PARTIAL_RASTER_BACKGROUND_NOT_FULL_WCVP_NICHE",
+      "native": {
+        "original_observer_cell_balanced_wild_sightings": 26161,
+        "complete_CHELSA": 26161,
+        "potential_background_points": 15817,
+        "cached_background_points": 10567,
+        "area_weighted_background_coverage": 0.66
+      },
+      "introduced": {
+        "original_observer_cell_balanced_wild_sightings": 49088,
+        "complete_CHELSA": 42274,
+        "potential_background_points": 12617,
+        "cached_background_points": 6127,
+        "area_weighted_background_coverage": 0.461
+      },
+      "cell_weighted_median_climate": {
+        "BIO1_C": [
+          8.35,
+          8.35
+        ],
+        "BIO4": [
+          788.3,
+          854.4
+        ],
+        "BIO12_mm": [
+          666,
+          930
+        ],
+        "BIO15": [
+          32.5,
+          37.9
+        ],
+        "RSDS_mean": [
+          12.489,
+          14.631
+        ]
+      },
+      "pca_background_corrected_Schoener_D": 0.25844120280815996,
+      "pca_uncorrected_photo_density_Schoener_D": 0.6021649491969541,
+      "introduced_occupancy_mass_outside_native_95pct_content": 0.651357300036584,
+      "introduced_regions": {
+        "North America": {
+          "available_background_fraction": 0.810440985791862,
+          "original_climate_complete_sightings": 42174,
+          "background_points": 5726,
+          "exploratory_D": 0.3816845425150288
+        },
+        "Africa": {
+          "available_background_fraction": 0.0010899642783355693,
+          "original_climate_complete_sightings": 52,
+          "background_points": 1,
+          "status": "NOT_ESTIMABLE"
+        },
+        "South America": {
+          "available_background_fraction": 0.02777430969549713,
+          "background_points": 38,
+          "status": "NOT_ESTIMABLE"
+        },
+        "Australasia": {
+          "available_background_fraction": 0,
+          "background_points": 0,
+          "status": "NOT_ESTIMABLE"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Occurrence-based range medians are descriptive conditional on original cached CHELSA source pixels and original user×site cell sample, not full estimated realized climatic niche.",
+    "Both overall WCVP available backgrounds fail the prespecified 80%-coverage threshold. Schoener D values are restricted-cache exploratory figures, NOT verified global niche equivalency or expansion.",
+    "Native available area ≈66–67%; introduced available area ≈36–46%; absent rasters in South America, Africa and Australasia prohibit cross-continent PCA-env tests.",
+    "Only North American C. vulgare introduced available climate background reaches >=80% areal coverage; native background still only 66%, so its D cannot be compared directly with Román 2021 reported North America D=0.5486.",
+    "Environmental predictors and resolution differ from Román 2021 (BIO1/BIO4/BIO12/BIO15 plus RSDS mean here, vs Rad_sd and Human Footprint at ~10km there).",
+    "Maximum entropy species occurrence relative to selected survey-effort background requires its own bias correction and spatial predictive evaluation; PCA-env D is not MaxEnt AUC.",
+    "Photographic head response has been deliberately excluded from this niche comparison; no morphological adaptation or evolution claim."
+  ],
+  "next_action": "Extend only missing original raster coverage in WCVP native and introduced polygons, starting C. vulgare Africa/South America BIO1/BIO4/BIO12/BIO15/RSDS, validate source exact pixel SHA and rerun availability-corrected PCA-env 100x100 with geography/observer/source-effort sensitivity before linking flower orientation."
+}

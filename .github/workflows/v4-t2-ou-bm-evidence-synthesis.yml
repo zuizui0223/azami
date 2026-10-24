@@ -1,0 +1,87 @@
+name: V4 T2 completed all244 BM OU evidence synthesis
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-t2-ou-bm-evidence-synthesis.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify-and-summarize-source-receipts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify two executed source artifacts are the expected original analyses
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401001041 --jq .digest)" = 'sha256:60740a808f856ca68fcf96bdffd06b4b79954b18c7d824ef52e3cc99d9ef5c46'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401560444 --jq .digest)" = 'sha256:2ade40b835d6f2655ff7c7c2c51533544d63d9ee2df3176bdc3a530a076fcbac'
+          mkdir -p work/t2-evidence/all244 work/t2-evidence/nuclear work/t2-evidence/summary
+          gh run download 39720452379 --repo zuizui0223/azami \
+            --name v4-t2-S1-all244-wn-bm-ou1-placement-screen \
+            --dir work/t2-evidence/all244
+          gh run download 39721344262 --repo zuizui0223/azami \
+            --name v4-t2-S1-NA42-nuclear-wn-bm-ou-true-means \
+            --dir work/t2-evidence/nuclear
+      - name: Freeze six main sensitivity cases and independent nuclear model preferences
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path('work/t2-evidence')
+          all244=json.loads((root/'all244/S1_ALL244_NUCLEAR_COVERAGE_AND_BM_OU_SUMMARY.json').read_text())
+          nuclear=json.loads((root/'nuclear/NA42_GENUINE_NUCLEAR_S1_ORIENTATION_WN_BM_OU1.json').read_text())
+          with (root/'all244/S1_ALL244_TAXON_COVERAGE.csv').open() as h:
+              roster=list(csv.DictReader(h))
+          with (root/'all244/S1_191_PHYLOGENETIC_WN_BM_OU1_ALL_PLACEMENTS.csv').open() as h:
+              fit=list(csv.DictReader(h))
+          assert len(roster)==244 and len(fit)==312
+          assert all244['all_source_eligible']==244
+          assert all244['main_collision_free']==191
+          assert len(all244['comparison_by_case'])==6
+          assert len(nuclear['fits'])==4 and nuclear['matched_independent_nuclear_taxa']==42
+          assert nuclear['n_taxa_with_distinct_original_image_mean_median']>0
+          for label,summary in sorted(all244['comparison_by_case'].items()):
+              print('FULL244_' + label + '=' + json.dumps(summary,sort_keys=True))
+          for k,v in all244['all244_equal_taxon_WN_five_climate_baselines'].items():
+              print('FULL244_WN_' + k + '=' + json.dumps(v,sort_keys=True))
+          print('FULL244_S2_MAPPED='+json.dumps(all244['s2_exact_source_species'],sort_keys=True))
+          print('NA42_INDEPENDENT_NUCLEAR_MODELS='+json.dumps(nuclear['fits'],sort_keys=True))
+          out={
+            'schema':'v4_S1_all244_ML_phylogenetic_sensitivity_two_original_action_receipts_v1',
+            'all244_verified_run':39720452379,
+            'all244_verified_artifact':12401001041,
+            'independent_NA42_verified_run':39721344262,
+            'independent_NA42_verified_artifact':12401560444,
+            'source_taxon_count':244,
+            'phylo_coverage_194':194,
+            'strict_191':191,
+            'model_fits':312,
+            'placement_scenario_nonindependence':True,
+            'all244_model_summary':all244['comparison_by_case'],
+            'all244_WN_observational_baselines':all244['all244_equal_taxon_WN_five_climate_baselines'],
+            'S2_taxon_links':all244['s2_exact_source_species'],
+            'NA42_nuclear_model_fits':nuclear['fits'],
+            'claim_not_established':[
+              'All 244 taxa have a reconstructed nuclear tree',
+              'Repeated true nodding origins calibrated from camera vertical angles',
+              'Single-optimum OU supports adaptive radiation',
+              'Historical rain triggered the origin of nodding',
+              'The 52 grafting scenarios are independent evolutionary replicates'
+            ]
+          }
+          (root/'summary/T2_ALL244_WN_BM_OU1_VERIFIED_EVIDENCE.json').write_text(
+              json.dumps(out,ensure_ascii=False,sort_keys=True,indent=2)+'\n')
+          print('PASS six exact all-244 placement sensitivity cases and independent original-nuclear 42-taxon comparator')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-all244-wn-bm-ou-evidence-summary
+          path: work/t2-evidence/summary/
+          if-no-files-found: error
+          retention-days: 90

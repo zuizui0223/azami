@@ -1,0 +1,162 @@
+name: V4 T2 real 123-run 120k 241-locus 111-taxon shared panel
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_moreyra125_120k_source241_locus_matrix.py'
+      - 'analysis/v4/t2_moreyra125_120k_shared_locus_occupancy.py'
+      - 'tests/test_v4_t2_moreyra125_120k_locus_matrix_and_occupancy.py'
+      - '.github/workflows/v4-t2-real125-120k-locus111-occupancy.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  frozen-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate strict 120k per-locus public accession and missingness logic
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_moreyra125_120k_locus_matrix_and_occupancy.py
+      - name: Restore authenticated full125 original241 and verified same-run 120k evidence
+        run: |
+          set -euo pipefail
+          mkdir -p work/source/older work/source/verified work/source/input
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12428430410 --jq '.digest')" = 'sha256:16ef207ec02ee24ea3d214a9935ddc0d21e70003573935ffdf1132aa9bacc5a1'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12430551556 --jq '.digest')" = 'sha256:525e10d23276f21fea8453a56dac941b66c52d59e3ce76ffde859fbaa194602b'
+          gh run download 39783655030 --repo zuizui0223/azami --name t2-real241-original-source --dir work/source/older
+          gh run download 39787499085 --repo zuizui0223/azami --name t2-all125-original241-30k-vs-120k-Q20-coverage --dir work/source/verified
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/source/older/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/source/older/loci/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+          cp work/source/older/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv work/source/input/
+          cp work/source/older/loci/moreyra_conservative_241_no_warning_loci.txt work/source/input/
+          cp work/source/verified/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv work/source/input/
+          python - <<'PY'
+          from pathlib import Path
+          import csv
+          p=Path('work/source/input')
+          with (p/'T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv').open() as f: old=list(csv.DictReader(f))
+          assert len(old)==125 and len({r['run'] for r in old})==125
+          assert sum(r['full_120k_comparison_status']=='real_ENA_120k_quality20_depth' for r in old)==123
+          from analysis.v4.t2_moreyra_all125_ena_read_mapping import load_source
+          assert len(load_source(p/'S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv'))==125
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t2-real120k-125-source241-identities
+          path: work/source/input/
+          if-no-files-found: error
+          retention-days: 90
+
+  per-locus:
+    needs: frozen-sources
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retrieve only verified public original125 metadata and source241 locus IDs
+        run: |
+          set -euo pipefail
+          mkdir -p work/real125/input work/real125/ref work/real125/scratch work/real125/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-real120k-125-source241-identities --dir work/real125/input
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/real125/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          echo "d561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/real125/input/moreyra_conservative_241_no_warning_loci.txt" | sha256sum -c -
+      - name: Install alignment software and source-verify original Compositae1061 DNA
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/real125/ref
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          x=json.loads(Path('work/real125/ref/comp1061_original_reference_contract.json').read_text())
+          assert x['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert x['locus_count']==1061 and not x['moreyra_augmented_reference_recovered']
+          PY
+          bwa index work/real125/ref/comp1061_hybpiper_reference.fasta
+      - name: Map real first120k matched ENA paired reads for all 241 targets on original sources
+        run: |
+          python -m analysis.v4.t2_moreyra125_120k_source241_locus_matrix --source work/real125/input/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --original120k work/real125/input/T2_ALL125_NESTED_PUBLIC_30K_VS_120K_Q20.csv --loci work/real125/input/moreyra_conservative_241_no_warning_loci.txt --reference work/real125/ref/comp1061_hybpiper_reference.fasta --shard ${{ matrix.shard }} --scratch work/real125/scratch --out work/real125/out/shard_${{ matrix.shard }}.json
+      - name: Remove all original FASTQ and BAM scratch before publication
+        if: always()
+        run: rm -rf work/real125/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real120k-125-perlocus-shard-${{ matrix.shard }}
+          path: work/real125/out/
+          retention-days: 90
+          if-no-files-found: warn
+
+  empirical-111-taxa-occupancy:
+    needs: [frozen-sources,per-locus]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aggregate exactly 125 original source-run outcomes including short-run missingness
+        run: |
+          set -euo pipefail
+          mkdir -p work/aggregate/shards work/aggregate/source work/aggregate/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --pattern 't2-real120k-125-perlocus-shard-*' --dir work/aggregate/shards
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-real120k-125-source241-identities --dir work/aggregate/source
+          python -m analysis.v4.t2_moreyra125_120k_shared_locus_occupancy --source work/aggregate/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --receipts work/aggregate/shards --out-dir work/aggregate/out
+      - name: Confirm shared 241 loci across 111 independently sampled taxa without imaginary tree
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv,json
+          p=Path('work/aggregate/out')
+          s=json.loads((p/'T2_REAL120K_AUTHOR241_ALL111_CROSS_TAXON_SUMMARY.json').read_text())
+          files=[('T2_ALL113_SOURCE_TAXA_REAL120K_BEST_SINGLE_RUN.csv',113),
+                 ('T2_AUTHOR241_SHARED_Q20_120K_ACROSS111_TAXA.csv',241)]
+          for file,n in files:
+              with (p/file).open() as f: assert sum(1 for _ in csv.DictReader(f))==n
+          assert s['source_independently_measured_120k_taxa']==111
+          assert s['source_original_Moreyra_public_SRA_run_count']==125
+          assert s['source_short_run_unavailable_not_zero_genes']==2
+          assert s['S1_original_source_name_units']==251
+          assert s['source_241_author_filtered_no_warning_loci']==241
+          assert not s['no_294_tip_nuclear_tree_constructed'] is False
+          assert s['same_original_reference_is_not_confirmed_orthology']
+          print('PASS TRUE all111 species shared reference locus presence, original125 source IDs')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real120k-all111-original241-shared-locus-occupancy
+          path: work/aggregate/out/
+          if-no-files-found: warn
+          retention-days: 90

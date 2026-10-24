@@ -1,0 +1,83 @@
+name: V4 T2 S1 BIO18 BIO5 RSDS elevation nuclear PGLS PIC
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_fourclimate_real_nuclear_pgls_pic.py'
+      - 'tests/test_v4_t2_s1_fourclimate_real_nuclear_pgls_pic.py'
+      - '.github/workflows/v4-t2-s1-fourclimate-genuine-nuclear-pgls-pic.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-two-source-nuclear-species-trees:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install real measured S1 photo and nuclear covariance dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Unit test B18 B05 RSDS elevation measured site link and independent contrasts
+        run: |
+          python -m pytest -q \
+            tests/test_v4_t2_s1_fourclimate_real_nuclear_pgls_pic.py \
+            tests/test_v4_t2_s1_photo_nuclear_pgls_bio1_bio15_bridge.py \
+            tests/test_v4_t2_s1_continuous_genuine_nuclear_two_tree_clustering.py
+      - name: Retrieve ORIGINAL all251 S1 measured photos and 2026-10-24 real four-climate extension
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1 work/newfour work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12548594169 --jq '.digest')" = 'sha256:8b19d76a695f3773d54885c637fcf7ed52445f615e9dae8501305a40e05327f5'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/s1
+          gh run download 40064998009 --repo zuizui0223/azami \
+            --name v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation --dir work/newfour
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+          echo '823ecb8442eb03598253cb33f3e16bac86538c6c2652f48ca2dc0886d0e19626  work/newfour/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv' | sha256sum -c -
+      - name: Fit 4-axis original S1 photographed angle with NA42 and Japan12 true multilocus nuclear PGLS and PIC
+        run: |
+          python -m analysis.v4.t2_s1_fourclimate_real_nuclear_pgls_pic \
+            --original251 work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --new-four-species work/newfour/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv \
+            --out work/out
+          git rev-parse HEAD > work/out/GITHUB_SOURCE_COMMIT.txt
+      - name: Assert original 251 continuity, 2 real nuclear trees and no U D or chloroplast
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/out')
+          o=json.loads((root/'T2_REAL_NUCLEAR_4AXIS_S1_ANGLE_PGLS_PIC.json').read_text())
+          assert o['new_four_axes']==['chelsa_bio18','chelsa_bio05','chelsa_rsds_mean','elevation_m']
+          assert o['new_four_environment_matched_original_photo_observations']==169020
+          assert o['authentic_true_multilocus_nuclear_species_trees']==2
+          assert o['no_plastid_or_flora_U_D_or_failed_111_Q20_tree']
+          a=o['nuclear_panels']
+          assert a['NA42_genuine_published_nuclear']['min_photos_1']['n_authentic_source_taxa']==42
+          assert a['Japan12_genuine_176_loci_nuclear']['min_photos_1']['n_authentic_source_taxa']==12
+          assert a['Japan12_genuine_176_loci_nuclear']['min_photos_10']['status']=='NOT_EVALUABLE_TOO_FEW_SOURCE_PHOTOS_NUCLEAR_TIPS'
+          for label in a:
+              result=a[label]['min_photos_1']
+              assert len(result['PGLS']['estimated_Pagel_lambda']['coefficients_degrees_per_SD'])==5
+              assert result['PIC']['status']=='FELSENSTEIN_REAL_NUCLEAR_SOURCE_CONTRASTS'
+              assert len(result['BH_q_genuine_2panel_fouraxis_PGLS'])==4
+          assert (root/'T2_REAL_NUCLEAR_S1_4AXIS_PGLS.png').stat().st_size>10000
+          print('TRUE_NUCLEAR_4_AXIS_S1_PHOTO_PGLS_PIC_SOURCE_VERIFIED_SUCCESS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-real-NA42-Japan12-S1-BIO18-BIO5-RSDS-elev-PGLS-PIC
+          path: work/out/
+          retention-days: 90
+          if-no-files-found: warn

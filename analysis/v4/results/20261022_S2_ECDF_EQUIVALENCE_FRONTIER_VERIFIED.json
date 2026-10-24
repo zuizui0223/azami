@@ -1,0 +1,113 @@
+{
+  "schema": "V4_S2_source_399_cell_bootstrap_cdf_equivalence_frontier_report_20261022_v1",
+  "status": "SOURCE_VERIFIED_FUTURE_EQUIVALENCE_PRECISION_ONLY__NO_PREDECLARED_ECOLOGICAL_SESOI_OR_FORMAL_TOST",
+  "source_run_id": 39711427699,
+  "source_workflow_url": "https://github.com/zuizui0223/azami/actions/runs/39711427699",
+  "source_job_id": 119603422234,
+  "artifact": {
+    "id": 12396863611,
+    "name": "v4-s2-source-ecdf-equivalence-feasibility",
+    "digest": "sha256:92f65d98c9e0fe20d541ba9fc03275cc5da5efca423e547cc585b1c872351888",
+    "size_bytes": 2301
+  },
+  "original_full_curve_source": {
+    "archived_successful_run_id": 39592586205,
+    "GitHub_Actions_artifact_id": 12341964253,
+    "artifact_digest": "sha256:f892cd15cbf8be0232e9ec5286d98b168ae47f813685bb1480ed6c53e638a910",
+    "source_member_sha256": "765742c0a2fdaef094f26de7999c9c322e5397a3c74ac0912edec4c2d09d9e4f",
+    "two_original_species": [
+      "Cirsium arvense",
+      "Cirsium vulgare"
+    ],
+    "S1_S2_scale_and_N": "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json"
+  },
+  "result": {
+    "species": {
+      "Cirsium arvense": {
+        "photo_angle_frontier": {
+          "ECDF_bootstrap_draws": 399,
+          "NOT_a_calibrated_formal_equivalence_TOST": true,
+          "NOT_a_proof_of_unchanged_biological_head_posture": true,
+          "NOT_a_prospectively_chosen_SESOI": true,
+          "all_95pct_CDF_difference_bands_include_zero_at_reported_knots": true,
+          "delta_units": "absolute cumulative probability = 100 * delta percentage points",
+          "display_knots": 401,
+          "fraction_of_display_knots_where_introduced_CDF_below_native": 0.3341645885286783,
+          "hypothetical_margin_decision_rule": "If delta>upper and delta independently selected in advance, source-grid band would fit within ±delta; without a justified delta, no equivalence claim is made",
+          "max_observed_difference_at_value": 119.39773868662485,
+          "minimum_delta_for_95pct_simultaneous_band_containment": 0.12346166441399255,
+          "n_introduced_original_cell_balanced_observations": 25657,
+          "n_introduced_spatial_5deg_cells": 100,
+          "n_native_original_cell_balanced_observations": 21870,
+          "n_native_spatial_5deg_cells": 186,
+          "observed_signed_CDF_difference_at_max": 0.046184870442695036,
+          "observed_sup_absolute_CDF_difference": 0.046184870442695036,
+          "reported_Plotting_grid_only_not_exact_all_empirical_CDF_jumps": true,
+          "simultaneous_95pct_envelope_lower_bound_on_sup_CDF_difference": 0,
+          "simultaneous_95pct_envelope_upper_bound_on_sup_CDF_difference": 0.12346166441399255,
+          "source_bootstrap_uncertainty_exploratory_and_spatial_cells_not_independent_genetic_replicates": true,
+          "type": "UNSELECTED_FULL_CDF_GRID_DIFFERENCE_NATIVE_VS_ALL_INTRODUCED",
+          "unit": "image_degrees"
+        },
+        "rain_source_distribution": {
+          "all_95pct_CDF_difference_bands_include_zero_at_reported_knots": false,
+          "observed_sup_absolute_CDF_difference": 0.2559035344999895
+        }
+      },
+      "Cirsium vulgare": {
+        "photo_angle_frontier": {
+          "ECDF_bootstrap_draws": 399,
+          "NOT_a_calibrated_formal_equivalence_TOST": true,
+          "NOT_a_proof_of_unchanged_biological_head_posture": true,
+          "NOT_a_prospectively_chosen_SESOI": true,
+          "all_95pct_CDF_difference_bands_include_zero_at_reported_knots": true,
+          "delta_units": "absolute cumulative probability = 100 * delta percentage points",
+          "display_knots": 401,
+          "fraction_of_display_knots_where_introduced_CDF_below_native": 0.48129675810473815,
+          "hypothetical_margin_decision_rule": "If delta>upper and delta independently selected in advance, source-grid band would fit within ±delta; without a justified delta, no equivalence claim is made",
+          "max_observed_difference_at_value": 70.09332851767607,
+          "minimum_delta_for_95pct_simultaneous_band_containment": 0.11459217572205463,
+          "n_introduced_original_cell_balanced_observations": 30287,
+          "n_introduced_spatial_5deg_cells": 157,
+          "n_native_original_cell_balanced_observations": 16246,
+          "n_native_spatial_5deg_cells": 124,
+          "observed_signed_CDF_difference_at_max": 0.044243156739647405,
+          "observed_sup_absolute_CDF_difference": 0.044243156739647405,
+          "reported_Plotting_grid_only_not_exact_all_empirical_CDF_jumps": true,
+          "simultaneous_95pct_envelope_lower_bound_on_sup_CDF_difference": 0,
+          "simultaneous_95pct_envelope_upper_bound_on_sup_CDF_difference": 0.11459217572205463,
+          "source_bootstrap_uncertainty_exploratory_and_spatial_cells_not_independent_genetic_replicates": true,
+          "type": "UNSELECTED_FULL_CDF_GRID_DIFFERENCE_NATIVE_VS_ALL_INTRODUCED",
+          "unit": "image_degrees"
+        },
+        "rain_source_distribution": {
+          "all_95pct_CDF_difference_bands_include_zero_at_reported_knots": false,
+          "observed_sup_absolute_CDF_difference": 0.3309562892812207
+        }
+      }
+    },
+    "status": "ACTUAL_SOURCE_GRID_UNCERTAINTY_FRONTIER_COMPUTED_WITHOUT_SELECTING_AN_EQUIVALENCE_MARGIN"
+  },
+  "sensitivity_without_SESOI": {
+    "meaning": "The smallest ±delta hypothetical half-width of WHOLE ECDF population CDF differences whose 95% *exploratory spatial-cell source* envelope would fit within that region.",
+    "arvense_observed_sup_probability": 0.046184870442695036,
+    "arvense_minimum_equivalence_half_width_probability": 0.12346166441399255,
+    "vulgare_observed_sup_probability": 0.044243156739647405,
+    "vulgare_minimum_equivalence_half_width_probability": 0.11459217572205463,
+    "5pct_difference_halfwidth_supported_both": false,
+    "10pct_difference_halfwidth_supported_both": false,
+    "15pct_difference_halfwidth_band_containment_both": true,
+    "15pct_halfwidth_independently_ecologically_validated": false
+  },
+  "nonclaim": {
+    "formally_conducted_predeclared_equivalence_TOST": false,
+    "concluded_no_biologically_important_change": false,
+    "concluded_absence_of_genetic_change": false,
+    "CDF_delta_units_are_image_degrees": false,
+    "cdf_equivalence_can_be_taken_as_real_gravitational_capitulum_equivalence": false,
+    "assumes_399_5deg_cells_are_independent_individuals": false,
+    "S2_positive_introduced_wetter_climate_shift_retained": true,
+    "S1_between_taxon_positive_BIO12_effect_retained": true,
+    "original_S1_and_V3_numerical_outputs_unchanged": true
+  }
+}

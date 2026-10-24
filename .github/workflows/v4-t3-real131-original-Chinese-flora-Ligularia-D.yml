@@ -1,0 +1,85 @@
+name: V4 T3 real131 nuclear linked rDNA Chinese flora Ligularia purdomii capitula D
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/t3_131_chinese_flora_new_Ligularia_nodding.py'
+      - 'analysis/v4/results/20261024_T3_LIGULARIA_PURDOMII_ORIGINAL_CHINESE_FLORA_HEAD.csv'
+      - 'tests/test_v4_t3_131_chinese_flora_new_Ligularia_nodding.py'
+      - '.github/workflows/v4-t3-real131-original-Chinese-flora-Ligularia-D.yml'
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_131_chinese_flora_new_Ligularia_nodding.py'
+      - 'analysis/v4/results/20261024_T3_LIGULARIA_PURDOMII_ORIGINAL_CHINESE_FLORA_HEAD.csv'
+      - 'tests/test_v4_t3_131_chinese_flora_new_Ligularia_nodding.py'
+      - '.github/workflows/v4-t3-real131-original-Chinese-flora-Ligularia-D.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-original-131-tip-nuclear-chinese-Flora-head-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original GenBank linked gene-tree scientific audit
+        run: python -m pip install 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Check FRPS capitulum D not erect stem, exact Taiwania ITS-only and no invented gains
+        run: |
+          python -m pytest -q tests/test_v4_t3_131_chinese_flora_new_Ligularia_nodding.py tests/test_v4_t3_2025_real_nuclear_rDNA_phylogeny_posture_topology.py
+      - name: Restore real 131 Senecioneae original GenBank ITS ETS DNA IQTREE and author state table
+        run: |
+          set -euo pipefail
+          mkdir -p work/T3/real2025 work/T3/results
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12505750735 --jq '.digest')" = 'sha256:55e67249c9873d31562c75157cf57accd45a5cd349e92ace89dce474e03ba9aa'
+          gh run download 39961377067 --repo zuizui0223/azami \
+            --name t3-2025-actual-131-GenBank-linked-ITS-ETS-original-ML-nuclear-phylogeny \
+            --dir work/T3/real2025
+          echo 'fb1c2019b06e3691fac13e19d2f250ad7a34287fbd29abd209b9405d30748310  work/T3/real2025/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile' | sha256sum -c -
+      - name: Join direct original Chinese species-head down to original D8 nuclear gene tree and inspect true 4-tip LCA
+        run: |
+          python -m analysis.v4.t3_131_chinese_flora_new_Ligularia_nodding \
+            --tree work/T3/real2025/2025-tree/T3_2025_REAL_GENBANK_ITS_ETS_LINKED_RIBOSOMAL_ML.treefile \
+            --original131 work/T3/real2025/2025-tree/T3_2025_OWN_REAL_LINKED_ITS_ETS_GENBANK_TREE_TIP_EVIDENCE.csv \
+            --chinese-flora analysis/v4/results/20261024_T3_LIGULARIA_PURDOMII_ORIGINAL_CHINESE_FLORA_HEAD.csv \
+            --genbank163 analysis/v4/results/20261023_T3_TAIWANIA2025_ORIGINAL163_ITS_ETS_GENBANK_ACCESSIONS.csv \
+            --out work/T3/results/T3_REAL131_NUCLEAR_ADDITIONAL_FRPS_L_PURDOMII_HEAD_NODDING_4TIP_LCA.json
+          git rev-parse HEAD > work/T3/results/SOURCE_GIT_COMMIT.txt
+      - name: Assert actual DNA 131 D9 in 3 genera and no false 2-tip sister or adaptation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/T3/results/T3_REAL131_NUCLEAR_ADDITIONAL_FRPS_L_PURDOMII_HEAD_NODDING_4TIP_LCA.json').read_text())
+          assert d['original_2025_genbank_linked_rDNA_taxa']==131
+          assert d['previous_authority_documented_D']==8
+          assert d['new_authority_D']==9
+          assert d['new_D_across_genera']=={'Cremanthodium':2,'Parasenecio':6,'Ligularia':1}
+          assert d['source_unknown_heads_retained']==122
+          assert d['source_verified_U']==0
+          assert d['original_same_species_ITS_only_accession']=='AY723257'
+          assert not d['L_purdomii_rDNA_ETS_gene_available_in_2025_source']
+          assert d['experiment_species_nearest_nuclear_genealogy_taxon']=='Ligularia purdomii'
+          assert len(d['original_4tip_clade_member_names'])==4
+          assert abs(d['clade_IQTREE_SHaLRT']-80.4)<1e-8
+          assert d['clade_IQTREE_UFBoot']==100
+          assert d['within_real_clade_other_two_members_have_UNKNOWN_morphology']
+          assert not d['experiment_and_new_D_species_are_A_CHERRY_two_tip_sisters']
+          assert d['number_of_independent_down_head_origins_inferred'] is False
+          assert d['rainfall_at_head_origin_or_effect_on_pollen_fitness_in_L_purdomii_measured'] is False
+          print('PASS_131_TRUE_GENEALOGY_9_SOURCE_NODDING_IN_THREE_GENERA_ACTUAL_4TIP_RELATION')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t3-real131-Chinese-FRPS-Ligularia-D-true-fourtip-neighbor-ecology
+          path: work/T3/results/
+          if-no-files-found: warn
+          retention-days: 90

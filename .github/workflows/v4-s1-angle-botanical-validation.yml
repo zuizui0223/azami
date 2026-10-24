@@ -1,0 +1,53 @@
+name: V4 S1 photo-angle external botanical-state validation
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - '.github/workflows/v4-s1-angle-botanical-validation.yml'
+      - 'analysis/v4/s1_angle_external_morphology_check.py'
+      - 'tests/test_v4_s1_angle_external_morphology_check.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-s1-ud-calibration-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  botanical-contrast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install current numerical dependencies
+        run: python -m pip install -r reproducibility/requirements-current.txt pytest
+      - name: Test exact source-count null and independent botanical-state scoring
+        run: python -m pytest -q tests/test_v4_s1_angle_external_morphology_check.py
+      - name: Restore only pre-aggregated S1-phenotype and independently coded states
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1-ud-calibration/input work/s1-ud-calibration/out
+          gh run download 39584744194 --repo zuizui0223/azami \
+            --name v4-joint-s1-t2-exact-cohort-public-aggregate \
+            --dir work/s1-ud-calibration/input
+          test -s work/s1-ud-calibration/input/S1_T2_joint_244_194.json
+      - name: Evaluate rank concordance with original published U/D labels, source-fixed exact null
+        run: |
+          python -m analysis.v4.s1_angle_external_morphology_check \
+            --joint work/s1-ud-calibration/input/S1_T2_joint_244_194.json \
+            --out work/s1-ud-calibration/out/S1_PHOTO_TO_EXTERNAL_U_D_AUC.json
+      - name: Upload public aggregate with no raw photographs or precise locations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-photo-to-botanical-source-stratified-AUC
+          path: work/s1-ud-calibration/out/
+          if-no-files-found: warn
+          retention-days: 90

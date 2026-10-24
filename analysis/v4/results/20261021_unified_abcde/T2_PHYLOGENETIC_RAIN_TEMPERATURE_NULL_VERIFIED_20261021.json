@@ -1,0 +1,384 @@
+{
+  "schema_version": "azami_T2_observational_2026-10-21_phylogenetic_rain_temp_null_v1",
+  "status": "RUN_SUCCEEDED_SOURCE_VERIFIED_OBSERVATIONAL_ASSOCIATION_NOT_EVOLUTIONARY_RATE",
+  "github_actions_run_id": 39582229296,
+  "github_job_id": 119162340272,
+  "github_actions_url": "https://github.com/zuizui0223/azami/actions/runs/39582229296",
+  "source_commit": "c925d4af86160064448f794a9715f70b917a2786",
+  "source_doi": "10.1086/724310",
+  "source_repository": "carol-siniscalchi/cirsium",
+  "pgls_tree_source": "SHA-verified original Zenodo DOI 10.5281/zenodo.22703215, GBOTB/V.PhyloMaker2 52 scenario trees",
+  "all_52_individual_scenario_results": "Actions artifact t2-rain-temp-real-phylogenetic-null / climate_phylogenetic_null.json",
+  "code": "analysis/v4/t2_phylogenetic_climate_null.py",
+  "tests": "tests/test_v4_t2_phylogenetic_climate_null.py",
+  "root_hypotheses": "erect and stationary, separate null fits",
+  "registered_null": "prevalence-preserving binary symmetric-Mk on each tree, same original climate means, BIO12 contrast conditional BIO1+elevation, BIO1 contrast conditional BIO12+elevation",
+  "multiple_testing": "two-axis maxT, not across 52 dependent scenarios",
+  "public_source_checksums": {
+    "environment_git_blob": "6ca878423881db13f2af4624380bdce342afdf1b",
+    "environment_sha256": "91a0c1b9fd8d2076886dda42885cfb24033164adcc9ffe3e532a8143ed470473",
+    "head_state_git_blob": "fa127f0587b676e6e004ea121424d26069586bcb",
+    "head_state_sha256": "b135425cdd01ab18723d4ce582788efb9fcb011465363f957bf786e827718a8c",
+    "nuclear_tree_git_blob": "6417a38793427bc7c8562dc0e2cab59b74d8c316",
+    "nuclear_tree_sha256": "4040a46f5b35e9b84e550d363f168c445cc1477a9fc9dc0a4bf2254e06297709"
+  },
+  "summary": {
+    "n_placement_scenarios": 52,
+    "nuclear63": {
+      "nonphylogenetic_fixed_prevalence_shuffle": {
+        "axis_order": [
+          "BIO12_adjusted_for_BIO1_elevation",
+          "BIO1_adjusted_for_BIO12_elevation"
+        ],
+        "null_mean": [
+          -0.007396059851328918,
+          0.004529766663264592
+        ],
+        "null_name": "nonphylogenetic_fixed_prevalence_tip_label_shuffling",
+        "null_q025_q50_q975": [
+          [
+            -0.7986328374394318,
+            -0.052813488204875525,
+            0.9937666834934554
+          ],
+          [
+            -0.924717931117806,
+            -0.0010049209610698427,
+            0.9117325565091545
+          ]
+        ],
+        "null_sd": [
+          0.4755302737197461,
+          0.4653435366505059
+        ],
+        "observed_contrast": [
+          0.8400112091220557,
+          0.9535505134163406
+        ],
+        "p_method": "two-sided null-centred Monte Carlo rank with plus-one correction; maxT controls two registered axes conditional on fitted null",
+        "raw_empirical_two_sided_p": [
+          0.06663890045814244,
+          0.044564764681382756
+        ],
+        "status": "calibrated_label_shuffling_not_phylogenetic",
+        "two_axis_maxT_adjusted_p": [
+          0.1324448146605581,
+          0.07663473552686381
+        ],
+        "used_accepted_null_draws": 2400
+      },
+      "root_hypotheses": {
+        "erect": {
+          "acceptance_fraction": 0.129150390625,
+          "accepted_occupancy_matched": 1058,
+          "axis_order": [
+            "BIO12_adjusted_for_BIO1_elevation",
+            "BIO1_adjusted_for_BIO12_elevation"
+          ],
+          "fitted_Mk_loglikelihood": -17.649486896675352,
+          "fitted_Mk_rate_tree_units": 0.049604432831583396,
+          "null_mean": [
+            -0.04963491217618918,
+            -0.05441442880937552
+          ],
+          "null_name": "conditional_binary_symmetric_Mk_taxon_prevalence",
+          "null_q025_q50_q975": [
+            [
+              -0.8020947578576659,
+              -0.1170362245694368,
+              0.9570655035012795
+            ],
+            [
+              -0.9539097772489376,
+              -0.04443759879877954,
+              0.9748790421939365
+            ]
+          ],
+          "null_root": "erect",
+          "null_sd": [
+            0.4442780480180452,
+            0.49965196659917904
+          ],
+          "observed_contrast": [
+            0.8400112091220557,
+            0.9535505134163406
+          ],
+          "observed_tip_prevalence": 5,
+          "optimizer_near_rate_bound": false,
+          "p_method": "two-sided null-centred Monte Carlo rank with plus-one correction; maxT controls two registered axes conditional on fitted null",
+          "raw_empirical_two_sided_p": [
+            0.04991680532445923,
+            0.04658901830282862
+          ],
+          "status": "calibrated_conditional_null",
+          "total_simulated_tip_histories": 8192,
+          "two_axis_maxT_adjusted_p": [
+            0.09484193011647254,
+            0.09484193011647254
+          ],
+          "used_accepted_null_draws": 600
+        },
+        "stationary": {
+          "acceptance_fraction": 0.0762939453125,
+          "accepted_occupancy_matched": 625,
+          "axis_order": [
+            "BIO12_adjusted_for_BIO1_elevation",
+            "BIO1_adjusted_for_BIO12_elevation"
+          ],
+          "fitted_Mk_loglikelihood": -18.297571914670144,
+          "fitted_Mk_rate_tree_units": 0.050558618390085915,
+          "null_mean": [
+            -0.0199508830866654,
+            -0.05339899210899489
+          ],
+          "null_name": "conditional_binary_symmetric_Mk_taxon_prevalence",
+          "null_q025_q50_q975": [
+            [
+              -0.846940262217373,
+              -0.06350844790368464,
+              1.1240592771796476
+            ],
+            [
+              -0.9877673140924781,
+              -0.07347577264144375,
+              1.0128356255653883
+            ]
+          ],
+          "null_root": "stationary",
+          "null_sd": [
+            0.4894940640244852,
+            0.4882951549236916
+          ],
+          "observed_contrast": [
+            0.8400112091220557,
+            0.9535505134163406
+          ],
+          "observed_tip_prevalence": 5,
+          "optimizer_near_rate_bound": false,
+          "p_method": "two-sided null-centred Monte Carlo rank with plus-one correction; maxT controls two registered axes conditional on fitted null",
+          "raw_empirical_two_sided_p": [
+            0.064891846921797,
+            0.04991680532445923
+          ],
+          "status": "calibrated_conditional_null",
+          "total_simulated_tip_histories": 8192,
+          "two_axis_maxT_adjusted_p": [
+            0.13311148086522462,
+            0.09151414309484193
+          ],
+          "used_accepted_null_draws": 600
+        }
+      },
+      "status": "assessable_published_head_state_climate",
+      "trait_and_environment": {
+        "measured_original_BIO12_units": "published source values, annual precipitation typically mm",
+        "measured_original_BIO1_units": "published source values, standardised not interpreted as degrees C",
+        "n_erect": 58,
+        "n_nodding": 5,
+        "n_tips": 63,
+        "nodding_taxa": [
+          "Cirsium_fontinale_campylon",
+          "Cirsium_scopulorum",
+          "Cirsium_funkiae",
+          "Cirsium_vinaceum",
+          "Cirsium_conspicuum"
+        ],
+        "observed_adjusted_rain_contrast_sd_units": 0.8400112091220557,
+        "observed_adjusted_temperature_contrast_sd_units": 0.9535505134163406,
+        "primary_estimand": "nodding-minus-erect contrast in standardized rainfall residual after BIO1 and elevation",
+        "raw_erect_BIO12_mean": 597.7543793103448,
+        "raw_erect_BIO1_source_mean": 76.70322551724138,
+        "raw_nodding_BIO12_mean": 776.6334,
+        "raw_nodding_BIO1_source_mean": 68.2219,
+        "secondary_estimand": "nodding-minus-erect contrast in standardized temperature residual after BIO12 and elevation"
+      }
+    },
+    "nuclear44": {
+      "nonphylogenetic_fixed_prevalence_shuffle": {
+        "axis_order": [
+          "BIO12_adjusted_for_BIO1_elevation",
+          "BIO1_adjusted_for_BIO12_elevation"
+        ],
+        "null_mean": [
+          -0.0054027788062523474,
+          0.002040951506115494
+        ],
+        "null_name": "nonphylogenetic_fixed_prevalence_tip_label_shuffling",
+        "null_q025_q50_q975": [
+          [
+            -0.9936950164618976,
+            -0.06307752988323768,
+            1.32589996840624
+          ],
+          [
+            -1.1016493347481768,
+            -0.02518695114780843,
+            1.2833532636098728
+          ]
+        ],
+        "null_sd": [
+          0.5951973272032105,
+          0.6063559850665233
+        ],
+        "observed_contrast": [
+          1.2697406687142596,
+          1.01772771941095
+        ],
+        "p_method": "two-sided null-centred Monte Carlo rank with plus-one correction; maxT controls two registered axes conditional on fitted null",
+        "raw_empirical_two_sided_p": [
+          0.03331945022907122,
+          0.09121199500208246
+        ],
+        "status": "calibrated_label_shuffling_not_phylogenetic",
+        "two_axis_maxT_adjusted_p": [
+          0.06372344856309871,
+          0.16409829237817575
+        ],
+        "used_accepted_null_draws": 2400
+      },
+      "root_hypotheses": {
+        "erect": {
+          "acceptance_fraction": 0.1806640625,
+          "accepted_occupancy_matched": 740,
+          "axis_order": [
+            "BIO12_adjusted_for_BIO1_elevation",
+            "BIO1_adjusted_for_BIO12_elevation"
+          ],
+          "fitted_Mk_loglikelihood": -11.228999056476166,
+          "fitted_Mk_rate_tree_units": 0.041247666831503896,
+          "null_mean": [
+            0.0047643299776430155,
+            -0.026346680370662384
+          ],
+          "null_name": "conditional_binary_symmetric_Mk_taxon_prevalence",
+          "null_q025_q50_q975": [
+            [
+              -1.0020857034082373,
+              -0.100001135319357,
+              1.3542953397388051
+            ],
+            [
+              -1.1395501829161443,
+              -0.04123077801177158,
+              1.2073208728185763
+            ]
+          ],
+          "null_root": "erect",
+          "null_sd": [
+            0.6135588792601993,
+            0.6044045326284521
+          ],
+          "observed_contrast": [
+            1.2697406687142596,
+            1.01772771941095
+          ],
+          "observed_tip_prevalence": 3,
+          "optimizer_near_rate_bound": false,
+          "p_method": "two-sided null-centred Monte Carlo rank with plus-one correction; maxT controls two registered axes conditional on fitted null",
+          "raw_empirical_two_sided_p": [
+            0.033277870216306155,
+            0.08319467554076539
+          ],
+          "status": "calibrated_conditional_null",
+          "total_simulated_tip_histories": 4096,
+          "two_axis_maxT_adjusted_p": [
+            0.064891846921797,
+            0.1464226289517471
+          ],
+          "used_accepted_null_draws": 600
+        },
+        "stationary": {
+          "acceptance_fraction": 0.1063232421875,
+          "accepted_occupancy_matched": 871,
+          "axis_order": [
+            "BIO12_adjusted_for_BIO1_elevation",
+            "BIO1_adjusted_for_BIO12_elevation"
+          ],
+          "fitted_Mk_loglikelihood": -11.890345929520903,
+          "fitted_Mk_rate_tree_units": 0.0421792321789922,
+          "null_mean": [
+            -0.029426895916573475,
+            -0.060682224607855856
+          ],
+          "null_name": "conditional_binary_symmetric_Mk_taxon_prevalence",
+          "null_q025_q50_q975": [
+            [
+              -1.071289965564447,
+              -0.08158437906791326,
+              1.2616519222139748
+            ],
+            [
+              -1.2261528523890386,
+              -0.07047971736595599,
+              1.1096742983474266
+            ]
+          ],
+          "null_root": "stationary",
+          "null_sd": [
+            0.6133580585384203,
+            0.6256133005426459
+          ],
+          "observed_contrast": [
+            1.2697406687142596,
+            1.01772771941095
+          ],
+          "observed_tip_prevalence": 3,
+          "optimizer_near_rate_bound": false,
+          "p_method": "two-sided null-centred Monte Carlo rank with plus-one correction; maxT controls two registered axes conditional on fitted null",
+          "raw_empirical_two_sided_p": [
+            0.03161397670549085,
+            0.09484193011647254
+          ],
+          "status": "calibrated_conditional_null",
+          "total_simulated_tip_histories": 8192,
+          "two_axis_maxT_adjusted_p": [
+            0.05490848585690516,
+            0.16472545757071547
+          ],
+          "used_accepted_null_draws": 600
+        }
+      },
+      "status": "assessable_published_head_state_climate",
+      "trait_and_environment": {
+        "measured_original_BIO12_units": "published source values, annual precipitation typically mm",
+        "measured_original_BIO1_units": "published source values, standardised not interpreted as degrees C",
+        "n_erect": 41,
+        "n_nodding": 3,
+        "n_tips": 44,
+        "nodding_taxa": [
+          "Cirsium_scopulorum",
+          "Cirsium_funkiae",
+          "Cirsium_conspicuum"
+        ],
+        "observed_adjusted_rain_contrast_sd_units": 1.2697406687142596,
+        "observed_adjusted_temperature_contrast_sd_units": 1.01772771941095,
+        "primary_estimand": "nodding-minus-erect contrast in standardized rainfall residual after BIO1 and elevation",
+        "raw_erect_BIO12_mean": 668.5494634146341,
+        "raw_erect_BIO1_source_mean": 74.84020926829268,
+        "raw_nodding_BIO12_mean": 915.061,
+        "raw_nodding_BIO1_source_mean": 39.454100000000004,
+        "secondary_estimand": "nodding-minus-erect contrast in standardized temperature residual after BIO12 and elevation"
+      }
+    },
+    "pgls_erect_calibrated_scenarios": 52,
+    "pgls_erect_annual_rain_adjusted_p_range": [
+      0.0066555740432612314,
+      0.08818635607321132
+    ],
+    "pgls_stationary_calibrated_scenarios": 52,
+    "pgls_stationary_annual_rain_adjusted_p_range": [
+      0.008319467554076539,
+      0.09650582362728785
+    ]
+  },
+  "scientific_claim_stop_rules": {
+    "not_a_phylogenetic_GLM_rediscovery_of_gene_plasticity": true,
+    "not_an_evolutionary_rain_dependent_transition_model": true,
+    "not_independent_tree_replication_52": true,
+    "not_global_Cirsium_supported": true,
+    "fewer_than_6_nodding_morphological_taxa": true,
+    "temperature_coefficient_not_resolved_as_causal_alternative": true,
+    "photo_gravity_angle_not_validated": true,
+    "independent_external_non_NA_evidence_pending": true
+  }
+}

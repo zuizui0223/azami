@@ -1,0 +1,181 @@
+name: V4 T2 seven source-verified 120k original110 joint Q20 nucleotide positions
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_seven_real120k_shared_sites.py'
+      - 'tests/test_v4_t2_seven_real120k_shared_sites.py'
+      - '.github/workflows/v4-t2-seven-original110-real120k-nucleotide-sites.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate exact same-reference coordinates and no unobserved base imputation
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_seven_real120k_shared_sites.py
+      - name: Restore original source authentic SRA run IDs and author241 nuclear gene universe
+        run: |
+          set -euo pipefail
+          mkdir -p work/source/original work/source/seven work/source/targets
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12428430410 --jq '.digest')" = 'sha256:16ef207ec02ee24ea3d214a9935ddc0d21e70003573935ffdf1132aa9bacc5a1'
+          gh run download 39783655030 --repo zuizui0223/azami --name t2-real241-original-source --dir work/source/original
+          echo '1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv' | sha256sum -c -
+          echo 'd561c6e393b1964fdd4b3acf14fda8b10f2f43923b1074cd35f86bfed07ebf73  work/source/original/loci/moreyra_conservative_241_no_warning_loci.txt' | sha256sum -c -
+      - name: Restore published independently verified exact seven samples and 110 targets
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12459969354 --jq '.digest')" = 'sha256:4a689ce4b90d99a266936ad1a2794ab8b872f2e719f333b8b7bbd910a6bcde21'
+          gh run download 39860346124 --repo zuizui0223/azami --name v4-t2-113taxa-deep7-author241-30k-shared-locus-audit --dir work/source/seven
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12461423454 --jq '.digest')" = 'sha256:0d889125536d4a0d3512c80ba3b4406ba2a170a84645a71e15ad0e83cb07061b'
+          gh run download 39861236007 --repo zuizui0223/azami --name v4-t2-seven-real120k-author241-common-depth --dir work/source/targets
+          python - <<'PY'
+          import csv
+          from analysis.v4.t2_seven_real120k_shared_sites import targets,SEVEN
+          with open('work/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv') as f:
+              t=targets(list(csv.DictReader(f)))
+          with open('work/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv') as f:
+              samples=list(csv.DictReader(f))
+          assert len(t)==110 and {x['run'] for x in samples}==SEVEN
+          print('AUTHENTIC_7_BIOSAMPLES_110_SAME_REFERENCE_LOCUS_TARGETS_READY')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t2-original110-same-reference-nuclear-source
+          path: |
+            work/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+            work/source/original/loci/moreyra_conservative_241_no_warning_loci.txt
+            work/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+            work/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
+          if-no-files-found: error
+          retention-days: 90
+
+  run-Q20-basecall:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 7
+      matrix:
+        accession: [SRR30887180,SRR30887204,SRR30887201,SRR30887197,SRR30887312,SRR30887284,SRR25265665]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore all original source run/BioSample and source-copy candidate loci
+        run: |
+          set -euo pipefail
+          mkdir -p work/alleles/source work/alleles/ref work/alleles/scratch work/alleles/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/alleles/source
+          find work/alleles/source -maxdepth 4 -type f | sort
+          test -s work/alleles/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv
+          test -s work/alleles/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv
+          test -s work/alleles/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv
+      - name: Install original read mapping and conservative nucleotide pileup
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python -m pip install 'pysam>=0.22,<0.25'
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/alleles/ref
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/alleles/ref/comp1061_original_reference_contract.json').read_text())
+          assert x['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert x['locus_count']==1061
+          assert not x['moreyra_augmented_reference_recovered']
+          PY
+          bwa index work/alleles/ref/comp1061_hybpiper_reference.fasta
+      - name: Actually map 120k public paired reads and call Q20 high-confidence same-reference positions
+        run: |
+          python -m analysis.v4.t2_seven_real120k_shared_sites \
+            --mode one --run-id ${{ matrix.accession }} \
+            --source work/alleles/source/original/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv \
+            --chosen work/alleles/source/seven/REAL120K_DEEP7_SELECTED_SPECIMENS.csv \
+            --targets work/alleles/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --author-loci work/alleles/source/original/loci/moreyra_conservative_241_no_warning_loci.txt \
+            --reference work/alleles/ref/comp1061_hybpiper_reference.fasta \
+            --scratch work/alleles/scratch \
+            --output work/alleles/out/${{ matrix.accession }}.json
+      - name: Always destroy the raw FASTQ and BAM scratch
+        if: always()
+        run: rm -rf work/alleles/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real120k-source-original110-Q20-sites-${{ matrix.accession }}
+          path: work/alleles/out/
+          if-no-files-found: warn
+          retention-days: 90
+
+  combine-seven:
+    needs: [source,run-Q20-basecall]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recover seven completed biological source site call datasets
+        run: |
+          set -euo pipefail
+          mkdir -p work/common/reports work/common/source work/common/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --pattern 't2-real120k-source-original110-Q20-sites-*' --dir work/common/reports
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-original110-same-reference-nuclear-source --dir work/common/source
+          test "$(find work/common/reports -name 'SRR*.json' | wc -l)" -eq 7
+      - name: Quantify exact shared seven specimen nucleotide positions and observed variable sites
+        run: |
+          python -m analysis.v4.t2_seven_real120k_shared_sites \
+            --mode combine \
+            --targets work/common/source/targets/ORIGINAL241_SEVEN_SOURCE_120K_Q20_COMMON_TARGETS.csv \
+            --reports work/common/reports \
+            --output work/common/out
+      - name: Enforce no phylogeny or unverified genotype assertions
+        run: |
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          p=Path('work/common/out')
+          s=json.loads((p/'ORIGINAL110_REAL120K_SEVEN_TAXON_Q20_SITE_SUMMARY.json').read_text())
+          with (p/'ORIGINAL110_REAL120K_SEVEN_SPECIMENS_SHARED_Q20_SITES.csv').open() as f:
+              loci=list(csv.DictReader(f))
+          assert len(loci)==110
+          assert s['source_original241_shared_copy_target_candidates']==110
+          assert s['sample_count']==7
+          assert not s['species_tree_inferred']
+          assert not s['single_copy_orthology_or_homeology_validated']
+          print('REAL_7x120K_Q20_SHARED_NUCLEOTIDE_POSITIONS',s['total_shared_Q20_majority_positions_all7'],s['total_shared_variable_positions_all7'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-seven-original110-real120k-Q20-shared-nucleotide-sites
+          path: work/common/out/
+          if-no-files-found: warn
+          retention-days: 90

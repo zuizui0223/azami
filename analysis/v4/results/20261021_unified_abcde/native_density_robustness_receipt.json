@@ -1,0 +1,178 @@
+{
+  "schema_version": "native_abcde_density_robustness_20261021_v1",
+  "source": {
+    "workflow_run": 39528835793,
+    "artifact_id": 12314092145,
+    "artifact_name": "v4-native-integration-audit",
+    "artifact_zip_digest": "sha256:449c15140a625f17e275facd301dbf37020afc0966522385bdac28a15e4663c3",
+    "json_member": "native_density_robustness.json",
+    "json_member_sha256": "0ddf0339e994157ccb75fbc1309917c94265cadaf1dd4fbe80d9baf944483642",
+    "source_native_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "previous_unified_result_sha256": "8dd590f286961285372e0879ca9b9c9033ea38b10d16b510ef890c696c1789a3"
+  },
+  "design": {
+    "native_observations": 313350,
+    "original_WCVP_taxa": 306,
+    "eligible_same_nine_outputs": 157779,
+    "accepted_taxa_with_measured_core9": 242,
+    "mixed_name_WCVP_key_excluded": 7,
+    "qualifying_taxa": 40,
+    "phenotypic_proxy_modules": [
+      "presentation",
+      "colour",
+      "outline"
+    ],
+    "sampling": "one original observation/taxon×5-degree equal-sin(latitude) cell×observer stratum; 50 per taxon per rarefaction",
+    "repeated_rarefaction": 30,
+    "same_species_null_reps": 30,
+    "within_species_null_sample": "disjoint 50+50 observations; p95 reference",
+    "taxon_cluster_bootstrap": 1000,
+    "cross_module_KDE_bandwidth_pairs": 100,
+    "KDE_bandwidth_reps": 10,
+    "KDE_bandwidth_multipliers": [
+      0.75,
+      1,
+      1.25
+    ],
+    "photo_calibration_verified": false
+  },
+  "results": {
+    "same_species_baseline_taxa": 38,
+    "pairs_with_both_same_species_baselines": 703,
+    "presentation": {
+      "dimensions": 1,
+      "shared_PCA_retained": 1,
+      "centred_w2_above_null_pairs": 37,
+      "centred_w2_above_null_fraction": 0.05263157894736842,
+      "full_w2_above_null_pairs": 199,
+      "median_pairwise_full_w2": 0.3335627892733468,
+      "median_pairwise_centred_w2": 0.21457488890950477
+    },
+    "colour": {
+      "dimensions": 3,
+      "shared_PCA_retained": 0.9215308375768918,
+      "centred_w2_above_null_pairs": 498,
+      "centred_w2_above_null_fraction": 0.7083926031294452,
+      "full_w2_above_null_pairs": 628,
+      "median_pairwise_full_w2": 1.624059166204345,
+      "median_pairwise_centred_w2": 1.0524375480794939
+    },
+    "outline": {
+      "dimensions": 3,
+      "shared_PCA_retained": 0.9650621142841485,
+      "centred_w2_above_null_pairs": 2,
+      "centred_w2_above_null_fraction": 0.002844950213371266,
+      "full_w2_above_null_pairs": 75,
+      "median_pairwise_full_w2": 1.1773192913024884,
+      "median_pairwise_centred_w2": 1.0275547781438086
+    },
+    "paired_colour_outline": {
+      "shared_taxon_pairs": 703,
+      "both_above": 2,
+      "colour_only_above": 496,
+      "outline_only_above": 0,
+      "neither_above": 205,
+      "difference_centred_exceedance_rate": 0.705547652916074,
+      "bootstrap_q025_q50_q975": [
+        0.589985808224808,
+        0.710641064871481,
+        0.7988473156091402
+      ],
+      "bootstrap_fraction_positive": 1,
+      "leave_one_taxon_out_min_max": [
+        0.6891891891891891,
+        0.7207207207207207
+      ],
+      "exclude_top_two_taxa": {
+        "pairs": 630,
+        "difference": 0.7174603174603175
+      }
+    },
+    "KDE": {
+      "present": {
+        "overlap_075_1_125": [
+          0.8348037496098961,
+          0.8565018509957409,
+          0.8713861770862673
+        ],
+        "rank_rho_vs_1": [
+          0.9907830783078307,
+          0.996099609960996
+        ]
+      },
+      "colour": {
+        "overlap_075_1_125": [
+          0.4599203257849772,
+          0.5319676342915697,
+          0.5818174950530379
+        ],
+        "rank_rho_vs_1": [
+          0.9956555655565555,
+          0.9977317731773176
+        ]
+      },
+      "outline": {
+        "overlap_075_1_125": [
+          0.5850581117659595,
+          0.6779667357292564,
+          0.7361562783205637
+        ],
+        "rank_rho_vs_1": [
+          0.953003300330033,
+          0.9848784878487847
+        ]
+      }
+    },
+    "fixed_deletions": {
+      "observer_top1pct": {
+        "observers_removed": 521,
+        "taxa_retained_for_null": 36,
+        "pairs": 630,
+        "difference_colour_minus_outline": 0.7587301587301588
+      },
+      "longitude_regions": [
+        {
+          "sector": "[-180,-90)",
+          "taxa": 23,
+          "pairs": 253,
+          "difference": 0.6561264822134387
+        },
+        {
+          "sector": "[-90,0)",
+          "taxa": 34,
+          "pairs": 561,
+          "difference": 0.7183600713012478
+        },
+        {
+          "sector": "[0,90)",
+          "taxa": 29,
+          "pairs": 406,
+          "difference": 0.7610837438423645
+        },
+        {
+          "sector": "[90,180)",
+          "taxa": 36,
+          "pairs": 630,
+          "difference": 0.753968253968254
+        }
+      ],
+      "reference_replicates": 10,
+      "between_species_replicates": 6
+    }
+  },
+  "interpretation": {
+    "main": "Within this outcome-independent 40-taxon geographical/observer-supported native photo subset, species-level colour distributions are more distinguishable than 2D whole-head outline after centre removal relative to same-taxon finite-sample null distances.",
+    "methods_note": "30 rarefactions recalculate BOTH median between-species distances and 30-disjoint same-species nulls; older 12-replicate/first-replicate exceedances are not directly comparable as independent repeats.",
+    "conditional_uncertainty": "Taxon-bootstrap interval conditioned on 38 selected taxa, 5-degree cell/observer sampling, fixed shared PCA, finite-n null and uncalibrated photos. Bootstrap is not a multiple-comparisons-corrected p value nor a phylogenetic-independent confidence interval.",
+    "bandwidth_note": "Only 100 outcome-blind species pairs; absolute overlap changes with KDE bandwidth despite high rank correlations. Colour/outline both 3D; presentation 1D is not directly comparable by raw overlap.",
+    "deletion_note": "Geographic quadrants and top 1% observer exclusions change retained qualifying taxa; each sensitivity uses only 6 paired and 10 within-nulling repetitions and fixed first-40 PCA basis. These are not independent spatial holdouts.",
+    "not_established": [
+      "species traits independent of camera-pose and illumination",
+      "unique genets among observations",
+      "genetic covariance",
+      "adaptation or pollinator functional advantage",
+      "generalization to all 306 accepted WCVP taxa",
+      "evolutionary re-expression of pigment"
+    ]
+  }
+}

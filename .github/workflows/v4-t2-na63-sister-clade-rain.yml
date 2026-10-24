@@ -1,0 +1,40 @@
+name: V4 T2 NA63 nuclear sister-clade rainfall contrasts
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_na63_sister_clade_rain.py'
+      - 'tests/test_v4_t2_na63_sister_clade_rain.py'
+      - '.github/workflows/v4-t2-na63-sister-clade-rain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-pinned-nuclear-sister-comparison:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: '.'
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install exact necessary numerical libraries
+        run: python -m pip install 'biopython>=1.83,<2' 'numpy>=1.26' 'scipy>=1.11' 'pytest>=8'
+      - name: Validate no-causality claims and source invariants
+        run: python -m pytest -q tests/test_v4_t2_na63_sister_clade_rain.py tests/test_v4_t2_pgls_placement_screen.py
+      - name: Recompute original-author nuclear sister-clade precipitation contrasts
+        run: |
+          python -m analysis.v4.t2_na63_sister_clade_rain \
+            --out work/t2-na63-sister-clade-rain/T2_NA63_SISTER_CLADE_RAIN.json
+      - name: Preserve numerical values and source checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-NA63-nuclear-sister-clade-rain
+          path: work/t2-na63-sister-clade-rain/
+          if-no-files-found: warn
+          retention-days: 90

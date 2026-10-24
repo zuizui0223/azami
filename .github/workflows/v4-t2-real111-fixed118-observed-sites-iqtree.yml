@@ -1,0 +1,216 @@
+name: V4 T2 real111 source 118 nuclear fixed-reference Q20 nucleotide technical tree
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_real111_fixed118_nucleotides.py'
+      - 'analysis/v4/t2_real111_fixed118_nucleotide_alignment.py'
+      - 'tests/test_v4_t2_real111_fixed118_nucleotides.py'
+      - 'tests/test_v4_t2_real111_fixed118_nucleotide_alignment.py'
+      - '.github/workflows/v4-t2-real111-fixed118-observed-sites-iqtree.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit-test all111 source / observed site / original WCVP and reference proof
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_real111_fixed118_nucleotides.py tests/test_v4_t2_real111_fixed118_nucleotide_alignment.py
+      - name: Materialize immutable original 125 SRA runs and 111/two-short/118 predeclared loci
+        run: |
+          set -euo pipefail
+          mkdir -p work/source/moreyra work/source/preflight work/source/stage
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12401840192 --jq .digest)" = 'sha256:3508c1974a4255e1d3d971c1fcc4921bfd16d75a203dffff0d4506370f0acf71'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12473590157 --jq .digest)" = 'sha256:99c4d23620a3ae5b562f1c4f5f35cac3506f90e8775a52ca27855324a54df27a'
+          gh run download 39721528204 --repo zuizui0223/azami --name v4-t2-all244-Moreyra-SRA-voucher-evidence --dir work/source/moreyra
+          gh run download 39887027362 --repo zuizui0223/azami --name v4-t2-real111-118-fixed-source-reference-phylogeny-preflight --dir work/source/preflight
+          echo "1142600fd5d7a1cfd2bd7a359c35bb249fda552ebf973ef545a36ad3a25ec7bc  work/source/moreyra/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv" | sha256sum -c -
+          cp work/source/moreyra/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv work/source/stage/
+          cp work/source/preflight/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv work/source/stage/
+          cp work/source/preflight/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv work/source/stage/
+          python - <<'PY'
+          from analysis.v4.t2_real111_fixed118_nucleotides import audit_samples,load_csv,SOURCE_TAXA_FIELDS,TARGET_FIELDS
+          from analysis.v4.t2_moreyra_all125_ena_read_mapping import load_source
+          p='work/source/stage/'
+          all125=load_source(p+'S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv')
+          taxa=load_csv(p+'S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv',SOURCE_TAXA_FIELDS)
+          loc=load_csv(p+'AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv',TARGET_FIELDS)
+          all0,sel,refs=audit_samples(all125,taxa,loc)
+          assert len(all0)==125 and len(sel)==111 and len(refs)==118
+          print('PASS original 111 independent source runs and 118 pre-registered identical Asteraceae references')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t2-source111-original125-and-fixed118
+          path: work/source/stage/
+          if-no-files-found: error
+          retention-days: 90
+
+  empirical-111-site-calls:
+    needs: source-contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9]
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: external/EAzami
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download pre-registered 118 nuclear original references and all 111 samples
+        run: |
+          set -euo pipefail
+          mkdir -p work/111/source work/111/ref work/111/scratch work/111/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-source111-original125-and-fixed118 --dir work/111/source
+          test -s work/111/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv
+          test -s work/111/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv
+      - name: Install genuine base-call and original reference alignment software
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq bwa samtools
+          python -m pip install 'pysam>=0.22,<0.25'
+          python external/EAzami/analysis/recover_comp1061_original_hybpiper_reference.py --outdir work/111/ref
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('work/111/ref/comp1061_original_reference_contract.json').read_text())
+          assert s['github_blob_sha1']=='4f89e234007f367ffa8aa5e2be536bc44f31f445'
+          assert s['locus_count']==1061 and s['moreyra_augmented_reference_recovered'] is False
+          PY
+          bwa index work/111/ref/comp1061_hybpiper_reference.fasta
+      - name: Read authentic source ENA first120k and independently call Q20 DNA positions in 118 fixed copies
+        run: |
+          python -m analysis.v4.t2_real111_fixed118_nucleotides --source work/111/source/S1_MOREYRA_PUBLIC_SRA_RUN_LINKS.csv --samples work/111/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv --targets work/111/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv --reference work/111/ref/comp1061_hybpiper_reference.fasta --scratch work/111/scratch --shard ${{ matrix.shard }} --out work/111/out/shard_${{ matrix.shard }}.json
+      - name: Delete source FASTQ and BAM; only selected Q20 base position receipts are preserved
+        if: always()
+        run: rm -rf work/111/scratch
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real111-Q20-observed-fixed118-shard-${{ matrix.shard }}
+          path: work/111/out/
+          if-no-files-found: warn
+          retention-days: 90
+
+  prepare-empirical-DNA-alignment:
+    needs: [source-contracts,empirical-111-site-calls]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect all ten 111×118 site-level source receipts and original sample registry
+        run: |
+          set -euo pipefail
+          mkdir -p work/111-aggregate/raw work/111-aggregate/source work/111-aggregate/output
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --pattern 't2-real111-Q20-observed-fixed118-shard-*' --dir work/111-aggregate/raw
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-source111-original125-and-fixed118 --dir work/111-aggregate/source
+      - name: Real observed-only same-site Q20 alignment across 111 nuclear sample accessions
+        run: |
+          python -m analysis.v4.t2_real111_fixed118_nucleotide_alignment --samples work/111-aggregate/source/S1_111_REAL120K_SAMPLE_SOURCE_RUNS.csv --targets work/111-aggregate/source/AUTHOR241_S1_111_SOURCE_COMMON_REFERENCE_ML_TARGETS.csv --receipts work/111-aggregate/raw --out-dir work/111-aggregate/output
+      - name: Confirm all111 original public samples and real base calls with no species-tree claim
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv,json
+          out=Path('work/111-aggregate/output')
+          d=json.loads((out/'REAL111_NUCLEOTIDE_SITE_PHYLOGENY_INPUT_GATE.json').read_text())
+          with (out/'Q20_111_SRA_SOURCE_SAMPLE_AND_MISSINGNESS.csv').open() as h: samples=list(csv.DictReader(h))
+          with (out/'Q20_118_FIXED_LOCUS_REAL_SITE_OCCUPANCY.csv').open() as h: loci=list(csv.DictReader(h))
+          assert len(samples)==111 and len(loci)==118
+          assert d['original_real120k_SRA_source_runs']==111
+          assert d['source_fixed_same_original_reference_loci']==118
+          assert d['initial_all111_alignment_created_from_real_DNA_not_reference_imputation']
+          assert not d['biological_accepted_taxon_concepts_or_orthologs_validated']
+          print('REAL111_FIXED118_Q20_SITE_PREML_GATE',d['ML_readiness'],d['primary_technical_alignment_real_nucleotide_sites'],d['technical_source_taxa_with25pct_sites'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real111-observed-fixed118-nucleotides-technical-alignment
+          path: work/111-aggregate/output/
+          if-no-files-found: warn
+          retention-days: 90
+
+  technical-unrooted-ML:
+    needs: prepare-empirical-DNA-alignment
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 110
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '4'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve exact source site alignment and scientific original read QC
+        run: |
+          set -euo pipefail
+          mkdir -p work/111-ml/input work/111-ml/trees work/111-ml/out
+          gh run download "$GITHUB_RUN_ID" --repo zuizui0223/azami --name t2-real111-observed-fixed118-nucleotides-technical-alignment --dir work/111-ml/input
+          test -s work/111-ml/input/REAL111_NUCLEOTIDE_SITE_PHYLOGENY_INPUT_GATE.json
+      - name: Fit preliminary unrooted ML only if quality sample/locus/site gates genuinely pass
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          z=json.loads(Path('work/111-ml/input/REAL111_NUCLEOTIDE_SITE_PHYLOGENY_INPUT_GATE.json').read_text())
+          if not z['ML_readiness']:
+              Path('work/111-ml/out/PHYLO_NOT_FIT_MISSING_INFORMATION.json').write_text(json.dumps(z,indent=2))
+              print('Technical ML not run: preregistered all111 informative DNA data gate not passed')
+          else:
+              Path('work/111-ml/ML_READY').write_text('genuinely observed-only Q20 sites\n')
+          PY
+          if test -s work/111-ml/ML_READY; then
+            sudo apt-get update -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq iqtree
+            iqtree2 -s work/111-ml/input/REAL_SOURCE_Q20_TECHNICAL_ML_PROVISIONAL_NOT_ORTHOLOGS.fasta -m GTR+G4 -T 4 --seed 20261023 -pre work/111-ml/trees/real111_fixed118_unrooted
+            test -s work/111-ml/trees/real111_fixed118_unrooted.treefile
+            cp work/111-ml/trees/real111_fixed118_unrooted.treefile work/111-ml/out/REAL111_NUCLEAR_OBSERVED_Q20_TECHNICAL_UNROOTED_NOT_SPECIES_TREE.nwk
+            iqtree2 --version > work/111-ml/out/IQTREE_TECHNICAL_VERSION.txt
+          fi
+      - name: Preserve original scientific limitations and SHA of inferred technical tree
+        if: always()
+        run: |
+          cp work/111-ml/input/REAL111_NUCLEOTIDE_SITE_PHYLOGENY_INPUT_GATE.json work/111-ml/out/
+          if test -s work/111-ml/out/REAL111_NUCLEAR_OBSERVED_Q20_TECHNICAL_UNROOTED_NOT_SPECIES_TREE.nwk; then
+            sha256sum work/111-ml/out/*.nwk > work/111-ml/out/REAL111_Q20_TECHNICAL_TREE_SHA256.txt
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-real111-real-DNA-observed-unrooted-IQTREE-technical
+          path: work/111-ml/out/
+          if-no-files-found: warn
+          retention-days: 90

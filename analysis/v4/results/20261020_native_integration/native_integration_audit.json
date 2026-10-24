@@ -1,0 +1,641 @@
+{
+  "input_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+  "native_observations": 313350,
+  "native_species": 306,
+  "endpoint_coverage": {
+    "orientation_image_vertical_angle": {
+      "finite": 170066,
+      "eligible": 170066,
+      "species": 244
+    },
+    "corolla_lab_lightness": {
+      "finite": 186439,
+      "eligible": 186439,
+      "species": 244
+    },
+    "corolla_lab_chroma": {
+      "finite": 186439,
+      "eligible": 186439,
+      "species": 244
+    },
+    "corolla_hue_sin": {
+      "finite": 186390,
+      "eligible": 186390,
+      "species": 244
+    },
+    "corolla_hue_cos": {
+      "finite": 186390,
+      "eligible": 186390,
+      "species": 244
+    },
+    "visible_floret_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "species": 0
+    },
+    "corolla_white_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "species": 0
+    },
+    "corolla_redmagenta_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "species": 0
+    },
+    "corolla_purple_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "species": 0
+    },
+    "corolla_yellow_pixel_fraction": {
+      "finite": 0,
+      "eligible": 0,
+      "species": 0
+    },
+    "capitulum_outline_aspect_ratio": {
+      "finite": 176048,
+      "eligible": 176048,
+      "species": 243
+    },
+    "capitulum_outline_circularity": {
+      "finite": 176048,
+      "eligible": 176048,
+      "species": 243
+    },
+    "capitulum_outline_solidity": {
+      "finite": 176048,
+      "eligible": 176048,
+      "species": 243
+    },
+    "capitulum_width_profile_cv": {
+      "finite": 176048,
+      "eligible": 176048,
+      "species": 243
+    },
+    "involucre_length_width_ratio": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "involucre_apical_taper_ratio": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "involucre_basal_taper_ratio": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "bract_projection_roughness": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "bract_projection_p95": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "bract_projection_maximum": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "bract_spread_fraction": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "bract_projection_peak_density": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "bract_projection_asymmetry": {
+      "finite": 1303,
+      "eligible": 1303,
+      "species": 111
+    },
+    "involucre_surface_edge_density": {
+      "finite": 570,
+      "eligible": 0,
+      "species": 0
+    },
+    "involucre_surface_lbp_entropy": {
+      "finite": 570,
+      "eligible": 0,
+      "species": 0
+    },
+    "involucre_surface_high_frequency_energy": {
+      "finite": 570,
+      "eligible": 0,
+      "species": 0
+    },
+    "involucre_surface_specular_fraction": {
+      "finite": 570,
+      "eligible": 0,
+      "species": 0
+    }
+  },
+  "module_overlap": {
+    "orientation/orientation": {
+      "n": 170066,
+      "species": 244
+    },
+    "orientation/colour": {
+      "n": 164167,
+      "species": 243
+    },
+    "orientation/outline": {
+      "n": 159967,
+      "species": 242
+    },
+    "orientation/bract_si": {
+      "n": 1141,
+      "species": 108
+    },
+    "colour/colour": {
+      "n": 186390,
+      "species": 244
+    },
+    "colour/outline": {
+      "n": 170227,
+      "species": 243
+    },
+    "colour/bract_si": {
+      "n": 1140,
+      "species": 109
+    },
+    "outline/outline": {
+      "n": 176048,
+      "species": 243
+    },
+    "outline/bract_si": {
+      "n": 1164,
+      "species": 110
+    },
+    "bract_si/bract_si": {
+      "n": 1303,
+      "species": 111
+    }
+  },
+  "core_complete": {
+    "n": 157779,
+    "species": 242
+  },
+  "environment_diagnostics": {
+    "raw_observations": {
+      "n_complete": 312001,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "correlation": {
+        "columns": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_sfcwind_mean",
+          "chelsa_gsp",
+          "chelsa_npp"
+        ],
+        "index": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_sfcwind_mean",
+          "chelsa_gsp",
+          "chelsa_npp"
+        ],
+        "data": [
+          [
+            1.0,
+            -0.4767464013,
+            0.1327233583,
+            0.1364335896,
+            0.533690442,
+            0.9082581852,
+            -0.1903838143,
+            0.4368494326,
+            0.6443048482
+          ],
+          [
+            -0.4767464013,
+            1.0,
+            -0.3579339903,
+            -0.1286878804,
+            -0.1867134444,
+            -0.1944730632,
+            -0.0181419235,
+            -0.5006483611,
+            -0.4538350153
+          ],
+          [
+            0.1327233583,
+            -0.3579339903,
+            1.0,
+            0.0023678705,
+            0.0812020798,
+            0.0001571618,
+            -0.0518500062,
+            0.8598764979,
+            0.5059738647
+          ],
+          [
+            0.1364335896,
+            -0.1286878804,
+            0.0023678705,
+            1.0,
+            0.6001501116,
+            0.2580692809,
+            -0.2470354263,
+            0.0153116671,
+            -0.1460897633
+          ],
+          [
+            0.533690442,
+            -0.1867134444,
+            0.0812020798,
+            0.6001501116,
+            1.0,
+            0.7012013359,
+            -0.2200508291,
+            0.1284771171,
+            0.1006490517
+          ],
+          [
+            0.9082581852,
+            -0.1944730632,
+            0.0001571618,
+            0.2580692809,
+            0.7012013359,
+            1.0,
+            -0.2053046375,
+            0.2356628695,
+            0.4010825529
+          ],
+          [
+            -0.1903838143,
+            -0.0181419235,
+            -0.0518500062,
+            -0.2470354263,
+            -0.2200508291,
+            -0.2053046375,
+            1.0,
+            -0.0944508426,
+            -0.1140510908
+          ],
+          [
+            0.4368494326,
+            -0.5006483611,
+            0.8598764979,
+            0.0153116671,
+            0.1284771171,
+            0.2356628695,
+            -0.0944508426,
+            1.0,
+            0.7093938057
+          ],
+          [
+            0.6443048482,
+            -0.4538350153,
+            0.5059738647,
+            -0.1460897633,
+            0.1006490517,
+            0.4010825529,
+            -0.1140510908,
+            0.7093938057,
+            1.0
+          ]
+        ]
+      },
+      "scope": "Complete nine-candidate rows; diagnostic, not a variable selection."
+    },
+    "between_equal_species": {
+      "n_complete": 303,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "correlation": {
+        "columns": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_sfcwind_mean",
+          "chelsa_gsp",
+          "chelsa_npp"
+        ],
+        "index": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_sfcwind_mean",
+          "chelsa_gsp",
+          "chelsa_npp"
+        ],
+        "data": [
+          [
+            1.0,
+            -0.5357918534,
+            -0.0223656843,
+            0.3560500939,
+            0.2532095473,
+            0.8622789533,
+            -0.4421749249,
+            0.3260115788,
+            0.6234367498
+          ],
+          [
+            -0.5357918534,
+            1.0,
+            -0.0827135145,
+            -0.5434773133,
+            -0.4046803805,
+            -0.3114570672,
+            0.3140126899,
+            -0.307284024,
+            -0.3751107665
+          ],
+          [
+            -0.0223656843,
+            -0.0827135145,
+            1.0,
+            -0.1943593777,
+            -0.4485060076,
+            -0.2904360804,
+            0.2362587068,
+            0.8392035929,
+            0.4390706645
+          ],
+          [
+            0.3560500939,
+            -0.5434773133,
+            -0.1943593777,
+            1.0,
+            0.55143496,
+            0.3317490219,
+            -0.3320093673,
+            0.0331832126,
+            0.1008009093
+          ],
+          [
+            0.2532095473,
+            -0.4046803805,
+            -0.4485060076,
+            0.55143496,
+            1.0,
+            0.5047028682,
+            -0.200066341,
+            -0.3187515776,
+            -0.2416853293
+          ],
+          [
+            0.8622789533,
+            -0.3114570672,
+            -0.2904360804,
+            0.3317490219,
+            0.5047028682,
+            1.0,
+            -0.315955507,
+            -0.0088774387,
+            0.2487454144
+          ],
+          [
+            -0.4421749249,
+            0.3140126899,
+            0.2362587068,
+            -0.3320093673,
+            -0.200066341,
+            -0.315955507,
+            1.0,
+            -0.0741398999,
+            -0.3315649024
+          ],
+          [
+            0.3260115788,
+            -0.307284024,
+            0.8392035929,
+            0.0331832126,
+            -0.3187515776,
+            -0.0088774387,
+            -0.0741398999,
+            1.0,
+            0.7035197516
+          ],
+          [
+            0.6234367498,
+            -0.3751107665,
+            0.4390706645,
+            0.1008009093,
+            -0.2416853293,
+            0.2487454144,
+            -0.3315649024,
+            0.7035197516,
+            1.0
+          ]
+        ]
+      },
+      "scope": "Complete nine-candidate rows; diagnostic, not a variable selection."
+    },
+    "within_observations": {
+      "n_complete": 312001,
+      "variables": [
+        "chelsa_bio01",
+        "chelsa_bio04",
+        "chelsa_bio12",
+        "chelsa_bio15",
+        "chelsa_rsds_mean",
+        "chelsa_vpd_mean",
+        "chelsa_sfcwind_mean",
+        "chelsa_gsp",
+        "chelsa_npp"
+      ],
+      "correlation": {
+        "columns": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_sfcwind_mean",
+          "chelsa_gsp",
+          "chelsa_npp"
+        ],
+        "index": [
+          "chelsa_bio01",
+          "chelsa_bio04",
+          "chelsa_bio12",
+          "chelsa_bio15",
+          "chelsa_rsds_mean",
+          "chelsa_vpd_mean",
+          "chelsa_sfcwind_mean",
+          "chelsa_gsp",
+          "chelsa_npp"
+        ],
+        "data": [
+          [
+            1.0,
+            -0.609141294,
+            0.085747658,
+            -0.0022834319,
+            0.35214662,
+            0.8117800142,
+            -0.0621249121,
+            0.3781086441,
+            0.5158819317
+          ],
+          [
+            -0.609141294,
+            1.0,
+            -0.3293402766,
+            0.1824855763,
+            -0.0588109731,
+            -0.1398105907,
+            -0.2030255288,
+            -0.51002021,
+            -0.4986496889
+          ],
+          [
+            0.085747658,
+            -0.3293402766,
+            1.0,
+            -0.1322824473,
+            0.0139533846,
+            -0.0815803501,
+            0.0525571276,
+            0.8345153017,
+            0.5066968309
+          ],
+          [
+            -0.0022834319,
+            0.1824855763,
+            -0.1322824473,
+            1.0,
+            0.3527337865,
+            0.19547979,
+            -0.139328153,
+            -0.1419278633,
+            -0.1654660587
+          ],
+          [
+            0.35214662,
+            -0.0588109731,
+            0.0139533846,
+            0.3527337865,
+            1.0,
+            0.4749368361,
+            -0.2366026805,
+            0.0189652869,
+            0.018590012
+          ],
+          [
+            0.8117800142,
+            -0.1398105907,
+            -0.0815803501,
+            0.19547979,
+            0.4749368361,
+            1.0,
+            -0.1602068301,
+            0.1138149195,
+            0.2138799261
+          ],
+          [
+            -0.0621249121,
+            -0.2030255288,
+            0.0525571276,
+            -0.139328153,
+            -0.2366026805,
+            -0.1602068301,
+            1.0,
+            0.0568284243,
+            0.0027790487
+          ],
+          [
+            0.3781086441,
+            -0.51002021,
+            0.8345153017,
+            -0.1419278633,
+            0.0189652869,
+            0.1138149195,
+            0.0568284243,
+            1.0,
+            0.6931124957
+          ],
+          [
+            0.5158819317,
+            -0.4986496889,
+            0.5066968309,
+            -0.1654660587,
+            0.018590012,
+            0.2138799261,
+            0.0027790487,
+            0.6931124957,
+            1.0
+          ]
+        ]
+      },
+      "scope": "Complete nine-candidate rows; diagnostic, not a variable selection."
+    }
+  },
+  "sampling_fields": {
+    "latitude": {
+      "available": true,
+      "nonmissing": 313350
+    },
+    "longitude": {
+      "available": true,
+      "nonmissing": 313350
+    },
+    "observer_id": {
+      "available": false,
+      "nonmissing": 0
+    },
+    "user_id": {
+      "available": false,
+      "nonmissing": 0
+    },
+    "photographer_id": {
+      "available": false,
+      "nonmissing": 0
+    },
+    "region": {
+      "available": false,
+      "nonmissing": 0
+    },
+    "tdwg3": {
+      "available": false,
+      "nonmissing": 0
+    }
+  },
+  "scope": "Input gate only. No response-environment fits, variable selection, thinning or adaptation tests. Equal-species between correlations are not observation-weighted mixed-model design diagnostics."
+}

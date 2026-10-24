@@ -1,0 +1,274 @@
+{
+  "schema_version": "v4_S1_continuous_same42_public_nuclear_versus_grafted_Pagel_lambda_20261021",
+  "scientific_status": "REAL_S1_MEASURED_ORIENTATION_PHYLOGENETIC_SIGNAL_WEAK_IN_NA_NUCLEAR_AND_GRAFTED_PLACEMENT_SENSITIVITY",
+  "run_id": 39595992874,
+  "job_id": 119208310096,
+  "run_url": "https://github.com/zuizui0223/azami/actions/runs/39595992874",
+  "artifact": {
+    "id": 12344157754,
+    "name": "v4-s1-NA42-continuous-nuclear-v-grafted-pagel-signal",
+    "digest": "sha256:778f17c843c561c05dfd8c6a84bdb47978a9dd809daa8079041510375ad71c98",
+    "size": 13398
+  },
+  "code": "analysis/v4/s1_continuous_nuclear_vs_grafted_signal.py",
+  "tests": "tests/test_v4_s1_continuous_nuclear_vs_grafted_signal.py",
+  "workflow": ".github/workflows/v4-s1-continuous-nuclear-benchmark.yml",
+  "source_S1_194_taxa_global_run_id": 39594257539,
+  "source_S1_194_taxa_global_artifact_id": 12343166776,
+  "source_S1_194_taxa_sha256": "sha256:345617fd8fef6bdb41a06a1a03fa8a776c5ad48ba13c2aa971deb1e929cbf8cb",
+  "source_published_NA_phylogeny_DOI": "10.1086/724310",
+  "source_published_NA_phylogeny_commit": "c925d4af86160064448f794a9715f70b917a2786",
+  "scope": {
+    "NA_only_independently_sequenced_reference": true,
+    "matched_original_S1_continuous_tips": 42,
+    "same_52_grafted_scaffold_comparison": true,
+    "S1_full_244_continuous_native_sample_unchanged": true,
+    "taxon_sampling_5_photos": 41,
+    "taxon_sampling_10_photos": 40,
+    "five_CHELSA_covariates": [
+      "chelsa_bio01",
+      "chelsa_bio04",
+      "chelsa_bio12",
+      "chelsa_bio15",
+      "chelsa_rsds_mean"
+    ],
+    "original_images_recalculated": false,
+    "zero_lambda_Does_NOT_prove_no_evolution": true,
+    "no_Independent_downward_botanical_origin_numbers_inferred": true,
+    "phylogenetic_placement_52_is_not_independent_52_ancestor_tests": true
+  },
+  "source_verified_summary": {
+    "cohort_sizes": {
+      "all42": 42,
+      "at_least10": 40,
+      "at_least5": 41
+    },
+    "first_na_nuclear": {
+      "all42": {
+        "species_mean|all_five_original_S1_climates|nugget0.05": {
+          "grafted_52": {
+            "LRT_range": [
+              0,
+              2.6388208339499784
+            ],
+            "lambda_ML_median": 0,
+            "lambda_ML_range": [
+              0,
+              0.7586248562013521
+            ],
+            "n_deltaAIC_gt2": 0,
+            "n_lambda_gt0_1": 7,
+            "n_scenarios": 52
+          },
+          "n_tip_cohort": 42,
+          "nuclear": {
+            "LRT_against_lambda0": 0,
+            "cohort": "all42",
+            "covariance_model": "shared_root_Brownian_Pagel_lambda_0_to_1",
+            "delta_AIC_against_lambda0": -2,
+            "lambda_ML": 0,
+            "model": "all_five_original_S1_climates",
+            "n_taxa": 42,
+            "not_true_gravity_nodding": true,
+            "nugget_fraction": 0.05,
+            "response": "species_mean",
+            "scenario": "original_NA_nuclear63",
+            "tree_source": "independent_published_NA_nuclear"
+          }
+        },
+        "species_mean|no_climate|nugget0.05": {
+          "grafted_52": {
+            "LRT_range": [
+              0,
+              2.904389673439084
+            ],
+            "lambda_ML_median": 0,
+            "lambda_ML_range": [
+              0,
+              0.8363758179147682
+            ],
+            "n_deltaAIC_gt2": 0,
+            "n_lambda_gt0_1": 9,
+            "n_scenarios": 52
+          },
+          "n_tip_cohort": 42,
+          "nuclear": {
+            "LRT_against_lambda0": 0,
+            "cohort": "all42",
+            "covariance_model": "shared_root_Brownian_Pagel_lambda_0_to_1",
+            "delta_AIC_against_lambda0": -2,
+            "lambda_ML": 0,
+            "model": "no_climate",
+            "n_taxa": 42,
+            "not_true_gravity_nodding": true,
+            "nugget_fraction": 0.05,
+            "response": "species_mean",
+            "scenario": "original_NA_nuclear63",
+            "tree_source": "independent_published_NA_nuclear"
+          }
+        }
+      },
+      "at_least10": {
+        "species_mean|all_five_original_S1_climates|nugget0.05": {
+          "grafted_52": {
+            "LRT_range": [
+              0,
+              3.7836203135493065
+            ],
+            "lambda_ML_median": 0,
+            "lambda_ML_range": [
+              0,
+              0.8936056961856371
+            ],
+            "n_deltaAIC_gt2": 0,
+            "n_lambda_gt0_1": 4,
+            "n_scenarios": 52
+          },
+          "n_tip_cohort": 40,
+          "nuclear": {
+            "LRT_against_lambda0": 0,
+            "cohort": "at_least10",
+            "covariance_model": "shared_root_Brownian_Pagel_lambda_0_to_1",
+            "delta_AIC_against_lambda0": -2,
+            "lambda_ML": 0,
+            "model": "all_five_original_S1_climates",
+            "n_taxa": 40,
+            "not_true_gravity_nodding": true,
+            "nugget_fraction": 0.05,
+            "response": "species_mean",
+            "scenario": "original_NA_nuclear63",
+            "tree_source": "independent_published_NA_nuclear"
+          }
+        },
+        "species_mean|no_climate|nugget0.05": {
+          "grafted_52": {
+            "LRT_range": [
+              0,
+              4.257161871812059
+            ],
+            "lambda_ML_median": 0,
+            "lambda_ML_range": [
+              0,
+              0.8558635776496984
+            ],
+            "n_deltaAIC_gt2": 1,
+            "n_lambda_gt0_1": 9,
+            "n_scenarios": 52
+          },
+          "n_tip_cohort": 40,
+          "nuclear": {
+            "LRT_against_lambda0": 0,
+            "cohort": "at_least10",
+            "covariance_model": "shared_root_Brownian_Pagel_lambda_0_to_1",
+            "delta_AIC_against_lambda0": -2,
+            "lambda_ML": 0,
+            "model": "no_climate",
+            "n_taxa": 40,
+            "not_true_gravity_nodding": true,
+            "nugget_fraction": 0.05,
+            "response": "species_mean",
+            "scenario": "original_NA_nuclear63",
+            "tree_source": "independent_published_NA_nuclear"
+          }
+        }
+      },
+      "at_least5": {
+        "species_mean|all_five_original_S1_climates|nugget0.05": {
+          "grafted_52": {
+            "LRT_range": [
+              0,
+              4.843248909495571
+            ],
+            "lambda_ML_median": 0,
+            "lambda_ML_range": [
+              0,
+              1
+            ],
+            "n_deltaAIC_gt2": 2,
+            "n_lambda_gt0_1": 6,
+            "n_scenarios": 52
+          },
+          "n_tip_cohort": 41,
+          "nuclear": {
+            "LRT_against_lambda0": 0,
+            "cohort": "at_least5",
+            "covariance_model": "shared_root_Brownian_Pagel_lambda_0_to_1",
+            "delta_AIC_against_lambda0": -2,
+            "lambda_ML": 0,
+            "model": "all_five_original_S1_climates",
+            "n_taxa": 41,
+            "not_true_gravity_nodding": true,
+            "nugget_fraction": 0.05,
+            "response": "species_mean",
+            "scenario": "original_NA_nuclear63",
+            "tree_source": "independent_published_NA_nuclear"
+          }
+        },
+        "species_mean|no_climate|nugget0.05": {
+          "grafted_52": {
+            "LRT_range": [
+              0,
+              4.675767579230353
+            ],
+            "lambda_ML_median": 0,
+            "lambda_ML_range": [
+              0,
+              0.9517611225930738
+            ],
+            "n_deltaAIC_gt2": 2,
+            "n_lambda_gt0_1": 8,
+            "n_scenarios": 52
+          },
+          "n_tip_cohort": 41,
+          "nuclear": {
+            "LRT_against_lambda0": 0,
+            "cohort": "at_least5",
+            "covariance_model": "shared_root_Brownian_Pagel_lambda_0_to_1",
+            "delta_AIC_against_lambda0": -2,
+            "lambda_ML": 0,
+            "model": "no_climate",
+            "n_taxa": 41,
+            "not_true_gravity_nodding": true,
+            "nugget_fraction": 0.05,
+            "response": "species_mean",
+            "scenario": "original_NA_nuclear63",
+            "tree_source": "independent_published_NA_nuclear"
+          }
+        }
+      }
+    },
+    "null_calibration": {
+      "all42": {
+        "all_five_original_S1_climates__species_mean__nugget0.05": {
+          "boundary_calibrated_bootstrap_p": 1,
+          "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+          "null_lrt_q50_q95_q99": [
+            0,
+            0,
+            0.9022112869406139
+          ],
+          "observed_lambda_ML": 0,
+          "observed_lrt": 0,
+          "requested_draws": 399,
+          "scope": "Original author-published North American nuclear tree pruned to identical 42 S1-measured taxa; fixed branch lengths, fixed nugget, normal residuals, and fitted lambda; not a genus-wide origin or photo-camera accuracy test",
+          "seed": 20261022
+        },
+        "no_climate__species_mean__nugget0.05": {
+          "boundary_calibrated_bootstrap_p": 1,
+          "null": "parametric_bootstrap_phylogenetically_independent_tips_given_original_five_climates",
+          "null_lrt_q50_q95_q99": [
+            0,
+            0,
+            2.1593591423753336
+          ],
+          "observed_lambda_ML": 0,
+          "observed_lrt": 0,
+          "requested_draws": 399,
+          "scope": "Original author-published North American nuclear tree pruned to identical 42 S1-measured taxa; fixed branch lengths, fixed nugget, normal residuals, and fitted lambda; not a genus-wide origin or photo-camera accuracy test",
+          "seed": 20261021
+        }
+      }
+    },
+    "status": "VERIFIED_PUBLISHED_NA_NUCLEAR_VS_GRAFTED_CONTINUOUS_S1_SIGNAL"
+  }
+}

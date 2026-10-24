@@ -1,0 +1,79 @@
+name: V4 T2 original 110 Q20 nuclear vs 109 ITS shared58 actual head photo and rain
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_110_multilocus_vs_109_its_photo_niche.py'
+      - 'tests/test_v4_t2_110_multilocus_vs_109_its_photo_niche.py'
+      - '.github/workflows/v4-t2-original110-vs-genbank109-shared58-own-photo.yml'
+  pull_request:
+    paths:
+      - 'analysis/v4/t2_110_multilocus_vs_109_its_photo_niche.py'
+      - 'tests/test_v4_t2_110_multilocus_vs_109_its_photo_niche.py'
+      - '.github/workflows/v4-t2-original110-vs-genbank109-shared58-own-photo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-verified-110-vs-109-on-identical-58:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install nuclear phylogenetic source/math tools
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Verify source-independent S1 photographic angle, Q20 ancestry, Pagel null and 58 matching
+        run: python -m pytest -q tests/test_v4_t2_110_multilocus_vs_109_its_photo_niche.py
+      - name: Restore original S1 data, genuine Q20 110 source, original two ML tree datasets
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1 work/q20 work/nuclear110 work/ITS work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/S1
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/q20
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63 --dir work/nuclear110
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/ITS
+      - name: Fit same original camera-angle and rain on actual two DNA trees, source-full and matched-58 cohorts
+        run: |
+          python -m analysis.v4.t2_110_multilocus_vs_109_its_photo_niche             --S1-original-251 work/S1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv             --nuclear-source110 work/q20/REAL110_SOURCE_TAXON_BIOSAMPLE_TECHNICAL_SENSITIVITY.csv             --original111-failed-posthoc110-receipt work/q20/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json             --real-108-locus-110-tree work/nuclear110/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile             --GenBank-ITS109-tree work/ITS/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile             --out work/output/T2_REAL110_VS_ITS109_SHARED58_ORIGINAL_PHOTO_RAIN_PHYLOGENY.json             --permutations 999
+          git rev-parse HEAD > work/output/SOURCE_COMMIT.txt
+      - name: Prevent invented adaptive rate claims and preserve original failed 111 source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path('work/output/T2_REAL110_VS_ITS109_SHARED58_ORIGINAL_PHOTO_RAIN_PHYLOGENY.json').read_text())
+          assert d['S1_original_taxonomy_units']==251
+          assert d['original_110_posthoc_source_gate_failed']
+          assert d['original108_nuclear_candidate_loci_and_Q20_positions']==[108,29310]
+          assert d['trait_source_is_original_S1_OWN_photo_angle_not_external_flora_U_D']
+          assert d['same_photo_outcome_and_same_climate_used_on_common58_IID_test_passed']
+          assert not d['independent_phylogenetically_replicated_adaptive_morphological_gain_established']
+          groups=d['results']
+          keys=('108_candidate_locus_real110','nuclear_ITS_real109','108_candidate_locus_same58','nuclear_ITS_same58')
+          assert [groups[k]['n_original_S1_taxa'] for k in keys]==[110,109,58,58]
+          for v in groups.values():
+              assert set(v['signal'])=={'five_pct_source_tip_noise','zero_tip_noise'}
+              assert v['signal']['five_pct_source_tip_noise']['log_BIO12']['permutation_diagnostic']['permutations']==999
+              assert v['photo_measurements_are_camera_vertical_not_true_gravity_head_tilt']
+          print('PASSED_T2_TRUE110_NUCLEAR_VS_ITS109_SAME58_NO_FAKE_EVOLUTIONARY_GAIN')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t2-S1-original-photo-true110-108loci-vs-ITS109-common58
+          path: work/output/
+          if-no-files-found: warn
+          retention-days: 90

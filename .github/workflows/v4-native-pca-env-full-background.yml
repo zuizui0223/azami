@@ -1,0 +1,263 @@
+name: V4 S2 full-background WCVP climate PCA-env
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/native_pca_env.py'
+      - 'analysis/v4/native_pca_env_fullcoverage.py'
+      - 'analysis/v4/native_full_rain_head_response.py'
+      - 'analysis/v4/native_wet_edge.py'
+      - 'analysis/v4/s2_rainfall_occupancy_trait.py'
+      - 'analysis/v4/native_rain_niche_trait_redistribution.py'
+      - 'analysis/v4/s2_full_distribution_exploration.py'
+      - 'analysis/v4/s2_joint_rain_angle_landscape.py'
+      - 'analysis/v4/s2_conditional_curve_spatial.py'
+      - 'tests/test_v4_s2_conditional_curve_spatial.py'
+      - 'tests/test_v4_s2_joint_rain_angle_landscape.py'
+      - 'tests/test_v4_s2_full_distribution_exploration.py'
+      - 'tests/test_v4_native_rain_niche_trait_redistribution.py'
+      - 'tests/test_v4_s2_rainfall_occupancy_trait.py'
+      - 'tests/test_v4_native_wet_edge.py'
+      - 'tests/test_v4_native_full_rain_head_response.py'
+      - 'analysis/v4/native_climate_source_archive.py'
+      - 'tests/test_v4_native_pca_env_fullcoverage.py'
+      - '.github/workflows/v4-native-pca-env-full-background.yml'
+permissions:
+  # Required to READ original source from immutable private GitHub Draft release.
+  # No release, tag or repository content is modified by this workflow.
+  contents: write
+  actions: read
+concurrency:
+  group: v4-pca-env-full-background-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  source-verified-complete-niche:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned environment and rasterio for original TIFF-only sampling
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt \
+            'shapely>=2,<3' 'rasterio>=1.4,<2' \
+            'requests>=2.32,<3' 'cryptography>=46,<49' pytest
+      - name: Validate source SHA, exact original TIFF pixel and stop-rule tests
+        run: |
+          python -m pytest -q \
+            tests/test_v4_native_pca_env.py \
+            tests/test_v4_native_pca_env_fullcoverage.py \
+            tests/test_v4_native_full_rain_head_response.py \
+            tests/test_v4_native_wet_edge.py \
+            tests/test_v4_s2_rainfall_occupancy_trait.py \
+            tests/test_v4_native_rain_niche_trait_redistribution.py \
+            tests/test_v4_s2_full_distribution_exploration.py \
+            tests/test_v4_s2_joint_rain_angle_landscape.py \
+            tests/test_v4_s2_conditional_curve_spatial.py
+      - name: Recover original sealed 665115 source and WCVP350 authority, never publish originals
+        run: |
+          set -euo pipefail
+          mkdir -p work/full-pca-env/private work/full-pca-env/public
+          gh api -H 'Accept: application/octet-stream' \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/full-pca-env/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/full-pca-env/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+            > work/full-pca-env/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/full-pca-env/private/authority350.zip' | sha256sum -c -
+          gh api -H 'Accept: application/octet-stream' \
+            repos/zuizui0223/azami/releases/assets/659010325 \
+            > work/full-pca-env/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/full-pca-env/private/original-measurements.aesgcm' | sha256sum -c -
+      - name: Obtain five original CHELSA TIFFs serially with full SHA check then discard each source
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          python -m analysis.v4.native_pca_env_fullcoverage \
+            --original work/full-pca-env/private/original-metadata.aesgcm \
+            --authority-archive work/full-pca-env/private/authority350.zip \
+            --measurements work/full-pca-env/private/original-measurements.aesgcm \
+            --source-meta analysis/v4/environment_source_metadata.json \
+            --work work/full-pca-env/private \
+            --output work/full-pca-env/public
+      - name: Ensure only output aggregates and fully sourced climate information escape private runner
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          path=Path('work/full-pca-env/public/S2_two_species_full_background_PCA_env.json')
+          if not path.exists():
+              print('Full original CHELSA download or PCA-env did NOT complete; no fake climate niche result created.')
+              raise SystemExit(0)
+          out=json.loads(path.read_text())
+          assert out['status']=='ORIGINAL_TIFF_SHA_VERIFIED_ALL_FIVE_COMPLETE_NATIVE_INTRODUCED_AVAILABLE_ENVIRONMENT'
+          assert set(out['focal_source_species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert out['without_image_orientation_trait_selection']
+          assert out['no_original_photo_observer_coordinates_in_public_report']
+          assert out['total_wild_source_observations_before_observer_cell_balance']==297622
+          assert all(x['has_been_SHA_verified_against_existing_native_source']
+                     for x in out['source_TIFF_provenance_per_variable'].values())
+          response=path.parent/'S2_two_species_full_rain_head_response.json'
+          assert response.is_file()
+          data=json.loads(response.read_text())
+          assert data['status']=='DIRECT_CLIMATE_NOVELTY_AND_IMAGE_ORIENTATION_FINISHED_EXPLORATORY'
+          assert set(data['focal'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert data['no_original_location_observation_photographer_identifiers_in_public_result']
+          assert all(
+            'annual_precipitation' in region['hypotheses']
+            and 'precipitation_seasonality' in region['hypotheses']
+            for species in data['focal'].values() for region in species['regions'].values()
+          )
+          # S2 envelope must be defined independently of photo-angle outcomes.
+          wet=path.parent/'S2_wet_edge_angle_blind_distribution.json'
+          assert wet.is_file()
+          w=json.loads(wet.read_text())
+          assert w['status']=='SOURCE_VERIFIED_WET_EDGE_PREFLIGHT_AND_CONDITIONAL_EXPLORATORY_WHERE_ADMITTED'
+          assert set(w['focal'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert w['source_two_species_full_original_wild_observations']==297622
+          assert w['source_orientation_eligible_before_date_and_cell_balancing']==173737
+          assert set(w['source_five_original_CHELSA_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert not any(w['privacy'].values())
+          for species in w['focal'].values():
+              assert len(species['native_original_unselected_climate_reference']['BIO12_q50_q75_q90_q95_q975_mm'])==5
+              assert 'angle_blind_source_coverage' in species
+          trait=path.parent/'S2_rain_occupancy_vs_head_angle_bands.json'
+          assert trait.is_file()
+          t=json.loads(trait.read_text())
+          assert t['status']=='SOURCE_VERIFIED_RAIN_OCCUPANCY_AND_ANGLE_BANDS_EXPLORATORY'
+          assert set(t['focal'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert t['total_original_wild_two_species_source']==297622
+          assert t['total_original_photo_eligible']==173737
+          assert set(t['CHELSA_original_TIFF_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert not any(t['privacy'].values())
+          for species in t['focal'].values():
+              assert len(species['native_rain_reference_BIO12_q50_q75_q95_mm'])==3
+              for status in ('native','introduced_all'):
+                  assert len(species['climate_occupancy'][status]['bands'])==4
+                  assert len(species['orientation_by_native_rain_band'][status])==4
+          decomposition=path.parent/'S2_rain_niche_phenotype_decomposition.json'
+          assert decomposition.is_file()
+          d=json.loads(decomposition.read_text())
+          assert d['status']=='EXECUTED_ORIGINAL_SOURCE_RAIN_OCCUPANCY_AND_IMAGE_TRAIT_MIXTURE'
+          assert d['sources_are_angle_blind']
+          assert d['original_source_two_species_n']==297622
+          assert d['original_angle_eligible_observations']==173737
+          assert set(d['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(d['privacy'].values())
+          for case in d['species'].values():
+              assert len(case['native_rain_source_cutoffs_q25_q50_q75_q90_q95_mm'])==5
+              assert 'all_introduced' in case['introduced']
+              assert len(case['native_source_rain']['source_occurrence_probabilities'])==6
+          # Visual curves are the primary exploratory inspection. Knots are
+          # not selected quantile tests, rain thresholds or claimed changes.
+          distribution=path.parent/'S2_unselected_full_rain_and_head_angle_distributions.json'
+          assert distribution.is_file()
+          curves=json.loads(distribution.read_text())
+          assert curves['status']=='ORIGINAL_NATIVE_ALL_INTRODUCED_FULL_EMPIRICAL_CURVES'
+          assert curves['no_selected_outcome_threshold_or_effect_score']
+          assert set(curves['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(curves['privacy'].values())
+          for species in curves['species'].values():
+              assert set(species)=={
+                  'rainfall_environment_full_distribution',
+                  'image_angle_full_distribution'
+              }
+              for trace in species.values():
+                  xs=trace['display_only_unselected_common_knots']
+                  assert len(xs)>50
+                  assert len(xs)==len(trace['native_empirical_cdf'])
+                  assert len(xs)==len(trace['all_introduced_empirical_cdf'])
+                  assert trace['native_empirical_cdf'][-1]==1.0
+                  assert trace['all_introduced_empirical_cdf'][-1]==1.0
+                  uncertainty=trace['whole_curve_spatial_uncertainty']
+                  assert uncertainty['status']=='EXPLORATORY_FULL_ECDF_GEOGRAPHIC_CELL_UNCERTAINTY'
+                  assert uncertainty['no_biological_tail_or_width_metric_selected']
+                  assert uncertainty['resamples_valid']>=.9*uncertainty['resamples_requested']
+                  assert len(uncertainty['introduced_minus_native_ECDF'])==len(xs)
+                  assert len(uncertainty['simultaneous_95pct_spatial_sensitivity_lower'])==len(xs)
+                  assert len(uncertainty['simultaneous_95pct_spatial_sensitivity_upper'])==len(xs)
+          joint=path.parent/'S2_full_joint_rain_angle_landscape.json'
+          assert joint.is_file()
+          j=json.loads(joint.read_text())
+          assert j['status']=='ORIGINAL_S2_JOINT_RAIN_AND_IMAGE_ANGLE_ALL_INTRODUCED'
+          assert j['two_species_original_wild_source']==144178
+          assert j['two_species_original_angle_eligible']==173737
+          assert j['visualization_only_no_trait_width_or_tail_indices_selected']
+          assert j['all_introduced_remains_primary'] is True
+          assert set(j['source_raster_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert set(j['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(j['privacy'].values())
+          for species in j['species'].values():
+              xs=species['display_climate_BIO12_edges_mm_year']
+              ys=species['display_angle_edges_image_degrees']
+              assert len(xs)>10 and len(ys)==37
+              for region in ('native','all_introduced'):
+                  panel=species[region]
+                  assert panel['rain_and_angle_measured_on_same_photo_observation']
+                  assert len(panel['original_photo_joint_mass'])==len(xs)-1
+                  assert all(len(row)==len(ys)-1
+                             for row in panel['original_photo_joint_mass'])
+                  assert abs(sum(map(sum,panel['original_photo_joint_mass']))-1)<1e-7
+              assert species['introduced_continents_supplementary'][
+                  'all_introduced_joint_mass_recovered_exactly']
+          # Complete same-rain, same-species image-angle conditional CDF.
+          # Never select a tail or a width from the exploratory heatmap.
+          conditional=path.parent/'S2_full_conditional_rain_angle_ECDF_cell_sensitivity.json'
+          assert conditional.is_file()
+          q=json.loads(conditional.read_text())
+          assert q['status']=='SOURCE_VERIFIED_SAME_RAIN_UNSELECTED_ANGLE_FULL_CDF_CELL_SENSITIVITY'
+          assert q['n_source_photo_angle_eligible']==173737
+          assert q['n_photographer_cell_dated_balanced']==94060
+          assert q['no_chosen_width_quantile_extreme_tail_effect_metric']
+          assert set(q['source_original_five_CHELSA_SHA256'])==set(out['source_TIFF_provenance_per_variable'])
+          assert set(q['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not any(q['source_privacy'].values())
+          for study in q['species'].values():
+              assert study['status'] in {
+                  'EXPLORATORY_SIMULTANEOUS_SAME_RAIN_FULL_HEAD_CDF_CELL_ENVELOPE',
+                  'STOP_INSUFFICIENT_CELL_BOOTSTRAP_SUPPORT'}
+              if study['status'].startswith('EXPLORATORY'):
+                  n=len(study['rainfall_display_bins_originally_supported_both_ranges'])
+                  assert n>=10
+                  assert len(study['observed_conditional_head_angle_CDF_introduced_minus_native'])==n
+                  assert len(study['simultaneous_95pct_spatial_sensitivity_lower'])==n
+                  assert study['simultaneous_interval_diagnostic']['draws_valid_for_all_common_rain_bins']>=360
+                  audit=study['photo_sample_metadata_for_every_supported_rain_plot_bin']
+                  assert set(audit)=={'native','introduced_all'}
+                  assert len(audit['native'])==n and len(audit['introduced_all'])==n
+                  leverage=study['all_original_cells_removed_one_at_a_time_surface_sensitivity']
+                  assert leverage['status']=='FULL_CONDITIONAL_SURFACE_ALL_SINGLE_5DEG_CELL_DELETIONS'
+                  assert len(leverage['observed_delta_min_over_one_cell_deletion_or_original'])==n
+                  for state in audit.values():
+                      for admitted,metadata in zip(study['rainfall_display_bins_originally_supported_both_ranges'],state):
+                          if admitted:
+                              assert metadata['source_5degree_cells']>=5
+                              assert metadata['record_grade_is_NOT_photo_pose_or_clarity']
+                              assert len(metadata['observation_month_fractions_1_to_12'])==12
+                          else:
+                              assert metadata is None
+          files=list(path.parent.iterdir())
+          assert set(files)=={path,response,wet,trait,decomposition,distribution,joint,conditional}, files
+          for file in (path,response,wet,trait,decomposition,distribution,joint,conditional):
+              content=file.read_text()
+              for field in ('"obs_id"','"user_id"','"latitude"','"longitude"'):
+                  assert field not in content
+          print('Exact five-original-raster-source PCA-env aggregate audit passed')
+          PY
+      - name: Upload aggregate two-species full-background climate niche result only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-two-species-PCA-env-full-original-background
+          path: work/full-pca-env/public/
+          if-no-files-found: warn
+          retention-days: 90

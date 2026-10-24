@@ -1,0 +1,85 @@
+{
+  "schema": "azami_v4_T2_original_NA63_sister_BIO12_v1",
+  "date": "2026-10-22",
+  "result_class": "EXECUTED_SOURCE_PINNED_DESCRIPTIVE_SISTER_CLADE_SIGN_NOT_EVOLUTIONARY_ADAPTATION",
+  "github_action_run_id": 39716167374,
+  "github_action_url": "https://github.com/zuizui0223/azami/actions/runs/39716167374",
+  "github_action_head_sha": "6d9061747ca2ad812144d21ea80c03311cbe1fd0",
+  "github_artifact_id": 12399275929,
+  "github_artifact_digest": "sha256:4ce1723489e1fd84f056444f1764df1dcc4e0668f86efba64b7d80de44c609cc",
+  "rerun_command": "python -m analysis.v4.t2_na63_sister_clade_rain --out work/t2-na63-sister-clade-rain/T2_NA63_SISTER_CLADE_RAIN.json",
+  "source": {
+    "repo": "carol-siniscalchi/cirsium",
+    "commit": "c925d4af86160064448f794a9715f70b917a2786",
+    "doi": "10.1086/724310",
+    "traits_git_blob": "fa127f0587b676e6e004ea121424d26069586bcb",
+    "tree_git_blob": "6417a38793427bc7c8562dc0e2cab59b74d8c316",
+    "climate_git_blob": "6ca878423881db13f2af4624380bdce342afdf1b"
+  },
+  "n_tips": 63,
+  "n_author_scored_nodding": 5,
+  "n_maximal_pure_nodding_tip_clades": 4,
+  "root_erect_minimum_total_changes": 4,
+  "root_nodding_minimum_total_changes": 6,
+  "sister_comparisons_wetter_nodding": 2,
+  "sister_comparisons_drier_nodding": 2,
+  "contrasts": [
+    {
+      "nodding": [
+        "Cirsium_fontinale_campylon"
+      ],
+      "sister_erect": [
+        "Cirsium_andrewsii",
+        "Cirsium_crassicaule",
+        "Cirsium_douglasii",
+        "Cirsium_validum"
+      ],
+      "nodding_bio12_mean_mm": 580.957,
+      "sister_erect_bio12_mean_mm": 614.6865,
+      "delta_mm": -33.7295
+    },
+    {
+      "nodding": [
+        "Cirsium_scopulorum"
+      ],
+      "sister_erect": [
+        "Cirsium_centaureae"
+      ],
+      "nodding_bio12_mean_mm": 769.758,
+      "sister_erect_bio12_mean_mm": 522.382,
+      "delta_mm": 247.376
+    },
+    {
+      "nodding": [
+        "Cirsium_funkiae"
+      ],
+      "sister_erect": [
+        "Cirsium_hesperium"
+      ],
+      "nodding_bio12_mean_mm": 753.275,
+      "sister_erect_bio12_mean_mm": 888.727,
+      "delta_mm": -135.452
+    },
+    {
+      "nodding": [
+        "Cirsium_vinaceum",
+        "Cirsium_conspicuum"
+      ],
+      "sister_erect": [
+        "Cirsium_grahamii",
+        "Cirsium_wrightii"
+      ],
+      "nodding_bio12_mean_mm": 889.5885,
+      "sister_erect_bio12_mean_mm": 489.3205,
+      "delta_mm": 400.268
+    }
+  ],
+  "stop_rules": {
+    "confirmed_independent_gain_events": false,
+    "phylogenetic_rain_transition_rate_estimated": false,
+    "ancestral_rain_reconstructed": false,
+    "global_S1_244_phylo_connected": false,
+    "T3_cross_tribe_evolution_completed": false
+  },
+  "interpretation": "Four all-nodding tip clusters on one independent North American nuclear tree, with immediate all-erect sister clusters showing BIO12 differences of mixed sign (2 wetter,2 drier). This is descriptive and does not establish adaptive evolution or a complete repeated-gain count."
+}

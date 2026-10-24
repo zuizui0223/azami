@@ -1,3 +1,5 @@
 # These are exact archived artifact bytes, not platform-normalized source text.
 reproducibility/current_reference/** -text
 reproducibility/current_reference/manifest.json text eol=lf
+analysis/v4/results/**/*.json -text
+analysis/v4/results/**/*.csv -text

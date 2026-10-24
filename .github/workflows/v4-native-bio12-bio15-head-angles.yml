@@ -1,0 +1,108 @@
+name: V4 S2 new wet-season climate versus original head photo angle
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/native_rain_seasonality_angle_continents.py'
+      - 'tests/test_v4_native_rain_seasonality_angle_continents.py'
+      - 'analysis/v4/native_intro_continent_orientation.py'
+      - '.github/workflows/v4-native-bio12-bio15-head-angles.yml'
+permissions:
+  # Authenticated READ of source archive Draft Release.
+  contents: write
+  actions: read
+concurrency:
+  group: v4-wet-season-head-angles-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  empirical-climate-head-orientation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install scientific original raster and secure-decryption dependencies
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt \
+            'shapely>=2,<3' 'rasterio>=1.4,<2' \
+            'requests>=2.32,<3' 'cryptography>=46,<49' pytest
+      - name: Test same-photo weather controls, no rain phenotype leakage and missing site safeguards
+        run: |
+          python -m pytest -q \
+            tests/test_v4_native_intro_continent_orientation.py \
+            tests/test_v4_native_rain_seasonality_angle_continents.py \
+            tests/test_v4_native_pca_env_fullcoverage.py
+      - name: Restore original sealed observations, original measurements, and source WCVP350 authority
+        run: |
+          set -euo pipefail
+          mkdir -p work/wet-season/private work/wet-season/provenance work/wet-season/public
+          gh api -H 'Accept: application/octet-stream' \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/wet-season/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/wet-season/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H 'Accept: application/octet-stream' \
+            repos/zuizui0223/azami/releases/assets/659010325 \
+            > work/wet-season/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/wet-season/private/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+            > work/wet-season/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/wet-season/private/authority350.zip' | sha256sum -c -
+      - name: Rebuild exactly the same original wild photo orientation source privately
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          python -m analysis.v4.native_introduced_opportunity \
+            --original work/wet-season/private/original-metadata.aesgcm \
+            --measurements work/wet-season/private/original-measurements.aesgcm \
+            --authority work/wet-season/private/authority350.zip \
+            --output work/wet-season/provenance \
+            --private-focal-output work/wet-season/private/focal_native_intro_orientation.csv.gz
+      - name: Extract full-sha-verified original BIO12 and BIO15 at each historical head photograph
+        run: |
+          python -m analysis.v4.native_rain_seasonality_angle_continents \
+            --focal work/wet-season/private/focal_native_intro_orientation.csv.gz \
+            --original-status work/wet-season/provenance/source665115_introduced_opportunity.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --work work/wet-season/private \
+            --output work/wet-season/public
+      - name: Check output is aggregated and two specified climate axes are present
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/wet-season/public')
+          target=root/'S2_introduced_rain_seasonality_vs_original_head_image_angle.json'
+          if not target.is_file():
+              print('No estimated climate-head phenotype after original TIFF verification; fail-closed.')
+              raise SystemExit(0)
+          data=json.loads(target.read_text(encoding='utf-8'))
+          assert data['source_original_eligible_image_head_angles']==173737
+          assert data['status']=='EXECUTED_ORIGINAL_TWO_CHELSA_RAIN_VARIABLES_VS_ORIGINAL_IMAGE_HEAD_ANGLES'
+          assert set(data['climate_variables'])=={'chelsa_bio12','chelsa_bio15'}
+          assert set(data['distinct_focal_species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not data['private_observation_user_geo_or_image_data_published']
+          for v,rec in data['full_original_CHELSA_source_SHA_and_grid'].items():
+              assert rec['has_been_SHA_verified_against_existing_native_source']
+          assert len(list(root.iterdir()))==1
+          value=target.read_text()
+          assert '"obs_id"' not in value and '"user_id"' not in value
+          assert '"latitude"' not in value and '"longitude"' not in value
+          print('Bio12/Bio15 direct head-angle contrast source/QC checks passed')
+          PY
+      - name: Upload aggregate climate and photo orientation contrast only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-two-Cirsium-original-rain-seasonality-photo-angle
+          path: work/wet-season/public/
+          if-no-files-found: warn
+          retention-days: 90

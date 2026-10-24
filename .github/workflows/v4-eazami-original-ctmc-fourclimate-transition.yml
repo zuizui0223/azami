@@ -1,0 +1,115 @@
+name: V4 EAzami original U-to-D CTMC Brownian transition new four climate
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_eazami_original_ctmc_fourclimate_transition.py'
+      - 'tests/test_v4_t2_eazami_original_ctmc_fourclimate_transition.py'
+      - '.github/workflows/v4-eazami-original-ctmc-fourclimate-transition.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reproduce-original-EAzami-six-nuclear-CTMC:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: zuizui0223/EAzami
+          ref: c9870e91604ed1514344ddc8f765eae5237dbf27
+          path: eazami_reference
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original EAzami CTMC plus S1 S2 real climate sampling dependencies
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' \
+            'biopython>=1.83,<2' 'pandas>=2.1,<3' \
+            'rasterio>=1.4,<2' 'requests>=2.32,<3' 'pytest>=8,<10'
+      - name: Test original 6 accepted nuclear EAzami trees and real 4-axis science gates
+        run: python -m pytest -q tests/test_v4_t2_eazami_original_ctmc_fourclimate_transition.py
+      - name: Authenticate old original East Asia EAzami Japan Taiwan GBIF occurrence source assets
+        run: |
+          set -euo pipefail
+          mkdir -p work/japan work/taiwan work/rasters work/rsds/chelsa_rsds_mean work/results work/private
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9516784077 --jq .digest)" = \
+            'sha256:cb5717c90cbc769398f9ffce38787704a02e34253c1ff16cf8f368ba55aeda96'
+          test "$(gh api repos/zuizui0223/EAzami/actions/artifacts/9520157997 --jq .digest)" = \
+            'sha256:819936ceeb6008f356c580622fb72972617700402afaa3d3ab125bff2e6d9106'
+          gh run download 32716015605 --repo zuizui0223/EAzami \
+            --name fdt4-japan-orientation-niche-v1 --dir work/japan
+          gh run download 32725842871 --repo zuizui0223/EAzami \
+            --name fdt4-taiwan-orientation-niche-v1 --dir work/taiwan
+          test -s work/japan/focal_occurrences_environment_complete.csv
+          test -s work/taiwan/focal_occurrences_environment_complete.csv
+          python - <<'PY'
+          import pandas as pd
+          a=pd.read_csv('work/japan/focal_occurrences_environment_complete.csv')
+          b=pd.read_csv('work/taiwan/focal_occurrences_environment_complete.csv')
+          assert len(a)==693 and len(b)==55
+          assert {'latitude','longitude','chelsa_bio01','chelsa_bio15'} <= set(a)
+          assert {'latitude','longitude','chelsa_bio01','chelsa_bio15'} <= set(b)
+          print('SOURCE_AUTHENTIC_EAZAMI_693_JAPAN_55_TAIWAN_ORIGINAL_OCCURRENCES')
+          PY
+      - name: Recover exact original site CHELSA BIO18 BIO05 WorldClim elev from S1 S2 and verified RSDS pixels
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_s2_real_bio18_bio05_rsds_elevation \
+            --stage download --source-root work/rasters
+          echo '90078d99eeb0b08dd1a115a5ffa60b7c19e5849686854db950283cbac9d3817d  work/rasters/CHELSA_bio05_1981-2010_V.2.1.tif' | sha256sum -c -
+          echo '68b0b1cb905cdf6972364e947e137f714a68d287f38863b1516161a2a4bbd7ec  work/rasters/CHELSA_bio18_1981-2010_V.2.1.tif' | sha256sum -c -
+          echo '1d57ce9fd3584cea6a227396bc75ef88522fd5346e8487c17370885c0499716e  work/rasters/wc2.1_30s_elev.tif' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12242917323/zip > work/private/original-S1-RSDS-cache.zip
+          echo '2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4  work/private/original-S1-RSDS-cache.zip' | sha256sum -c -
+          unzip -q work/private/original-S1-RSDS-cache.zip -d work/rsds/chelsa_rsds_mean
+      - name: Replay EAzami 2026-09-04 original CTMC/Brownian U-D transition per six nuclear topologies
+        run: |
+          python -m analysis.v4.t2_eazami_original_ctmc_fourclimate_transition \
+            --reference eazami_reference \
+            --japan-zip work/japan/focal_occurrences_environment_complete.csv \
+            --taiwan-zip work/taiwan/focal_occurrences_environment_complete.csv \
+            --source-root work/rasters \
+            --rsds-root work/rsds \
+            --rsds-metadata analysis/v4/environment_source_metadata.json \
+            --outdir work/results
+          git rev-parse HEAD > work/results/AZAMI_SOURCE_COMMIT.txt
+      - name: Verify original EAzami legacy BIO15 BIO1 reproduced before all new BIO18 BIO05 RSDS elevation null calculations
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('work/results/EAzami_UD_original_method_4_REAL_CLIMATES_CTMC_BRANCH_RESULTS.json').read_text())
+          assert r['original_old_BIO1_BIO15_method_reproduced_before_new_axes']['status']=='pass'
+          assert r['same_original_six_AU_nonrejected_nuclear_topologies']
+          assert r['original_EAzami_trait'].startswith('botanical-literature')
+          assert r['n_original_Japan_occurrences']==693 and r['n_original_Taiwan_occurrences']==55
+          assert set(r['four_real_site_climates'])=={'chelsa_bio18','chelsa_bio05','chelsa_rsds_mean','elevation_m'}
+          for label,m,n in (('n5_original_primary_12',792,12),('n3_original_sensitivity_13',1716,13),('n10_original_method_9',126,9)):
+              stage=r['panels'][label]
+              if stage['status']!='ORIGINAL_EAzami_SIX_NUCLEAR_CTMC_BROWNIAN_STATE_MAPS_4CLIMATE_COMPLETE':
+                  print('SOURCE_COVERAGE_GATE:',label,stage)
+                  continue
+              assert stage['number_count_preserving_tip_state_maps']==m
+              assert stage['n_original_taxa']==n
+              assert len(stage['axis_results'])==4
+              assert 0<=stage['BIO18_focal_one_sided_increase_exact_fraction']<=1
+          assert r['EAzami_binary_botanical_tip_states_not_interchangeable_with_S1_0_to_180_photo_angles']
+          assert r['per_taxon_coordinates_and_observer_data_never_exported']
+          print('PASS_ORIGINAL_EAZAMI_EXACT_CTMC_BROWNIAN_FOUR_ENVIRONMENTS_REAL_PUBLIC_SOURCES')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-eazami-original-six-nuclear-UD-CTMC-Brownian-BIO18-BIO05-RSDS-elevation
+          path: work/results/
+          retention-days: 90
+          if-no-files-found: warn

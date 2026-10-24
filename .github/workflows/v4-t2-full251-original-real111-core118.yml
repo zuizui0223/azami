@@ -1,0 +1,69 @@
+name: V4 T2 full251 original S1 names joined to real111 core118 nuclear Q20
+on:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_full251_111real_core118_readiness.py'
+      - 'tests/test_v4_t2_full251_111real_core118_readiness.py'
+      - '.github/workflows/v4-t2-full251-original-real111-core118.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  full-original-251-with-real-111-nuclear:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify original WCVP taxon-synonym and missingness source gates
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t2_full251_111real_core118_readiness.py
+      - name: Verify source-authenticated all251 and exact real111 same-copy results
+        run: |
+          set -euo pipefail
+          mkdir -p work/251/source work/251/real work/251/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12461101999 --jq '.digest')" = 'sha256:c4d3923d6c53578bede1529bc4241770a42c9169639c1882d2dd0d1839b1f91f'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12472628740 --jq '.digest')" = 'sha256:4c42984b8e2feb0fa12c2f2233bdc609da199322ab74765ce5a69d0a184ccf73'
+          gh run download 39859507880 --repo zuizui0223/azami --name v4-t2-all251-all244-source-name-real120k-Q20-breadth --dir work/251/source
+          gh run download 39886900937 --repo zuizui0223/azami --name t2-real111-241-same-original-reference-30k120k-occupancy --dir work/251/real
+          test -s work/251/source/S1_ALL251_ORIGINAL_NAMES_REAL_120K_Q20_SOURCE_COVERAGE.csv
+          test -s work/251/real/111_TAXA_X_241_REAL_SITE_DEPTH_COPY_MATRIX.csv
+      - name: Join 111 source specimens and real common118 original loci to every one of 251 S1 names
+        run: |
+          python -m analysis.v4.t2_full251_111real_core118_readiness \
+            --source251 work/251/source/S1_ALL251_ORIGINAL_NAMES_REAL_120K_Q20_SOURCE_COVERAGE.csv \
+            --source111 work/251/real/111_SOURCE_TAXA_BIOSAMPLE_SELECTION.csv \
+            --matrix111 work/251/real/111_TAXA_X_241_REAL_SITE_DEPTH_COPY_MATRIX.csv \
+            --loci241 work/251/real/241_AUTHOR_LOCI_SAME_REF_OCCUPANCY_30K_120K.csv \
+            --out-dir work/251/output
+      - name: Validate all 251 original names remain observed/missing without inventing genes
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          p=Path('work/251/output')
+          s=json.loads((p/'FULL251_ORIGINAL_Q20_118_SHARED_REF_READINESS_SUMMARY.json').read_text())
+          with (p/'FULL251_ORIGINAL_CIRSIUM_REAL120K_118_REF_COPY_READINESS.csv').open() as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==251 and len({x['accepted_key'] for x in rows})==244
+          assert sum(int(x['original_S1_photo_count']) for x in rows)==170066
+          assert sum(x['nuclear120k_source_observation_status']=='measured_real_Q20_source_read_prefix' for x in rows)==111
+          assert sum(x['nuclear120k_source_observation_status']=='public_run_shorter_than_120k_not_gene_loss' for x in rows)==2
+          assert s['core_reference_copy_Q20_shared_atleast80pct_111_taxa']==118
+          assert not s['species_phylogeny_constructed']
+          print('PASS: original251 S1 names and 244 WCVP keys; 111 measured, two short sources and 138 not in source cohort')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-t2-all251-original-S1-real111-core118-public-nuclear-readiness
+          path: work/251/output/
+          if-no-files-found: error
+          retention-days: 90

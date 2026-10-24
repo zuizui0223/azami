@@ -1,0 +1,218 @@
+name: V4 S2 source-wide WCVP native vs introduced opportunity
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/native_range_status.py'
+      - 'analysis/v4/native_introduced_opportunity.py'
+      - 'analysis/v4/native_cached_climate.py'
+      - 'analysis/v4/native_introduced_climate_transfer.py'
+      - 'tests/test_v4_native_introduced_climate_transfer.py'
+      - 'analysis/v4/native_introduced_common_support.py'
+      - 'tests/test_v4_native_introduced_common_support.py'
+      - 'analysis/v4/native_pca_env.py'
+      - 'tests/test_v4_native_pca_env.py'
+      - 'analysis/v4/native_intro_continent_orientation.py'
+      - 'tests/test_v4_native_intro_continent_orientation.py'
+      - 'analysis/v4/native_niche_crossfit.py'
+      - 'tests/test_v4_native_niche_crossfit.py'
+      - 'analysis/v4/native_climate_trait_coupling.py'
+      - 'tests/test_v4_native_climate_trait_coupling.py'
+      - 'tests/test_v4_native_introduced_opportunity.py'
+      - '.github/workflows/v4-rain-introduced-opportunity.yml'
+permissions:
+  # The source is a PRIVATE draft-release asset. GitHub requires write-scoped
+  # contents for the built-in runner token to READ draft-release binary assets.
+  # This job NEVER changes or publishes the Release or original data.
+  contents: write
+  actions: read
+concurrency:
+  group: v4-native-introduced-screen-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  classified-original-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install audit environment (no global Cirsium downloads)
+        run: python -m pip install -r reproducibility/requirements-current.txt 'shapely>=2,<3' 'cryptography>=46,<49' pytest
+      - name: Check introduced/native WCVP partition and phantom-phenotype guards
+        run: python -m pytest -q tests/test_v4_native_introduced_opportunity.py tests/test_v4_native_introduced_climate_transfer.py tests/test_v4_native_introduced_common_support.py tests/test_v4_native_climate_trait_coupling.py tests/test_v4_native_niche_crossfit.py tests/test_v4_native_intro_continent_orientation.py tests/test_v4_native_pca_env.py
+      - name: Recover exact source and original measurement ciphertext and 350-species WCVP authority
+        run: |
+          set -euo pipefail
+          mkdir -p work/rain-transfer/private work/rain-transfer/public
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/rain-transfer/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/rain-transfer/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/659010325 \
+            > work/rain-transfer/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/rain-transfer/private/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+            > work/rain-transfer/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/rain-transfer/private/authority350.zip' | sha256sum -c -
+      - name: Classify ALL 665115 original observation regions and match true orientation availability
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          python -m analysis.v4.native_introduced_opportunity \
+            --original work/rain-transfer/private/original-metadata.aesgcm \
+            --measurements work/rain-transfer/private/original-measurements.aesgcm \
+            --authority work/rain-transfer/private/authority350.zip \
+            --output work/rain-transfer/public \
+            --private-focal-output work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --private-focal-all-wild-output work/rain-transfer/private/focal_all_wild_source.csv.gz
+      - name: Restore existing five original-pixel CHELSA caches for focal native and introduced regions
+        run: |
+          set -euo pipefail
+          mkdir -p work/rain-transfer/cache
+          while read -r variable id sha; do
+            target="work/rain-transfer/cache/chelsa_$variable"
+            mkdir -p "$target"
+            gh api "repos/zuizui0223/azami/actions/artifacts/$id/zip" > "work/rain-transfer/private/cache-$variable.zip"
+            echo "$sha  work/rain-transfer/private/cache-$variable.zip" | sha256sum -c -
+            unzip -q "work/rain-transfer/private/cache-$variable.zip" -d "$target"
+            rm "work/rain-transfer/private/cache-$variable.zip"
+          done <<'CACHE'
+          bio01 12243016948 0e3b83ebfb7de1865662cde2c2c2395fa7737460996e66354f87391f8f0867ab
+          bio04 12241949860 dac232683b2a72b9c4f62eab0f341be7927e5e3287a29dbf3a162b893c2307e3
+          bio12 12242703088 71e7edeb0d4c0042e973ed97672a1593bef98a608c917792006e22722e288ada
+          bio15 12242508971 9f255a7c756fc83a5dd81e6c13d8fee63c53698d93bffb65ae13288e4eebb445
+          rsds_mean 12242917323 2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4
+          CACHE
+      - name: Estimate provisional five-exposure native-to-introduced annual-rain cline and prediction transfer
+        run: |
+          python -m analysis.v4.native_introduced_climate_transfer \
+            --focal work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --source-receipt work/rain-transfer/public/source665115_introduced_opportunity.json \
+            --climate-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
+      - name: Recheck five-climate common support on same source and refit only supported cells
+        run: |
+          set -euo pipefail
+          mkdir -p work/rain-transfer/prior
+          gh run download 39539209624 --repo zuizui0223/azami \
+            --name v4-rain-introduced-source-opportunity \
+            --dir work/rain-transfer/prior
+          echo 'a95e0eaa085cc4cbd55a8302f5d527e26e3800761f7bb043ae9e65bfecdbdb26  work/rain-transfer/prior/S2_native_introduced_climate_transfer.json' | sha256sum -c -
+          python -m analysis.v4.native_introduced_common_support \
+            --focal work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --source-receipt work/rain-transfer/public/source665115_introduced_opportunity.json \
+            --baseline work/rain-transfer/prior/S2_native_introduced_climate_transfer.json \
+            --climate-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
+      - name: Compare original photographed head angles in every introduced continent, including warm and seasonal source climates
+        run: |
+          python -m analysis.v4.native_intro_continent_orientation \
+            --private-focal work/rain-transfer/private/focal_native_intro_orientation.csv.gz \
+            --source-receipt work/rain-transfer/public/source665115_introduced_opportunity.json \
+            --climate-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
+      - name: Fit native vs introduced two-species PCA-env with WCVP-available CHELSA source background
+        run: |
+          python -m analysis.v4.native_pca_env \
+            --occurrences work/rain-transfer/private/focal_all_wild_source.csv.gz \
+            --authority work/rain-transfer/private/authority350.zip \
+            --cache-root work/rain-transfer/cache \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rain-transfer/public
+      - name: Validate public-only output and no original metadata exposure
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          output=Path('work/rain-transfer/public')
+          if not (output/'source665115_introduced_opportunity.json').is_file():
+              # If the numerical stage failed, retain its original failure;
+              # never create a guessed, fake-complete scientific receipt.
+              print('No source-wide numerical result yet: inspect job failure.')
+              raise SystemExit(0)
+          files=[x.name for x in output.iterdir()]
+          assert set(files)=={'source665115_introduced_opportunity.json',
+                               'source665115_all_species_range_support.json',
+                               'S2_native_introduced_climate_transfer.json',
+                               'S2_native_introduced_common_support.json',
+                               'S2_original_head_angle_by_continent.json',
+                               'S2_two_species_native_introduced_pca_env.json'}, files
+          d=json.loads((output/'source665115_introduced_opportunity.json').read_text())
+          o=d['overall']
+          assert o['status_partition_conserved']
+          assert o['original_observations']==665115
+          assert o['native_primary_wild_observations']==313350
+          assert o['introduced_primary_wild_observations']>0
+          assert len(d['focal_native_intro_orientation_support'])==2
+          transferred=json.loads((output/'S2_native_introduced_climate_transfer.json').read_text())
+          assert transferred['status']=='PROVISIONAL_SOURCE_MEASUREMENT_CLIMATE_TRANSFER_NO_CAUSAL_EVOLUTION'
+          assert set(transferred['focal_species'])=={'Cirsium arvense','Cirsium vulgare'}
+          overlap=json.loads((output/'S2_native_introduced_common_support.json').read_text())
+          assert overlap['source_original_transfer_action']==39539209624
+          assert set(overlap['focal_species'])==set(transferred['focal_species'])
+          assert overlap['no_photo_or_location_or_user_ids_published'] is True
+          for species,analysis in overlap['focal_species'].items():
+              holdout=analysis['climate_only_native_cell_holdout_crossfit']
+              assert holdout['status'].startswith('EXECUTED_SOURCE_CLIMATE_ONLY_CROSS_FIT')
+              assert holdout['folds']==5
+              assert holdout['independent_random_cell_partitions']==100
+              assert holdout['introduced_and_native_evaluated_without_angle_values']
+              assert holdout['reference_source_name']==species
+              assert len(holdout['results'])==4
+              assert all(q['not_a_sampling_confidence_interval'] for q in holdout['results'].values())
+              trait=analysis['climate_novelty_x_observed_head_orientation']
+              assert trait['status'].startswith('EXECUTED_CLIMATE_NOVELTY_X_PHOTO_ANGLE')
+              assert trait['native_climate_reference']['climate_group_computed_without_orientation_values']
+              groups=trait['introduced_four_climate_categories']
+              assert set(groups)=={
+                  'rain_wetter_than_native','rain_drier_than_native',
+                  'other_climate_novel','native_climate_analogue'
+              }
+              assert sum(g['photo_observations'] for g in groups.values())==(
+                  trait['source_eligible_introduced_observations']
+              )
+          continent=json.loads((output/'S2_original_head_angle_by_continent.json').read_text())
+          assert continent['status']=='OBSERVED_IMAGE_RELATIVE_HEAD_ANGLE_BY_NATIVE_AND_INTRODUCED_CONTINENT'
+          assert continent['two_species_archived_eligible_image_angle_observations']==173737
+          assert continent['no_private_original_identifiers_in_public_result']
+          assert 'Cirsium vulgare' in continent['source_taxa']
+          assert {'North America','Africa','South America','Australasia'} <= set(
+              continent['source_taxa']['Cirsium vulgare']['introduced_by_TDWG_level1'])
+          assert 'Cirsium vulgare|Africa|chelsa_bio15' in continent[
+              'climate_novelty_x_photo_angle_by_introduced_region']
+          assert 'Cirsium vulgare|North America|chelsa_bio01' in continent[
+              'climate_novelty_x_photo_angle_by_introduced_region']
+          pca=json.loads((output/'S2_two_species_native_introduced_pca_env.json').read_text())
+          assert pca['species_original_sightings_not_conditioned_on_photo_trait_eligibility']
+          assert set(pca['taxon_results'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert not pca['private_individual_observations_or_user_coordinates_in_export']
+          assert pca['source_background']['original_source_raster_cache_tile_count']==316
+          assert all('complete_pixel_background_fraction_of_all_WCVP_available_area'
+                     in d['available_climatic_background_audit']['native']
+                     for d in pca['taxon_results'].values())
+          print('PCA-env available-background and source-coverage verified')
+          print('Regional original photo-angle and warm/precip-seasonality test auditable')
+          print('Joined climate novelty and photo-angle categories auditable')
+          print('Public-only source aggregate verified')
+          PY
+      - name: Upload aggregate source status without private observations
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-rain-introduced-source-opportunity
+          path: work/rain-transfer/public/
+          retention-days: 90
+          if-no-files-found: warn

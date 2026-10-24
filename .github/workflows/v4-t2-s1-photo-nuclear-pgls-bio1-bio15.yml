@@ -1,0 +1,81 @@
+name: V4 T2 true nuclear PGLS photo angle BIO1 BIO15 EAzami contrast
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_photo_nuclear_pgls_bio1_bio15_bridge.py'
+      - 'tests/test_v4_t2_s1_photo_nuclear_pgls_bio1_bio15_bridge.py'
+      - '.github/workflows/v4-t2-s1-photo-nuclear-pgls-bio1-bio15.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-s1-continuous-two-nuclear-pgls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original source phylogenetic statistics and figure deps
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Validate two-axis environmental contrast and fixed phylogenetic covariance
+        run: |
+          python -m pytest -q \
+            tests/test_v4_t2_s1_photo_nuclear_pgls_bio1_bio15_bridge.py \
+            tests/test_v4_t2_s1_continuous_genuine_nuclear_two_tree_clustering.py
+      - name: Recover immutable original photographic 251 S1 taxon means and CHELSA five axes
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1 work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/s1
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+      - name: PGLS same continuous S1 photo angle on actual NA and Japan multilocus nuclear trees
+        run: |
+          python -m analysis.v4.t2_s1_photo_nuclear_pgls_bio1_bio15_bridge \
+            --original251 work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --outdir work/out
+          git rev-parse HEAD > work/out/SOURCE_GITHUB_COMMIT.txt
+      - name: Validate source scope and report real BIO1/BIO15 effects without selecting positives
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=Path("work/out/T2_REAL_NUCLEAR_S1_PHOTO_PGLS_BIO1_BIO15.json")
+          d=json.loads(r.read_text())
+          assert d["authentic_nuclear_panels"]==2
+          assert d["not_EAzami_U_D_transition_score_or_replication"]
+          assert d["not_phylogenetically_grafted_or_plastid"]
+          assert set(d["nuclear_panels"])=={"NA42_genuine_published_nuclear","Japan12_genuine_176_loci_nuclear"}
+          for panel,n in [("NA42_genuine_published_nuclear",42),("Japan12_genuine_176_loci_nuclear",12)]:
+              cohort=d["nuclear_panels"][panel]["min_photos_1"]
+              assert cohort["n_taxa"]==n
+              for endpoint in ("mean_image_angle_deg","median_image_angle_deg"):
+                  tests=cohort["model_tables"][endpoint]
+                  assert set(tests)=={"two_axis_BIO1_BIO15","two_axis_plus_BIO12","frozen_S1_five_axes","EAzami_vector_BIO15up_BIO1down","EAzami_vector_plus_BIO12"}
+                  for spec in tests.values():
+                      if spec["status"]!="evaluated":continue
+                      assert 0<=spec["Pagel_lambda_ML_residual_from_this_design"]<=1
+                      assert set(spec["models"])=={"IID_no_phylogeny","fixed_Brownian_PGLS","ML_Pagel_lambda_PGLS"}
+              assert set(cohort["model_tables"]["mean_image_angle_deg"]["two_axis_BIO1_BIO15"]["primary_BH_FDR_across_both_regions_and_axes"])=={"chelsa_bio01","chelsa_bio15"}
+              assert len(cohort["model_tables"]["mean_image_angle_deg"]["frozen_S1_five_axes"]["primary_BH_FDR_across_both_regions_and_axes"])==5
+          assert d["nuclear_panels"]["Japan12_genuine_176_loci_nuclear"]["min_photos_10"]["status"]=="NOT_EVALUABLE_TOO_FEW_SOURCE_NUCLEAR_TIPS"
+          assert Path("work/out/T2_REAL_NUCLEAR_S1_ANGLE_BIO1_BIO15_PGLS.png").stat().st_size>10000
+          print("PASS_TRUE_NUCLEAR_S1_CONTINUOUS_PGLS_BIO1_BIO15_NOT_EAZAMI_BINARY_OR_PLASTID")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-real-NA42-Japan12-multilocus-PGLS-S1-photo-BIO1-BIO15
+          path: work/out/
+          if-no-files-found: warn
+          retention-days: 90
