@@ -1,5 +1,8 @@
 # T2｜S1の連続画像角度：ITS109＋核DNA候補110で多雨分類群をどこまで補完できるか（2026-10-24）
 
+**採用するT2の中心結論：核DNA候補を追加した161分類群でも、S1写真の連続頭花角度と年降水量BIO12の正の関連は残った（β=+0.3019画像°／100 mm）。** これは同じ画像形質・同じ5気候軸で確認した記述的な結果である。161分類群は異なる核DNA資料の候補和集合であり、正式な161-tip種系統樹上の推定値ではない。信頼区間・標本数・感度は以下に保存するが、本文の主軸はこの結果に置く。
+
+
 **最新の実データ計算：[GitHub Actions #40057271562](https://github.com/zuizui0223/azami/actions/runs/40057271562) SUCCESS、10テスト成功。** 元S1全251原学名を測った170,066枚の連続画像角度、5つのCHELSA環境軸、GenBank ITS109配列系統と元111品質ゲート未通過後のQ20核候補110配列系統を、完全原名＋元ソースSHAで厳密照合。**文献記述の直立/下垂U/Dは使用していない。**
 
 - [実行コード](../t2_s1_continuous_sequence_source_coverage.py)／[再現CI](../../../.github/workflows/v4-t2-s1-continuous-sequence-wet-union.yml)／[検証テスト](../../../tests/test_v4_t2_s1_continuous_sequence_source_coverage.py)。
