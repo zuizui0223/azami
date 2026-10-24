@@ -176,8 +176,8 @@ def proper_s1(frame,reference):
         right_on=["accepted_key","original_source_name"],how="left",validate="one_to_one",indicator=True)
     if (len(merged)!=251 or not merged._merge.eq("both").all() or
         not (merged["count"].to_numpy()==merged.original_photo_count.to_numpy()).all() or
-        not np.allclose(merged.angle,merged.mean_image_angle_deg,atol=1e-5,rtol=0) or
-        not np.allclose(merged.rsds,merged.chelsa_rsds_mean_y,atol=1e-6,rtol=0)):
+        not np.allclose(merged.angle.to_numpy(float),merged.mean_image_angle_deg.to_numpy(float),atol=1e-5,rtol=0) or
+        not np.allclose(merged.rsds.to_numpy(float),merged.chelsa_rsds_mean.to_numpy(float),atol=1e-6,rtol=0)):
         raise ValueError("S1 new four-axis original-photo source fails frozen exact 251 validation")
     return s
 
