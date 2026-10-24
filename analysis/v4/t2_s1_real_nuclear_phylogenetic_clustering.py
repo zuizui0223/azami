@@ -192,8 +192,7 @@ def make_figure(out, source, tree, names, title, full_note):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib import cm
-    from matplotlib.colors import Normalize, LogNorm
+        from matplotlib.colors import Normalize, LogNorm
     from matplotlib.patches import Rectangle
     from matplotlib.lines import Line2D
     shown=deepcopy(tree)
@@ -228,8 +227,8 @@ def make_figure(out, source, tree, names, title, full_note):
                    vmax=float(prec_all.max()))
     name_map={x.name:x.name for x in tips} if "Q20" not in title else {
         x.name:full_note[x.name] for x in tips}
-    angle_cmap=cm.get_cmap("cividis")
-    prec_cmap=cm.get_cmap("viridis")
+    angle_cmap=matplotlib.colormaps["cividis"]
+    prec_cmap=matplotlib.colormaps["viridis"]
     for tip in tips:
         name=name_map[tip.name]
         if name not in source:
