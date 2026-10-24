@@ -84,11 +84,16 @@ def original_assets(root):
 
 def occurrences_from_zip(path,expected):
     raw=Path(path).read_bytes()
-    with zipfile.ZipFile(path) as archive:
-        member="focal_occurrences_environment_complete.csv"
-        if member not in archive.namelist():
-            raise ValueError("Missing original EAzami exact occurrence source")
-        frame=pd.read_csv(archive.open(member),low_memory=False)
+    if zipfile.is_zipfile(path):
+        with zipfile.ZipFile(path) as archive:
+            member="focal_occurrences_environment_complete.csv"
+            if member not in archive.namelist():
+                raise ValueError("Missing original EAzami exact occurrence source")
+            frame=pd.read_csv(archive.open(member),low_memory=False)
+    else:
+        # GitHub Actions 'gh run download --name' extracts original ZIP into
+        # its authenticated CSV member. These are identical source rows.
+        frame=pd.read_csv(path,low_memory=False)
     if len(frame)!=N_ORIG_OCC[expected] or not {"scientific_name_query",
        "latitude","longitude","chelsa_bio01","chelsa_bio15",
        "chelsa_bio12","chelsa_bio04"}<=set(frame):
