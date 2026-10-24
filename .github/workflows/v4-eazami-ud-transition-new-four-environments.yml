@@ -104,7 +104,7 @@ jobs:
             --rsds-metadata analysis/v4/environment_source_metadata.json \
             --out work/out/EAzami_REAL_U_D_CTMC_BIO18_BIO05_RSDS_ELEVATION.json
           git rev-parse HEAD > work/out/SOURCE_CODE_COMMIT.txt
-      - name: Scientific evidence gate: four new axes and exactly original CTMC state-map null; no old BIO1 BIO15 rerun, no invented phylogenetic fitness
+      - name: Verify new four climate transition evidence and no old BIO1 or BIO15 results
         run: |
           python - <<'PY'
           import json
