@@ -1,0 +1,157 @@
+name: V4 S1 S2 empirical BIO18 BIO5 RSDS elevation four axes
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/s1_s2_real_bio18_bio05_rsds_elevation.py'
+      - 'tests/test_v4_s1_s2_real_bio18_bio05_rsds_elevation.py'
+      - '.github/workflows/v4-s1-s2-real-bio18-bio05-rsds-elevation.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  empirical-original-observation-four-axis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 125
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install S1 S2 source climate and phylogeography dependencies
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt \
+            'rasterio>=1.4,<2' 'requests>=2.32,<3' \
+            'cryptography>=46,<49' 'shapely>=2,<3' 'pytest>=8,<10'
+      - name: Test scientific variable registry, source-size guards and continuous-angle regression
+        run: python -m pytest -q tests/test_v4_s1_s2_real_bio18_bio05_rsds_elevation.py
+      - name: Download exact CHELSA 1981-2010 BIO5 BIO18 and 30 arcsecond elevation with SHA receipts
+        run: |
+          mkdir -p work/new-four/public-rasters work/new-four/public-out
+          python -m analysis.v4.s1_s2_real_bio18_bio05_rsds_elevation \
+            --stage download --source-root work/new-four/public-rasters
+      - name: Restore encrypted original 665115 native S1 observation and climate measurements
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/new-four/private/native work/new-four/private/receipts
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/new-four/private/native
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/new-four/private/receipts
+          python - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/new-four/private')
+          raw=(root/'receipts/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'native/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          data=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+              sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          assert hashlib.sha256(data).hexdigest()==receipt['prepared_table_sha256']
+          (root/'native/observations.csv.gz').write_bytes(data)
+          PY
+      - name: Decode S1 source and source-authenticate all 251 original S1 species means
+        run: |
+          mkdir -p work/new-four/private/native/decoded work/new-four/private/s1name
+          python -m analysis.v4.decode_environment \
+            --table work/new-four/private/native/observations.csv.gz \
+            --receipt work/new-four/private/receipts/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/new-four/private/native/decoded
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq .digest)" = \
+            'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/new-four/private/s1name
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/new-four/private/s1name/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+      - name: Retrieve original S2 WCVP native introduced photo observations into PRIVATE runner
+        run: |
+          set -euo pipefail
+          mkdir -p work/new-four/private/s2 work/new-four/private/s2-report
+          gh api -H 'Accept: application/octet-stream' \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/new-four/private/s2/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/new-four/private/s2/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H 'Accept: application/octet-stream' \
+            repos/zuizui0223/azami/releases/assets/659010325 \
+            > work/new-four/private/s2/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/new-four/private/s2/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+            > work/new-four/private/s2/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/new-four/private/s2/authority350.zip' | sha256sum -c -
+      - name: Reproduce original S2 native introduced field without publishing coordinates
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          python -m analysis.v4.native_introduced_opportunity \
+            --original work/new-four/private/s2/original-metadata.aesgcm \
+            --measurements work/new-four/private/s2/original-measurements.aesgcm \
+            --authority work/new-four/private/s2/authority350.zip \
+            --output work/new-four/private/s2-report \
+            --private-focal-output work/new-four/private/s2/focal_native_intro_orientation.csv.gz \
+            --private-focal-all-wild-output work/new-four/private/s2/focal_all_wild_source.csv.gz
+      - name: Restore exact original 316-tile one-km CHELSA RSDS cache for the S2 sites
+        run: |
+          set -euo pipefail
+          mkdir -p work/new-four/private/rsds/chelsa_rsds_mean
+          gh api repos/zuizui0223/azami/actions/artifacts/12242917323/zip \
+            > work/new-four/private/rsds/rsds-cache.zip
+          echo '2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4  work/new-four/private/rsds/rsds-cache.zip' | sha256sum -c -
+          unzip -q work/new-four/private/rsds/rsds-cache.zip \
+            -d work/new-four/private/rsds/chelsa_rsds_mean
+      - name: Analyse exactly same original S1 170066 plus original S2 173737 camera angles against BIO18 BIO5 RSDS elevation
+        run: |
+          python -m analysis.v4.s1_s2_real_bio18_bio05_rsds_elevation \
+            --stage analyse \
+            --source-root work/new-four/public-rasters \
+            --s1 work/new-four/private/native/decoded/observations.csv.gz \
+            --s1-original251 work/new-four/private/s1name/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --s2-photo work/new-four/private/s2/focal_native_intro_orientation.csv.gz \
+            --s2-allwild work/new-four/private/s2/focal_all_wild_source.csv.gz \
+            --rsds-cache-root work/new-four/private/rsds \
+            --rsds-metadata analysis/v4/environment_source_metadata.json \
+            --out work/new-four/public-out
+          cp work/new-four/public-rasters/FOUR_AXIS_PUBLIC_SOURCE_RECEIPT.json \
+            work/new-four/public-out/FOUR_AXIS_PUBLIC_SOURCE_RECEIPT.json
+          git rev-parse HEAD > work/new-four/public-out/VERIFIED_CODE_COMMIT.txt
+      - name: Verify counts four-axis results and absence of row-level geographic disclosure
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/new-four/public-out')
+          r=json.loads((root/'S1_S2_ORIGINAL_FOUR_CLIMATE_REAL_RESULTS.json').read_text())
+          assert set(r['variables'])=={'chelsa_bio18','chelsa_bio05','chelsa_rsds_mean','elevation_m'}
+          assert r['S1']['all_original_native_S1_head_image_observations']==170066
+          assert r['S1']['n_taxon_source_names_after_new_four_axis']>=185
+          assert r['S2']['all_original_WCVP_native_and_introduced_wild_records']==297622
+          assert r['S2']['all_original_photo_angles']==173737
+          assert r['S2']['source_observation_same_native_angle_overlap']==82709
+          assert r['claim_stop']['source_locations_and_users_not_exposed']
+          assert len(list((root/'S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv').open()))>=186
+          allowed={'S1_S2_ORIGINAL_FOUR_CLIMATE_REAL_RESULTS.json',
+                   'S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv',
+                   'FOUR_AXIS_PUBLIC_SOURCE_RECEIPT.json','VERIFIED_CODE_COMMIT.txt'}
+          assert {p.name for p in root.iterdir()}==allowed
+          txt=(root/'S1_S2_ORIGINAL_FOUR_CLIMATE_REAL_RESULTS.json').read_text()
+          assert '"obs_id"' not in txt and '"latitude"' not in txt and '"longitude"' not in txt
+          print('PASS_ONLY_PUBLIC_AGGREGATES_REAL_NEW_BIO18_BIO5_RSDS_ELEVATION')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation
+          path: work/new-four/public-out/
+          retention-days: 90
+          if-no-files-found: warn
