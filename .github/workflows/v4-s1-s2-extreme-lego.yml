@@ -1,0 +1,149 @@
+name: V4 S1 S2 extreme BIOCLIM elevation and phenotypic LEGO
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'analysis/v4/s1_s2_extreme_environment.py'
+      - 'analysis/v4/s1_s2_extreme_lego.py'
+      - 'tests/test_v4_s1_s2_extreme_lego.py'
+      - 'analysis/v4/V4_S1_S2_EXTREME_LEGO_CONTRACT_20261024.md'
+      - '.github/workflows/v4-s1-s2-extreme-lego.yml'
+
+permissions:
+  # Private draft-release binaries need contents:write for READ access.
+  contents: write
+  actions: read
+
+jobs:
+  original-V4-S1-S2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned packages and raster source readers
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' 'shapely>=2,<3' 'rasterio>=1.4,<2' 'requests>=2.31,<3' pytest
+
+      - name: Compile and run source-free tests
+        run: |
+          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py
+          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py
+
+      - name: Recover original encrypted V4 S1 measurements and receipt
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/extreme/private work/extreme/receipt work/extreme/public work/extreme/temp
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/extreme/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/extreme/receipt
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/extreme')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                 sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Source authentication failed') from None
+          assert hashlib.sha256(clear).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(clear)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/extreme/private/observations.csv.gz \
+            --receipt work/extreme/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/extreme/decoded
+
+      - name: Restore real S2 source WCVP native-introduced census
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          set -euo pipefail
+          gh api -H "Accept: application/octet-stream" \
+             repos/zuizui0223/azami/releases/assets/658986481 \
+             > work/extreme/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/extreme/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H "Accept: application/octet-stream" \
+             repos/zuizui0223/azami/releases/assets/659010325 \
+             > work/extreme/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/extreme/private/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+             > work/extreme/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/extreme/private/authority350.zip' | sha256sum -c -
+          python -m analysis.v4.native_introduced_opportunity \
+             --original work/extreme/private/original-metadata.aesgcm \
+             --measurements work/extreme/private/original-measurements.aesgcm \
+             --authority work/extreme/private/authority350.zip \
+             --output work/extreme/roster-public \
+             --private-focal-output work/extreme/private/focal_angle.csv.gz \
+             --private-focal-all-wild-output work/extreme/private/focal_wild.csv.gz
+          python - <<'PY'
+          import os,io
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.native_introduced_opportunity import (
+              decrypt_checked,MEASUREMENT_AAD,MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA)
+          original=Path('work/extreme/private/original-measurements.aesgcm').read_bytes()
+          clear=decrypt_checked(original,os.environ['AZAMI_MEASUREMENTS_KEY'],
+                                MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA,MEASUREMENT_AAD)
+          table=pd.read_csv(io.BytesIO(clear),dtype={'obs_id':str},low_memory=False)
+          if not table.obs_id.is_unique:
+              raise ValueError('S2_SOURCE_MEASUREMENT_DUPLICATE')
+          table.to_csv('work/extreme/private/s2_measured.csv.gz',index=False,compression='gzip')
+          # No original observation identifiers or locations in public outputs.
+          print({'measurement_rows':len(table),'measurement_columns':list(table.columns)})
+          PY
+
+      - name: Sample new true CHELSA BIO5 BIO6 BIO13 BIO14 BIO17 BIO18 and WorldClim elevation
+        run: |
+          python -m analysis.v4.s1_s2_extreme_environment \
+            --native work/extreme/decoded/observations.csv.gz \
+            --focal work/extreme/private/focal_wild.csv.gz \
+            --out-private work/extreme/private \
+            --out-public work/extreme/public \
+            --temporary work/extreme/temp
+
+      - name: New V4 S1/S2 VIF and 28-pair LEGO on same recorded heads
+        run: |
+          python -m analysis.v4.s1_s2_extreme_lego \
+            --native work/extreme/decoded/observations.csv.gz \
+            --focal work/extreme/private/focal_wild.csv.gz \
+            --environment-ext work/extreme/private/environment_ext.csv.gz \
+            --s2-measurements work/extreme/private/s2_measured.csv.gz \
+            --out-public work/extreme/public
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path('work/extreme/public/S1_S2_extreme_LEGO_results.json').read_text())
+          assert d['S1']['native_original_population']==313350
+          assert d['S2']['source_wild_two_species_observations']==297622
+          assert len(d['S1']['raw_28_pairs'])==28
+          assert len(d['S1']['scenario_results'])==9
+          assert not d['limits']['molecular_Lego_functional_resource_test']
+          print('Exact V4 S1/S2 sources, nine scenarios and 28 edges verified')
+          PY
+
+      - name: Upload ONLY source-aggregate scientific evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-s2-extreme-lego-${{ github.run_id }}
+          path: work/extreme/public/
+          if-no-files-found: warn
+          retention-days: 90
