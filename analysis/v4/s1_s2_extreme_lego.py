@@ -58,6 +58,15 @@ SCENARIOS = {
   "wettest_month_BIO13": {"exposure":"chelsa_bio13","thermal":"chelsa_bio01","elevation":True},
   "heat_BIO05_warm_rain": {"exposure":"chelsa_bio18","thermal":"chelsa_bio05","elevation":True},
   "cold_BIO06_warm_rain": {"exposure":"chelsa_bio18","thermal":"chelsa_bio06","elevation":True},
+  # Explicit lean terrain sensitivity: retain elevation but omit BIO4/BIO15,
+  # which caused it to be excluded in the more heavily adjusted alternatives.
+  # Same 12-variable original cohort and same four covariates in both models.
+  "annual_BIO12_hot_BIO05_elevation_reduced":
+      {"exposure":"chelsa_bio12","thermal":"chelsa_bio05","elevation":True,
+       "reduced":True,"protect_elevation":True},
+  "warmest_quarter_BIO18_hot_BIO05_elevation_reduced":
+      {"exposure":"chelsa_bio18","thermal":"chelsa_bio05","elevation":True,
+       "reduced":True,"protect_elevation":True},
 }
 MODULE_NAMES = list(FEATURES)
 SEED = 20261024
@@ -161,13 +170,18 @@ def outcome_blind_set(env_frame,scenario):
     Comparisons use SAME all-12-complete original observations. Rejected
     protected conflicts stop; never search trait p-values for a better set.
     """
-    rain=scenario["exposure"]; temp=scenario["thermal"]
-    protected=[rain,temp,"chelsa_rsds_mean"]
-    extra=["chelsa_bio04","chelsa_bio15"]
-    if scenario["elevation"]:
+    rain=scenario["exposure"]; temp=scenario.get("thermal")
+    protected=[rain]+([temp] if temp else [])+["chelsa_rsds_mean"]
+    if scenario.get("protect_elevation"):
+        if not scenario.get("elevation"):
+            raise ValueError("PROTECTED_ELEVATION_NOT_REQUESTED")
+        protected.append("topo_elevation")
+    extra=[] if scenario.get("reduced") else ["chelsa_bio04","chelsa_bio15"]
+    if scenario["elevation"] and not scenario.get("protect_elevation"):
         extra.append("topo_elevation")
     selected=list(dict.fromkeys(protected+extra))
-    removal_priority=["chelsa_bio04","chelsa_bio15","topo_elevation"]
+    removal_priority=[v for v in ("chelsa_bio04","chelsa_bio15","topo_elevation")
+                      if v not in protected]
     actions=[]
     for _ in range(len(selected)+2):
         levels=env_levels(env_frame,env_frame.accepted_key,selected)
