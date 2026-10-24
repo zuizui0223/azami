@@ -1,0 +1,65 @@
+name: V4 T3 authentic source photo candidates for S1 continuous angle
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t3_s1_continuous_external_photo_source_pilot.py'
+      - 'tests/test_v4_t3_s1_continuous_external_photo_source_pilot.py'
+      - '.github/workflows/v4-t3-s1-continuous-external-photo-source-pilot.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  131tip-original-GBIF-photo-feasibility-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source-based photographic metadata query and unit tests
+        run: |
+          python -m pip install 'requests>=2.31,<3' 'pytest>=8,<10'
+          python -m pytest -q tests/test_v4_t3_s1_continuous_external_photo_source_pilot.py
+      - name: Recover authenticated 2025 original GenBank ITS 131 biological taxon names
+        run: |
+          set -euo pipefail
+          mkdir -p work/input work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12504855926 --jq '.digest')" = 'sha256:64419785872135e4232eae8f96d6976f22da958300764209619951223fd9a55e'
+          gh run download 39960458391 --repo zuizui0223/azami \
+            --name t3-published2025-163-source-genbank-ITS-ETS-154names-exact-original \
+            --dir work/input
+          test -s work/input/T3_2025_NUCLEAR_rDNA_SOURCE_ACCESSION_TAXON_MAPPING.csv
+      - name: Query real GBIF photo availability for deterministic 15 source taxon pilot
+        run: |
+          python -m analysis.v4.t3_s1_continuous_external_photo_source_pilot \
+            --source work/input/T3_2025_NUCLEAR_rDNA_SOURCE_ACCESSION_TAXON_MAPPING.csv \
+            --out-dir work/out
+      - name: Explicitly block false taxonomic U D and fabricated angles
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("work/out/T3_PUBLIC_IMAGE_SOURCE_ELIGIBILITY.json").read_text())
+          assert a["source_ITS_taxa"]==131
+          assert a["pilot_taxa"]==15
+          assert len(a["taxa"])==15
+          assert a["original_photo_angular_measurements"]==0
+          assert a["original_photo_files_downloaded"]==0
+          assert a["selection_by_flora_posture"] is False
+          assert a["T3_same_S1_angle_comparative_statistical_status"]=="BLOCKED_UNTIL_VALIDATED_REAL_IMAGE_MEASUREMENTS"
+          assert a["not_automatically_transferrable_Cirsium_detector"]
+          print("PASS_REAL_PUBLIC_GBIF_PHOTO_CANDIDATES_T3_STILL_ANGLE_UNMEASURED")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t3-source-blind-131-nuclear-ITS-15-GBIF-photo-candidates
+          path: work/out/
+          retention-days: 90
+          if-no-files-found: warn
