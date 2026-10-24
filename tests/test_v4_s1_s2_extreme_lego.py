@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from analysis.v4 import s1_s2_extreme_environment as source
 from analysis.v4 import s1_s2_extreme_lego as lego
+from analysis.v4 import s1_s2_lego_three_way as triple
 
 
 class ExtremeAndLego(unittest.TestCase):
@@ -71,6 +72,28 @@ class ExtremeAndLego(unittest.TestCase):
         self.assertEqual(corrected.shape,vals.shape)
         self.assertLess(np.abs(corrected[:,0]).max(),.045)
         self.assertEqual(design.shape[1],5)
+
+    def test_pairwise_maximum_entropy_holds_fixed_margins(self):
+        observed=np.array([[[25.,5.],[4.,12.]],[[7.,6.],[3.,18.]]])
+        expected=triple.pairwise_max_entropy(observed)
+        self.assertAlmostEqual(float(expected.sum()),1.0,places=10)
+        for axis in (0,1,2):
+            np.testing.assert_allclose(expected.sum(axis=axis),
+                                       observed.sum(axis=axis)/observed.sum(),
+                                       atol=1e-9)
+        parity,dev,fit=triple.three_way_excess(observed)
+        self.assertTrue(np.isfinite(parity))
+        self.assertGreaterEqual(dev,0.)
+
+    def test_three_way_phenotypes_do_not_imply_genotypes(self):
+        rng=np.random.default_rng(17)
+        groups=np.repeat(np.arange(20),36)
+        arr=rng.normal(size=(len(groups),len(lego.FEATURE_COLS)))
+        out=triple.test_three_way(arr,groups,reps=100,seed=17)
+        self.assertEqual(out['status'],'OBSERVED_VISIBLE_THREE_WAY_CONFIGURATION')
+        self.assertEqual(out['taxa_eligible'],20)
+        self.assertTrue(out['not_a_test_of_genetic_resource_co_retention'])
+        self.assertEqual(len(out['observed_taxon_equal_state_fraction']),8)
 
     def test_s2_nonindependent_range_climate_only(self):
         rows=[]
