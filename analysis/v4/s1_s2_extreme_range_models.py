@@ -23,6 +23,10 @@ S2_MODELS = {
     "warmest_quarter_BIO18_plus_elevation": ["chelsa_bio18","chelsa_bio01","chelsa_rsds_mean","topo_elevation"],
     "dry_quarter_BIO17_plus_elevation": ["chelsa_bio17","chelsa_bio01","chelsa_rsds_mean","topo_elevation"],
     "warmest_month_BIO05": ["chelsa_bio18","chelsa_bio05","chelsa_rsds_mean","topo_elevation"],
+    # Same reduced temperature/radiation/elevation adjustment as the
+    # warm-quarter-hot alternative, changing hydric timescale only.
+    "annual_BIO12_hot_BIO05_elevation_reduced":
+        ["chelsa_bio12","chelsa_bio05","chelsa_rsds_mean","topo_elevation"],
     "coldest_month_BIO06": ["chelsa_bio18","chelsa_bio06","chelsa_rsds_mean","topo_elevation"],
 }
 MIN_INDEPENDENT_CELLS=15
@@ -163,7 +167,7 @@ def analyse_s2_range_models(focal):
             outcomes[block]={
                 "source_measured_n":len(trait_relevant),
                 "date_photographer_5deg_balanced_n":len(cohort),
-                "same_cohort_used_for_all_7_s2_climate_scenarios":True,
+                "same_cohort_used_for_all_8_s2_climate_scenarios":True,
                 "range_models":scenario_results}
         table[species+"/"+region]={
             "original_WCVP_range_source_observations":len(g),
