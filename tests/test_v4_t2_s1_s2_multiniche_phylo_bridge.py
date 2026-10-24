@@ -7,7 +7,7 @@ import pytest
 
 from analysis.v4.t2_s1_s2_multiniche_phylo_bridge import (
     AXES, SOURCE_S1S2, SOURCE_S2, shrink_inverse,
-    score_vectors, panel_inputs
+    score_vectors, panel_inputs, join_original_five
 )
 
 
@@ -40,3 +40,24 @@ def test_shrink_inverse_symmetric_for_correlated_climate_and_sign_free_score():
 def test_null_covariance_zero_axis_refuses_to_report_significance():
     with pytest.raises(ValueError,match="Degenerate"):
         shrink_inverse(np.diag([1.,0.]))
+
+
+def test_join_restores_only_original_taxon_five_axes_and_checks_source_counts():
+    import pandas as pd
+    three=pd.DataFrame([{
+        "accepted_key":"22","original_source_name":"Cirsium arvense",
+        "original_photo_count":7,"chelsa_bio12":702.,
+        "chelsa_bio15":43.,"chelsa_bio01":8.0
+    }])
+    full=pd.DataFrame([{
+        "accepted_key":22,"original_source_name":"Cirsium_arvense",
+        "original_photo_count":7,"chelsa_bio12":702.,
+        "chelsa_bio15":43.,"chelsa_bio01":8.0,
+        "chelsa_bio04":400.,"chelsa_rsds_mean":190.
+    }])
+    a=join_original_five(three,full)
+    assert len(a)==1 and a.loc[0,"chelsa_bio04"]==400.
+    assert a.loc[0,"chelsa_rsds_mean"]==190.
+    bad=full.assign(original_photo_count=8)
+    with pytest.raises(ValueError,match="mismatch"):
+        join_original_five(three,bad)

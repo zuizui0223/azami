@@ -38,6 +38,48 @@ SOURCE_S2 = Path(
 )
 
 
+def join_original_five(source: pd.DataFrame, original_five: pd.DataFrame) -> pd.DataFrame:
+    """Add BIO4/RSDS to the independent U/D table from original all-251 S1 source.
+
+    Never infer missing climate from a different species or from a photograph.
+    Source taxon name and accepted key, plus native original photo n and three
+    already-preserved CHELSA axes must agree exactly before joining.
+    """
+    base = source.copy()
+    complete = original_five.copy()
+    required = {"accepted_key", "original_source_name", "original_photo_count",
+                "chelsa_bio12", "chelsa_bio15", "chelsa_bio01"}
+    five_required = required | {"chelsa_bio04", "chelsa_rsds_mean"}
+    if not required <= set(base) or not five_required <= set(complete):
+        raise ValueError("Missing original taxon identity/photo/five CHELSA fields")
+    if {"chelsa_bio04", "chelsa_rsds_mean"} & set(base):
+        raise ValueError("Enrichment source is already five-axis; do not overwrite")
+    for frame in (base, complete):
+        frame["_join_accepted_key"] = frame["accepted_key"].astype(str)
+        frame["_join_source_name"] = (
+            frame["original_source_name"].astype(str).str.replace("_", " ", regex=False)
+            .str.replace(r"\\s+", " ", regex=True).str.strip()
+        )
+        if frame[["_join_accepted_key", "_join_source_name"]].duplicated().any():
+            raise ValueError("Original taxon source key is not unique")
+    lookup = ["_join_accepted_key", "_join_source_name"]
+    extra_columns = lookup + ["original_photo_count", "chelsa_bio12",
+                              "chelsa_bio15", "chelsa_bio01",
+                              "chelsa_bio04", "chelsa_rsds_mean"]
+    full = base.merge(complete[extra_columns], on=lookup, how="left", validate="one_to_one",
+                      suffixes=("", "_S1_source"))
+    if len(full) != len(base) or full["chelsa_bio04"].isna().any() or full["chelsa_rsds_mean"].isna().any():
+        raise ValueError("Original five-axis source cannot map exactly to all U/D source taxa")
+    for field in ("original_photo_count", "chelsa_bio12", "chelsa_bio15", "chelsa_bio01"):
+        l = full[field].to_numpy(dtype=float)
+        r = full[field + "_S1_source"].to_numpy(dtype=float)
+        if not np.allclose(l, r, rtol=0, atol=1e-7):
+            raise ValueError("Original observation/climate mismatch across source archives: "+field)
+    full = full.drop(columns=lookup+[x+"_S1_source" for x in
+                ("original_photo_count", "chelsa_bio12", "chelsa_bio15", "chelsa_bio01")])
+    return full
+
+
 def evidence_bridge(receipt: dict, transfer: dict, source: pd.DataFrame) -> dict:
     """Verify that S2 native photos are a subset of S1, never replicate them."""
     assert receipt["S1"]["n_observations"] == 170066
@@ -271,17 +313,21 @@ def multi_axis_nuclear(panel_a: dict, panel_b: dict, draws: int, seed: int) -> d
 def main() -> None:
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--original251",type=Path,required=True)
+    parser.add_argument("--original251-five",type=Path,required=True)
     parser.add_argument("--out",type=Path,required=True)
     parser.add_argument("--draws",type=int,default=10000)
     args=parser.parse_args()
     if args.draws<2000:
         raise ValueError("At least 2000 conditioned Mk draws required")
-    source=pd.read_csv(args.original251)
+    source=join_original_five(
+        pd.read_csv(args.original251), pd.read_csv(args.original251_five))
+    enriched = args.original251.parent / "S1_ALL251_FIVEAXIS_BOTANICAL_ENRICHED.csv"
+    source.to_csv(enriched, index=False)
     bridge=evidence_bridge(
         json.loads(SOURCE_S1S2.read_text(encoding="utf-8")),
         json.loads(SOURCE_S2.read_text(encoding="utf-8")),
         source)
-    na,jp=source_panels(args.original251)
+    na,jp=source_panels(enriched)
     for taxon,detail in bridge["S2"]["species"].items():
         name=taxon.replace(" ","_")
         detail["in_NA44_or_Japan12_true_nuclear_posture_cohort"] = any(

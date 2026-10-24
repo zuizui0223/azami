@@ -35,10 +35,18 @@ jobs:
           test "$(gh api repos/zuizui0223/azami/actions/artifacts/12474513290 --jq '.digest')" = 'sha256:34b744e1e92b1fee9c3dbef12946b9facfd49a5360a7ac8631a3ab1f32882524'
           gh run download 39890812308 --repo zuizui0223/azami --name v4-t2-original251-author-head-UD-observed-hydric-association --dir work/S1
           test -s work/S1/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv
+      - name: Restore SHA-verified S1 original 251 taxon five-CHELSA aggregates
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1-five
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/S1-five
+          test -s work/S1-five/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv
       - name: Run no-preferred-sign five-climate Mk null independently on NA44 and Japan12
         run: |
           python -m analysis.v4.t2_s1_s2_multiniche_phylo_bridge \
             --original251 work/S1/S1_ALL251_ORIGINAL_PHOTO_CLIMATE_BOTANICAL_UD_JOIN.csv \
+            --original251-five work/S1-five/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
             --out work/out/S1_S2_T2_5D_NUCLEAR_POSTURE_CLIMATE_BRIDGE.json \
             --draws 10000
       - name: Check completed real results and scope boundaries
