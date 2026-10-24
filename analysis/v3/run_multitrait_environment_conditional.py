@@ -229,7 +229,7 @@ def main() -> int:
         "predictors_adjusted": env_columns,
         "not_available_in_frozen_environment": ["elevation", "BIO18"],
         "adjustment": {
-            "method": "three outcome-blind weighted environmental PCs separately at within and among taxon scales",
+            "method": f"{args.environment_pcs} outcome-blind weighted environmental PCs fitted separately at within and among taxon scales",
             "environment_pcs": args.environment_pcs, **pc_info,
             "geography_phylogeny_measurement_error_adjusted": False,
         },
