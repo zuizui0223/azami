@@ -1,5 +1,8 @@
 # V4 T2・T3の新しい主線：S1連続画像角度のみ（2026-10-24）
 
+> **2026-10-24 T3に実写真ソースを追加：[真正核ITS131種のうち形質・気候に盲検の15種をGBIF照会し、7種126写真レコードを確認](results/20261024_T3_S1_CONTINUOUS_EXTERNAL_PHOTO_SOURCE_PILOT_JA.md)。[実GBIF CI #40057656854](https://github.com/zuizui0223/azami/actions/runs/40057656854)成功。S1凍結YOLO検出器も長期Google Driveアーカイブから回収しモデルSHAを一致確認。ただし画像実測角度は0件、Cirsiumモデルの別属への転移精度は未検証。先に同じ頭花／花柄軸を正しく測定できるか検証し、T3の生態比較へ進む。
+
+
 > **2026-10-24 新しいT2元配列被覆の実再解析：[全251／GenBank ITS109／Q20候補110の同一S1画像角度・5気候・多雨四分位＋2,000回標本感度](results/20261024_T2_CONTINUOUS_ITS109_Q20110_WET_TAIL_COMPLEMENT_JA.md)。[実データActions #40057271562](https://github.com/zuizui0223/azami/actions/runs/40057271562) SUCCESS・10テスト。原名被覆109→161、BIO12上位四分位の核候補16/63→27/63、まだ36原名未対応。原名和集合161を**核系統樹が完成した**とは扱わない。和集合のBIO12効果+0.302°/100mm（95%CI −0.144～+0.748）で、ITS109との差の2,000回ペア再標本区間は0を含む。
 
 
