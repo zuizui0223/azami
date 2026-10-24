@@ -163,7 +163,7 @@ def sample_grid(raster_path, variable, frame):
                 height = min(256, source.height-y0)
                 width = min(256, source.width-x0)
                 block = source.read(1, window=Window(x0,y0,width,height), masked=True)
-                block_values = np.ma.filled(block, np.nan).astype(float)
+                block_values = block.astype(float).filled(np.nan)
                 sample = block_values[row[ix]-y0, col[ix]-x0]
                 if source.nodata is not None:
                     sample[np.isclose(sample, float(source.nodata), atol=0, rtol=0)] = np.nan
