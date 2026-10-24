@@ -146,3 +146,23 @@ source checksums. It publishes only aggregate JSON after genuine completion.
 
 **Until an actual successful Action with seven new source layers, any new
 climate/elevation coefficients or LEGO outcomes are UNCOMPUTED, not zero.**
+
+
+## Explicit reduction to identify a conditional elevation sensitivity (24 October)
+
+The original full-adjustment annual BIO12/elevation and BIO18/elevation
+candidate models excluded elevation for VIF >5. Before interpreting that
+as no elevation effect, diagnose a distinct and deliberately **reduced**
+four-predictor sensitivity: original-pixel precipitation time-scale
+(BIO12 **or** BIO18), BIO05 warm-season heat, RSDS, elevation. On the
+all-12-original-climate source-only correlation matrices, both
+four-variable designs pass VIF<5 at raw, equal-taxon and within-taxon
+levels (raw maximum VIF approximately 4.98 and 4.96 respectively).
+BIO4 and BIO15 are not adjusted in this sensitivity; the resulting
+coefficient has a different, less conditional meaning. The samples,
+bio05/rsds/elevation controls and 8 response constructs remain identical
+between these two newly declared alternative rain time scales.
+These are additional exploratory comparisons, not a revised original
+S1 model, an elevation causality test, or proof that BIO12 beats BIO18.
+S2 uses the same four adjusted source variables in both ranges of each
+focal species, if its measured photo and geographic-cell support passes.
