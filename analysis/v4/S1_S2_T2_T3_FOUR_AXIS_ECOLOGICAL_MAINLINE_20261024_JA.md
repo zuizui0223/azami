@@ -40,6 +40,8 @@
 
 [全131原GenBank ITS核rDNA名義×GBIF実写真×4環境を元画素で実照合したコード](t3_real_131_photo_fourclimate_s1s2_extension.py)／[SUCCESS CI #40066319064](https://github.com/zuizui0223/azami/actions/runs/40066319064)／[species/genus別実数と写真ライセンス台帳artifact](https://github.com/zuizui0223/azami/actions/runs/40066319064/artifacts/12549069699)。生態環境だけのテーブルは、**頭花角度を代理していない**。
 
+**T3の画像計測への実務接続（実行済み）：** 元131核ITS名義×実GBIF写真×4気候から、頭花角度も気候変数も見ずに**23原学名×各5画像＝計115枚のライセンス付き元画像参照**を選んだ[目視QC入力台帳と元S1測定ルール](../../analysis/v4/t3_blind_s1_orientation_qc_source_packet.py)。[GitHub Actions #40067326029 SUCCESS](https://github.com/zuizui0223/azami/actions/runs/40067326029)、[115画像QC台帳artifact](https://github.com/zuizui0223/azami/actions/runs/40067326029/artifacts/12550021207)。実画像は転載せず、レビュー欄はすべて空欄。元S1の頭花YOLOが外部分類群で有効か確認し、重力角ではない連続頭花角度を**測定する前段階まで完了**した（元S1と同質な角度は依然0件）。
+
 初回の写真計測品質監査は**23原学名**が対象（各10写真以上・3独立5度セル以上）。うち**Ligularia 7分類群**と他属の適切な比較種を、気候の効果符号を見る前に抽出し、元S1と同じ頭花ROI／花柄の幾何／EXIF縦軸／S1品質判定が外部分類群で機能するかを実測校正する。元S1のCirsium専用YOLOの重みは長期アーカイブからSHA回収済みだが、**Ligularia/Senecioneaeへの検出精度・姿勢推定精度は未確認**。品質校正前に720記録から角度のβを出さない。T3の既存131樹は**連鎖したITS/ETS rDNA遺伝子樹**であり、異なる遺伝子由来の真正核種樹ではない。
 
 ## 投稿上の判断・停止条件
