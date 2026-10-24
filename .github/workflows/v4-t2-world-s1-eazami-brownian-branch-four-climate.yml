@@ -1,0 +1,119 @@
+name: V4 WORLD S1 continuous EAzami Brownian branch four-climate transition
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_world_s1_fouraxis_eazami_brownian_branch_regime.py'
+      - 'tests/test_v4_t2_world_s1_fouraxis_eazami_brownian_branch_regime.py'
+      - '.github/workflows/v4-t2-world-s1-eazami-brownian-branch-four-climate.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  world-source-original-photo-four-environment-ancestral-branches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original S1 / EAzami Brownian squared-change and phylogenetic analysis environment
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' \
+            'pandas>=2.1,<3' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Unit tests for full continuous-photo Brownian branch vs categorical-CTMC boundary
+        run: python -m pytest -q tests/test_v4_t2_world_s1_fouraxis_eazami_brownian_branch_regime.py
+      - name: Restore exactly source-verified GLOBAL S1 251 original measured taxa and new four original site climates
+        run: |
+          set -euo pipefail
+          mkdir -p work/global/source251 work/global/newfour work/global/its109 work/global/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq .digest)" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12548594169 --jq .digest)" = 'sha256:8b19d76a695f3773d54885c637fcf7ed52445f615e9dae8501305a40e05327f5'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq .digest)" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/global/source251
+          gh run download 40064998009 --repo zuizui0223/azami \
+            --name v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation --dir work/global/newfour
+          gh run download 39914024548 --repo zuizui0223/azami \
+            --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/global/its109
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/global/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+          echo '823ecb8442eb03598253cb33f3e16bac86538c6c2652f48ca2dc0886d0e19626  work/global/newfour/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv' | sha256sum -c -
+          echo '8fd10d299b4d520ce08f2552993b02d3cc1b10350f0fb68ea24874dbb9ccfe92  work/global/its109/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile' | sha256sum -c -
+      - name: Test full-world EAzami style continuous signed change × environmental branch change on all 52 archived SHA-pinned placements
+        run: |
+          python -m analysis.v4.t2_world_s1_fouraxis_eazami_brownian_branch_regime \
+            --original251 work/global/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --newfour work/global/newfour/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv \
+            --its-tree work/global/its109/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --out work/global/output/T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BIO18_BIO05_RSDS_ELEVATION.json \
+            --permutations 999 --scenario-limit 52
+          git rev-parse HEAD > work/global/output/VERIFIED_ORIGINAL_CODE_SHA.txt
+      - name: Validate world original 251 202 191 143 source matching and all original four climates
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/global/output/T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BIO18_BIO05_RSDS_ELEVATION.json')
+          x=json.loads(p.read_text())
+          assert x["original_world_S1_251_source_names"]==251
+          assert x["source_original_total_native_head_images"]==170066
+          assert x["source_new_four_climate_all_complete_head_images"]==169020
+          assert x["matched_52_grafted_world_source_names_including_aliases"]==202
+          assert x["primary_world_source_names_collision_free"]==191
+          assert x["world_source_names_photo_at_least10"]==143
+          assert x["real_ITS_gene_tree_source_names_alias_clean"]==105
+          assert x["52_placements_not_true_global_multilocus_species_tree"]
+          assert x["ITS_is_multicopy_gene_tree_not_true_nuclear_multilocus_species_tree"]
+          assert x["not_a_true_gravitational_nodding_or_U_to_D_origin_test"]
+          assert x["no_historical_climate_selection_or_adaptation_inferred"]
+          for group in x["panels"].values():
+              assert group["n_continuous_photo_tip_permutations"]==999
+              assert set(group["four_axis_maxT_fraction"])==set(x["exposures"])
+              assert group["not_Mk_transition_model_or_botanical_U_D"]
+              assert 0<group["BIO18_positive_direction_one_sided_fraction"]<=1
+          assert x["panels"]["world191_original_52_grafted_placement_scenarios"]["n_original_tree_placement_scenarios"]==52
+          assert x["panels"]["real_genbank_nuclear_ITS105_multicopy_gene_tree"]["n_original_tree_placement_scenarios"]==1
+          print("PASS_REAL_WORLD_191_PLACEMENTS_AND_105_NUCLEAR_ITS_PHOTO_CONTINUOUS_BRANCH_ENVIRONMENT")
+          PY
+      - name: Plot all global placement scenario signed BIO18 scores versus source-real ITS gene-tree
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import numpy as np
+          import matplotlib
+          matplotlib.use('Agg')
+          import matplotlib.pyplot as plt
+          root=Path('work/global/output')
+          d=json.loads((root/'T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BIO18_BIO05_RSDS_ELEVATION.json').read_text())
+          a=d['panels']['world191_original_52_grafted_placement_scenarios']
+          b=d['panels']['world191_internal_edges_only']
+          its=d['panels']['real_genbank_nuclear_ITS105_multicopy_gene_tree']
+          fig,ax=plt.subplots(figsize=(9,4.2))
+          ax.hist(a['per_scenario_BIO18_scores'],bins=16,alpha=.6,label='World191: 52 correlated graft placements')
+          ax.axvline(its['scores_standardised_climatic_shift_per_signed_degree']['chelsa_bio18'],
+                     label='ITS105 real rDNA gene tree (not multilocus)',linestyle='--')
+          ax.axvline(0,color='black',linewidth=.8)
+          ax.set_xlabel('Signed Brownian-branch score: S1 camera-angle increase × BIO18 increase')
+          ax.set_ylabel('Grafted tree scenario count (sensitivity, not replicates)')
+          ax.set_title('World Cirsium S1 photographic phenotype x BIO18 on phylogenetic branches\n'
+                       'All 52 graft placements, independent ITSrDNA105 as separate exploratory genealogy')
+          ax.legend(fontsize=8)
+          fig.tight_layout()
+          fig.savefig(root/'T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BRANCH_BIO18.png',dpi=165)
+          plt.close(fig)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-world191-original-S1-continuous-EAzami-branch-BIO18-BIO05-RSDS-elev
+          path: work/global/output/
+          retention-days: 90
+          if-no-files-found: warn
