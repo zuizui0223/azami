@@ -1,0 +1,56 @@
+name: V4 S1 S2 exact LEGO label null
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/audit_s1_s2_lego_exact_module_null.py'
+      - '.github/workflows/v4-s1-s2-exact-lego-label-null.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  original-source-module-null:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Numerical runtime
+        run: python -m pip install numpy==2.4.6
+      - name: Recover exact successful V4 original-image aggregate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/v4lego
+          gh api repos/zuizui0223/azami/actions/artifacts/12545642886/zip > work/v4lego/verified-v4.zip
+          echo 'eee2c03a8d090db1d228dffb2ca23b70d99eeabe40db1b867870a2e93d3dcc5f  work/v4lego/verified-v4.zip' | sha256sum -c -
+          unzip -oq work/v4lego/verified-v4.zip -d work/v4lego
+          echo 'f1fc39fa829318ce7289b27857255992f00b941094faf16d3b43812a77c04209  work/v4lego/S1_S2_extreme_LEGO_results.json' | sha256sum -c -
+      - name: Exact 280-configuration whole-capitulum module-label test
+        run: |
+          python -m py_compile analysis/v4/audit_s1_s2_lego_exact_module_null.py
+          python -m analysis.v4.audit_s1_s2_lego_exact_module_null \
+            --aggregate work/v4lego/S1_S2_extreme_LEGO_results.json \
+            --output work/v4lego/exact_v4_module_label_null.json
+          python - <<'PY'
+          import json
+          p='work/v4lego/exact_v4_module_label_null.json'
+          x=json.load(open(p))
+          assert x['base_original']['within_rv']['n_unique_allocations']==280
+          assert x['base_original']['among_rv']['n_unique_allocations']==280
+          assert abs(x['base_original']['within_rv']['one_sided_exact_label_p']-1/280)<1e-12
+          assert abs(x['base_original']['among_rv']['one_sided_exact_label_p']-2/280)<1e-12
+          assert len(x['climate_scenarios'])==9
+          print('V4 original 28 pair labels + 9 climate alternatives verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v4-verified-phenotypic-lego-module-labels-${{ github.run_id }}
+          path: work/v4lego/exact_v4_module_label_null.json
+          if-no-files-found: error
+          retention-days: 90

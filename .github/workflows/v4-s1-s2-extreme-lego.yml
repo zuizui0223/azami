@@ -1,0 +1,276 @@
+name: V4 S1 S2 extreme BIOCLIM elevation and phenotypic LEGO
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'analysis/v4/s1_s2_extreme_environment.py'
+      - 'analysis/v4/s1_s2_extreme_lego.py'
+      - 'analysis/v4/s1_s2_vif5_si10_alltraits.py'
+      - 'analysis/v4/s1_s2_four_model_compare.py'
+      - 'tests/test_v4_four_model_comparison.py'
+      - 'tests/test_v4_s1_s2_vif5_si10_alltraits.py'
+      - 'analysis/v4/s1_s2_lego_triple.py'
+      - 'analysis/v4/s1_s2_bract_lego.py'
+      - 'analysis/v4/lego_module_label_null.py'
+      - 'analysis/v4/s1_s2_multiplicity_audit.py'
+      - 'tests/test_v4_s1_s2_multiplicity_audit.py'
+      - 'tests/test_v4_lego_module_label_null.py'
+      - 'tests/test_v4_s1_s2_bract_lego.py'
+      - 'analysis/v4/s1_s2_lego_three_way.py'
+      - 'tests/test_v4_s1_s2_lego_triple.py'
+      - 'tests/test_v4_s1_s2_extreme_lego.py'
+      - 'analysis/v4/V4_S1_S2_EXTREME_LEGO_CONTRACT_20261024.md'
+      - '.github/workflows/v4-s1-s2-extreme-lego.yml'
+
+permissions:
+  # Private draft-release binaries need contents:write for READ access.
+  contents: write
+  actions: read
+
+jobs:
+  original-V4-S1-S2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned packages and raster source readers
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt 'cryptography>=46,<49' 'shapely>=2,<3' 'rasterio>=1.4,<2' 'requests>=2.31,<3' pytest
+
+      - name: Compile and run source-free tests
+        run: |
+          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_vif5_si10_alltraits.py analysis/v4/s1_s2_four_model_compare.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py analysis/v4/s1_s2_bract_lego.py analysis/v4/lego_module_label_null.py analysis/v4/s1_s2_multiplicity_audit.py
+          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py tests/test_v4_s1_s2_bract_lego.py tests/test_v4_lego_module_label_null.py tests/test_v4_s1_s2_multiplicity_audit.py tests/test_v4_s1_s2_vif5_si10_alltraits.py tests/test_v4_four_model_comparison.py
+
+      - name: Recover original encrypted V4 S1 measurements and receipt
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/extreme/private work/extreme/receipt work/extreme/public work/extreme/temp
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/extreme/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/extreme/receipt
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/extreme')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                 sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('Source authentication failed') from None
+          assert hashlib.sha256(clear).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(clear)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/extreme/private/observations.csv.gz \
+            --receipt work/extreme/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/extreme/decoded
+
+      - name: Restore real S2 source WCVP native-introduced census
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          set -euo pipefail
+          gh api -H "Accept: application/octet-stream" \
+             repos/zuizui0223/azami/releases/assets/658986481 \
+             > work/extreme/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/extreme/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H "Accept: application/octet-stream" \
+             repos/zuizui0223/azami/releases/assets/659010325 \
+             > work/extreme/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/extreme/private/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+             > work/extreme/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/extreme/private/authority350.zip' | sha256sum -c -
+          python -m analysis.v4.native_introduced_opportunity \
+             --original work/extreme/private/original-metadata.aesgcm \
+             --measurements work/extreme/private/original-measurements.aesgcm \
+             --authority work/extreme/private/authority350.zip \
+             --output work/extreme/roster-public \
+             --private-focal-output work/extreme/private/focal_angle.csv.gz \
+             --private-focal-all-wild-output work/extreme/private/focal_wild.csv.gz
+          python - <<'PY'
+          import os,io
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.native_introduced_opportunity import (
+              decrypt_checked,MEASUREMENT_AAD,MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA)
+          original=Path('work/extreme/private/original-measurements.aesgcm').read_bytes()
+          clear=decrypt_checked(original,os.environ['AZAMI_MEASUREMENTS_KEY'],
+                                MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA,MEASUREMENT_AAD)
+          table=pd.read_csv(io.BytesIO(clear),dtype={'obs_id':str},low_memory=False)
+          if not table.obs_id.is_unique:
+              raise ValueError('S2_SOURCE_MEASUREMENT_DUPLICATE')
+          table.to_csv('work/extreme/private/s2_measured.csv.gz',index=False,compression='gzip')
+          # No original observation identifiers or locations in public outputs.
+          print({'measurement_rows':len(table),'measurement_columns':list(table.columns)})
+          PY
+
+      - name: Restore original S2 five-CHELSA source-pixel caches and join same original observations
+        run: |
+          set -euo pipefail
+          mkdir -p work/extreme/cache
+          while read -r variable id sha; do
+            target="work/extreme/cache/chelsa_$variable"
+            mkdir -p "$target"
+            gh api "repos/zuizui0223/azami/actions/artifacts/$id/zip" > "work/extreme/private/cache-$variable.zip"
+            echo "$sha  work/extreme/private/cache-$variable.zip" | sha256sum -c -
+            unzip -q "work/extreme/private/cache-$variable.zip" -d "$target"
+            rm "work/extreme/private/cache-$variable.zip"
+          done <<'CACHE'
+          bio01 12243016948 0e3b83ebfb7de1865662cde2c2c2395fa7737460996e66354f87391f8f0867ab
+          bio04 12241949860 dac232683b2a72b9c4f62eab0f341be7927e5e3287a29dbf3a162b893c2307e3
+          bio12 12242703088 71e7edeb0d4c0042e973ed97672a1593bef98a608c917792006e22722e288ada
+          bio15 12242508971 9f255a7c756fc83a5dd81e6c13d8fee63c53698d93bffb65ae13288e4eebb445
+          rsds_mean 12242917323 2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4
+          CACHE
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          from analysis.v4.native_cached_climate import (
+              physical_climate_for_focal, VARIABLES)
+          source=Path("work/extreme/private/focal_wild.csv.gz")
+          focus=pd.read_csv(source,dtype={"obs_id":str},low_memory=False)
+          if len(focus)!=297622 or not focus.obs_id.is_unique:
+              raise ValueError("V4_S2_FOCAL_IDENTITY_CHANGED")
+          values,receipt=physical_climate_for_focal(
+              focus,Path("work/extreme/cache"),
+              Path("analysis/v4/environment_source_metadata.json"))
+          for name in VARIABLES:
+              focus[name]=values[name]
+          if len(focus)!=297622 or not set(VARIABLES)<=set(focus):
+              raise ValueError("S2_FIVE_CLIMATE_MISSING_AFTER_REAL_PIXEL_JOIN")
+          focus.to_csv("work/extreme/private/focal_wild_climate.csv.gz",
+                       index=False,compression="gzip")
+          print({"S2_source_observations":len(focus),
+                 "source_pixel_climate_coverage":{v:receipt[v]["n_finite"] for v in VARIABLES},
+                 "original_S2_rows_private":True})
+          PY
+
+      - name: Sample new true CHELSA BIO5 BIO6 BIO13 BIO14 BIO17 BIO18 and WorldClim elevation
+        run: |
+          python -m analysis.v4.s1_s2_extreme_environment \
+            --native work/extreme/decoded/observations.csv.gz \
+            --focal work/extreme/private/focal_wild.csv.gz \
+            --out-private work/extreme/private \
+            --out-public work/extreme/public \
+            --temporary work/extreme/temp
+
+      - name: New V4 S1/S2 VIF and 28-pair LEGO on same recorded heads
+        run: |
+          python -m analysis.v4.s1_s2_extreme_lego \
+            --native work/extreme/decoded/observations.csv.gz \
+            --focal work/extreme/private/focal_wild_climate.csv.gz \
+            --environment-ext work/extreme/private/environment_ext.csv.gz \
+            --s2-measurements work/extreme/private/s2_measured.csv.gz \
+            --out-public work/extreme/public
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path('work/extreme/public/S1_S2_extreme_LEGO_results.json').read_text())
+          assert d['S1']['native_original_population']==313350
+          assert d['S2']['source_wild_two_species_observations']==297622
+          assert len(d['S1']['raw_28_pairs'])==28
+          assert len(d['S1']['scenario_results'])==11
+          assert not d['limits']['molecular_Lego_functional_resource_test']
+          print('Exact V4 S1/S2 sources, nine scenarios and 28 edges verified')
+          PY
+
+      - name: Original V4 S1-S2 full phenotypes VIFstep5 main versus VIFstep10 SI
+        run: |
+          python -m analysis.v4.s1_s2_vif5_si10_alltraits \
+            --native work/extreme/decoded/observations.csv.gz \
+            --focal work/extreme/private/focal_wild_climate.csv.gz \
+            --environment-ext work/extreme/private/environment_ext.csv.gz \
+            --s2-measurements work/extreme/private/s2_measured.csv.gz \
+            --out-public work/extreme/public
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from analysis.v4.s1_s2_vif5_si10_alltraits import MAIN, SI
+          data=json.loads(Path(
+              'work/extreme/public/V4_S1_S2_four_vs_vif5_vif10_alltraits.json'
+          ).read_text())
+          assert data['status']=='SOURCE_VERIFIED_S1_S2_FOUR_MODELS_ALL_AVAILABLE_PHENOTYPES'
+          assert len(data['S1']['joint_8_constructs_28_pairs']['raw_pairs'])==28
+          assert len(data['S1']['bract_to_all_8_constructs'][
+              'bridges_to_all_eight_original_constructs'])==8
+          assert len(data['S2']['strata'])==4
+          assert set(data['selection']['selection']['main_vif5']['retained'])==set(MAIN)
+          assert set(data['selection']['selection']['si_vif10']['retained'])==set(SI)
+          assert data['selection']['fixed_model_set_diagnostics']['main_vif5']['max_vif']<=5
+          assert data['selection']['fixed_model_set_diagnostics']['si_vif10']['max_vif']<=10
+          assert len(data['multiplicity'])==8
+          assert set(data['S1']['joint_8_constructs_28_pairs']['models'])=={
+             'four_bio12','four_bio18','main_vif5','si_vif10'}
+          for m in ('four_bio12','four_bio18'):
+              assert not data['selection']['fixed_model_set_diagnostics'][m]['selected_by_vifstep']
+          print({'S1':data['S1']['original_native_n'],
+                 'S2':data['S2']['original_wild_source_n'],
+                 'bract_status':data['S2']['optional_bract_source']['status'],
+                 'hypothesis_families':{
+                   k:{'tested':v['n_tests'],'holm':v['n_Holm']}
+                   for k,v in data['multiplicity'].items()}},flush=True)
+          PY
+
+      - name: Compare original four-variable annual/warm with VIFstep5 and VIFstep10 corrected and uncorrected
+        run: |
+          python -m analysis.v4.s1_s2_four_model_compare \
+            --aggregate work/extreme/public/V4_S1_S2_four_vs_vif5_vif10_alltraits.json \
+            --out work/extreme/public
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/extreme/public/V4_S1_S2_four_model_comparison.json').read_text())
+          assert d['status']=='VERIFIED_FOUR_MODEL_CORRECTED_VS_UNCORRECTED'
+          assert len(d['counts'])==8
+          assert set(d['model_predictors'])=={
+              'four_bio12','four_bio18','main_vif5','si_vif10'}
+          for level, n in [('S1',(80,80,100,140)),('S2',(128,128,160,224))]:
+              for model, expected in zip(d['model_order'], n):
+                  row=d['counts'][level+'/'+model]
+                  assert row['tested']==expected,(level,model,row)
+                  assert 0<=row['Holm']<=row['BH']<=row['raw']<=row['tested']
+          print({'corrected_vs_raw':{key:[v['raw'],v['BH'],v['Holm']]
+                                    for key,v in d['counts'].items()}},flush=True)
+          PY
+
+      - name: Exact 280-permutation registered visible-module label reference
+        run: |
+          python -m analysis.v4.lego_module_label_null \
+            --aggregate work/extreme/public/S1_S2_extreme_LEGO_results.json \
+            --out work/extreme/public/V4_S1_module_label_null.json
+          python -m json.tool work/extreme/public/V4_S1_module_label_null.json >/dev/null
+
+      - name: Correct full S1 and S2 expanded hypothesis families
+        run: |
+          python -m analysis.v4.s1_s2_multiplicity_audit \
+            --aggregate work/extreme/public/S1_S2_extreme_LEGO_results.json \
+            --out work/extreme/public/V4_S1_S2_full_hypothesis_FDR.json
+          python -m json.tool work/extreme/public/V4_S1_S2_full_hypothesis_FDR.json >/dev/null
+
+      - name: Upload ONLY source-aggregate scientific evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-s1-s2-extreme-lego-${{ github.run_id }}
+          path: work/extreme/public/
+          if-no-files-found: warn
+          retention-days: 90
