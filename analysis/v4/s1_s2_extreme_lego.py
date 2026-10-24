@@ -298,40 +298,37 @@ def residualize(frame,values,variables):
 
 
 def equal_n_stats(values,adjusted,group,replicates=500,seed=SEED):
+    """Matched taxon counts; precompute centred features once (not every draw)."""
     require(replicates>=100,"NOT_ENOUGH_RESAMPLES")
-    _, a, labels, inv, _=split_covariances(adjusted,group)
+    _, adjusted_a, labels, inv, means_adjusted = split_covariances(adjusted,group)
+    _, raw_a, _, _, means_raw = split_covariances(values,group)
     rng=np.random.default_rng(seed)
     indices=[np.flatnonzero(inv==j) for j in range(len(labels))]
-    _, raw_a,_,_,_=split_covariances(values,group)
-    rows=[]
-    for rep in range(replicates):
-        selected=np.array([rng.choice(k) for k in indices])
-        results={}
-        for title,arr,among in (("raw",values,raw_a),("adjusted",adjusted,a)):
-            v=arr.copy()
-            for loc in indices:
-                v[loc]-=v[loc].mean(axis=0)
-            subset=v[selected]
-            wcov=np.cov(subset,rowvar=False,bias=True)
-            edges=rv_rows(wcov,among)
-            diffs=np.array([e["among_minus_within"] for e in edges])
-            results[title]={
-                "median_of_pairwise_among_minus_within":float(np.median(diffs)),
-                "count_among_gt_within":int((diffs>0).sum()),
-                "difference_of_median_RVs":float(
-                    np.median([e["among_rv"] for e in edges])-
-                    np.median([e["within_rv"] for e in edges]))}
-        rows.append({"replicate":rep,**results})
-    report={}
+    centred={"raw":values-means_raw[inv], "adjusted":adjusted-means_adjusted[inv]}
+    among={"raw":raw_a,"adjusted":adjusted_a}
+    fixed_between={}
     for mode in ("raw","adjusted"):
-        d=np.array([r[mode]["difference_of_median_RVs"] for r in rows])
-        count=np.array([r[mode]["count_among_gt_within"] for r in rows])
-        report[mode]={"median_differential_RV":float(np.median(d)),
-                      "resampling_q025":float(np.quantile(d,.025)),
-                      "resampling_q975":float(np.quantile(d,.975)),
-                      "fraction_difference_positive":float(np.mean(d>0)),
-                      "median_pairs_among_stronger":float(np.median(count))}
-    return report
+        edges=rv_rows(among[mode],among[mode])
+        fixed_between[mode]=np.array([e["among_rv"] for e in edges])
+    draws={mode:[] for mode in ("raw","adjusted")}
+    pair_counts={mode:[] for mode in ("raw","adjusted")}
+    for _ in range(replicates):
+        selected=np.array([rng.choice(ix) for ix in indices])
+        for mode in draws:
+            cov=np.cov(centred[mode][selected],rowvar=False,bias=True)
+            edges=rv_rows(cov,among[mode])
+            within=np.array([e["within_rv"] for e in edges])
+            between=fixed_between[mode]
+            draws[mode].append(float(np.median(between)-np.median(within)))
+            pair_counts[mode].append(int((between>within).sum()))
+    return {mode:{
+        "median_differential_RV":float(np.median(draws[mode])),
+        "resampling_q025":float(np.quantile(draws[mode],.025)),
+        "resampling_q975":float(np.quantile(draws[mode],.975)),
+        "fraction_difference_positive":float(np.mean(np.asarray(draws[mode])>0)),
+        "median_pairs_among_stronger":float(np.median(pair_counts[mode])),
+        "not_confidence_interval":True
+    } for mode in draws}
 
 
 def lego_module_summary(rows):
