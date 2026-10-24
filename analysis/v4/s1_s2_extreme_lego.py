@@ -531,11 +531,19 @@ def main():
     args.out_public.mkdir(parents=True,exist_ok=True)
     native,focal=read_tables(args.native,args.focal,args.environment_ext,
                              args.s2_measurements)
+    if not set(BASE)<=set(focal):
+        from analysis.v4.s1_s2_restore_original_five import recover_original_five
+        focal,baseline_receipt=recover_original_five(
+            focal, args.out_public.parent/"private"/"original_s2_five",
+            Path("analysis/v4/environment_source_metadata.json"))
+    else:
+        baseline_receipt={"status":"FIVE_NATIVE_S2_SOURCE_CLIMATES_ALREADY_PRESENT"}
     source={"analysis_id":"azami_v4_S1_S2_extreme_climate_and_phenotypic_LEGO_20261024",
             "status":"SOURCE_VERIFIED_V4_EXTENSION_EXPLORATORY",
             "input_source":"V4 original encrypted source, WCVP-native/introduced, original-pixel rasters",
             "not_V3_reanalysis":True,
             "not_aza3_molecular_gene_or_functional_test":True,
+            "S2_original_five_CHELSA_provenance":baseline_receipt,
             "S1":analyse_s1(native),"S2":aggregate_s2(focal),
             "limits":{"gravity_calibrated_orientation":False,
                       "true_phyllary_spines_and_stickiness":False,
