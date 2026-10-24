@@ -401,6 +401,10 @@ def analyse_s1(native):
     for name,scenario in SCENARIOS.items():
         outcome_blind[name]=outcome_blind_set(native[["accepted_key",*ALL_ENV]],scenario)
     vals=standardize_traits(common)
+    # aza3 LEGO-inspired observable three-way configuration audit.
+    # This is a phenotype test, never a functional genomic G123 inventory.
+    from analysis.v4.s1_s2_lego_three_way import test_three_way
+    raw_three_way=test_three_way(vals,common.accepted_key,499,SEED)
     raw_within,raw_among,*_=split_covariances(vals,common.accepted_key)
     original=rv_rows(raw_within,raw_among)
     model_results={}
@@ -438,6 +442,8 @@ def analyse_s1(native):
              "median_among_RV":float(np.median([v["among_rv"] for v in edges])),
              "module_summary":lego_module_summary(edges)},
           "equal_n_sensitivity":nboot,
+          "three_way_phenotype_after_environment":test_three_way(
+              residual,groups,199,SEED+len(name)),
           "pairs":edges,
           "trait_environment_component_gradients":gradients,
           "warning":"No individual pair is a genetic module or an independent evolutionary transition; raw RV has sample-size/dimensionality bias."
@@ -453,6 +459,7 @@ def analyse_s1(native):
       "all_12_predictor_collinearity":diagnostics,
       "selection_by_scenario":outcome_blind,
       "raw_28_pairs":original,
+      "raw_three_way_phenotype":raw_three_way,
       "scenario_results":model_results
     }
 
