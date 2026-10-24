@@ -11,7 +11,7 @@ permissions:
   contents: read
   actions: read
 jobs:
-  131tip-original-GBIF-photo-feasibility-only:
+  original-131tip-GBIF-photo-feasibility-only:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
