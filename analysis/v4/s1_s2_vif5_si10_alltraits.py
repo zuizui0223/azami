@@ -83,7 +83,7 @@ def vifstep_all_contexts(diagnostics, cutoff):
 def source_vif(native, focal):
     env_mask = np.isfinite(native[ALL_ENV].to_numpy(float)).all(axis=1)
     require(int(env_mask.sum()) > 300000, "UNEXPECTED_S1_ENV_COVERAGE")
-    d = all_diagnostics(native.loc[env_mask], ALL_ENV)
+    d = all_diagnostics(native, ALL_ENV)
     combined = {"S1/" + name: v for name, v in d.items()}
     populations = {}
     for (sp, state), g in focal.groupby(["taxon_name", "range_state"]):
@@ -361,9 +361,11 @@ def s2_extra_bract(focal, original_measurement_path):
                            "matched_columns": list(matched)}
         matched[endpoint] = eligible[0]
     columns = ["obs_id"] + [entry for a, b in matched.values() for entry in (a, b)]
-    mm = m[columns].rename(columns={
-        old: name for name, pair in matched.items() for old in pair
-        for name in ([name] if old==pair[0] else [name+"__eligible"])})
+    rename_map = {}
+    for canonical, (measurement, flag) in matched.items():
+        rename_map[measurement] = canonical
+        rename_map[flag] = canonical + "__eligible"
+    mm = m[columns].rename(columns=rename_map)
     # Source WCVP eligibility and dates remain the focal source, never inferred.
     out = focal.merge(mm, on="obs_id", how="left", validate="one_to_one")
     if len(out)!=len(focal):
