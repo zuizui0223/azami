@@ -1,0 +1,75 @@
+name: V4 T2 S1 authentic NA Japan multilocus nuclear angle clustering
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_continuous_genuine_nuclear_two_tree_clustering.py'
+      - 'tests/test_v4_t2_s1_continuous_genuine_nuclear_two_tree_clustering.py'
+      - '.github/workflows/v4-t2-S1-real-NA-Japan-multilocus-nuclear-angle-clustering.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  genuine-two-nuclear-genealogies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Recreate numerical and botanical sequence-source environment
+        run: python -m pip install 'numpy>=1.26,<3' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Unit-test real nuclear-only species and photo-angle estimand
+        run: python -m pytest -q tests/test_v4_t2_s1_continuous_genuine_nuclear_two_tree_clustering.py
+      - name: Retrieve and hash-verify original full S1 photographic species data
+        run: |
+          set -euo pipefail
+          mkdir -p work/s1 work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/s1
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+      - name: Load authentic published NA63 and Japan38 176-locus nuclear sequence trees (no chloroplast)
+        run: |
+          python -m analysis.v4.t2_s1_continuous_genuine_nuclear_two_tree_clustering \
+            --original251 work/s1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --out-dir work/out \
+            --permutations 9999
+          git rev-parse HEAD > work/out/SOURCE_GITHUB_COMMIT.txt
+      - name: Verify true original molecular trees and taxon identity, photograph and climate contrasts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.loads(Path("work/out/T2_S1_CONTINUOUS_GENUINE_TWO_NUCLEAR_PHYLO_CLUSTERING.json").read_text())
+          assert o["authentic_multi_locus_nuclear_matched_source_species_total"]==54
+          assert o["genuinely_independent_nuclear_panels_separate_not_grafted"]==2
+          assert o["chloroplast_tree_not_used"] and o["no_botanical_erect_nodding_states_used"]
+          assert o["Q20_posthoc_failed_primary_QC_NOT_USED"]
+          d=o["nuclear_panels"]
+          assert d["NA42_genuine_published_nuclear"]["source_S1_matched_taxa"]==42
+          assert d["Japan12_genuine_176_loci_nuclear"]["source_S1_matched_taxa"]==12
+          assert d["NA42_genuine_published_nuclear"]["source_S1_matched_original_photos"]==59917
+          assert d["Japan12_genuine_176_loci_nuclear"]["source_S1_matched_original_photos"]==600
+          for k,entry in d.items():
+              assert "min_original_photos_1" in entry["gates"]
+              assert "mean_image_angle_deg" in entry["gates"]["min_original_photos_1"]["traits"]
+              assert entry["gates"]["min_original_photos_1"]["traits"]["mean_image_angle_deg"]["n_permutations"]==9999
+              assert (Path("work/out")/f"T2_S1_CONTINUOUS_{k}_HEAD_BIO12.png").stat().st_size>10000
+          assert d["Japan12_genuine_176_loci_nuclear"]["gates"]["min_original_photos_10"]["status"]=="NOT_EVALUABLE_TOO_FEW_NUCLEAR_TIPS"
+          print("VERIFIED_TWO_AUTHENTIC_NUCLEAR_TREES_54_ORIGINAL_S1_PHOTO_TAXA_NO_PLASTID_OR_UD")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-real-S1-photo-NA42-Japan12-authentic-nuclear-clustering-figures
+          path: work/out/
+          retention-days: 90
+          if-no-files-found: warn
