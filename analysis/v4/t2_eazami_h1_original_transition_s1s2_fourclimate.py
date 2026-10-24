@@ -338,6 +338,51 @@ def map_rank(h1,trees,taxa,states,env,*,region_by_taxon=None,all_state_maps=True
       "no_true_transition_time_climate_observed":True,
     }
 
+def original_H1_matched_new_four_sites(h1,trees,coverage,orientation,environment,reference):
+    """The same AUTHOR CTMC/Brownian BIO15↑-BIO1↓ exact rank on exact NEW four-complete sites.
+
+    Preserves 12 original taxonomic states / 6 original nuclear topologies /
+    792 state maps, but source environmental niche centroids are computed from
+    the same 689 occurrence sites retained by the four new climate layers.
+    This is an attrition sensitivity, not a new independent validation.
+    """
+    taxa=coverage["threshold_summaries"]["5"]["taxa"]
+    counts,env=h1.build_panel_environment(environment,taxa)
+    if len(taxa)!=12 or any(int(counts.get(t,0))<5 for t in taxa):
+        raise ValueError("New four-climate complete observations cannot support original EAzami n5 panel")
+    states=h1.panel_state_map(orientation,taxa)
+    assets=h1.prepare_topology_assets(trees,taxa,env)
+    original_new,full_maps=h1.exact_panel_test(
+       "matched_EAzami_H1_BIO15up_BIO1down_12_original_taxa",
+       taxa,states,assets,792)
+    observed=float(original_new["observed"]["composite_median"])
+    old=float(reference["n5_primary"]["observed_composite_median"])
+    new_rank=original_new["exact_primary_rank"]
+    if new_rank["n_maps"]!=792 or len(full_maps)!=792:
+        raise ValueError("EAzami original matched climate exact state-map rank incomplete")
+    old_rank=reference["n5_primary"]["exact_primary_rank"]
+    return {
+       "status":"EAzami_ORIGINAL_BIO15up_BIO1down_H1_RECOMPUTED_ON_EXACT_4CLIMATE_COMPLETE_SITES",
+       "original_taxa":12,
+       "original_n_Japan_Taiwan":int(sum(counts[t] for t in taxa)),
+       "n_original_4climate_complete_sites_entire_14_taxon_universe":len(environment),
+       "six_frozen_nuclear_AU_trees":len(trees),
+       "state_preserving_null_12_choose_5":792,
+       "original_frozen_748site_BIO15up_minus_BIO1down_composite_median":old,
+       "original_frozen_748site_rank":{"n_maps":int(old_rank["n_maps"]),"count_at_least_observed":int(old_rank["count_at_least_observed"])},
+       "matched_4climate_site_BIO15up_minus_BIO1down_composite_median":observed,
+       "matched_fourclimate_exact_rank":new_rank,
+       "matched_fourclimate_all_six_topology_scores":original_new["observed"]["topology_composite"],
+       "matched_old_positive_all_six":all(float(t)>0 for t in original_new["observed"]["topology_composite"]),
+       "same_site_old_H1_original_threshold_passes":
+          bool(all(float(t)>0 for t in original_new["observed"]["topology_composite"]) and
+               new_rank["exact_fraction"]<=.05),
+       "old_data_are_biological_states_not_camera_head_angle":True,
+       "new_source_site_attrition_can_explain_part_of_cross_variable_difference":True,
+       "not_independent_cross_study_confirmation":True,
+    }
+
+
 def sensitivity(h1,trees,original,orientation,environment,region):
     # n5 maps exactly original source, n3 and n10 coverage sensitivity.
     output={}
@@ -379,6 +424,7 @@ def execute(h1_path,trees_path,orientation_path,coverage_path,contract_path,
     original,method=original_occurrences(jp_path,tw_path,h1,trees,orientation,
                                          coverage,contract,legacy,reference)
     sampled,qc=sample_new_climate(original,rasters,rsds,rsds_meta)
+    matched_old=original_H1_matched_new_four_sites(h1,trees,coverage,orientation,sampled,reference)
     region={t:group["_region"].iloc[0] for t,group in
         original.groupby("scientific_name_query")}
     if any(group._region.nunique()!=1 for _,group in original.groupby("scientific_name_query")):
@@ -388,6 +434,7 @@ def execute(h1_path,trees_path,orientation_path,coverage_path,contract_path,
       "schema":"azami_v4_EAzami_exact_U_to_D_CTMC_Brownian_four_original_S1_S2_exposures_20261024_v1",
       "status":"COMPLETED_EAzami_FROZEN_BINARY_UD_CTMC_WITH_REAL_NEW_CLIMATES_NOT_S1_PHOTO_ANGLE",
       "original_EAzami_frozen_H1_method":method,
+      "original_H1_BIO15up_BIO1down_recomputed_on_same_689_sites":matched_old,
       "original_EAzami_method_Git_blob":EA_H1_SOURCE_BLOB,
       "original_EAzami_source_commit":EA_HEAD_COMMIT,
       "original_six_accepted_nuclear_AU_topologies_from_EAzami_blob":EA_SIX_TREE_BLOB,
@@ -430,6 +477,8 @@ def execute(h1_path,trees_path,orientation_path,coverage_path,contract_path,
         writer.writeheader();writer.writerows(taxon)
     print("EAzami_FROZEN_TRANSITION_NEW_S1_S2_FOUR_AXES="+json.dumps({
        "original_method_numeric_check":method["status"],
+       "original_H1_on_four_complete_matched_sites_rank":matched_old["matched_fourclimate_exact_rank"],
+       "original_H1_on_four_complete_matched_sites_supported":matched_old["same_site_old_H1_original_threshold_passes"],
        "original_12_taxa_BIO18_positive_tail":result["n5_primary"]["BIO18_positive_one_sided_tail_fraction"],
        "original_12_taxa_BIO18_six_topology_scores":result["n5_primary"]["axis_effects"]["chelsa_bio18"]["six_nuclear_topology_observed_signed_effects"],
        "original_12_taxa_all_four_omnibus_rank":result["n5_primary"]["four_axis_omnibus_finite_map_fraction"],
