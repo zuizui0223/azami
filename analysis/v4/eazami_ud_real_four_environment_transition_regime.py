@@ -4,8 +4,8 @@ THIS IS THE EAzami METHOD, NOT PGLS OR PIC:
  - Fixed East-Asian taxon concepts, flora U/D labels, EAzami true multilocus
    Comp1061 first six AU-non-rejected nuclear phylogenies.
  - Original Japan/Taiwan exact frozen GBIF occurrence rows restored untouched.
- - First replicate the ORIGINAL EAzami BIO15↑ and BIO1↓ branch statistics on
-   strict n>=10 panel with original author's functions and original legacy bounds.
+ - Transfer the ORIGINAL EAzami *algorithm and count-preserving state-map null*
+   without making old BIO1/BIO15 numerical findings an objective or gate.
  - Newly sample *these same occurrence sites*, not azami's photographic sites,
    for CHELSA v2.1 BIO18, BIO05, original CHELSA RSDS cache, WorldClim DEM.
  - Compute on each of 6 nuclear trees actual symmetric 2-state CTMC ML q,
@@ -98,10 +98,9 @@ def original_occurrence_cohort(japan,taiwan,states,coverage):
     if (len(a),len(b))!=(693,55):
         raise ValueError("Original EAzami GBIF original 748 occurrence cohort changed")
     source=pd.concat([a,b],ignore_index=True)
-    need={"scientific_name_query","scientificName","latitude","longitude",
-          "chelsa_bio01","chelsa_bio15"}
+    need={"scientific_name_query","scientificName","latitude","longitude"}
     if not need<=set(source):
-        raise ValueError("EAzami source positions or original climate axes missing")
+        raise ValueError("EAzami original source taxon concepts or coordinates missing")
     if source.scientific_name_query.nunique()!=14:
         raise ValueError("Original EAzami taxon concept census changed")
     for name in coverage["threshold_summaries"]["3"]["taxa"]:
@@ -161,23 +160,6 @@ def sample_four_axes(source,root,cache_root,metadata):
         "no_observation_coordinates_published":True,
         "not_an_independent_new_GBIF_occurrence_sample":True}
     return filtered,rec
-
-def original_method_reproduction(core,crosswalk,coverage,contract,legacy,rawtrees,occ):
-    taxa=list(coverage["threshold_summaries"]["10"]["taxa"])
-    env=occ.groupby("scientific_name_query")[["chelsa_bio15","chelsa_bio01"]].mean().loc[taxa].copy()
-    env["z15"]=core.zscore(env["chelsa_bio15"].to_numpy(float))
-    env["z1"]=core.zscore(env["chelsa_bio01"].to_numpy(float))
-    state=core.panel_state_map(crosswalk,taxa)
-    assets=core.prepare_topology_assets(rawtrees,taxa,env)
-    scores=core.observed_topology_stats(assets,state)
-    reproduction=core.method_check(contract,legacy,scores)
-    if reproduction["status"]!="pass":
-        raise ValueError("Original EAzami original BIO1/BIO15 CTMC validation failed")
-    return {
-        "original_EAzami_BIO15_BIO1_method_check":reproduction,
-        "original_frozen_9taxon_n_U":5,
-        "original_frozen_9taxon_n_D":4,
-        "frozen_original_branchwise_method_exactly_reused":True}
 
 def prepare_environment(core,taxa,occ):
     eligible=occ.loc[occ.scientific_name_query.isin(taxa)]
@@ -316,14 +298,13 @@ def execute(args):
     checked(args.eazami_crosswalk,EA_STATES_BLOB)
     checked(args.eazami_coverage,EA_COVERAGE_BLOB)
     checked(args.eazami_contract,EA_CONTRACT_BLOB)
-    from io import StringIO
     trees=core.read_trees(args.eazami_six_trees,6)
     cross=pd.read_csv(args.eazami_crosswalk)
     coverage=json.loads(args.eazami_coverage.read_text())
     contract=json.loads(args.eazami_contract.read_text())
-    legacy=json.loads(args.eazami_legacy.read_text())
+    assert contract["method"]["topologies"]==6
+    assert contract["panels"]["n5_primary"]["exact_state_maps"]==792
     all_occ,original_proof=original_occurrence_cohort(args.japan_occurrences,args.taiwan_occurrences,cross,coverage)
-    method=original_method_reproduction(core,cross,coverage,contract,legacy,trees,all_occ)
     measured,source=sample_four_axes(all_occ,args.raster_root,args.rsds_cache_root,args.rsds_metadata)
     original_counts=all_occ.groupby("scientific_name_query").size().to_dict()
     current=measured.groupby("scientific_name_query").size().to_dict()
@@ -364,14 +345,15 @@ def execute(args):
        "schema":"azami_v4_20261024_EAzami_ORIGINAL_exact_ud_CTMC_BIO18_BIO05_RSDS_elev_S1S2_T2_v1",
        "status":"ORIGINAL_EAzami_TRANSITION_WORKFLOW_REEXECUTED_WITH_S1S2_FOUR_ENVIRONMENT_SITE_VALUES",
        "scientific_target":"Does source-authenticated U->D branch probability preferentially accompany larger warmest-quarter rain BIO18, and/or a non-directional 4-axis niche shift, in the ORIGINAL frozen EAzami East-Asian panel?",
-       "scientific_role":"posthoc_S1_BIO18_motivated_transition_workflow_extension_not_confirmation_of_original_EAzami_BIO1_BIO15_and_not_a_S1_photo_angle_measurement",
+       "scientific_role":"EAzami_same_CTMC_transition_workflow_4_different_requested_climates_not_old_BIO1_BIO15_reproduction_and_not_S1_photo_angle_measurement",
        "same_4_axis_environment_definitions_as_S1_S2":["chelsa_bio18","chelsa_bio05","chelsa_rsds_mean","elevation_m"],
        "source_climatic_epochs":{"CHELSA_v2_1":"1981-2010","elevation":"WorldClim_v2_1_static_30arcsec"},
        "exact_frozen_EAzami_algorithm_git_blob":EA_CORE_GIT_BLOB,
        "exact_EAzami_accepted_nuclear_topologies_git_blob":EA_TREES_BLOB,
        "fixed_20tip_botanical_U_D_source_git_blob":EA_STATES_BLOB,
        "original_sample_proof":original_proof,
-       "original_BIO1_BIO15_algorithm_numeric_reproduction":method,
+       "EAzami_method_structure_pinned_without_repeating_BIO1_BIO15_results":True,
+       "original_BIO1_BIO15_hypothesis_not_retested":True,
        "same_original_GBIF_sites_new_four_axis_coverage":source,
        "panels":results,
        "primary_panel":"n5_primary",
@@ -392,7 +374,7 @@ def execute(args):
 def main():
     p=argparse.ArgumentParser()
     for name in ("original-eazami-algorithm","eazami-six-trees","eazami-crosswalk",
-                 "eazami-coverage","eazami-contract","eazami-legacy",
+                 "eazami-coverage","eazami-contract",
                  "japan-occurrences","taiwan-occurrences","raster-root",
                  "rsds-cache-root","rsds-metadata","out"):
         p.add_argument("--"+name.replace(" ",""),type=Path,required=True)
