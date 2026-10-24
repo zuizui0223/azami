@@ -1,0 +1,103 @@
+{
+  "schema": "azami_V4_S1_S2_T2_five_axis_nuclear_20261024_summary_source_authenticated",
+  "original_source": "https://github.com/zuizui0223/azami/actions/runs/40054052557",
+  "github_run_id": 40054052557,
+  "github_artifact_id": 12544053274,
+  "artifact_zip_sha256": "b98a7c4b56ec68ecea2a7fc0a9fd5c1ea2886dcfe6bf9ff1de77dcdf5128fe46",
+  "result_json_sha256": "c404d59a2c56e022af6b28a59e41dac5fa8b739dacb72d2b9aa06fb6b76909f7",
+  "status": "REAL_SOURCE_VERIFIED_13_TESTS_5AXIS_10K_CONDITIONAL_MK_PER_ROOT",
+  "original_s1_source_images": 170066,
+  "s1_native_two_species_also_s2_original_photos": {
+    "Cirsium arvense": 49072,
+    "Cirsium vulgare": 33637
+  },
+  "s1_between_BIO12_deg_per100mm": 0.4381991922885207,
+  "s1_within_BIO12_deg_per100mm": -0.044298210799959194,
+  "s2_introduced_minus_native_BIO12_occurrence_median_mm": {
+    "Cirsium arvense": 217.4017,
+    "Cirsium vulgare": 293
+  },
+  "t2_true_nuclear_panels": [
+    {
+      "name": "NA44",
+      "U": 41,
+      "D": 3
+    },
+    {
+      "name": "Japan12",
+      "U": 7,
+      "D": 5
+    }
+  ],
+  "axes": [
+    "chelsa_bio12",
+    "chelsa_bio15",
+    "chelsa_bio01",
+    "chelsa_bio04",
+    "chelsa_rsds_mean"
+  ],
+  "pooled_region_standardized_D_minus_U": [
+    0.5024821973079736,
+    -0.008688585378850042,
+    -1.0855407199195446,
+    0.1672975529353706,
+    0.08948449812828158
+  ],
+  "panels_D_minus_U": {
+    "NA44": [
+      0.7333305965707333,
+      0.2195898516915736,
+      -0.7485604527454444,
+      -0.7129215688210762,
+      0.43958166365822243
+    ],
+    "Japan12": [
+      0.28122749775483524,
+      -0.22748012636323012,
+      -1.4085166123539419,
+      1.0109361397616794,
+      -0.24606317480820716
+    ]
+  },
+  "inferred": {
+    "erect": {
+      "five_axis_omnibus_mc_P": 0.0746925307469253,
+      "axes_maxT_adjusted_P": [
+        0.745,
+        1,
+        0.0401,
+        0.9956,
+        0.9992
+      ]
+    },
+    "stationary": {
+      "five_axis_omnibus_mc_P": 0.06989301069893011,
+      "axes_maxT_adjusted_P": [
+        0.7302,
+        1,
+        0.0369,
+        0.9956,
+        0.9977
+      ]
+    }
+  },
+  "focal_S2_T2_strict": {
+    "Cirsium arvense": {
+      "botanical_state": "?",
+      "matches_true_nuclear_56": false
+    },
+    "Cirsium vulgare": {
+      "botanical_state": "U",
+      "matches_true_nuclear_56": true
+    }
+  },
+  "boundaries": {
+    "s1_s2_share_original_native_images": true,
+    "five_selected_climates_are_from_preexisting_s1_model": true,
+    "omnibus_did_not_pass_p005": true,
+    "bio1_axis_is_exploratory_condition_on_five_test_family": true,
+    "no_climate_at_morphological_origin_estimated": true,
+    "no_independent_evolutionary_gains_estimated": true,
+    "no_false_cross_tribe_replication": true
+  }
+}
