@@ -55,6 +55,6 @@
 
 ## 実行証拠
 
-GitHub Actions [#40077527551](https://github.com/zuizui0223/azami/actions/runs/40077527551) は**原CSV/SHA・GenBank ITS核遺伝子樹・Zenodo固定52配置樹の認証、実195近縁系での枝長付きBrownian計算、全6パネル×999置換、6単体テスト、可視化**まで完走。成果 [artifact 12554340107](https://github.com/zuizui0223/azami/actions/runs/40077527551/artifacts/12554340107) は**ZIP SHA256 `ea7dc76df2800d800ab37077ae005a89bca815a57270257374c126016dee0ac7`**、JSON `T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BIO18_BIO05_RSDS_ELEVATION.json` **SHA256 `f4183f612203f34770187646e4f8e79ff4081b2ee078e057ccf53031b4711c00`**。別に原CSVも同一GitHub Actions成果物から復元している。浮動表示グラフ `T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BRANCH_BIO18.png` とコードcommitレシートも同梱。
+GitHub Actions [#40077527551](https://github.com/zuizui0223/azami/actions/runs/40077527551) は**原CSV/SHA・GenBank ITS核遺伝子樹・Zenodo固定52配置樹の認証、実191種の全球配置での枝長付きBrownian計算、全6パネル×999置換、6単体テスト、可視化**まで完走。成果 [artifact 12554340107](https://github.com/zuizui0223/azami/actions/runs/40077527551/artifacts/12554340107) は**ZIP SHA256 `ea7dc76df2800d800ab37077ae005a89bca815a57270257374c126016dee0ac7`**、JSON `T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BIO18_BIO05_RSDS_ELEVATION.json` **SHA256 `f4183f612203f34770187646e4f8e79ff4081b2ee078e057ccf53031b4711c00`**。別に原CSVも同一GitHub Actions成果物から復元している。浮動表示グラフ `T2_WORLD_S1_CONTINUOUS_EAZAMI_STYLE_BRANCH_BIO18.png` とコードcommitレシートも同梱。
 
 **次の真正の主検定：** 世界の湿潤BIO18上位分類群を真正の350核座位級の核種樹で広く覆い、同じtip集合・元画像測定不確実性・実地理を扱う。そこで方向一致が再現したときだけ、異系統の反復・気候と系統変化の連動に進む。T3の別連は、写真を本当に角度定量してから同じ問いへ接続する。
