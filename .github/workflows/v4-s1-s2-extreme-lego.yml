@@ -7,6 +7,8 @@ on:
       - 'analysis/v4/s1_s2_extreme_lego.py'
       - 'analysis/v4/s1_s2_lego_triple.py'
       - 'analysis/v4/s1_s2_bract_lego.py'
+      - 'analysis/v4/lego_module_label_null.py'
+      - 'tests/test_v4_lego_module_label_null.py'
       - 'tests/test_v4_s1_s2_bract_lego.py'
       - 'analysis/v4/s1_s2_lego_three_way.py'
       - 'tests/test_v4_s1_s2_lego_triple.py'
@@ -39,8 +41,8 @@ jobs:
 
       - name: Compile and run source-free tests
         run: |
-          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py analysis/v4/s1_s2_bract_lego.py
-          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py tests/test_v4_s1_s2_bract_lego.py
+          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py analysis/v4/s1_s2_bract_lego.py analysis/v4/lego_module_label_null.py
+          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py tests/test_v4_s1_s2_bract_lego.py tests/test_v4_lego_module_label_null.py
 
       - name: Recover original encrypted V4 S1 measurements and receipt
         env:
@@ -184,6 +186,13 @@ jobs:
           assert not d['limits']['molecular_Lego_functional_resource_test']
           print('Exact V4 S1/S2 sources, nine scenarios and 28 edges verified')
           PY
+
+      - name: Exact 280-permutation registered visible-module label reference
+        run: |
+          python -m analysis.v4.lego_module_label_null \
+            --aggregate work/extreme/public/S1_S2_extreme_LEGO_results.json \
+            --out work/extreme/public/V4_S1_module_label_null.json
+          python -m json.tool work/extreme/public/V4_S1_module_label_null.json >/dev/null
 
       - name: Upload ONLY source-aggregate scientific evidence
         if: always()
