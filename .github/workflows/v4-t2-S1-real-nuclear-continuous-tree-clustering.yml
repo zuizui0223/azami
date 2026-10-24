@@ -1,0 +1,102 @@
+name: V4 T2 S1 continuous real nuclear phylogenetic clustering and tree plot
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_s1_real_nuclear_phylogenetic_clustering.py'
+      - 'tests/test_v4_t2_s1_real_nuclear_phylogenetic_clustering.py'
+      - '.github/workflows/v4-t2-S1-real-nuclear-continuous-tree-clustering.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-S1-continuous-photo-nuclear-trees:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: .
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install scientific tools for genuine molecular tree comparisons
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'matplotlib>=3.8,<4' 'pytest>=8,<10'
+      - name: Test continuous-photo orientation, molecular neighbor distances and null permutations
+        run: |
+          python -m pytest -q tests/test_v4_t2_s1_real_nuclear_phylogenetic_clustering.py \
+            tests/test_v4_t2_110_multilocus_vs_109_its_photo_niche.py
+      - name: Recover original authenticated S1 photo climate traits and real 109/110 molecule trees
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1 work/Q20 work/Q20tree work/ITS work/NA work/output
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479233954 --jq '.digest')" = 'sha256:01b78f6a8129fec585dbe9a886df1d0997d78eb8a3b45165955455553b187009'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12479273411 --jq '.digest')" = 'sha256:87894a99183757e12d510f97d291fe1a2bad246569289402a0b8068c718fbf61'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/S1
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-original111-posthoc110-authentic-Q20-ML-input --dir work/Q20
+          gh run download 39902959690 --repo zuizui0223/azami --name t2-posthoc110-realQ20-GTRG4-ML-vs-independent-NA63 --dir work/Q20tree
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/ITS
+      - name: Recover independent publication 63-tip author nuclear tree from immutable Git SHA
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --silent --show-error \
+            https://raw.githubusercontent.com/carol-siniscalchi/cirsium/c925d4af86160064448f794a9715f70b917a2786/traits/cirsium.phyluce95p.ultrametric.tre \
+            -o work/NA/published_author_63_nuclear.tre
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path("work/NA/published_author_63_nuclear.tre").read_bytes()
+          assert hashlib.sha1(b"blob "+str(len(p)).encode()+b"\0"+p).hexdigest()=="6417a38793427bc7c8562dc0e2cab59b74d8c316"
+          print("PASS_AUTHENTIC_PUBLISHED_NA63_NUCLEAR_GIT_BLOB")
+          PY
+      - name: Compare real tree nearest-neighbor clustering for S1 angle and rainfall using 9999 tip shuffles
+        run: |
+          python -m analysis.v4.t2_s1_real_nuclear_phylogenetic_clustering \
+            --s1 work/S1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --NA63-original-tree work/NA/published_author_63_nuclear.tre \
+            --q20-source110 work/Q20/REAL110_SOURCE_TAXON_BIOSAMPLE_TECHNICAL_SENSITIVITY.csv \
+            --receipt work/Q20/REAL110_POSTHOC_ONLY_LOW_Q20_TIP_REMOVED_RECEIPT.json \
+            --Q20-tree work/Q20tree/REAL110_ORIGINAL111_POSTHOC_Q20_GTRG4_ML.treefile \
+            --ITS109-tree work/ITS/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --out work/output \
+            --permutations 9999
+          git rev-parse HEAD > work/output/VERIFIED_CODE_COMMIT.txt
+      - name: Validate same 58 taxa, source limitations and actual phylogeny figures
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('work/output/T2_S1_CONTINUOUS_REAL_TREE_PHYLOGENETIC_CLUSTERING.json').read_text())
+          assert a['S1_original_source_taxa']==251
+          assert a['S1_original_photo_count']==170066
+          assert a['original_botanical_U_D_not_analyzed']
+          assert a['Q20_110_from_failed_original111_primary_gate_NOT_species_tree']
+          assert a['161_source_name_union_NOT_a_161tip_tree']
+          assert a['identical_58_taxon_set_both_real_geneaologies']
+          counts={'NA42_real_authored_nuclear':42,'ITS109_GenBank_nuclear_rDNA':109,'Q20_posthoc110_candidate_loci':110,'same58_ITS_gene_tree':58,'same58_Q20_candidate_tree':58}
+          for name,count in counts.items():
+              row=a['five_nonindependent_molecular_tree_panels'][name]['min_n1']
+              assert row['n_real_tree_tips_matched_to_original_S1']==count
+              for endpoint in ('mean_image_angle_deg','median_image_angle_deg','log_BIO12'):
+                  p=row['three_original_S1_traits'][endpoint]
+                  assert p['n_permutations']==9999
+                  assert 0<=p['single_sided_clustering_p']<=1
+              assert [int(g.removeprefix('min_n')) for g in a['five_nonindependent_molecular_tree_panels'][name]]==[1,10,30]
+          for name,path in a['tree_visuals'].items():
+              assert Path('work/output',path).stat().st_size>20000
+          print('PASS_SOURCE_REAL_42_109_110_58_58_CONTINUOUS_PHOTO_PHYLOGENETIC_CLUSTERING')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-t2-original-S1-angle-rain-real-nuclear-ITS-Q20-tree-plots
+          path: work/output/
+          retention-days: 90
+          if-no-files-found: warn
