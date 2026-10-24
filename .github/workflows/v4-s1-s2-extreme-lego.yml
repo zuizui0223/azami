@@ -6,6 +6,8 @@ on:
       - 'analysis/v4/s1_s2_extreme_environment.py'
       - 'analysis/v4/s1_s2_extreme_lego.py'
       - 'analysis/v4/s1_s2_lego_triple.py'
+      - 'analysis/v4/s1_s2_bract_lego.py'
+      - 'tests/test_v4_s1_s2_bract_lego.py'
       - 'analysis/v4/s1_s2_lego_three_way.py'
       - 'tests/test_v4_s1_s2_lego_triple.py'
       - 'tests/test_v4_s1_s2_extreme_lego.py'
@@ -37,8 +39,8 @@ jobs:
 
       - name: Compile and run source-free tests
         run: |
-          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py
-          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py
+          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py analysis/v4/s1_s2_bract_lego.py
+          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py tests/test_v4_s1_s2_bract_lego.py
 
       - name: Recover original encrypted V4 S1 measurements and receipt
         env:
