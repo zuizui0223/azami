@@ -207,8 +207,35 @@ integration stronger."
 **Unresolved:** no BIO18 or elevation in these inputs; no geographic/phylogenetic
 joint correction; no image-viewing-angle/colour-error correction;
 no inference that the remaining associations are adaptive strategies.
-The three-PC dimensional choice itself needs a sensitivity comparison
-(e.g. 2 and 4 PCs) before Main promotion.
+The three-PC dimensional choice was additionally checked with two and four PCs
+(results below); further spatial, phylogenetic and measurement-audit work is required
+before Main promotion.
 
 Source: [Actions run 40055211966](https://github.com/zuizui0223/azami/actions/runs/40055211966)
 and archived output artifact 12544872267.
+
+
+## PC-rank sensitivity executed — 2026-10-24
+
+A second successful Actions run (`40055396652`; artifact `12544483709`)
+repeated the same frozen-cohort and checksum gates for 2, 3 and 4 environmental
+PCs (500 matched-n replicates each; the same fixed sampling seed).
+
+| Environmental PCs | among-minus-within matched-n median RV difference | 95% matched-n resampling interval | fraction positive | median count stronger among |
+|---:|---:|---|---:|---:|
+| 2 | +0.017486 | -0.000696 to +0.028793 | 97.4% | 24/36 |
+| 3 | +0.021654 | +0.002326 to +0.033197 | 98.2% | 24/36 |
+| 4 | +0.023726 | +0.004202 to +0.034834 | 99.0% | 24/36 |
+
+**Interpretation:** The median difference remains positive across the
+three PC ranks, but the 2-PC 95% resampling interval *slightly overlaps zero*.
+Do not claim that all PC choices satisfy a positive 95% interval or that these
+Monte Carlo resamples give independent population-level evidence. In particular,
+the persistent count of 24/36 remains descriptive under estimator caveats.
+The PC rank tests do not substitute for including BIO18/elevation or
+handling geography/phylogeny and correlated image measurement errors.
+
+Archive and reproducibility:
+- [Actions run 40055396652](https://github.com/zuizui0223/azami/actions/runs/40055396652)
+- output artifact `12544483709` (`ch1-multitrait-climate-conditional-40055396652`),
+  including `results/pc2/`, `results/pc4/` and the default 3-PC results.
