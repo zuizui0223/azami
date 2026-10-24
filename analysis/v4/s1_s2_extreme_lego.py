@@ -546,6 +546,7 @@ def main():
             Path("analysis/v4/environment_source_metadata.json"))
     else:
         baseline_receipt={"status":"FIVE_NATIVE_S2_SOURCE_CLIMATES_ALREADY_PRESENT"}
+    from analysis.v4.s1_s2_extreme_range_models import analyse_s2_range_models
     source={"analysis_id":"azami_v4_S1_S2_extreme_climate_and_phenotypic_LEGO_20261024",
             "status":"SOURCE_VERIFIED_V4_EXTENSION_EXPLORATORY",
             "input_source":"V4 original encrypted source, WCVP-native/introduced, original-pixel rasters",
@@ -553,6 +554,7 @@ def main():
             "not_aza3_molecular_gene_or_functional_test":True,
             "S2_original_five_CHELSA_provenance":baseline_receipt,
             "S1":analyse_s1(native),"S2":aggregate_s2(focal),
+            "S2_environmental_models":analyse_s2_range_models(focal),
             "limits":{"gravity_calibrated_orientation":False,
                       "true_phyllary_spines_and_stickiness":False,
                       "molecular_Lego_functional_resource_test":False,
