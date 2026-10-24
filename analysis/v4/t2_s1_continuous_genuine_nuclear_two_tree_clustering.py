@@ -231,10 +231,20 @@ def plot_tree(tree,tipmap,by,output,title):
         label=tipmap[tip.name].replace("Cirsium_","C. ").replace("_"," ")
         an.text(.01,i,label,ha="left",va="center",fontsize=8)
         r=by[tipmap[tip.name]]
-        ha.add_patch(Rectangle((0,i-.4),1,.8,facecolor=plt.get_cmap("viridis")(float(r["mean_image_angle_deg"])/180),lw=0))
-        rain=np.log(float(r["chelsa_bio12"]))
+        angle=float(r["mean_image_angle_deg"])
+        angle_rgba=plt.get_cmap("viridis")(angle/180)
+        ha.add_patch(Rectangle((0,i-.4),1,.8,facecolor=angle_rgba,lw=0))
+        rain_mm=float(r["chelsa_bio12"])
+        rain=np.log(rain_mm)
         rclip=np.clip((rain-np.log(200))/(np.log(5000)-np.log(200)),0,1)
-        hr.add_patch(Rectangle((0,i-.4),1,.8,facecolor=plt.get_cmap("cividis")(rclip),lw=0))
+        rain_rgba=plt.get_cmap("cividis")(rclip)
+        hr.add_patch(Rectangle((0,i-.4),1,.8,facecolor=rain_rgba,lw=0))
+        def contrast(rgb):
+            return "black" if (0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2])>.55 else "white"
+        ha.text(.5,i,f"{angle:.0f}°",fontsize=6.7,va="center",ha="center",
+                color=contrast(angle_rgba))
+        hr.text(.5,i,f"{rain_mm:.0f}",fontsize=6.4,va="center",ha="center",
+                color=contrast(rain_rgba))
     for axis in [ax,an,ha,hr]:
         axis.set_ylim(len(tips)-.2,-.8)
         axis.spines[:].set_visible(False)
@@ -244,7 +254,9 @@ def plot_tree(tree,tipmap,by,output,title):
     an.set_xlim(0,1);an.set_xticks([])
     for axis,label in [(ha,"S1 head\nangle"),(hr,"BIO12")]:
         axis.set_xlim(0,1);axis.set_xticks([]);axis.set_title(label,fontsize=9)
-    fig.suptitle(title+"\nTip colours are own S1 IMAGE angles, NOT botanical erect/nodding classes",fontsize=11)
+    ha.set_xlabel("0° up – 180° down\n(image coordinates)",fontsize=7)
+    hr.set_xlabel("annual mm",fontsize=7)
+    fig.suptitle(title+"\nTip cells give original S1 continuous camera angles (°) and native annual rainfall (mm)\nNot gravity-validated nodding or plastid phylogeny",fontsize=10)
     fig.savefig(output,dpi=170,bbox_inches="tight")
     plt.close(fig)
 
