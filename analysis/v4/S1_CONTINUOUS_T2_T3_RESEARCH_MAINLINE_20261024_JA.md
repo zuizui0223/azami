@@ -1,5 +1,8 @@
 # V4 T2・T3の新しい主線：S1連続画像角度のみ（2026-10-24）
 
+> **2026-10-24 新しいT2元配列被覆の実再解析：[全251／GenBank ITS109／Q20候補110の同一S1画像角度・5気候・多雨四分位＋2,000回標本感度](results/20261024_T2_CONTINUOUS_ITS109_Q20110_WET_TAIL_COMPLEMENT_JA.md)。[実データActions #40057271562](https://github.com/zuizui0223/azami/actions/runs/40057271562) SUCCESS・10テスト。原名被覆109→161、BIO12上位四分位の核候補16/63→27/63、まだ36原名未対応。原名和集合161を**核系統樹が完成した**とは扱わない。和集合のBIO12効果+0.302°/100mm（95%CI −0.144～+0.748）で、ITS109との差の2,000回ペア再標本区間は0を含む。
+
+
 > **2026-10-24 実データ再計算完走：** [S1の同じ連続画像角度だけで元251名・GenBank ITS109・S2を統合した結果](results/20261024_S1_CONTINUOUS_ONLY_REAL_SOURCE_REANALYSIS_JA.md)。[GitHub Actions #40056635774](https://github.com/zuizui0223/azami/actions/runs/40056635774) SUCCESS／8テスト。全251のBIO12画像角度係数**+0.4037°/100mm**（95%CI +0.0926～+0.7147）、ITS109では**+0.2506**（−0.2693～+0.7704）。**文献U/Dを使わず**、S1とS2の元画像重複を認証。T3の異連写真は同方法未計測につき明示的にBLOCKED。
 
 
