@@ -98,7 +98,7 @@ def evidence_bridge(receipt: dict, transfer: dict, source: pd.DataFrame) -> dict
             "native_and_introduced_are_not_the_same_individual": True,
             "regional_slope_evidence": values,
             "native_model_prediction_skill_in_introduced":
-                tr["introduced"]["predictive_transfer"]["native_trained_skill_relative_to_native_constant"],
+                tr["predictive_transfer"]["native_trained_skill_relative_to_native_constant"],
             "original_S2_native_intro_slope_difference":
                 tr["introduced_minus_native"],
         }
