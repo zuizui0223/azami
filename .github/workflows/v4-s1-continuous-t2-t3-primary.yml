@@ -1,0 +1,76 @@
+name: V4 primary S1 continuous photo only S1 S2 T2 T3
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/s1_continuous_t2_t3_primary_bridge.py'
+      - 'tests/test_v4_s1_continuous_t2_t3_primary_bridge.py'
+      - '.github/workflows/v4-s1-continuous-t2-t3-primary.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-photo-continuous-T2-crosswalk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install real S1 regression and nuclear source verification libraries
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Test photo-continuous ontology and reject literature U D
+        run: |
+          python -m pytest -q tests/test_v4_s1_continuous_t2_t3_primary_bridge.py tests/test_v4_t2_s1_109_vs251_phylogenetic_sampling_explanation.py
+      - name: Recover original 251 S1 taxa camera-angle + five CHELSA source
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1 work/ITS work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          gh run download 39769949628 --repo zuizui0223/azami --name v4-t2-S1-all251-original-source-name-resolved --dir work/S1
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/S1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+      - name: Recover genuine 109-tip GenBank nuclear ITS genealogy
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12484282607 --jq '.digest')" = 'sha256:5c44c8c1b53dd78ed4f72eed0d5e162324b090d2d0575345864b70e9e1327f62'
+          gh run download 39914024548 --repo zuizui0223/azami --name t2-original-all251-own-GenBank-nuclear-ITS-tree-rainfall-or-source-block --dir work/ITS
+          echo '8fd10d299b4d520ce08f2552993b02d3cc1b10350f0fb68ea24874dbb9ccfe92  work/ITS/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile' | sha256sum -c -
+      - name: Independently recompute exact S1 continuous five-climate phylo source-cohort slopes and S2 overlap
+        run: |
+          python -m analysis.v4.s1_continuous_t2_t3_primary_bridge \
+            --original251 work/S1/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --genbank-its109-tree work/ITS/S1_SOURCE_GENBANK_NUCLEAR_ITS_ML.treefile \
+            --out work/out/S1_CONTINUOUS_ONLY_S1_S2_T2_T3_PRIMARY_RESULT.json
+      - name: Validate real source coverage, no botanical U D, and prospective T3 block
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/out/S1_CONTINUOUS_ONLY_S1_S2_T2_T3_PRIMARY_RESULT.json')
+          d=json.loads(p.read_text())
+          assert d['endpoint']=='orientation_image_vertical_angle'
+          assert d['never_botanical_U_D']
+          assert d['U_D_flora_codes_not_used_in_any_inference']
+          assert d['S1_frozen_original_model']['n_original_native_images']==170066
+          assert d['T2_real_ITS_gene_tree_continuous_source']['n_gene_tree_taxa']==109
+          assert d['T2_real_ITS_gene_tree_continuous_source']['n_original_S1_photo_observations_covered']==162146
+          assert d['T2_real_ITS_gene_tree_continuous_source']['source_BIO12_wettest_quartile_n']==63
+          assert d['T2_real_ITS_gene_tree_continuous_source']['ITS_taxa_of_wettest_quartile_n']==16
+          assert d['T2_real_ITS_gene_tree_continuous_source']['ITS_internal_supported_nodes']==17
+          assert set(d['S2_same_continuous_endpoint']['species'])=={'Cirsium arvense','Cirsium vulgare'}
+          assert d['T3']['status']=='BLOCKED_NO_MEASURED_EXTERNAL_TRIBE_PHOTOS'
+          print('PASS_REAL_S1_ORIGINAL_CONTINUOUS_ONLY_NO_U_D_T2_SOURCE_AND_T3_BLOCK')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-primary-original-S1-continuous-photo-only-T2-ITS109-S2-T3
+          path: work/out/
+          if-no-files-found: warn
+          retention-days: 90
