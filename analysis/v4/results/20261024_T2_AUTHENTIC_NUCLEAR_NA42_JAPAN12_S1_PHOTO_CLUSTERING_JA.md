@@ -6,6 +6,8 @@
 
 [最新の真正核DNAによる元ソース再実行／GitHub Actions **#40061260105**](https://github.com/zuizui0223/azami/actions/runs/40061260105) **SUCCESS・5単体テスト成功・本物2樹のchecksum／元S1の全251原学名checksum・出力図/個別種CSV認証完了**。[解析コード](../t2_s1_continuous_genuine_nuclear_two_tree_clustering.py)／[テスト](../../../tests/test_v4_t2_s1_continuous_genuine_nuclear_two_tree_clustering.py)／[再現ワークフロー](../../../.github/workflows/v4-t2-S1-real-NA-Japan-multilocus-nuclear-angle-clustering.yml)。
 
+[5つの主要数値とソースダイジェストを固定したマシン可読サマリー](20261024_T2_AUTHENTIC_NUCLEAR_S1_CONTINUOUS_CLUSTERING_VERIFIED.json)。
+
 原データは[元全251実測写真角度](https://github.com/zuizui0223/azami/actions/runs/39769949628)（**170,066元画像・244受容キー、251原学名**）で、当該公開元CSV SHA256 `47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1` と照合。
 
 ### 検証対象
