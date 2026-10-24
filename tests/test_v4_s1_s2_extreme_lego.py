@@ -102,7 +102,7 @@ class ExtremeAndLego(unittest.TestCase):
         dataframe=pd.DataFrame({
             'obs_id':[str(i) for i in range(n)],
             'user_id':[str(i) for i in range(n)],
-            'observed_on':['2024-05-01' if i%2 else '2025-06-01' for i in range(n)],
+            'observed_on':[f'{2023+(i//12)%3}-{1+i%12:02d}-15' for i in range(n)],
             'latitude':np.linspace(-65,65,n),
             'longitude':np.linspace(-175,175,n),
         })
