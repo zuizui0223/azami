@@ -153,3 +153,62 @@ This retains the core v3 result (scale-dependent integration) and uses the
 existing colour and form measurements rather than treating their non-significant
 individual climate slopes as failed data. It does not imply adaptation,
 genetic/developmental modularity or physical trait measurement accuracy.
+
+
+## Executed first-stage results — 2026-10-24 (new, exploratory)
+
+**GitHub Actions succeeded**: run `40055211966`, job `120756591327`,
+artifact `12544872267` (`ch1-multitrait-climate-conditional-40055211966`);
+artifact ZIP SHA-256
+`155bf1bc7734829b543309f50666d37ec4b030503d758d312d3de44a8648df39`.
+Input archive hashes, independent unit tests and exact reconstitution of all
+36 baseline raw RV rows passed.
+
+The first three environmental PCs explain **62.04%** of the weighted within-taxon
+nine-predictor variance and **82.82%** of the among-taxon nine-predictor
+variance. These are distinct scales and distinct PC bases.
+
+| Diagnostic | Before climate PC adjustment | After 3-PC adjustment |
+|---|---:|---:|
+| median within RV | 0.002238 | 0.002286 |
+| median among RV | 0.043212 | 0.045955 |
+| pairs stronger among (raw RV, descriptive only) | 33/36 | 34/36 |
+| median stronger-among count from equal-n resampling | 23/36 (older estimator audit) | 24/36 (500 new replicates) |
+| median among-minus-within matched-n RV difference | +0.019316 (older audit) | **+0.021654** |
+| 95% equal-n resampling range of difference | +0.001884 to +0.030352 | **+0.002326 to +0.033197** |
+
+In the new adjustment, **98.2%** of matched-n resamples have a positive median
+among-minus-within difference. These are Monte Carlo resampling *distributions
+conditional on the fixed taxa and among-taxon medians*, not inferential
+confidence intervals for a new population of taxa or independent confirmations.
+
+Three high-difference examples after environmental adjustment:
+
+| Pair | within adjusted RV | among adjusted RV | matched-n difference median |
+|---|---:|---:|---:|
+| presentation angle × head elongation | 0.002414 | 0.365192 | +0.351387 |
+| floral chroma × projection prominence | 0.000328 | 0.311041 | +0.296904 |
+| floral lightness × floral hue | 0.181528 | 0.485623 | +0.291583 |
+
+Exception:
+projection prominence × projection pattern has adjusted within RV
+**0.351340** and among RV **0.067699**, matched-n difference median
+**-0.273725**.
+
+**Safe interpretation:** The qualitative tendency for stronger among-taxon
+visible-trait integration is not eliminated by this particular linear,
+three-PC shared-climate adjustment, after matching the number of rows at the
+two scales. The contrasting bract-projection relation persists. Neither
+the 34/36 count nor the selected-pair magnitudes are confirmatory effect
+tests. Residual RV can change in magnitude simply by changing marginal
+variances; do not describe a larger post-adjustment RV as "climate makes
+integration stronger."
+
+**Unresolved:** no BIO18 or elevation in these inputs; no geographic/phylogenetic
+joint correction; no image-viewing-angle/colour-error correction;
+no inference that the remaining associations are adaptive strategies.
+The three-PC dimensional choice itself needs a sensitivity comparison
+(e.g. 2 and 4 PCs) before Main promotion.
+
+Source: [Actions run 40055211966](https://github.com/zuizui0223/azami/actions/runs/40055211966)
+and archived output artifact 12544872267.
