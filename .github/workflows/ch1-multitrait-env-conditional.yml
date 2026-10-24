@@ -64,13 +64,29 @@ jobs:
           test -s work/multitrait/results/multitrait_pairwise_conditional.csv
           python -m json.tool work/multitrait/results/multitrait_conditional_report.json >/dev/null
 
+      - name: Test sensitivity to environmental PC rank (2 and 4)
+        run: |
+          set -euo pipefail
+          for pc in 2 4; do
+            python -m analysis.v3.run_multitrait_environment_conditional \
+              --traits work/multitrait/input/universe/continuous_trait_universe_observation_long.csv \
+              --environment work/multitrait/input/process_environment/strict_spatial_chelsa_process.csv \
+              --reference-pairs reproducibility/current_reference/upgrade/complete18_construct_pairwise.csv \
+              --out-dir "work/multitrait/results/pc$pc" \
+              --environment-pcs "$pc" \
+              --matched-replicates 500 \
+              --seed 20261024 > "work/multitrait/results/pc$pc.log"
+            python -m json.tool "work/multitrait/results/pc$pc/multitrait_conditional_report.json" >/dev/null
+            cat "work/multitrait/results/pc$pc/multitrait_conditional_report.json"
+          done
+
       - name: Upload post-hoc numerical results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ch1-multitrait-climate-conditional-${{ github.run_id }}
           path: |
-            work/multitrait/results/*
+            work/multitrait/results/**
             work/multitrait/report.log
           if-no-files-found: warn
           retention-days: 30
