@@ -35,6 +35,12 @@ class ExtremeAndLego(unittest.TestCase):
         selection=lego.outcome_blind_set(d,lego.SCENARIOS["warmest_quarter_BIO18"])
         self.assertEqual(selection["status"],"SELECTED")
         self.assertIn("chelsa_bio18",selection["selected"])
+        reduced=lego.outcome_blind_set(
+            d,lego.SCENARIOS["warmest_quarter_BIO18_hot_BIO05_elevation_reduced"])
+        self.assertEqual(reduced["status"],"SELECTED")
+        self.assertEqual(reduced["selected"],
+                         ["chelsa_bio18","chelsa_bio05",
+                          "chelsa_rsds_mean","topo_elevation"])
         self.assertNotIn("chelsa_bio12",selection["selected"])
         d["chelsa_bio18"]=d["chelsa_bio12"].copy()
         checks=lego.all_diagnostics(d,lego.ALL_ENV)
