@@ -1,0 +1,137 @@
+name: V4 S1 S2 22 measured traits genuine nuclear branch four climates
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/s1s2_multitrait_branch_core.py'
+      - 'analysis/v4/run_s1s2_multitrait_nuclear_branch.py'
+      - 'tests/test_v4_s1s2_multitrait_branch_core.py'
+      - '.github/workflows/v4-s1s2-multitrait-true-nuclear-branch-four.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: v4-s1s2-multitrait-nuclear-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  genuine-nuclear-multitrait-original-pixels:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source-authenticated S1/S2 trait and climate dependencies
+        run: |
+          python -m pip install -r reproducibility/requirements-current.txt \
+            'cryptography>=46,<49' 'rasterio>=1.4,<2' \
+            'requests>=2.32,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
+      - name: Test 22/5 registry, circular hue, BM ancestry, honest nulls, internal edges and family error control
+        run: |
+          python -m pytest -q tests/test_v4_s1s2_multitrait_branch_core.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from analysis.v4.s1s2_multitrait_branch_core import selection_registry,tests_from_registry
+          original=json.loads(Path('analysis/v4/trait27_functional_crosswalk_v1.json').read_text())
+          selected=selection_registry(original)
+          tests=tests_from_registry(selected)
+          assert len(selected['measured'])==22 and len(selected['unmeasured'])==5
+          assert len(selected['technical_only'])==4
+          assert 'block:corolla_hue_circular' in tests
+          assert 'endpoint:involucre_surface_specular_fraction' not in tests
+          print('PASS_ACTUAL_27_TRAIT_CONTRACT_SOURCE_AND_22_MEASURED_5_UNMEASURED')
+          PY
+      - name: Restore original 313350 georeferenced wild-native observation measures privately
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/multi/private work/multi/receipt work/multi/decoded work/multi/source251 work/multi/four work/multi/rasters work/multi/out
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/multi/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/multi/receipt
+          python - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/multi')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+              sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          assert hashlib.sha256(clear).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(clear)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/multi/private/observations.csv.gz \
+            --receipt work/multi/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/multi/decoded
+      - name: Rehydrate independently frozen 251 original species-name and 4-site physical climate cohorts
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq .digest)" = \
+            'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12548594169 --jq .digest)" = \
+            'sha256:8b19d76a695f3773d54885c637fcf7ed52445f615e9dae8501305a40e05327f5'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/multi/source251
+          gh run download 40064998009 --repo zuizui0223/azami \
+            --name v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation --dir work/multi/four
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/multi/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+          echo '823ecb8442eb03598253cb33f3e16bac86538c6c2652f48ca2dc0886d0e19626  work/multi/four/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv' | sha256sum -c -
+      - name: Download exact original BIO18 BIO5 DEM public physical rasters
+        run: |
+          python -m analysis.v4.s1_s2_real_bio18_bio05_rsds_elevation \
+            --stage download --source-root work/multi/rasters
+          echo '90078d99eeb0b08dd1a115a5ffa60b7c19e5849686854db950283cbac9d3817d  work/multi/rasters/CHELSA_bio05_1981-2010_V.2.1.tif' | sha256sum -c -
+          echo '68b0b1cb905cdf6972364e947e137f714a68d287f38863b1516161a2a4bbd7ec  work/multi/rasters/CHELSA_bio18_1981-2010_V.2.1.tif' | sha256sum -c -
+          echo '1d57ce9fd3584cea6a227396bc75ef88522fd5346e8487c17370885c0499716e  work/multi/rasters/wc2.1_30s_elev.tif' | sha256sum -c -
+      - name: Run actual 22-trait source-specific four climate tests on separate NA42 and Japan12 genuine nuclear trees
+        run: |
+          python -m analysis.v4.run_s1s2_multitrait_nuclear_branch \
+            --decoded-native work/multi/decoded/observations.csv.gz \
+            --s1-source251 work/multi/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --s1-four251 work/multi/four/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv \
+            --registry analysis/v4/trait27_functional_crosswalk_v1.json \
+            --raster-root work/multi/rasters \
+            --permutations 999 \
+            --out work/multi/out/S1S2_MULTITRAIT_REAL_NUCLEAR_BRANCH_FOUR_CLIMATE.json
+          git rev-parse HEAD > work/multi/out/EXACT_EXECUTION_COMMIT.txt
+      - name: Fail closed on original 169020 S1 mismatch or fabricated botanical trait claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/multi/out/S1S2_MULTITRAIT_REAL_NUCLEAR_BRANCH_FOUR_CLIMATE.json')
+          a=json.loads(p.read_text())
+          assert a['n_registered_image_endpoints']==27 and a['n_measured_image_endpoints']==22
+          assert a['n_technical_only_not_ecological']==4
+          assert a['S1_S2_same_pixel_angle_reproduction']['four_pixel_complete']==169020
+          assert a['NA_and_Japan_never_joined_into_invented_global_tree']
+          assert a['no_hue_double_testing'] and a['no_photo_angle_thresholded_as_botanical_U_D']
+          assert a['S2_introduced_extension'].startswith('NOT_TESTED_')
+          assert len(a['nuclear_single_and_multivariate_tests'])>0
+          assert all(x['status'].startswith(('STOP_','COMPUTED_')) for x in a['nuclear_single_and_multivariate_tests'])
+          assert not any(x in p.read_text() for x in ('"obs_id"','"latitude"','"longitude"','"user_id"','"photographer_id"'))
+          print('PASS_SOURCE_VERIFIED_S1_S2_22_TRAIT_TRUE_NUCLEAR_NO_INVENTED_TRANSITIONS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-S1S2-22trait-authentic-NA42-Japan12-nuclear-4climate
+          path: work/multi/out/
+          retention-days: 90
+          if-no-files-found: warn
