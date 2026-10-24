@@ -60,9 +60,9 @@ the following annual vs seasonal comparisons.
 | Pairs with among-RV > within-RV, raw estimator | **21/28** | **23/28** | **23/28** |
 | Median within-taxon RV | 0.003481 | 0.003459 | 0.003386 |
 | Median among-taxon RV | 0.022713 | 0.019054 | 0.021316 |
-| Median equal-n among-minus-within RV, n=taxa matched | archived prior audit only | **+0.010230** | **+0.012460** |
-| Equal-n 500-resampling 2.5–97.5% range | — | **+0.000296 to +0.015383** | **+0.002511 to +0.017690** |
-| Median equal-n count with stronger among | — | **19/28** | **19/28** |
+| Median equal-n among-minus-within RV, n=taxa matched | **+0.014037** | **+0.010230** | **+0.012460** |
+| Equal-n 500-resampling 2.5–97.5% range | **+0.003826 to +0.019002** | **+0.000296 to +0.015383** | **+0.002511 to +0.017690** |
+| Median equal-n count with stronger among | **19/28** | **19/28** | **19/28** |
 
 Do not report the raw 21/28 or 23/28 as a sample-size-independent
 statistical success rate. The equal-n ranges conditional on original
