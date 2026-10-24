@@ -6,6 +6,8 @@ on:
       - 'analysis/v4/s1_s2_extreme_environment.py'
       - 'analysis/v4/s1_s2_extreme_lego.py'
       - 'analysis/v4/s1_s2_vif5_si10_alltraits.py'
+      - 'analysis/v4/s1_s2_four_model_compare.py'
+      - 'tests/test_v4_four_model_comparison.py'
       - 'tests/test_v4_s1_s2_vif5_si10_alltraits.py'
       - 'analysis/v4/s1_s2_lego_triple.py'
       - 'analysis/v4/s1_s2_bract_lego.py'
@@ -45,8 +47,8 @@ jobs:
 
       - name: Compile and run source-free tests
         run: |
-          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_vif5_si10_alltraits.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py analysis/v4/s1_s2_bract_lego.py analysis/v4/lego_module_label_null.py analysis/v4/s1_s2_multiplicity_audit.py
-          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py tests/test_v4_s1_s2_bract_lego.py tests/test_v4_lego_module_label_null.py tests/test_v4_s1_s2_multiplicity_audit.py tests/test_v4_s1_s2_vif5_si10_alltraits.py
+          python -m py_compile analysis/v4/s1_s2_extreme_environment.py analysis/v4/s1_s2_extreme_lego.py analysis/v4/s1_s2_vif5_si10_alltraits.py analysis/v4/s1_s2_four_model_compare.py analysis/v4/s1_s2_lego_triple.py analysis/v4/s1_s2_lego_three_way.py analysis/v4/s1_s2_bract_lego.py analysis/v4/lego_module_label_null.py analysis/v4/s1_s2_multiplicity_audit.py
+          python -m pytest -q tests/test_v4_s1_s2_extreme_lego.py tests/test_v4_s1_s2_lego_triple.py tests/test_v4_s1_s2_bract_lego.py tests/test_v4_lego_module_label_null.py tests/test_v4_s1_s2_multiplicity_audit.py tests/test_v4_s1_s2_vif5_si10_alltraits.py tests/test_v4_four_model_comparison.py
 
       - name: Recover original encrypted V4 S1 measurements and receipt
         env:
@@ -204,9 +206,9 @@ jobs:
           from pathlib import Path
           from analysis.v4.s1_s2_vif5_si10_alltraits import MAIN, SI
           data=json.loads(Path(
-              'work/extreme/public/V4_S1_S2_vif5_main_vif10_SI_alltraits.json'
+              'work/extreme/public/V4_S1_S2_four_vs_vif5_vif10_alltraits.json'
           ).read_text())
-          assert data['status']=='SOURCE_VERIFIED_S1_S2_MAIN_SI_ALL_AVAILABLE_PHENOTYPES'
+          assert data['status']=='SOURCE_VERIFIED_S1_S2_FOUR_MODELS_ALL_AVAILABLE_PHENOTYPES'
           assert len(data['S1']['joint_8_constructs_28_pairs']['raw_pairs'])==28
           assert len(data['S1']['bract_to_all_8_constructs'][
               'bridges_to_all_eight_original_constructs'])==8
@@ -215,13 +217,39 @@ jobs:
           assert set(data['selection']['selection']['si_vif10']['retained'])==set(SI)
           assert data['selection']['fixed_model_set_diagnostics']['main_vif5']['max_vif']<=5
           assert data['selection']['fixed_model_set_diagnostics']['si_vif10']['max_vif']<=10
-          assert len(data['multiplicity'])==4
+          assert len(data['multiplicity'])==8
+          assert set(data['S1']['joint_8_constructs_28_pairs']['models'])=={
+             'four_bio12','four_bio18','main_vif5','si_vif10'}
+          for m in ('four_bio12','four_bio18'):
+              assert not data['selection']['fixed_model_set_diagnostics'][m]['selected_by_vifstep']
           print({'S1':data['S1']['original_native_n'],
                  'S2':data['S2']['original_wild_source_n'],
                  'bract_status':data['S2']['optional_bract_source']['status'],
                  'hypothesis_families':{
                    k:{'tested':v['n_tests'],'holm':v['n_Holm']}
                    for k,v in data['multiplicity'].items()}},flush=True)
+          PY
+
+      - name: Compare original four-variable annual/warm with VIFstep5 and VIFstep10 corrected and uncorrected
+        run: |
+          python -m analysis.v4.s1_s2_four_model_compare \
+            --aggregate work/extreme/public/V4_S1_S2_four_vs_vif5_vif10_alltraits.json \
+            --out work/extreme/public
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/extreme/public/V4_S1_S2_four_model_comparison.json').read_text())
+          assert d['status']=='VERIFIED_FOUR_MODEL_CORRECTED_VS_UNCORRECTED'
+          assert len(d['counts'])==8
+          assert set(d['model_predictors'])=={
+              'four_bio12','four_bio18','main_vif5','si_vif10'}
+          for level, n in [('S1',(80,80,100,140)),('S2',(128,128,160,224))]:
+              for model, expected in zip(d['model_order'], n):
+                  row=d['counts'][level+'/'+model]
+                  assert row['tested']==expected,(level,model,row)
+                  assert 0<=row['Holm']<=row['BH']<=row['raw']<=row['tested']
+          print({'corrected_vs_raw':{key:[v['raw'],v['BH'],v['Holm']]
+                                    for key,v in d['counts'].items()}},flush=True)
           PY
 
       - name: Exact 280-permutation registered visible-module label reference
