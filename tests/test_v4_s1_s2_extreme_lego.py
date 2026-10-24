@@ -5,6 +5,7 @@ import pandas as pd
 from analysis.v4 import s1_s2_extreme_environment as source
 from analysis.v4 import s1_s2_extreme_lego as lego
 from analysis.v4 import s1_s2_lego_three_way as triple
+from analysis.v4 import s1_s2_extreme_range_models as ranges
 
 
 class ExtremeAndLego(unittest.TestCase):
@@ -94,6 +95,30 @@ class ExtremeAndLego(unittest.TestCase):
         self.assertEqual(out['taxa_eligible'],20)
         self.assertTrue(out['not_a_test_of_genetic_resource_co_retention'])
         self.assertEqual(len(out['observed_taxon_equal_state_fraction']),8)
+
+    def test_real_s2_model_balancing_and_collinearity_stop(self):
+        rng=np.random.default_rng(444)
+        n=360
+        dataframe=pd.DataFrame({
+            'obs_id':[str(i) for i in range(n)],
+            'user_id':[str(i) for i in range(n)],
+            'observed_on':['2024-05-01' if i%2 else '2025-06-01' for i in range(n)],
+            'latitude':np.linspace(-65,65,n),
+            'longitude':np.linspace(-175,175,n),
+        })
+        for name in lego.ALL_ENV:
+            dataframe[name]=rng.normal(size=n)
+        dataframe['orientation_image_vertical_angle']=60+10*dataframe['chelsa_bio12']+rng.normal(size=n)
+        frame=ranges._get_dated_balanced(dataframe)
+        self.assertGreaterEqual(frame._cell.nunique(),15)
+        result=ranges.model_one(frame,'orientation_image_vertical_angle',
+                      ranges.S2_MODELS['annual_BIO12'])
+        self.assertEqual(result['status'],'EXPLORATORY_OBSERVED_S2_CLIMATE_GRADIENT')
+        self.assertGreater(result['hydric_coefficient_per_sample_SD'],0)
+        frame['chelsa_bio18']=frame['chelsa_bio12']
+        stopped=ranges.model_one(frame,'orientation_image_vertical_angle',
+                      ['chelsa_bio12','chelsa_bio18','chelsa_rsds_mean'])
+        self.assertEqual(stopped['status'],'UNRESOLVED_S2_CLIMATE_COLLINEARITY')
 
     def test_s2_nonindependent_range_climate_only(self):
         rows=[]
