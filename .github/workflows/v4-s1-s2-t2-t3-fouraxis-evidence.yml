@@ -1,0 +1,76 @@
+name: V4 scientific S1 S2 T2 T3 four-axis source-to-test synthesis
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/s1_s2_t2_t3_four_axis_ecology_bridge.py'
+      - 'tests/test_v4_s1_s2_t2_t3_four_axis_ecology_bridge.py'
+      - '.github/workflows/v4-s1-s2-t2-t3-fouraxis-evidence.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  same-variable-same-measurement-multiple-levels:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test one scientific question and immutable evidence paths
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests/test_v4_s1_s2_t2_t3_four_axis_ecology_bridge.py
+      - name: Recover and verify four independently executed source analyses without rerunning photo extraction
+        run: |
+          set -euo pipefail
+          mkdir -p work/S1S2 work/T2 work/TCOVER work/T3 work/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12548594169 --jq .digest)" = 'sha256:8b19d76a695f3773d54885c637fcf7ed52445f615e9dae8501305a40e05327f5'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12549022986 --jq .digest)" = 'sha256:07c56cf4aa9b2aba89678ceecc0c4fb65e3f2b2ba951dff5f7347abbac765b5f'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12549626250 --jq .digest)" = 'sha256:6cc7ffb1dce15e6fa44eb4f9fefd98ca2fbbbcf56dda2b4d39ba1c433c2589d9'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12549069699 --jq .digest)" = 'sha256:ea1d3039f23f4a8c610e94480e0ae32af44604b9ba62c9ca523e7acd786a34dc'
+          gh run download 40064998009 --repo zuizui0223/azami \
+            --name v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation --dir work/S1S2
+          gh run download 40065528345 --repo zuizui0223/azami \
+            --name v4-t2-real-NA42-Japan12-S1-BIO18-BIO5-RSDS-elev-PGLS-PIC --dir work/T2
+          gh run download 40066587489 --repo zuizui0223/azami \
+            --name v4-t2-original-S1-BIO18-missing-wet-true-nuclear-tips --dir work/TCOVER
+          gh run download 40066319064 --repo zuizui0223/azami \
+            --name v4-t3-all131-real-other-tribe-public-photo-four-original-climates --dir work/T3
+      - name: Synthesize S1 S2 T2 T3 BIO18 / BIO5 / RSDS / elevation without changing underlying estimands
+        run: |
+          python -m analysis.v4.s1_s2_t2_t3_four_axis_ecology_bridge \
+            --s1-s2 work/S1S2/S1_S2_ORIGINAL_FOUR_CLIMATE_REAL_RESULTS.json \
+            --t2 work/T2/T2_REAL_NUCLEAR_4AXIS_S1_ANGLE_PGLS_PIC.json \
+            --t2-gap work/TCOVER/T2_S1_REAL_BIO18_NUCLEAR_WET_QUARTILE_SOURCE_BIAS.json \
+            --t3 work/T3/T3_OTHER_TRIBE_131_TRUE_DNA_TAXA_PUBLIC_IMAGES_FOUR_CLIMATES.json \
+            --out work/out/S1_S2_T2_T3_SOURCE_AUTHENTIC_FOUR_AXIS_ECOLOGICAL_TRAJECTORY.json
+          git rev-parse HEAD > work/out/BRIDGE_SOURCE_CODE_COMMIT.txt
+      - name: Scientific results must not promote nonrepeat/candidate to confirmed independent adaptive evolution
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("work/out/S1_S2_T2_T3_SOURCE_AUTHENTIC_FOUR_AXIS_ECOLOGICAL_TRAJECTORY.json").read_text())
+          assert r["S1_between_species"]["positive_pattern_supported_by_S1_source"]
+          assert r["T2_true_multilocus_nuclear_two_disjoint_geographic_panels"]["n_true_nuclear_top_quartile_missing"]==55
+          assert r["T3_independent_other_tribe_four_climate_photo_feasibility"]["n_photo_records_with_all4_original_environment_pixels"]==720
+          assert r["T3_independent_other_tribe_four_climate_photo_feasibility"]["measured_S1_equivalent_0_180_head_angles"]==0
+          assert not r["T3_independent_other_tribe_four_climate_photo_feasibility"]["trait_environment_cross_tribe_replication_estimated"]
+          assert r["ecological_boundary"]["do_not_claim_independent_BIO18_clade_recurrence"]
+          assert r["ecological_boundary"]["do_not_infer_independent_genetic_adaptation_or_nodding"]
+          assert all(x["no_S2_photo_BIO18_positive_effect_confirmed"] for x in r["S2_two_species_introduction_gradient"]["species"].values())
+          print("PASS_REAL_FOUR_STAGE_S1_S2_T2_T3_ECOLOGICAL_CONTINUUM_NO_FALSE_REPLICATION")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-S1-S2-T2-T3-real-fouraxis-ecological-continuum
+          path: work/out/
+          retention-days: 90
+          if-no-files-found: warn
