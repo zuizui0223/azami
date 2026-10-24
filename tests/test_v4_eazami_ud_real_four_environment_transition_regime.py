@@ -30,3 +30,14 @@ def test_synthetic_true_eazami_signed_branch_direction(monkeypatch):
     assert np.allclose(vector,np.array([.6,1.2,1.8,2.4]))
     assert changes==.5
     assert q==.12
+
+
+def test_old_bio1_bio15_effect_replay_is_not_part_of_new_four_axis_objective():
+    # The upstream EAzami algorithm is imported for CTMC edge probabilities,
+    # but the frozen old numeric effect must not gate this user's new question.
+    import inspect
+    assert not hasattr(m,"original_method_reproduction")
+    assert "args.eazami_legacy" not in inspect.getsource(m.execute)
+    assert "chelsa_bio01" not in inspect.getsource(m.sample_four_axes)
+    assert "chelsa_bio15" not in inspect.getsource(m.sample_four_axes)
+    assert "chelsa_bio18" in inspect.getsource(m.sample_four_axes)
