@@ -1,0 +1,47 @@
+name: V4 S1 S2 BIO18 BIO5 RSDS elevation original source preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/s1_s2_bio18_bio05_rsds_elevation_source_preflight.py'
+      - 'tests/test_v4_s1_s2_bio18_bio05_rsds_elevation_source_preflight.py'
+      - '.github/workflows/v4-s1-s2-bio18-bio5-rsds-elevation-preflight.yml'
+permissions:
+  contents: read
+jobs:
+  remote-raster-source-provenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install authenticated HTTP source probe and tests
+        run: python -m pip install 'requests>=2.31,<3' 'pytest>=8,<10'
+      - name: Test physical variable source registry without phenotype results
+        run: python -m pytest -q tests/test_v4_s1_s2_bio18_bio05_rsds_elevation_source_preflight.py
+      - name: Probe bounded remote CHELSA BIO18/BIO05 and WorldClim 30s elevation ranges
+        run: |
+          python -m analysis.v4.s1_s2_bio18_bio05_rsds_elevation_source_preflight \
+            --out work/out/S1_S2_BIO18_BIO5_RSDS_ELEVATION_PREFLIGHT.json
+      - name: Fail-closed data-preservation check
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/out/S1_S2_BIO18_BIO5_RSDS_ELEVATION_PREFLIGHT.json').read_text())
+          assert d['not_biological_result']
+          assert d['no_S1_S2_private_photo_locations_fetched']
+          assert d['not_old_BIO1_BIO15_relabeled']
+          assert set(d['sources'])=={'chelsa_bio05','chelsa_bio18','elevation_worldclim'}
+          print('Verified variable-level original-source preflight; no fictitious S1/S2 effects')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-s1-s2-source-BIO18-BIO5-RSDS-elevation-provenance
+          path: work/out/
+          retention-days: 90
+          if-no-files-found: warn
