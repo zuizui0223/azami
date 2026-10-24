@@ -1,5 +1,8 @@
 # V4 T2・T3の新しい主線：S1連続画像角度のみ（2026-10-24）
 
+> **2026-10-24 実データ再計算完走：** [S1の同じ連続画像角度だけで元251名・GenBank ITS109・S2を統合した結果](results/20261024_S1_CONTINUOUS_ONLY_REAL_SOURCE_REANALYSIS_JA.md)。[GitHub Actions #40056635774](https://github.com/zuizui0223/azami/actions/runs/40056635774) SUCCESS／8テスト。全251のBIO12画像角度係数**+0.4037°/100mm**（95%CI +0.0926～+0.7147）、ITS109では**+0.2506**（−0.2693～+0.7704）。**文献U/Dを使わず**、S1とS2の元画像重複を認証。T3の異連写真は同方法未計測につき明示的にBLOCKED。
+
+
 > **ACTIVE SCIENTIFIC DECISION — replaces the earlier U/D-flora primary path.** 文献記述の erect/nodding をT2/T3の主要応答にも、対象種を選ぶ条件にも、系統遷移の推定形質にも使用しない。以前のU/D資料・分析は出所履歴として保持するだけで、この研究の主検定・主図・主結論に持ち込まない。S1/S2とV3の凍結ファイルを改変しない。
 
 ## 現在の一つの科学的問い
