@@ -182,7 +182,7 @@ jobs:
           assert d['S1']['native_original_population']==313350
           assert d['S2']['source_wild_two_species_observations']==297622
           assert len(d['S1']['raw_28_pairs'])==28
-          assert len(d['S1']['scenario_results'])==9
+          assert len(d['S1']['scenario_results'])==11
           assert not d['limits']['molecular_Lego_functional_resource_test']
           print('Exact V4 S1/S2 sources, nine scenarios and 28 edges verified')
           PY
