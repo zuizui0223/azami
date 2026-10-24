@@ -108,9 +108,11 @@ class MainSiTraitAnalysisTest(unittest.TestCase):
 
     def test_family_corresponds_to_all_coordinates_not_only_angle(self):
         effects=[{"environment":"chelsa_bio01","scale":"within_taxon",
-                  "status":"ESTIMATED","beta_std":.3,"p_uncorrected":.001},
+                  "status":"ESTIMATED","beta_std":.3,"p_uncorrected":.001,
+                  "ci95_wald":[.20,.40]},
                  {"environment":"chelsa_bio05","scale":"between_equal_taxa",
-                  "status":"ESTIMATED","beta_std":.1,"p_uncorrected":.3}]
+                  "status":"ESTIMATED","beta_std":.1,"p_uncorrected":.3,
+                  "ci95_wald":[-.09,.29]}]
         fitted={"status":"ESTIMATED","trait_cohort_vif_pass":True,
                 "n":123,"component_effects":{"bract_projection_p95":effects}}
         s1={"bract_projection":{"status":"SOURCE_LINKED",
