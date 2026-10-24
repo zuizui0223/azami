@@ -58,3 +58,7 @@ def test_finite_8_tip_panel_yields_not_ancient_direction_event_count():
 def test_fails_unsupported_too_few_tip_permutations():
     with pytest.raises(ValueError,match="Insufficient"):
         w.evaluate_panel({},[],[],19,20261024)
+
+def test_same_original_source_taxon_matching_must_be_97_not_two_independent_species_samples():
+    assert w.stable_seed("shared97")==w.stable_seed("shared97")
+    assert w.FOUR[0]=="chelsa_bio18"

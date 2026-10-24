@@ -220,7 +220,9 @@ def analyse(s1,climate,ITS,*,tree_provider=None,nperm=999,scenario_limit=52):
     if len(its_clean)!=105:raise ValueError("Unambiguous real ITS 105 source labels changed")
     world=original_sets["world_collision_free191"]
     world10=[x for x in world if int(by[x]["n_photo_complete_four_axis"])>=10]
-    if len(world10)!=143:raise ValueError("World photo >=10 per taxon cohort changed")
+    common97=sorted(set(world)&set(its_clean))
+    if len(world10)!=143 or len(common97)!=97:
+        raise ValueError("World photo >=10 or matched genuine ITS 97 cohort changed")
     panels={
       "world191_original_52_grafted_placement_scenarios":
         evaluate_panel(by,world,original_trees[:scenario_limit],nperm,stable_seed("world191")),
@@ -229,7 +231,11 @@ def analyse(s1,climate,ITS,*,tree_provider=None,nperm=999,scenario_limit=52):
       "world143_photo_min10_placement_sensitivity":
         evaluate_panel(by,world10,original_trees[:scenario_limit],nperm,stable_seed("world143")),
       "real_genbank_nuclear_ITS105_multicopy_gene_tree":
-        evaluate_panel(by,its_clean,[("GenBank_ITS_midpoint",its)],nperm,stable_seed("its105"))
+        evaluate_panel(by,its_clean,[("GenBank_ITS_midpoint",its)],nperm,stable_seed("its105")),
+      "matched97_global52_grafted_placements":
+        evaluate_panel(by,common97,original_trees[:scenario_limit],nperm,stable_seed("shared97")),
+      "matched97_real_GenBank_ITS_gene_tree":
+        evaluate_panel(by,common97,[("GenBank_ITS_midpoint",its)],nperm,stable_seed("shared97"))
     }
     return {"schema":"AZAMI_WORLD_S1_BM_EAZAMI_STYLE_FOUR_AXIS_BRANCH_TRAIT_ENV_NICHE_20261024_V1",
       "status":"WORLD_SOURCE_CONTINUOUS_PHOTO_ANGLE_BROWNIAN_BRANCH_NULL_COMPUTED_NOT_TRUE_U_D",
@@ -241,6 +247,7 @@ def analyse(s1,climate,ITS,*,tree_provider=None,nperm=999,scenario_limit=52):
       "world_source_names_photo_at_least10":143,
       "real_ITS_gene_tree_source_names":109,
       "real_ITS_gene_tree_source_names_alias_clean":105,
+      "same_original_world_placement_and_ITS_strict_taxa":len(common97),
       "exposures":list(FOUR),
       "positive_direction_for_focal_BIO18_fixed_from_original_S1_species_signal":True,
       "no_posthoc_favourable_signs_for_BIO05_RSDS_elevation":True,
