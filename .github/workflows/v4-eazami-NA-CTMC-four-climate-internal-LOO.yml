@@ -1,0 +1,94 @@
+name: V4 EAzami NA true nuclear CTMC BIO18 internal edges all nodding LOO
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/v4-native-integration-workflow]
+    paths:
+      - 'analysis/v4/t2_na_eazami_original_ctmc_internal_nodding_LOO.py'
+      - 'tests/test_v4_t2_na_eazami_original_ctmc_internal_nodding_LOO.py'
+      - '.github/workflows/v4-eazami-NA-CTMC-four-climate-internal-LOO.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  exact-NA-nuclear-internal-branch-and-every-D-tip-LOO:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install EAzami original nuclear-biology statistical environment
+        run: |
+          python -m pip install 'numpy>=1.26,<3' 'scipy>=1.11,<2' \
+            'biopython>=1.83,<2' 'pandas>=2.1,<3' 'requests>=2.31,<3' pytest
+      - name: Assert baseline, D taxon cardinalities and four S1/S2 environmental axes
+        run: python -m pytest -q tests/test_v4_t2_na_eazami_original_ctmc_internal_nodding_LOO.py
+      - name: Restore exact original S1 photo and four-source climatic measured species, plus confirmed published NA U D CTMC
+        run: |
+          set -euo pipefail
+          mkdir -p work/NA/source251 work/NA/four work/NA/upstream work/NA/old work/NA/out
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12421842342 --jq '.digest')" = 'sha256:2b3fff23a280341c81c2d9c95fc2b99c55ccd22458b530f3d4b7e3c451ebe57d'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12548594169 --jq '.digest')" = 'sha256:8b19d76a695f3773d54885c637fcf7ed52445f615e9dae8501305a40e05327f5'
+          test "$(gh api repos/zuizui0223/azami/actions/artifacts/12554411255 --jq '.digest')" = 'sha256:10423505472ac2142a5e7cb0af36edff0cadfaf83a20ec5d3f8f0eec30cf31ac'
+          gh run download 39769949628 --repo zuizui0223/azami \
+            --name v4-t2-S1-all251-original-source-name-resolved --dir work/NA/source251
+          gh run download 40064998009 --repo zuizui0223/azami \
+            --name v4-real-original-S1-S2-BIO18-BIO5-RSDS-elevation --dir work/NA/four
+          gh run download 40078460538 --repo zuizui0223/azami \
+            --name v4-EAzami-NA42-NA40-original-author-U-D-true-nuclear-four-axes-exact-maps \
+            --dir work/NA/old
+          echo '47b32972b20564ade163907ef6fdf3eb2a69f8b42c8d87b8cf4ea75ca1682dc1  work/NA/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv' | sha256sum -c -
+          echo '823ecb8442eb03598253cb33f3e16bac86538c6c2652f48ca2dc0886d0e19626  work/NA/four/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv' | sha256sum -c -
+          echo 'c97756b6806128aefdca7d09701474c7d21c0bd4ffd6afb9ce27f68369ecba03  work/NA/old/EAzami_NA42_NA40_INDEPENDENT_TRUE_NUCLEAR_CTMC_NEW_FOUR_CLIMATE.json' | sha256sum -c -
+      - name: Recover EAzami original symmetrical CTMC and Brownian method source by commit and Git blob
+        run: |
+          curl -fsSL --retry 3 --max-time 45 \
+            https://raw.githubusercontent.com/zuizui0223/EAzami/c9870e91604ed1514344ddc8f765eae5237dbf27/analysis/run_chapter2_orientation_transition_regime_hypothesis_v1.py \
+            > work/NA/upstream/original_EAzami_CTMC.py
+          python - <<'PY'
+          from analysis.v4.eazami_ud_real_four_environment_transition_regime import blob,EA_CORE_GIT_BLOB
+          from pathlib import Path
+          assert blob(Path("work/NA/upstream/original_EAzami_CTMC.py").read_bytes())==EA_CORE_GIT_BLOB
+          print("EAzami_ORIGINAL_SOURCE_DIRECTLY_VERIFIED")
+          PY
+      - name: Test original EAzami internal-edge-only normalization and three leave-one-D-taxon panels with ALL exact state maps
+        run: |
+          python -m analysis.v4.t2_na_eazami_original_ctmc_internal_nodding_LOO \
+            --original251 work/NA/source251/S1_ALL_251_SOURCE_NAME_BY_ACCEPTED_KEY_MEASUREMENTS.csv \
+            --newfour251 work/NA/four/S1_ORIGINAL_251_TAXON_MEAN_NEW_BIO18_BIO05_RSDS_ELEVATION.csv \
+            --EAzami-method work/NA/upstream/original_EAzami_CTMC.py \
+            --NA42-baseline work/NA/old/EAzami_NA42_NA40_INDEPENDENT_TRUE_NUCLEAR_CTMC_NEW_FOUR_CLIMATE.json \
+            --out work/NA/out/T2_NA42_BIO18_EAzami_CTMC_EVERY_D_LOO_AND_INTERNAL_EDGES.json
+          git rev-parse HEAD > work/NA/out/SOURCE_COMMIT.txt
+      - name: Validate all observed original maps included and transition-edge sensitivity supported without photo angle dichotomization
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("work/NA/out/T2_NA42_BIO18_EAzami_CTMC_EVERY_D_LOO_AND_INTERNAL_EDGES.json").read_text())
+          assert d["no_S1_photo_angle_dichotomization"]
+          assert len(d["all_original_D_species_exhaustively_one_by_one_deleted"])==3
+          assert len(d["tests"])==4
+          for name,row in d["tests"].items():
+              assert row["observed_map_exhaustively_present_once"]
+              assert row["refit_EAzami_q_for_each_state_map"]
+              assert row["S1_camera_angle_NOT_classified_as_U_D"]
+              assert row["species"]==(42 if name=="NA42_only_internal_edges" else 41)
+              assert row["n_exact_count_preserving_configurations"]==(11480 if name=="NA42_only_internal_edges" else 820)
+              assert 0<row["scores_and_finite_map_ranks"]["chelsa_bio18"]["BIO18_positive_one_sided_exact_fraction"]<=1
+          print("PASS_EAZAMI_INTERNAL_ONLY_AND_EXHAUSTIVE_THREE_NODDING_TAXON_LOO")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v4-NA42-EAzami-author-UD-4climate-internal-only-allD-LOO-exact
+          path: work/NA/out/
+          retention-days: 90
+          if-no-files-found: warn
