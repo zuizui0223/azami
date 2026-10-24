@@ -59,14 +59,26 @@ def _formula(frame,columns):
     month=frame["_month"].to_numpy(float)
     year=frame["_year"].to_numpy(float)
     ystd=year.std()
-    nuisance=np.column_stack([
-        np.sin(2*np.pi*month/12),
-        np.cos(2*np.pi*month/12),
-        (year-year.mean())/ystd if ystd>0 else np.zeros(len(year))])
-    design=np.column_stack([np.ones(len(x)),z,nuisance])
+    # Month and year can be exactly confounded in sparsely sampled ranges.
+    # Preserve all scientific climate terms; retain nuisance columns only
+    # when they add an independent direction to the design.
+    nuisance=[
+        ("month_sin",np.sin(2*np.pi*month/12)),
+        ("month_cos",np.cos(2*np.pi*month/12)),
+        ("year",(year-year.mean())/ystd if ystd>0 else np.zeros(len(year)))]
+    design=np.column_stack([np.ones(len(x)),z])
     if np.linalg.matrix_rank(design)<design.shape[1]:
-        raise ValueError("S2_DESIGN_RANK_DEFICIENT")
-    return design,means,std
+        raise ValueError("S2_CLIMATE_DESIGN_RANK_DEFICIENT")
+    selected=[]
+    skipped=[]
+    for name,term in nuisance:
+        trial=np.column_stack([design,term])
+        if np.linalg.matrix_rank(trial)>design.shape[1]:
+            design=trial
+            selected.append(name)
+        else:
+            skipped.append(name)
+    return design,means,std,selected,skipped
 
 
 def model_one(frame,outcome,variables):
@@ -82,7 +94,7 @@ def model_one(frame,outcome,variables):
         return {"status":"UNRESOLVED_S2_CLIMATE_COLLINEARITY",
                 "n":len(frame),"diagnostic":coldiagnostic}
     try:
-        design,means,std=_formula(frame,variables)
+        design,means,std,nuisance_retained,nuisance_collinear=_formula(frame,variables)
     except (ValueError,np.linalg.LinAlgError) as exc:
         return {"status":"S2_EXPOSURE_OR_DATE_DESIGN_NOT_IDENTIFIABLE",
                 "reason":str(exc)[:160],"n":len(frame),
@@ -107,7 +119,9 @@ def model_one(frame,outcome,variables):
             "hydric_cluster_se_per_SD":float(fit.bse[1]),
             "hydric_cluster_p_uncorrected":float(fit.pvalues[1]),
             "AIC_same_matched_range_rows":float(fit.aic),
-            "seasonal_month_sin_cos_and_year_adjusted":True,
+            "temporal_nuisance_retained":nuisance_retained,
+            "temporal_nuisance_omitted_as_collinear":nuisance_collinear,
+            "seasonal_month_sin_cos_and_year_adjusted":len(nuisance_retained)==3,
             "5degree_cell_cluster_robust_not_spatial_causal":True}
 
 
