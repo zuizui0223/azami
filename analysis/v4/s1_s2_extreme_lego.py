@@ -394,9 +394,13 @@ def analyse_s1(native):
     require(common.accepted_key.nunique()>=MIN_PAIR_TAXA,
             "INSUFFICIENT_JOINT_TRAIT_CLIMATE_COHORT")
     diagnostics=all_diagnostics(native,ALL_ENV)
+    # One outcome-blind original environment support for ALL model choices;
+    # otherwise candidate selection would silently change species/cells.
+    env_only_complete=np.isfinite(native[ALL_ENV].to_numpy(float)).all(axis=1)
+    climate_selection_source=native.loc[env_only_complete,["accepted_key",*ALL_ENV]]
     outcome_blind={}
     for name,scenario in SCENARIOS.items():
-        outcome_blind[name]=outcome_blind_set(native[["accepted_key",*ALL_ENV]],scenario)
+        outcome_blind[name]=outcome_blind_set(climate_selection_source,scenario)
     vals=standardize_traits(common)
     # aza3 LEGO-inspired observable three-way configuration audit.
     # This is a phenotype test, never a functional genomic G123 inventory.
@@ -484,10 +488,14 @@ def aggregate_s2(focal):
                                  "q95":float(np.quantile(arr,.95)) if len(arr) else None}
             measured={col:int(pd.to_numeric(g[col],errors="coerce").notna().sum())
                       for col in FEATURE_COLS if col in g.columns}
+            env_complete=g.loc[np.isfinite(g[ALL_ENV].to_numpy(float)).all(axis=1)]
             output[state]={"observations":len(g),
                            "observers":int(g.user_id.nunique()),
                            "climate":variables,
-                           "trait_coverage":measured}
+                           "trait_coverage":measured,
+                           "complete_original_12_exposure_rows":len(env_complete),
+                           "expanded_environment_VIF":diagnostic_matrix(
+                               env_complete, ALL_ENV)}
             available=[k for k in MODULE_NAMES
                        if all(c in g.columns for c in FEATURES[k])]
             paired=[]
