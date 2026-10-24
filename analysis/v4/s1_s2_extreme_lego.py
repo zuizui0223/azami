@@ -453,6 +453,8 @@ def analyse_s1(native):
           "trait_environment_component_gradients":gradients,
           "warning":"No individual pair is a genetic module or an independent evolutionary transition; raw RV has sample-size/dimensionality bias."
         }
+    from analysis.v4.s1_s2_bract_lego import evaluate as evaluate_bract_candidate
+    bract_candidate=evaluate_bract_candidate(native,ALL_ENV,outcome_blind)
     return {
       "native_original_population":COHORT_ORIGINAL_S1,
       "all_eight_trait_before_climate_n":len(trait_only),
@@ -464,6 +466,7 @@ def analyse_s1(native):
       "all_12_predictor_collinearity":diagnostics,
       "selection_by_scenario":outcome_blind,
       "raw_28_pairs":original,
+      "source_linked_candidate_protective_envelope_LEGO":bract_candidate,
       "raw_within_and_among_three_domain_configurations":raw_triad_scale,
       "raw_three_way_phenotype":raw_three_way,
       "scenario_results":model_results
