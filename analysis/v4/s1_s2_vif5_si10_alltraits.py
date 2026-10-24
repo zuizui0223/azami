@@ -1,8 +1,8 @@
-"""V4 S1/S2 source-verified main VIF5 + SI VIF10: every measured phenotype.
+"""V4 S1/S2 source-verified 4-var annual/warm vs VIF5/VIF10: all phenotypes.
 
-Main: 5 outcome-blind VIFstep survivors across three native environmental
-levels and four focal taxon/range environmental populations.
-SI: repeat VIFstep at 10, retaining RSDS and BIO13 (7 variables).
+Compare two registered 4-variable rainfall models, the 5-variable VIFstep5
+and 7-variable VIFstep10 source-blind sets. Raw p, BH and Holm in parallel.
+Both 4-variable models are *not* outcome-blind VIFstep selections.
 The original 12-variable source is held constant. All actual head traits,
 including two LIMITED image-derived bract proxies, are fitted as available.
 No per-observation identifiers, photographers or coordinates are released.
@@ -44,8 +44,16 @@ BR = ("bract_projection_p95", "bract_spread_fraction")
 MAIN = ("chelsa_bio01", "chelsa_bio05", "chelsa_bio14",
         "chelsa_bio18", "topo_elevation")
 SI = (*MAIN, "chelsa_rsds_mean", "chelsa_bio13")
-SPEC = OrderedDict((("main_vif5", MAIN), ("si_vif10", SI)))
-LIMITS = {"main_vif5": 5., "si_vif10": 10.}
+FOUR_ANNUAL = ("chelsa_bio12", "chelsa_bio05",
+               "chelsa_rsds_mean", "topo_elevation")
+FOUR_WARM = ("chelsa_bio18", "chelsa_bio05",
+             "chelsa_rsds_mean", "topo_elevation")
+SPEC = OrderedDict((("four_bio12", FOUR_ANNUAL),
+                    ("four_bio18", FOUR_WARM),
+                    ("main_vif5", MAIN), ("si_vif10", SI)))
+LIMITS = {"four_bio12": 5., "four_bio18": 5.,
+          "main_vif5": 5., "si_vif10": 10.}
+VIFSTEP_NAMES = {"main_vif5", "si_vif10"}
 ENDPOINTS = list(dict.fromkeys(FEATURE_COLS + list(BR)))
 SEED = 20261024
 
@@ -110,10 +118,16 @@ def source_vif(native, focal):
         vv = {key: vif_for(v, variables) for key, v in combined.items()}
         m = max((value, key, col) for key, row in vv.items()
                 for col, value in row.items())
-        require(m[0] <= LIMITS[name] + 1.e-6,
-                "PRESPECIFIED_ENVIRONMENT_VIF_EXCEEDS_LIMIT")
+        if name in VIFSTEP_NAMES:
+            require(m[0] <= LIMITS[name] + 1.e-6,
+                    "VIFSTEP_SELECTED_SET_EXCEEDS_SOURCE_THRESHOLD")
+        # The BIO12 four-variable comparison is deliberately retained even
+        # when C. arvense/introduced source VIF is slightly above 5.
+        # This is NOT a VIFstep-selected model; report that failure explicitly.
         receipt["fixed_model_set_diagnostics"][name] = {
-            "columns": list(variables), "cutoff": LIMITS[name],
+            "columns": list(variables), "diagnostic_vif_cutoff": LIMITS[name],
+            "selected_by_vifstep": name in VIFSTEP_NAMES,
+            "source_vif_pass": bool(m[0] <= LIMITS[name]+1.e-6),
             "max_vif": m[0], "max_vif_context": m[1],
             "max_vif_variable": m[2],
             "per_context_vif": vv}
@@ -498,12 +512,18 @@ def family_corrections(s1, s2):
                 if model.get("status")!="ESTIMATED":
                     continue
                 for col, effects in model.get("component_effects",{}).items():
+                    # Biological colour hue is one 2-dimensional trait.
+                    # Retain individual sin/cos estimates in component_effects,
+                    # but never double-count them alongside the joint 2df test.
+                    if col in ("corolla_hue_sin","corolla_hue_cos"):
+                        continue
                     for v in effects:
                         if v["status"]=="ESTIMATED" and np.isfinite(v["p_uncorrected"]):
                             rows.append({"group":label,"coordinate":col,
                                          "environment":v["environment"],"scale":v["scale"],
                                          "p_original":v["p_uncorrected"],
                                          "beta_std":v["beta_std"],
+                                         "ci95_wald":v["ci95_wald"],
                                          "n":int(model.get("n",entry.get("balanced_n",0))),
                                          "trait_cohort_vif_pass":bool(
                                              model["trait_cohort_vif_pass"]),
@@ -514,6 +534,7 @@ def family_corrections(s1, s2):
                                      "environment":v["environment"],"scale":v["scale"],
                                      "p_original":v["p_uncorrected"],
                                      "beta_std":None,
+                                     "ci95_wald":None,
                                      "n":int(model.get("n",entry.get("balanced_n",0))),
                                      "trait_cohort_vif_pass":bool(
                                          model["trait_cohort_vif_pass"]),
@@ -526,17 +547,25 @@ def family_corrections(s1, s2):
                 for row,pbh,pholm in zip(rows,adj_bh,adj_holm):
                     row["p_BH"] = float(pbh)
                     row["p_Holm"] = float(pholm)
+                    row["raw_lt_0_05"] = bool(row["p_original"]<.05)
                     row["BH_lt_0_05"] = bool(pbh<.05)
                     row["Holm_lt_0_05"] = bool(pholm<.05)
             families[layer+"/"+spec] = {
                 "status":"COMPLETE_NEW_EXPLORATORY_HYPOTHESIS_FAMILY",
                 "n_tests":len(rows),
+                "n_unadjusted":sum(x["raw_lt_0_05"] for x in rows),
                 "n_BH":sum(x["BH_lt_0_05"] for x in rows),
                 "n_Holm":sum(x["Holm_lt_0_05"] for x in rows),
+                "n_raw_with_model_VIF_pass":sum(
+                    x["raw_lt_0_05"] and x["trait_cohort_vif_pass"] for x in rows),
+                "n_BH_with_model_VIF_pass":sum(
+                    x["BH_lt_0_05"] and x["trait_cohort_vif_pass"] for x in rows),
                 "n_Holm_with_model_VIF_pass":sum(
                     x["Holm_lt_0_05"] and x["trait_cohort_vif_pass"] for x in rows),
                 "rows":rows,
-                "hue_interpretation": "Only joint sin/cos tests are biological hue tests."}
+                "hue_interpretation": "Only joint sin/cos 2df hue tests count; individual sin/cos estimates preserved solely as diagnostics.",
+                "family_scope": "one V4 layer and one model: all eligible actual biological constructs, all environmental terms, both S1 scales if applicable",
+                "q_values_per_model_not_joint_correction_for_selecting_the_best_of_4_models": True}
     return families
 
 
@@ -564,8 +593,8 @@ def main():
     bract=s1_bract_edges(native)
     s2=s2_trait_blocks(focal,bract_receipt)
     families=family_corrections(s1,s2)
-    output={"analysis_id":"azami_v4_s1_s2_vif5_main_vif10_SI_all_observed_traits_20261024",
-            "status":"SOURCE_VERIFIED_S1_S2_MAIN_SI_ALL_AVAILABLE_PHENOTYPES",
+    output={"analysis_id":"azami_v4_s1_s2_four_bio12_bio18_vs_vifstep5_vifstep10_alltraits_20261024",
+            "status":"SOURCE_VERIFIED_S1_S2_FOUR_MODELS_ALL_AVAILABLE_PHENOTYPES",
             "V4_NOT_V3":True,"selection":selection,
             "S1": {"original_native_n":len(native),"traits":s1,
                    "joint_8_constructs_28_pairs":joint,
@@ -574,6 +603,15 @@ def main():
                    "optional_bract_source":bract_receipt,
                    "strata":s2},
             "multiplicity":families,
+            "analysis_plan":{
+                "four_bio12": "BIO12 + BIO05 + RSDS + elevation; registered non-VIFstep sensitivity",
+                "four_bio18": "BIO18 + BIO05 + RSDS + elevation; registered non-VIFstep sensitivity",
+                "main_vif5": "source-only stepwise max-VIF cutoff 5 from 12 candidate predictors",
+                "si_vif10": "source-only stepwise max-VIF cutoff 10 from same candidates",
+                "cohorts": "all12-complete source with outcome-specific QC, identical per biological trait across four models",
+                "inferential_contrasts": "unadjusted p, BH q and Holm p side by side for distinct biological endpoint tests; 95% pointwise Wald CI",
+                "corrected_results_not_precondition_for_reporting": True,
+            },
             "interpretation_boundaries":{
                 "all_P_exploratory_and_spatial_phylogeny_unresolved":True,
                 "image_orientation_not_gravity_calibrated":True,
@@ -583,15 +621,17 @@ def main():
                 "joint_circular_hue_reported_separately":True,
                 "no_heritable_genomic_LEGO_or_fitness_test":True},
             "no_public_observation_identifiers_coordinates_or_photographers":True}
-    path=args.out_public/"V4_S1_S2_vif5_main_vif10_SI_alltraits.json"
+    path=args.out_public/"V4_S1_S2_four_vs_vif5_vif10_alltraits.json"
     path.write_text(json.dumps(output,ensure_ascii=False,allow_nan=False,indent=2)+"\n",
                     encoding="utf-8")
     print(json.dumps({"status":output["status"],
+       "four_bio12":list(FOUR_ANNUAL),"four_bio18":list(FOUR_WARM),
        "vif5":list(MAIN),"vif10":list(SI),
        "source_S1":len(native),"source_S2":len(focal),
        "S1_trait_blocks":{k:v["status"] for k,v in s1.items()},
        "S1_common":joint["n"],"S2_strata":list(s2),
-       "hypothesis_family":{k:{"n":v["n_tests"],"holm":v["n_Holm"]}
+       "hypothesis_family":{k:{"n":v["n_tests"],"raw":v["n_unadjusted"],
+                                    "BH":v["n_BH"],"holm":v["n_Holm"]}
                             for k,v in families.items()}},
        ensure_ascii=False),flush=True)
 
