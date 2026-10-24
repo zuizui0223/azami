@@ -81,7 +81,12 @@ def model_one(frame,outcome,variables):
        max(coldiagnostic["vif"].values())>5:
         return {"status":"UNRESOLVED_S2_CLIMATE_COLLINEARITY",
                 "n":len(frame),"diagnostic":coldiagnostic}
-    design,means,std=_formula(frame,variables)
+    try:
+        design,means,std=_formula(frame,variables)
+    except (ValueError,np.linalg.LinAlgError) as exc:
+        return {"status":"S2_EXPOSURE_OR_DATE_DESIGN_NOT_IDENTIFIABLE",
+                "reason":str(exc)[:160],"n":len(frame),
+                "cells":int(frame._cell.nunique())}
     y=frame[outcome].to_numpy(float)
     if not np.isfinite(y).all() or y.std()<1e-12:
         return {"status":"INVALID_OR_CONSTANT_S2_TRAIT_VALUE","n":len(frame)}
