@@ -23,7 +23,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import requests
-import rasterio
 from scipy import stats
 
 BIO5_URL="https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/bioclim/bio05/1981-2010/CHELSA_bio05_1981-2010_V.2.1.tif"
@@ -106,6 +105,7 @@ def fetch_all(root):
 
 def raster_sample(srcpath,lat,lon):
     """Pixel-exact sampling; unique original grid cells group source observations."""
+    import rasterio
     from rasterio.transform import rowcol
     with rasterio.open(srcpath) as src:
         if src.crs is None or src.crs.to_epsg()!=4326 or src.count!=1:
