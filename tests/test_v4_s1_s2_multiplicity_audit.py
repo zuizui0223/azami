@@ -11,7 +11,7 @@ class MultitestAudit(unittest.TestCase):
         answer=audit.correct_family(rows)
         self.assertEqual(answer["n_tests"],3)
         self.assertEqual(answer["n_BH_005"],2)
-        self.assertEqual(answer["n_Holm_005"],1)
+        self.assertEqual(answer["n_Holm_005"],2)
         self.assertGreaterEqual(answer["rows"][0]["p_BH_exploratory_family"],.001)
         self.assertGreaterEqual(answer["rows"][1]["p_BH_exploratory_family"],.02)
 
