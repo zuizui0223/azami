@@ -37,13 +37,14 @@ def get_range(session,url):
             cr=r.headers.get("Content-Range","")
             cl=r.headers.get("Content-Length")
             evidence=r.raw.read(32) if status in (200,206) else b""
-            tiff=evidence[:4] in (b"II*\0",b"MM\0*")
+            tiff=evidence[:4] in (b"II*\0",b"MM\0*",b"II+\0",b"MM\0+")
             zip_file=evidence.startswith(b"PK\x03\x04")
             partial=status==206 and cr.startswith("bytes 0-")
             return {"url":url,"status_code":status,"content_type":ctype,
                 "content_range":cr,"content_length":cl,
                 "range_206_verified":partial,
                 "first_bytes_TIFF_header":tiff,
+                "first_eight_bytes_hex":evidence[:8].hex(),
                 "first_bytes_ZIP_header":zip_file,
                 "seconds":round(time.monotonic()-begin,2),
                 "ready_to_consider_GDAL_remote_range":
