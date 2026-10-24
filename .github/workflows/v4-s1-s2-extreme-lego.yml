@@ -113,6 +113,47 @@ jobs:
           print({'measurement_rows':len(table),'measurement_columns':list(table.columns)})
           PY
 
+      - name: Restore original S2 five-CHELSA source-pixel caches and join same original observations
+        run: |
+          set -euo pipefail
+          mkdir -p work/extreme/cache
+          while read -r variable id sha; do
+            target="work/extreme/cache/chelsa_$variable"
+            mkdir -p "$target"
+            gh api "repos/zuizui0223/azami/actions/artifacts/$id/zip" > "work/extreme/private/cache-$variable.zip"
+            echo "$sha  work/extreme/private/cache-$variable.zip" | sha256sum -c -
+            unzip -q "work/extreme/private/cache-$variable.zip" -d "$target"
+            rm "work/extreme/private/cache-$variable.zip"
+          done <<'CACHE'
+          bio01 12243016948 0e3b83ebfb7de1865662cde2c2c2395fa7737460996e66354f87391f8f0867ab
+          bio04 12241949860 dac232683b2a72b9c4f62eab0f341be7927e5e3287a29dbf3a162b893c2307e3
+          bio12 12242703088 71e7edeb0d4c0042e973ed97672a1593bef98a608c917792006e22722e288ada
+          bio15 12242508971 9f255a7c756fc83a5dd81e6c13d8fee63c53698d93bffb65ae13288e4eebb445
+          rsds_mean 12242917323 2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4
+          CACHE
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          from analysis.v4.native_cached_climate import (
+              physical_climate_for_focal, VARIABLES)
+          source=Path("work/extreme/private/focal_wild.csv.gz")
+          focus=pd.read_csv(source,dtype={"obs_id":str},low_memory=False)
+          if len(focus)!=297622 or not focus.obs_id.is_unique:
+              raise ValueError("V4_S2_FOCAL_IDENTITY_CHANGED")
+          values,receipt=physical_climate_for_focal(
+              focus,Path("work/extreme/cache"),
+              Path("analysis/v4/environment_source_metadata.json"))
+          for name in VARIABLES:
+              focus[name]=values[name]
+          if len(focus)!=297622 or not set(VARIABLES)<=set(focus):
+              raise ValueError("S2_FIVE_CLIMATE_MISSING_AFTER_REAL_PIXEL_JOIN")
+          focus.to_csv("work/extreme/private/focal_wild_climate.csv.gz",
+                       index=False,compression="gzip")
+          print({"S2_source_observations":len(focus),
+                 "source_pixel_climate_coverage":{v:receipt[v]["n_finite"] for v in VARIABLES},
+                 "original_S2_rows_private":True})
+          PY
+
       - name: Sample new true CHELSA BIO5 BIO6 BIO13 BIO14 BIO17 BIO18 and WorldClim elevation
         run: |
           python -m analysis.v4.s1_s2_extreme_environment \
@@ -126,7 +167,7 @@ jobs:
         run: |
           python -m analysis.v4.s1_s2_extreme_lego \
             --native work/extreme/decoded/observations.csv.gz \
-            --focal work/extreme/private/focal_wild.csv.gz \
+            --focal work/extreme/private/focal_wild_climate.csv.gz \
             --environment-ext work/extreme/private/environment_ext.csv.gz \
             --s2-measurements work/extreme/private/s2_measured.csv.gz \
             --out-public work/extreme/public
