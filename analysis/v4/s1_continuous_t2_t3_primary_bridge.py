@@ -24,7 +24,15 @@ import numpy as np
 from analysis.v4.t2_s1_109_vs251_phylogenetic_sampling_explanation import (
     FIVE, EXPECTED_251_SHA256, EXPECTED_109_ML_SHA256, evaluate, read_source,
 )
-from analysis.v4.t2_s1_s2_multiniche_phylo_bridge import SOURCE_S1S2, SOURCE_S2
+# Read frozen receipts directly; the superseded botanical U/D module is not
+# a dependency of the S1 continuous-photo mainline.
+SOURCE_S1S2 = Path(
+    "analysis/v4/results/20261022_S1_S2_BETWEEN_WITHIN_NATIVE_INTRO_COUNTS_VERIFIED.json"
+)
+SOURCE_S2 = Path(
+    "analysis/v4/results/20261021_unified_abcde/"
+    "S2_NATIVE_INTRODUCED_CLIMATE_TRANSFER_20261021.json"
+)
 
 S2_FOCALS = ("Cirsium arvense", "Cirsium vulgare")
 ENDPOINT = "orientation_image_vertical_angle"
