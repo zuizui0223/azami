@@ -133,6 +133,11 @@ jobs:
           data=json.loads((root/"EAzami_S1S2_BIO18_BIO05_RSDS_ELEV_CTMC_BRANCHWISE_RESULTS.json").read_text())
           assert data["original_EAzami_frozen_H1_method"]["status"]=="ORIGINAL_EAZAMI_FROZEN_CTMC_BROWNIAN_REPRODUCED"
           assert data["original_EAzami_frozen_H1_method"]["n_original_occurrences"]==748
+          x=data["original_H1_BIO15up_BIO1down_recomputed_on_same_689_sites"]
+          assert x["original_n_Japan_Taiwan"]>600
+          assert x["n_original_4climate_complete_sites_entire_14_taxon_universe"]==689
+          assert x["matched_fourclimate_exact_rank"]["n_maps"]==792
+          assert x["old_data_are_biological_states_not_camera_head_angle"]
           assert data["frozen_panels_exact_maps"]["n5_primary"]["n_exact_state_maps"]==792
           assert data["frozen_panels_exact_maps"]["n3_sensitivity"]["n_exact_state_maps"]==1716
           assert data["frozen_panels_exact_maps"]["n10_strict_sensitivity"]["n_exact_state_maps"]==126
