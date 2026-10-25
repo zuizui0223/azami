@@ -7,6 +7,7 @@
 - [GEB_RESEARCH_ARTICLE_BLINDED.md](GEB_RESEARCH_ARTICLE_BLINDED.md) — a separately prepared identity-concealed text draft. Actual anonymous reviewer access, affiliations, title page and final journal formatting are **pending**.
 - [CLAIM_LEDGER_AND_SUBMISSION_GATES.md](CLAIM_LEDGER_AND_SUBMISSION_GATES.md) — each frozen estimate to its source and non-claims.
 - [GEB_SUBMISSION_CHECKLIST.md](GEB_SUBMISSION_CHECKLIST.md) — structure, required figures, full 208-test table and unresolved submission gates.
+- [S2 native/introduced colour-coefficient context](SI_S2_COLOUR_NATIVE_INTRO_FIXED_HOLM_CONTEXT.md) — three original introduced Holm-positive colour associations shown next to the corresponding native coefficients; no new model or rainfall-niche comparison.
 - [S1–S2 scope lock](SCOPE_LOCK_20261025_JA.md) — retain 24 October models, S1 macroecological results, three S2 introduced-stratum colour associations and phenotype covariance, without precipitation-niche comparisons.
 - [Deferred source-real S2 climate-niche exploration](../../legacy/v4_s2_precipitation_niche_20261025/README.md) — original exploratory results preserved outside the active article.
 

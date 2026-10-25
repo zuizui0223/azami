@@ -79,6 +79,23 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("s2_phenotype_domains",plotting)
         self.assertNotIn("s2_wet_quarter_occupancy",plotting)
 
+    def test_s2_colour_native_counterparts_are_inference_bounded(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blind)
+        self.assertIn("native coefficient (**+0.136883**)",article)
+        self.assertIn("Holm P of 0.102398",article)
+        self.assertIn("introduced coefficient (**+0.134504**)",article)
+        self.assertIn("a direct interaction test",article)
+        self.assertIn("without** comparing native–introduced rainfall niches",article)
+        si=(PAPER/"SI_S2_COLOUR_NATIVE_INTRO_FIXED_HOLM_CONTEXT.md").read_text(encoding="utf-8")
+        self.assertIn("22,936",si)
+        self.assertIn("17,335",si)
+        self.assertIn("0.017760",si)
+        self.assertIn("128 biological tests",si)
+        self.assertIn("not a new model",si)
+        self.assertTrue((PAPER/"verify_s2_frozen_colour_context.py").is_file())
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
