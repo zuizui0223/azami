@@ -46,6 +46,11 @@ def reconstruct(tree, tip_order, values, columns):
     variances=np.zeros_like(fitted)
     variances[free]=np.maximum(np.diag(inverse),0)[:,None]*rate
     se=np.sqrt(variances)
+    conditional_covariance=np.zeros((len(nodes),len(nodes)))
+    conditional_covariance[np.ix_(free,free)]=inverse
+    edge_scale=np.array([conditional_covariance[a,a]+conditional_covariance[b,b]-2*conditional_covariance[a,b] for a,b,_,_ in edges])
+    if np.min(edge_scale)<-1e-10:raise ValueError('Negative conditional edge variance')
+    edge_se=np.sqrt(np.maximum(edge_scale,0)[:,None]*rate)
     if not all(np.isfinite(v).all() for v in (fitted,se,rate)):
         raise ValueError('Nonfinite Brownian solution')
     descendants=[sorted(t.name for t in n.get_terminals()) for n in nodes]
@@ -71,5 +76,8 @@ def reconstruct(tree, tip_order, values, columns):
                  for i,n in enumerate(nodes)],
         'edges':[{'parent_id':ids[a],'child_id':ids[b],
                   'internal':not nodes[b].is_terminal(),'source_branch_length':length,
-                  'delta':record(fitted[b]-fitted[a])} for a,b,_,length in edges],
+                  'delta':record(delta[j]),'conditional_delta_se':record(edge_se[j]),
+                  'conditional_delta_lower_95':record(delta[j]-1.959963984540054*edge_se[j]),
+                  'conditional_delta_upper_95':record(delta[j]+1.959963984540054*edge_se[j])}
+                 for j,(a,b,_,length) in enumerate(edges)],
     }

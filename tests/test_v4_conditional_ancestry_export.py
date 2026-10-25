@@ -19,6 +19,16 @@ def test_star_analytic_mean_rate_uncertainty_and_tip_conservation():
     assert all(n['conditional_se']['angle']==0 for n in out['nodes'] if n['is_tip'])
     assert out['measurement_error_included'] is False
 
+def test_branch_intervals_use_parent_child_covariance():
+    tree=Phylo.read(StringIO('((T0:1,T1:1,T2:1,T3:1):1,(T4:1,T5:1,T6:1,T7:1):1);'),'newick')
+    out=m.reconstruct(tree,[f'T{i}' for i in range(8)],np.arange(8)[:,None],['x'])
+    # Internal precision [[2,-1,-1],[-1,5,0],[-1,0,5]] gives
+    # Var(root-child)/sigma2 = .625+.225-2*.125 = .6.
+    for edge in out['edges']:
+        if edge['internal']:
+            assert edge['conditional_delta_se']['x']**2==pytest.approx(.6*out['diffusion_rate']['x'])
+            assert edge['conditional_delta_lower_95']['x'] < edge['delta']['x'] < edge['conditional_delta_upper_95']['x']
+
 def test_exported_edges_match_frozen_branch_operator():
     tree=Phylo.read(StringIO('(((T0:1,T1:2):1,(T2:1,T3:1):2):1,((T4:1,T5:1):1,(T6:2,T7:1):1):1);'),'newick')
     names=[f'T{i}' for i in range(8)]; x=np.column_stack((np.arange(8),np.arange(8)**2))
