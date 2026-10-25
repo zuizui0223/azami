@@ -50,6 +50,35 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(value, freeze)
         self.assertTrue((V4 / "final_v4_bio18_holm_freeze.py").is_file())
 
+    def test_frozen_geb_scope_excludes_s2_niche(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blind)
+        self.assertIn("not a comparison of climatic niche occupancy",article)
+        self.assertIn("no native-versus-introduced climatic-niche analysis",article)
+        self.assertIn("photo",article.lower())
+        self.assertIn("24/28",article)
+        self.assertIn("0.0487/0.00532",article)
+        self.assertIn("**Figure 4.** Four original S2",article)
+        forbidden=("+48.2","270.4 versus 222.2","−0.172","0.448",
+                   "1.791","23/91","−1.03°","40166532404")
+        for item in forbidden:
+            self.assertNotIn(item,article)
+        for path in ("analysis/v4/s2_four_axis_joint_niche.py",
+                     "analysis/v4/s2_four_axis_source_recheck.py",
+                     "analysis/v4/S2_NATURAL_CONTRAST_BIO18_FOUR_AXIS_AUDIT_20261025.md",
+                     "analysis/v4/results/20261025_S2_FOUR_AXIS_SOURCE_VERIFIED_SUMMARY.json"):
+            self.assertFalse((ROOT/path).exists(),path)
+            self.assertTrue((ROOT/"legacy/v4_s2_precipitation_niche_20261025"/path).exists(),path)
+        self.assertFalse((PAPER/"s2_bio18_range_occupancy_summary.csv").exists())
+        self.assertTrue((ROOT/"legacy/v4_s2_precipitation_niche_20261025/manuscripts/v4_s1_s2_frozen_20261025/s2_bio18_range_occupancy_summary.csv").exists())
+        policy=(PAPER/"SCOPE_LOCK_20261025_JA.md").read_text(encoding="utf-8")
+        self.assertIn("2026-10-24",policy)
+        self.assertIn("降水ニッチ",policy)
+        plotting=(PAPER/"plot_frozen_summary.py").read_text(encoding="utf-8")
+        self.assertIn("s2_phenotype_domains",plotting)
+        self.assertNotIn("s2_wet_quarter_occupancy",plotting)
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
