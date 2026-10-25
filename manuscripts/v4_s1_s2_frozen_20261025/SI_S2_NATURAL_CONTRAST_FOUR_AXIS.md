@@ -21,13 +21,13 @@ The four original environmental axes are CHELSA BIO18 (**mean monthly precipitat
 
 **Spatial/photographer-balanced climate comparison:** only observations complete for all four predictors are eligible. First keep one original observation per photographer × 5°/sine-latitude approximately equal-area cell, then average retained observations within each occupied cell. Each occupied cell contributes equally to the species-range mean. Standardise the introduced-minus-native cell mean by the **native cell-mean SD** for each exposure. Resample the observed native and introduced cell means separately 399 times to display descriptive percentile ranges; these cells are **not independent evolutionary replicates**. Cell-varying climate availability is **not** modelled.
 
-**Descriptive four-dimensional multivariate contrast:** compute four-axis native-SD-standardised cell coordinates. Estimate their native-reference covariance and a 5%-trace ridge **in dimensionless units** before calculating a native-reference Mahalanobis centroid distance and an empirical native-95th-distance threshold. These are descriptive measures of observed climate positions only; this is **not** an accessible-environment-corrected claim of niche expansion, stability or unfilling. Multivariate values may be reported only from a passing unit-scaling-invariant source audit; first-run heterogeneous-unit ridge distances are invalid for comparison.
+**Descriptive four-dimensional multivariate contrast:** compute four-axis native-SD-standardised cell coordinates. Estimate their native-reference covariance and a 5%-trace ridge **in dimensionless units** before calculating a native-reference Mahalanobis centroid distance and an empirical native-95th-distance threshold. These are descriptive measures of observed climate positions only; this is **not** an accessible-environment-corrected claim of niche expansion, stability or unfilling. The **first source run** applied the covariance ridge on heterogeneous physical units and is superseded. The **corrected source rerun** standardises the four exposure coordinates by native-cell SD before covariance regularisation, with a regression test showing that changing the physical units cannot change the dimensionless distance or empirical outside-threshold fraction.
 
 **Photographic head-angle comparison:** select source photographs whose four environmental measurements fall inside a *rectangular intersection of the two ranges' marginal 5th–95th percentile intervals*; this is **not** a full four-dimensional nearest-neighbour match, counterfactual treatment assignment or controlled experiment. Deduplicate by photographer × spatial cell within native/introduced range. For each species, regress EXIF/image-vertical angle on range indicator, the four standardized climates, BIO18 × range and available photograph month (sine/cosine) and year. Weight spatial cells equally within native and introduced groups; use cell-clustered pointwise 95% intervals. Neither a null interaction nor an interval crossing zero is a test of equivalence.
 
 ## SI-S2.3. Actual source-real marginal and cell-weighted results
 
-Source execution: [Actions #40164655107](https://github.com/zuizui0223/azami/actions/runs/40164655107), artifact 12587614564, ZIP SHA-256 \`024c8c14e5f0ec4a4a767ed419dbf3f2ef30caaf8156953630c4e04914547934\`. Original frozen S1–S2 member SHAs remained unchanged. Source-script scientific outputs and JSON source IDs are under \`analysis/v4\`.
+The first source-real run was [Actions #40164655107](https://github.com/zuizui0223/azami/actions/runs/40164655107); its raw-unit ridge output is superseded. The corrected source-real 4D calculation passed [Actions #40166532404](https://github.com/zuizui0223/azami/actions/runs/40166532404), artifact **12588158569**, ZIP SHA-256 `1fcb9ff110f2c2d6bba6afc58b45d9a38f86cf919f989f354f82054a80cec121`, corrected JSON SHA-256 `800f2f5dc37d7156324a4756f372306c3f8b28cb00c88d683e86cd01c2c64063`. The replayed original aggregate JSON members had floating-point rounding differences from the original 24 October freeze (maximum absolute difference `9.93e-11`), but identical field structure, counts and Holm conclusions. No original four-variable primary science was changed.
 
 The four-environment-complete records were 78,060 native/68,397 introduced for *C. arvense*, and 61,800 native/70,653 introduced for *C. vulgare*. Equal-cell climate comparisons used 198/77 and 129/91 distinct occupied native/introduced cells respectively.
 
@@ -39,6 +39,15 @@ The four-environment-complete records were 78,060 native/68,397 introduced for *
 | Elevation | +115 m | +0.074 [−0.143, +0.302] | +74 m | +0.256 [−0.022, +0.574] |
 
 All four raw source-location median contrasts are positive. However, the BIO18 **cell-equal mean** contrast reverses in *C. arvense* while remaining strongly positive in *C. vulgare*. **Both the summary statistic and sampling weights change** between the raw median and cell-equal mean estimands; the discrepancy alone cannot be attributed solely to observer clustering. Neither species's historical introduction was an independent rainfall treatment.
+
+### Source-cell 4D climate novelty (unit-invariant descriptive sensitivity)
+
+| Indicator | *C. arvense* | *C. vulgare* |
+|---|---:|---:|
+| Native-SD-standardised regularised 4D centroid distance | **0.448** | **1.791** |
+| Introduced occupied cells exceeding native 95%-distance threshold | **1/77 (1.3%)** | **23/91 (25.3%)** |
+
+This is the prevalence of **observed** introduced cells beyond a native-reference climate-distance envelope. It is *not* an estimate of 25.3% genetically new ecological niche, nor climate-availability-corrected expansion/stability/unfilling.
 
 ## SI-S2.4. Camera-angle contrasts conditional on common climate envelope
 
@@ -62,7 +71,7 @@ Ecological niche shift frameworks explicitly separate **expansion, stability and
 
 ## Pending validation
 
-- Replace any pre-correction raw-unit 4D ridge outputs with source-reexecuted native-SD-standardised distances and source-certified artifact digest.
+- [Completed] Native-SD standardised unit-invariant 4D source rerun, original-vs-rerun numerical comparison and SHA-certified artifact; the earlier raw-unit ridge is superseded.
 - Environmental **availability/background** distributions and direction-agnostic niche novelty/stability/unfilling estimands.
 - Independent standardized photographic/gravity measurements and equivalence-margin design.
 - Photographic licensing/archival deposition; this appendix does not grant source redistribution.
