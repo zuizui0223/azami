@@ -1,0 +1,5 @@
+species,range_status,source_wild_observations,BIO18_n,BIO18_median_mm_per_month,BIO18_q05_mm_per_month,BIO18_q95_mm_per_month,source_artifact
+Cirsium arvense,native,78646,78646,222.2,147.1,356.7,12547876704
+Cirsium arvense,introduced,70964,70964,270.4,82.2,362.8,12547876704
+Cirsium vulgare,native,62368,62368,218.0,126.7,361.1,12547876704
+Cirsium vulgare,introduced,85644,85644,267.7,8.8,387.3,12547876704

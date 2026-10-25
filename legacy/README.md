@@ -1,16 +1,25 @@
-# Historical implementations
+# Legacy research versions
 
-Start current numerical reproduction at [the current runbook](../reproducibility/CURRENT_ANALYSIS.md), not here.
+Current S1–S2 GEB manuscript and four-variable BIO18 science are described in [root README](../README.md). These directories are preserved for provenance and historical reproduction, **not** promoted as present V4 results.
 
-- `ch1_global/v2/`: preserved image acquisition, detector development, categorical experiments, continuous measurements and numbered endpoint scripts. These are historical implementations, not additional current entry points. Their presence does not authorize new image acquisition or model training.
-- `v2/analysis/`: frozen endpoint-level analysis and recovery implementations.
-- `v2/figures/`: frozen endpoint-level figure builders, not the current construct-level figures.
-- `v2/ORIGINAL_REPRODUCTION.md`: original runbook for immutable revision `584af97b050d15701f26ce1facea212d5b648d4d`. Its commands apply to that checkout, before relocation.
-- `tests/`: historical tests whose target implementations had already been removed before this cleanup. Run them on their original revision, not as current tests.
-- `workflows/`: original per-stage Actions definitions; current execution is unified in `.github/workflows/reproduce-current-analysis.yml`.
+## V3 archival snapshot
 
-The current construct sensitivity chain explicitly imports two retained numerical implementations from `legacy.v2.analysis`: spatial sensitivity and historical-placement sensitivity. These are shared dependencies, not independent current paper entry points. Keeping their numerical implementation avoids changing the analysis during repository cleanup.
+- [`v3/README.md`](v3/README.md) lists the exact immutable pre-migration main revision and the old→archive path map.
+- `v3/analysis/v3/` contains all prior V3 biological-construct analytical scripts and their original scientific results.
+- `v3/reproducibility/` contains the V3 numerical runner, frozen public figures, release manifests and source receipts (including historical V2 reference illustrations).
+- `v3/workflows/active_as_of_20260928/` contains GitHub Actions previously active on main, including V3 publication steps; these are **deliberately disabled** on current main.
+- `v3/workflows/previously_archived/` contains the older per-stage V3 workflow definitions.
+- `v3/tests/` contains V3-specific tests and fixtures from the former active analysis.
 
-The complete old-to-new path mapping is [legacy_path_map.json](../reproducibility/legacy_path_map.json). Frozen results in `analysis_outputs/`, reference figures in `reproducibility/figures/`, artifact hashes, and immutable historical Git references are preserved. Historical receipts can legitimately contain pre-relocation paths; use the map to locate them in this checkout.
+Run historical V3 reproduction from pre-migration commit `b463dbc938e454baa54b2e480f7f1d8badd7795d` rather than assuming moved path imports work unchanged. File-tree moves preserve each original blob SHA.
 
-No historical statistical result, missing measurement or failed audit has been removed or promoted by this reorganization.
+## Earlier V2 files
+
+- `ch1_global/v2/`: early acquisition, detector development and continuous measurement scripts.
+- `v2/analysis/`: preserved frozen endpoint-level numerical methods and recovery.
+- `v2/figures/`: original v2 figure generation.
+- [`v2/ORIGINAL_REPRODUCTION.md`](v2/ORIGINAL_REPRODUCTION.md): replay instructions pinned to `584af97b050d15701f26ce1facea212d5b648d4d`.
+- `tests/`: already archived earlier test scripts unrelated to active V4.
+- `v3/reproducibility/legacy_path_map.json`: prior reorganization's path mapping.
+
+No archived result should be used in a V4 manuscript as if it belongs to the 24 October 2026 science freeze.

@@ -1,0 +1,67 @@
+name: GEB V4 S1-S2 frozen science and manuscript contract
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'README.md'
+      - 'analysis/v4/**'
+      - 'manuscripts/v4_s1_s2_frozen_20261025/**'
+      - 'legacy/v3/**'
+      - '.github/workflows/v4-geb-main-contract.yml'
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'analysis/v4/**'
+      - 'manuscripts/v4_s1_s2_frozen_20261025/**'
+      - 'legacy/v3/**'
+      - '.github/workflows/v4-geb-main-contract.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check journal abstract, locked numbers, archive and static sources
+        run: |
+          python -m unittest discover -s tests -p 'test_v4_geb_main_contract.py' -v
+          python -m py_compile analysis/v4/final_v4_bio18_holm_freeze.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/build_full_supplement.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_frozen_summary.py
+      - name: Recover SHA-256-fixed original aggregated results
+        run: |
+          set -euo pipefail
+          mkdir -p work/geb_v4
+          gh api repos/zuizui0223/azami/actions/artifacts/12547876704/zip > work/geb_v4/source.zip
+          echo '6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205  work/geb_v4/source.zip' | sha256sum -c -
+      - name: Revalidate four Holm claims and exact visible-module freeze
+        run: |
+          python -m analysis.v4.final_v4_bio18_holm_freeze --artifact-zip work/geb_v4/source.zip --output work/geb_v4/freeze_check.json
+          python -m json.tool work/geb_v4/freeze_check.json > /dev/null
+      - name: Regenerate full 208-test and 28-pair Supporting Information
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'matplotlib>=3.8,<4'
+          python manuscripts/v4_s1_s2_frozen_20261025/build_full_supplement.py --artifact work/geb_v4/source.zip --out work/geb_v4/si
+          test $(($(wc -l < work/geb_v4/si/Table_S1_full_208_BIO18_tests.csv)-1)) -eq 208
+          test $(($(wc -l < work/geb_v4/si/Table_S2_all_28_RV_pairs.csv)-1)) -eq 28
+          python manuscripts/v4_s1_s2_frozen_20261025/plot_frozen_summary.py --output-dir work/geb_v4/figures
+      - name: Save verified aggregate tables, not private source records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: geb-v4-source-check-${{ github.run_id }}
+          path: |
+            work/geb_v4/freeze_check.json
+            work/geb_v4/si/**
+            work/geb_v4/figures/**
+          retention-days: 30
+          if-no-files-found: warn

@@ -1,0 +1,62 @@
+name: Final V4 BIO18 Holm phenotype LEGO freeze audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'analysis/v4/final_v4_bio18_holm_freeze.py'
+      - 'analysis/v4/FINAL_V4_BIO18_HOLM_LEGO_FREEZE_20261024_JA.md'
+      - '.github/workflows/v4-final-bio18-holm-freeze.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  pinned-final-v4-science:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate the frozen audit code and its Holm implementation
+        run: |
+          set -euo pipefail
+          python -m py_compile analysis/v4/final_v4_bio18_holm_freeze.py
+          python - <<'PY'
+          from analysis.v4.final_v4_bio18_holm_freeze import holm
+          p=[.01,.04,.003,.8]
+          ans=holm(p)
+          assert all(abs(a-b)<1e-12 for a,b in zip(ans,[.03,.08,.012,.8])),(p,ans)
+          assert holm([])==[]
+          print('INDEPENDENT_HOLM_STEPDOWN_OK')
+          PY
+      - name: Restore unchanged success-run original-source aggregate
+        run: |
+          set -euo pipefail
+          mkdir -p work/final_v4
+          gh api repos/zuizui0223/azami/actions/artifacts/12547876704/zip \
+            > work/final_v4/original-v4-source-verified.zip
+          printf '%s\n' \
+            '6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205  work/final_v4/original-v4-source-verified.zip' \
+            | sha256sum -c -
+      - name: Verify all four final Holm claims and descriptive phenotype LEGO
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.final_v4_bio18_holm_freeze \
+            --artifact-zip work/final_v4/original-v4-source-verified.zip \
+            --output work/final_v4/FINAL_V4_BIO18_HOLM_LEGO_PINNED_EVIDENCE.json
+          python -m json.tool \
+            work/final_v4/FINAL_V4_BIO18_HOLM_LEGO_PINNED_EVIDENCE.json \
+            > /dev/null
+      - name: Upload source-verified frozen aggregate evidence ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-v4-bio18-holm-phenotype-lego-${{ github.run_id }}
+          path: work/final_v4/FINAL_V4_BIO18_HOLM_LEGO_PINNED_EVIDENCE.json
+          if-no-files-found: error
+          retention-days: 90

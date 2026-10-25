@@ -1,0 +1,5 @@
+scale,pair_type,median_RV,statistical_status,n_photographs,n_taxa
+within_taxa,same_domain,0.085245,descriptive,156683,174
+within_taxa,cross_domain,0.001419,descriptive,156683,174
+among_taxa,same_domain,0.197455,descriptive,156683,174
+among_taxa,cross_domain,0.015453,descriptive,156683,174
