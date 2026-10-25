@@ -8,6 +8,8 @@
 - [CLAIM_LEDGER_AND_SUBMISSION_GATES.md](CLAIM_LEDGER_AND_SUBMISSION_GATES.md) — each frozen estimate to its source and non-claims.
 - [GEB_SUBMISSION_CHECKLIST.md](GEB_SUBMISSION_CHECKLIST.md) — structure, required figures, full 208-test table and unresolved submission gates.
 - [S2 natural-contrast audit](../../analysis/v4/S2_NATURAL_CONTRAST_BIO18_FOUR_AXIS_AUDIT_20261025.md) and [source-verified 4-axis aggregate replay](../../analysis/v4/s2_four_axis_source_recheck.py).
+- [S2 natural-contrast Supporting Information](SI_S2_NATURAL_CONTRAST_FOUR_AXIS.md) — case-selection gate, all four climatic gradients, photo-angle conditional CIs, zero-equivalence safeguard.
+- [S2 source-real plot script](plot_s2_four_axis.py) — reproducible forest figures for native-cell-standardized environmental differences and 4-climate-conditional angle contrasts.
 
 ## Exact source-level statistical evidence
 - Actions original success **40062126006**, artifact **12547876704**. Original archive ZIP SHA-256:
