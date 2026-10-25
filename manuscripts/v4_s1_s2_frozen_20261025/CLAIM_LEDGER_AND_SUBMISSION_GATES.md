@@ -36,6 +36,14 @@ The 24 October S2 **128-test** BIO18 model yielded Holm-passing colour–environ
 
 Status: **Supporting description of the original six rows**, no native-versus-introduced BIO18/climate niche comparisons, no fitted range-status × environment model, no expansion of the frozen 128-test family.
 
+## Selection evidence C20: joint historical rationale and full-source gate
+
+**C20 (Methods 2.1, 2.5; Discussion 4.4; Table S3)** — Original [350-source-name WCVP eligibility audit](../../analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json): **seven** nominal *Cirsium* names with wild observations assigned to both native and introduced statuses, but only *C. arvense* and *C. vulgare* pass **100 original image-angle-eligible observations, 15 occupied 5° equal-sine-latitude cells and 10 observers in each range**. Original selected-two source wild introduced observations **156,608 / 156,750 = 99.91%**. Whole screen's provenance: Actions **39544849439**, aggregate artifact **12321361815**, source member SHA-256 `9d7019098874664611fd048a6f920432b1645957bca9af267a13f3401c92cf5b`. See [Table S3, all seven candidates](SI_S2_FOCAL_SPECIES_SELECTION_AUDIT.md).
+
+**Allowed:** S2 is a literature-motivated historical native–introduced comparison **made feasible by documented sufficient within-species range-specific measurement, location and observer support**. The all-source screen occurred *after* the two focal species were selected and confirmed those same two meet fixed stronger support gates. Photo coverage is a dataset-specific property; this is a two-case study, **not** phylogenetically independent replication, outcome-based selection by significant regression effects or near-total global *Cirsium* coverage.
+
+**Excluded:** novel species radiation, measured residence-time contrasts, direct native–introduced climate-niche differences, formal range×environment interaction tests, evolution/plasticity causation or source-genotype matching. GEB V4 Holm/β and S1/S2 experimental boundaries remain exactly fixed.
+
 ## Frozen statistics used to regenerate summary figures
 
 The machine-readable manuscript-local file [table1_holm_associations.csv](table1_holm_associations.csv) contains only the four frozen Holm-passing comparisons. It is a **display subset**, not the complete 208-test result table. Any final Figure 2 caption must name the selection rule and direct readers to the complete archived model output. [module_summary.csv](module_summary.csv) contains descriptive module RV medians and [s2_module_summary.csv](s2_module_summary.csv) the four S2 stratum medians. These values must never replace the complete 28-pair artifact when making a full integration heatmap.
