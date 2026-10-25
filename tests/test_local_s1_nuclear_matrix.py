@@ -1,5 +1,23 @@
 import pytest
 from analysis.v4.local_s1_nuclear_matrix import concatenate, write_fasta, ROOT
+from analysis.v4.local_s1_nuclear_matrix import project_anchor_columns
+
+
+def test_projection_keeps_exact_source_coordinates_and_never_adds_anchor_tips():
+    rows = {'lett-L':'A-CNT', 'sunf-L':'AGC-T', 'saff-L':'ATCGT', 'A':'A-CGT'}
+    projected, columns = project_anchor_columns(rows, 'L', {'A', 'missing'})
+    assert columns == [0, 2, 4]
+    assert projected == {ROOT:'ACT', 'A':'ACT'}
+    assert 'missing' not in projected
+
+
+def test_projection_rejects_unexpected_tip_and_absent_homology():
+    rows = {'lett-L':'A-', 'sunf-L':'-C', 'saff-L':'AC', 'A':'AC'}
+    with pytest.raises(ValueError, match='No shared'):
+        project_anchor_columns(rows, 'L', {'A'})
+    rows['foreign'] = 'AC'
+    with pytest.raises(ValueError, match='identity mismatch'):
+        project_anchor_columns(rows, 'L', {'A'})
 
 
 def panel(tmp_path, last=None):

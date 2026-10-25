@@ -39,6 +39,31 @@ def write_fasta(path, rows):
                 f.write(seq[start:start+80]+'\n')
 
 
+def project_anchor_columns(rows, locus, known):
+    """Diagnostic projection onto shared lettuce/sunflower reference positions.
+
+    Returns tree-tip sequences and zero-based source columns. This does not
+    admit a locus, prove coding status, or change the frozen locus-QC gate.
+    Reference anchors never become inferred tree tips.
+    """
+    anchors = ['lett-'+locus, 'sunf-'+locus]
+    saff = 'saff-'+locus
+    expected_refs = set(anchors+[saff])
+    if not known or known & (expected_refs | {ROOT}):
+        raise ValueError('Explicit non-reference ingroup required')
+    if not expected_refs <= rows.keys() or set(rows)-known-expected_refs:
+        raise ValueError('Reference or sample identity mismatch')
+    if len({len(seq) for seq in rows.values()}) != 1:
+        raise ValueError('Ragged anchor alignment')
+    columns = [i for i, pair in enumerate(zip(*(rows[k] for k in anchors)))
+               if all(base in 'ACGT' for base in pair)]
+    if not columns:
+        raise ValueError('No shared reference anchor positions')
+    projected = {ROOT if key == saff else key: ''.join(seq[i] for i in columns)
+                 for key, seq in rows.items() if key not in anchors}
+    return projected, columns
+
+
 def prepare_loci(loci, known, retrieved, reference, output):
     if hashlib.sha256(Path(reference).read_bytes()).hexdigest() != REFERENCE_SHA:
         raise ValueError('Reference digest mismatch')
