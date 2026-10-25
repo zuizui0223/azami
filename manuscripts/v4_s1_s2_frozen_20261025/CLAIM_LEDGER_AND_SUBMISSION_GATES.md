@@ -26,6 +26,16 @@
 | C14 | 2.6 / 3.4 | Bract 1,168 each/39 taxa; chroma-bract 1,007/38; adjusted between RV0.153365 /within0.001796; subset max VIF6.14 | Limited supplementary image proxy | Not bract spine/stickiness/defense; not four-exposure primary claim |
 | C15 | Discussion | No independent gravitational marker, pigment measurement, genetic module, field fitness, systematic phylogenetic correction | Observational claim boundary | Never call adaptation, LEGO genetic reuse or independent gains established |
 
+## S2 familywise-detection asymmetry: original native counterparts (no new fit)
+
+The 24 October S2 **128-test** BIO18 model yielded Holm-passing colour–environment associations only in introduced strata (**3** in introduced; **0** in native). To avoid equating different significance decisions with biological effect modification, the [six original colour coefficients and all original P adjustments](SI_S2_COLOUR_NATIVE_INTRO_FIXED_HOLM_CONTEXT.md) are reported in Supporting Information. Independent source ZIP/member SHA verification and a deterministic six-row extraction are implemented in [the source validator](verify_s2_frozen_colour_context.py).
+
+- **C17:** *C. arvense* lightness×elevation, native β+0.056267 (Holm P=1) versus introduced β−0.173732 (Holm P=0.001312). **Allowed:** opposite signed descriptive point estimates, candidate geographic heterogeneity. **Not allowed:** statistically established interaction, evolved change or causal pigmentation mechanism.
+- **C18:** *C. vulgare* chroma×RSDS, native β+0.136883 (raw P=0.0008325; **BH P=0.017760**, Holm P=0.102398) versus introduced β+0.134504 (Holm P=0.014568). **Allowed:** native and introduced point estimates have similar standardized magnitudes and native BH evidence. **Not allowed:** introduction acquired a new radiation response or proven equality of physical slopes.
+- **C19:** *C. vulgare* lightness×RSDS, native β−0.048808 (Holm P=1) versus introduced β−0.142801 (Holm P=0.019254). **Allowed:** both negative point estimates, more negative introduced estimate. **Not allowed:** formal range interaction or independent replication from chroma extracted from the same photograph.
+
+Status: **Supporting description of the original six rows**, no native-versus-introduced BIO18/climate niche comparisons, no fitted range-status × environment model, no expansion of the frozen 128-test family.
+
 ## Frozen statistics used to regenerate summary figures
 
 The machine-readable manuscript-local file [table1_holm_associations.csv](table1_holm_associations.csv) contains only the four frozen Holm-passing comparisons. It is a **display subset**, not the complete 208-test result table. Any final Figure 2 caption must name the selection rule and direct readers to the complete archived model output. [module_summary.csv](module_summary.csv) contains descriptive module RV medians and [s2_module_summary.csv](s2_module_summary.csv) the four S2 stratum medians. These values must never replace the complete 28-pair artifact when making a full integration heatmap.
