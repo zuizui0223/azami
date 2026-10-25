@@ -96,6 +96,23 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("not a new model",si)
         self.assertTrue((PAPER/"verify_s2_frozen_colour_context.py").is_file())
 
+    def test_s2_native_introduced_evolutionary_theory_is_bounded(self):
+        manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(manuscript,blinded)
+        for name in ("Hulme and Barrett (2013)",
+                     "Colautti, Maron & Barrett, 2009",
+                     "Guggisberg et al. (2013)",
+                     "rather than assuming that introduced plants have undergone a recent *species radiation*",
+                     "did not fit a range-status interaction",
+                     "does **not** compare the climatic niches"):
+            self.assertIn(name,manuscript)
+        note=(PAPER/"S2_NATIVE_INTRO_EVOLUTIONARY_RATIONALE_REFERENCES_JA.md").read_text(encoding="utf-8")
+        self.assertIn("急速な種分化・適応放散",note)
+        self.assertIn("1600年代",note)
+        self.assertIn("10.1111/nph.12258",note)
+        self.assertIn("降水ニッチ",note)
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
