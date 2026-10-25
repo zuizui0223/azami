@@ -1,53 +1,59 @@
-# S2 natural experiment-like contrast: frozen V4 four-axis source audit (25 October 2026)
+# S2 natural experiment-like contrasts: **source-real four-axis reanalysis complete** (25 October 2026)
 
-## Design and choice of the two species
+## Current adopted interpretation
 
-The ecological contrast uses non-random introductions as **historical natural experiments in the limited comparative sense**, not randomized manipulations of rainfall or replicates of adaptive evolution. The source-verified all-350 species-name screen at `analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json` found **seven** names with both wild native and explicit WCVP-introduced range statuses. Only **two** passed the predeclared stronger data coverage gate in **both** ranges: ≥100 orientation-eligible photographs/observations, ≥15 broad 5°×sine-latitude equal-spherical-area occupied cells and ≥10 original observers per range. The initial focal species were selected before that all-350 re-screen; the re-screen subsequently confirmed no additional eligible cases. This is data-coverage validation **after a focal choice**, not outcome-blind randomized species selection.
+**Both species have higher introduced-range observed-record BIO18 medians, but they do NOT share an equivalent wetward climatic shift after spatial-cell balancing.** In *C. arvense*, the cell-weighted mean BIO18 contrast reverses direction; in *C. vulgare* it remains strongly positive. Neither has a resolved introduction-associated camera-angle effect or BIO18 × introduction interaction in the restricted four-climate support. This is a novel **observation-weight versus spatial-scale dependence**, not proof of evolution or absent phenotypic change.
 
-- *C. arvense*: native 78,646 wild source records, introduced 70,964; angle-eligible 49,072 vs 43,195; stronger gate passes in both ranges.
-- *C. vulgare*: native 62,368, introduced 85,644; angle-eligible 33,637 vs 47,833; stronger gate passes in both.
-- The 156,608 wild introduced records represented by both species constitute **99.91%** of all 156,750 original-source WCVP explicitly introduced wild records. Introduced records are predominantly North American: **69,138/70,964** for *C. arvense* and **71,667/85,644** for *C. vulgare*. The introduced-range climate comparison consequently reflects strongly unequal region-specific observation availability, not a replicated random global treatment. The remaining five both-range species have too few or too spatially confined introduced images. No inference for other thistles follows.
+Scientific parent: original 24 October frozen V4 S1/S2 four-exposure/BIO18 Holm results are **not overwritten**.
 
-Source/status caution: TDWG/WCVP regional native/introduced flags are coarse, and do not demonstrate photographed-individual ancestry, introduction date, reproductive naturalization, or a mutation. The S1 native photos and S2 native photos overlap. Two species are **not independent evolutionary replication units**.
+**Corrected source-real execution:** [Actions #40166532404](https://github.com/zuizui0223/azami/actions/runs/40166532404) **SUCCESS**, artifact **12588158569**, ZIP SHA-256 `1fcb9ff110f2c2d6bba6afc58b45d9a38f86cf919f989f354f82054a80cec121`, corrected JSON `V4_S2_FOUR_AXIS_JOINT_NICHE_REAL_SOURCE.json` SHA-256 `800f2f5dc37d7156324a4756f372306c3f8b28cb00c88d683e86cd01c2c64063`. The earlier [Actions #40164655107](https://github.com/zuizui0223/azami/actions/runs/40164655107) was scientifically valid for marginal climate and conditional camera-angle estimates but computed its 4D ridge on raw heterogeneous physical units; its distance and outside-threshold fraction are **superseded**. Recomputing the original V4 source aggregates changed JSON bytes at floating-point roundoff level only (max absolute numeric deviation `9.93e-11` across compared members; no structural/nominal data differences). The **original frozen** October 24 input/member digest identities remain `bb01d3b5...` and `3738292e...`; do not falsely call rerun JSON byte-identical.
 
-## Exact original source, frozen BIO18 model
+## Why these two species?
 
-- Frozen model: **BIO18 (warmest-quarter mean monthly precipitation)** + BIO05 (warmest-month maximum temperature) + RSDS (shortwave radiation) + elevation.
-- Original experiment code commit: `d2c45b00018a0c04e7c69a29857207dc1ac06d0c`.
-- Source-verified success: [Actions #40062126006](https://github.com/zuizui0223/azami/actions/runs/40062126006) / artifact **12547876704**, ZIP SHA-256 `6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205`.
-- Independent re-extraction checks each source member checksum and enumerates **all 16 camera-angle × four exposure** stratum coefficients in original `S2/four_bio18` Holm family (128 S2 tests overall); **none of the 16 passes Holm**.
-- **No new full 4D climate-space density comparison has yet been computed from source-level rows**. The original aggregate holds marginal quartiles/means and climate correlations, not joined site climate records. A 4D centroid, analog fraction, niche expansion or background-standardized D cannot be reconstructed uniquely from four separate medians.
+The original **350 species-name** screen found **seven** *Cirsium* taxa with wild WCVP-assigned native **and** explicit introduced regions. Only *C. arvense* and *C. vulgare* met the fixed stronger per-range support gates in both domains (≥100 orientation-eligible observations, ≥15 independent 5°/equal-sine-latitude geographic cells, ≥10 observers). The two candidates were initially specified prior to the complete all-350 check; the later screen confirms there were no other qualifying taxa. This is *not* a random draw of introductions.
 
-## Results: positive association in source-site occupancy, not proof of niche evolution
+*C. arvense* original source totals: **78,646 native / 70,964 introduced**; *C. vulgare*: **62,368 / 85,644**. Introduced observations are dominated by North America (**69,138 of 70,964** for *C. arvense*; **71,667 of 85,644** for *C. vulgare*), limiting geographic independence.
 
-| Introduced minus native location median | *C. arvense* | *C. vulgare* |
+## Same four physical environmental variables, two valid units of sampling
+
+The exact science-frozen environmental family is BIO18 (warmest-quarter mean monthly precipitation), BIO05 (warmest-month maximum temperature), RSDS (source-scaled downward shortwave radiation) and source-pixel elevation. All four are extracted on exactly matched original WCVP-wild observations.
+
+One estimator computes **observed-record medians** (photograph/observer effort strongly nonuniform). The independent source-row reanalysis first deduplicates photographer × broad spatial cell and **equally weights occupied cells**, comparing four-coordinate cell means standardized by the native-range cell SD of each predictor. 399 within-range cell resamplings yield descriptive 2.5–97.5% intervals. The standardized 4D centroid distance first scales every exposure by the **native-cell SD**, then applies native-reference covariance with a 5%-trace ridge in the resulting dimensionless coordinates. The share of introduced cell means outside the native 95th-percentile Mahalanobis ellipsoid diagnoses source climate novelty **without climate-availability correction**, not a formal niche expansion/unfilling estimate.
+
+| Species | Four-exposure complete native/introduced records | Equal-weight native/introduced cells |
 |---|---:|---:|
-| BIO18 (mean mm / month in warmest quarter) | **+48.2** | **+49.7** |
-| BIO05 (°C) | **+4.5** | **+3.7** |
-| RSDS (original CHELSA radiation scale) | **+3.740** | **+3.688** |
-| Elevation (m) | **+115** | **+74** |
+| *C. arvense* | 78,060 / 68,397 | 198 / 77 |
+| *C. vulgare* | 61,800 / 70,653 | 129 / 91 |
 
-Source-level counts differ by trait/environment due to predictor coverage; see `s2_four_axis_source_recheck.py` outputs. All BIO18 site rows were present. The four marginal changes mean the colonized sites are **warmer, wetter in the warmest quarter, sunnier and at higher elevations in median occupancy**. The climatic contrast is NOT a single-axis rainfall addition. Environmental availability and observer sampling may jointly explain the geographic redistribution.
+## Genuine four-axis site results
 
-Introduced stratum **four-variable adjusted** camera-angle × BIO18 coefficient:
-- *C. arvense* n=24,777, standardized β = **+0.001659**, raw P=.95043, Holm P=1.
-- *C. vulgare* n=25,107, standardized β = **−0.022218**, raw P=.55263, Holm P=1.
+| Explanatory axis | *C. arvense*, source median introduced−native | *C. arvense*, cell-balanced native-SD difference [bootstrap range] | *C. vulgare*, source median introduced−native | *C. vulgare*, cell-balanced native-SD difference [bootstrap range] |
+|---|---:|---|---:|---|
+| BIO18 | **+48.2 mm/month** | **−0.172 [−0.350, −0.004]** | **+49.7 mm/month** | **+0.976 [+0.526, +1.544]** |
+| BIO05 | +4.5 °C | +0.182 [−0.014, +0.388] | +3.7 °C | +0.495 [+0.194, +0.819] |
+| RSDS | +3.740 source units | +0.338 [+0.131, +0.549] | +3.688 | +0.578 [+0.334, +0.781] |
+| Elevation | +115 m | +0.074 [−0.143, +0.302] | +74 m | +0.256 [−0.022, +0.574] |
 
-These are **within-range photo-angle environmental slopes**, not difference-of-range mean-angle or genotype contrasts. The 16 camera-angle coefficients all have Holm P≥0.05, but **absence of statistical support is not an equivalence/nonresponse test**. A prior BIO12 source-appearance comparison reported median 68→67° and 64→63°; do not relabel that historical BIO12 five-exposure comparison as the new BIO18 common-support analysis.
+After scaling **each of BIO18, BIO05, RSDS and elevation by the native-range cell SD before covariance regularization**, the native-reference 4D Mahalanobis centroid distances are **0.448** (*C. arvense*) and **1.791** (*C. vulgare*). Outside-native-95th-distance fractions are **1/77 (1.3%)** and **23/91 (25.3%)**, respectively. The native-SD-standardized source code passes an explicit unit-rescaling invariance regression test. These are conditional descriptive climatic **occurrence** measures, not environmental-availability-corrected niche expansion: **25.3% is not a percentage of new adaptive ecological niche**. The first-run heterogeneous-unit distances of 0.182 and 0.913 must not be reused.
 
-## What to test next using private genuine source rows
+## Photo angle within four-axis overlapping climate conditions
 
-The source-level source reconstruction exists in the frozen original workflow `.github/workflows/v4-s1-s2-extreme-lego.yml` at the source execution ref. Once the privacy-safe four-variable join is available, the proper multivariate analysis will:
-1. evaluate the complete original BIO18/BIO05/RSDS/elevation four-axis per-site overlap, **separately from photographic measurement eligibility**;
-2. use equal-space-cell and observer×cell balancing (before comparing range medians and native-reference scaled climate centroids);
-3. quantify 4D niche distance, non-analog introduction-site occupation and cell-resampled uncertainty while distinguishing occupancy from accessible climates;
-4. evaluate native versus introduced photographic angles **within matched four-axis common climate support**, including range-status × BIO18 interactions and conditional time/observer/site adjustments;
-5. preserve null or nonsupported estimates and 95% intervals and refrain from an equivalence claim without a biologically defined angle-margin and independent physical-camera validation.
+For each species, the overlap is a four-dimensional intersection of the 5th–95th percentile **marginal bounds** for all four predictors. Source photo observations are filtered and deduplicated by observer × cell. Each fitted within-species WLS includes a range indicator, BIO18 × introduction interaction, BIO18/BIO05/RSDS/elevation main terms, month sine/cosine and year, equal range×cell weights, and cell-clustered uncertainty. This is a common-climate sensitivity, not exact pair matching or a causal estimand.
 
-This precludes declaring a joint **BIO18 four-axis niche expansion** merely from the verified marginal +48.2/+49.7 mm/month differences.
+| Metric | *C. arvense* | *C. vulgare* |
+|---|---:|---:|
+| Valid source angles, native/introduced in overlap | **438 / 6,069** | **791 / 8,220** |
+| Distinct spatial cells, native/introduced | 30 / 31 | 25 / 35 |
+| Observed overlap-subset image angle medians (°), native / introduced | 67.41 / 74.54 | 64.38 / 64.89 |
+| **Adjusted introduction status coefficient (°)** | **−1.03** [−10.38, +8.32] | **−2.52** [−8.37, +3.32] |
+| **BIO18 × introduction (°/pooled climate SD)** | **−1.58** [−8.96, +5.80] | **−0.02** [−7.30, +7.27] |
 
-## GEB framing and relevant literature
+**Both adjusted confidence intervals cross zero, but neither is a test of shape equivalence.** The *C. arvense* raw median angle difference within four-axis overlap is not trivial, and its native eligible cohort is much smaller than its introduced cohort; this rules out concluding “no shape change” or evolutionary stasis from a non-significant contrast. The older source V4 128-test Holm family independently retained 0/16 head-angle effects across four range strata; all original positive colour results remain untouched.
 
-Invasion as a natural comparison can be informative but is vulnerable to nonrandom geography, source ancestry and climate availability. Use Guisan et al. (2014; doi:10.1016/j.tree.2014.02.009) for stability/expansion/unfilling and climate analog/background, and Colautti & Lau (2015; doi:10.1111/mec.13162) for differentiation vs actual adaptive evolution. The multi-region native-to-introduced comparison should anchor a **scale-dependent observational claim**, not infer rainfall-driven downward floral evolution or fundamental niche shifts.
+## GEB ecological contribution and interpretation limits
 
-**Strong defensible statement:** In native *Cirsium*, warmer-quarter precipitation corresponds to larger camera-frame capitulum angles **among taxa**, while the same two thistle species occupy introduced locations with higher four-axis climate medians, yet exhibit **no common Holm-supported photo-angle gradient** in the fixed strata. This is suggestive of differing ecological scaling or covariance structure, not proof that the same genotypes did not change.
+The S1 between-taxon BIO18/photo-angle association, S2 native/introduced source-domain climatic occupancy, and S2 within-species/common-climate angle contrasts are **three different estimands**. Their disagreement identifies scale- and sampling-dependent **apparent phenotype–climate coupling**, not a demonstrated mechanism.
+
+Biological introductions are useful **natural experiment-like opportunities**, but not randomized. Source cell coverage is sparse relative to the number of photographs, climatic availability differs by region, the native and introduced sampled genotypes are not genealogically paired, and original photographs do not validate gravitational nodding or anthocyanin physiology. An ellipsoid threshold, an axis-aligned common support rectangle and 399-cell bootstrap do **not** resolve selection or true niche evolution. For background-corrected niche expansion/stability/unfilling, see Guisan et al. (2014, doi:10.1016/j.tree.2014.02.009); for invasion comparisons and nonrandom geography, see Colautti & Lau (2015, doi:10.1111/mec.13162).
+
+**Freeze policy:** This 25 October source-real comparison is a distinct, reproducible **V4 S2 extension**; do not change any 24 October V4 S1/S2 Holm estimate or reinterpret a null as a causal nonresponse.
