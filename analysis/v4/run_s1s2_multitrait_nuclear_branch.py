@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from analysis.v4 import s1s2_multitrait_branch_core as core
+from analysis.v4.conditional_ancestry_export import reconstruct
 from analysis.v4 import s1_s2_real_bio18_bio05_rsds_elevation as climates
 from analysis.v4 import t2_s1_continuous_genuine_nuclear_two_tree_clustering as dna
 from analysis.v4 import t2_true_nuclear_S1_continuous_eazami_brownian_fourclimate as true_nuclear
@@ -183,9 +184,13 @@ def _test_unit(panel_label,treeinfo,measures,cols,scope,nperm,gate,unit):
     except ValueError as exc:
         return {**receipt,"status":"STOP_UNIDENTIFIABLE_REAL_TRAIT_OR_CLIMATE",
                 "reason":str(exc)}
-    return {**receipt,"status":"COMPUTED_REAL_PHOTO_CONTINUOUS_NUCLEAR_BROWNIAN",
+    output={**receipt,"status":"COMPUTED_REAL_PHOTO_CONTINUOUS_NUCLEAR_BROWNIAN",
             "n_placement_scenarios":1,"n_tip_shuffles":nperm,
             "edge_count_scored":int(D.shape[0]),"axes":axes}
+    if scope=="all_edges":
+        output["conditional_ancestry"]=reconstruct(
+            tree,names,np.column_stack((trait,climate)),[*cols,*core.FOUR])
+    return output
 
 
 def _test_coscore(panel_label,treeinfo,means,group_a,group_b,nperm,scope,gate):
@@ -209,7 +214,7 @@ def _test_coscore(panel_label,treeinfo,means,group_a,group_b,nperm,scope,gate):
     return {**row,"status":"COMPUTED_SAME_PHOTO_MODULE_COSHIFT","n_tip_shuffles":nperm,**test}
 
 
-def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=999):
+def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=9999):
     if nperm<999:raise ValueError("Cannot downgrade frozen permutation resolution")
     reference_keys={r["original_source_name"]:str(r["accepted_key"]) for r in source251.to_dict("records")}
     trees,treesrc=true_nuclear_panels(reference)
@@ -237,6 +242,7 @@ def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=999):
                      for r in rows for axis in core.FOUR]
                 adjusted=core.holm_family(flat)
                 for row in rows:
+                    row["family_resolution"]=core.permutation_resolution(nperm,len(flat))
                     for axis in core.FOUR:
                         row["axes"][axis]["holm_family_fraction"]=adjusted[row["unit"]+"|"+axis]
     # Co-shift pair co-observation is formed BEFORE any taxon averaging.
@@ -265,7 +271,7 @@ def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=999):
                 adjusted=core.holm_family([(r["unit"],r["conditional_tip_shuffle_fraction"])
                                            for r in selected])
                 for r in selected:r["holm_pair_family_fraction"]=adjusted[r["unit"]]
-    return {"version":"s1s2_multitrait_true_nuclear_branch_four_20261024_v1",
+    return {"version":"s1s2_multitrait_true_nuclear_branch_four_20261025_v2",
        "status":"SOURCE_VERIFIED_S1_PHOTO_BROWNIAN_MULTITRAIT_NOT_BOTANICAL_CTMC",
        "source_scope":"Original 313350 geolocated native observations / 306 accepted keys, filtered to frozen 251 original S1 source-name concept universe; exact 4 site climate raster pixels",
        "axes":list(core.FOUR),"n_registered_image_endpoints":27,
@@ -296,7 +302,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ("decoded-native","s1-source251","s1-four251","registry","raster-root","out"):
         p.add_argument("--"+name,type=Path,required=True)
-    p.add_argument("--permutations",type=int,default=999)
+    p.add_argument("--permutations",type=int,default=9999)
     args=p.parse_args()
     frame,reference,photo,four,reg=load_sources(args.decoded_native,args.s1_source251,
                  args.s1_four251,args.registry)

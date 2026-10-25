@@ -199,5 +199,17 @@ def holm_family(pairs:list[tuple[str,float]]):
     return out
 
 
+def permutation_resolution(nperm:int, family_size:int, alpha:float=0.05):
+    """Attainable first Holm threshold, not Monte Carlo precision assurance."""
+    if (not isinstance(nperm,int) or nperm<1 or not isinstance(family_size,int)
+            or family_size<1 or not 0<alpha<1):
+        raise ValueError("Positive integer permutations/family size and valid alpha required")
+    floor=family_size/(nperm+1)
+    return {"permutations":nperm,"family_size":family_size,"alpha":alpha,
+            "minimum_attainable_first_holm":min(1.,floor),
+            "can_reject_at_alpha":floor<=alpha,
+            "Monte_Carlo_precision_guaranteed":False}
+
+
 def stable_seed(text:str)->int:
     return int.from_bytes(hashlib.sha256(text.encode("utf-8")).digest()[:8],"big")
