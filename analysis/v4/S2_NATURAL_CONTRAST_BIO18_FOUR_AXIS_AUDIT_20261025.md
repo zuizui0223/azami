@@ -6,7 +6,7 @@ The ecological contrast uses non-random introductions as **historical natural ex
 
 - *C. arvense*: native 78,646 wild source records, introduced 70,964; angle-eligible 49,072 vs 43,195; stronger gate passes in both ranges.
 - *C. vulgare*: native 62,368, introduced 85,644; angle-eligible 33,637 vs 47,833; stronger gate passes in both.
-- The 156,608 wild introduced records represented by both species constitute **99.91%** of all 156,750 original-source WCVP explicitly introduced wild records. The remaining five both-range species have too few or too spatially confined introduced images. No inference for other thistles follows.
+- The 156,608 wild introduced records represented by both species constitute **99.91%** of all 156,750 original-source WCVP explicitly introduced wild records. Introduced records are predominantly North American: **69,138/70,964** for *C. arvense* and **71,667/85,644** for *C. vulgare*. The introduced-range climate comparison consequently reflects strongly unequal region-specific observation availability, not a replicated random global treatment. The remaining five both-range species have too few or too spatially confined introduced images. No inference for other thistles follows.
 
 Source/status caution: TDWG/WCVP regional native/introduced flags are coarse, and do not demonstrate photographed-individual ancestry, introduction date, reproductive naturalization, or a mutation. The S1 native photos and S2 native photos overlap. Two species are **not independent evolutionary replication units**.
 
