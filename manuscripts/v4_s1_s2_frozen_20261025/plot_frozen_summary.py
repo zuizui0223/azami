@@ -65,11 +65,11 @@ def forest(assoc: list[dict[str, str]], dest: Path) -> None:
                 lw=1.7, capsize=4, markersize=6)
     ax.set_yticks(y, labels)
     ax.set_xlabel("Standardized coefficient β (pointwise 95% CI)")
-    ax.set_xlim(-0.3, 0.42)
+    ax.set_xlim(-0.3, 0.65)
     ax.set_ylim(-0.7, n - 0.3)
     ax.set_title("Four Holm-supported associations in frozen V4 S1–S2")
     for i, row in enumerate(assoc):
-        ax.text(0.409, y[i], f"n = {int(row['n']):,} | P_Holm = {float(row['holm_p']):.4g}",
+        ax.text(0.629, y[i], f"n = {int(row['n']):,} | P_Holm = {float(row['holm_p']):.4g}",
                 va="center", ha="right", fontsize=9,
                 bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.9})
     fig.text(.03, .04,
