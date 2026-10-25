@@ -104,6 +104,51 @@ def rv_medians(module: list[dict[str, str]], dest: Path) -> None:
     plt.close(fig)
 
 
+
+def s2_wet_quarter_occupancy(dest: Path) -> None:
+    """Plot source-location distribution quantiles, never regression CIs."""
+    r = rows(ROOT / "s2_bio18_range_occupancy_summary.csv")
+    expected = [
+        ("Cirsium arvense", "native", 78646, 222.2),
+        ("Cirsium arvense", "introduced", 70964, 270.4),
+        ("Cirsium vulgare", "native", 62368, 218.0),
+        ("Cirsium vulgare", "introduced", 85644, 267.7),
+    ]
+    assert len(r) == 4, "Unexpected S2 range strata"
+    for x, (sp, status, n, med) in zip(r, expected):
+        assert (x["species"], x["range_status"]) == (sp, status)
+        assert int(x["source_wild_observations"]) == n
+        assert np.isclose(float(x["BIO18_median_mm_per_month"]), med, atol=1e-10)
+    fig, ax = plt.subplots(figsize=(10.8, 5.0))
+    fig.subplots_adjust(left=.22, right=.97, top=.85, bottom=.22)
+    yy = [3.15, 2.5, 1.25, .6]
+    for row, y in zip(r, yy):
+        median = float(row["BIO18_median_mm_per_month"])
+        q05 = float(row["BIO18_q05_mm_per_month"])
+        q95 = float(row["BIO18_q95_mm_per_month"])
+        status = row["range_status"]
+        marker = "o" if status == "native" else "s"
+        ax.plot([q05, q95], [y, y], linewidth=2.1)
+        ax.scatter(median, y, marker=marker, s=72, zorder=3)
+        ax.text(median, y+.13, f"{median:.1f}", ha="center", va="bottom", fontsize=9)
+    ax.set_yticks(yy, [
+        "arvense • native", "arvense • introduced",
+        "vulgare • native", "vulgare • introduced",
+    ])
+    ax.set_xlim(-10, 430)
+    ax.set_ylim(-.2, 4)
+    ax.set_xlabel("BIO18: warmest-quarter mean monthly precipitation (mm/month)")
+    ax.set_title("Observed S2 sites: wetter warm-quarter median climates in introduced ranges")
+    ax.text(242, 2.02, "Introduced − native median: +48.2 mm/month", ha="center", fontsize=9)
+    ax.text(240, -.06, "Introduced − native median: +49.7 mm/month", ha="center", fontsize=9)
+    fig.text(.025, .02,
+             "Segments show observed 5th–95th percentiles, NOT confidence intervals. "
+             "Source observations are spatially dependent; no niche evolution inferred.", fontsize=8)
+    for ext in ("png", "svg"):
+        fig.savefig(dest / f"figure_S2_BIO18_native_introduced.{ext}", dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=ROOT / "rendered")
@@ -114,6 +159,7 @@ def main() -> None:
     check_locked_input(assoc, module)
     forest(assoc, args.output_dir)
     rv_medians(module, args.output_dir)
+    s2_wet_quarter_occupancy(args.output_dir)
     print(f"Locked-source figures created in {args.output_dir}")
 
 
