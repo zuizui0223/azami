@@ -1,0 +1,159 @@
+{
+  "study": "V4_S2_FOUR_AXIS_NATURAL_CONTRAST_20261025",
+  "status": "SOURCE_REAL_EXECUTION_SUCCEEDED",
+  "provenance": {
+    "run_url": "https://github.com/zuizui0223/azami/actions/runs/40164655107",
+    "artifact_id": 12587614564,
+    "artifact_zip_sha256": "024c8c14e5f0ec4a4a767ed419dbf3f2ef30caaf8156953630c4e04914547934",
+    "joint_result_member_sha256": "b63662536bf26309622d3fed4a0602891658b1afcd8c00770443b516bb7bbe6e",
+    "unchanged_original_s1_s2_aggregate_sha256": "bb01d3b5da03148d84b2521c9c92cf14f7f6177435e145118f6ff6df8846733f",
+    "unchanged_four_model_aggregate_sha256": "3738292e0a64da183dfe219c854c16cda199a7f9769f4928da8ab07657d60b70"
+  },
+  "units": {
+    "BIO18": "mean monthly warmest-quarter precipitation (mm/month)",
+    "BIO05": "warmest month maximum temperature (degrees C)",
+    "RSDS": "original source-pixel solar radiation scale",
+    "elevation": "metres",
+    "cell_equal_difference": "native-cell SD"
+  },
+  "species": {
+    "Cirsium arvense": {
+      "source_n": {
+        "native": 78646,
+        "introduced": 70964
+      },
+      "four_axis_complete_n": {
+        "native": 78060,
+        "introduced": 68397
+      },
+      "cells": {
+        "native": 198,
+        "introduced": 77
+      },
+      "source_site_median_intro_minus_native": {
+        "BIO18": 48.2,
+        "BIO05": 4.5,
+        "RSDS": 3.74,
+        "elevation": 115
+      },
+      "equal_cell_mean_intro_minus_native_in_native_sd": {
+        "BIO18": -0.17230181253295926,
+        "BIO05": 0.18229492832707173,
+        "RSDS": 0.3382468617150483,
+        "elevation": 0.0736706599310639
+      },
+      "equal_cell_bootstrap_95": {
+        "BIO18": [
+          -0.3500249591320551,
+          -0.004125062351789384
+        ],
+        "BIO05": [
+          -0.014492423853378492,
+          0.3881441417480273
+        ],
+        "RSDS": [
+          0.13074837046230864,
+          0.5488672317424645
+        ],
+        "elevation": [
+          -0.1430239966718835,
+          0.3017318570882106
+        ]
+      },
+      "joint_4d_native_covariance_regularized_centroid_distance": 0.18224350262099506,
+      "introduced_cells_outside_native95_ellipsoid_fraction": 0,
+      "camera_angle_four_axis_analog": {
+        "native_n": 438,
+        "introduced_n": 6069,
+        "native_cells": 30,
+        "introduced_cells": 31,
+        "native_median_degrees": 67.40850053724006,
+        "introduced_median_degrees": 74.54314556548223,
+        "adjusted_intro_effect_degrees": -1.032376994580246,
+        "adjusted_intro_effect_95": [
+          -10.381903478391624,
+          8.317149489231134
+        ],
+        "BIO18_intro_interaction_degrees_per_joint_sd": -1.580329975946534,
+        "interaction_95": [
+          -8.957604063146364,
+          5.796944111253296
+        ]
+      }
+    },
+    "Cirsium vulgare": {
+      "source_n": {
+        "native": 62368,
+        "introduced": 85644
+      },
+      "four_axis_complete_n": {
+        "native": 61800,
+        "introduced": 70653
+      },
+      "cells": {
+        "native": 129,
+        "introduced": 91
+      },
+      "source_site_median_intro_minus_native": {
+        "BIO18": 49.7,
+        "BIO05": 3.7,
+        "RSDS": 3.688,
+        "elevation": 74
+      },
+      "equal_cell_mean_intro_minus_native_in_native_sd": {
+        "BIO18": 0.9757639582239015,
+        "BIO05": 0.49492098661534845,
+        "RSDS": 0.5784929144568416,
+        "elevation": 0.2564214398216198
+      },
+      "equal_cell_bootstrap_95": {
+        "BIO18": [
+          0.5261585039162351,
+          1.5444901495904582
+        ],
+        "BIO05": [
+          0.19431459275561597,
+          0.8186956689900204
+        ],
+        "RSDS": [
+          0.33384250672922583,
+          0.7811795574576312
+        ],
+        "elevation": [
+          -0.022049860075025147,
+          0.5741479362808615
+        ]
+      },
+      "joint_4d_native_covariance_regularized_centroid_distance": 0.9133865600187208,
+      "introduced_cells_outside_native95_ellipsoid_fraction": 0.18681318681318682,
+      "camera_angle_four_axis_analog": {
+        "native_n": 791,
+        "introduced_n": 8220,
+        "native_cells": 25,
+        "introduced_cells": 35,
+        "native_median_degrees": 64.38064845772809,
+        "introduced_median_degrees": 64.88800178847802,
+        "adjusted_intro_effect_degrees": -2.5235654967311354,
+        "adjusted_intro_effect_95": [
+          -8.369935847877723,
+          3.3228048544154523
+        ],
+        "BIO18_intro_interaction_degrees_per_joint_sd": -0.015044691628994886,
+        "interaction_95": [
+          -7.29552000544396,
+          7.265430622185971
+        ]
+      }
+    }
+  },
+  "interpretation": {
+    "unweighted_native_vs_intro_medians_are_not_cell_balanced": true,
+    "cell_bootstrap_is_conditional_descriptive_not_independent_colonization_inference": true,
+    "native_ellipsoid_not_available_environment_corrected_niche_expansion": true,
+    "rectangular_joint_common_support_is_not_climatic_availability_matching": true,
+    "angle_photo_axis_not_gravity_validated": true,
+    "wide_angle_intervals_do_not_prove_equivalence": true,
+    "same_species_range_contrast_is_not_randomized_selection_experiment": true,
+    "maintain_original_frozen_V4_S1_S2_Holm_results_unchanged": true
+  }
+}
