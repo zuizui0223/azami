@@ -1,0 +1,5 @@
+species,range_status,within_domain_RV,cross_domain_RV,statistical_status
+Cirsium arvense,introduced,0.0487,0.00532,descriptive
+Cirsium arvense,native,0.0218,0.0119,descriptive
+Cirsium vulgare,introduced,0.1180,0.00785,descriptive
+Cirsium vulgare,native,0.1102,0.0125,descriptive
