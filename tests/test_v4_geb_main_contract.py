@@ -113,6 +113,40 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("10.1111/nph.12258",note)
         self.assertIn("降水ニッチ",note)
 
+    def test_s2_focal_species_full_350_source_eligibility(self):
+        import json
+        source=(V4/"results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json")
+        d=json.loads(source.read_text(encoding="utf-8"))
+        self.assertEqual(d["evidence_census"]["source_species_rank_names"],350)
+        self.assertEqual(d["evidence_census"]["wild_native_and_explicit_introduced_species_names"],7)
+        self.assertEqual(d["evidence_census"]["both_range_stronger_gate_species"],2)
+        self.assertEqual(d["evidence_census"]["WCVP_explicit_introduced_wild_observations"] if "WCVP_explicit_introduced_wild_observations" in d["evidence_census"] else d["source"]["WCVP_explicit_introduced_wild_observations"],156750)
+        strong=d["predeclared_gates"]["stronger"]
+        self.assertEqual((strong["orientation_eligible_per_range"],
+                          strong["5_degree_equal_sin_cells_per_range"],
+                          strong["original_observers_per_range"]),(100,15,10))
+        seven=d["all_both_range_species"]
+        self.assertEqual(len(seven),7)
+        expected={"Cirsium arvense","Cirsium vulgare"}
+        for case in seven:
+            computed=all(case[f"{range}_orientation_eligible"]>=100 and
+                         case[f"{range}_cells"]>=15 and
+                         case[f"{range}_observers"]>=10
+                         for range in ("native","introduced"))
+            self.assertEqual(computed,case["stronger_pass"])
+        self.assertEqual({s["source_name"] for s in seven if s["stronger_pass"]},expected)
+        self.assertTrue(d["selection_and_interpretation"]["two_focal_species_selected_posthoc_before_global_source_screen"])
+        self.assertTrue(d["source"]["all_source_taxa_checked_without_rain_or_orientation_values"])
+        doc=(PAPER/"SI_S2_FOCAL_SPECIES_SELECTION_AUDIT.md").read_text(encoding="utf-8")
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        for species in seven:
+            self.assertIn(species["source_name"].split()[1],doc)
+        for token in ("156,608","156,750","99.91%","350","seven","100","15","10"):
+            self.assertIn(token,paper)
+        self.assertIn("Table S3",paper)
+        self.assertIn("not random",paper)
+        self.assertNotIn("+48.2 mm/month",paper)
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
