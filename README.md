@@ -22,14 +22,16 @@ Are climatic associations and covariation among visible *Cirsium* capitulum **pr
 - S2 introduced *C. vulgare*: chroma × RSDS, β +0.134504, Holm P = 0.01456813 (n 27,200).
 - S2 introduced *C. vulgare*: lightness × RSDS, β −0.142801, Holm P = 0.01925414 (n 27,200).
 
-S1's 156,683 common photographs / 174 taxa yielded stronger raw between- than within-taxon RV for **24/28** environmentally adjusted pairs; higher same-domain than cross-domain RV is a measured **phenotypic association**, not genetically independent modules. Both S2 introduced ranges have wetter BIO18 source-site medians (+48.2/+49.7 mm per month) without common supported image-angle slopes. S1 native photographs overlap S2 native photographs and cannot be treated as independent replications.
+S1's 156,683 common photographs / 174 taxa yielded larger between- than within-taxon RV for **24/28** environmentally adjusted pairs; higher same-domain than cross-domain RV is a measured **photographic phenotypic association**, not proof of genetic modules. In S2, the original four species×range strata retain three Holm-supported **colour** associations in introduced ranges, with **no head-angle term** passing the S2 Holm family. S1 native photographs overlap S2 native photographs and cannot be treated as independent replications.
+
+**Current GEB scope exclusion:** no native-versus-introduced **precipitation-niche** or climate-occupancy comparison, no post-freeze 4D centroid/novelty or matched-climate range-effect regression. Those 25 October exploratory products were moved to [deferred historical research](legacy/v4_s2_precipitation_niche_20261025/README.md), outside the frozen primary narrative. See [scope policy](manuscripts/v4_s1_s2_frozen_20261025/SCOPE_LOCK_20261025_JA.md).
 
 **Not established:** causal rainfall selection, true gravity-based nodding, calibrated anthocyanin, heritable LEGO units, evolutionary module reassembly or introduction-driven evolution. Previous BIO12 geographic analyses show sensitivity to taxon composition; photograph-based confounding remains a limitation. Full supplement and source checks are anchored to [frozen artifact 12547876704](https://github.com/zuizui0223/azami/actions/runs/40062126006), original-data success SHA `d2c45b00018a0c04e7c69a29857207dc1ac06d0c`, ZIP SHA-256 `6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205`. The scientific snapshot is `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`.
 
 ## Layout and reproducibility boundaries
 
 - `analysis/v4/`: **only frozen S1–S2 code, contracts and source-verified summaries**, not the T2/T3 research branches. For full, earlier private-source reconstruction use the source execution commit pinned above; today's `main` is a submission-oriented presentation of that immutable analysis, not a remeasurement.
-- `manuscripts/v4_s1_s2_frozen_20261025/`: editable article, summary figures scripts, checked numerical supplement rebuild and claim ledger.
+- `manuscripts/v4_s1_s2_frozen_20261025/`: GEB article and figure set limited to the 24 October frozen S1–S2 **phenotype–environment** science, with a scope-locked claim ledger and checked numerical supplement.
 - `legacy/v3/`: archived V3 analytical source, reproducibility package, result receipts, old CI definitions and dedicated tests.
 - `legacy/v2/`, `legacy/ch1_global/v2/`, `analysis/ch1/`, `src/azami_ch1/`, `analysis_outputs/`: retained earlier/shared resources. They are **not** the V4 results.
 

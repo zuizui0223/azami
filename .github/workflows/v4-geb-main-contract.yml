@@ -47,12 +47,7 @@ jobs:
         run: |
           python -m analysis.v4.final_v4_bio18_holm_freeze --artifact-zip work/geb_v4/source.zip --output work/geb_v4/freeze_check.json
           python -m json.tool work/geb_v4/freeze_check.json > /dev/null
-      - name: Recheck four native-introduced climate margins and all 16 original angle slopes
-        run: |
-          python -m analysis.v4.s2_four_axis_source_recheck --artifact work/geb_v4/source.zip --out work/geb_v4/four_axis
-          test $(($(wc -l < work/geb_v4/four_axis/S2_four_axis_site_occupancy_margins.csv)-1)) -eq 8
-          test $(($(wc -l < work/geb_v4/four_axis/S2_four_axis_angle_coefficients.csv)-1)) -eq 16
-      - name: Regenerate full 208-test and 28-pair Supporting Information
+      - name: Regenerate 208 frozen phenotype-environment tests, 28 RV pairs and non-niche figures
         run: |
           python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'matplotlib>=3.8,<4'
           python manuscripts/v4_s1_s2_frozen_20261025/build_full_supplement.py --artifact work/geb_v4/source.zip --out work/geb_v4/si
@@ -66,7 +61,6 @@ jobs:
           name: geb-v4-source-check-${{ github.run_id }}
           path: |
             work/geb_v4/freeze_check.json
-            work/geb_v4/four_axis/**
             work/geb_v4/si/**
             work/geb_v4/figures/**
           retention-days: 30

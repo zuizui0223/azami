@@ -105,47 +105,43 @@ def rv_medians(module: list[dict[str, str]], dest: Path) -> None:
 
 
 
-def s2_wet_quarter_occupancy(dest: Path) -> None:
-    """Plot source-location distribution quantiles, never regression CIs."""
-    r = rows(ROOT / "s2_bio18_range_occupancy_summary.csv")
+def s2_phenotype_domains(dest: Path) -> None:
+    """Render original 24 October S2 photographic domain RV medians only.
+
+    Compares within-stratum trait association geometry; it DOES NOT compare
+    precipitation, climate occupancy, environmental niches or introduction effects.
+    """
+    r = rows(ROOT / "s2_module_summary.csv")
     expected = [
-        ("Cirsium arvense", "native", 78646, 222.2),
-        ("Cirsium arvense", "introduced", 70964, 270.4),
-        ("Cirsium vulgare", "native", 62368, 218.0),
-        ("Cirsium vulgare", "introduced", 85644, 267.7),
+        ("Cirsium arvense", "introduced", .0487, .00532),
+        ("Cirsium arvense", "native", .0218, .0119),
+        ("Cirsium vulgare", "introduced", .1180, .00785),
+        ("Cirsium vulgare", "native", .1102, .0125),
     ]
-    assert len(r) == 4, "Unexpected S2 range strata"
-    for x, (sp, status, n, med) in zip(r, expected):
-        assert (x["species"], x["range_status"]) == (sp, status)
-        assert int(x["source_wild_observations"]) == n
-        assert np.isclose(float(x["BIO18_median_mm_per_month"]), med, atol=1e-10)
-    fig, ax = plt.subplots(figsize=(10.8, 5.0))
-    fig.subplots_adjust(left=.22, right=.97, top=.85, bottom=.22)
-    yy = [3.15, 2.5, 1.25, .6]
-    for row, y in zip(r, yy):
-        median = float(row["BIO18_median_mm_per_month"])
-        q05 = float(row["BIO18_q05_mm_per_month"])
-        q95 = float(row["BIO18_q95_mm_per_month"])
-        status = row["range_status"]
-        marker = "o" if status == "native" else "s"
-        ax.plot([q05, q95], [y, y], linewidth=2.1)
-        ax.scatter(median, y, marker=marker, s=72, zorder=3)
-        ax.text(median, y+.13, f"{median:.1f}", ha="center", va="bottom", fontsize=9)
-    ax.set_yticks(yy, [
-        "arvense • native", "arvense • introduced",
-        "vulgare • native", "vulgare • introduced",
-    ])
-    ax.set_xlim(-10, 430)
-    ax.set_ylim(-.2, 4)
-    ax.set_xlabel("BIO18: warmest-quarter mean monthly precipitation (mm/month)")
-    ax.set_title("Observed S2 sites: wetter warm-quarter median climates in introduced ranges")
-    ax.text(242, 2.02, "Introduced − native median: +48.2 mm/month", ha="center", fontsize=9)
-    ax.text(240, -.06, "Introduced − native median: +49.7 mm/month", ha="center", fontsize=9)
-    fig.text(.025, .02,
-             "Segments show observed 5th–95th percentiles, NOT confidence intervals. "
-             "Source observations are spatially dependent; no niche evolution inferred.", fontsize=8)
+    assert len(r) == len(expected), "S2 frozen 2x2 phenotype strata changed"
+    for x, (species, status, same, across) in zip(r, expected):
+        assert x["species"] == species and x["range_status"] == status
+        assert np.isclose(float(x["within_domain_RV"]), same, atol=1e-10)
+        assert np.isclose(float(x["cross_domain_RV"]), across, atol=1e-10)
+        assert x["statistical_status"] == "descriptive"
+    labels = [("arvense • " if "arvense" in row["species"] else "vulgare • ") + row["range_status"] for row in r]
+    same = [float(x["within_domain_RV"]) for x in r]
+    cross = [float(x["cross_domain_RV"]) for x in r]
+    loc = np.arange(4)
+    fig, ax = plt.subplots(figsize=(10, 5.6))
+    fig.subplots_adjust(left=.17, right=.96, top=.85, bottom=.27)
+    ax.bar(loc - .19, same, .38, label="Within a registered visible trait domain")
+    ax.bar(loc + .19, cross, .38, label="Across domains")
+    ax.set_xticks(loc, labels, rotation=12, ha="right")
+    ax.set_ylabel("Median photographic RV (descriptive)")
+    ax.set_ylim(0, .15)
+    ax.set_title("S2: observed trait association geometry by species and range status")
+    ax.legend(frameon=False, loc="upper left", fontsize=9)
+    fig.text(.03, .04, "Four frozen S2 strata; no rainfall-niche or climate-occupancy comparison. "
+             "RV is not genetically validated.", fontsize=9)
     for ext in ("png", "svg"):
-        fig.savefig(dest / f"figure_S2_BIO18_native_introduced.{ext}", dpi=220, bbox_inches="tight")
+        fig.savefig(dest / f"figure4_S2_trait_domain_RV.{ext}", dpi=220,
+                    bbox_inches="tight")
     plt.close(fig)
 
 
@@ -159,7 +155,7 @@ def main() -> None:
     check_locked_input(assoc, module)
     forest(assoc, args.output_dir)
     rv_medians(module, args.output_dir)
-    s2_wet_quarter_occupancy(args.output_dir)
+    s2_phenotype_domains(args.output_dir)
     print(f"Locked-source figures created in {args.output_dir}")
 
 

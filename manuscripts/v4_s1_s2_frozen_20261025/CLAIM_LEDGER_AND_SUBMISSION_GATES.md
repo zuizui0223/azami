@@ -6,7 +6,7 @@
 **Aggregate JSON SHA-256:** 3738292e0a64da183dfe219c854c16cda199a7f9769f4928da8ab07657d60b70.  
 **LEGO JSON SHA-256:** bb01d3b5da03148d84b2521c9c92cf14f7f6177435e145118f6ff6df8846733f.  
 **Independent frozen audit:** Actions 40063813578 (success), artifact 12548870574.  
-**Immutable base:** snapshot/v4-final-bio18-holm-20261024. This manuscript branch adds text/data-to-figure scaffolding only.
+**Immutable base:** snapshot/v4-final-bio18-holm-20261024. The active GEB paper now excludes all post-freeze precipitation-niche analysis; its retained science is the 24 October V4 S1/S2 freeze.
 
 | Claim ID | Manuscript section | Evidence fixed in the freeze | Allowed claim | Stop / qualifier |
 |---|---|---|---|---|
@@ -22,14 +22,13 @@
 | C10 | 3.2 | Size-preserving 280 trait-label allocations; rank 1/280 within, 3/280 among | Registered domains distinctive in frozen measured covariance | NOT genetic modularity test nor independent replication |
 | C11 | 3.3 | 123/135 taxa possess all eight three-trait high/low combinations after adjustment | Broad photographed combinations exist | Sampling intensity/threshold dependence; not viability/genetic recombination |
 | C12 | 3.3 | Parity +0.03640 [0.01456,0.05762]; all-three-high −0.003595 [−0.007336,−0.000049]; between contrast +0.011494 [−0.004680,+0.027401] | Higher-order statistic depends on coding | No threshold-invariant synergistic G123 |
-| C13 | 3.4 | S2 adjusted RV medians for all 4 species×range strata | Descriptive colour/outline/photo covariances within strata | No replicated evolutionary module transition |
+| C13 | 3.4 / Figure 4 | S2 original 24 October BIO18-four-variable-adjusted same-/cross-domain RV medians for 4 species×range strata | Descriptive within-stratum photographic phenotype covariance | Not a native–introduced niche difference or evolutionary module transition |
 | C14 | 2.6 / 3.4 | Bract 1,168 each/39 taxa; chroma-bract 1,007/38; adjusted between RV0.153365 /within0.001796; subset max VIF6.14 | Limited supplementary image proxy | Not bract spine/stickiness/defense; not four-exposure primary claim |
 | C15 | Discussion | No independent gravitational marker, pigment measurement, genetic module, field fitness, systematic phylogenetic correction | Observational claim boundary | Never call adaptation, LEGO genetic reuse or independent gains established |
-| C16 | Abstract / Results 3.4 | Original Actions 12547876704 `S1_S2_extreme_LEGO_results.json`: *arvense* BIO18 222.2 native n=78,646 → 270.4 introduced n=70,964; *vulgare* 218.0 native n=62,368 → 267.7 introduced n=85,644 (mm per month) | Higher source-site median BIO18 in introduced ranges, +48.2/+49.7 mm month⁻¹ | Occurrence-site climate distribution, not matched photo-trait regression cohort or climate-niche evolution; source at same verified ZIP SHA |
 
 ## Frozen statistics used to regenerate summary figures
 
-The machine-readable manuscript-local file [table1_holm_associations.csv](table1_holm_associations.csv) contains only the four frozen Holm-passing comparisons. It is a **display subset**, not the complete 208-test result table. Any final Figure 2 caption must name the selection rule and direct readers to the complete archived model output. [s2_bio18_range_occupancy_summary.csv](s2_bio18_range_occupancy_summary.csv) contains source-location BIO18 n, 5th/95th quantiles and medians for all four range strata. [module_summary.csv](module_summary.csv) contains descriptive module RV medians and [s2_module_summary.csv](s2_module_summary.csv) the four S2 stratum medians. These values must never replace the complete 28-pair artifact when making a full integration heatmap.
+The machine-readable manuscript-local file [table1_holm_associations.csv](table1_holm_associations.csv) contains only the four frozen Holm-passing comparisons. It is a **display subset**, not the complete 208-test result table. Any final Figure 2 caption must name the selection rule and direct readers to the complete archived model output. [module_summary.csv](module_summary.csv) contains descriptive module RV medians and [s2_module_summary.csv](s2_module_summary.csv) the four S2 stratum medians. These values must never replace the complete 28-pair artifact when making a full integration heatmap.
 
 ## Editorial completion gates
 
@@ -47,3 +46,7 @@ The machine-readable manuscript-local file [table1_holm_associations.csv](table1
 - introduced-range evolution inferred from two species;
 - phylogenetically corrected T2 or cross-tribe T3 replication (separate projects);
 - claims that Holm adjustment also corrects the entire preceding model-selection process.
+
+## 25 October 2026 editorial scope stop
+
+**C16 has been withdrawn from the GEB manuscript's claim set**: native–introduced BIO18 source-location median comparisons, four-dimensional climate-centroid/novelty statistics, and matched-climate range effects are out of scope. All their original source receipts and code remain recoverable in [`legacy/v4_s2_precipitation_niche_20261025/`](../../legacy/v4_s2_precipitation_niche_20261025/README.md). This is a **manuscript scope change**, not falsification or alteration of the frozen 24 October data, the four accepted Holm coefficients, the 80/128 test-family definitions, or any photograph-derived trait covariance.

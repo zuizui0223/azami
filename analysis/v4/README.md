@@ -13,3 +13,7 @@ Frozen primary exposures: CHELSA BIO18, BIO05, RSDS and WorldClim elevation. Sou
 All original private source-reconstruction dependencies and cached assets remain reproducible at the **pinned source execution commit** `d2c45b00018a0c04e7c69a29857207dc1ac06d0c`. The scoped V4 code here reproduces the source calculation logic subject to the original private inputs; do not claim that `main` contains protected photos, decrypted metadata or new validated measurements. T2/T3 live outside this canonical S1/S2 manuscript scope.
 
 V3 remains at [`legacy/v3/`](../../legacy/v3/README.md), numerically separate.
+
+## GEB scope boundary (25 October 2026)
+
+For the present manuscript, S2 compares **photographic phenotype–environment coefficients and visible-trait covariance within four species×range strata**; it does **not** compare the distributions of BIO18/climatic niches between native and introduced ranges. The subsequent source-real niche results have been deferred to [`legacy/v4_s2_precipitation_niche_20261025/`](../../legacy/v4_s2_precipitation_niche_20261025/README.md). **Frozen 24 October models, coefficients, Holm families and original artifacts remain unchanged.**
