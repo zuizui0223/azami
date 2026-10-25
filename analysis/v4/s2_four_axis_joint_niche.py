@@ -80,12 +80,18 @@ def empirical_niche(t:pd.DataFrame,boot:int=399)->dict:
         if (sd<1e-8).any():
             raise ValueError("NATIVE_CLIMATE_SD_ZERO")
         diff=mi-mu; relative=diff/sd
-        cov=np.cov(n,rowvar=False)
-        ridge=.05*np.trace(cov)/4
-        inv=np.linalg.inv(cov+ridge*np.eye(4))
-        distance=float(np.sqrt(diff@inv@diff))
-        native_md=np.sqrt(np.einsum("ij,jk,ik->i",n-mu,inv,n-mu))
-        intro_md=np.sqrt(np.einsum("ij,jk,ik->i",i-mu,inv,i-mu))
+        # IMPORTANT: raw units mix mm/month, degrees C, radiation and metres.
+        # A ridge proportional to trace(raw covariance) is unit dependent.
+        # Standardise the four axes by native-cell SD BEFORE covariance
+        # regularisation, distance and novelty calculations.
+        zn=(n-mu)/sd
+        zi=(i-mu)/sd
+        cov=np.cov(zn,rowvar=False)
+        ridge=.05*np.trace(cov)/len(ENV)
+        inv=np.linalg.inv(cov+ridge*np.eye(len(ENV)))
+        distance=float(np.sqrt(relative@inv@relative))
+        native_md=np.sqrt(np.einsum("ij,jk,ik->i",zn,inv,zn))
+        intro_md=np.sqrt(np.einsum("ij,jk,ik->i",zi,inv,zi))
         threshold=float(np.quantile(native_md,.95))
         draws=np.empty((boot,4))
         for it in range(boot):
@@ -115,6 +121,7 @@ def empirical_niche(t:pd.DataFrame,boot:int=399)->dict:
             "original_observer_deduplicated_spatial_cell_n":{st:int(len(z)) for st,z in points.items()},
             "climate_axes":axes,"joint_4D_regularized_mahalanobis_centroid_distance":distance,
             "ridge_trace_fraction":.05,
+            "distance_unit_invariant_native_sd_standardized":True,
             "introduced_cell_fraction_outside_native_cell_95pct_ellipsoid":float(np.mean(intro_md>threshold)),
             "native_cell_fraction_outside_native_cell_95pct_ellipsoid":float(np.mean(native_md>threshold)),
             "not_environmental_availability_corrected_niche_expansion":True,
