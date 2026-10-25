@@ -1,4 +1,4 @@
-"""S1/S2-compatible 22-trait inventory -> genuine nuclear branchwise climate tests.
+"""Frozen S1/S2 eight constructs in three domains -> nuclear branchwise tests.
 
 Same original 313350 source-native observations, frozen 251-source S1 identity,
 endpoint-specific measurable-photo cohorts and four S1/S2 climate pixels.
@@ -6,8 +6,8 @@ Only the genuine NA63 and independent Japan38 176-locus trees are primary.
 NEVER read source rows from a public artifact: location/photo/user information
 stays inside GitHub Actions' authorised private workspace. Output is aggregate.
 
-S2 introduced-range extension is an *availability gate*, not a fabricated
-colour/shape remeasurement from the angle-only S2 four-climate source file.
+This T2 run does not execute an introduced-range S2 extension. The frozen
+S2 analysis already covers all eight constructs; its status is independent.
 """
 from __future__ import annotations
 import argparse
@@ -33,8 +33,6 @@ PAIRS=(
     ("presentation", "flower_colour"),
     ("presentation", "whole_head_shape"),
     ("flower_colour", "whole_head_shape"),
-    ("whole_head_shape", "involucre_body"),
-    ("involucre_body", "phyllary_contour_proxies"),
 )
 
 
@@ -63,7 +61,7 @@ def load_sources(table:Path,reference:Path,four:Path,registry:Path):
     original_photo=climates.proper_s1(measured,old_frame)
     if len(original_photo)!=FROZEN_S1_ANGLE_N:
         raise ValueError("S1 original photograph/angle baseline not reproduced")
-    selection=core.selection_registry(json.loads(registry.read_text(encoding="utf-8")))
+    selection=core.primary_trait_registry(json.loads(registry.read_text(encoding="utf-8")))
     for name in selection["measured"]:
         if name not in measured or name+"__eligible" not in measured:
             raise ValueError("Original measured endpoint unavailable: "+name)
@@ -218,7 +216,7 @@ def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=9999):
     if nperm<999:raise ValueError("Cannot downgrade frozen permutation resolution")
     reference_keys={r["original_source_name"]:str(r["accepted_key"]) for r in source251.to_dict("records")}
     trees,treesrc=true_nuclear_panels(reference)
-    units=core.tests_from_registry(registry)
+    units=core.primary_trait_tests(registry)
     results=[]; coverage=[]; pairs=[]
     for unit,trait_fields in units.items():
         available=observed_tip_means(frame,trait_fields,reference_keys,n_min=1)
@@ -271,12 +269,16 @@ def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=9999):
                 adjusted=core.holm_family([(r["unit"],r["conditional_tip_shuffle_fraction"])
                                            for r in selected])
                 for r in selected:r["holm_pair_family_fraction"]=adjusted[r["unit"]]
-    return {"version":"s1s2_multitrait_true_nuclear_branch_four_20261025_v2",
+    return {"version":"s1s2_primary8_three_domains_nuclear_branch_four_20261025_v3",
        "status":"SOURCE_VERIFIED_S1_PHOTO_BROWNIAN_MULTITRAIT_NOT_BOTANICAL_CTMC",
        "source_scope":"Original 313350 geolocated native observations / 306 accepted keys, filtered to frozen 251 original S1 source-name concept universe; exact 4 site climate raster pixels",
-       "axes":list(core.FOUR),"n_registered_image_endpoints":27,
-       "n_measured_image_endpoints":22,"n_unmeasured":5,
-       "n_technical_only_not_ecological":4,
+       "axes":list(core.FOUR),"n_primary_constructs":8,
+       "n_measured_coordinates":9,"n_primary_domains":3,
+       "primary_constructs":{k:list(v) for k,v in units.items()},
+       "primary_domains":list(registry['groups']),
+       "scope_source":"native_integration.FEATURES; frozen V4 S1/S2 presentation1 + colour3 + outline4",
+       "bract_involucre_texture_excluded_from_primary":True,
+       "cohort_note":"T2 endpoint-specific original-name/four-environment cohorts; not frozen S1 complete-12-climate regression or 156683 common-photo cohort",
        "no_hue_double_testing":True,
        "no_photo_angle_thresholded_as_botanical_U_D":True,
        "no_gloss_interpreted_as_stickiness":True,
@@ -288,9 +290,9 @@ def compute(frame,source251,four251,registry,*,reference:Path,nperm:int=9999):
        "hierarchy":"same-original-observation endpoint-specific taxon means -> nuclear Brownian branch deltas; no independent biological origin count",
        "unmeasured_endpoints":registry["unmeasured"],
        "technical_only_endpoints":registry["technical_only"],
-       "S2_introduced_extension":"NOT_TESTED_UNTIL_SAME_MEASURED_ENDPOINTS_AND_FOUR_EXPOSURES_REJOINED_TO_INTRODUCED_OBSERVATIONS",
+       "S2_introduced_extension":"NOT_TESTED_IN_THIS_T2_RUN_FROZEN_S2_8_CONSTRUCTS_ALREADY_AVAILABLE",
        "null":"conditioned original continuous taxon trait tip-shuffles, not fixed-count botanical-state maps",
-       "multiple_testing":"Holm across all admitted endpoint/block x four climates, separately per genuine tree, edge scope and photo gate",
+       "multiple_testing":"Holm across admitted primary constructs x four climates (maximum32), separately per genuine tree, edge scope and photo gate",
        "claim_ceiling":["No transition-time historical climate", "No true U-to-D from photo vertical",
           "No species-level ancestral pigment gain from JPEG L/C/hue", "No demonstrated genetic modularity, adaptation or independent origins"],
        "n_permutations":nperm,"endpoint_coverage":coverage,
@@ -315,7 +317,7 @@ def main():
                                              "four_environment_species251":sha(args.s1_four251)}
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(result,ensure_ascii=False,sort_keys=True,indent=2,allow_nan=False)+"\n",encoding="utf-8")
-    print(json.dumps({"status":result["status"],"n_measured":22,
+    print(json.dumps({"status":result["status"],"n_primary_constructs":8,"n_measured_coordinates":9,
           "n_run_models":sum(x["status"].startswith("COMPUTED") for x in result["nuclear_single_and_multivariate_tests"]),
           "n_joint_models":sum(x["status"].startswith("COMPUTED") for x in result["joint_photo_module_co_shifts"]),
           "n_blocked_or_unidentifiable":sum(not x["status"].startswith("COMPUTED") for x in result["nuclear_single_and_multivariate_tests"]),

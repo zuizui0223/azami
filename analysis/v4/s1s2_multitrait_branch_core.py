@@ -75,6 +75,32 @@ def tests_from_registry(reg: dict) -> dict[str, tuple[str, ...]]:
     return units
 
 
+def primary_trait_registry(inventory:dict)->dict:
+    """Frozen S1/S2: three domains, eight constructs, nine coordinates.
+
+    The 27-entry acquisition inventory is provenance, not the primary family.
+    Bract, involucre and texture variables do not enter this analysis.
+    """
+    from analysis.v4.native_integration import FEATURES
+    full=selection_registry(inventory)
+    columns={c for values in FEATURES.values() for c in values}
+    if len(FEATURES)!=8 or len(columns)!=9 or not columns<=set(full['measured']):
+        raise ValueError('Frozen eight primary constructs or measurements changed')
+    groups={k:full['groups'][k] for k in ('presentation','flower_colour','whole_head_shape')}
+    if {c for values in groups.values() for c in values}!=columns:
+        raise ValueError('Three-domain inventory differs from frozen S1/S2')
+    return {'measured':sorted(columns),'inferential':sorted(columns),
+            'groups':groups,'unmeasured':[],'technical_only':[]}
+
+
+def primary_trait_tests(reg:dict)->dict[str,tuple[str,...]]:
+    from analysis.v4.native_integration import FEATURES
+    units={'construct:'+key:tuple(values) for key,values in FEATURES.items()}
+    if {c for values in units.values() for c in values}!=set(reg['inferential']):
+        raise ValueError('Primary trait scope mismatch')
+    return units
+
+
 def branch_operator(tree, tip_order: list[str]):
     """Return Luu-inverted Brownian child-minus-parent operator and edge masks."""
     if len(tip_order) < MIN_TIPS or len(tip_order) != len(set(tip_order)):

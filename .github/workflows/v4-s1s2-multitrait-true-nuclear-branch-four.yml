@@ -1,4 +1,4 @@
-name: V4 S1 S2 22 measured traits genuine nuclear branch four climates
+name: V4 primary presentation colour outline eight constructs nuclear four climates
 on:
   workflow_dispatch:
   push:
@@ -9,6 +9,7 @@ on:
       - 'analysis/v4/run_s1s2_multitrait_nuclear_branch.py'
       - 'tests/test_v4_s1s2_multitrait_branch_core.py'
       - 'tests/test_v4_conditional_ancestry_export.py'
+      - 'tests/test_v4_t2_primary_trait_scope.py'
       - '.github/workflows/v4-s1s2-multitrait-true-nuclear-branch-four.yml'
 permissions:
   contents: read
@@ -35,21 +36,21 @@ jobs:
           python -m pip install -r reproducibility/requirements-current.txt \
             'cryptography>=46,<49' 'rasterio>=1.4,<2' \
             'requests>=2.32,<3' 'scipy>=1.11,<2' 'biopython>=1.83,<2' 'pytest>=8,<10'
-      - name: Test 22/5 registry, circular hue, BM ancestry, honest nulls, internal edges and family error control
+      - name: Test frozen eight constructs in three domains, ancestry and family error control
         run: |
-          python -m pytest -q tests/test_v4_s1s2_multitrait_branch_core.py tests/test_v4_conditional_ancestry_export.py
+          python -m pytest -q tests/test_v4_s1s2_multitrait_branch_core.py tests/test_v4_conditional_ancestry_export.py tests/test_v4_t2_primary_trait_scope.py
           python - <<'PY'
           import json
           from pathlib import Path
-          from analysis.v4.s1s2_multitrait_branch_core import selection_registry,tests_from_registry
+          from analysis.v4.s1s2_multitrait_branch_core import primary_trait_registry,primary_trait_tests
           original=json.loads(Path('analysis/v4/trait27_functional_crosswalk_v1.json').read_text())
-          selected=selection_registry(original)
-          tests=tests_from_registry(selected)
-          assert len(selected['measured'])==22 and len(selected['unmeasured'])==5
-          assert len(selected['technical_only'])==4
-          assert 'block:corolla_hue_circular' in tests
-          assert 'endpoint:involucre_surface_specular_fraction' not in tests
-          print('PASS_ACTUAL_27_TRAIT_CONTRACT_SOURCE_AND_22_MEASURED_5_UNMEASURED')
+          selected=primary_trait_registry(original)
+          tests=primary_trait_tests(selected)
+          assert len(selected['measured'])==9 and len(tests)==8
+          assert len(selected['groups'])==3 and not selected['technical_only']
+          assert tests['construct:hue']==('corolla_hue_sin','corolla_hue_cos')
+          assert not any('bract' in c or 'involucre' in c for v in tests.values() for c in v)
+          print('PASS_FROZEN_S1S2_PRESENTATION1_COLOUR3_OUTLINE4')
           PY
       - name: Restore original 313350 georeferenced wild-native observation measures privately
         env:
@@ -101,7 +102,7 @@ jobs:
           echo '90078d99eeb0b08dd1a115a5ffa60b7c19e5849686854db950283cbac9d3817d  work/multi/rasters/CHELSA_bio05_1981-2010_V.2.1.tif' | sha256sum -c -
           echo '68b0b1cb905cdf6972364e947e137f714a68d287f38863b1516161a2a4bbd7ec  work/multi/rasters/CHELSA_bio18_1981-2010_V.2.1.tif' | sha256sum -c -
           echo '1d57ce9fd3584cea6a227396bc75ef88522fd5346e8487c17370885c0499716e  work/multi/rasters/wc2.1_30s_elev.tif' | sha256sum -c -
-      - name: Run actual 22-trait source-specific four climate tests on separate NA42 and Japan12 genuine nuclear trees
+      - name: Run primary eight constructs four climate tests on separate NA42 and Japan12 nuclear trees
         run: |
           python -m analysis.v4.run_s1s2_multitrait_nuclear_branch \
             --decoded-native work/multi/decoded/observations.csv.gz \
@@ -110,17 +111,17 @@ jobs:
             --registry analysis/v4/trait27_functional_crosswalk_v1.json \
             --raster-root work/multi/rasters \
             --permutations 9999 \
-            --out work/multi/out/S1S2_MULTITRAIT_REAL_NUCLEAR_BRANCH_FOUR_CLIMATE.json
+            --out work/multi/out/T2_PRIMARY8_THREE_DOMAINS_NUCLEAR_FOUR_CLIMATE.json
           git rev-parse HEAD > work/multi/out/EXACT_EXECUTION_COMMIT.txt
       - name: Fail closed on original 169020 S1 mismatch or fabricated botanical trait claims
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path('work/multi/out/S1S2_MULTITRAIT_REAL_NUCLEAR_BRANCH_FOUR_CLIMATE.json')
+          p=Path('work/multi/out/T2_PRIMARY8_THREE_DOMAINS_NUCLEAR_FOUR_CLIMATE.json')
           a=json.loads(p.read_text())
-          assert a['n_registered_image_endpoints']==27 and a['n_measured_image_endpoints']==22
-          assert a['n_technical_only_not_ecological']==4
+          assert a['n_primary_constructs']==8 and a['n_measured_coordinates']==9
+          assert a['n_primary_domains']==3 and a['bract_involucre_texture_excluded_from_primary']
           assert a['S1_S2_same_pixel_angle_reproduction']['four_pixel_complete']==169020
           assert a['NA_and_Japan_never_joined_into_invented_global_tree']
           assert a['no_hue_double_testing'] and a['no_photo_angle_thresholded_as_botanical_U_D']
@@ -128,12 +129,12 @@ jobs:
           assert len(a['nuclear_single_and_multivariate_tests'])>0
           assert all(x['status'].startswith(('STOP_','COMPUTED_')) for x in a['nuclear_single_and_multivariate_tests'])
           assert not any(x in p.read_text() for x in ('"obs_id"','"latitude"','"longitude"','"user_id"','"photographer_id"'))
-          print('PASS_SOURCE_VERIFIED_S1_S2_22_TRAIT_TRUE_NUCLEAR_NO_INVENTED_TRANSITIONS')
+          print('PASS_PRIMARY8_THREE_DOMAINS_TRUE_NUCLEAR_NO_INVENTED_TRANSITIONS')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: v4-S1S2-22trait-authentic-NA42-Japan12-nuclear-4climate
+          name: v4-T2-primary8-three-domains-authentic-nuclear-four-climate
           path: work/multi/out/
           retention-days: 90
           if-no-files-found: warn
