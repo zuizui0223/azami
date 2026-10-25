@@ -1,6 +1,11 @@
 name: V4 primary presentation colour outline eight constructs nuclear four climates
 on:
   workflow_dispatch:
+    inputs:
+      cohort_only:
+        type: boolean
+        default: false
+        description: Export exact frozen S1 aggregate taxon cohorts only
   push:
     branches: [codex/v4-native-integration-workflow]
     paths:
@@ -19,6 +24,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   genuine-nuclear-multitrait-original-pixels:
+    if: ${{ inputs.cohort_only != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 140
     env:
@@ -138,3 +144,63 @@ jobs:
           path: work/multi/out/
           retention-days: 90
           if-no-files-found: warn
+
+  frozen-s1-taxon-cohorts:
+    if: ${{ inputs.cohort_only == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: d2c45b00018a0c04e7c69a29857207dc1ac06d0c
+          path: frozen-s1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r frozen-s1/reproducibility/requirements-current.txt 'cryptography>=46,<49' 'rasterio>=1.4,<2' 'requests>=2.32,<3' 'shapely>=2,<3'
+      - name: Restore original 313350 georeferenced wild-native observation measures privately
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/multi/private work/multi/receipt work/multi/decoded work/multi/source251 work/multi/four work/multi/rasters work/multi/out
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/multi/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/multi/receipt
+          python - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/multi')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt['encrypted_table_sha256']
+          clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+              sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          assert hashlib.sha256(clear).hexdigest()==receipt['prepared_table_sha256']
+          (root/'private/observations.csv.gz').write_bytes(clear)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/multi/private/observations.csv.gz \
+            --receipt work/multi/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/multi/decoded
+      - name: Export aggregate membership with frozen selection functions
+        env:
+          PYTHONPATH: frozen-s1
+        run: |
+          python analysis/v4/export_frozen_s1_taxon_cohorts.py --native work/multi/decoded/observations.csv.gz --out work/s1-cohort/out --temporary work/s1-cohort/temp
+          git rev-parse HEAD > work/s1-cohort/out/EXACT_EXECUTION_COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frozen-s1-primary-taxon-cohorts
+          path: work/s1-cohort/out/
+          if-no-files-found: error
