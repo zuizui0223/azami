@@ -68,5 +68,33 @@ class JointV4SourceContract(unittest.TestCase):
         self.assertNotIn("synthetic_",payload)
         self.assertNotIn("tester_",payload)
 
+    def test_4d_mahalanobis_invariant_to_exposure_units(self):
+        sample=synthetic()
+        changed=sample.copy()
+        # Multiplying the four physical units must not change a dimensionless
+        # native-reference 4D distance or the outside-native-95th fraction.
+        factors=(.001, 100.0, 2.5, .01)
+        for col,k in zip(mod.ENV,factors):
+            changed[col]=changed[col]*k
+        original=dict(mod.BIO18_MEDIANS)
+        def compare(frame):
+            for sp in mod.SPECIES:
+                for state in ("native","introduced"):
+                    vals=frame.loc[(frame.taxon_name==sp)&(frame.range_state==state),"chelsa_bio18"]
+                    mod.BIO18_MEDIANS[(sp,state)]=float(vals.median())
+            return mod.empirical_niche(frame,boot=30)
+        try:
+            before=compare(sample)
+            after=compare(changed)
+        finally:
+            mod.BIO18_MEDIANS.clear()
+            mod.BIO18_MEDIANS.update(original)
+        for sp in mod.SPECIES:
+            self.assertTrue(before[sp]["distance_unit_invariant_native_sd_standardized"])
+            for key in ("joint_4D_regularized_mahalanobis_centroid_distance",
+                        "introduced_cell_fraction_outside_native_cell_95pct_ellipsoid",
+                        "native_cell_fraction_outside_native_cell_95pct_ellipsoid"):
+                self.assertAlmostEqual(before[sp][key],after[sp][key],places=10)
+
 if __name__=="__main__":
     unittest.main()
