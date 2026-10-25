@@ -2,12 +2,23 @@
   "study": "V4_S2_FOUR_AXIS_NATURAL_CONTRAST_20261025",
   "status": "SOURCE_REAL_EXECUTION_SUCCEEDED",
   "provenance": {
-    "run_url": "https://github.com/zuizui0223/azami/actions/runs/40164655107",
-    "artifact_id": 12587614564,
-    "artifact_zip_sha256": "024c8c14e5f0ec4a4a767ed419dbf3f2ef30caaf8156953630c4e04914547934",
-    "joint_result_member_sha256": "b63662536bf26309622d3fed4a0602891658b1afcd8c00770443b516bb7bbe6e",
-    "unchanged_original_s1_s2_aggregate_sha256": "bb01d3b5da03148d84b2521c9c92cf14f7f6177435e145118f6ff6df8846733f",
-    "unchanged_four_model_aggregate_sha256": "3738292e0a64da183dfe219c854c16cda199a7f9769f4928da8ab07657d60b70"
+    "rechecked_at": "2026-10-25",
+    "verified_unit_invariant_source_run": "https://github.com/zuizui0223/azami/actions/runs/40166532404",
+    "corrected_artifact_id": 12588158569,
+    "corrected_zip_sha256": "1fcb9ff110f2c2d6bba6afc58b45d9a38f86cf919f989f354f82054a80cec121",
+    "corrected_joint_result_sha256": "800f2f5dc37d7156324a4756f372306c3f8b28cb00c88d683e86cd01c2c64063",
+    "original_20261024_frozen_S1_S2_member_sha256": "bb01d3b5da03148d84b2521c9c92cf14f7f6177435e145118f6ff6df8846733f",
+    "original_20261024_frozen_four_model_member_sha256": "3738292e0a64da183dfe219c854c16cda199a7f9769f4928da8ab07657d60b70",
+    "recomputed_source_member_S1_S2_sha256": "7ef3def10aff9143825273431c98c600a1bfd2b1266915767ab953f5f8f22b05",
+    "recomputed_four_model_member_sha256": "985bdace3af1b9130d9b78ae4400a7b072a4950533de66dd08eabb9d7284561d",
+    "original_members_not_byte_identical_but_numerically_equivalent": true,
+    "max_absolute_numeric_deviation_in_recomputed_members": 9.922018762154039e-11,
+    "original_metadata_non_numeric_structure_unchanged": true,
+    "first_source_run_reference": {
+      "url": "https://github.com/zuizui0223/azami/actions/runs/40164655107",
+      "artifact_id": 12587614564,
+      "raw_unit_4D_metric_superseded": true
+    }
   },
   "units": {
     "BIO18": "mean monthly warmest-quarter precipitation (mm/month)",
@@ -60,8 +71,8 @@
           0.3017318570882106
         ]
       },
-      "joint_4d_native_covariance_regularized_centroid_distance": 0.18224350262099506,
-      "introduced_cells_outside_native95_ellipsoid_fraction": 0,
+      "joint_4d_native_covariance_regularized_centroid_distance": 0.4484905736715805,
+      "introduced_cells_outside_native95_ellipsoid_fraction": 0.012987012987012988,
       "camera_angle_four_axis_analog": {
         "native_n": 438,
         "introduced_n": 6069,
@@ -79,7 +90,8 @@
           -8.957604063146364,
           5.796944111253296
         ]
-      }
+      },
+      "distance_unit_invariant_native_sd_standardized": true
     },
     "Cirsium vulgare": {
       "source_n": {
@@ -124,8 +136,8 @@
           0.5741479362808615
         ]
       },
-      "joint_4d_native_covariance_regularized_centroid_distance": 0.9133865600187208,
-      "introduced_cells_outside_native95_ellipsoid_fraction": 0.18681318681318682,
+      "joint_4d_native_covariance_regularized_centroid_distance": 1.791317748408152,
+      "introduced_cells_outside_native95_ellipsoid_fraction": 0.25274725274725274,
       "camera_angle_four_axis_analog": {
         "native_n": 791,
         "introduced_n": 8220,
@@ -143,7 +155,8 @@
           -7.29552000544396,
           7.265430622185971
         ]
-      }
+      },
+      "distance_unit_invariant_native_sd_standardized": true
     }
   },
   "interpretation": {
@@ -154,6 +167,8 @@
     "angle_photo_axis_not_gravity_validated": true,
     "wide_angle_intervals_do_not_prove_equivalence": true,
     "same_species_range_contrast_is_not_randomized_selection_experiment": true,
-    "maintain_original_frozen_V4_S1_S2_Holm_results_unchanged": true
+    "maintain_original_frozen_V4_S1_S2_Holm_results_unchanged": true,
+    "four_dimensional_distance_calculated_from_native_SD_standardized_coordinates": true,
+    "original_raw_unit_ridge_distances_superseded": true
   }
 }
