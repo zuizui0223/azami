@@ -23,8 +23,12 @@ def verified(path: Path) -> dict:
     if d["status"]!="SOURCE_REAL_EXECUTION_SUCCEEDED":
         raise ValueError("Source real V4 S2 data absent")
     # Protect original input identity; published summaries never export IDs.
-    if d["provenance"]["unchanged_four_model_aggregate_sha256"]!="3738292e0a64da183dfe219c854c16cda199a7f9769f4928da8ab07657d60b70":
+    if d["provenance"]["original_20261024_frozen_four_model_member_sha256"]!="3738292e0a64da183dfe219c854c16cda199a7f9769f4928da8ab07657d60b70":
         raise ValueError("Original four-model V4 freeze checksum mismatch")
+    if d["provenance"].get("corrected_joint_result_sha256")!="800f2f5dc37d7156324a4756f372306c3f8b28cb00c88d683e86cd01c2c64063":
+        raise ValueError("Corrected unit-standardized real-source result not verified")
+    if not all(d["species"][sp]["distance_unit_invariant_native_sd_standardized"] for sp in NAMES):
+        raise ValueError("Heterogeneous-unit niche distance input rejected")
     if set(d["species"])!=set(NAMES):
         raise ValueError("Unexpected thistle source strata")
     return d
