@@ -1,60 +1,42 @@
-# Azami capitulum phenotypes
+# Azami — V4 S1–S2 | Global Ecology and Biogeography
 
-Current analysis and reproducible numerical evidence for the Chapter 1 study prepared for **Global Ecology and Biogeography (GEB)**. Manuscript text, submission files and private reviewer correspondence are kept outside this repository.
-
-Original software is released under the [MIT license](LICENSE); see [NOTICE.md](NOTICE.md) for the separate treatment of images, data and third-party material.
-
-## Reproduction boundary
-
-The current statistical analysis **has executable code**. Its replay starts from frozen image-derived continuous measurements plus fixed environmental, spatial and historical auxiliary inputs; it does not start from the original photographs. Original photographs, detector training/provenance and other external source materials belong to a separate upstream layer and are not all redistributed by the minimum numerical archive. See [upstream-data and reproducibility boundary](reproducibility/UPSTREAM_DATA_BOUNDARY_20260926.md).
+**Current main scientific baseline (frozen 24 October 2026): V4 S1–S2.** This repository preserves the existing V3 science under [`legacy/v3/`](legacy/v3/README.md) without deleting its original sources. V4 T2 (phylogenetic history) and T3 (other-tribe extension) are **not** part of the present GEB manuscript.
 
 ## Start here
 
-1. [Current numerical reproduction](reproducibility/CURRENT_ANALYSIS.md): verified inputs, one-command execution, and result validation.
-2. [Current results and interpretation](analysis/v3/README.md): biological constructs, environmental associations and whole-capitulum integration.
-3. [GEB scope freeze](analysis/v3/GEB_SCOPE_FREEZE_20260912.md): frozen claim boundary, submission-readiness work, analysis stop list, and separate evidence routes for any higher-tier successor.
-4. [Current figure surface](reproducibility/CURRENT_FIGURE_SURFACE_20260912.md): Main-figure role freeze aligned to the v3 story and the boundary between the 46,276/259 atlas and 1,734/42 integration cohort.
-5. [GEB submission audit](reproducibility/GEB_SUBMISSION_AUDIT_20260912.md): journal-format, double-anonymous review-access, abstract/display-piece and Supporting Information gates.
-6. [Reproducibility and archive status](reproducibility/README.md): what is publicly archived and what still needs a new Zenodo version.
-7. [Historical implementations](legacy/README.md): v2 and superseded entry points. Do not start the current paper analysis from these scripts.
+1. [GEB Research Article draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md) — macroecological framing, structured abstract, primary Methods/Results/Discussion, tables and planned display pieces.
+2. [Blinded reviewer-text working draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE_BLINDED.md) — identity-sensitive internal provenance hidden; **not yet submission ready** because anonymous reviewer access is not established.
+3. [Source and claim ledger](manuscripts/v4_s1_s2_frozen_20261025/CLAIM_LEDGER_AND_SUBMISSION_GATES.md) and [GEB preparation checklist](manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_CHECKLIST.md).
+4. [Frozen V4 scientific record](analysis/v4/FINAL_V4_BIO18_HOLM_LEGO_FREEZE_20261024_JA.md) and [read-only science checksum workflow](.github/workflows/v4-final-bio18-holm-freeze.yml).
+5. [Historical V3 archive](legacy/v3/README.md) and [V2 archive](legacy/v2/ORIGINAL_REPRODUCTION.md).
 
-## Current evidence chain
+## Frozen V4 research question
 
-```text
-Frozen image-derived continuous measurements
-    22 measured endpoints out of 27 registered
-                    ↓
-Biological constructs and environmental associations
-    same 46,276-observation / 259-taxon source cohort
-                    ↓
-Sampling, spatial and phylogenetic-placement sensitivities
-                    ↓
-Whole-capitulum integration on the common complete-18 cohort
-    1,734 observations / 42 taxa; 9 constructs / 36 relations
-                    ↓
-Taxon bootstrap, direct scale contrast and technical audits
-```
+Are climatic associations and covariation among visible *Cirsium* capitulum **presentation, colour and outline** the same at between-taxon and within-species native/introduced scales, or is the visible floral phenotype partly modular and environmentally scale dependent?
 
-The source includes native- and introduced-range observations. The current numerical workflow does not download images, retrain YOLO or revive categorical trait classifiers. YOLO localizes visible capitula; deterministic measurements define the continuous image phenotypes. Current construct analyses use the existing measurements, with the endpoint baseline retained separately.
+**Primary four-variable model:** CHELSA BIO18 (warmest-quarter **mean monthly** precipitation), BIO05, RSDS, plus WorldClim elevation. This is a **post hoc frozen** model, not independently preregistered. S1 is the native-range source census (313,350 records); S2 is the native/introduced wild census of *C. arvense* and *C. vulgare* (297,622). Eight photograph-derived constructs are analysed. Independent Holm families contain **80 S1 and 128 S2** biological comparisons (hue sine/cosine jointly counted as one construct).
 
-Environmental associations are marginal analyses of nine predictors, not jointly adjusted effects of nine independent environmental causes. Spatial and phylogenetic-placement models are separate sensitivity analyses. Their passage is not a simultaneous spatial–phylogenetic correction or proof of adaptation. Module integration describes visible phenotypes, not genetic or evolutionary modularity.
+**Four Holm-supported observational associations:**
+- S1 between taxa: image-frame head angle × BIO18, standardized β +0.045447, Holm P = 0.00920635 (n 168,907).
+- S2 introduced *C. arvense*: image colour lightness × elevation, β −0.173732, Holm P = 0.00131233 (n 26,171).
+- S2 introduced *C. vulgare*: chroma × RSDS, β +0.134504, Holm P = 0.01456813 (n 27,200).
+- S2 introduced *C. vulgare*: lightness × RSDS, β −0.142801, Holm P = 0.01925414 (n 27,200).
 
-## Repository boundaries
+S1's 156,683 common photographs / 174 taxa yielded stronger raw between- than within-taxon RV for **24/28** environmentally adjusted pairs; higher same-domain than cross-domain RV is a measured **phenotypic association**, not genetically independent modules. Both S2 introduced ranges have wetter BIO18 source-site medians (+48.2/+49.7 mm per month) without common supported image-angle slopes. S1 native photographs overlap S2 native photographs and cannot be treated as independent replications.
 
-| Location | Role |
-|---|---|
-| `analysis/v3/` | Current construct-level numerical entry points and result receipts |
-| `analysis/ch1/` | Shared frozen measurement and environmental contracts |
-| `src/azami_ch1/` | Shared provenance and tabular utilities |
-| `reproducibility/` | Input identities, current runner, validators and archive status |
-| `analysis_outputs/` | Labelled frozen endpoint-level reference results |
-| `reproducibility/figures/` | Labelled frozen v2 reference figures, not the current Main figure set |
-| `legacy/` | Historical acquisition, measurement, endpoint analysis and figure implementations |
+**Not established:** causal rainfall selection, true gravity-based nodding, calibrated anthocyanin, heritable LEGO units, evolutionary module reassembly or introduction-driven evolution. Previous BIO12 geographic analyses show sensitivity to taxon composition; photograph-based confounding remains a limitation. Full supplement and source checks are anchored to [frozen artifact 12547876704](https://github.com/zuizui0223/azami/actions/runs/40062126006), original-data success SHA `d2c45b00018a0c04e7c69a29857207dc1ac06d0c`, ZIP SHA-256 `6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205`. The scientific snapshot is `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`.
 
-The current numerical runner reuses the retained spatial and historical-placement implementations under `legacy/v2/analysis`; those two explicit dependencies preserve the original calculations. Other legacy entry points are not current analysis instructions.
+## Layout and reproducibility boundaries
 
-## Public availability
+- `analysis/v4/`: **only frozen S1–S2 code, contracts and source-verified summaries**, not the T2/T3 research branches. For full, earlier private-source reconstruction use the source execution commit pinned above; today's `main` is a submission-oriented presentation of that immutable analysis, not a remeasurement.
+- `manuscripts/v4_s1_s2_frozen_20261025/`: editable article, summary figures scripts, checked numerical supplement rebuild and claim ledger.
+- `legacy/v3/`: archived V3 analytical source, reproducibility package, result receipts, old CI definitions and dedicated tests.
+- `legacy/v2/`, `legacy/ch1_global/v2/`, `analysis/ch1/`, `src/azami_ch1/`, `analysis_outputs/`: retained earlier/shared resources. They are **not** the V4 results.
 
-Zenodo DOI [10.5281/zenodo.22295791](https://doi.org/10.5281/zenodo.22295791) archives the **v2** numerical input package. The planned v3 Zenodo update is likewise **data-only**: it preserves the exact processed numerical inputs that would otherwise depend on expiring GitHub Actions artifacts. Analysis code, runbooks, frozen reference outputs and figures remain versioned in GitHub. The eight-stage/16-reference-file replay has already passed; the [archive audit](reproducibility/ZENODO_UPDATE_AUDIT.md) records the data-only update contract.
+Only a **read-only V4 audit and GEB manuscript integrity** workflow remain active. Historical V3 Zenodo publishing steps are archived and must not auto-run after this change.
 
-Exact historical v2 reproduction remains available at commit `584af97b050d15701f26ce1facea212d5b648d4d`. The current scientific reference is main commit `fe25abd46e7235c85e6da191f976e1c8a02d0406`; subsequent layout-only changes must preserve its numerical results.
+## Public-data limitation and journal status
+
+The frozen V4 numerical artifact is verified but GitHub Actions artifacts can expire and private upstream measurements remain access-restricted. A durable deposit of allowable aggregates/code, anonymous review URL, field/photo validation, licences, full references, author metadata and final figure layout are still necessary to submit to *Global Ecology and Biogeography*. No DOI for V4 or published/submitted manuscript is claimed. The previous Zenodo DOI 10.5281/zenodo.22295791 is a **historical V2 numerical archive**, not the V4 dataset.
+
+Original code is MIT licensed; data, images and third-party assets remain subject to their separate licences; see [NOTICE](NOTICE.md).

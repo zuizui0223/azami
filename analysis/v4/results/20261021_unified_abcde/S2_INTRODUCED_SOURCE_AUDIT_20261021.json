@@ -1,0 +1,168 @@
+{
+  "schema_version": "v4_S2_source665115_introduced_range_verified_20261021_v1",
+  "source": {
+    "repository": "zuizui0223/azami",
+    "workflow_run": 39537559204,
+    "artifact_id": 12318407009,
+    "artifact_name": "v4-rain-introduced-source-opportunity",
+    "artifact_sha256": "80e5c7d91545ed00aff635a6ff4e274219a040caa42051e6e5b5782d03565372",
+    "source_json_member": "source665115_introduced_opportunity.json",
+    "source_json_sha256": "bbfc9a459a1a5c230c31a405671633e3032491f92f0123634e5cbb8f4db33562",
+    "original_metadata_sha256": "2f216652602a0b3c42b64780d9b31a3ecb2e7fc1300b28b303e8c369b31884ae",
+    "WCVP_350_source_sha256": "a5bf23efffbf8e8f9459d5c3391a0136adcedd8f9dbff0117caa969ab545c2bd",
+    "archived_observation_measurements_sha256": "b49a093c849928c456d6747ec51772b5a6b78debb2ae5eb5dbe2a91b08f66dd7",
+    "status": "EXECUTED_ORIGINAL_PREDETECTOR_METADATA_AND_ARCHIVED_MEASUREMENT_ROSTER",
+    "private_source_ids_in_receipt": false
+  },
+  "original_population": {
+    "observations": 665115,
+    "photo_links": 1122854,
+    "species_rank_observations": 580066,
+    "native_wild": 313350,
+    "introduced_wild_explicit_WCVP": 156750,
+    "other_unresolved_captive_unmapped_or_unusable": 195015,
+    "other_breakdown": {
+      "taxonomic_unresolved": 123495,
+      "unusable_coordinates": 32211,
+      "unmapped_TDWG": 30199,
+      "WCVP_uncertain_or_unlisted": 7447,
+      "captive": 1663
+    },
+    "all_statuses_exactly_partition_original": true,
+    "preexisting_measured_observations": 406582,
+    "native_measured_observations": 217104,
+    "introduced_measured_observations": 117878,
+    "introduced_orientation_eligible": 91106,
+    "introduced_colour_eligible": 99153
+  },
+  "focal_taxa": {
+    "Cirsium arvense": {
+      "native": {
+        "observations": 78646,
+        "orientation_eligible": 49072,
+        "photo_links": 117662,
+        "observers": 26644,
+        "cells": 205,
+        "continent_TDWG1_eligible": {
+          "Europe": {
+            "observations": 71472,
+            "orientation": 44470
+          },
+          "Asia temperate": {
+            "observations": 6936,
+            "orientation": 4499
+          },
+          "Asia tropical": {
+            "observations": 238,
+            "orientation": 103
+          }
+        }
+      },
+      "introduced": {
+        "observations": 70964,
+        "orientation_eligible": 43195,
+        "photo_links": 112179,
+        "observers": 34332,
+        "cells": 106,
+        "continent_TDWG1_eligible": {
+          "Europe": {
+            "observations": 32,
+            "orientation": 22
+          },
+          "Australasia": {
+            "observations": 1764,
+            "orientation": 1038
+          },
+          "North America": {
+            "observations": 69138,
+            "orientation": 42114
+          },
+          "South America": {
+            "observations": 20,
+            "orientation": 12
+          },
+          "Antarctic": {
+            "observations": 10,
+            "orientation": 9
+          }
+        }
+      },
+      "other_status_observations": 13732
+    },
+    "Cirsium vulgare": {
+      "native": {
+        "observations": 62368,
+        "orientation_eligible": 33637,
+        "photo_links": 97526,
+        "observers": 22860,
+        "cells": 129,
+        "continent_TDWG1_eligible": {
+          "Europe": {
+            "observations": 59298,
+            "orientation": 31892
+          },
+          "Africa": {
+            "observations": 25,
+            "orientation": 14
+          },
+          "Asia temperate": {
+            "observations": 3031,
+            "orientation": 1727
+          },
+          "Asia tropical": {
+            "observations": 14,
+            "orientation": 4
+          }
+        }
+      },
+      "introduced": {
+        "observations": 85644,
+        "orientation_eligible": 47833,
+        "photo_links": 139262,
+        "observers": 44154,
+        "cells": 162,
+        "continent_TDWG1_eligible": {
+          "Africa": {
+            "observations": 3639,
+            "orientation": 2376
+          },
+          "Asia temperate": {
+            "observations": 74,
+            "orientation": 49
+          },
+          "Australasia": {
+            "observations": 6958,
+            "orientation": 4238
+          },
+          "Pacific": {
+            "observations": 123,
+            "orientation": 86
+          },
+          "North America": {
+            "observations": 71667,
+            "orientation": 39009
+          },
+          "South America": {
+            "observations": 3183,
+            "orientation": 2075
+          }
+        }
+      },
+      "other_status_observations": 25146
+    }
+  },
+  "next_step_support_rule": {
+    "min_orientation_eligible_per_range": 30,
+    "min_5degree_equal_sin_cells_per_range": 5,
+    "min_distinct_observers_per_range": 10,
+    "both_focal_taxa_pass": true
+  },
+  "not_yet_tested": [
+    "native-to-introduced slope differences",
+    "climatic common support and extrapolation",
+    "camera/phenological correction in both ranges",
+    "independently validated same-head measurement error",
+    "fitness or evolution rate"
+  ],
+  "scientific_boundary": "WCVP region introduced establishment and original non-captive geo-confidence do not prove a photographed individual's naturalization; photo orientation is camera-axis relative and historical archived measurements are not independent new phenotyping"
+}

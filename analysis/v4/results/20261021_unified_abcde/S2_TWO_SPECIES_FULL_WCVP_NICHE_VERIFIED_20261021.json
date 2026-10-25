@@ -1,0 +1,214 @@
+{
+  "schema_version": "v4_two_cirsium_full_WCVP_background_pca_env_real_receipt_20261021_v1",
+  "source": {
+    "repo": "zuizui0223/azami",
+    "pr": 144,
+    "full_background_actions_run": 39557273395,
+    "artifact_id": 12326676034,
+    "artifact_zip_sha256": "58fe9c9dd0253590f3045734e1bffd591f7d5450f3a21cc305f57c4250f8f91e",
+    "source_json_member": "S2_two_species_full_background_PCA_env.json",
+    "source_json_sha256": "3809d84d478b1178737d5518d045bedda5917e755a4725a7db7749cdb50a3776",
+    "original_665115_source_WCVP_350_map_correct": true,
+    "private_original_observers_and_locations_not_exported": true,
+    "all_five_CHELSA_1981_2010_original_full_TIFFs_SHA256_checked_against_frozen_source_metadata": true,
+    "original_raster_bytes_each_deleted_after_point_sampling": true,
+    "original_photo_angle_values_not_used_in_environment_niche_selection": true
+  },
+  "global_background": {
+    "TDWG_0p5_degree_mesh_points": 85414,
+    "CHELSA_five_predictors_finite_mesh_points": 85414,
+    "source_chelsa_variables": [
+      "bio01",
+      "bio04",
+      "bio12",
+      "bio15",
+      "rsds_mean"
+    ],
+    "WCVP_available_native_area_coverage_both_species": 1,
+    "WCVP_available_introduced_area_coverage_both_species": 1,
+    "background_area_weight": "cos(latitude) on WCVP 0.5deg region mesh, exact original ~1km CHELSA pixels for site values",
+    "same_2axis_climate_ordination_native_introduced_balanced_background": true,
+    "PCA_env_grid": "80x80 Gaussian smoothing 1.5 grid cells corrected by within-region available climate density",
+    "ecospat_exact_equivalence_similarity_test_executed": false,
+    "MaxEnt_executed": false
+  },
+  "species": {
+    "Cirsium arvense": {
+      "original_eligible_wild_before_cell_dedup": {
+        "native": 78646,
+        "introduced": 70964
+      },
+      "observer_cell_unique_sightings_full_CHELSA": {
+        "native": 30523,
+        "introduced": 38406
+      },
+      "WCVP_area_weighted_background_coverage": {
+        "native": 1,
+        "introduced": 1
+      },
+      "climate_median_native_to_introduced": {
+        "BIO1_C": [
+          6.45,
+          6.75
+        ],
+        "BIO4": [
+          938.7241929969608,
+          843.4000000000001
+        ],
+        "BIO12_mm": [
+          658.5982622830617,
+          876
+        ],
+        "BIO15": [
+          42.1,
+          29.9
+        ],
+        "RSDS": [
+          13.129765337663486,
+          13.771
+        ]
+      },
+      "PCA_env_2axis_variance_fraction": [
+        0.5031348660055801,
+        0.254677230361598
+      ],
+      "PCA_env_background_corrected_Schoener_D": 0.47393796854546466,
+      "PCA_env_uncorrected_occurrence_density_D": 0.5293182401433436,
+      "introduced_density_outside_native_95percent_probability_content": 0.18845136735411133,
+      "introduced_regions": {
+        "North America": {
+          "n": 37547,
+          "available_background": 1,
+          "D": 0.41975641086786464,
+          "BIO12_median_minus_native_mm": 173.402,
+          "BIO15_median_minus_native": -1.6
+        },
+        "Australasia": {
+          "n": 807,
+          "available_background": 1,
+          "D": 0.1575751821243585,
+          "BIO12_median_minus_native_mm": 450.57,
+          "BIO15_median_minus_native": -23.5
+        },
+        "South America": {
+          "n": 17,
+          "available_background": 1,
+          "status": "STOP_TOO_FEW_SOURCE_WILD_SIGHTINGS"
+        },
+        "Europe": {
+          "n": 26,
+          "available_background": 1,
+          "status": "STOP_TOO_FEW_SOURCE_WILD_SIGHTINGS"
+        }
+      }
+    },
+    "Cirsium vulgare": {
+      "original_eligible_wild_before_cell_dedup": {
+        "native": 62368,
+        "introduced": 85644
+      },
+      "observer_cell_unique_sightings_full_CHELSA": {
+        "native": 26161,
+        "introduced": 49088
+      },
+      "WCVP_area_weighted_background_coverage": {
+        "native": 1,
+        "introduced": 1
+      },
+      "climate_median_native_to_introduced": {
+        "BIO1_C": [
+          8.35,
+          12.55
+        ],
+        "BIO4": [
+          788.3000000000001,
+          614.2
+        ],
+        "BIO12_mm": [
+          666,
+          959
+        ],
+        "BIO15": [
+          32.5,
+          39.516152343561565
+        ],
+        "RSDS": [
+          12.489,
+          16.525719946936157
+        ]
+      },
+      "PCA_env_2axis_variance_fraction": [
+        0.528308877252545,
+        0.2852414492741975
+      ],
+      "PCA_env_background_corrected_Schoener_D": 0.4424543915282124,
+      "PCA_env_uncorrected_occurrence_density_D": 0.5444396283607262,
+      "introduced_density_outside_native_95percent_probability_content": 0.43979374526144926,
+      "introduced_regions": {
+        "North America": {
+          "n": 42317,
+          "available_background": 1,
+          "D": 0.42881475245754297,
+          "BIO1_median_minus_native_C": -0.3,
+          "BIO12_median_minus_native_mm": 238,
+          "BIO15_median_minus_native": 1.8
+        },
+        "Africa": {
+          "n": 1537,
+          "available_background": 1,
+          "D": 0.09277589527145014,
+          "BIO1_median_minus_native_C": 8.1,
+          "BIO12_median_minus_native_mm": 271.051,
+          "BIO15_median_minus_native": 29.9
+        },
+        "South America": {
+          "n": 2302,
+          "available_background": 1,
+          "D": 0.2946373163381756,
+          "BIO1_median_minus_native_C": 6,
+          "BIO12_median_minus_native_mm": 584,
+          "BIO15_median_minus_native": 9.5
+        },
+        "Australasia": {
+          "n": 2801,
+          "available_background": 1,
+          "D": 0.1641251811175224,
+          "BIO1_median_minus_native_C": 8.6,
+          "BIO12_median_minus_native_mm": 133,
+          "BIO15_median_minus_native": -6.2
+        },
+        "Asia temperate": {
+          "n": 48,
+          "available_background": 1,
+          "status": "STOP_TOO_FEW_SOURCE_WILD_SIGHTINGS"
+        },
+        "Pacific": {
+          "n": 83,
+          "available_background": 1,
+          "status": "STOP_BACKGROUND_OR_OCCURRENCE_TOO_SMALL"
+        }
+      }
+    }
+  },
+  "prior_partial_cache_comparison": {
+    "limited_to_316_original_native_occupied_storage_tiles": true,
+    "partial_cached_D": {
+      "Cirsium arvense": 0.40548011625855396,
+      "Cirsium vulgare": 0.25844120280815996
+    },
+    "full_source_D": {
+      "Cirsium arvense": 0.47393796854546466,
+      "Cirsium vulgare": 0.4424543915282124
+    },
+    "refrain_interpreting_cached_D_as_true_global_niche_difference": true
+  },
+  "limitations": [
+    "Comparison uses original WCVP native and introduced region availability polygons, not independent genetic population origin or occupied range boundaries.",
+    "PCA-env original five-CHELSA predictor/background implementation differs from Román et al. 2021 exact ecospat grid, climate predictor sources and availability geometry.",
+    "Observed occupancy is iNaturalist geographic and observer sampling, even after one per original human×5degree source cell.",
+    "Two-dimensional PCA captures 75.8% C. arvense and 81.4% C. vulgare of weighted 5-climate background variance; remaining axes ignored.",
+    "Corrected Schoener D and 95% probability support are descriptive, no niche equivalence/similarity permutation tests or uncertainty bands.",
+    "Climate distribution differences do not demonstrate rapid genetic adaptation, phylogenetic history, head angle change, rainfall protection or pollinator selection."
+  ],
+  "next_main_scientific_stage": "Confirm PCA-env sampling/smoothing robustness and climatic analogues; THEN compare exactly these environmental novelty strata with original same-image capitulum orientation, accounting for camera and cell effects."
+}
