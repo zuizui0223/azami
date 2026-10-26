@@ -35,13 +35,17 @@ Replace the informal “LEGO hypothesis” label with **phenotypic integration a
 
 ## Seven display pieces for GEB (planned)
 
-1. **Figure 1:** three-part narrative and actual observation/analysis/cohort schematic + geographically aggregated global sampling domain (NO inferred points; source permission and location auditing first).
-2. **Figure 2 (Parts 1–2):** four source-verified Holm-supported slopes/pointwise 95% CIs, with n and family labels; readers must find full 208-test table in SI.
-3. **Figure 3 (Part 3):** all 28 within/among × raw/adjusted RV relations (full observational heatmaps, not fabricated component correlations).
-4. **Figure 4 (Part 3 supplementary covariance):** four **original frozen S2 species×range-stratum** same-domain versus cross-domain median photographic RV values (descriptive phenotype integration, not niche occupancy).
-5. **Figure 5 (Part 3):** eight image high/low combinations and the threshold-sensitivity of three-way maximum-entropy reference (compute from archived counted records, not decorative cartoons).
-6. **Table 1:** frozen four Holm-passing climate–photograph associations.
-7. **Table 2:** within- vs among-taxon same-domain and cross-domain median RV.
+**Narrative:** two connected evidence axes—(a) quantitative continuous image phenotyping with measurement/provenance limits, and (b) environmental organisation of the photographed traits in Parts 1–3. Keep the full interpretation and results in the research article; reserve priority/novelty rhetoric for the [cover-letter contribution paragraph](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md). This matches the [V3→V4 audit and figure-migration plan](GEB_V3_V4_MINIMAL_DELTA_STORY_AND_FIGURES_JA.md).
+
+1. **Figure 1:** measurement workflow, V4 photo/source eligibility and audited 350→7→2 selection; rebuild V4 geography from safe source records, **not** V3 46,276/259 map.
+2. **Figure 2 (Parts 1–2):** existing V4 original 4-Holm forest (one among-taxon angle×BIO18 + three introduced colour effects), with true 80/128 test-family and pointwise CI labels.
+3. **Figure 3 (Part 2):** source-derived side-by-side original **six** native/introduced colour–environment coefficients (three selected pairs), including CIs, BH/Holm decisions and a **no direct between-range interaction** caption. Render with `plot_s2_native_introduced_colour.py` only from the original SHA-verified ZIP.
+4. **Figure 4 (Part 3):** original V4 28-pair raw/adjusted within-/among-taxon RV matrices from the common **156,683/174** cohort; this replaces numerical use of V3's old 1,734/42 integration figure.
+5. **Figure 5 (Part 3):** eight observed image angle×chroma×outline configurations and sensitivity to alternative binarisation. Do not fabricate individual-source examples or claim genetic module recombination.
+6. **Table 1:** four original Holm-passing environmental associations.
+7. **Table 2:** original native-taxonomic within/among same-/cross-domain median RV.
+
+**Supporting displays:** original Part 2 four-stratum photographic RV median bars; older V3 robustness/tree/9-predictor plots are **not transferred** as V4 findings. Figure 1 geographic provenance and Figure 5 source-derived frequencies still need publication-level rendering verification.
 
 ## Submission blockers (not claimed complete)
 

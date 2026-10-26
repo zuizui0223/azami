@@ -12,6 +12,8 @@ The earlier term "LEGO" is a **working nickname**, not a tested genetic-componen
 
 [Three-part Japanese narrative and abstract](GEB_THREE_PART_STRUCTURE_JA.md).
 
+**Current editorial emphasis:** retain the V3's methodological+ecological narrative, but interpret the frozen V4 colour–environment gradients with existing ecological predictions and more visibly present the native/introduced design and the measured domain integration. [V3↔V4 source-diff, narrative and five-figure decision](GEB_V3_V4_MINIMAL_DELTA_STORY_AND_FIGURES_JA.md). Scientific novelty/fit for GEB is discussed separately in [the working cover-letter contribution paragraph](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
+
 ## Manuscript and scientific evidence
 - [GEB_RESEARCH_ARTICLE.md](GEB_RESEARCH_ARTICLE.md) — scientific working text with GEB structured Abstract, Methods, Results, Discussion and cited natural-contrast interpretation.
 - [GEB_RESEARCH_ARTICLE_BLINDED.md](GEB_RESEARCH_ARTICLE_BLINDED.md) — a separately prepared identity-concealed text draft. Actual anonymous reviewer access, affiliations, title page and final journal formatting are **pending**.
@@ -30,7 +32,9 @@ The earlier term "LEGO" is a **working nickname**, not a tested genetic-componen
 - `table1_holm_associations.csv`: four accepted associations after separate S1 (80 tests) and S2 (128 tests) Holm corrections.
 - `module_summary.csv`, `s2_module_summary.csv`: display-only 24 October fixed phenotypic covariance summaries, not the complete hypothesis family.
 - `build_full_supplement.py`: SHA-checked source-regeneration of **all 208** primary BIO18-family tests and 28 raw/adjusted RV construct pairs.
-- `plot_frozen_summary.py`: summary figures, observational and never a causal adaptation analysis.
+- `plot_frozen_summary.py`: existing four-Holm forest (Main Figure 2); earlier module-median and two-species domain-RV summary charts moved to descriptive **Supporting Information** outputs.
+- `plot_s2_native_introduced_colour.py`: new Main Figure 3 **source-verified six original coefficients**, generated from the exact original S2 source CSV by the existing SHA-locked validator. This is not a cross-range hypothesis test or rainfall-niche comparison.
+- `build_full_supplement.py`: the original 28-pair matrix may become Main Figure 4 after layout QA; no replacement of the values.
 
 ## Explicit scientific separation
 
