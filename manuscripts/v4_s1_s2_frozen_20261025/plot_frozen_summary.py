@@ -100,7 +100,7 @@ def rv_medians(module: list[dict[str, str]], dest: Path) -> None:
              "Same 156,683 S1 photographs / 174 taxa; four exposures adjusted. "
              "Shared-pixel and RV baseline biases remain.", fontsize=9)
     for ext in ("png", "svg"):
-        fig.savefig(dest / f"figure3_module_RV_medians.{ext}", dpi=220, bbox_inches="tight")
+        fig.savefig(dest / f"SI_module_RV_medians.{ext}", dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -140,7 +140,7 @@ def s2_phenotype_domains(dest: Path) -> None:
     fig.text(.03, .04, "Four frozen S2 strata; no rainfall-niche or climate-occupancy comparison. "
              "RV is not genetically validated.", fontsize=9)
     for ext in ("png", "svg"):
-        fig.savefig(dest / f"figure4_S2_trait_domain_RV.{ext}", dpi=220,
+        fig.savefig(dest / f"SI_S2_trait_domain_RV.{ext}", dpi=220,
                     bbox_inches="tight")
     plt.close(fig)
 

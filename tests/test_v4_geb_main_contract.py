@@ -59,7 +59,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("photo",article.lower())
         self.assertIn("24/28",article)
         self.assertIn("0.0487/0.00532",article)
-        self.assertIn("**Figure 4.** Part 3 supplementary covariance",article)
+        self.assertIn("**Figure 4.** Part 3: the full 28-pair",article)
         forbidden=("+48.2","270.4 versus 222.2","−0.172","0.448",
                    "1.791","23/91","−1.03°","40166532404")
         for item in forbidden:
@@ -77,6 +77,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("降水ニッチ",policy)
         plotting=(PAPER/"plot_frozen_summary.py").read_text(encoding="utf-8")
         self.assertIn("s2_phenotype_domains",plotting)
+        self.assertIn("SI_S2_trait_domain_RV",plotting)
         self.assertNotIn("s2_wet_quarter_occupancy",plotting)
 
     def test_s2_colour_native_counterparts_are_inference_bounded(self):
@@ -167,6 +168,29 @@ class V4GEBMainContract(unittest.TestCase):
                     "## 3. 頭花形質の表現型統合","新しいS3ソース"):
             self.assertIn(val,outline)
         self.assertNotIn("降水ニッチの比較を行った",article)
+
+    def test_v3_to_v4_minimal_story_and_ecological_figure_evidence(self):
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(paper,blind)
+        for key in ("Dalrymple et al. (2020)","Berardi et al. (2016)",
+                    "greater image chroma and lower image lightness",
+                    "**Figure 3.** Part 2 ecological comparison",
+                    "**Figure 4.** Part 3: the full 28-pair",
+                    "https://doi.org/10.1111/nph.16737",
+                    "https://doi.org/10.3732/ajb.1600106"):
+            self.assertIn(key,paper)
+        for key in ("Table Part 2","V4 the three-part study"):
+            self.assertNotIn(key,paper)
+        plan=(PAPER/"GEB_V3_V4_MINIMAL_DELTA_STORY_AND_FIGURES_JA.md").read_text(encoding="utf-8")
+        for key in ("46,276","1,734","33/36","24/28","156,683",
+                    "V3 chroma","native–introduced","Fig. 3","Fig. 4",
+                    "https://doi.org/10.1111/nph.16737"):
+            self.assertIn(key,plan)
+        self.assertTrue((PAPER/"GEB_COVER_LETTER_CONTRIBUTION_PITCH.md").is_file())
+        figure=(PAPER/"plot_s2_native_introduced_colour.py").read_text(encoding="utf-8")
+        for field in ("read_source","EXPECTED","holm_p","ci_lower","ci_upper","native","introduced"):
+            self.assertIn(field,figure)
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
