@@ -1,6 +1,16 @@
-# GEB V4 S1–S2 Research Article
+# GEB V4: three-part Research Article (science frozen 2026-10-24)
 
 **Science locked:** 24 October 2026, original V4 S1–S2 commit `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`. The manuscript has been revised for GEB after this freeze; numerical estimates were not modified.
+
+## Paper structure (editorial, not three independent datasets)
+
+1. **Global native-taxon climate–trait associations** — positive image-frame head angle × warm-quarter precipitation among taxa.
+2. **Native/introduced within-species trait–environment associations** — two focal species, four source strata, three Holm-supported introduced-range colour slopes and the original native counterparts.
+3. **Phenotypic integration and modularity of visible head traits** — eight continuous constructs/28 pairs and three-trait configurations, mainly the **same native photographs** used in Part 1; range-stratum RV as descriptive support.
+
+The earlier term "LEGO" is a **working nickname**, not a tested genetic-component mechanism or a formal thesis title. No source set called S3 was collected or analysed. Frozen internal S1/S2 labels are preserved to maintain checksums, historical analysis and CI.
+
+[Three-part Japanese narrative and abstract](GEB_THREE_PART_STRUCTURE_JA.md).
 
 ## Manuscript and scientific evidence
 - [GEB_RESEARCH_ARTICLE.md](GEB_RESEARCH_ARTICLE.md) — scientific working text with GEB structured Abstract, Methods, Results, Discussion and cited natural-contrast interpretation.
@@ -24,6 +34,6 @@
 
 ## Explicit scientific separation
 
-S1 uses the same **156,683 native photographs/174 taxa** for eight visible traits (28 pairs), with one Holm-supported between-taxon image-frame angle × BIO18 relation. S2 uses **two species × two native/introduced range-status strata** to estimate **trait–environment associations within each stratum** and corresponding photographic covariance: three colour coefficients pass Holm in introduced strata, but no original head-angle term passes Holm. **No native-versus-introduced precipitation/climate niche comparison belongs to this article**, and the original 24 October primary Holm science is unchanged.
+**Part 1** draws from the frozen S1 native-taxon source to evaluate environmental gradients; **Part 2** draws from the frozen S2 two-species×two-range-status source to estimate **within-stratum** trait–environment slopes; **Part 3** reuses native common photographs and existing S2 descriptive RV values to evaluate **observed** covariance and combinations. Part 3 is a separate conceptual question, **not** a third independent dataset or a new multiple-testing family. **No native-versus-introduced precipitation/climate niche comparison belongs to this article**, and all 24 October source results and Holm coefficients are unchanged.
 
 Historical V3 numerical results belong to `legacy/v3/`. Separate 25 October S2 climate-niche analyses are preserved under `legacy/v4_s2_precipitation_niche_20261025/`; they are **not** current GEB findings, submission figures or a prerequisite for the frozen numerical replay. T2/T3 are not validation layers in this S1–S2 manuscript. Private identities, coordinates and unlicensed images are not redistributable.

@@ -13,23 +13,33 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 - Cover letter uploaded separately as a PDF, including a <250-word paragraph explaining interest to GEB readership.
 - Data and code availability declaration is mandatory. Pre-print/anonymous review availability are not substitutes for a durable, rights-compliant data/code release.
 
+## Manuscript narrative: three research parts
+
+**Part 1. Global trait–environment patterns:** One Holm-supported native among-taxon image-frame angle×BIO18 result.
+
+**Part 2. Native/introduced within-species pattern:** The source-coverage-qualified *C. arvense* and *C. vulgare* strata; three introduced colour×environment Holm positives, native counterparts for the same three traits, no direct range×environment test.
+
+**Part 3. Phenotypic integration and combinations:** Native same-photo 8 constructs/28 pair RV, domain contrasts, three-trait configurations, and supplementary RV in the four Part 2 strata. **This is not a new source S3 or independent confirmation of Part 1**.
+
+Replace the informal “LEGO hypothesis” label with **phenotypic integration and modularity** only in the editorial narrative; retained original S1/S2 raw field/filename identifiers must remain unchanged. [Japanese outline](GEB_THREE_PART_STRUCTURE_JA.md).
+
 ## What the frozen results can support
 
 **Macroecological axis:** among native taxa, BIO18 relates positively to **camera-frame** capitulum angle in one of 80 S1 Holm-controlled tests. S2 estimates **phenotype–environment regressions within** two species×native/introduced strata: three introduced-stratum colour slopes pass Holm; no original S2 head-angle term passes Holm. **No wet/dry climate-niche occupancy comparison or introduction-driven phenotypic evolution is claimed.** S1 native photos can overlap S2 native photos.
 
 **S2 colour asymmetry:** only introduced S2 strata contain Holm-surviving colour coefficients (3/128), but the native *C. vulgare* chroma×RSDS coefficient is similar to the introduced coefficient and passes BH, not Holm. *C. arvense* lightness×elevation has opposite-signed native/introduced point estimates. These are not tests of direct slope differences; [all six source-locked original rows](SI_S2_COLOUR_NATIVE_INTRO_FIXED_HOLM_CONTEXT.md) are in SI. The manuscript must never claim acquired colour responsiveness, identical native/introduced response slopes, or introduction-caused phenotypic evolution. **No precipitation niche is compared.**
 
-**Phenotypic organisation:** eight visible constructs/28 pairs on the common S1 156,683-photo/174-taxon cohort show heterogeneous association structure; 24/28 adjusted RV are between>within; label-shuffle reference is conditional on measured coordinate definitions. **Do not claim** genetic modularity, molecular LEGO, functional synergy or independent evolutionary origins from common-source image traits.
+**Phenotypic organisation:** eight visible constructs/28 pairs on the common S1 156,683-photo/174-taxon cohort show heterogeneous association structure; 24/28 adjusted RV are between>within; label-shuffle reference is conditional on measured coordinate definitions. **Do not claim** genetic autonomy of measured modules, functional synergy or independent evolutionary origins from common-source image traits.
 
 **Alternative explanation:** camera angle and lighting, taxon/geographic confounding (prior BIO12 area-control sensitivity), shared-pixel mathematical covariance, imperfect taxonomic and temporal resolution. Selected-model Holm correction is **not** adjusted for the earlier explorations leading to the fixed model. All significant results and all 208 tests are visible in the numerical supplement; don't conceal the full family.
 
 ## Seven display pieces for GEB (planned)
 
-1. **Figure 1:** actual observation/analysis/cohort schematic + geographically aggregated global sampling domain (NO inferred points; source permission and location auditing first).
-2. **Figure 2:** four source-verified Holm-supported slopes/pointwise 95% CIs, with n and family labels; readers must find full 208-test table in SI.
-3. **Figure 3:** all 28 within/among × raw/adjusted RV relations (full observational heatmaps, not fabricated component correlations).
-4. **Figure 4:** four **original frozen S2 species×range-stratum** same-domain versus cross-domain median photographic RV values (descriptive phenotype integration, not niche occupancy).
-5. **Figure 5:** eight image high/low combinations and the threshold-sensitivity of three-way maximum-entropy reference (compute from archived counted records, not decorative cartoons).
+1. **Figure 1:** three-part narrative and actual observation/analysis/cohort schematic + geographically aggregated global sampling domain (NO inferred points; source permission and location auditing first).
+2. **Figure 2 (Parts 1–2):** four source-verified Holm-supported slopes/pointwise 95% CIs, with n and family labels; readers must find full 208-test table in SI.
+3. **Figure 3 (Part 3):** all 28 within/among × raw/adjusted RV relations (full observational heatmaps, not fabricated component correlations).
+4. **Figure 4 (Part 3 supplementary covariance):** four **original frozen S2 species×range-stratum** same-domain versus cross-domain median photographic RV values (descriptive phenotype integration, not niche occupancy).
+5. **Figure 5 (Part 3):** eight image high/low combinations and the threshold-sensitivity of three-way maximum-entropy reference (compute from archived counted records, not decorative cartoons).
 6. **Table 1:** frozen four Holm-passing climate–photograph associations.
 7. **Table 2:** within- vs among-taxon same-domain and cross-domain median RV.
 

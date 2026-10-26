@@ -11,20 +11,20 @@
 | Claim ID | Manuscript section | Evidence fixed in the freeze | Allowed claim | Stop / qualifier |
 |---|---|---|---|---|
 | C01 | Abstract / 2.1 | S1 313,350 source WCVP-native records; S2 297,622 wild native/introduced records in two species | Source study populations | These are not all measured head sample sizes; native sources overlap |
-| C02 | 2.2 / 3.1 | S1 168,907 angle-ready records / 178 taxa, 156,683 all-8 complete photographs / 174 taxa | Trait-specific denominators | Do not substitute original 170,066 / 244 from a distinct S1 cohort |
+| C02 | 2.2 / 3.1 / 3.3 | S1 168,907 angle-ready records / 178 taxa, 156,683 all-8 complete photographs / 174 taxa | Trait-specific denominators | Do not substitute original 170,066 / 244 from a distinct S1 cohort |
 | C03 | 2.3 / 3.1 | BIO18/BIO05/RSDS/elevation model; max source VIF 4.9559 | Fixed four-exposure observational model | BIO18 is mean monthly precipitation during warmest quarter; not measured flowering rain |
-| C04 | 2.4 / 3.1 | Separate 80 S1 and 128 S2 joint-hue Holm families; four pass | Four retained associations | CIs pointwise, P adjusted only within selected model/family; model chosen after exploration |
+| C04 | 2.4–2.5 / 3.1–3.2 | Separate 80 S1 and 128 S2 joint-hue Holm families; four pass | Four retained associations | CIs pointwise, P adjusted only within selected model/family; model chosen after exploration |
 | C05 | 3.1 Table 1 | S1 between-taxon angle × BIO18 β+0.045447, CI +0.022349,+0.068545, Holm 0.00920635 | Larger image angle at wetter warm-quarter climates across taxa | Not gravity-validated nodding or rainfall protection |
-| C06 | 3.1 Table 1 | Introduced arvense lightness × elev β−0.173732, Holm 0.00131233 | Within introduced stratum image lightness declines with elevation | Not pigment assay or introduction-induced evolutionary change |
-| C07 | 3.1 Table 1 | Introduced vulgare chroma × RSDS β+0.134504, Holm 0.01456813 | Within introduced stratum chroma is higher with RSDS | Same photo colour extraction; not independent mechanism |
-| C08 | 3.1 Table 1 | Introduced vulgare lightness × RSDS β−0.142801, Holm 0.01925414 | Within introduced stratum lightness is lower with RSDS | Same RSDS/sample/photos as C07 |
-| C09 | 3.2 Table 2 | S1 28 pairs, raw between>within 21; BIO18-adjusted 24; within module RV median 0.085245 vs cross 0.001419; among 0.197455 vs 0.015453 | Partially separable observable trait association groups | RV baseline/sample size, common pixels/derived metrics |
-| C10 | 3.2 | Size-preserving 280 trait-label allocations; rank 1/280 within, 3/280 among | Registered domains distinctive in frozen measured covariance | NOT genetic modularity test nor independent replication |
+| C06 | 3.2 Table 1 | Introduced arvense lightness × elev β−0.173732, Holm 0.00131233 | Within introduced stratum image lightness declines with elevation | Not pigment assay or introduction-induced evolutionary change |
+| C07 | 3.2 Table 1 | Introduced vulgare chroma × RSDS β+0.134504, Holm 0.01456813 | Within introduced stratum chroma is higher with RSDS | Same photo colour extraction; not independent mechanism |
+| C08 | 3.2 Table 1 | Introduced vulgare lightness × RSDS β−0.142801, Holm 0.01925414 | Within introduced stratum lightness is lower with RSDS | Same RSDS/sample/photos as C07 |
+| C09 | 3.3 Table 2 | S1 28 pairs, raw between>within 21; BIO18-adjusted 24; within module RV median 0.085245 vs cross 0.001419; among 0.197455 vs 0.015453 | Partially separable observable trait association groups | RV baseline/sample size, common pixels/derived metrics |
+| C10 | 3.3 | Size-preserving 280 trait-label allocations; rank 1/280 within, 3/280 among | Registered domains distinctive in frozen measured covariance | NOT genetic modularity test nor independent replication |
 | C11 | 3.3 | 123/135 taxa possess all eight three-trait high/low combinations after adjustment | Broad photographed combinations exist | Sampling intensity/threshold dependence; not viability/genetic recombination |
 | C12 | 3.3 | Parity +0.03640 [0.01456,0.05762]; all-three-high −0.003595 [−0.007336,−0.000049]; between contrast +0.011494 [−0.004680,+0.027401] | Higher-order statistic depends on coding | No threshold-invariant synergistic G123 |
-| C13 | 3.4 / Figure 4 | S2 original 24 October BIO18-four-variable-adjusted same-/cross-domain RV medians for 4 species×range strata | Descriptive within-stratum photographic phenotype covariance | Not a native–introduced niche difference or evolutionary module transition |
-| C14 | 2.6 / 3.4 | Bract 1,168 each/39 taxa; chroma-bract 1,007/38; adjusted between RV0.153365 /within0.001796; subset max VIF6.14 | Limited supplementary image proxy | Not bract spine/stickiness/defense; not four-exposure primary claim |
-| C15 | Discussion | No independent gravitational marker, pigment measurement, genetic module, field fitness, systematic phylogenetic correction | Observational claim boundary | Never call adaptation, LEGO genetic reuse or independent gains established |
+| C13 | 3.3 / Figure 4 | S2 original 24 October BIO18-four-variable-adjusted same-/cross-domain RV medians for 4 species×range strata | Descriptive within-stratum photographic phenotype covariance | Not a native–introduced niche difference or evolutionary module transition |
+| C14 | 2.6 / 3.3 / SI | Bract 1,168 each/39 taxa; chroma-bract 1,007/38; adjusted between RV0.153365 /within0.001796; subset max VIF6.14 | Limited supplementary image proxy | Not bract spine/stickiness/defense; not four-exposure primary claim |
+| C15 | Discussion | No independent gravitational marker, pigment measurement, genetic module, field fitness, systematic phylogenetic correction | Observational claim boundary | Never call adaptation, independent heritable module reuse or independent gains established |
 
 ## S2 familywise-detection asymmetry: original native counterparts (no new fit)
 
@@ -38,11 +38,21 @@ Status: **Supporting description of the original six rows**, no native-versus-in
 
 ## Selection evidence C20: joint historical rationale and full-source gate
 
-**C20 (Methods 2.1, 2.5; Discussion 4.4; Table S3)** — Original [350-source-name WCVP eligibility audit](../../analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json): **seven** nominal *Cirsium* names with wild observations assigned to both native and introduced statuses, but only *C. arvense* and *C. vulgare* pass **100 original image-angle-eligible observations, 15 occupied 5° equal-sine-latitude cells and 10 observers in each range**. Original selected-two source wild introduced observations **156,608 / 156,750 = 99.91%**. Whole screen's provenance: Actions **39544849439**, aggregate artifact **12321361815**, source member SHA-256 `9d7019098874664611fd048a6f920432b1645957bca9af267a13f3401c92cf5b`. See [Table S3, all seven candidates](SI_S2_FOCAL_SPECIES_SELECTION_AUDIT.md).
+**C20 (Methods 2.1, 2.5; Discussion 4.2; Table S3)** — Original [350-source-name WCVP eligibility audit](../../analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json): **seven** nominal *Cirsium* names with wild observations assigned to both native and introduced statuses, but only *C. arvense* and *C. vulgare* pass **100 original image-angle-eligible observations, 15 occupied 5° equal-sine-latitude cells and 10 observers in each range**. Original selected-two source wild introduced observations **156,608 / 156,750 = 99.91%**. Whole screen's provenance: Actions **39544849439**, aggregate artifact **12321361815**, source member SHA-256 `9d7019098874664611fd048a6f920432b1645957bca9af267a13f3401c92cf5b`. See [Table S3, all seven candidates](SI_S2_FOCAL_SPECIES_SELECTION_AUDIT.md).
 
 **Allowed:** S2 is a literature-motivated historical native–introduced comparison **made feasible by documented sufficient within-species range-specific measurement, location and observer support**. The all-source screen occurred *after* the two focal species were selected and confirmed those same two meet fixed stronger support gates. Photo coverage is a dataset-specific property; this is a two-case study, **not** phylogenetically independent replication, outcome-based selection by significant regression effects or near-total global *Cirsium* coverage.
 
 **Excluded:** novel species radiation, measured residence-time contrasts, direct native–introduced climate-niche differences, formal range×environment interaction tests, evolution/plasticity causation or source-genotype matching. GEB V4 Holm/β and S1/S2 experimental boundaries remain exactly fixed.
+
+## Three-part editorial mapping (26 October 2026)
+
+| Paper part | Original source / analysis | Manuscript location | Statistical changes |
+|---|---|---|---|
+| **1. Global trait–environment gradients** | Source S1, 313,350 native observations; 80 Holm tests | Methods 2.4, Results 3.1, Discussion 4.1 | None |
+| **2. Native–introduced historical comparison** | Source S2, 297,622 original wild observations; 2 species × 2 strata; 128 Holm tests | Methods 2.5, Results 3.2, Discussion 4.2 | None (original six colour slopes only) |
+| **3. Phenotypic integration and modularity** | Same S1 common 156,683 photos/174 taxa, 8 constructs/28 pairs and 3-way combinations; S2 original descriptive RV | Methods 2.6, Results 3.3, Discussion 4.3 | None; no independent S3 source or third Holm family |
+
+In the manuscript narrative, “LEGO” is not a formal hypothesis or mechanistic claim; it survives **only as an immutable source-file working name** where needed for reproducibility. All frozen 24 October 2026 source SHA identities, four Holm-supported β/P values and the predefined multiple-test families remain unchanged. [Japanese 3-part outline](GEB_THREE_PART_STRUCTURE_JA.md).
 
 ## Frozen statistics used to regenerate summary figures
 
@@ -60,7 +70,7 @@ The machine-readable manuscript-local file [table1_holm_associations.csv](table1
 
 - adaptive rain shielding or gravity-axis nodding;
 - causal effects of BIO18, RSDS, BIO05 or elevation;
-- genetically independent reusable LEGO units, three-way functional G123 or independent evolutionary transitions;
+- genetically independent reusable visible modules, three-way functional G123 or independent evolutionary transitions;
 - introduced-range evolution inferred from two species;
 - phylogenetically corrected T2 or cross-tribe T3 replication (separate projects);
 - claims that Holm adjustment also corrects the entire preceding model-selection process.

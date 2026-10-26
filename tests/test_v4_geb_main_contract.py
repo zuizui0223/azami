@@ -54,12 +54,12 @@ class V4GEBMainContract(unittest.TestCase):
         article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(article,blind)
-        self.assertIn("not a comparison of climatic niche occupancy",article)
+        self.assertIn("not a new third source cohort",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("photo",article.lower())
         self.assertIn("24/28",article)
         self.assertIn("0.0487/0.00532",article)
-        self.assertIn("**Figure 4.** Four original S2",article)
+        self.assertIn("**Figure 4.** Part 3 supplementary covariance",article)
         forbidden=("+48.2","270.4 versus 222.2","−0.172","0.448",
                    "1.791","23/91","−1.03°","40166532404")
         for item in forbidden:
@@ -105,7 +105,7 @@ class V4GEBMainContract(unittest.TestCase):
                      "Guggisberg et al. (2013)",
                      "rather than assuming that introduced plants have undergone a recent *species radiation*",
                      "did not fit a range-status interaction",
-                     "does **not** compare the climatic niches"):
+                     "do **not** compare native and introduced climatic niches"):
             self.assertIn(name,manuscript)
         note=(PAPER/"S2_NATIVE_INTRO_EVOLUTIONARY_RATIONALE_REFERENCES_JA.md").read_text(encoding="utf-8")
         self.assertIn("急速な種分化・適応放散",note)
@@ -146,6 +146,27 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("Table S3",paper)
         self.assertIn("not random",paper)
         self.assertNotIn("+48.2 mm/month",paper)
+
+    def test_three_part_manuscript_has_no_formal_lego_hypothesis(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blinded)
+        self.assertNotIn("LEGO",article)
+        headings=re.findall(r"^### 3\.(\d+)\. (.+)$",article,re.MULTILINE)
+        self.assertEqual([int(i) for i,_ in headings],[1,2,3])
+        for prefix in ("### 2.4. Part 1", "### 2.5. Part 2", "### 2.6. Part 3",
+                       "### 3.1. Part 1", "### 3.2. Part 2", "### 3.3. Part 3",
+                       "### 4.1. Part 1", "### 4.2. Part 2", "### 4.3. Part 3"):
+            self.assertIn(prefix,article)
+        self.assertIn("not a new third source cohort",article)
+        self.assertIn("does **not** create a source S3",article)
+        self.assertIn("phenotypic integration",article.lower())
+        self.assertIn("**123 of 135",article)
+        outline=(PAPER/"GEB_THREE_PART_STRUCTURE_JA.md").read_text(encoding="utf-8")
+        for val in ("## 1. 全球的な形質―環境関連","## 2. 在来域・導入域における種内の形質―環境関連",
+                    "## 3. 頭花形質の表現型統合","新しいS3ソース"):
+            self.assertIn(val,outline)
+        self.assertNotIn("降水ニッチの比較を行った",article)
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
