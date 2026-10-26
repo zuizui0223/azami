@@ -165,7 +165,7 @@ class V4GEBMainContract(unittest.TestCase):
                        "### 4.2. Part 2 — Climatic precipitation",
                        "### 4.3. Part 3 — Colour gradients"):
             self.assertIn(prefix,article)
-        self.assertIn("not a new third source cohort",article)
+        self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
         self.assertIn("phenotypic integration",article.lower())
         self.assertIn("**123 of 135",article)
@@ -209,7 +209,7 @@ class V4GEBMainContract(unittest.TestCase):
                      "**Part 2** identifies the strongest",
                      "**Part 3** identifies three",
                      "**Figure 3 (Part 2: featured ecological result).**",
-                     "only the Holm-supported among-taxon fit",
+                     "main figure includes only this Holm-supported term",
                      "all 80 native-taxon tests with raw, BH and Holm P values"):
             self.assertIn(term,paper)
         main_table=paper.split("**Table 2.",1)[1].split("**Out of scope",1)[0]
