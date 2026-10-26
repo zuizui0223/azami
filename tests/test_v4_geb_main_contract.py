@@ -173,7 +173,7 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blind)
-        for key in ("Dalrymple et al. (2020)","Berardi et al. (2016)",
+        for key in ("Dalrymple et al. (2020)","Berardi et al., 2016",
                     "greater image chroma and lower image lightness",
                     "**Figure 3.** Part 2 ecological comparison",
                     "**Figure 4.** Part 3: the full 28-pair",
