@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figure 3: source-verified native/introduced photographed-colour slopes.
+"""Figure 4: source-verified native/introduced photographed-colour slopes.
 
 Consumes ONLY the six-row CSV produced by verify_s2_frozen_colour_context.py
 from SHA-256-verified original October 24 V4 source artifact 12547876704.
@@ -99,7 +99,7 @@ def plot(rows: list[dict[str,str]], output_dir: Path) -> None:
              fontsize=8.5,ha="left",va="bottom",color="0.34")
     fig.subplots_adjust(left=.17,right=.73,bottom=.18,top=.91,hspace=.47)
     for ext in ("png","svg"):
-        fig.savefig(output_dir/f"figure3_S2_native_introduced_colour_coefficients.{ext}",
+        fig.savefig(output_dir/f"figure4_S2_native_introduced_colour_coefficients.{ext}",
                     dpi=220,bbox_inches="tight")
     plt.close(fig)
 

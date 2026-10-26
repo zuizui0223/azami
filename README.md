@@ -4,7 +4,7 @@
 
 ## Start here
 
-1. [GEB Research Article draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md) — Methods, Results and Discussion organised into **three research parts** (global environment; native/introduced comparison; phenotypic integration and configurations).
+1. [GEB Research Article draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md) — Methods, Results and Discussion organised into **three research parts** (visible trait integration; BIO18 and capitulum image angle; native/introduced colour–environment gradients).
 2. [Three-part Japanese research outline and abstract](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md) — parts 1, 2 and 3, without treating the informal LEGO working nickname as a theory or creating a new source S3.
 3. [Blinded reviewer-text working draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE_BLINDED.md) — identity-sensitive internal provenance hidden; **not yet submission ready** because anonymous reviewer access is not established.
 4. [Source and claim ledger](manuscripts/v4_s1_s2_frozen_20261025/CLAIM_LEDGER_AND_SUBMISSION_GATES.md) and [GEB preparation checklist](manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_CHECKLIST.md).
@@ -13,13 +13,13 @@
 
 ## Three-part GEB research question
 
-The article uses **three linked research parts**, not independently named S1/S2/S3 studies:
+The paper joins a **methodological axis** (repeatable continuous photographic traits) with an **ecological axis** (environmental organisation of the same traits):
 
-1. **Global trait–environment associations** — native *Cirsium* taxa: how do continuous image-derived capitulum traits relate to precipitation, temperature, radiation and elevation?
-2. **Within-species native/introduced comparison** — *C. arvense* and *C. vulgare*: how do photographed trait–environment relationships appear across historically contrasting range strata?
-3. **Phenotypic integration and modularity** — among the same already measured flowers, are presentation, colour and outline relatively concentrated within their domains, and do alternative configurations occur?
+1. **Part 1: Phenotypic integration and configurations** — eight image constructs, 28 matched-pair RV analyses and 3-trait arrangements in 156,683 shared native photographs/174 taxa.
+2. **Part 2: Capitulum image angle × warm-quarter precipitation BIO18** — the single Holm-supported native among-taxon association (β +0.045447, Holm P 0.00920635), featured in Main Figure 3.
+3. **Part 3: Native/introduced colour–environment associations** — two source-qualified species and three Holm-supported introduced-stratum floral-colour gradients (4 species×range strata).
 
-**Part 3 is not a new dataset**. It reuses the 156,683 native common photographs and archived descriptive covariance by range status. Historical source IDs **S1** (native-taxon population) and **S2** (two-species native/introduced population) remain unchanged in frozen code/tests, and **there is no S3 source or third Holm testing family**. The former informal “LEGO” nickname is not used as a formal hypothesis in the GEB article. See [the 3-part outline](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md).
+The three parts **reuse original V4 sources S1 and S2**, not independent photo datasets or a new S3 testing family. Main Figure 3 deliberately does not show raw-only within-taxon P; [Supporting Information](manuscripts/v4_s1_s2_frozen_20261025/SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) makes **both original image-angle×BIO18 slopes and all 80 native raw/BH/Holm values** inspectable. The historical working nickname “LEGO” is not a formal genetic-module hypothesis. [Current Japanese outline](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md).
 
 **Primary four-variable model:** CHELSA BIO18 (warmest-quarter **mean monthly** precipitation), BIO05, RSDS, plus WorldClim elevation. This is a **post hoc frozen** model, not independently preregistered. S1 is the native-range source census (313,350 records); S2 is the native/introduced wild census of *C. arvense* and *C. vulgare* (297,622). Eight photograph-derived constructs are analysed. Independent Holm families contain **80 S1 and 128 S2** biological comparisons (hue sine/cosine jointly counted as one construct).
 
@@ -29,7 +29,7 @@ The article uses **three linked research parts**, not independently named S1/S2/
 - S2 introduced *C. vulgare*: chroma × RSDS, β +0.134504, Holm P = 0.01456813 (n 27,200).
 - S2 introduced *C. vulgare*: lightness × RSDS, β −0.142801, Holm P = 0.01925414 (n 27,200).
 
-**Part 3** uses the common **156,683 native photographs / 174 taxa** and finds larger between- than within-taxon RV for **24/28** adjusted pairs, while within-domain RV tends to exceed cross-domain RV. These are **photographic phenotypic** associations, not genetic modules. **Part 2** retains three Holm-supported introduced-stratum **colour** associations but no Holm-supported head-angle term; source native photos overlap between Parts 1–3 and must not be counted as independent replications.
+**Part 1** finds larger between- than within-taxon RV for **24/28** adjusted pairs using the same **156,683 native photographs / 174 taxa**, with stronger within-domain photographic covariance (not genetic modules). **Part 2** foregrounds the native among-taxon angle×BIO18 relationship. **Part 3** retains three introduced-stratum Holm-supported **colour** associations; original source photographs overlap and cannot be counted as independent replication.
 
 **Current GEB scope exclusion:** no native-versus-introduced **precipitation-niche** or climate-occupancy comparison, no post-freeze 4D centroid/novelty or matched-climate range-effect regression. Those 25 October exploratory products were moved to [deferred historical research](legacy/v4_s2_precipitation_niche_20261025/README.md), outside the frozen primary narrative. See [scope policy](manuscripts/v4_s1_s2_frozen_20261025/SCOPE_LOCK_20261025_JA.md).
 
