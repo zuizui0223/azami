@@ -1,5 +1,9 @@
 # GEB Chapter 1: V3 → frozen V4 science comparison and minimal-update decision (26 October 2026)
 
+## Figure-order update (26 October 2026): supersedes the original figure-table proposal below
+
+The V3-vs-V4 **scientific difference table and numerical comparisons below remain valid**, but the earlier five-Main-figure allocation is now an **historical editorial proposal**. The current [three-part figure plan](GEB_THREE_PART_STRUCTURE_JA.md) puts **Part 1 phenotypic integration first**, **Part 2 BIO18×image-reference angle as Main Figure 3**, and **Part 3 native/introduced colour as Main Figure 4**. The original **raw-only within-taxon angle×BIO18** association is fully available in [SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) but is **not** shown as an additional significant term in the main figure. Main Figure 2 uses original 28 RV pairs. No original V3 numeric plot is re-labelled as V4.
+
 ## Current decision
 
 **Preserve the V3 scientific backbone**: repeated public photographs represent *continuous, scale-dependent image-defined floral phenotypes*, with distinguishable methodological value and biological environmental associations. **Do not rewrite this as a wholly new conceptual study.** The frozen 24 October V4 analysis is a stronger/different source-cohort analysis, not a numerical extension with directly comparable model coefficients. The editorial revision should foreground the two actual V4 improvements that connect to the established story:

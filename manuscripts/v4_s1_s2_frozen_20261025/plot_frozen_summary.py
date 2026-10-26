@@ -76,7 +76,7 @@ def forest(assoc: list[dict[str, str]], dest: Path) -> None:
              "Passing subset of 80 S1 and 128 S2 tests; pointwise (not simultaneous) CIs. "
              "Image angle is not gravity-calibrated.", fontsize=9)
     for ext in ("png", "svg"):
-        fig.savefig(dest / f"figure2_holm_forest.{ext}", dpi=220, bbox_inches="tight")
+        fig.savefig(dest / f"SI_four_Holm_supported_coefficients.{ext}", dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 

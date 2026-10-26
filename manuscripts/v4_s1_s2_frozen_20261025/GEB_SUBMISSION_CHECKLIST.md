@@ -15,13 +15,13 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 
 ## Manuscript narrative: three research parts
 
-**Part 1. Global trait–environment patterns:** One Holm-supported native among-taxon image-frame angle×BIO18 result.
+**Part 1. Photographic head-trait integration and combinations:** Eight constructs/28 original same-photo RV pairs and eight three-trait configurations; not genetic modularity.
 
-**Part 2. Native/introduced within-species pattern:** The source-coverage-qualified *C. arvense* and *C. vulgare* strata; three introduced colour×environment Holm positives, native counterparts for the same three traits, no direct range×environment test.
+**Part 2. BIO18 precipitation and capitulum presentation (featured):** Among native taxa image-referenced angle β +0.045447, 95% pointwise CI [+0.022349, +0.068545], Holm P 0.00920635. The original within-taxon β +0.058700, raw P 0.039865, BH P 0.395837 and Holm P 1.0 are reported **in SI only**, not as a second discovery; do not claim the within slope is zero or the among slope is statistically stronger.
 
-**Part 3. Phenotypic integration and combinations:** Native same-photo 8 constructs/28 pair RV, domain contrasts, three-trait configurations, and supplementary RV in the four Part 2 strata. **This is not a new source S3 or independent confirmation of Part 1**.
+**Part 3. Native/introduced flower-colour gradients:** *C. arvense* and *C. vulgare*, 350→7→2 eligibility, three original introduced Holm positives, and matching native descriptive slopes with no formal range interaction.
 
-Replace the informal “LEGO hypothesis” label with **phenotypic integration and modularity** only in the editorial narrative; retained original S1/S2 raw field/filename identifiers must remain unchanged. [Japanese outline](GEB_THREE_PART_STRUCTURE_JA.md).
+The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 and the Holm families remain unchanged. [Japanese outline](GEB_THREE_PART_STRUCTURE_JA.md).
 
 ## What the frozen results can support
 
@@ -35,17 +35,17 @@ Replace the informal “LEGO hypothesis” label with **phenotypic integration a
 
 ## Seven display pieces for GEB (planned)
 
-**Narrative:** two connected evidence axes—(a) quantitative continuous image phenotyping with measurement/provenance limits, and (b) environmental organisation of the photographed traits in Parts 1–3. Keep the full interpretation and results in the research article; reserve priority/novelty rhetoric for the [cover-letter contribution paragraph](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md). This matches the [V3→V4 audit and figure-migration plan](GEB_V3_V4_MINIMAL_DELTA_STORY_AND_FIGURES_JA.md).
+**Methodology plus ecology:** show the source-verified continuous photographed phenotypes, then their BIO18, native/introduced colour and domain-covariance structure. Scientific novelty rhetoric stays in the [separate cover letter](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
 
-1. **Figure 1:** measurement workflow, V4 photo/source eligibility and audited 350→7→2 selection; rebuild V4 geography from safe source records, **not** V3 46,276/259 map.
-2. **Figure 2 (Parts 1–2):** existing V4 original 4-Holm forest (one among-taxon angle×BIO18 + three introduced colour effects), with true 80/128 test-family and pointwise CI labels.
-3. **Figure 3 (Part 2):** source-derived side-by-side original **six** native/introduced colour–environment coefficients (three selected pairs), including CIs, BH/Holm decisions and a **no direct between-range interaction** caption. Render with `plot_s2_native_introduced_colour.py` only from the original SHA-verified ZIP.
-4. **Figure 4 (Part 3):** original V4 28-pair raw/adjusted within-/among-taxon RV matrices from the common **156,683/174** cohort; this replaces numerical use of V3's old 1,734/42 integration figure.
-5. **Figure 5 (Part 3):** eight observed image angle×chroma×outline configurations and sensitivity to alternative binarisation. Do not fabricate individual-source examples or claim genetic module recombination.
-6. **Table 1:** four original Holm-passing environmental associations.
-7. **Table 2:** original native-taxonomic within/among same-/cross-domain median RV.
+1. **Figure 1:** V4 measurement workflow, provenance-safe coverage and audited 350→7→2 taxon selection (photo/geographic attribution QA outstanding).
+2. **Figure 2 (Part 1):** V4 same-photo full 28-pair RV matrices at within-/among-taxon scales (156,683 photos, 174 taxa).
+3. **Figure 3 (Part 2):** **Only** the original Holm-supported among-taxon image angle×BIO18 coefficient with pointwise 95% CI and corrected P. [SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) contains **all 80 native-taxon raw/BH/Holm tests** and a supplementary two-scale figure including within-taxon raw P.
+4. **Figure 4 (Part 3):** Three selected photographed colour×environment pairs in native/introduced strata, six exact original coefficients with CI; no range×environment interaction inference.
+5. **Figure 5 (Part 1):** Eight image-derived trait combinations and threshold sensitivity (publication-quality source-count figure still pending).
+6. **Table 1:** Native taxon within/among same-domain versus cross-domain descriptive RV medians.
+7. **Table 2:** Four original Holm-supported environment associations, with Holm rather than raw P displayed in the main table.
 
-**Supporting displays:** original Part 2 four-stratum photographic RV median bars; older V3 robustness/tree/9-predictor plots are **not transferred** as V4 findings. Figure 1 geographic provenance and Figure 5 source-derived frequencies still need publication-level rendering verification.
+**SI figures:** full 208-test table (80 native + 128 two-species) including unadjusted/BH/Holm P, the original two-scale BIO18 image-angle forest, all 28 RV pairs, the previous four-positive forest and S2 domain RV medians. Earlier V3 numerical plots are not re-labelled as V4.
 
 ## Submission blockers (not claimed complete)
 

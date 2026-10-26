@@ -54,12 +54,12 @@ class V4GEBMainContract(unittest.TestCase):
         article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(article,blind)
-        self.assertIn("not a new third source cohort",article)
+        self.assertIn("not an independent source cohort",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("photo",article.lower())
         self.assertIn("24/28",article)
         self.assertIn("0.0487/0.00532",article)
-        self.assertIn("**Figure 4.** Part 3: the full 28-pair",article)
+        self.assertIn("**Figure 2 (Part 1).** Eight-trait, 28-pair",article)
         forbidden=("+48.2","270.4 versus 222.2","−0.172","0.448",
                    "1.791","23/91","−1.03°","40166532404")
         for item in forbidden:
@@ -155,17 +155,25 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertNotIn("LEGO",article)
         headings=re.findall(r"^### 3\.(\d+)\. (.+)$",article,re.MULTILINE)
         self.assertEqual([int(i) for i,_ in headings],[1,2,3])
-        for prefix in ("### 2.4. Part 1", "### 2.5. Part 2", "### 2.6. Part 3",
-                       "### 3.1. Part 1", "### 3.2. Part 2", "### 3.3. Part 3",
-                       "### 4.1. Part 1", "### 4.2. Part 2", "### 4.3. Part 3"):
+        for prefix in ("### 2.4. Part 1 — Visible phenotypic integration",
+                       "### 2.5. Part 2 — Native-taxon capitulum angle",
+                       "### 2.6. Part 3 — Native/introduced",
+                       "### 3.1. Part 1 — Partial integration",
+                       "### 3.2. Part 2 — Among-taxon image angle",
+                       "### 3.3. Part 3 — Native/introduced colour",
+                       "### 4.1. Part 1 — Integration",
+                       "### 4.2. Part 2 — Climatic precipitation",
+                       "### 4.3. Part 3 — Colour gradients"):
             self.assertIn(prefix,article)
         self.assertIn("not a new third source cohort",article)
         self.assertIn("does **not** create a source S3",article)
         self.assertIn("phenotypic integration",article.lower())
         self.assertIn("**123 of 135",article)
         outline=(PAPER/"GEB_THREE_PART_STRUCTURE_JA.md").read_text(encoding="utf-8")
-        for val in ("## 1. 全球的な形質―環境関連","## 2. 在来域・導入域における種内の形質―環境関連",
-                    "## 3. 頭花形質の表現型統合","新しいS3ソース"):
+        for val in ("## 1. 頭花形質の定量化、表現型統合と組合せ",
+                    "## 2. 頭花の画像角度とBIO18",
+                    "## 3. 在来域と導入域の花色―環境関係",
+                    "新しいS3ソース"):
             self.assertIn(val,outline)
         self.assertNotIn("降水ニッチの比較を行った",article)
 
@@ -175,8 +183,8 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(paper,blind)
         for key in ("Dalrymple et al. (2020)","Berardi et al., 2016",
                     "greater image chroma and lower image lightness",
-                    "**Figure 3.** Part 2 ecological comparison",
-                    "**Figure 4.** Part 3: the full 28-pair",
+                    "**Figure 3 (Part 2: featured ecological result).**",
+                    "**Figure 4 (Part 3).**",
                     "https://doi.org/10.1111/nph.16737",
                     "https://doi.org/10.3732/ajb.1600106"):
             self.assertIn(key,paper)
@@ -191,6 +199,42 @@ class V4GEBMainContract(unittest.TestCase):
         figure=(PAPER/"plot_s2_native_introduced_colour.py").read_text(encoding="utf-8")
         for field in ("read_source","EXPECTED","holm_p","ci_lower","ci_upper","native","introduced"):
             self.assertIn(field,figure)
+
+    def test_featured_bio18_main_and_full_uncorrected_si(self):
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(paper,blinded)
+        self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2,3])
+        for term in ("**Part 1** demonstrates partially integrated",
+                     "**Part 2** identifies the strongest",
+                     "**Part 3** identifies three",
+                     "**Figure 3 (Part 2: featured ecological result).**",
+                     "only the Holm-supported among-taxon fit",
+                     "all 80 native-taxon tests with raw, BH and Holm P values"):
+            self.assertIn(term,paper)
+        main_table=paper.split("**Table 2.",1)[1].split("**Out of scope",1)[0]
+        self.assertNotIn("| Raw P |",main_table)
+        self.assertIn("| Holm P |",main_table)
+        self.assertIn("0.00920635",main_table)
+        note=(PAPER/"SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md").read_text(encoding="utf-8")
+        for value in ("0.039865108","0.395836573","1.000000000",
+                      "+0.058700384","+0.045446843","80 biological tests",
+                      "numerically larger","168,907","0.009206351"):
+            self.assertIn(value,note)
+        script=(PAPER/"plot_bio18_angle_part2.py").read_text(encoding="utf-8")
+        for value in ("SOURCE_SHA256","original_frozen_rows",
+                      "SI_S1_all_80_original_raw_BH_Holm.csv",
+                      "SI_S1_BIO18_image_angle_both_scales.csv",
+                      "figure3_BIO18_among_taxa_image_angle",
+                      "SI_Figure_BIO18_image_angle_both_scales",
+                      "p_original","p_BH","p_Holm"):
+            self.assertIn(value,script)
+        ci=(ROOT/".github/workflows/v4-geb-main-contract.yml").read_text(encoding="utf-8")
+        for value in ("SI_S1_all_80_original_raw_BH_Holm.csv",
+                      "figure3_BIO18_among_taxa_image_angle.png",
+                      "figure2_V4_same_photo_RV_matrix.png",
+                      "figure4_S2_native_introduced_colour_coefficients.png"):
+            self.assertIn(value,ci)
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
