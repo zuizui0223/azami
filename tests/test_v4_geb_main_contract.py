@@ -166,7 +166,7 @@ class V4GEBMainContract(unittest.TestCase):
                        "### 3.1. Part 1 — Cross-domain presentation, colour and outline associations",
                        "### 3.2. Part 2 — Among-taxon image angle",
                        "### 3.3. Part 3 — Native/introduced colour",
-                       "### 4.1. Part 1 — Integration",
+                       "### 4.1. Part 1 — Weak cross-domain covariation",
                        "### 4.2. Part 2 — Climatic precipitation",
                        "### 4.3. Part 3 — Colour gradients"):
             self.assertIn(prefix,article)
