@@ -57,9 +57,14 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("not an independent source cohort",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("photo",article.lower())
-        self.assertIn("24/28",article)
-        self.assertIn("0.0487/0.00532",article)
-        self.assertIn("**Figure 2 (Part 1).** Eight-trait, 28-pair",article)
+        si_cov=(PAPER/"SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md").read_text(encoding="utf-8")
+        self.assertIn("24/28",si_cov)
+        self.assertIn("0.0487/0.00532",si_cov)
+        self.assertIn("**123/135**",si_cov)
+        self.assertIn("**Figure 2 (Part 1).** Source-verified descriptive signed correlations",article)
+        self.assertNotIn("**Figure 5 (Part 1).**",article)
+        for biological_pair in ("angle", "chroma", "aspect"):
+            self.assertIn(biological_pair,(PAPER/"plot_cross_functional_pairs.py").read_text(encoding="utf-8"))
         forbidden=("+48.2","270.4 versus 222.2","−0.172","0.448",
                    "1.791","23/91","−1.03°","40166532404")
         for item in forbidden:
@@ -168,7 +173,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
         self.assertIn("phenotypic integration",article.lower())
-        self.assertIn("**123 of 135",article)
+        self.assertIn("156,683 shared native photographs",article)
         outline=(PAPER/"GEB_THREE_PART_STRUCTURE_JA.md").read_text(encoding="utf-8")
         for val in ("## 1. 頭花形質の定量化、表現型統合と組合せ",
                     "## 2. 頭花の画像角度とBIO18",
@@ -205,7 +210,7 @@ class V4GEBMainContract(unittest.TestCase):
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blinded)
         self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2,3])
-        for term in ("**Part 1** demonstrates partially integrated",
+        for term in ("**Part 1** identifies weak among-taxon associations",
                      "**Part 2** identifies the strongest",
                      "**Part 3** identifies three",
                      "**Figure 3 (Part 2: featured ecological result).**",
@@ -232,7 +237,7 @@ class V4GEBMainContract(unittest.TestCase):
         ci=(ROOT/".github/workflows/v4-geb-main-contract.yml").read_text(encoding="utf-8")
         for value in ("SI_S1_all_80_original_raw_BH_Holm.csv",
                       "figure3_BIO18_among_taxa_image_angle.png",
-                      "figure2_V4_same_photo_RV_matrix.png",
+                      "figure2_cross_functional_trait_pairs.png",
                       "figure4_S2_native_introduced_colour_coefficients.png"):
             self.assertIn(value,ci)
 
