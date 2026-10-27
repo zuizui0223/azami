@@ -236,6 +236,33 @@ class V4GEBMainContract(unittest.TestCase):
                       "figure4_S2_native_introduced_colour_coefficients.png"):
             self.assertIn(value,ci)
 
+    def test_photo_cross_domain_interaction_discussion_has_primary_sources(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blind)
+        audit=(PAPER/"GEB_INTERACTION_FILTER_LITERATURE_AUDIT_20261027_JA.md").read_text(encoding="utf-8")
+        for value in ("−0.2251","−0.2469","−0.0281","−0.0694","r=+0.0199",
+                      "P(landing | approach)", "photographic CIELAB chroma",
+                      "neither a fixed three-trait syndrome", "not pollinator choice",
+                      "capitulum receptacle width", "Neither measure is the photograph-derived height-to-width ratio"):
+            self.assertIn(value,article)
+        for value in ("## 2. 実験・比較文献のエビデンス階層",
+                      "### H1.", "### H2.", "### H3.", "### H4.", "### H5.",
+                      "分類群間", "分類群内", "視覚", "食害"):
+            self.assertIn(value,audit)
+        for doi in ("10.1007/s00114-023-01845-w",
+                    "10.1111/ele.13204",
+                    "10.1002/ece3.73221",
+                    "10.1007/s004420100773",
+                    "10.1139/b99-182",
+                    "10.1111/plb.13414",
+                    "10.1073/pnas.071053098"):
+            self.assertIn(doi,article)
+            self.assertIn(doi,audit)
+        self.assertIn("a larger **number of flowering heads per plant**",article)
+        self.assertIn("lower aspect ratio",audit)
+        self.assertNotIn("LEGO",article)
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())

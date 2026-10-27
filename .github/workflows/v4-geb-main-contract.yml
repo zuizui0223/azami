@@ -71,6 +71,27 @@ jobs:
           test -s work/geb_v4/figures/figure3_BIO18_among_taxa_image_angle.png
           test -s work/geb_v4/si/SI_Figure_BIO18_image_angle_both_scales.png
           test -s work/geb_v4/figures/figure4_S2_native_introduced_colour_coefficients.png
+      - name: Validate original cross-domain signed correlations (descriptive only)
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          path=Path("work/geb_v4/si/Table_S2_all_28_RV_pairs.csv")
+          with path.open(newline="",encoding="utf-8") as f:
+              rows={(r["left"],r["right"]):r for r in csv.DictReader(f)}
+          assert len(rows)==28, "Missing a source-derived RV pair"
+          expected={
+              ("angle","chroma"):(-0.22512839486857492,-0.028067356918921597),
+              ("angle","aspect"):(-0.24694620634514822,-0.0693870326972044),
+              ("chroma","aspect"):(0.01993972231831634,-0.01824691397495542),
+          }
+          for pair,(among,within) in expected.items():
+              result=rows[pair]
+              assert result["n_photos"]=="156683" and result["n_taxa"]=="174"
+              assert abs(float(result["adjusted_among_signed_r"])-among)<1e-9,pair
+              assert abs(float(result["adjusted_within_signed_r"])-within)<1e-9,pair
+          print("Original 28 pairs verified, selected angle-chroma-aspect cross-domain signs fixed")
+          PY
       - name: Save verified aggregate tables, not private source records
         if: always()
         uses: actions/upload-artifact@v4
