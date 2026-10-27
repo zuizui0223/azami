@@ -18,9 +18,10 @@
 | C06 | 3.3 / Table 2 | Introduced arvense lightness × elev β−0.173732, Holm 0.00131233 | Within introduced stratum image lightness declines with elevation | Not pigment assay or introduction-induced evolutionary change |
 | C07 | 3.3 / Table 2 | Introduced vulgare chroma × RSDS β+0.134504, Holm 0.01456813 | Within introduced stratum chroma is higher with RSDS | Same photo colour extraction; not independent mechanism |
 | C08 | 3.3 / Table 2 | Introduced vulgare lightness × RSDS β−0.142801, Holm 0.01925414 | Within introduced stratum lightness is lower with RSDS | Same RSDS/sample/photos as C07 |
-| C09 | 3.1 / Figure 2 / Table 1 | S1 28 pairs, raw between>within 21; BIO18-adjusted 24; within module RV median 0.085245 vs cross 0.001419; among 0.197455 vs 0.015453 | Partially separable observable trait association groups | RV baseline/sample size, common pixels/derived metrics |
-| C10 | 3.1 | Size-preserving 280 trait-label allocations; rank 1/280 within, 3/280 among | Registered domains distinctive in frozen measured covariance | NOT genetic modularity test nor independent replication |
-| C11 | 3.1 | 123/135 taxa possess all eight three-trait high/low combinations after adjustment | Broad photographed combinations exist | Sampling intensity/threshold dependence; not viability/genetic recombination |
+| C09 | 3.1 / SI | S1 full 28 pair matrix, raw among>within 21; 4-predictor adjusted 24; within same-domain RV 0.085245 vs cross 0.001419; among 0.197455 vs 0.015453 | Technical covariance organisation retained in SI without deletion | Shared colour/pixel/outline coordinate definitions; NOT several independently functioning biological traits |
+| C22 | 3.1 / Figure 2 / Table 1 | Original adjusted S1 matched 156,683 images /174 taxa: angle×chroma signed r among −0.225128, within −0.028067; angle×2D aspect among −0.246946, within −0.069387; chroma×aspect among +0.019940, within −0.018247 | Weak descriptive cross-domain co-variation; lack of a fixed colour–outline trade-off | Post-hoc pair selection for biological interpretation; no pairwise Holm, evolutionary independence, insect contrast, gravitational angle, absolute landing width, or pollinator/antagonist effect |
+| C10 | SI | Size-preserving 280 trait-label allocations; rank 1/280 within, 3/280 among | Registered image metric groups distinguished descriptively in SI | NOT genetic modularity test nor independent replication |
+| C11 | SI | 123/135 taxa possess all eight three-trait high/low combinations after adjustment | Broad photographed combinations exist | Sampling intensity/threshold dependence; not viability/genetic recombination |
 | C12 | 3.1 | Parity +0.03640 [0.01456,0.05762]; all-three-high −0.003595 [−0.007336,−0.000049]; between contrast +0.011494 [−0.004680,+0.027401] | Higher-order statistic depends on coding | No threshold-invariant synergistic G123 |
 | C13 | 3.1 / SI | S2 original 24 October BIO18-four-variable-adjusted same-/cross-domain RV medians for 4 species×range strata | Descriptive within-stratum photographic phenotype covariance | Not a native–introduced niche difference or evolutionary module transition |
 | C14 | 2.4 / 3.1 / SI | Bract 1,168 each/39 taxa; chroma-bract 1,007/38; adjusted between RV0.153365 /within0.001796; subset max VIF6.14 | Limited supplementary image proxy | Not bract spine/stickiness/defense; not four-exposure primary claim |
@@ -48,7 +49,7 @@ Status: **Supporting description of the original six rows**, no native-versus-in
 
 | Paper part | Original evidence and test family | Manuscript | Source changes |
 |---|---|---|---|
-| **1. Visible phenotypic integration** | S1 matched 156,683 photographs/174 taxa; 8 constructs/28 pairs and three-trait configurations | 2.4, 3.1, 4.1; Figure 2, Table 1 | None |
+| **1. Cross-domain photographic trait covariation** | S1 same 156,683 photographs/174 taxa; three originally measured signed-r pairs from complete 8-construct/28-pair matrix | 2.4, 3.1, 4.1; main Figure 2/Table 1 for the three pairs, complete 28-pair/configuration in SI | None; source-verified display-only refocus |
 | **2. BIO18 × image-referenced capitulum angle** | S1 native cohort 313,350 source observations; angle-eligible 168,907; **80 original Holm tests** | 2.5, 3.2, 4.2; **Figure 3** | None; only the Holm-supported among-taxon result is displayed in Main |
 | **3. Native/introduced photographed colour gradients** | S2 297,622 wild source observations; 2 species×native/introduced; **128 original Holm tests** | 2.6, 3.3, 4.3; Figure 4, Table 2 | None |
 
