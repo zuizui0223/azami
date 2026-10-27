@@ -201,11 +201,11 @@ The biological scope is native *Cirsium* source taxa in Parts 1–2 and exactly 
 
 ## 5. Conclusion
 
-**Part 1** demonstrates partially integrated but varied visible floral configurations: the original 156,683 common photographs of 174 native taxa yield greater among- than within-taxon RV for 24 of 28 adjusted trait pairs, relatively larger within-domain than cross-domain covariance, and all eight tested three-trait configurations in 123 of 135 eligible taxa. These correlations concern observed image-derived phenotypes, not genetically independent or freely recombinable modules.
+**Part 1** identifies weak among-taxon associations of photographic head presentation with colour chroma (r=−0.2251) and 2D outline aspect (r=−0.2469), whereas chroma and aspect themselves are approximately uncorrelated (r=+0.0199); these associations are smaller within taxa. The comprehensive 28-pair covariance matrix and three-trait configurations remain in Supporting Information because several same-domain measurements describe overlapping aspects of a single colour or segmented outline, rather than independent biological functions.
 
 **Part 2** identifies the strongest supported native-taxon ecological association in the fixed V4 four-predictor family: greater warm-quarter precipitation (BIO18) corresponds to a **larger capitulum image-referenced angle across taxa** (β=+0.045447, Holm P=0.00920635, n=168,907). This does not directly measure gravitational nodding or adaptive rain protection. **Part 3** identifies three Holm-surviving introduced-stratum colour–environment associations with elevation or radiation in two well-sampled *Cirsium* species, while native-stratum counterparts show partly similar and partly different estimates; no formal between-range slope-difference test was performed.
 
-Together the three parts provide a method for retaining repeated continuous phenotypes and a bounded ecological account of **presentation, colour and outline** as partly integrated dimensions of floral variation across taxa and geographic histories.
+Together the three parts demonstrate the value of repeated continuous photographic phenotypes and describe **partly decoupled presentation, colour and outline measurements** across taxonomic and environmental contexts, without inferring pollinator filtering, enemy exclusion or adaptation from their correlations.
 
 ## References
 
@@ -252,12 +252,12 @@ The exact primary four-variable statistical results, the 208-test multiple-compa
 
 **Figure 1.** Measurement of continuous head presentation, colour and outline in public photographs, source-verified V4 population coverage and audited native/introduced eligibility. Do not relabel V3 geography or use unlicensed photo material.
 
-**Figure 2 (Part 1).** Eight-trait, 28-pair adjusted/raw within- and among-taxon **photographic RV matrices** from the same original 156,683 photos of 174 native taxa. Within-domain colour/outline associations are explicitly marked.
+**Figure 2 (Part 1).** Source-verified descriptive signed correlations for the **three post hoc exploratory cross-domain pairs** (image angle × chroma, image angle × 2D outline aspect, chroma × outline aspect), each shown at among- and within-taxon levels on the identical 156,683-photo/174-taxon cohort. Not tests of selection or functions. The entire 28-pair raw/adjusted RV matrices appear **in Supporting Information**.
 
 **Figure 3 (Part 2: featured ecological result).** The source-verified **among-taxon image-angle × CHELSA BIO18** standardized coefficient (+0.045447), pointwise 95% CI (+0.022349 to +0.068545), and Holm P=0.00920635. The main figure includes only this Holm-supported term, while Supporting Information provides a separate two-scale coefficient figure and **all 80 native-taxon tests with raw, BH and Holm P values**. No observation-level scatterplot is inferred from aggregates.
 
 **Figure 4 (Part 3).** Source-verified native/introduced colour–environment slopes for the three introduced Holm-surviving pairs, displaying all six existing original coefficients and pointwise intervals with clearly separated within-stratum estimates. This is NOT a direct range×environment interaction or a native/introduced precipitation-niche comparison.
 
-**Figure 5 (Part 1).** Original eight measured high/low configurations of head image angle × chroma × aspect ratio, with sensitivity to binarisation/three-way contrast. Pending original source-count extraction and publication-quality layout audit.
+**Supporting Information (three-trait configurations).** The complete eight high/low combinations of image angle × chroma × aspect and threshold-dependent higher-order contrasts are preserved with their original values. They are **not** a main-text Figure 5 because the inferred direction changes with dichotomisation, and publication-quality source-count visualization remains pending.
 
-**Tables 1–2.** Four-predictor-adjusted same-/cross-domain RV medians (Table 1), and four original Holm-supported environmental associations in the 80/128 frozen families (Table 2). The former four-coefficient forest and four-range RV medians may appear as descriptive Supporting Information figures.
+**Tables 1–2.** Three exploratory cross-domain signed-r pairs at two taxonomic scales (Table 1), and the four original Holm-supported environment associations in the separate 80/128 frozen families (Table 2). Original within-/cross-domain RV medians, the full 28-pair heatmap, configurations and the four range-stratum RV summaries are retained in Supporting Information.
