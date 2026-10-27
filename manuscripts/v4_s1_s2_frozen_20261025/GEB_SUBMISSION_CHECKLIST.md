@@ -15,7 +15,7 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 
 ## Manuscript narrative: three research parts
 
-**Part 1. Photographic head-trait integration and combinations:** Eight constructs/28 original same-photo RV pairs and eight three-trait configurations; not genetic modularity.
+**Part 1. Biologically cross-domain photographic trait relationships (exploratory):** Main compares angle×chroma, angle×aspect and chroma×aspect among/within taxa. Original eight constructs/28 RV pairs and thresholded configurations are retained in SI; not evidence for an independent genetic module, pollinator filtering or anti-herbivore defenses.
 
 **Part 2. BIO18 precipitation and capitulum presentation (featured):** Among native taxa image-referenced angle β +0.045447, 95% pointwise CI [+0.022349, +0.068545], Holm P 0.00920635. The original within-taxon β +0.058700, raw P 0.039865, BH P 0.395837 and Holm P 1.0 are reported **in SI only**, not as a second discovery; do not claim the within slope is zero or the among slope is statistically stronger.
 
@@ -33,19 +33,19 @@ The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 a
 
 **Alternative explanation:** camera angle and lighting, taxon/geographic confounding (prior BIO12 area-control sensitivity), shared-pixel mathematical covariance, imperfect taxonomic and temporal resolution. Selected-model Holm correction is **not** adjusted for the earlier explorations leading to the fixed model. All significant results and all 208 tests are visible in the numerical supplement; don't conceal the full family.
 
-## Seven display pieces for GEB (planned)
+## Six main display pieces for GEB (planned; full 28-pair displays in SI)
 
 **Methodology plus ecology:** show the source-verified continuous photographed phenotypes, then their BIO18, native/introduced colour and domain-covariance structure. Scientific novelty rhetoric stays in the [separate cover letter](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
 
 1. **Figure 1:** V4 measurement workflow, provenance-safe coverage and audited 350→7→2 taxon selection (photo/geographic attribution QA outstanding).
-2. **Figure 2 (Part 1):** V4 same-photo full 28-pair RV matrices at within-/among-taxon scales (156,683 photos, 174 taxa).
+2. **Figure 2 (Part 1):** Source-verified descriptive signed-r display of the three cross-domain photographic pairs among/within taxa (156,683 photos, 174 taxa). Original full 28-pair matrices appear in SI; no new inference.
 3. **Figure 3 (Part 2):** **Only** the original Holm-supported among-taxon image angle×BIO18 coefficient with pointwise 95% CI and corrected P. [SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) contains **all 80 native-taxon raw/BH/Holm tests** and a supplementary two-scale figure including within-taxon raw P.
 4. **Figure 4 (Part 3):** Three selected photographed colour×environment pairs in native/introduced strata, six exact original coefficients with CI; no range×environment interaction inference.
-5. **Figure 5 (Part 1):** Eight image-derived trait combinations and threshold sensitivity (publication-quality source-count figure still pending).
-6. **Table 1:** Native taxon within/among same-domain versus cross-domain descriptive RV medians.
+5. **SI-only configuration results:** Original eight high/low three-trait combinations and binarisation-sensitivity contrasts; no main Figure 5.
+6. **Table 1:** The three cross-domain signed-r pairs at both taxonomic scales; domain RV medians moved to SI.
 7. **Table 2:** Four original Holm-supported environment associations, with Holm rather than raw P displayed in the main table.
 
-**SI figures:** full 208-test table (80 native + 128 two-species) including unadjusted/BH/Holm P, the original two-scale BIO18 image-angle forest, all 28 RV pairs, the previous four-positive forest and S2 domain RV medians. Earlier V3 numerical plots are not re-labelled as V4.
+**SI figures and tables:** full 208-test family with original/BH/Holm P, the two-scale BIO18 angle forest, all 28 RV pairs (original full matrix and CSV), 280 fixed-size label ranks, eight-state configurations with threshold sensitivity, original domain RV medians, previous four-positive forest and S2 range-stratum RV medians. See SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md. Earlier V3 numerical plots are not re-labelled as V4.
 
 ## Submission blockers (not claimed complete)
 
