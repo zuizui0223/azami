@@ -4,7 +4,7 @@
 
 ## Paper structure (editorial, not three independent datasets)
 
-1. **Part 1 — Continuous head traits, visible phenotypic integration and configurations.** Eight constructs/28 same-photo RV pairs; all eight tested three-trait configurations in 123/135 eligible taxa.
+1. **Part 1 — Cross-domain photographic trait relationships (exploratory).** Main text shows angle×chroma, angle×2D outline aspect and chroma×aspect among/within-taxon signed correlations. All 28 pairs, within-domain image-metric redundancy and thresholded configurations are in Supporting Information.
 2. **Part 2 — Image-referenced capitulum angle versus warm-quarter BIO18.** Feature the **Holm-supported among-taxon** coefficient β +0.045447, Holm P 0.00920635 in the Main figure; place the raw-only **within-taxon** association and complete 80-test raw/BH/Holm context in SI.
 3. **Part 3 — Native/introduced colour–environment gradients.** Two *Cirsium* species, four WCVP native/introduced strata, three original introduced Holm positives with native counterparts.
 
@@ -16,6 +16,7 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 - [GEB_RESEARCH_ARTICLE.md](GEB_RESEARCH_ARTICLE.md) — scientific working text with GEB structured Abstract, Methods, Results, Discussion and cited natural-contrast interpretation.
 - [GEB_RESEARCH_ARTICLE_BLINDED.md](GEB_RESEARCH_ARTICLE_BLINDED.md) — a separately prepared identity-concealed text draft. Actual anonymous reviewer access, affiliations, title page and final journal formatting are **pending**.
 - [CLAIM_LEDGER_AND_SUBMISSION_GATES.md](CLAIM_LEDGER_AND_SUBMISSION_GATES.md) — each frozen estimate to its source and non-claims.
+- [Full 28-pair and configuration SI context](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md) — all same-domain metrics, descriptive RV medians, 280 group-label allocations and threshold-sensitive eight-state counts.
 - [GEB_SUBMISSION_CHECKLIST.md](GEB_SUBMISSION_CHECKLIST.md) — structure, required figures, full 208-test table and unresolved submission gates.
 - [S2 seven-species eligibility table and stronger two-range gate](SI_S2_FOCAL_SPECIES_SELECTION_AUDIT.md) — source-real WCVP 350-name screen, all seven two-range candidates, and exactly two species meeting coverage in **each** native/introduced stratum.
 - [S2 study-design synthesis: historical rationale × empirical eligibility](S2_SELECTION_RATIONALE_20261025.md) — two defensible reasons for selecting the same two focal species without claiming random selection or new niche/trait fits.
@@ -36,7 +37,7 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 - `plot_frozen_summary.py`: the historical four-Holm forest and domain-median charts are **supplementary** descriptive displays.
 - `plot_bio18_angle_part2.py`: Main Figure 3 contains the source-verified among-taxon BIO18×image-angle coefficient; SI includes both scales and 80 raw/BH/Holm rows.
 - `plot_s2_native_introduced_colour.py`: Main Figure 4 **source-verified six original coefficients**, generated from the exact original S2 source CSV by the existing SHA-locked validator. This is not a cross-range hypothesis test or rainfall-niche comparison.
-- `build_full_supplement.py`: the original 28-pair V4 matrix is mapped to Main Figure 2 (layout QA pending), without replacement of source values.
+- `build_full_supplement.py`: preserves and regenerates the **complete original 28-pair matrix in SI** (with no source-data changes). `plot_cross_functional_pairs.py` verifies and plots the **three original cross-domain signed-r pairs in Main Figure 2**; no new statistical tests.
 
 ## Explicit scientific separation
 
