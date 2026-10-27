@@ -163,7 +163,7 @@ class V4GEBMainContract(unittest.TestCase):
         for prefix in ("### 2.4. Part 1 — Visible phenotypic integration",
                        "### 2.5. Part 2 — Native-taxon capitulum angle",
                        "### 2.6. Part 3 — Native/introduced",
-                       "### 3.1. Part 1 — Partial integration",
+                       "### 3.1. Part 1 — Cross-domain presentation, colour and outline associations",
                        "### 3.2. Part 2 — Among-taxon image angle",
                        "### 3.3. Part 3 — Native/introduced colour",
                        "### 4.1. Part 1 — Integration",
