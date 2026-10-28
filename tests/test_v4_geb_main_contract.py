@@ -257,7 +257,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("three Holm-supported comparisons from a single 128-test family",article)
         self.assertIn("native coefficient (**+0.136883**)",article)
         self.assertIn("Holm P of 0.102398",article)
-        self.assertIn("a **direct interaction test**",article)
+        self.assertIn("**direct interaction test**",article)
         self.assertIn("not evidence of rainfall-mediated selection",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("**without** comparing native–introduced rainfall niches",article)
