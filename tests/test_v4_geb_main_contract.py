@@ -92,7 +92,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("native coefficient (**+0.136883**)",article)
         self.assertIn("Holm P of 0.102398",article)
         self.assertIn("introduced coefficient (**+0.134504**)",article)
-        self.assertIn("a direct interaction test",article)
+        self.assertIn("direct interaction test",article)
         self.assertIn("without** comparing native–introduced rainfall niches",article)
         si=(PAPER/"SI_S2_COLOUR_NATIVE_INTRO_FIXED_HOLM_CONTEXT.md").read_text(encoding="utf-8")
         self.assertIn("22,936",si)
@@ -186,8 +186,8 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blind)
-        for key in ("Dalrymple et al. (2020)","Berardi et al., 2016",
-                    "greater image chroma and lower image lightness",
+        for key in ("Dalrymple et al., 2020","Berardi et al., 2016",
+                    "Greater chroma and lower lightness",
                     "**Figure 3 (Part 2: featured ecological result).**",
                     "**Figure 4 (Part 3).**",
                     "https://doi.org/10.1111/nph.16737",
@@ -210,9 +210,9 @@ class V4GEBMainContract(unittest.TestCase):
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blinded)
         self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2,3])
-        for term in ("**Part 1** identifies weak among-taxon associations",
-                     "**Part 2** identifies the strongest",
-                     "**Part 3** identifies three",
+        for term in ("Globally distributed public photographs",
+                     "a larger downward-looking image angle",
+                     "The conspecific native–introduced comparison provides a second ecological perspective.",
                      "**Figure 3 (Part 2: featured ecological result).**",
                      "main figure includes only this Holm-supported term",
                      "all 80 native-taxon tests with raw, BH and Holm P values"):
@@ -241,31 +241,39 @@ class V4GEBMainContract(unittest.TestCase):
                       "figure4_S2_native_introduced_colour_coefficients.png"):
             self.assertIn(value,ci)
 
-    def test_photo_cross_domain_interaction_discussion_has_primary_sources(self):
+    def test_v4_manuscript_results_before_mechanistic_speculation(self):
         article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(article,blind)
+        self.assertTrue(article.startswith("# Global photographic phenomics reveals"))
+        self.assertIn("regional radiations",article)
+        self.assertIn("Moreyra et al., 2025",article)
+        self.assertIn("Siniscalchi, Ackerfield & Folk, 2023",article)
+        self.assertIn("Hulme & Barrett, 2013",article)
+        self.assertIn("avoidance of pollen wetting and wash-off",article)
+        self.assertIn("only Holm-surviving association",article)
+        self.assertIn("1981–2010 climatic normal",article)
+        self.assertIn("**141,014 native, 156,608 introduced**",article)
+        self.assertIn("three Holm-supported comparisons from a single 128-test family",article)
+        self.assertIn("native coefficient (**+0.136883**)",article)
+        self.assertIn("Holm P of 0.102398",article)
+        self.assertIn("a **direct interaction test**",article)
+        self.assertIn("not evidence of rainfall-mediated selection",article)
+        self.assertIn("no native-versus-introduced climatic-niche analysis",article)
+        self.assertIn("**without** comparing native–introduced rainfall niches",article)
+        for doi in ("10.1016/j.ympev.2025.108285",
+                    "10.1086/724310",
+                    "10.1080/17550874.2012.702793",
+                    "10.1111/1365-2745.12009",
+                    "10.1111/nph.16737"):
+            self.assertIn(doi,article)
+        for pair in ("r=−0.2251","r=−0.2469","r=+0.0199"):
+            self.assertIn(pair,article)
         audit=(PAPER/"GEB_INTERACTION_FILTER_LITERATURE_AUDIT_20261027_JA.md").read_text(encoding="utf-8")
-        for value in ("−0.2251","−0.2469","−0.0281","−0.0694","r=+0.0199",
-                      "P(landing | approach)", "photographic CIELAB chroma",
-                      "neither a fixed three-trait syndrome", "not pollinator choice",
-                      "capitulum receptacle width", "Neither measure is the photograph-derived height-to-width ratio"):
-            self.assertIn(value,article)
         for value in ("## 2. 実験・比較文献のエビデンス階層",
                       "### H1.", "### H2.", "### H3.", "### H4.", "### H5.",
                       "分類群間", "分類群内", "視覚", "食害"):
             self.assertIn(value,audit)
-        for doi in ("10.1007/s00114-023-01845-w",
-                    "10.1111/ele.13204",
-                    "10.1002/ece3.73221",
-                    "10.1007/s004420100773",
-                    "10.1139/b99-182",
-                    "10.1111/plb.13414",
-                    "10.1073/pnas.071053098"):
-            self.assertIn(doi,article)
-            self.assertIn(doi,audit)
-        self.assertIn("a larger **number of flowering heads per plant**",article)
-        self.assertIn("lower aspect ratio",audit)
         self.assertNotIn("LEGO",article)
 
     def test_v3_archived(self):
