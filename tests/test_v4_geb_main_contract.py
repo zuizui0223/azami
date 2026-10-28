@@ -110,7 +110,7 @@ class V4GEBMainContract(unittest.TestCase):
                      "Colautti, Maron & Barrett, 2009",
                      "Guggisberg et al., 2013",
                      "not a randomised climate intervention",
-                     "a **direct interaction test**",
+                     "**direct interaction test**",
                      "no native-versus-introduced climatic-niche analysis"):
             self.assertIn(name,manuscript)
         note=(PAPER/"S2_NATIVE_INTRO_EVOLUTIONARY_RATIONALE_REFERENCES_JA.md").read_text(encoding="utf-8")
@@ -167,8 +167,8 @@ class V4GEBMainContract(unittest.TestCase):
                        "### 3.2. Part 2 — Among-taxon image angle",
                        "### 3.3. Part 3 — Native/introduced colour",
                        "### 4.1. Part 1 — Distinguishing biological domains",
-                       "### 4.2. Part 2 — Climatic precipitation",
-                       "### 4.3. Part 3 — Colour gradients"):
+                       "### 4.2. Part 2 — Precipitation, head presentation",
+                       "### 4.3. Part 3 — Floral colour and climate"):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
