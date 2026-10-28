@@ -2,6 +2,10 @@
 
 **Science locked:** 24 October 2026, original V4 S1–S2 commit `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`. The manuscript has been revised for GEB after this freeze; numerical estimates were not modified.
 
+**Current article title:** *Global photographic phenomics reveals precipitation-associated capitulum presentation and floral colour gradients in Cirsium*.
+
+**Current central argument (2026-10-28 editorial pass):** Global photograph-derived continuous traits allow climate–trait comparisons across a genus diversified in multiple regions. The paper foregrounds **the corrected native among-taxon BIO18 × image-angle relationship** and **three introduced-stratum colour–radiation/elevation relationships in two source-eligible species**, then asks what a historical native/introduced comparison contributes beyond among-taxon turnover. The directional rain-shielding interpretation is a hypothesis with independent experimental precedent, not measured fitness or an adaptation claim. Within-/across-domain image metric covariance and eight-state threshold configurations are descriptive context and their complete results remain in SI.
+
 ## Paper structure (editorial, not three independent datasets)
 
 1. **Part 1 — Cross-domain photographic trait relationships (exploratory).** Main text shows angle×chroma, angle×2D outline aspect and chroma×aspect among/within-taxon signed correlations. All 28 pairs, within-domain image-metric redundancy and thresholded configurations are in Supporting Information.
