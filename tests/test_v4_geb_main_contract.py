@@ -106,12 +106,12 @@ class V4GEBMainContract(unittest.TestCase):
         manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(manuscript,blinded)
-        for name in ("Hulme and Barrett (2013)",
+        for name in ("Hulme & Barrett, 2013",
                      "Colautti, Maron & Barrett, 2009",
-                     "Guggisberg et al. (2013)",
-                     "rather than assuming that introduced plants have undergone a recent *species radiation*",
-                     "did not fit a range-status interaction",
-                     "do **not** compare native and introduced climatic niches"):
+                     "Guggisberg et al., 2013",
+                     "not a randomised climate intervention",
+                     "a **direct interaction test**",
+                     "no native-versus-introduced climatic-niche analysis"):
             self.assertIn(name,manuscript)
         note=(PAPER/"S2_NATIVE_INTRO_EVOLUTIONARY_RATIONALE_REFERENCES_JA.md").read_text(encoding="utf-8")
         self.assertIn("急速な種分化・適応放散",note)
@@ -166,7 +166,7 @@ class V4GEBMainContract(unittest.TestCase):
                        "### 3.1. Part 1 — Cross-domain presentation, colour and outline associations",
                        "### 3.2. Part 2 — Among-taxon image angle",
                        "### 3.3. Part 3 — Native/introduced colour",
-                       "### 4.1. Part 1 — Weak cross-domain covariation",
+                       "### 4.1. Part 1 — Distinguishing biological domains",
                        "### 4.2. Part 2 — Climatic precipitation",
                        "### 4.3. Part 3 — Colour gradients"):
             self.assertIn(prefix,article)
