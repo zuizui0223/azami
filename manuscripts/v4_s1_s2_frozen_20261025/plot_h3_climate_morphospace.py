@@ -30,9 +30,9 @@ def read_sources(breadth,analogue):
         or a["verified_execution"]["artifact_id"]!=EXPECTED_H3A_ARTIFACT
         or a["source"]["quality_eligible_matched_observations"]!=157822
         or b["status"]!="SOURCE_DERIVED_EXPLORATORY_NOT_ORIGINAL_V4_HOLM"
-        or b["source"]["run_id"]!=EXPECTED_H3C_RUN
-        or b["source"]["artifact_id"]!=EXPECTED_H3C_ARTIFACT
-        or b["source"]["quality_eligible_matched_photographs"]!=157822):
+        or b["verified_execution"]["github_actions_run"]!=EXPECTED_H3C_RUN
+        or b["verified_execution"]["aggregate_artifact_id"]!=EXPECTED_H3C_ARTIFACT
+        or b["source"]["quality_eligible_matched_observations"]!=157822):
         raise ValueError("H3_FIGURE_SOURCE_VERIFICATION_FAILED")
     for key,n in (("1degree",63),("5degree",31)):
         ca=a["analyses"][key];co=b["results"][key]
