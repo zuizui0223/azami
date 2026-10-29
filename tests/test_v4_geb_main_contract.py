@@ -348,13 +348,15 @@ class V4GEBMainContract(unittest.TestCase):
                                -0.008144762186869107,places=12)
         self.assertTrue(a["similarity"]["phylogenetic_evolutionary_convergence_NOT_tested"])
         manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
-        for term in ("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",
+        for term in ("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",
                      "### 4.3. Local climatic correspondence without a single global floral syndrome",
                      "**157,822 records across 242 taxa**","**63 taxa**",
-                     "permutation P=0.3875","**ρ=−0.0081**",
                      "not a thresholded hypervolume intersection",
                      "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md"):
             self.assertIn(term,manuscript)
+        breadth_si=(PAPER/"SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md").read_text(encoding="utf-8")
+        for value in ("0.3875", "**−0.0081**", "0.9125", "supplementary H3a and H3b"):
+            self.assertIn(value,breadth_si)
         self.assertIn("The standardized among-taxon coefficient was **+0.045447**",manuscript)
         self.assertIn("β=**+0.134504**",manuscript)
         self.assertIn("β=**−0.173732**",manuscript)
@@ -419,10 +421,11 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         headings=re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)
         self.assertEqual([int(v) for v in headings],[1,2,3])
-        self.assertIn("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",paper)
+        self.assertIn("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",paper)
         self.assertIn("**Holm-2 P=0.010**",paper)
-        self.assertIn("**0.507 versus 0.615**",paper)
-        self.assertIn("**0.460 versus 0.536**",paper)
+        overlap_si=(PAPER/"SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md").read_text(encoding="utf-8")
+        for value in ("0.61509 / 0.50742", "0.53554 / 0.46046", "not a greater overlap than all cells"):
+            self.assertIn(value,overlap_si)
         self.assertIn("Holm P=**0.00920635**",paper)
         self.assertIn("Holm P=**0.01456813**",paper)
         self.assertIn("Holm P=**0.01925414**",paper)
@@ -465,7 +468,7 @@ class V4GEBMainContract(unittest.TestCase):
                       "−0.07581 to +0.20119",
                       "SI_S2_COLOUR_SPATIAL_BLOCK_SENSITIVITY_20261029.md",
                       "SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md",
-                      "### 3.3. Climate-conditioned floral resemblance beyond niche breadth"):
+                      "### 3.3. Similar local climates are associated with more similar capitulum phenotypes"):
             self.assertIn(token,paper)
         self.assertIn("**Holm-2 P=0.010**",paper)
 
@@ -481,18 +484,20 @@ class V4GEBMainContract(unittest.TestCase):
             if marker=="not independently replicated":
                 continue
             self.assertIn(marker,si)
-        for marker in ("Six further random-seed series",
-                       "only **two of six** 1°",
-                       "compared with **six of six** 5°",
-                       "after omitting floral chroma",
+        result3=article.split("### 3.3.",1)[1].split("## 4. Discussion",1)[0]
+        for marker in ("positive in all six additional random-seed series",
+                       "Statistical support was more stable at 5°",
+                       "matching threshold, trait composition and regional coverage",
                        "SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md"):
-            self.assertIn(marker,article)
+            self.assertIn(marker,result3)
+        for unrelated_result in ("permutation P=0.3875", "ρ=−0.0081", "Holm P=0.096"):
+            self.assertNotIn(unrelated_result,result3)
         for retained in ("### 3.1. Global image measurements and precipitation-associated capitulum presentation",
                          "### 3.2. Radiation and elevation gradients in native and introduced ranges",
                          "The standardized among-taxon coefficient was **+0.045447**",
                          "β=**+0.134504**","β=**−0.142801**","β=**−0.173732**"):
             self.assertIn(retained,article)
-        self.assertIn("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",article)
+        self.assertIn("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",article)
         self.assertNotIn("evolutionary convergence has been demonstrated",article.lower())
         code=(V4/"s1_h3c_seed_stability.py").read_text(encoding="utf-8")
         self.assertIn("DRAWS = 24",code)

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """GEB Figure 5: local climate-analogue 3D photographic floral resemblance.
 
-Three aggregate-only panels:
- a) climate-matched floral distance advantage versus within-taxon permutation
- b) conditional Gaussian-KDE L2 overlap difference versus permutation reference
- c) the separate, unresolved climate-breadth / floral-breadth relationship.
+The main figure shows climate-matched floral distance advantage versus the
+within-taxon permutation mean at 1 and 5 degrees. The original three-panel
+distance, Gaussian-KDE overlap and climate/floral-breadth display is retained
+as a separate supplementary export. All displays use aggregate sources only.
 
 No taxon names, observation IDs, individual photographs or exact coordinates.
 The original S1 80 and S2 128 Holm families are untouched; the H3c Holm-2
@@ -44,6 +44,82 @@ def read_sources(breadth,analogue):
 
 
 def plot(a,b,output):
+    """Render the H3c distance result alone under the legacy Figure 5 name."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+
+    blue="#19659a"
+    neutral="#69737c"
+    with plt.rc_context({"font.family":"DejaVu Sans","font.size":10,
+                         "axes.labelcolor":"#28323c","text.color":"#28323c",
+                         "xtick.color":"#47525c","ytick.color":"#28323c"}):
+        fig,ax=plt.subplots(figsize=(9.4,5.3))
+        fig.subplots_adjust(left=.25,right=.96,bottom=.33,top=.75)
+        fig.text(.04,.95,"Similar local climates, closer head phenotypes",
+                 fontsize=16,fontweight="bold",va="top")
+        fig.text(.04,.885,"Image-referenced head angle · CIELAB chroma · 2D outline aspect ratio",
+                 fontsize=10.5,color=neutral)
+
+        keys=("1degree","5degree")
+        ys=(1,0)
+        labels=("1° cells · 63 taxa\nPrimary analysis",
+                "5° cells · 31 taxa\nSpatial sensitivity")
+        for key,y in zip(keys,ys):
+            item=b["results"][key]
+            observed=item["primary_trait_distance_advantage_of_climate_matched_cells"]
+            null=item["null_mean"]
+            p=item["holm2_distance_vs_overlap_p"]
+            ax.plot(null,y,marker="s",markersize=8,markeredgewidth=1.5,
+                    color=neutral,markerfacecolor="white",zorder=3)
+            ax.plot(observed,y,marker="o",markersize=9,color=blue,zorder=3)
+            ax.annotate(f"{observed:+.5f}",(observed,y),xytext=(0,13),
+                        textcoords="offset points",ha="center",fontsize=11,
+                        fontweight="bold",color=blue)
+            ax.annotate(f"Holm-2 P = {p:.3f}",(observed,y),xytext=(0,-21),
+                        textcoords="offset points",ha="center",fontsize=10)
+            ax.annotate(f"{null:+.5f}",(null,y),xytext=(0,-21),
+                        textcoords="offset points",ha="center",fontsize=10,
+                        color=neutral,bbox={"facecolor":"white","edgecolor":"none","pad":1})
+
+        ax.set_yticks(ys,labels)
+        ax.tick_params(axis="y",length=0,pad=16,labelsize=10.5)
+        ax.tick_params(axis="x",length=4,pad=7)
+        ax.set_ylim(-.55,1.55)
+        ax.set_xlim(-.009,.115)
+        ax.set_xticks([0,.025,.05,.075,.1],
+                      ["0","0.025","0.050","0.075","0.100"])
+        ax.axvline(0,ls="--",color=neutral,lw=1,zorder=1)
+        ax.grid(axis="y",color="#e4e8eb",lw=.8,zorder=0)
+        for side in ("top","right","left"):
+            ax.spines[side].set_visible(False)
+        ax.spines["bottom"].set_color("#89929a")
+        ax.set_xlabel("Distance advantage from climate matching (standardised 3D distance)",
+                      fontsize=10.5,labelpad=13)
+        handles=[Line2D([],[],marker="o",linestyle="none",markersize=8,
+                        color=blue,label="Observed"),
+                 Line2D([],[],marker="s",linestyle="none",markersize=7,
+                        markeredgewidth=1.5,color=neutral,markerfacecolor="white",
+                        label="Within-taxon permutation mean")]
+        fig.legend(handles=handles,loc="upper left",bbox_to_anchor=(.245,.84),
+                   ncol=2,frameon=False,fontsize=10,handletextpad=.6,columnspacing=2)
+        fig.text(.25,.17,"All cell pairs − climate-matched pairs; positive values indicate more similar heads.",
+                 fontsize=9.5,color=neutral)
+        fig.text(.04,.115,"Exploratory Holm-2 correction retains the original distance + KDE-overlap family; 199 permutations.",
+                 fontsize=9,color=neutral)
+        fig.text(.04,.068,"Statistical support depends on spatial grain, traits and regions; sensitivity analyses are reported in SI.",
+                 fontsize=9,color=neutral)
+        path=Path(output);path.mkdir(parents=True,exist_ok=True)
+        for ext in ("png","svg"):
+            fig.savefig(path/f"figure5_H3_climatic_breadth_floral_morphospace.{ext}",
+                        dpi=260,bbox_inches="tight")
+        plt.close(fig)
+    return path
+
+
+def plot_supplementary(a,b,output):
+    """Preserve the original distance, overlap and breadth context panels."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -103,7 +179,7 @@ def plot(a,b,output):
     fig.tight_layout(rect=[0,.035,1,.96],w_pad=2.0)
     path=Path(output);path.mkdir(parents=True,exist_ok=True)
     for ext in ("png","svg"):
-        fig.savefig(path/f"figure5_H3_climatic_breadth_floral_morphospace.{ext}",
+        fig.savefig(path/f"SI_H3_context_distance_overlap_breadth.{ext}",
                     dpi=260,bbox_inches="tight")
     plt.close(fig)
     return path
@@ -117,7 +193,9 @@ def main():
     args=p.parse_args()
     a,b=read_sources(args.source,args.analogue_source)
     plot(a,b,args.output_dir)
+    plot_supplementary(a,b,args.output_dir)
 
 
 if __name__=="__main__":
     main()
+

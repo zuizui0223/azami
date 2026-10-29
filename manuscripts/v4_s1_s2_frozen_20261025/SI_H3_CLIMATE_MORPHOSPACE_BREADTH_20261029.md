@@ -2,7 +2,7 @@
 
 ## Motivation and source
 
-The third ecological question in the V4 GEB Research Article is whether taxa occupying a wider **realised geographic climatic niche** also occupy a larger volume in a common **photographically observed floral morphospace**, and whether morphological similarity recurs between taxa from different geographic sectors when their climatic centroids are similar. These are **hypotheses about observed ecological organisation**, not genetic plasticity, fitness, phylogenetic convergence or adaptive radiation.
+These supplementary H3a and H3b comparisons ask whether taxa occupying a wider **realised geographic climatic niche** also occupy a larger volume in a common **photographically observed floral morphospace**, and whether morphological similarity recurs between taxa from different geographic sectors when their climatic centroids are similar. Main Results 3.3 focuses on the distinct H3c question of local resemblance at climate-matched sites; the complete breadth and centroid results remain reported here, with their original source, estimands and uncertainty unchanged. These are **hypotheses about observed ecological organisation**, not genetic plasticity, fitness, phylogenetic convergence or adaptive radiation.
 
 Original source: encrypted, SHA-verified V4 native source **313,350 observations** and CHELSA pixel-decoded climatology. In the original records, exactly **157,822** observations from **242** source taxon keys passed matched angle, colour-chroma and outline-aspect quality gates. Original observer identities and site coordinates were retained only in the Actions runner, not uploaded.
 
