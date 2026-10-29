@@ -2,7 +2,9 @@
 
 **Science locked:** 24 October 2026, original V4 S1–S2 commit `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`. The manuscript has been revised for GEB after this freeze; numerical estimates were not modified.
 
-**Current article title:** *Global photographic phenomics reveals precipitation-associated capitulum presentation and floral colour gradients in Cirsium*.
+**Current article title:** *Global photographic phenomics reveals geographically structured precipitation–capitulum associations in Cirsium*.
+
+**New empirical geographic sensitivity (2026-10-29):** [Exact-cohort BIO18 source-verified result](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED_JA.md), [CI #40837107465](https://github.com/zuizui0223/azami/actions/runs/40837107465). The original native S1 beta +0.045447 (Holm P0.00920635) was numerically reproduced on the **same 168,907 photos/178 taxa**. Longitude-sector adjustment reduced it to +0.020035 (95% HC3 −0.010833,+0.050902) and spherical geography to −0.003295 (−0.063000,+0.056410); omitting the eastern-sector 38 taxa yielded −0.010372 (−0.068465,+0.047721). Geographic effects are **exploratory pointwise sensitivities**, not new Holm tests or phylogenetic radiation contrasts. The positive pooled coefficient is not a world-region-replicated rain-protection law.
 
 **Current central argument (2026-10-29 GEB published-article editorial pass):** Global photograph-derived continuous traits allow climate–trait comparisons across a genus diversified in multiple regions. The paper foregrounds **the corrected native among-taxon BIO18 × image-angle relationship** and **three introduced-stratum colour–radiation/elevation relationships in two source-eligible species**, then asks what a historical native/introduced comparison contributes beyond among-taxon turnover. The directional rain-shielding interpretation is a hypothesis with independent experimental precedent, not measured fitness or an adaptation claim. Within-/across-domain image metric covariance and eight-state threshold configurations are descriptive context and their complete results remain in SI.
 
@@ -40,7 +42,7 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 - `module_summary.csv`, `s2_module_summary.csv`: display-only 24 October fixed phenotypic covariance summaries, not the complete hypothesis family.
 - `build_full_supplement.py`: SHA-checked source-regeneration of **all 208** primary BIO18-family tests and 28 raw/adjusted RV construct pairs.
 - `plot_frozen_summary.py`: the historical four-Holm forest and domain-median charts are **supplementary** descriptive displays.
-- `plot_bio18_angle_part2.py`: Main Figure 3 contains the source-verified among-taxon BIO18×image-angle coefficient; SI includes both scales and 80 raw/BH/Holm rows.
+- `plot_bio18_angle_part2.py`: the unchanged original Holm-supported BIO18×image-angle coefficient and the supplementary within/among scales; SI includes both scales and 80 raw/BH/Holm rows.
 - `plot_s2_native_introduced_colour.py`: Main Figure 4 **source-verified six original coefficients**, generated from the exact original S2 source CSV by the existing SHA-locked validator. This is not a cross-range hypothesis test or rainfall-niche comparison.
 - `build_full_supplement.py`: preserves and regenerates the **complete original 28-pair matrix in SI** (with no source-data changes). `plot_cross_functional_pairs.py` verifies and plots the **three original cross-domain signed-r pairs as a supplementary exploratory asset** (historical filename still begins `figure2_`); no new statistical tests. Main Figure 2 is reserved for a **not-yet-source-generated** geographic coverage map; no invented locations/images.
 
@@ -49,3 +51,5 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 **Part 1** reuses native common photographs from original source S1 for visible trait integration; **Part 2** models the native S1 cohort and emphasizes the Holm-supported image-angle×BIO18 association; **Part 3** uses the two-species×two-range source S2 for **within-stratum** photographed colour gradients. The parts are not independent datasets or new multiple-testing families. **No native-versus-introduced precipitation/climate niche comparison belongs to this article**, and all 24 October source results and Holm coefficients are unchanged.
 
 Historical V3 numerical results belong to `legacy/v3/`. Separate 25 October S2 climate-niche analyses are preserved under `legacy/v4_s2_precipitation_niche_20261025/`; they are **not** current GEB findings, submission figures or a prerequisite for the frozen numerical replay. T2/T3 are not validation layers in this S1–S2 manuscript. Private identities, coordinates and unlicensed images are not redistributable.
+
+- `plot_bio18_geographic_sensitivity.py`: **Main Figure 3 geographic-sensitivity forest** (source-locked original baseline, fixed sector/sphere controls and eastern holdout under photo-weighted versus cell-balanced taxa). The source-audited aggregate JSON is committed separately; original individual metadata remain private.
