@@ -1,8 +1,9 @@
 # Supporting Information: original V4 full trait-pair and configuration context
 
 This document retains the original 24 October 2026 S1–S2 source science while
-the main article discusses only associations between the biologically different
-visible domains: image-referenced presentation, colour and head outline.
+the GEB main article foregrounds independently reported climate–trait results.
+All 28 exploratory visible-trait associations, including post hoc cross-domain
+pairs, are retained here rather than used as additional main-text discoveries.
 No new phenotype estimation, adjustment, correlation test or multiple-testing
 family was performed in the editorial refocus.
 
@@ -48,6 +49,24 @@ of a covariance matrix whose variables overlap algebraically, not evidence
 of separate genetic developmental modules or an adjusted phenotypic
 selection test.
 
+## Exploratory original cross-domain correlations (environment-adjusted)
+
+These three **post hoc** descriptively selected pairs are calculated on the
+same **156,683 photos / 174 native taxa**, controlling for the frozen four
+environmental predictors. The **sign of the correlation** does not come from
+RV (which is nonnegative): we report the original signed *r* values separately.
+
+| Photographic construct pair | Between-taxon signed r | Within-taxon signed r |
+| --- | ---: | ---: |
+| Image angle × chroma | **−0.225128** | **−0.028067** |
+| Image angle × 2D aspect | **−0.246946** | **−0.069387** |
+| Chroma × 2D aspect | **+0.019940** | **−0.018247** |
+
+These weak effects are not independent biological tests or evidence for a
+functional presentation–colour/outline trade-off, geographic environmental
+convergence, pollinator filtering, or genetically separable modules.
+An image-based angle and outline aspect can share camera viewpoint artifacts.
+
 ## Original three-construct observations
 
 Image angle × chroma × 2D outline aspect were dichotomised and enumerated;
@@ -71,9 +90,11 @@ not proven changes to a genetic module after introduction.
 
 ## Main-paper biological emphasis
 
-Only three source-verified signed-r pairs are promoted into the descriptive
-Figure 2 / Table 1: image angle×colour chroma, image angle×2D aspect and
-chroma×2D aspect. The photograph-centred and taxon-mean coefficients
-remain observational and were **selected for interpretability after inspection**,
-without any new P values, phylogenetic sensitivity or causal inference.
-No original full pair or configuration result is hidden or overwritten.
+All three source-verified signed-r pairs (angle×chroma, angle×2D aspect,
+chroma×2D aspect) are now **Supporting Information only**. Their former
+`figure2_cross_functional_trait_pairs.png` filename is a legacy analysis
+artifact, **not** the GEB main manuscript's planned geographic Figure 2.
+These photo- and taxon-centred coefficients remain observational and were
+selected for interpretability **after inspection**, with no new P values,
+phylogenetic sensitivity or causal inference. Nothing in the original 28-pair
+or configuration record is overwritten.
