@@ -1,15 +1,15 @@
-# GEB V4: three-part Research Article (science frozen 2026-10-24)
+# GEB V4: global photographic phenomics Research Article (science frozen 2026-10-24)
 
 **Science locked:** 24 October 2026, original V4 S1–S2 commit `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`. The manuscript has been revised for GEB after this freeze; numerical estimates were not modified.
 
 **Current article title:** *Global photographic phenomics reveals precipitation-associated capitulum presentation and floral colour gradients in Cirsium*.
 
-**Current central argument (2026-10-28 editorial pass):** Global photograph-derived continuous traits allow climate–trait comparisons across a genus diversified in multiple regions. The paper foregrounds **the corrected native among-taxon BIO18 × image-angle relationship** and **three introduced-stratum colour–radiation/elevation relationships in two source-eligible species**, then asks what a historical native/introduced comparison contributes beyond among-taxon turnover. The directional rain-shielding interpretation is a hypothesis with independent experimental precedent, not measured fitness or an adaptation claim. Within-/across-domain image metric covariance and eight-state threshold configurations are descriptive context and their complete results remain in SI.
+**Current central argument (2026-10-29 GEB published-article editorial pass):** Global photograph-derived continuous traits allow climate–trait comparisons across a genus diversified in multiple regions. The paper foregrounds **the corrected native among-taxon BIO18 × image-angle relationship** and **three introduced-stratum colour–radiation/elevation relationships in two source-eligible species**, then asks what a historical native/introduced comparison contributes beyond among-taxon turnover. The directional rain-shielding interpretation is a hypothesis with independent experimental precedent, not measured fitness or an adaptation claim. Within-/across-domain image metric covariance and eight-state threshold configurations are descriptive context and their complete results remain in SI.
 
 ## Paper structure (editorial, not three independent datasets)
 
-1. **Part 1 — Cross-domain photographic trait relationships (exploratory).** Main text shows angle×chroma, angle×2D outline aspect and chroma×aspect among/within-taxon signed correlations. All 28 pairs, within-domain image-metric redundancy and thresholded configurations are in Supporting Information.
-2. **Part 2 — Image-referenced capitulum angle versus warm-quarter BIO18.** Feature the **Holm-supported among-taxon** coefficient β +0.045447, Holm P 0.00920635 in the Main figure; place the raw-only **within-taxon** association and complete 80-test raw/BH/Holm context in SI.
+1. **Native-taxon global photographic phenomics and climate.** Main Results 3.1 and Figure 3 foreground the one Holm-supported BIO18 × image angle association. The image-measurement cohort and methods are explicitly distinguished from raw source observation totals.
+2. **Historical within-species comparison.** Main Results 3.2 / Figure 4 / Table 2 show three original Holm-supported introduced-stratum colour associations and their native counterparts, without a formal cross-range slope-difference claim.
 3. **Part 3 — Native/introduced colour–environment gradients.** Two *Cirsium* species, four WCVP native/introduced strata, three original introduced Holm positives with native counterparts.
 
 Source **S1/S2** labels are unchanged, and there is **no third independent source S3**. V3's measurement and ecological motivation is retained without treating its historical regression coefficients as V4 replication. “LEGO” was an informal project nickname, not the formal hypothesis.
@@ -20,7 +20,8 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 - [GEB_RESEARCH_ARTICLE.md](GEB_RESEARCH_ARTICLE.md) — scientific working text with GEB structured Abstract, Methods, Results, Discussion and cited natural-contrast interpretation.
 - [GEB_RESEARCH_ARTICLE_BLINDED.md](GEB_RESEARCH_ARTICLE_BLINDED.md) — a separately prepared identity-concealed text draft. Actual anonymous reviewer access, affiliations, title page and final journal formatting are **pending**.
 - [CLAIM_LEDGER_AND_SUBMISSION_GATES.md](CLAIM_LEDGER_AND_SUBMISSION_GATES.md) — each frozen estimate to its source and non-claims.
-- [Full 28-pair and configuration SI context](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md) — all same-domain metrics, descriptive RV medians, 280 group-label allocations and threshold-sensitive eight-state counts.
+- [Full 28-pair and configuration SI context](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md) — all same-domain metrics, three original cross-domain signed-r pairs, descriptive RV medians, 280 group-label allocations and threshold-sensitive eight-state counts.
+- [GEB published-paper writing audit (Japanese)](GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md) — five source-verified GEB articles, their rhetorical structure and the exact V4 editorial decisions.
 - [GEB_SUBMISSION_CHECKLIST.md](GEB_SUBMISSION_CHECKLIST.md) — structure, required figures, full 208-test table and unresolved submission gates.
 - [S2 seven-species eligibility table and stronger two-range gate](SI_S2_FOCAL_SPECIES_SELECTION_AUDIT.md) — source-real WCVP 350-name screen, all seven two-range candidates, and exactly two species meeting coverage in **each** native/introduced stratum.
 - [S2 study-design synthesis: historical rationale × empirical eligibility](S2_SELECTION_RATIONALE_20261025.md) — two defensible reasons for selecting the same two focal species without claiming random selection or new niche/trait fits.
@@ -41,7 +42,7 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 - `plot_frozen_summary.py`: the historical four-Holm forest and domain-median charts are **supplementary** descriptive displays.
 - `plot_bio18_angle_part2.py`: Main Figure 3 contains the source-verified among-taxon BIO18×image-angle coefficient; SI includes both scales and 80 raw/BH/Holm rows.
 - `plot_s2_native_introduced_colour.py`: Main Figure 4 **source-verified six original coefficients**, generated from the exact original S2 source CSV by the existing SHA-locked validator. This is not a cross-range hypothesis test or rainfall-niche comparison.
-- `build_full_supplement.py`: preserves and regenerates the **complete original 28-pair matrix in SI** (with no source-data changes). `plot_cross_functional_pairs.py` verifies and plots the **three original cross-domain signed-r pairs in Main Figure 2**; no new statistical tests.
+- `build_full_supplement.py`: preserves and regenerates the **complete original 28-pair matrix in SI** (with no source-data changes). `plot_cross_functional_pairs.py` verifies and plots the **three original cross-domain signed-r pairs as a supplementary exploratory asset** (historical filename still begins `figure2_`); no new statistical tests. Main Figure 2 is reserved for a **not-yet-source-generated** geographic coverage map; no invented locations/images.
 
 ## Explicit scientific separation
 
