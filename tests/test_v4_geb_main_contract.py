@@ -159,21 +159,20 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(article,blinded)
         self.assertNotIn("LEGO",article)
         headings=re.findall(r"^### 3\.(\d+)\. (.+)$",article,re.MULTILINE)
-        self.assertEqual([int(i) for i,_ in headings],[1,2,3])
+        self.assertEqual([int(i) for i,_ in headings],[1,2])
         for prefix in ("### 2.4. Supplementary matched-photograph trait associations",
                        "### 2.5. Climatic associations within and among native taxa",
                        "### 2.6. Within-species native and introduced",
                        "### 3.1. Global image measurements and precipitation-associated",
                        "### 3.2. Radiation and elevation gradients",
-                       "### 3.3. Exploratory co-variation among photographic trait domains",
-                       "### 4.1. Precipitation, head presentation",
+                                              "### 4.1. Precipitation, head presentation",
                        "### 4.2. Floral colour and climate",
-                       "### 4.3. Distinguishing biological domains"):
+                       "### 4.3. What public photographs measure"):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
-        self.assertIn("phenotypic integration",article.lower())
-        self.assertIn("156,683 shared native photographs",article)
+        self.assertIn("trait covariance",article.lower())
+        self.assertIn("156,683 photographs across 174 taxa",article)
         outline=(PAPER/"GEB_THREE_PART_STRUCTURE_JA.md").read_text(encoding="utf-8")
         for val in ("## 1. 頭花形質の定量化、表現型統合と組合せ",
                     "## 2. 頭花の画像角度とBIO18",
@@ -209,7 +208,7 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blinded)
-        self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2,3])
+        self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2])
         for term in ("Globally distributed public photographs",
                      "a larger downward-looking image angle",
                      "The conspecific native–introduced comparison provides a second ecological perspective.",
@@ -267,8 +266,11 @@ class V4GEBMainContract(unittest.TestCase):
                     "10.1111/1365-2745.12009",
                     "10.1111/nph.16737"):
             self.assertIn(doi,article)
+        si=(PAPER/"SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md").read_text(encoding="utf-8")
+        for pair in ("−0.225128","−0.246946","+0.019940"):
+            self.assertIn(pair,si)
         for pair in ("r=−0.2251","r=−0.2469","r=+0.0199"):
-            self.assertIn(pair,article)
+            self.assertNotIn(pair,article)
         audit=(PAPER/"GEB_INTERACTION_FILTER_LITERATURE_AUDIT_20261027_JA.md").read_text(encoding="utf-8")
         for value in ("## 2. 実験・比較文献のエビデンス階層",
                       "### H1.", "### H2.", "### H3.", "### H4.", "### H5.",
@@ -287,12 +289,12 @@ class V4GEBMainContract(unittest.TestCase):
                      "| *Cirsium vulgare* | 62,368 | 85,644 | 33,637 | 47,833 |",
                      "**Total** | **141,014** | **156,608**",
                      "Figure 2 (planned, NOT YET SOURCE-GENERATED)",
-                     "The complete **28-pair** raw and adjusted association matrices"):
+                     "The original 28-pair raw/adjusted RV source matrices"):
             self.assertIn(term,article)
         self.assertLess(article.index("### 3.1. Global image measurements"),
-                        article.index("### 3.3. Exploratory co-variation"))
+                        article.index("### 3.2. Radiation and elevation gradients"))
         self.assertLess(article.index("### 4.1. Precipitation"),
-                        article.index("### 4.3. Distinguishing biological domains"))
+                        article.index("### 4.3. What public photographs measure"))
         benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
         for doi in ("10.1111/geb.13077","10.1111/geb.13507",
                     "10.1111/geb.70131","10.1111/geb.70245"):
