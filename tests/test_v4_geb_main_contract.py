@@ -329,6 +329,39 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertTrue((V4/"s1_climate_trait_hypervolume.py").is_file())
         self.assertTrue((V4/"HYPERVOLUME_CLIMATE_MORPHOSPACE_H3_PREDECLARED_20261029_JA.md").is_file())
 
+    def test_h3_climatic_breadth_and_flower_morphospace_original_source(self):
+        import json
+        h3=(V4/"results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json")
+        source=json.loads(h3.read_text(encoding="utf-8"))
+        self.assertEqual(source["verified_execution"]["run_id"],40841007115)
+        self.assertEqual(source["verified_execution"]["artifact_id"],12883021095)
+        self.assertEqual(source["source"]["quality_eligible_matched_observations"],157822)
+        self.assertEqual(source["source"]["matched_source_taxa"],242)
+        a=source["analyses"]["1degree"]
+        b=source["analyses"]["5degree"]
+        self.assertEqual((a["taxa"],b["taxa"]),(63,31))
+        self.assertAlmostEqual(a["breadth"]["trait_logvolume_slope_per_climate_logvolume"],
+                               0.06689477516770817,places=12)
+        self.assertAlmostEqual(a["breadth"]["sector_conditioned_residual_permutation_p_exploratory"],
+                               0.3875,places=6)
+        self.assertAlmostEqual(a["similarity"]["climate_distance_vs_trait_distance_spearman"],
+                               -0.008144762186869107,places=12)
+        self.assertTrue(a["similarity"]["phylogenetic_evolutionary_convergence_NOT_tested"])
+        manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        for term in ("### 3.3. Climatic occupancy breadth and floral morphospace diversity",
+                     "### 4.3. Climatic generalism need not imply",
+                     "**157,822 photographs across 242 taxa**","**63 taxa**",
+                     "**P=0.3875**","**Spearman ρ=−0.0081**",
+                     "not tests of evolutionary convergence",
+                     "SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md"):
+            self.assertIn(term,manuscript)
+        self.assertIn("The standardized among-taxon coefficient was **+0.045447**",manuscript)
+        self.assertIn("β=**+0.134504**",manuscript)
+        self.assertIn("β=**−0.173732**",manuscript)
+        self.assertIn("β=**−0.142801**",manuscript)
+        self.assertTrue((PAPER/"plot_h3_climate_morphospace.py").is_file())
+        self.assertTrue((PAPER/"SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md").is_file())
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
