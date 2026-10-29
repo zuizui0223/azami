@@ -72,6 +72,8 @@ The full configuration analysis is detailed in [Supporting Information](SI_V4_FU
 
 Two apparent involucre projection/spreading proxies **were included in the original native-taxon 80-test multiple-comparison family, but were interpreted only in Supporting Information**, because they were available for only **1,168 observations and 39 taxa each**, and chroma could be compared with these proxies on **1,007 common photographs and 38 taxa**. The subset-specific four-predictor VIF was **6.14**; those data therefore remain descriptive Supporting Information rather than a basis for primary four-variable mechanistic inference. No direct bract spine length, glandular secretion or defense measurement was available.
 
+The original 28-pair raw/adjusted RV source matrices and three-trait configurations are retained in [Supporting Information](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md).
+
 ### 2.5. Climatic associations within and among native taxa
 
 The native-taxon model separated among-taxon climate means from within-taxon environmental deviations using equal total taxon weighting and taxon-cluster-robust uncertainty. Predictor availability and quality gating were evaluated for each photographed outcome. All four frozen predictors were included simultaneously, and sine/cosine hue terms were combined in a joint two-degree-of-freedom test representing **one biological trait**.
@@ -125,10 +127,6 @@ The corresponding native-stratum point estimates were heterogeneous. In *C. vulg
 | Introduced *C. vulgare* | chroma | RSDS | 27,200 | +0.134504 | +0.066158, +0.202850 | 0.01456813 |
 | Introduced *C. vulgare* | lightness | RSDS | 27,200 | −0.142801 | −0.216718, −0.068884 | 0.01925414 |
 
-### 3.3. Scope of supplementary trait covariance
-
-Continuous angle, colour and outline phenotypes were measured jointly in **156,683 shared native photographs from 174 taxa**. All 28 pairwise associations and eight-state thresholded configurations are reported in [Supporting Information](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md), because they were exploratory, included image-metric dependence and provided no independently tested functional mechanism. They were not used to select the climatic predictors or to establish the four Holm-supported findings.
-
 **Out of scope by design:** no native-versus-introduced climatic-niche analysis, no native/introduced range × BIO18 interaction test, and no reanalysis of archived four-dimensional climatic niche occupancy is included.
 
 ## 4. Discussion
@@ -153,13 +151,13 @@ Examining the original native coefficients is important for interpreting **why H
 
 Finally, the ecological motivation is stronger than a simple native–introduced mean-colour comparison but narrower than an inference about the **rate or cause of adaptation**. Prior work found distinct stress-related gene expression between native and introduced *C. arvense* under controlled conditions (Guggisberg et al., 2013), showing that this species is a meaningful system for future experimental comparisons. Our photographic observations do not establish whether existing plasticity, source-population selection, post-introduction evolution or differences in photographic conditions produced the present colour associations. The analysis tests within-stratum trait–environment gradients **without** comparing native–introduced rainfall niches or claiming measured post-introduction evolutionary change.
 
-### 4.4. What public photographs measure—and cannot measure
+### 4.3. What public photographs measure—and cannot measure
 
 The gain from public photos is the ability to retain many observations and to compare the joint distributions of continuous visible traits across environmental settings. This complements traits summarized in reference databases, but does not replace standardized field phenotyping. Even correct image segmentation yields outline measures dependent on view angle and head maturity; JPEG colour is not a pigment assay; and an EXIF-corrected frame does not define gravity. The present results should accordingly be read as **image-derived phenotypic associations**. The full within- and among-taxon image-metric covariance analysis is provided in Supporting Information; its signed correlations cannot establish genetic integration or function, and are not additional independent climatic discoveries.
 
 Future mechanistic tests can be staged without rewriting the present source freeze: (i) independent orientation landmarks including a gravity marker and camera-roll record; (ii) spectral reflectance and chemical pigment assays; (iii) three-dimensional or standardized multi-view capitulum geometry, including true bract/spine structures; (iv) phylogenetic and cytotype-aware comparisons; and (v) pollinator, herbivory, rainfall and reproductive-fitness observations. Such data would permit testing whether the apparent modules are developmentally or genetically separable, and whether any configuration actually improves ecological function. These are next-study questions rather than claims about the present three-part study.
 
-### 4.5. Statistical scope and generalisability
+### 4.4. Statistical scope and generalisability
 
 The estimates derive from a fixed, post hoc selected four-predictor model. Holm control applies to the declared 80/128 test families **within that model**, not to every environmental specification explored before the model was frozen. Pointwise intervals do not provide simultaneous coverage. Multiple photographs, observers, spatial cells and taxa still have complicated dependencies; clustered standard errors and balancing reduce but do not eliminate these concerns. A future independent sample and photo-to-field validation could change both the estimated coefficients and apparent module contrast.
 
