@@ -393,6 +393,43 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(claim if claim!="conditional climate" else "local climate-analogue analysis",paper)
         self.assertTrue((PAPER/"plot_h3_climate_morphospace.py").is_file())
 
+    def test_h3c_positive_FROZEN_on_original_source_and_no_overclaimed_overlap(self):
+        import json
+        frozen=(V4/"H3C_SOURCE_VERIFIED_FROZEN_POSITIVE_20261029_JA.md").read_text(encoding="utf-8")
+        d=json.loads((V4/"results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        self.assertEqual(d["source"]["decoded_sha256"],
+                         "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed")
+        self.assertEqual(d["source"]["quality_eligible_matched_observations"],157822)
+        self.assertEqual(d["verified_execution"]["github_actions_run"],40847696537)
+        self.assertEqual(d["verified_execution"]["aggregate_artifact_id"],12885860903)
+        for key,n,beta,kde_p in (("1degree",63,0.040963661993538125,.010),
+                                  ("5degree",31,0.0943310892554725,.015)):
+            z=d["results"][key]
+            self.assertEqual(z["n_taxa"],n)
+            self.assertEqual(z["successful_rarefaction_draws"],24)
+            self.assertAlmostEqual(z["primary_trait_distance_advantage_of_climate_matched_cells"],beta,places=11)
+            self.assertAlmostEqual(z["holm2_distance_vs_overlap_p"],.01,places=6)
+            density=z["climate_analogue_conditional_KDE_L2_overlap"]
+            self.assertAlmostEqual(density["holm2_distance_vs_overlap_p"],kde_p,places=6)
+            self.assertLess(density["mean_conditional_analogue_support"],
+                            density["mean_unconditional_eight_cells"])
+        for claim in ("+0.04096366","+0.09433109","0.61509→0.50742",
+                      "0.53554→0.46046","Holm-2","進化的収束","SI"):
+            self.assertIn(claim,frozen)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        headings=re.findall(r"^### 3\\.(\\d+)\\.",paper,re.MULTILINE)
+        self.assertEqual([int(v) for v in headings],[1,2,3])
+        self.assertIn("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",paper)
+        self.assertIn("**Holm-2 P=0.010**",paper)
+        self.assertIn("**0.507 versus 0.615**",paper)
+        self.assertIn("**0.460 versus 0.536**",paper)
+        self.assertIn("Holm P=**0.00920635**",paper)
+        self.assertIn("Holm P=**0.01456813**",paper)
+        self.assertIn("Holm P=**0.01925414**",paper)
+        self.assertIn("Holm P=**0.00131233**",paper)
+        self.assertIn("spatial", (PAPER/"SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md").read_text(encoding="utf-8").lower())
+        self.assertNotIn("ecologically adaptive convergent evolution was proven",paper.lower())
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
