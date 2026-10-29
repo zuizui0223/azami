@@ -207,11 +207,66 @@ def summarise_geography(rosters, *, verify_original_baseline=True):
     return result
 
 
+def photo_taxon_spatial_blocks(selected: pd.DataFrame, frame: pd.DataFrame):
+    """Assign taxa to 20-degree spatial resampling blocks from occupied 5deg cells.
+
+    Geography only determines spatial *resampling* clusters.  Neither
+    latitude nor longitude enters the original four-exposure regression.
+    """
+    from analysis.v4.s2_original_colour_spatial_block_sensitivity import (
+        spatial_block_labels,
+    )
+    loc=pd.DataFrame({
+        "taxon":selected.accepted_key.astype(str).to_numpy(),
+        "latitude":selected.latitude.to_numpy(float),
+        "longitude":selected.longitude.to_numpy(float),
+    })
+    loc["block"]=spatial_block_labels(loc)
+    loc["cell_lat"]=np.floor((loc.latitude+90)/5).astype(int)
+    loc["cell_lon"]=np.floor((loc.longitude+180)/5).astype(int)
+    # One vote per occupied 5deg cell, not source-photo abundance.
+    loc=loc.drop_duplicates(["taxon","cell_lat","cell_lon"])
+    votes=loc.groupby(["taxon","block"],sort=True).size().reset_index(name="n_cells")
+    choice=votes.sort_values(["taxon","n_cells","block"],
+                            ascending=[True,False,True],kind="stable")
+    major=choice.drop_duplicates("taxon").set_index("taxon")["block"]
+    frameindex=frame.index.astype(str)
+    if not frameindex.isin(major.index).all():
+        raise ValueError("UNMATCHED_FROZEN_S1_TAXON_BLOCK")
+    return major.loc[frameindex].to_numpy(int)
+
+
+def s1_spatial_block_sensitivity(selected, photo_weighted_frame, *, reps=399):
+    """S1 sample-opportunity and block-bootstrap sensitivity with unchanged β."""
+    from analysis.v4.s2_original_colour_spatial_block_sensitivity import (
+        bootstrap_blocks,
+    )
+    X=_fixed_design(photo_weighted_frame,"none")
+    y=photo_weighted_frame.response.to_numpy(float)
+    blocks=photo_taxon_spatial_blocks(selected,photo_weighted_frame)
+    out=bootstrap_blocks(
+        X,y,np.ones(len(y)),1,blocks,reps=reps,seed=20261029+77
+    )
+    if out.get("status")=="estimated":
+        check=float(np.linalg.lstsq(X,y,rcond=None)[0][1])
+        if len(selected)==EXPECTED_ANGLE and len(photo_weighted_frame)==EXPECTED_TAXA:
+            if not np.isclose(check,EXPECTED_BETA,atol=3e-7,rtol=0):
+                raise ValueError("ORIGINAL_BIO18_BETA_NOT_RETAINED_IN_S1_BLOCK_FIT")
+        out["original_S1_equal_taxon_beta_exact"]=check
+    out["original_source_cohort"]=len(selected)
+    out["source_taxa"]=len(photo_weighted_frame)
+    out["taxa_assigned_to_dominant_source_cell_20degree_blocks"]=True
+    out["latlon_not_regression_covariates"]=True
+    out["exploratory_not_Holm_familywise"]=True
+    return out
+
+
 def execute(native_path, extended_path, source_receipt, output):
     sample, geo, sectors = exact_eligible(native_path, extended_path)
     baseline = reproduce_frozen_baseline(sample)
     rosters, counts = taxon_rosters(sample, geo, sectors)
     sensitivity = summarise_geography(rosters)
+    blocks = s1_spatial_block_sensitivity(sample,rosters["photo_weighted"])
     receipt = json.loads(Path(source_receipt).read_text(encoding="utf-8"))
     if receipt.get("status") != "COMPLETE_SEVEN_ORIGINAL_RASTERS" or len(receipt.get("rasters", [])) != len(EXTRA):
         raise ValueError("INCOMPLETE_CHELSA_OR_ELEVATION_RESTORATION")
@@ -231,6 +286,7 @@ def execute(native_path, extended_path, source_receipt, output):
             "original_source_archive_locked": True,
         },
         "sensitivity": sensitivity,
+        "spatial_block_20degree_no_latlon_fixed_effects": blocks,
         "scientific_limits": {
             "different_regression_estimand_with_new_geographic_covariates": True,
             "new_pointwise_CI_not_familywise_80_test_claim": True,
@@ -248,7 +304,8 @@ def execute(native_path, extended_path, source_receipt, output):
                     encoding="utf-8")
     print(json.dumps({"status": report["status"],
                       "n": EXPECTED_ANGLE, "taxa": EXPECTED_TAXA,
-                      "geographic_fits": sensitivity}, ensure_ascii=False), flush=True)
+                      "geographic_fits": sensitivity,
+                      "spatial_block": blocks}, ensure_ascii=False), flush=True)
     return report
 
 
