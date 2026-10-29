@@ -152,7 +152,8 @@ jobs:
               parent=another.get("original_source",another.get("source_provenance"))
               assert parent["source_observations"]==313350
               assert parent["quality_eligible_matched_observations"]==157822
-              assert "1degree" in another["results"] and "5degree" in another["results"]
+              panels=another.get("results",another.get("panels"))
+              assert panels is not None and "1degree" in panels and "5degree" in panels
               for forbidden in ("obs_id","user_id","accepted_key","photo_id",
                                 "taxon_name","latitude","longitude","photographer_id"):
                   assert forbidden not in set(all_dict_keys(another)),forbidden
