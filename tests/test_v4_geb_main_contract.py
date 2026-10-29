@@ -348,19 +348,50 @@ class V4GEBMainContract(unittest.TestCase):
                                -0.008144762186869107,places=12)
         self.assertTrue(a["similarity"]["phylogenetic_evolutionary_convergence_NOT_tested"])
         manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
-        for term in ("### 3.3. Climatic occupancy breadth and floral morphospace diversity",
-                     "### 4.3. Climatic generalism need not imply",
-                     "**157,822 photographs across 242 taxa**","**63 taxa**",
-                     "**P=0.3875**","**Spearman ρ=−0.0081**",
-                     "not tests of evolutionary convergence",
-                     "SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md"):
+        for term in ("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",
+                     "### 4.3. Local climatic correspondence without a single global floral syndrome",
+                     "**157,822 records across 242 taxa**","**63 taxa**",
+                     "permutation **P=0.3875**","**ρ=−0.0081**",
+                     "not a thresholded hypervolume intersection",
+                     "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md"):
             self.assertIn(term,manuscript)
         self.assertIn("The standardized among-taxon coefficient was **+0.045447**",manuscript)
         self.assertIn("β=**+0.134504**",manuscript)
         self.assertIn("β=**−0.173732**",manuscript)
         self.assertIn("β=**−0.142801**",manuscript)
         self.assertTrue((PAPER/"plot_h3_climate_morphospace.py").is_file())
-        self.assertTrue((PAPER/"SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md").is_file())
+        self.assertTrue((PAPER/"SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md").is_file())
+
+    def test_h3c_climate_analogue_and_h3d_covariance_sources_frozen(self):
+        import json
+        c=json.loads((V4/"results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        d=json.loads((V4/"results/20261029_H3D_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        for payload in (c,d):
+            self.assertEqual(payload["verified_execution"]["github_actions_run"],40847696537)
+            self.assertEqual(payload["verified_execution"]["aggregate_artifact_id"],12885860903)
+            self.assertEqual(payload["source"]["quality_eligible_matched_observations"],157822)
+        for key,n in (("1degree",63),("5degree",31)):
+            r=c["results"][key]
+            self.assertEqual(r["n_taxa"],n)
+            self.assertEqual(r["successful_rarefaction_draws"],24)
+            self.assertAlmostEqual(r["holm2_distance_vs_overlap_p"],0.01,places=6)
+            self.assertEqual(d["summary"][key]["taxa"],n)
+            self.assertFalse(any(t["exploratory_Holm_6_moderations"]<.05
+                                 for t in d["summary"][key]["moderation"]["results"]))
+            self.assertFalse(any(t["exploratory_Holm_3_traits"]<.05
+                                 for t in d["summary"][key]["breadth"]["results"]))
+        self.assertAlmostEqual(c["results"]["1degree"]["primary_trait_distance_advantage_of_climate_matched_cells"],
+                               .040963661993538125,places=12)
+        self.assertAlmostEqual(c["results"]["5degree"]["primary_trait_distance_advantage_of_climate_matched_cells"],
+                               .0943310892554725,places=12)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        for claim in ("**+0.04096**", "**+0.09433**",
+                      "Holm-2 P=0.010",
+                      "conditional climate",
+                      "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md",
+                      "SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md"):
+            self.assertIn(claim if claim!="conditional climate" else "local climate-analogue analysis",paper)
+        self.assertTrue((PAPER/"plot_h3_climate_morphospace.py").is_file())
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
