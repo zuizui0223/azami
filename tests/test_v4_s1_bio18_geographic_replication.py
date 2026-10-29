@@ -8,6 +8,7 @@ import pandas as pd
 
 from analysis.v4.s1_bio18_geographic_replication import (
     GEO_COLS, SECTORS, FOUR_WARM, geography, fit_taxon, summarise_geography,
+    s1_spatial_block_sensitivity,
 )
 
 
@@ -64,6 +65,27 @@ class NativeBio18GeographyTests(unittest.TestCase):
             for sector in SECTORS:
                 self.assertEqual(grouping["within_predeclared_longitude_sectors"][sector]["n_taxa"], 40)
                 self.assertEqual(grouping["leave_one_predeclared_sector_out"][sector]["heldout_n_taxa"], 40)
+
+    def test_s1_block_resampling_does_not_insert_latlon_covariates(self):
+        frame=self.synthetic_taxon_means()
+        taxon_ids=frame.index.to_list()
+        from numpy import arange
+        ids=np.arange(len(frame))
+        selected=pd.DataFrame({
+            "accepted_key":taxon_ids,
+            "latitude":-55+(ids % 10)*11,
+            "longitude":-160+(ids // 10)*25,
+        })
+        analysis=s1_spatial_block_sensitivity(selected,frame,reps=99)
+        self.assertEqual(analysis["status"],"estimated")
+        self.assertEqual(analysis["source_taxa"],120)
+        self.assertEqual(analysis["original_source_cohort"],120)
+        self.assertTrue(analysis["latlon_not_regression_covariates"])
+        self.assertTrue(analysis["exploratory_not_Holm_familywise"])
+        self.assertGreaterEqual(analysis["n_original_source_geo_blocks"],8)
+        self.assertEqual(analysis["n_largest_source_weight_blocks_heldout"],5)
+        self.assertTrue(np.isfinite(analysis["original_S1_equal_taxon_beta_exact"]))
+        self.assertNotIn("private_taxon",str(analysis))
 
     def test_invalid_geographic_design_not_silently_replaced(self):
         frame = self.synthetic_taxon_means(30)
