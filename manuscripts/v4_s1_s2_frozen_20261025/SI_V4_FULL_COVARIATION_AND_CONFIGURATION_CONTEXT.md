@@ -7,6 +7,18 @@ pairs, are retained here rather than used as additional main-text discoveries.
 No new phenotype estimation, adjustment, correlation test or multiple-testing
 family was performed in the editorial refocus.
 
+## Methods for the original descriptive comparisons
+
+**The descriptive covariance comparison is a distinct analytical question applied to existing photographed observations, not an independent source cohort.** The principal analysis uses the identical **156,683 native-source photographs of 174 taxa** with all eight visible constructs; the separate S2 species–range strata supply supplementary descriptive RV medians. We retain all original measurements from three image domains: presentation (one), colour (three) and outline (four). For biological interpretation, we focus on **post hoc, exploratory cross-domain pairs**—angle×chroma, angle×aspect and chroma×aspect—rather than treating correlated numerical descriptions of the same colour or outline as independent functions.
+
+The 28 unordered construct pairs were estimated on the same photograph-complete native-taxon cohort. Within-taxon covariation was calculated from taxon-centred phenotypes with equal total taxon weight, whereas between-taxon covariation was based on equally weighted taxon means of the matched observations. For scalar pairs we used the squared correlation as an RV-style association magnitude; hue comparisons used the full two-dimensional circular embedding. Environmental adjustment removed the fitted fixed effects of the frozen four predictors, without removing the species mean itself. This produces conditional descriptive residual associations, **not** estimates of genetic covariance or the fraction of integration caused by environment.
+
+Median pairwise RV was compared within and across the registered domains. For an outcome-blind descriptive reference, the eight trait labels were reassigned exhaustively to groups of sizes 1, 3 and 4 (**280** allocations), and the original within-module minus between-module contrast was ranked among the allocations. These label ranks condition on one measured covariance matrix, whose components partly share pixels and mathematical definitions; they are not phylogenetically independent replications or hypothesis-test P values for heritable modules (Pigliucci, 2003; Diggle, 2014). Raw RV estimates also have sample-size- and dimension-dependent baselines, which the exploratory equal-sampling sensitivity attempts to diagnose.
+
+The full configuration analysis is detailed in [Supporting Information](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md) and combines image angle, chroma and outline aspect ratio. One representation dichotomized each construct at its own taxon-level median, enabling enumeration of the eight visual combinations within taxa. A separate higher-order analysis contrasted observed triads with pair-constrained maximum-entropy expectations. A change in binarization rule was explicitly examined, because the direction of such parity or three-high contrasts is not invariant.
+
+Two apparent involucre projection/spreading proxies **were included in the original native-taxon 80-test multiple-comparison family, but were interpreted only in Supporting Information**, because they were available for only **1,168 observations and 39 taxa each**, and chroma could be compared with these proxies on **1,007 common photographs and 38 taxa**. The subset-specific four-predictor VIF was **6.14**; those data therefore remain descriptive Supporting Information rather than a basis for primary four-variable mechanistic inference. No direct bract spine length, glandular secretion or defense measurement was available.
+
 ## Original data and complete tables
 
 - Original source archive: GitHub Actions artifact **12547876704**, ZIP SHA-256
@@ -106,3 +118,8 @@ interpretation after inspecting the results**; it was not independently
 cross-validated against new photograph or taxon samples, was not tested
 as genetic modularity, and cannot establish independent selection or
 pollinator/predator filtering.
+
+
+### Alignment with local climate-matched capitulum resemblance
+
+The current main Results 3.3 concerns H3c: whether the joint photographic phenotype is closer at climate-matched cells of geographically separated taxa. It uses its own three-trait eligibility cohort and within-taxon cell-vector permutations. The descriptive associations retained here are not additional evidence for that null-model result, and no original estimates or test families were changed when the main Introduction, Methods and Discussion were aligned with H3c.

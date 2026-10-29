@@ -1,32 +1,45 @@
-# GEB掲載Research Articleの構成をV4へ適用するための比較監査（2026-10-29）
+# GEB掲載論文を参照した、局所気候と頭花の類似性を軸とする原稿改訂（2026-10-29）
 
-**対象:** *Global Ecology and Biogeography* (GEB) に実際に掲載された、広域植物形質研究・在来／外来植物研究。出版物の文章を複製せず、**研究の問い・実測結果の提示順・主張の程度・図表の機能**のみを参考にする。V4原資料の係数・標本数・Holm多重検定群は変更しない。
+## 改訂の対象
 
-## 1. 比較した採択論文
+基準はPR #159のコミット `521c6f730c81f415ea11815d7fa7151c183432d0`。この時点でResults 3.3は、**「実際に似た気候を占める地点同士では、頭花の写真上の形態も似るか」**というH3cの肯定的結果に整理されている。
 
-| GEB掲載論文・原典 | Abstract / Introduction / Results / Discussion の特徴 | V4で採用する編集原則 |
+Introduction、Methods、Discussionをこの問いへ揃え、タイトル・構造化要旨・Conclusionも改めた。Results 3.1–3.3の文章・数値、元データ、解析コード、多重比較群は変更しない。論旨は、個別形質の環境勾配から、複数形質を合わせた頭花の局所的な類似性へ進む。
+
+## 1. 本文を確認したGEB掲載Research Article
+
+| 論文・原典 | 原論文で確認できること | 今回の適用 |
 |---|---|---|
-| Kuppler et al. (2020), [*Global gradients in intraspecific variation in vegetative and floral traits are partially associated with climate and species richness*](https://doi.org/10.1111/geb.13077) | 種内形質変異がなぜ重要か→温度・降水など地理的勾配→標本単位と仮説を明示。Aimは「どんな共通則か」を先に問う | 「種平均・カテゴリは地理的な連続形質変異を隠す」というギャップを、写真の数より先に置く。分類群間と分類群内を混同しない |
-| Hanz et al. (2022), [*Climatic and biogeographical drivers of functional diversity in the flora of the Canary Islands*](https://doi.org/10.1111/geb.13507) | 系統・地域史、気候と形質の生態学的質問を一貫してつなぐ。導入・在来の地理文脈の解釈を分け、Resultsには観測値を置く | 日本・北米の複数のアザミ放散を比較群の選定理由に置く。ただしV4は独立適応放散や系統的な反復進化を**検定していない** |
-| Grenié et al. (2025), [*Gaps in Global Alien Plant Trait Data and How to Fill Them*](https://doi.org/10.1111/geb.70131) | 全球形質データの欠測・地理的偏りという研究上の具体的な欠点を先に説明。データ構築と再現性が研究成果そのものを支える。Introductionから実測単位が明確 | 公開写真による反復した連続形質計測が種代表値に比べ何を増やすかを明確にする。同時に源泉観測数≠撮影枚数≠計測可能な頭花数と明記。写真の標本・計測偏りは隠さない |
-| Riera et al. (2026), [*From Purpose to Persistence: How Intentional Introductions by Humans Influence Ecological Niches of Non-Native Plants*](https://doi.org/10.1111/geb.70245) | 導入を環境障壁の通過という生態学的な問いへ直接つなぐ。Aimと主要な比較・標本規模を冒頭で明確化 | S2の在来・導入域比較は「異なる分布史で形質―環境関係が維持／変化するか」という自然実験**的**対照。環境勾配の傾き差自体は未検定であり、導入後進化の証明ではない |
-| Wiethase et al. (2024), [*Spatio-temporal integrated Bayesian species distribution models reveal lack of broad relationships between traits and range shifts*](https://doi.org/10.1111/geb.13819) | 候補形質に関する弱い・支持されない結果を中心的発見に偽装せず、サンプリングと解析の欠点を考慮した結果を提示 | V4の画像形質間の r≈0.2 前後は探索的な記述としてSIへ移し、Holm通過した環境関連を本文の主役にする |
+| **Kuppler et al. (2020)**. *Global gradients in intraspecific variation in vegetative and floral traits are partially associated with climate and species richness*. **29**, 992–1007. [出版社全文](https://onlinelibrary.wiley.com/doi/10.1111/geb.13077) | 種×地点の単位で種内変異を扱い、その気候関連が形質・種によって異なることを示す。種代表値の限界から具体的な測定対象へ進む構成。 | 地理的な花形質の反復観測を行う背景として引用。原論文の応答は種内変異の程度であり、H3cと同じ局所距離検定を行ったとは書かない。 |
+| **Govaert et al. (2024)**. *Trait–micro-environment relationships of forest herb communities across Europe*. **33**, 286–302. [出版社の書誌情報](https://onlinelibrary.wiley.com/doi/10.1111/geb.13789)／[大学機関リポジトリの採択原稿](https://backoffice.biblio.ugent.be/download/01HGCZ5NSJF0Q5K8X397ZCC56M/01HKW771C397GKW8N6TSNMV3GD) | 種に固定値を割り当てる場合と局所的な種内形質変異を残す場合を比べ、後者で環境との関連が強まることを報告。Methodsは比較する量を先に定義。 | どこでどの表現型を観測したかを保持する意義を背景・考察に置く。原論文は森林草本群集と実測微環境の研究であり、本研究の格子気候を微気候測定として扱わない。 |
+| **Hanz et al. (2022)**. *Climatic and biogeographical drivers of functional diversity in the flora of the Canary Islands*. **31**, 1313–1331. [出版社全文](https://onlinelibrary.wiley.com/doi/10.1111/geb.13507) | 起源の異なる植物群の機能的多様性と環境・地理との関係を検討。広い生物地理学的問いから比較群と解析単位を明確にする。 | 気候と地域史を冒頭で結び付け、Cirsiumを比較系として選ぶ理由を説明。地域区分を独立な進化的起源の証拠とは扱わない。 |
 
-## 2. GEB編集上の方針：単なる「Part 1/2/3」の書き方から脱却
+Introduction、Methods、Discussionを確認し、文章を転写せず、問いの組み立てと説明順を参考にした。Govaert論文は採択原稿と出版社の巻号を照合し、巻号年の**2024**を引用する。地理セル単位のベクトル置換は本研究の手順であり、上記論文の実装を移植したものではない。
 
-1. **Introduction:** 広域の形態的多様性は、地域史と気候にどう関係するか→種代表値・カテゴリーの限界→なぜ *Cirsium*（日本・北米の地域的放散と豊富な公開写真）→具体的な降水・色彩勾配仮説→導入による新しい地域史を使う比較の問い→本研究の目的。
-2. **Methods:** 全写真への計測成功を示唆しない。YOLO頭花局在化→連続角度・色・2D輪郭→品質判定、WCVP在来／導入、S1/S2別母集団、4環境変数、分類群間・内推定、多重比較数を再現可能に。
-3. **Results:** ①観測可能範囲と計測数→②**S1 BIO18×角度（分類群間、Holm P0.00920635）**→③**S2 導入域の花色×日射／標高（Holm通過3件）**→④弱い形質間関連はResultsから除外しSIで完全開示。解釈や否定命題をResultsで繰り返さない。
-4. **Discussion:** 観測結果から開始し、次に雨による花粉の濡れ／流失回避という具体的な候補を先行実験と照合。在来／導入は既存変異、可塑性、進化、検出力の競合理論を**実際の在来係数を見て**解釈。限界は最後に集約し、実証した因果として書かない。
-5. **Main displays:** Holm支持のBIO18角度・日射／標高色が主図。測定工程・全球分布地図はデータ裏付けと権利確認が必要な未完了素材。28ペアのRV、形質間相関、8組合せはSIのまま。旧Figure 2の3弱相関は**Main Figureではない**。
+## 2. 改訂後の構成
 
-## 3. 変更しない科学的境界
+**背景：** 気候と地域史に沿う植物形態の違い → 種代表値だけでは保持できない地理的な表現型情報 → 写真による連続計測とCirsiumの比較系 → 降水・向き／日射・標高・色彩の背景 → Resultsと対応する三つの問い。第3の問いは局所気候と共同表現型の類似性に絞った。
 
-- 固定V4 S1：313,350元在来観測、角度168,907件／178分類群、分類群間β=+0.045446843、Holm P=0.0092063506（80検定中1件）。
-- 固定V4 S2：297,622元野生記録（在来141,014、導入156,608）、2種4層、128検定中3件（導入 *C. arvense* 標高×明度、導入 *C. vulgare* 日射×彩度／明度）。
-- native *C. vulgare* 日射×彩度β=+0.136883、introduced β=+0.134504。Holmの判定差は**効果の域間差を意味しない**。
-- オリジナルのSHA256 `6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205`、S1 80/S2 128、多重検定補正、全28ペア・SIでの保全、画像角度は重力校正ではない点を維持。
+**方法：** S1/S2を元資料・検定群の識別子とし、旧Part 1/2/3と現在のResults番号の混同を除いた。2.3で回帰の4変数とH3cの3気候軸を区別し、2.7はH3cを直接説明する。気候幅の体積推定などは2.4からSIへ案内する。
 
-## 4. 投稿規程
+H3cの記述は、分類群×セルの中央値、分類群総重みを揃えた標準化、代表経度帯による分類群ペア、8セル×24抽出、気候のEuclidean距離≤0.9、多対多対応、分類群ペアの等重み平均、選択8セル内の3形質ベクトル置換に合わせた。1°と5°では標準化を別々に行う。
 
-GEBの公式[Author Guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html)はResearch Articleに **Aim / Location / Time period / Major taxa studied / Methods / Results / Main conclusions** の7項目・300語以内の構造化要旨を要求し、おおむね本文5000語、文献50、図表6–8点を目安とする。研究の**一般的な生態学的意義**がAbstractと主要図で読み取れる必要があり、データ・コード利用可能性と匿名レビューを要求する。引用は著者–年、参考文献は著者名順。実際の画像権利と匿名コード公開は未完了なので、**投稿準備完了とはしない**。
+199個の帰無統計は各置換番号を24抽出間で平均して作り、帰無平均を中心とする**両側**Monte Carlo P値と+1補正を用いる。KDEをSIで提示しても元のHolm-2補正を維持する。追加感度と6乱数系列は24抽出・99置換で、経度帯除外は1°のみ。これらは同じ資料の感度・Monte Carlo安定性を調べる。
+
+**考察：** 三つの結果を短く統合して開始し、4.1降水と向き、4.2範囲別の色彩勾配、4.3局所気候と共同表現型の類似性へ進む。4.3は、各分類群の表現型分布を保つ帰無比較に対して、元の地理的配置には局所気候と対応する類似性があるという結果から解釈する。
+
+同じH3c結果の直接的な感度は残す。6系列の正の効果と除外時の符号変化は**観測統計−帰無平均**の差として明記。5°の大きな数値を同一尺度での効果増大と解釈しない。写真測定と推論の共通の限界は4.4–4.5に集約した。
+
+## 3. 引用と推論の照合
+
+Dalrymple et al. (2020), [*New Phytologist*](https://nph.onlinelibrary.wiley.com/doi/10.1111/nph.16737)は、日射とスペクトル由来のchromatic contrastの正の関連を報告する。本研究の写真CIELAB彩度との対応は定性的とし、同論文が写真明度の低下も支持したとは書かない。Kuppler論文の対象も、形質値一般ではなく種内変異の程度と明記した。
+
+H3cの地域区分は系統独立性を意味しない。格子気候は頭花の微気候ではなく、3形質距離は生理的機能や適応度ではない。観測された類似性の機能的・進化的説明は、実測と系統情報を伴う次の検証課題として置いた。
+
+## 4. 完全な解析記録とGEB形式
+
+元の28形質対・組合せ解析の詳しいMethodsは `SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md` に保管した。H3a/bの幅・平均、H3dの共変動、H3cの補助的KDE指標は既存SIに維持する。S1の80、S2の128、H3cの2指標という補正単位と、元の数値・標本数を保持した。
+
+種の選択後に全350種を監査した履歴、回帰モデルを探索後に固定した履歴、H3cが後続の探索的問いであることを明記した。肯定的な結果の提示に合わせて、先験性や独立性を付加していない。
+
+公式[Author Guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html)を再確認。Research Articleは7項目からなる300語以内の要旨、本文約5,000語を目安とする。改訂稿は要旨約270語、IntroductionからConclusionまで約5,000語。本文と匿名版本文は同一内容で更新した。図・写真の権利処理や匿名公開先の準備状況は既存記載を維持した。

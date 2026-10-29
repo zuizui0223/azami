@@ -186,7 +186,7 @@ class V4GEBMainContract(unittest.TestCase):
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blind)
         for key in ("Dalrymple et al., 2020","Berardi et al., 2016",
-                    "Greater chroma and lower lightness",
+                    "positive radiation–chromatic contrast relationship",
                     "**Figure 3.**",
                     "**Figure 4.**",
                     "https://doi.org/10.1111/nph.16737",
@@ -297,7 +297,7 @@ class V4GEBMainContract(unittest.TestCase):
                         article.index("### 4.4. What public photographs measure"))
         benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
         for doi in ("10.1111/geb.13077","10.1111/geb.13507",
-                    "10.1111/geb.70131","10.1111/geb.70245"):
+                    "10.1111/geb.13789"):
             self.assertIn(doi,benchmark)
 
     def test_bio18_geographic_sensitivity_is_si_only_and_not_causal_partition(self):
@@ -349,7 +349,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertTrue(a["similarity"]["phylogenetic_evolutionary_convergence_NOT_tested"])
         manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         for term in ("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",
-                     "### 4.3. Local climatic correspondence without a single global floral syndrome",
+                     "### 4.3. Local climatic similarity and joint capitulum resemblance",
                      "**157,822 records across 242 taxa**","**63 taxa**",
                      "not a thresholded hypervolume intersection",
                      "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md"):
