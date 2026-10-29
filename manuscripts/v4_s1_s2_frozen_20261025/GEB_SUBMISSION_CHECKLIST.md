@@ -13,15 +13,15 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 - Cover letter uploaded separately as a PDF, including a <250-word paragraph explaining interest to GEB readership.
 - Data and code availability declaration is mandatory. Pre-print/anonymous review availability are not substitutes for a durable, rights-compliant data/code release.
 
-## Manuscript narrative: three research parts
+## Manuscript narrative: three ecological questions
 
-**Global photographic trait coverage and S1 native climatic results (main):** Main Results 3.1 foregrounds Holm-supported BIO18×image angle after source-/trait-specific eligibility; the full 28-pair matrix and three exploratory cross-domain r comparisons remain in SI. No genetic module, pollinator or anti-herbivore adaptation is inferred.
+**3.1 Climate and head presentation:** Original native-taxon BIO18 × image angle, n=168,907/178 taxa, β=+0.045447, Holm P0.00920635. Geographic sensitivity is reported in [SI](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md) as model-dependence, not a causal separation of climate from space.
 
-**Native-taxon BIO18 precipitation and capitulum presentation (featured):** Among native taxa image-referenced angle β +0.045447, 95% pointwise CI [+0.022349, +0.068545], Holm P 0.00920635. The original within-taxon β +0.058700, raw P 0.039865, BH P 0.395837 and Holm P 1.0 are reported **in SI only**, not as a second discovery; do not claim the within slope is zero or the among slope is statistically stronger.
+**3.2 Flower colour after colonisation of new regions:** Two species × four range strata, 297,622 original wild source observations; three introduced-stratum colour×radiation/elevation associations survived the original 128-test Holm family. No formal range×environment interaction was estimated.
 
-**Native/introduced flower-colour gradients (Results 3.2):** *C. arvense* and *C. vulgare*, 350→7→2 eligibility, three original introduced Holm positives, and matching native descriptive slopes with no formal range interaction.
+**3.3 Climatic generalism and floral morphospace:** The new post-freeze H3 study uses 3 climatic dimensions and 3 image-derived flowering-head dimensions, equal-geographic-cell rarefaction and taxon-level permutations. From 157,822 matched photos /242 taxa, 63 taxa passed 1° coverage gates (31 passed 5°). Climate log-volume versus floral log-volume slope β+0.0669 (HC3 CI −0.1046,+0.2384; permutation P0.3875); cross-sector climate–trait centroid ρ−0.0081 (P0.9125). Neither a strong positive coupling nor evolutionary divergence/convergence is established. [H3 SI](SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md).
 
-The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 and the Holm families remain unchanged. [Japanese outline](GEB_THREE_PART_STRUCTURE_JA.md).
+The weak exploratory 28-pair shape/colour/angle covariance remains in SI; “LEGO” is not a formal study hypothesis. Original S1/S2 frozen results unchanged.
 
 ## What the frozen results can support
 
@@ -35,7 +35,7 @@ The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 a
 
 **Alternative explanation:** camera angle and lighting, taxon/geographic confounding now tested on original BIO18, shared-pixel mathematical covariance, imperfect taxonomic and temporal resolution. Selected-model Holm correction is **not** adjusted for the earlier explorations leading to the fixed model. All significant results and all 208 tests are visible in the numerical supplement; don't conceal the full family.
 
-## Six main display pieces for GEB (one new map not yet source-generated)
+## Seven main display pieces for GEB (five figures + two tables; Figure 2 unbuilt)
 
 **Methodology plus ecology:** show the source-verified continuous photographed phenotypes, then their BIO18, native/introduced colour and domain-covariance structure. Scientific novelty rhetoric stays in the [separate cover letter](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
 
@@ -43,7 +43,7 @@ The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 a
 2. **Figure 2 (planned only):** actual source-verified global photographic coverage and eligible taxon/range map, pending licenced aggregation. **NOT yet generated; submission stop gate.** The original three cross-domain signed-r pair graph remains in SI despite its historical `figure2_` filename.
 3. **Figure 3 (native climate + geography):** Main forest plot of original Holm-supported BIO18×angle and source-verified exploratory geographic adjustments (three longitude sectors, spherical spatial basis, east-sector holdout, with and without 5°cell within-taxon reweighting). The original S1 Holm P applies **only to the frozen coefficient**; new HC3 intervals are exploratory, pointwise. [SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) retains all original 80 native-taxon raw/BH/Holm tests and the original two-scale figure.
 4. **Figure 4 (native/introduced):** Three selected photographed colour×environment pairs in native/introduced strata, six exact original coefficients with CI; no range×environment interaction inference.
-5. **SI-only configuration results:** Original eight high/low three-trait combinations and binarisation-sensitivity contrasts; no main Figure 5.
+5. **Figure 5 (H3):** Source-verified aggregate-only climatic occupancy breadth × photographed floral morphospace analysis and cross-region similarity, 1° vs 5° cells. No fictitious 3D photo scatter or evolutionary convergence inference. **The original eight high/low three-trait configurations and binarisation-sensitive contrasts remain SI only.**
 6. **Table 1:** Audited source totals and image-angle eligible observations by native/introduced stratum for *C. arvense* and *C. vulgare* (78,646/70,964 and 62,368/85,644; native/introduced totals 141,014/156,608). Weak r pairs and domain RV medians moved to SI.
 7. **Table 2:** Four original Holm-supported environment associations, with Holm rather than raw P displayed in the main table.
 
@@ -65,4 +65,6 @@ The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 a
 
 **Editorial comparison:** [GEB published-article writing audit](GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md). GEB Research Article structured Abstract and broad-scale generality follow the [official author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html).
 
-**Source-grounded geographic Fig3:** [aggregate JSON](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json), [secure-source CI](https://github.com/zuizui0223/azami/actions/runs/40837107465). New `plot_bio18_geographic_sensitivity.py` generates Figure 3 in the standard CI artifact; no individual coordinates/observer data shared.
+**SI-only source-grounded spatial-model sensitivity:** [aggregate JSON](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json), [secure-source CI](https://github.com/zuizui0223/azami/actions/runs/40837107465). New `plot_bio18_geographic_sensitivity.py` generates Figure 3 in the standard CI artifact; no individual coordinates/observer data shared.
+
+**H3 original-source CI:** [Actions #40841007115](https://github.com/zuizui0223/azami/actions/runs/40841007115), artifact 12883021095; [machine-readable anonymous source-verified H3](../../analysis/v4/results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json). All H3 hypotheses are exploratory and separate from the 24 October S1/S2 frozen Holm tests.
