@@ -1,0 +1,80 @@
+{
+  "schema": "azami_s1_original_178taxa_20degree_source_block_sensitivity_20261029_v1",
+  "status": "SOURCE_VERIFIED_SPATIAL_BLOCK_REWEIGHT_NO_LATLON_REGRESSOR",
+  "provenance": {
+    "original_native_source": "2026-10-24 encrypted, checksum and CHELSA raster verified",
+    "original_model": "BIO18/BIO05/RSDS/elevation, equal taxon weights",
+    "original_S1_80test_Holm_P": 0.009206350580895119,
+    "run_id": 40855350461,
+    "job_id": 123385152955,
+    "original_GitHub_artifact_id": 12889980119,
+    "run_url": "https://github.com/zuizui0223/azami/actions/runs/40855350461",
+    "frozen_20261024_zip_sha256": "6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205"
+  },
+  "n_eligible": 168907,
+  "n_native_taxa": 178,
+  "original_beta_recovered": 0.04544684307686097,
+  "spatial_block": {
+    "status": "estimated",
+    "n_original_source_geo_blocks": 26,
+    "grid_cell_resolution_degrees": 20,
+    "block_partition_used_for_resampling_not_a_regression_predictor": true,
+    "n_valid_bootstraps": 399,
+    "n_requested_bootstraps": 399,
+    "source_block_bootstrap_95_percentile_interval": [
+      0.014568992117768206,
+      0.08448339091066548
+    ],
+    "fraction_bootstraps_same_sign_as_original": 0.9949874686716792,
+    "block_bootstrap_center": 0.044475599703471314,
+    "n_largest_source_weight_blocks_heldout": 5,
+    "largest_source_weight_block_holdout_results": [
+      {
+        "status": "estimated",
+        "coefficient": 0.04380225931547405,
+        "source_weight_fraction_omitted": 0.20786516853932585,
+        "sign_retained": true
+      },
+      {
+        "status": "estimated",
+        "coefficient": 0.050480217652701984,
+        "source_weight_fraction_omitted": 0.11235955056179775,
+        "sign_retained": true
+      },
+      {
+        "status": "estimated",
+        "coefficient": 0.0450250706568506,
+        "source_weight_fraction_omitted": 0.10674157303370786,
+        "sign_retained": true
+      },
+      {
+        "status": "estimated",
+        "coefficient": 0.04614390849098386,
+        "source_weight_fraction_omitted": 0.07865168539325842,
+        "sign_retained": true
+      },
+      {
+        "status": "estimated",
+        "coefficient": 0.03374169181411407,
+        "source_weight_fraction_omitted": 0.07865168539325842,
+        "sign_retained": true
+      }
+    ],
+    "n_largest_holdouts_retaining_sign": 5,
+    "not_original_S2_Holm_family_or_causal_spatial_partition": true,
+    "original_S1_equal_taxon_beta_exact": 0.04544684307686097,
+    "original_source_cohort": 168907,
+    "source_taxa": 178,
+    "taxa_assigned_to_dominant_source_cell_20degree_blocks": true,
+    "latlon_not_regression_covariates": true,
+    "exploratory_not_Holm_familywise": true
+  },
+  "inference_limits": {
+    "exploratory_block_bootstrap_not_Holm_multiple_test_CI": true,
+    "grouping_taxa_by_photo_occupied_dominant_spatial_block_not_independent_lineages": true,
+    "resampling_does_not_separate_climate_and_spatial_causal_components": true,
+    "prior_sector_and_spherical_adjustments_attenuate_original_association": true,
+    "no_rain_protection_or_genetic_adaptation_test": true,
+    "no_precise_coordinates_observation_ids_or_taxon_keys_exported": true
+  }
+}
