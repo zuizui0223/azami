@@ -171,7 +171,7 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
-        self.assertIn("trait covariance",article.lower())
+        self.assertIn("SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md",article)
         self.assertIn("156,683 photographs across 174 taxa",article)
         outline=(PAPER/"GEB_THREE_PART_STRUCTURE_JA.md").read_text(encoding="utf-8")
         for val in ("## 1. 頭花形質の定量化、表現型統合と組合せ",
