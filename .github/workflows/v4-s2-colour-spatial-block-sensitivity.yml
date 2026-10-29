@@ -1,0 +1,196 @@
+name: V4 S2 original colour spatial block sensitivity
+
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/s2_original_colour_spatial_block_sensitivity.py'
+      - 'tests/test_v4_s2_original_colour_spatial_block_sensitivity.py'
+      - '.github/workflows/v4-s2-colour-spatial-block-sensitivity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: azami-v4-s2-spatial-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  exact-original-S2-colour-spatial-blocks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+      - name: Skip expensive private source recovery for unrelated commits
+        id: gate
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo 'execute=true' >> "$GITHUB_OUTPUT"
+          else
+            changed="$(git diff-tree --no-commit-id --name-only -r HEAD)"
+            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/s2_original_colour_spatial_block_sensitivity\.py|tests/test_v4_s2_original_colour_spatial_block_sensitivity\.py|\.github/workflows/v4-s2-colour-spatial-block-sensitivity\.yml)$'; then
+              echo 'execute=true' >> "$GITHUB_OUTPUT"
+            else
+              echo 'execute=false' >> "$GITHUB_OUTPUT"
+              echo 'No S2 spatial source/runner changes; avoid re-downloading rasters'
+            fi
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate source-free exact-coefficient contracts and bootstrap invariants
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'cryptography>=46,<49' 'shapely>=2,<3' 'rasterio>=1.4,<2' 'requests>=2.31,<3' pytest
+          python -m pytest -q tests/test_v4_s2_original_colour_spatial_block_sensitivity.py
+          python -m py_compile analysis/v4/s2_original_colour_spatial_block_sensitivity.py
+      - name: Restore original confidential WCVP-native and explicitly introduced S2 sources
+        if: steps.gate.outputs.execute == 'true'
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/s2-spatial/private work/s2-spatial/public work/s2-spatial/temp
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/s2-spatial/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/s2-spatial/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/659010325 \
+            > work/s2-spatial/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/s2-spatial/private/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+            > work/s2-spatial/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/s2-spatial/private/authority350.zip' | sha256sum -c -
+          python -m analysis.v4.native_introduced_opportunity \
+            --original work/s2-spatial/private/original-metadata.aesgcm \
+            --measurements work/s2-spatial/private/original-measurements.aesgcm \
+            --authority work/s2-spatial/private/authority350.zip \
+            --output work/s2-spatial/private/authority-public-stage \
+            --private-focal-all-wild-output work/s2-spatial/private/focal_wild.csv.gz
+          python - <<'PY'
+          import os,io
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.native_introduced_opportunity import (
+              decrypt_checked, MEASUREMENT_AAD, MEASUREMENT_SEALED_SHA,
+              MEASUREMENT_SHA,
+          )
+          src=Path('work/s2-spatial/private/original-measurements.aesgcm').read_bytes()
+          clear=decrypt_checked(src,os.environ['AZAMI_MEASUREMENTS_KEY'],
+                                MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA,MEASUREMENT_AAD)
+          measured=pd.read_csv(io.BytesIO(clear),dtype={'obs_id':str},low_memory=False)
+          if measured.obs_id.duplicated().any():
+              raise ValueError('UNVERIFIED_OR_DUPLICATE_ORIGINAL_COLOUR_MEASUREMENTS')
+          measured.to_csv('work/s2-spatial/private/original-measured.csv.gz',
+                          index=False,compression='gzip')
+          print({'original_measurement_rows':len(measured),
+                 'source_colour_fields':[c for c in measured if 'chroma' in c or 'lightness' in c]},
+                flush=True)
+          PY
+      - name: Restore SHA-authenticated original CHELSA five-variable pixel caches
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.s1_s2_restore_original_five import recover_original_five
+          source=Path('work/s2-spatial/private/focal_wild.csv.gz')
+          focal=pd.read_csv(source,dtype={'obs_id':str},low_memory=False)
+          if len(focal)!=297622 or focal.obs_id.duplicated().any():
+              raise ValueError('ORIGINAL_WCVP_WILD_S2_CENSUS_NOT_297622')
+          focal,receipt=recover_original_five(
+              focal,Path('work/s2-spatial/private/chelsa_original_five'),
+              Path('analysis/v4/environment_source_metadata.json'))
+          focal.to_csv('work/s2-spatial/private/focal_wild_five.csv.gz',
+                       index=False,compression='gzip')
+          import json
+          Path('work/s2-spatial/public/original_five_raster_receipt.json').write_text(
+              json.dumps(receipt,indent=2)+'\n',encoding='utf-8')
+          print('S2 five original source-pixel exposures recovered',flush=True)
+          PY
+      - name: Restore all seven extra CHELSA/elevation source pixels for exact all12 original-cohort gate
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import pandas as pd
+          from analysis.v4.s1_s2_extreme_environment import retrieve,open_raster,sample_grid
+          from analysis.v4.s1_s2_extreme_lego import EXTRA
+          root=Path('work/s2-spatial')
+          f=pd.read_csv(root/'private/focal_wild_five.csv.gz',
+                        usecols=['obs_id','latitude','longitude'],
+                        dtype={'obs_id':str},low_memory=False)
+          if len(f)!=297622 or f.obs_id.duplicated().any():
+              raise ValueError('ORIGINAL_FOCAL_SOURCE_COORDINATES_MISSING')
+          additional=f[['obs_id']].copy()
+          sources=[]
+          for key in EXTRA:
+              downloaded,meta=retrieve(key,root/'temp')
+              extracted=open_raster(downloaded,key,root/'temp')
+              values,diag=sample_grid(extracted,key,f)
+              additional[key]=values
+              sources.append({
+                  'variable':key,'download_sha256':meta['download_sha256'],
+                  'source_url':meta['url'],'source_pixels_not_resampled':True,
+                  'n_finite':diag['n_finite_extracted'],
+              })
+              if extracted!=downloaded:
+                  extracted.unlink(missing_ok=True)
+              downloaded.unlink(missing_ok=True)
+              print({'variable':key,'eligible_pixels':diag['n_finite_extracted']},flush=True)
+          additional.to_csv(root/'private/focal_extra7.csv.gz',
+                            index=False,compression='gzip')
+          (root/'public/extra7_raster_source_receipt.json').write_text(
+              json.dumps({'source_population':len(f),'original_extra_pixels':sources},
+                         indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Reproduce all six original S2 coefficient rows before block bootstrap
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s2_original_colour_spatial_block_sensitivity \
+            --focal work/s2-spatial/private/focal_wild_five.csv.gz \
+            --extra work/s2-spatial/private/focal_extra7.csv.gz \
+            --measured work/s2-spatial/private/original-measured.csv.gz \
+            --out work/s2-spatial/public/S2_ORIGINAL_COLOUR_SPATIAL_BLOCK_SENSITIVITY.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('work/s2-spatial/public/S2_ORIGINAL_COLOUR_SPATIAL_BLOCK_SENSITIVITY.json').read_text())
+          assert data['original_wild_source_observations']==297622
+          assert len(data['panel_rows'])==6
+          assert data['spatial_degrees_only_used_to_define_resampling_blocks']
+          assert data['original_holm_family_not_refitted']
+          for panel in data['panel_rows']:
+              assert abs(panel['source_verification']['exact_frozen_beta']-
+                         panel['source_verification']['recovered_beta'])<=2e-7
+          txt=json.dumps(data)
+          for protected in ('"obs_id"', '"user_id"', '"latitude"', '"longitude"',
+                            '"photo_id"', '"photographer_id"'):
+              assert protected not in txt,protected
+          print('S2 six source-verified frozen rows and spatial-block sensitivities validated',
+                flush=True)
+          PY
+      - name: Upload aggregate-only source receipts and spatial block sensitivity tables
+        if: always() && steps.gate.outputs.execute == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-v4-S2-spatial-block-coefficients-${{ github.run_id }}
+          path: |
+            work/s2-spatial/public/original_five_raster_receipt.json
+            work/s2-spatial/public/extra7_raster_source_receipt.json
+            work/s2-spatial/public/S2_ORIGINAL_COLOUR_SPATIAL_BLOCK_SENSITIVITY.json
+          retention-days: 90
+          if-no-files-found: warn
