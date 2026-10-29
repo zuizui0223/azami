@@ -16,12 +16,35 @@ import numpy as np
 import pandas as pd
 from scipy.stats import t
 
-from analysis.v4.s1_rain_native_geographic_controls import (
-    geo_features, longitude_sector, GEO_COLS, SECTOR_NAMES
-)
 from analysis.v4.s1_s2_extreme_environment import (
     retrieve, open_raster, sample_grid
 )
+
+# Keep the geometry self-contained: the legacy BIO12 pipeline also imports
+# an archived T2 module and must not be required for this new source-only test.
+SECTOR_NAMES = ("W180_W030", "W030_E060", "E060_E180")
+GEO_COLS = ("g_x", "g_y", "g_z", "g_xy", "g_xz", "g_yz",
+            "g_x2_minus_y2", "g_3z2_minus1")
+
+
+def geo_features(lat_deg, lon_deg):
+    lat = np.asarray(lat_deg, dtype=float)
+    lon = np.asarray(lon_deg, dtype=float)
+    if lat.shape != lon.shape or not np.isfinite(lat).all() or not np.isfinite(lon).all():
+        raise ValueError("INVALID_OR_MISMATCHED_COORDINATES")
+    require((np.abs(lat) <= 90).all() and (np.abs(lon) <= 180).all(),
+            "INVALID_LAT_LON_FOR_SPHERE")
+    la, lo = np.deg2rad(lat), np.deg2rad(lon)
+    x, y, z = np.cos(la)*np.cos(lo), np.cos(la)*np.sin(lo), np.sin(la)
+    return np.column_stack((x,y,z,x*y,x*z,y*z,x*x-y*y,3*z*z-1))
+
+
+def longitude_sector(lon_deg):
+    lon = np.asarray(lon_deg, float)
+    if not np.isfinite(lon).all() or np.any(np.abs(lon)>180):
+        raise ValueError("INVALID_LONGITUDE_FOR_FIXED_SECTORS")
+    return np.select((lon < -30, lon < 60),(0,1),default=2).astype(np.int8)
+
 
 SOURCE_SHA = "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed"
 ENDPOINT = "orientation_image_vertical_angle"
