@@ -8,7 +8,7 @@
 
 **空間感度はSIのモデル依存性評価。** 同じBIO18×画像角度の全球正勾配は、経度帯・球面空間項で弱まるが、環境と空間の交絡が分離できるわけではない。Results 3.1の元Holm支持、Results 3.2の花色×環境結果は本文の既存主張として保持。感度の詳細は [SI](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md) に移す。
 
-**H3の主題：** 「気候ニッチの幅が広い種は、頭花の多形質形態空間も広いか。異なる地域で似た気候を使う種は似た頭花形態に収束する候補か」。気候3軸（BIO12・BIO01・RSDS）、写真の頭花3軸（向き・彩度・2D縦横比）を用いる。元157,822枚で対応可能、1°セルで63分類群、5°セルで31分類群が標本条件を満たした。主解析の楕円体体積proxyの係数は+0.0669（95% CI −0.1046～+0.2384、置換P=0.3875）、地域間の気候重心距離と形態重心距離はρ=−0.0081（置換P=0.9125）。**明瞭な正の対応は現在検出されない**が、形態が気候から独立と証明したわけではない。進化的放散・収束は十分な独立核系統樹が必要で、ここでは未検証。[H3 SI](SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md)。
+**H3の実測結論：** 気候空間の広さから頭花形態空間の体積を直接予測する結果は支持されなかった（1°63分類群、β+0.0669、95% CI −0.1046～+0.2384、P=0.3875）。しかし、**別の経度帯の分類群の実際の撮影地を気候条件で一致させると、3次元頭花形態の距離が種内セル置換帰無より小さい**（1° +0.04096／5° +0.09433、両方Holm-2 P=0.010）。3次元KDE形態分布の重複も**帰無との相対比較では**一致方向（Holm-2 P=0.010／0.015）だが、条件付きサブセットの絶対重複は全セルより**低い**。気候×頭花形質間共分散6検定はHolm補正後に支持されず、形質別多様性3検定も未支持。系統的収束・選択・遺伝的相互作用は未検証。[H3c SI](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md)・[H3d SI](SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md)。
 
 ## 2026-10-28 GEB原稿の中心ストーリー（文章改稿・数値変更なし）
 
@@ -58,7 +58,7 @@
 - **Figure 2（未生成）:** 解析済みの観測地点・分類群の**実際の全球カバレッジ図**。元図の弱い3ペアrと28ペア全体はSIへ移す（歴史的な描画ファイル名がfigure2で始まる点に注意）。
 - **Figure 3：** 元のBIO18×頭花角度のHolm支持係数のみ主図に表示。経度帯・球面2次調整、東側除外の探索的区間はSIのみ。
 - **Figure 4：** Results 3.2：在来／導入の花色×環境の元3組・計6係数の比較。
-- **Figure 5：** Results 3.3：気候ハイパーボリュームproxyと頭花形態空間の体積、地域間の環境・形態類似性（1°/5°感度）を表示。
+- **Figure 5：** Results 3.3：**気候条件の一致で近づく頭花の3次元形態距離**と、KDE密度重複の置換帰無との比較を主に示し、ニッチ幅×形態空間体積の未支持結果も同じ図で対照。
 - **SI（元Figure 5構想）：** 第1部：3形質8組合せと閾値感度分析。現段階で本図として提出しない。
 - **SI：** 分類群内BIO18角度を含む**80件の未補正P・BH補正P・Holm補正Pの全表**と、両スケールの2係数図、S2の128件全表、28ペア全行列（図と数表）、画像指標の重複性、8状態の閾値感度、導入域の形質共分散。
 
@@ -73,3 +73,14 @@
 さらに、同種が異なる分布史を持つ在来域と導入域を比較することで、進出先でも形質―環境関係が観測されるかを問うた。2種計297,622元野生記録（在来141,014、導入156,608）の4層のうち、導入域に限って *C. vulgare* の日射×彩度・明度、*C. arvense* の標高×明度の計3件がHolm補正後に有意だった。高日射に伴う高彩度・低明度や標高に伴う低明度は既報の非生物的花色勾配と方向が整合する。ただし *C. vulgare* 日射×彩度の在来係数は導入係数と近く、有意／非有意だけから新たな進化を推定できない。
 
 画像形質間の弱い共変動を主論文の独立結果から除外し、全28ペア・8通りの二値配置・形質間rの詳細はSIに保持する。Main Table 1には母集団・適格数を置き、Main Figure 3にはBIO18角度、Figure 4には在来／導入の花色係数を示す。全球分布地図（Figure 2）は源泉を検証してから実制作する。
+
+## New source-confirmed H3c/H3d endpoints (29 October 2026)
+
+**H3c — positive ecological pattern:** 157,822 common valid photographs/242 source taxa; **63 geographically supported taxa at 1°** and 31 at 5°. For different-sector taxa, matching the three-dimensional climate conditions of occupied cells (BIO12/BIO01/RSDS) yields closer three-dimensional photographed capitulum phenotypes (angle/chroma/aspect) than expected under within-taxon climate–trait permutation: **distance advantage +0.04096, Holm-2 P=0.010** (1°; mean 229 supported cross-sector pairs) and **+0.09433, Holm-2 P=0.010** (5°; mean 103 pairs). A fixed-bandwidth conditional 3D KDE L2 overlap comparison also deviated from its taxon-preserving null (Holm-2 P 0.010 / 0.015). **The conditional subset's absolute overlap was LOWER than the full eight-cell overlap**; this is a relative-to-permutation result, not an absolute increase in niche intersection. The H3a species-level breadth slope +0.0669 (CI −0.1046,+0.2384) and H3b species centroid ρ−0.0081 are not supported.
+
+**H3d — not a positive claim:** Three trait-specific climatic-breadth responses and six rainfall/radiation-modulated cross-trait covariance contrasts were prespecified and tested on the same matched source; none survived their respective exploratory Holm families. In particular, the nominal 1° solar-radiation × image-angle–outline covariance P=0.016 had Holm-6 P=0.096 and a non-replicating/opposite-signed 5° estimate. No genetically encoded module, correlational selection or evolutionary convergence is established.
+
+[H3c empirical source](../../analysis/v4/results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json) · [H3d empirical source](../../analysis/v4/results/20261029_H3D_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_SOURCE_VERIFIED.json) · [Source CI #40847696537](https://github.com/zuizui0223/azami/actions/runs/40847696537) · [H3c SI](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md) · [H3d SI](SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md).
+
+**GEB placement:** H3c is now Results **3.3** and Figure 5; H3a/H3b as context; H3d weak covariance moderation, the original 28-pair matrix and spatial BIO18 sensitivity are **SI**, while original 3.1/3.2 results and original S1 80/S2 128 Holm tests remain fixed.
+
