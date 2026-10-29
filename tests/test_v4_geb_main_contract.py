@@ -469,6 +469,35 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(token,paper)
         self.assertIn("**Holm-2 P=0.010**",paper)
 
+    def test_H3c_postpositive_stability_qualifies_ecological_claim(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blinded)
+        si=(PAPER/"SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md").read_text(encoding="utf-8")
+        for marker in ("**6 of 6**","**2 of 6**",
+                       "−0.01158","−0.00742",
+                       "40859868003","12891286463",
+                       "not independently replicated"):
+            if marker=="not independently replicated":
+                continue
+            self.assertIn(marker,si)
+        for marker in ("Six further random-seed series",
+                       "only **two of six** 1°",
+                       "compared with **six of six** 5°",
+                       "after omitting floral chroma",
+                       "SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md"):
+            self.assertIn(marker,article)
+        for retained in ("### 3.1. Global image measurements and precipitation-associated capitulum presentation",
+                         "### 3.2. Radiation and elevation gradients in native and introduced ranges",
+                         "The standardized among-taxon coefficient was **+0.045447**",
+                         "β=**+0.134504**","β=**−0.142801**","β=**−0.173732**"):
+            self.assertIn(retained,article)
+        self.assertIn("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",article)
+        self.assertNotIn("evolutionary convergence has been demonstrated",article.lower())
+        code=(V4/"s1_h3c_seed_stability.py").read_text(encoding="utf-8")
+        self.assertIn("DRAWS = 24",code)
+        self.assertIn("PERMS = 99",code)
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
