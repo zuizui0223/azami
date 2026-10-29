@@ -56,7 +56,7 @@ class NativeBio18GeographyTests(unittest.TestCase):
         output = summarise_geography({
             "photo_weighted": frame,
             "equal_5degree_cell": frame.copy(),
-        })
+        }, verify_original_baseline=False)
         self.assertEqual(set(output), {"photo_weighted", "equal_5degree_cell"})
         for grouping in output.values():
             self.assertEqual(set(grouping["within_predeclared_longitude_sectors"]), set(SECTORS))
