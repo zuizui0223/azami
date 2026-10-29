@@ -314,9 +314,8 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         si=(PAPER/"SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md").read_text(encoding="utf-8")
         self.assertIn("SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md",paper)
-        self.assertIn("not **part** of original Holm", si.replace("not part", "not **part**")) if False else None
-        self.assertIn("geography and climate are correlated", si.lower())
-        self.assertIn("causal partition", si)
+        self.assertIn("Spatial predictors share information with climate", si)
+        self.assertIn("no causal partition", si)
         self.assertNotIn("The **exact-cohort geographic sensitivity**",paper)
         self.assertNotIn("geographically structured precipitation–capitulum associations",paper)
         self.assertTrue((PAPER/"plot_bio18_geographic_sensitivity.py").is_file())
