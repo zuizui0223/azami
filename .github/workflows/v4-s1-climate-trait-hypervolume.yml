@@ -5,6 +5,12 @@ on:
     paths:
       - 'analysis/v4/s1_climate_trait_hypervolume.py'
       - 'tests/test_v4_s1_climate_trait_hypervolume.py'
+      - 'analysis/v4/s1_h3_climate_analogue_alignment.py'
+      - 'tests/test_v4_s1_h3_climate_analogue_overlap.py'
+      - 'analysis/v4/s1_h3_environment_moderated_trait_covariance.py'
+      - 'tests/test_v4_s1_h3_environment_moderated_trait_covariance.py'
+      - 'analysis/v4/H3_CLIMATE_ANALOG_PHENOTYPE_CONVERGENCE_DESIGN_20261029_JA.md'
+      - 'analysis/v4/H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_DESIGN_20261029_JA.md'
       - 'analysis/v4/HYPERVOLUME_CLIMATE_MORPHOSPACE_H3_PREDECLARED_20261029_JA.md'
       - '.github/workflows/v4-s1-climate-trait-hypervolume.yml'
   workflow_dispatch:
@@ -38,7 +44,7 @@ jobs:
             echo "run_analysis=true" >> "$GITHUB_OUTPUT"
           else
             changed="$(git diff-tree --no-commit-id --name-only -r HEAD)"
-            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/s1_climate_trait_hypervolume\.py|tests/test_v4_s1_climate_trait_hypervolume\.py)$'; then
+            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/s1_climate_trait_hypervolume\.py|tests/test_v4_s1_climate_trait_hypervolume\.py|analysis/v4/s1_h3_climate_analogue_alignment\.py|tests/test_v4_s1_h3_climate_analogue_overlap\.py|analysis/v4/s1_h3_environment_moderated_trait_covariance\.py|tests/test_v4_s1_h3_environment_moderated_trait_covariance\.py|\.github/workflows/v4-s1-climate-trait-hypervolume\.yml)$'; then
               echo "run_analysis=true" >> "$GITHUB_OUTPUT"
             else
               echo "run_analysis=false" >> "$GITHUB_OUTPUT"
