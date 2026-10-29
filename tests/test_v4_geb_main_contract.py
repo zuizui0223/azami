@@ -61,7 +61,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("24/28",si_cov)
         self.assertIn("0.0487/0.00532",si_cov)
         self.assertIn("**123/135**",si_cov)
-        self.assertIn("**Figure 2 (Part 1).** Source-verified descriptive signed correlations",article)
+        self.assertIn("**Figure 2 (planned, NOT YET SOURCE-GENERATED).**",article)
         self.assertNotIn("**Figure 5 (Part 1).**",article)
         for biological_pair in ("angle", "chroma", "aspect"):
             self.assertIn(biological_pair,(PAPER/"plot_cross_functional_pairs.py").read_text(encoding="utf-8"))
@@ -160,15 +160,15 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertNotIn("LEGO",article)
         headings=re.findall(r"^### 3\.(\d+)\. (.+)$",article,re.MULTILINE)
         self.assertEqual([int(i) for i,_ in headings],[1,2,3])
-        for prefix in ("### 2.4. Part 1 — Visible phenotypic integration",
-                       "### 2.5. Part 2 — Native-taxon capitulum angle",
-                       "### 2.6. Part 3 — Native/introduced",
-                       "### 3.1. Part 1 — Cross-domain presentation, colour and outline associations",
-                       "### 3.2. Part 2 — Among-taxon image angle",
-                       "### 3.3. Part 3 — Native/introduced colour",
-                       "### 4.1. Part 1 — Distinguishing biological domains",
-                       "### 4.2. Part 2 — Precipitation, head presentation",
-                       "### 4.3. Part 3 — Floral colour and climate"):
+        for prefix in ("### 2.4. Supplementary matched-photograph trait associations",
+                       "### 2.5. Climatic associations within and among native taxa",
+                       "### 2.6. Within-species native and introduced",
+                       "### 3.1. Global image measurements and precipitation-associated",
+                       "### 3.2. Radiation and elevation gradients",
+                       "### 3.3. Exploratory co-variation among photographic trait domains",
+                       "### 4.1. Precipitation, head presentation",
+                       "### 4.2. Floral colour and climate",
+                       "### 4.3. Distinguishing biological domains"):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
@@ -188,8 +188,8 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(paper,blind)
         for key in ("Dalrymple et al., 2020","Berardi et al., 2016",
                     "Greater chroma and lower lightness",
-                    "**Figure 3 (Part 2: featured ecological result).**",
-                    "**Figure 4 (Part 3).**",
+                    "**Figure 3.**",
+                    "**Figure 4.**",
                     "https://doi.org/10.1111/nph.16737",
                     "https://doi.org/10.3732/ajb.1600106"):
             self.assertIn(key,paper)
@@ -213,9 +213,9 @@ class V4GEBMainContract(unittest.TestCase):
         for term in ("Globally distributed public photographs",
                      "a larger downward-looking image angle",
                      "The conspecific native–introduced comparison provides a second ecological perspective.",
-                     "**Figure 3 (Part 2: featured ecological result).**",
-                     "main figure includes only this Holm-supported term",
-                     "all 80 native-taxon tests with raw, BH and Holm P values"):
+                     "**Figure 3.**",
+                     "The native within-taxon coefficient and the complete 80-test family are in Supporting Information",
+                     "80-test family"):
             self.assertIn(term,paper)
         main_table=paper.split("**Table 2.",1)[1].split("**Out of scope",1)[0]
         self.assertNotIn("| Raw P |",main_table)
@@ -275,6 +275,28 @@ class V4GEBMainContract(unittest.TestCase):
                       "分類群間", "分類群内", "視覚", "食害"):
             self.assertIn(value,audit)
         self.assertNotIn("LEGO",article)
+
+    def test_geb_published_style_main_findings_and_display_priorities(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blinded)
+        for term in ("Kuppler et al., 2020","Grenié et al., 2025",
+                     "https://doi.org/10.1111/geb.13077","https://doi.org/10.1111/geb.70131",
+                     "**Table 1.** Source observations and image-angle eligibility",
+                     "| *Cirsium arvense* | 78,646 | 70,964 | 49,072 | 43,195 |",
+                     "| *Cirsium vulgare* | 62,368 | 85,644 | 33,637 | 47,833 |",
+                     "**Total** | **141,014** | **156,608**",
+                     "Figure 2 (planned, NOT YET SOURCE-GENERATED)",
+                     "The complete **28-pair** raw and adjusted association matrices"):
+            self.assertIn(term,article)
+        self.assertLess(article.index("### 3.1. Global image measurements"),
+                        article.index("### 3.3. Exploratory co-variation"))
+        self.assertLess(article.index("### 4.1. Precipitation"),
+                        article.index("### 4.3. Distinguishing biological domains"))
+        benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
+        for doi in ("10.1111/geb.13077","10.1111/geb.13507",
+                    "10.1111/geb.70131","10.1111/geb.70245"):
+            self.assertIn(doi,benchmark)
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
