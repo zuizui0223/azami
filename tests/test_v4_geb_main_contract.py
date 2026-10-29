@@ -351,7 +351,7 @@ class V4GEBMainContract(unittest.TestCase):
         for term in ("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",
                      "### 4.3. Local climatic correspondence without a single global floral syndrome",
                      "**157,822 records across 242 taxa**","**63 taxa**",
-                     "permutation **P=0.3875**","**ρ=−0.0081**",
+                     "permutation P=0.3875","**ρ=−0.0081**",
                      "not a thresholded hypervolume intersection",
                      "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md"):
             self.assertIn(term,manuscript)
