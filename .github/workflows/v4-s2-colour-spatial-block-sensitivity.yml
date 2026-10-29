@@ -98,26 +98,67 @@ jobs:
                  'source_colour_fields':[c for c in measured if 'chroma' in c or 'lightness' in c]},
                 flush=True)
           PY
-      - name: Restore SHA-authenticated original CHELSA five-variable pixel caches
+      - name: Restore original checksum-authenticated CHELSA pixel caches with original missingness
         if: steps.gate.outputs.execute == 'true'
         run: |
           python - <<'PY'
+          import json,subprocess,zipfile
+          import numpy as np
           import pandas as pd
           from pathlib import Path
-          from analysis.v4.s1_s2_restore_original_five import recover_original_five
-          source=Path('work/s2-spatial/private/focal_wild.csv.gz')
+          from analysis.v4.s1_s2_restore_original_five import CACHES,sha256
+          from analysis.v4.native_cached_climate import physical_climate_for_focal
+          private=Path('work/s2-spatial/private')
+          source=private/'focal_wild.csv.gz'
           focal=pd.read_csv(source,dtype={'obs_id':str},low_memory=False)
           if len(focal)!=297622 or focal.obs_id.duplicated().any():
               raise ValueError('ORIGINAL_WCVP_WILD_S2_CENSUS_NOT_297622')
-          focal,receipt=recover_original_five(
-              focal,Path('work/s2-spatial/private/chelsa_original_five'),
-              Path('analysis/v4/environment_source_metadata.json'))
-          focal.to_csv('work/s2-spatial/private/focal_wild_five.csv.gz',
+          root=private/'original_chelsa_five'
+          root.mkdir(parents=True,exist_ok=True)
+          archives={}
+          for variable,(artifact,expected) in CACHES.items():
+              target=root/variable
+              target.mkdir(exist_ok=True)
+              zip_path=root/(variable+'.zip')
+              with zip_path.open('wb') as handle:
+                  subprocess.run(['gh','api',
+                      f'repos/zuizui0223/azami/actions/artifacts/{artifact}/zip'],
+                      stdout=handle,check=True)
+              if sha256(zip_path)!=expected:
+                  raise ValueError('S2_ORIGINAL_FIVE_CACHE_SHA_MISMATCH_'+variable)
+              with zipfile.ZipFile(zip_path) as archive:
+                  names=archive.namelist()
+                  if any(Path(n).is_absolute() or '..' in Path(n).parts for n in names):
+                      raise ValueError('UNSAFE_CHELSA_MEMBER_'+variable)
+                  archive.extractall(target)
+              zip_path.unlink()
+              archives[variable]={'artifact_id':artifact,'zip_sha256':expected}
+          values,diagnostics=physical_climate_for_focal(
+              focal,root,Path('analysis/v4/environment_source_metadata.json'))
+          coverage={}
+          for variable,a in values.items():
+              numbers=np.asarray(a,float)
+              if len(numbers)!=297622:
+                  raise ValueError('ORIGINAL_S2_FIVE_CHELSA_ROWS_DRIFT')
+              # Preserve actual missing raster values in the original success
+              # workflow; exact original per-outcome all12 coverage is checked
+              # downstream by the six frozen coefficient/denominator gates.
+              focal[variable]=numbers
+              coverage[variable]={
+                  'n_finite':int(np.isfinite(numbers).sum()),
+                  'fraction_finite':float(np.isfinite(numbers).mean()),
+                  'missing_value_imputed':False}
+          focal.to_csv(private/'focal_wild_five.csv.gz',
                        index=False,compression='gzip')
-          import json
-          Path('work/s2-spatial/public/original_five_raster_receipt.json').write_text(
-              json.dumps(receipt,indent=2)+'\n',encoding='utf-8')
-          print('S2 five original source-pixel exposures recovered',flush=True)
+          (Path('work/s2-spatial/public')/'original_five_raster_receipt.json').write_text(
+              json.dumps({'status':'ORIGINAL_FIVE_SOURCE_PIXEL_CACHE_REUSED_WITH_MISSINGNESS',
+                          'original_wild_source_n':297622,
+                          'archived_sources':archives,
+                          'pixel_decode_audit':diagnostics,
+                          'finite_fraction_by_variable':coverage,
+                          'original_source_missing_values_not_imputed':True},
+                         indent=2,ensure_ascii=False,default=str)+'\n',encoding='utf-8')
+          print({'S2_original_five_pixel_coverage':coverage},flush=True)
           PY
       - name: Restore all seven extra CHELSA/elevation source pixels for exact all12 original-cohort gate
         if: steps.gate.outputs.execute == 'true'
