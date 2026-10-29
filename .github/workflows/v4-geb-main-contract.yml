@@ -41,6 +41,7 @@ jobs:
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/verify_s2_frozen_colour_context.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_s2_native_introduced_colour.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_angle_part2.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_h3_climate_morphospace.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_geographic_sensitivity.py
       - name: Recover SHA-256-fixed original aggregated results
         run: |
@@ -76,6 +77,9 @@ jobs:
           test -s work/geb_v4/figures/figure3_BIO18_among_taxa_image_angle.png
           test -s work/geb_v4/si/SI_Figure_BIO18_image_angle_both_scales.png
           test -s work/geb_v4/figures/figure4_S2_native_introduced_colour_coefficients.png
+          python manuscripts/v4_s1_s2_frozen_20261025/plot_h3_climate_morphospace.py --output-dir work/geb_v4/figures
+          test -s work/geb_v4/figures/figure5_H3_climatic_breadth_floral_morphospace.png
+          test -s work/geb_v4/figures/figure5_H3_climatic_breadth_floral_morphospace.svg
       - name: Validate original cross-domain signed correlations (descriptive only)
         run: |
           python - <<'PY'
