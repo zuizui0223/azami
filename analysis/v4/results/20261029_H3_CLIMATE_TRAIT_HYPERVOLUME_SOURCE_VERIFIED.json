@@ -1,0 +1,119 @@
+{
+  "schema": "azami_s1_h3_aggregate_scientific_receipt_from_actions_stdout_20261029",
+  "status": "VERIFIED_SOURCE_DERIVED_TWO_HYPOTHESES_EXPLORATORY",
+  "verified_execution": {
+    "run_id": 40841007115,
+    "job_id": 123337085921,
+    "artifact_id": 12883021095,
+    "run_url": "https://github.com/zuizui0223/azami/actions/runs/40841007115",
+    "artifact_url": "https://github.com/zuizui0223/azami/actions/runs/40841007115/artifacts/12883021095",
+    "original_decoded_native_source_SHA256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_processing": "encrypted original 313350 observations with source SHA and original CHELSA raster decoder"
+  },
+  "source": {
+    "decoded_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_observations": 313350,
+    "quality_eligible_matched_observations": 157822,
+    "matched_source_taxa": 242
+  },
+  "predeclared_axes": {
+    "climate": [
+      "chelsa_bio12",
+      "chelsa_bio01",
+      "chelsa_rsds_mean"
+    ],
+    "morphospace": [
+      "orientation_image_vertical_angle",
+      "corolla_lab_chroma",
+      "capitulum_outline_aspect_ratio"
+    ],
+    "estimator": "8 equal occupied cells, 96 subsampling draws; 3D 1/2 log det(sample_cov+0.025 I); a regularized ellipsoid proxy, not full KDE hypervolume",
+    "supporting_cells": [
+      "1degree primary",
+      "5degree secondary"
+    ]
+  },
+  "analyses": {
+    "1degree": {
+      "taxa": 63,
+      "status": "source_matched_exploratory",
+      "breadth": {
+        "status": "estimated",
+        "n_taxa": 63,
+        "trait_logvolume_slope_per_climate_logvolume": 0.06689477516770817,
+        "HC3_95CI": [
+          -0.10457402112741507,
+          0.2383635714628314
+        ],
+        "HC3_p_pointwise": 0.4444878550772755,
+        "sector_conditioned_residual_permutation_p_exploratory": 0.3875,
+        "n_permutations": 399,
+        "adjusted_R2": 0.5214524857562097,
+        "controls_retained": [
+          "log geographic spread",
+          "log observed photos",
+          "log occupied geographic cells",
+          "sector_0",
+          "sector_1"
+        ],
+        "controls_omitted_algebraically": [],
+        "not_causal_plasticity_or_adaptation": true
+      },
+      "similarity": {
+        "status": "estimated",
+        "cross_sector_taxon_pairs": 1098,
+        "climate_distance_vs_trait_distance_spearman": -0.008144762186869107,
+        "within_sector_taxon_label_permutation_p_exploratory": 0.9125,
+        "n_permutations": 399,
+        "cross_sector_centroids_not_shared_climate_ancestry_control": true,
+        "phylogenetic_evolutionary_convergence_NOT_tested": true
+      }
+    },
+    "5degree": {
+      "taxa": 31,
+      "status": "source_matched_exploratory",
+      "breadth": {
+        "status": "estimated",
+        "n_taxa": 31,
+        "trait_logvolume_slope_per_climate_logvolume": 0.07002324203859087,
+        "HC3_95CI": [
+          -0.44029698572112896,
+          0.5803434697983108
+        ],
+        "HC3_p_pointwise": 0.7879796091983787,
+        "sector_conditioned_residual_permutation_p_exploratory": 0.71,
+        "n_permutations": 399,
+        "adjusted_R2": 0.23358099025521972,
+        "controls_retained": [
+          "log geographic spread",
+          "log observed photos",
+          "log occupied geographic cells",
+          "sector_0",
+          "sector_1"
+        ],
+        "controls_omitted_algebraically": [],
+        "not_causal_plasticity_or_adaptation": true
+      },
+      "similarity": {
+        "status": "estimated",
+        "cross_sector_taxon_pairs": 295,
+        "climate_distance_vs_trait_distance_spearman": -0.0953770789121879,
+        "within_sector_taxon_label_permutation_p_exploratory": 0.425,
+        "n_permutations": 399,
+        "cross_sector_centroids_not_shared_climate_ancestry_control": true,
+        "phylogenetic_evolutionary_convergence_NOT_tested": true
+      }
+    }
+  },
+  "claim_boundaries": {
+    "not_evidence_of_no_relationship": true,
+    "nonsignificant_slope_not_equivalence": true,
+    "source_visual_appearance_not_function_or_plasticity": true,
+    "climatic_occupancy_not_fundamental_niche": true,
+    "conditional_sector_permutations_are_exploratory": true,
+    "cross_region_pairs_not_independent_replicates": true,
+    "evolutionary_radiation_or_convergence_requires_adequate_phylogenetic_tree": true,
+    "this_is_postfreeze_h3_and_not_original_s1_80_s2_128": true,
+    "no_taxon_ids_geolocations_observer_information": true
+  }
+}
