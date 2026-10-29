@@ -215,7 +215,7 @@ def execute(native_path, extended_path, source_receipt, output):
     receipt = json.loads(Path(source_receipt).read_text(encoding="utf-8"))
     if receipt.get("status") != "COMPLETE_SEVEN_ORIGINAL_RASTERS" or len(receipt.get("rasters", [])) != len(EXTRA):
         raise ValueError("INCOMPLETE_CHELSA_OR_ELEVATION_RESTORATION")
-    output = {
+    report = {
         "schema": "azami_v4_S1_BIO18_exact_cohort_predeclared_geography_sensitivity_v1",
         "status": "EMPIRICAL_BIO18_SOURCE_VERIFIED_NOT_IN_ORIGINAL_HOLM_FAMILY",
         "primary_model": "CHELSA BIO18 BIO05 RSDS and WorldClim elevation",
@@ -244,12 +244,12 @@ def execute(native_path, extended_path, source_receipt, output):
     }
     path = Path(output)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(output, indent=2, allow_nan=False, ensure_ascii=False)+"\n",
+    path.write_text(json.dumps(report, indent=2, allow_nan=False, ensure_ascii=False)+"\n",
                     encoding="utf-8")
-    print(json.dumps({"status": output["status"],
+    print(json.dumps({"status": report["status"],
                       "n": EXPECTED_ANGLE, "taxa": EXPECTED_TAXA,
                       "geographic_fits": sensitivity}, ensure_ascii=False), flush=True)
-    return output
+    return report
 
 
 def main():
