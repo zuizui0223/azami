@@ -443,7 +443,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertGreater(a["spatial_block"]["source_block_bootstrap_95_percentile_interval"][0],0)
         self.assertTrue(a["spatial_block"]["latlon_not_regression_covariates"])
         self.assertEqual(b["provenance"]["run_id"],40855508122)
-        self.assertEqual((b["original_wild_source_n"],len(b["panels"])),(297622,6))
+        self.assertEqual((b["source"]["original_focal_wild_records"],len(b["panels"])),(297622,6))
         expected=[22936,26171,17335,27200,17335,27200]
         for record,n in zip(b["panels"],expected):
             self.assertEqual(record["n"],n)
