@@ -25,7 +25,7 @@ jobs:
           python-version: '3.12'
       - name: Install audited source-reading and numerical dependencies
         run: |
-          python -m pip install --disable-pip-version-check -r reproducibility/requirements-current.txt 'cryptography>=46,<49' 'rasterio>=1.4,<2' 'requests>=2.31,<3'
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.0,<3' 'scipy>=1.11,<2' 'cryptography>=46,<49' 'rasterio>=1.4,<2' 'requests>=2.31,<3'
       - name: Synthetic test separates a spurious global climate slope from region sorting
         run: |
           python -m py_compile analysis/v4/s1_bio18_geographic_robustness.py
