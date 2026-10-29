@@ -61,8 +61,8 @@ jobs:
       - name: Test fixed hypervolume estimator, source supports and taxon-level null
         if: steps.decide.outputs.run_analysis == 'true'
         run: |
-          python -m pytest -q tests/test_v4_s1_climate_trait_hypervolume.py
-          python -m py_compile analysis/v4/s1_climate_trait_hypervolume.py
+          python -m pytest -q tests/test_v4_s1_climate_trait_hypervolume.py tests/test_v4_s1_h3_climate_analogue_overlap.py tests/test_v4_s1_h3_environment_moderated_trait_covariance.py
+          python -m py_compile analysis/v4/s1_climate_trait_hypervolume.py analysis/v4/s1_h3_climate_analogue_alignment.py analysis/v4/s1_h3_environment_moderated_trait_covariance.py
       - name: Restore original confidential S1 source and strict receipt
         if: steps.decide.outputs.run_analysis == 'true'
         env:
