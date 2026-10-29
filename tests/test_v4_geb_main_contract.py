@@ -417,7 +417,7 @@ class V4GEBMainContract(unittest.TestCase):
                       "0.53554→0.46046","Holm-2","進化的収束","SI"):
             self.assertIn(claim,frozen)
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
-        headings=re.findall(r"^### 3\\.(\\d+)\\.",paper,re.MULTILINE)
+        headings=re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)
         self.assertEqual([int(v) for v in headings],[1,2,3])
         self.assertIn("### 3.3. Climate-conditioned floral resemblance beyond niche breadth",paper)
         self.assertIn("**Holm-2 P=0.010**",paper)
