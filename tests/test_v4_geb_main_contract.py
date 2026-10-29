@@ -167,7 +167,7 @@ class V4GEBMainContract(unittest.TestCase):
                        "### 3.2. Radiation and elevation gradients",
                                               "### 4.1. Precipitation, head presentation",
                        "### 4.2. Floral colour and climate",
-                       "### 4.4. What public photographs measure"):
+                       "### 4.4. What public photographs add"):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
@@ -294,7 +294,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertLess(article.index("### 3.1. Global image measurements"),
                         article.index("### 3.2. Radiation and elevation gradients"))
         self.assertLess(article.index("### 4.1. Precipitation, head presentation"),
-                        article.index("### 4.4. What public photographs measure"))
+                        article.index("### 4.4. What public photographs add"))
         benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
         for doi in ("10.1111/geb.13077","10.1111/geb.13507",
                     "10.1111/geb.13789"):
