@@ -81,8 +81,18 @@ jobs:
           assert a["original_decoded_source"]["source_observations"]==313350
           assert a["inference"]["separate_from_original_S1_80_and_S2_128_Holm_families"]
           assert "1degree" in a["analysis"] and "5degree" in a["analysis"]
-          for forbidden in ("obs_id","user_id","accepted_key","photo_id","taxon_name"):
-              assert forbidden not in f.read_text(),forbidden
+          def all_dict_keys(node):
+              if isinstance(node,dict):
+                  for k,v in node.items():
+                      yield k
+                      yield from all_dict_keys(v)
+              elif isinstance(node,list):
+                  for v in node:
+                      yield from all_dict_keys(v)
+          keys=set(all_dict_keys(a))
+          for forbidden in ("obs_id","user_id","accepted_key","photo_id","taxon_name",
+                            "latitude","longitude","photographer_id"):
+              assert forbidden not in keys,forbidden
           print({"H3_primary_taxa":a["analysis"]["1degree"].get("n_taxa_eligible",0),
                  "H3_status":a["analysis"]["1degree"]["status"],
                  "H3_secondary_status":a["analysis"]["5degree"]["status"]},flush=True)
