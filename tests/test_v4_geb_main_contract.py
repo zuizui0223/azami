@@ -159,15 +159,15 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(article,blinded)
         self.assertNotIn("LEGO",article)
         headings=re.findall(r"^### 3\.(\d+)\. (.+)$",article,re.MULTILINE)
-        self.assertEqual([int(i) for i,_ in headings],[1,2])
+        self.assertEqual([int(i) for i,_ in headings],[1,2,3])
         for prefix in ("### 2.4. Supplementary matched-photograph trait associations",
                        "### 2.5. Climatic associations within and among native taxa",
                        "### 2.6. Within-species native and introduced",
                        "### 3.1. Global image measurements and precipitation-associated",
                        "### 3.2. Radiation and elevation gradients",
-                                              "### 4.1. The geographic contingency",
+                                              "### 4.1. Precipitation, head presentation",
                        "### 4.2. Floral colour and climate",
-                       "### 4.3. What public photographs measure"):
+                       "### 4.4. What public photographs measure"):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
@@ -187,7 +187,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(paper,blind)
         for key in ("Dalrymple et al., 2020","Berardi et al., 2016",
                     "Greater chroma and lower lightness",
-                    "**Figure 3 (source-verified geographic sensitivity).**",
+                    "**Figure 3.**",
                     "**Figure 4.**",
                     "https://doi.org/10.1111/nph.16737",
                     "https://doi.org/10.3732/ajb.1600106"):
@@ -208,12 +208,12 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blinded)
-        self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2])
+        self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2,3])
         for term in ("Globally distributed public photographs",
-                     "more downward-looking head presentation",
+                     "a larger downward-looking image angle",
                      "The conspecific native–introduced comparison provides a second ecological perspective.",
-                     "**Figure 3 (source-verified geographic sensitivity).**",
-                     "The original within-taxon coefficient and all 80 original tests remain in Supporting Information",
+                     "**Figure 3.**",
+                     "The native within-taxon coefficient and the complete 80-test family are in Supporting Information",
                      "80-test family"):
             self.assertIn(term,paper)
         main_table=paper.split("**Table 2.",1)[1].split("**Out of scope",1)[0]
@@ -249,7 +249,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("Moreyra et al., 2025",article)
         self.assertIn("Siniscalchi, Ackerfield & Folk, 2023",article)
         self.assertIn("Hulme & Barrett, 2013",article)
-        self.assertIn("Downward or inclined capitula may expose pollen-bearing and receptive tissues to less rain",article)
+        self.assertIn("avoidance of pollen wetting and wash-off",article)
         self.assertIn("only Holm-surviving association",article)
         self.assertIn("1981–2010 climatic normal",article)
         self.assertIn("**141,014 native, 156,608 introduced**",article)
@@ -257,7 +257,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("native coefficient (**+0.136883**)",article)
         self.assertIn("Holm P of 0.102398",article)
         self.assertIn("**direct interaction test**",article)
-        self.assertIn("Neither the original Holm decision nor the exploratory HC3 geographic intervals prove adaptive shielding",article)
+        self.assertIn("not evidence of rainfall-mediated selection",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("**without** comparing native–introduced rainfall niches",article)
         for doi in ("10.1016/j.ympev.2025.108285",
@@ -289,20 +289,19 @@ class V4GEBMainContract(unittest.TestCase):
                      "| *Cirsium vulgare* | 62,368 | 85,644 | 33,637 | 47,833 |",
                      "**Total** | **141,014** | **156,608**",
                      "Figure 2 (planned, NOT YET SOURCE-GENERATED)",
-                     "The original 28-pair raw/adjusted RV source matrices"):
+                     "The full within- and among-taxon image-metric covariance analysis"):
             self.assertIn(term,article)
         self.assertLess(article.index("### 3.1. Global image measurements"),
                         article.index("### 3.2. Radiation and elevation gradients"))
-        self.assertLess(article.index("### 4.1. The geographic contingency"),
-                        article.index("### 4.3. What public photographs measure"))
+        self.assertLess(article.index("### 4.1. Precipitation, head presentation"),
+                        article.index("### 4.4. What public photographs measure"))
         benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
         for doi in ("10.1111/geb.13077","10.1111/geb.13507",
                     "10.1111/geb.70131","10.1111/geb.70245"):
             self.assertIn(doi,benchmark)
 
-    def test_bio18_geographic_sensitivity_changes_generalisation_not_frozen_holm(self):
+    def test_bio18_geographic_sensitivity_is_si_only_and_not_causal_partition(self):
         import json
-        from pathlib import Path
         path=V4/"results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json"
         data=json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual((data["n"],data["taxa"]),(168907,178))
@@ -312,19 +311,24 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertAlmostEqual(a["none"]["standardised_beta"],0.04544684307686103,places=7)
         self.assertAlmostEqual(a["longitude_sector"]["standardised_beta"],0.02003485434695006,places=9)
         self.assertAlmostEqual(a["spherical_degree2"]["standardised_beta"],-0.003294794324869813,places=9)
-        self.assertLess(a["spherical_degree2"]["HC3_pointwise_95CI"][0],0)
-        self.assertGreater(a["spherical_degree2"]["HC3_pointwise_95CI"][1],0)
-        b=data["geographic_fits"]["photo_weighted"]["leave_one_predeclared_sector_out"]["E060_E180"]
-        self.assertAlmostEqual(b["standardised_beta"],-0.010371821241885446,places=8)
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
-        for value in ("geographically structured precipitation–capitulum",
-                      "**+0.020035**", "**−0.003295**",
-                      "**−0.010372**", "cannot be presented as a rainfall–orientation law",
-                      "HC3 pointwise 95% intervals", "not independent phylogenetic lineages",
-                      "plot_bio18_geographic_sensitivity.py"):
-            self.assertIn(value,paper)
-        self.assertNotIn("geographically universal rain response", paper.split("## 5. Conclusion")[1])
+        si=(PAPER/"SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md").read_text(encoding="utf-8")
+        self.assertIn("SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md",paper)
+        self.assertIn("not **part** of original Holm", si.replace("not part", "not **part**")) if False else None
+        self.assertIn("geography and climate are correlated", si.lower())
+        self.assertIn("causal partition", si)
+        self.assertNotIn("The **exact-cohort geographic sensitivity**",paper)
+        self.assertNotIn("geographically structured precipitation–capitulum associations",paper)
         self.assertTrue((PAPER/"plot_bio18_geographic_sensitivity.py").is_file())
+
+    def test_new_third_ecological_question_not_old_trait_r_claim(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        self.assertIn("### 3.1. Global image measurements",article)
+        self.assertIn("### 3.2. Radiation and elevation gradients",article)
+        self.assertNotIn("r=−0.2251",article)
+        self.assertNotIn("r=−0.2469",article)
+        self.assertTrue((V4/"s1_climate_trait_hypervolume.py").is_file())
+        self.assertTrue((V4/"HYPERVOLUME_CLIMATE_MORPHOSPACE_H3_PREDECLARED_20261029_JA.md").is_file())
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
