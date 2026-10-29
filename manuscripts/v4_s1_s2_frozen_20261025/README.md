@@ -2,21 +2,23 @@
 
 **Science locked:** 24 October 2026, original V4 S1–S2 commit `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`. The manuscript has been revised for GEB after this freeze; numerical estimates were not modified.
 
-**Current article title:** *Global photographic phenomics reveals geographically structured precipitation–capitulum associations in Cirsium*.
+**Current article title:** *Global photographic phenomics reveals precipitation-associated capitulum presentation and floral colour gradients in Cirsium*.
 
-**New empirical geographic sensitivity (2026-10-29):** [Exact-cohort BIO18 source-verified result](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED_JA.md), [CI #40837107465](https://github.com/zuizui0223/azami/actions/runs/40837107465). The original native S1 beta +0.045447 (Holm P0.00920635) was numerically reproduced on the **same 168,907 photos/178 taxa**. Longitude-sector adjustment reduced it to +0.020035 (95% HC3 −0.010833,+0.050902) and spherical geography to −0.003295 (−0.063000,+0.056410); omitting the eastern-sector 38 taxa yielded −0.010372 (−0.068465,+0.047721). Geographic effects are **exploratory pointwise sensitivities**, not new Holm tests or phylogenetic radiation contrasts. The positive pooled coefficient is not a world-region-replicated rain-protection law.
+**Spatial-model sensitivity (SI only; 2026-10-29):** [source-verified BIO18 summary](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md) and [original runner](https://github.com/zuizui0223/azami/actions/runs/40837107465) show that spatial terms attenuate the original BIO18 coefficient. Because climate and geography overlap, this does not causally separate or negate environmental associations. The original S1 Holm result and Main Figure 3 are retained unchanged.
 
 **Current central argument (2026-10-29 GEB published-article editorial pass):** Global photograph-derived continuous traits allow climate–trait comparisons across a genus diversified in multiple regions. The paper foregrounds **the corrected native among-taxon BIO18 × image-angle relationship** and **three introduced-stratum colour–radiation/elevation relationships in two source-eligible species**, then asks what a historical native/introduced comparison contributes beyond among-taxon turnover. The directional rain-shielding interpretation is a hypothesis with independent experimental precedent, not measured fitness or an adaptation claim. Within-/across-domain image metric covariance and eight-state threshold configurations are descriptive context and their complete results remain in SI.
 
-## Paper structure (editorial, not three independent datasets)
+## Three independent ecological questions (two original source cohorts)
 
-1. **Native-taxon global photographic phenomics and climate.** Main Results 3.1 and Figure 3 foreground the one Holm-supported BIO18 × image angle association. The image-measurement cohort and methods are explicitly distinguished from raw source observation totals.
-2. **Historical within-species comparison.** Main Results 3.2 / Figure 4 / Table 2 show three original Holm-supported introduced-stratum colour associations and their native counterparts, without a formal cross-range slope-difference claim.
-3. **Part 3 — Native/introduced colour–environment gradients.** Two *Cirsium* species, four WCVP native/introduced strata, three original introduced Holm positives with native counterparts.
+1. **3.1: Global climate association.** Native-taxon continuous photographed angle versus BIO18 among 178 taxa. Original source-verified β +0.045447, Holm P0.00920635; [spatial-model dependence](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md) is reported in **SI only**, not recast as a new main finding.
+2. **3.2: Conspecific introduction comparison.** Two taxa and four native/introduced strata, with three source-verified, Holm-supported image colour×radiation/elevation associations. This is not a test that evolution occurred after introduction.
+3. **3.3: Climatic niche breadth versus floral phenotypic hypervolume.** Original S1 matched source: **157,822** photos / 242 taxa, with **63 taxa** satisfying the 1° cell/photo support gates (31 at 5°). A source-verified 3D climate-volume versus 3D head-morphospace proxy slope β +0.0669 (HC3 95% CI −0.1046 to +0.2384) and cross-region climate–morphology centroid ρ −0.0081 were **not supported** by taxon-level permutations; neither lack of effects nor evolutionary convergence is thereby demonstrated. The old weak trait-pair signed correlations remain **SI only**.
 
 Source **S1/S2** labels are unchanged, and there is **no third independent source S3**. V3's measurement and ecological motivation is retained without treating its historical regression coefficients as V4 replication. “LEGO” was an informal project nickname, not the formal hypothesis.
 
 [Japanese outline](GEB_THREE_PART_STRUCTURE_JA.md) | [V3/V4 evidence comparison](GEB_V3_V4_MINIMAL_DELTA_STORY_AND_FIGURES_JA.md) | [Contribution pitch kept in the cover-letter draft](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
+
+- [H3 source-verified climate/trait morphospace aggregate](../../analysis/v4/results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json) and [H3 methodology/results SI](SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md) — new 3.3, not part of the original S1/S2 Holm families.
 
 ## Manuscript and scientific evidence
 - [GEB_RESEARCH_ARTICLE.md](GEB_RESEARCH_ARTICLE.md) — scientific working text with GEB structured Abstract, Methods, Results, Discussion and cited natural-contrast interpretation.
@@ -52,4 +54,4 @@ Source **S1/S2** labels are unchanged, and there is **no third independent sourc
 
 Historical V3 numerical results belong to `legacy/v3/`. Separate 25 October S2 climate-niche analyses are preserved under `legacy/v4_s2_precipitation_niche_20261025/`; they are **not** current GEB findings, submission figures or a prerequisite for the frozen numerical replay. T2/T3 are not validation layers in this S1–S2 manuscript. Private identities, coordinates and unlicensed images are not redistributable.
 
-- `plot_bio18_geographic_sensitivity.py`: **Main Figure 3 geographic-sensitivity forest** (source-locked original baseline, fixed sector/sphere controls and eastern holdout under photo-weighted versus cell-balanced taxa). The source-audited aggregate JSON is committed separately; original individual metadata remain private.
+- `plot_bio18_geographic_sensitivity.py`: **SI-only spatial-model sensitivity forest** (source-locked original baseline, fixed sector/sphere controls and eastern holdout under photo-weighted versus cell-balanced taxa). The source-audited aggregate JSON is committed separately; original individual metadata remain private.
