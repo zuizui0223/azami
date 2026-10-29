@@ -97,7 +97,8 @@ def plot(a,b,output):
                  y=1.005,fontsize=13)
     fig.text(.09,-.022,
              "Blue circles: observed; hollow squares: permutation-null mean (a,b). "
-             "KDE overlap compares different cell subsets, not true hypervolume intersection.",
+             "KDE overlap compares different cell subsets, not true hypervolume intersection. "
+             "Original H3c results; 1° Monte Carlo and trait/region sensitivity are reported in SI.",
              fontsize=9,color="0.3")
     fig.tight_layout(rect=[0,.035,1,.96],w_pad=2.0)
     path=Path(output);path.mkdir(parents=True,exist_ok=True)
