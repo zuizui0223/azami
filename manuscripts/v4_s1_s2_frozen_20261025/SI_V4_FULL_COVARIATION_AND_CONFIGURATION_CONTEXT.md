@@ -88,13 +88,21 @@ Within- versus cross-domain adjusted RV medians were:
 These data are from observational strata with different source compositions,
 not proven changes to a genetic module after introduction.
 
-## Main-paper biological emphasis
+## Relationship to GEB V4 main manuscript (2026-10-29)
 
-All three source-verified signed-r pairs (angle×chroma, angle×2D aspect,
-chroma×2D aspect) are now **Supporting Information only**. Their former
-`figure2_cross_functional_trait_pairs.png` filename is a legacy analysis
-artifact, **not** the GEB main manuscript's planned geographic Figure 2.
-These photo- and taxon-centred coefficients remain observational and were
-selected for interpretability **after inspection**, with no new P values,
-phylogenetic sensitivity or causal inference. Nothing in the original 28-pair
-or configuration record is overwritten.
+The GEB Research Article's principal environmental evidence is the
+BIO18 × image-referenced capitulum-angle association across native taxa and
+three colour × radiation/elevation associations within introduced strata.
+**None** of the three selected angle–chroma–aspect cross-domain correlations
+is counted as a new statistically supported ecological or evolutionary
+finding. The full 28-pair matrix, within-/among-taxon signed-r subset and
+old exploratory image (`figure2_cross_functional_trait_pairs.png`) remain
+here as supplementary descriptive records. The historical plot filename
+does not represent the current main-paper Figure 2, which is reserved for
+a not-yet-built source-grounded geographic coverage map.
+
+Original photographed trait covariation was **chosen for biological
+interpretation after inspecting the results**; it was not independently
+cross-validated against new photograph or taxon samples, was not tested
+as genetic modularity, and cannot establish independent selection or
+pollinator/predator filtering.
