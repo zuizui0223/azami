@@ -449,7 +449,7 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertEqual(record["n"],n)
             self.assertEqual(record["spatial"]["n_valid_bootstraps"],399)
             self.assertEqual(record["spatial"]["n_largest_holdouts_retaining_sign"],5)
-        introduced=[p for p in b["panels"] if p["status"]=="introduced"]
+        introduced=[p for p in b["panels"] if p["range_status"]=="introduced"]
         self.assertEqual(len(introduced),3)
         chroma=next(p for p in introduced if p["trait"]=="corolla_lab_chroma")
         self.assertLess(chroma["spatial"]["source_block_bootstrap_95_percentile_interval"][0],0)
