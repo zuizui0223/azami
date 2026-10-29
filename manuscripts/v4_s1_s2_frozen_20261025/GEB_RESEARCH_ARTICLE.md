@@ -4,19 +4,19 @@
 
 ## Abstract
 
-**Aim:** Globally distributed plant species vary in floral form, but categorical descriptions and species averages obscure the continuous variation needed to identify climate–trait associations. We asked whether photographs reveal consistent environmental patterns in *Cirsium* capitula across native taxa and within species occupying historically distinct native and introduced ranges.
+**Aim:** Does floral diversity follow similar climatic gradients across the geographically distinct radiations of a plant lineage? Species-level descriptions obscure continuous variation in flower-head presentation and colour. We tested whether global public photographs reveal climate-associated variation in *Cirsium* capitula and whether such associations are also detectable in introduced ranges.
 
-**Location:** Global native *Cirsium* records; native and introduced ranges of *C. arvense* and *C. vulgare*.
+**Location:** Worldwide native *Cirsium* taxa; native and introduced ranges of *C. arvense* and *C. vulgare*.
 
-**Time period:** Photographic records from different years; 1981–2010 climatological normals.
+**Time period:** Photographs from different years; climatic normals for 1981–2010.
 
 **Major taxa studied:** *Cirsium* (Asteraceae).
 
-**Methods:** A YOLO-based workflow localised capitula in public photographs, from which we retained trait-specific, quality-screened estimates of image-referenced orientation, CIELAB floral colour and outline geometry. The native source comprised 313,350 observations, including 168,907 angle-eligible records from 178 taxa. We related traits to warm-quarter precipitation, warm-month maximum temperature, solar radiation and elevation, distinguishing within- and among-taxon associations (80 Holm-adjusted tests). We separately assessed four native/introduced strata of two species using 297,622 source records (128 tests).
+**Methods:** We quantified image-referenced capitulum angle, CIELAB floral colour and two-dimensional outline traits using YOLO-assisted localisation and trait-specific quality screening. A native-source archive of 313,350 observations yielded 168,907 angle-eligible records from 178 taxa. We estimated climate–trait associations at within- and among-taxon scales using precipitation, temperature, solar radiation and elevation (80 Holm-adjusted tests). We separately analysed native and introduced strata of two species (297,622 wild source observations; 128 tests).
 
-**Results:** Among native taxa, higher warm-quarter precipitation was associated with a larger, more downward-looking photographic capitulum angle (standardised β=+0.0454, Holm P=0.0092). In introduced *C. vulgare*, increasing radiation was associated with higher chroma (β=+0.1345) and lower lightness (β=−0.1428); in introduced *C. arvense*, higher elevation was associated with lower lightness (β=−0.1737). These three coefficients survived Holm correction, whereas no native-stratum coefficient did. The native *C. vulgare* radiation–chroma estimate nevertheless had a similar magnitude.
+**Results:** Among native taxa, capitula photographed in wetter warm-quarter climates appeared more downward-oriented (standardised β=+0.0454; Holm P=0.0092). In introduced *C. vulgare*, higher radiation corresponded to greater chroma (β=+0.1345) and lower lightness (β=−0.1428); in introduced *C. arvense*, higher elevation corresponded to lower lightness (β=−0.1737). All three colour associations survived Holm correction. None of the native-stratum coefficients did, although the native *C. vulgare* radiation–chroma estimate was similar in magnitude.
 
-**Main conclusions:** Continuous photographic phenotyping identifies environmental associations that categorical floral traits would not resolve at this measurement scale. The precipitation–presentation pattern is compatible with reduced rain exposure, and introduced-range colour gradients match previously described abiotic colour patterns. The analyses motivate tests of protective function and historical change; they do not establish either mechanism.
+**Main conclusions:** Continuous phenotypes recovered from public photographs reveal climatic structure in globally distributed floral traits. The precipitation–presentation pattern suggests a testable rain-protection hypothesis, while introduced-range colour gradients show that abiotic associations are detectable beyond native distributions. These observational patterns neither demonstrate rainfall protection nor establish evolutionary changes after introduction; they identify specific hypotheses for functional and phylogenetic tests.
 
 **Keywords:** biogeography, capitulum, citizen science, climate, floral colour, image phenomics, introduced ranges, trait variation
 
