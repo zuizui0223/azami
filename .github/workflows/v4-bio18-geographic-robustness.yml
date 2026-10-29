@@ -1,0 +1,95 @@
+name: V4.1 source-real BIO18 regional robustness (aggregate only)
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/s1_bio18_geographic_robustness.py'
+      - '.github/workflows/v4-bio18-geographic-robustness.yml'
+      - 'analysis/v4/results/20261029_BIO18_GEOGRAPHIC_TEST_PLAN_JA.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  s1-source-real-geographic-control:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install audited source-reading and numerical dependencies
+        run: |
+          python -m pip install --disable-pip-version-check -r reproducibility/requirements-current.txt 'cryptography>=46,<49' 'rasterio>=1.4,<2' 'requests>=2.31,<3'
+      - name: Synthetic test separates a spurious global climate slope from region sorting
+        run: |
+          python -m py_compile analysis/v4/s1_bio18_geographic_robustness.py
+          python -m analysis.v4.s1_bio18_geographic_robustness --selftest
+      - name: Restore SHA-locked S1 observations (private; not uploaded)
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/bio18-region/private work/bio18-region/receipt work/bio18-region/public
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/bio18-region/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/bio18-region/receipt
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          base=Path('work/bio18-region')
+          raw=(base/'receipt/measurement_receipt.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6'
+          receipt=json.loads(raw)
+          ciphertext=(base/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          assert hashlib.sha256(ciphertext).hexdigest()==receipt['encrypted_table_sha256']
+          key=os.environ.get('AZAMI_METADATA_KEY','')
+          assert key, 'Private source key not available; cannot fabricate raw source'
+          try:
+              plaintext=AESGCM(bytes.fromhex(key)).decrypt(ciphertext[:12],ciphertext[12:],receipt['encrypted_table_aad'].encode())
+          except Exception as exc:
+              raise SystemExit('Source key or ciphertext verification failed') from None
+          assert hashlib.sha256(plaintext).hexdigest()==receipt['prepared_table_sha256']
+          (base/'private/observations.csv.gz').write_bytes(plaintext)
+          print('S1 ORIGINAL SEALED SOURCE_AUTHENTICATED')
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/bio18-region/private/observations.csv.gz \
+            --receipt work/bio18-region/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/bio18-region/private/decoded
+      - name: Re-sample true BIO18, BIO05 and elevation pixels and test regional composition
+        run: |
+          python -m analysis.v4.s1_bio18_geographic_robustness \
+            --native work/bio18-region/private/decoded/observations.csv.gz \
+            --temporary work/bio18-region/private/tmp \
+            --output work/bio18-region/public/S1_BIO18_GEO_SPATIAL_AGGREGATES.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/bio18-region/public/S1_BIO18_GEO_SPATIAL_AGGREGATES.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='SOURCE_VERIFIED_EXPLORATORY_GEO_SENSITIVITY'
+          assert d['scope']['original_native_source_observations']==313350
+          assert d['scope']['original_five_climate_angle_eligible']==170066
+          assert d['fixed_80_test_S1_primary_result_NOT_replaced_or_recorrected']
+          assert d['no_original_observation_coordinates_names_or_ids_exported']
+          for k in ('original_photo_weighted','taxon_equal_5degree_cells'):
+              p=d['photo_weighting_and_taxon_cell_equalization'][k]
+              assert p['full_cohort_geographic_adjustments']['none']['status']=='estimated'
+              assert len(p['leave_dominant_sector_out'])==3
+          print('SOURCE_REAL_BIO18_REGIONAL_AGGREGATE_CHECKED')
+          PY
+      - name: Save only geography-adjusted aggregate coefficients
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-bio18-regional-robustness-${{ github.run_id }}
+          path: work/bio18-region/public/*.json
+          retention-days: 90
+          if-no-files-found: warn
