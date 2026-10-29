@@ -18,7 +18,7 @@
 
 **Main conclusions:** Global photographic phenomics reveals local climate-conditioned multivariate floral resemblance that species means and total morphospace volume do not capture, alongside geographically patterned presentation and colour. These observational patterns do not establish evolutionary convergence, fitness-related trait interactions or rain-protection adaptation.
 
-**Keywords:** biogeography, capitulum, climate, floral colour, image phenomics, morphospace, introduced ranges, trait variation
+**Keywords:** biogeography, capitulum, climate, floral colour, image phenomics, introduced ranges, morphospace, trait variation
 
 ## 1. Introduction
 
