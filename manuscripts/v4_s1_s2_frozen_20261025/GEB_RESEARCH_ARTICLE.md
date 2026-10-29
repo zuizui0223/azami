@@ -4,7 +4,7 @@
 
 ## Abstract
 
-**Aim:** Does floral diversity follow similar climatic gradients across the geographically distinct radiations of a plant lineage? Species-level descriptions obscure continuous variation in flower-head presentation and colour. We tested whether global public photographs reveal climate-associated variation in *Cirsium* capitula and whether such associations are also detectable in introduced ranges.
+**Aim:** Do floral traits follow common climatic gradients across geographically distinct *Cirsium* radiations? Species averages conceal continuous geographic variation. We used global public photographs to test climatic patterns in capitulum form and colour, including native and introduced ranges.
 
 **Location:** Worldwide native *Cirsium* taxa; native and introduced ranges of *C. arvense* and *C. vulgare*.
 
@@ -12,11 +12,11 @@
 
 **Major taxa studied:** *Cirsium* (Asteraceae).
 
-**Methods:** We quantified image-referenced capitulum angle, CIELAB floral colour and two-dimensional outline traits using YOLO-assisted localisation and trait-specific quality screening. A native-source archive of 313,350 observations yielded 168,907 angle-eligible records from 178 taxa. We estimated climate–trait associations at within- and among-taxon scales using precipitation, temperature, solar radiation and elevation (80 Holm-adjusted tests). We separately analysed native and introduced strata of two species (297,622 wild source observations; 128 tests).
+**Methods:** We quantified image-referenced capitulum angle, CIELAB floral colour and two-dimensional outline traits using YOLO-assisted localisation and trait-specific quality screening. A native-source archive of 313,350 observations yielded 168,907 angle-eligible records from 178 taxa. We estimated climate–trait associations at within- and among-taxon scales using precipitation, temperature, solar radiation and elevation (80 Holm-adjusted tests). We also tested geographic sensitivity in a separate native cohort and compared native and introduced strata of two species (297,622 wild source observations; 128 tests).
 
 **Results:** Among native taxa, capitula photographed in wetter warm-quarter climates appeared more downward-oriented (standardised β=+0.0454; Holm P=0.0092). In introduced *C. vulgare*, higher radiation corresponded to greater chroma (β=+0.1345) and lower lightness (β=−0.1428); in introduced *C. arvense*, higher elevation corresponded to lower lightness (β=−0.1737). A separate geographic sensitivity analysis attenuated the native precipitation–angle estimate, with intervals spanning zero. All three colour associations survived Holm correction. None of the native-stratum coefficients did, although native *C. vulgare* radiation–chroma was similar.
 
-**Main conclusions:** Continuous phenotypes recovered from public photographs reveal climatic structure in globally distributed floral traits. The precipitation–presentation pattern is geographically sensitive, suggesting a role for regional taxon turnover alongside a testable rain-protection hypothesis. Introduced-range colour gradients show abiotic associations beyond native distributions. These observational patterns neither demonstrate rainfall protection nor establish evolutionary changes after introduction; they identify specific hypotheses for functional and phylogenetic tests.
+**Main conclusions:** Public photographs reveal quantitative floral trait–climate associations across *Cirsium*. The precipitation–presentation association is sensitive to regional taxon composition; rain protection remains a hypothesis. Colour gradients are also detectable in introduced ranges. Neither repeated rainfall adaptation nor evolutionary change after introduction is established.
 
 **Keywords:** biogeography, capitulum, citizen science, climate, floral colour, image phenomics, introduced ranges, trait variation
 
