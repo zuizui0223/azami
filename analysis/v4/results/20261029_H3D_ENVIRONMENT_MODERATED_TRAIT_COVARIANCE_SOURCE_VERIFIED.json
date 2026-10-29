@@ -393,5 +393,12 @@
     "nominal_1deg_rsds_orientation_aspect_covariation_change_not_5deg_robust": true,
     "photographic_trait_covariance_not_genetic_or_functional_trait_interaction": true,
     "no_species_or_site_identifiers_exported": true
+  },
+  "verified_execution": {
+    "github_actions_run": 40847696537,
+    "original_private_job_id": 123359131501,
+    "aggregate_artifact_id": 12885860903,
+    "original_source_QC_signature": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "did_not_export_private_source": true
   }
 }
