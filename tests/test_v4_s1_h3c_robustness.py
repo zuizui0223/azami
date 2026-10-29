@@ -21,14 +21,14 @@ class H3cRobustnessTests(unittest.TestCase):
     def test_declared_conditions_are_fixed_not_screened_by_significance(self):
         main=declared_scenarios(1)
         secondary=declared_scenarios(5)
-        self.assertEqual(len(main),10)
-        self.assertEqual(len(secondary),5)
-        self.assertEqual(len({x["label"] for x in main}),10)
+        self.assertEqual(len(main),11)
+        self.assertEqual(len(secondary),6)
+        self.assertEqual(len({x["label"] for x in main}),11)
         self.assertEqual(
             [s["omit_axis"] for s in main if "omit_axis" in s],[0,1,2])
         self.assertEqual(
             [s["omit_sector"] for s in main if "omit_sector" in s],[0,1,2])
-        self.assertEqual(DRAWS,12)
+        self.assertEqual(DRAWS,24)
         self.assertEqual(PERMUTATIONS,99)
         with self.assertRaises(ValueError):
             declared_scenarios(3)
@@ -57,6 +57,18 @@ class H3cRobustnessTests(unittest.TestCase):
             self.assertTrue(np.isfinite(res["distance_advantage"]["observed_minus_null_mean"]))
             self.assertTrue(np.isfinite(res["conditional_KDE_overlap"]["observed_minus_null_mean"]))
             self.assertNotIn("do_not_release_taxon",str(res))
+
+    def test_kde_bandwidth_only_change_preserves_distance_analogue(self):
+        taxa=self.sample_taxa()
+        ref=examine(taxa,{"label":"original","bandwidth":.75},
+                    seed=2050,draws=3,perms=7)
+        changed=examine(taxa,{"label":"changed","bandwidth":1.0},
+                        seed=2050,draws=3,perms=7)
+        self.assertEqual(ref["status"],"estimated_exploratory_robustness")
+        self.assertEqual(changed["status"],"estimated_exploratory_robustness")
+        for key in ("observed","null_mean","observed_minus_null_mean"):
+            self.assertAlmostEqual(ref["distance_advantage"][key],
+                                   changed["distance_advantage"][key],places=12)
 
     def test_sparse_sector_fails_without_optimistic_coefficient(self):
         taxa=self.sample_taxa()
