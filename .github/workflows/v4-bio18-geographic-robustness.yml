@@ -6,6 +6,9 @@ on:
       - '.github/workflows/v4-bio18-geographic-robustness.yml'
       - 'analysis/v4/results/20261029_BIO18_GEOGRAPHIC_TEST_PLAN_JA.md'
   workflow_dispatch:
+concurrency:
+  group: v4-bio18-spatial-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   actions: read
