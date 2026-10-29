@@ -187,7 +187,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(paper,blind)
         for key in ("Dalrymple et al., 2020","Berardi et al., 2016",
                     "Greater chroma and lower lightness",
-                    "**Figure 3.**",
+                    "**Figure 3 (source-verified geographic sensitivity).**",
                     "**Figure 4.**",
                     "https://doi.org/10.1111/nph.16737",
                     "https://doi.org/10.3732/ajb.1600106"):
@@ -212,7 +212,7 @@ class V4GEBMainContract(unittest.TestCase):
         for term in ("Globally distributed public photographs",
                      "a larger downward-looking image angle",
                      "The conspecific native–introduced comparison provides a second ecological perspective.",
-                     "**Figure 3.**",
+                     "**Figure 3 (source-verified geographic sensitivity).**",
                      "The native within-taxon coefficient and the complete 80-test family are in Supporting Information",
                      "80-test family"):
             self.assertIn(term,paper)
@@ -299,6 +299,32 @@ class V4GEBMainContract(unittest.TestCase):
         for doi in ("10.1111/geb.13077","10.1111/geb.13507",
                     "10.1111/geb.70131","10.1111/geb.70245"):
             self.assertIn(doi,benchmark)
+
+    def test_bio18_geographic_sensitivity_changes_generalisation_not_frozen_holm(self):
+        import json
+        from pathlib import Path
+        path=V4/"results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json"
+        data=json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual((data["n"],data["taxa"]),(168907,178))
+        self.assertEqual(data["source"]["original_secure_workflow_run"],40837107465)
+        self.assertEqual(data["source"]["public_artifact_id"],12881655588)
+        a=data["geographic_fits"]["photo_weighted"]["global_geographic_adjustments"]
+        self.assertAlmostEqual(a["none"]["standardised_beta"],0.04544684307686103,places=7)
+        self.assertAlmostEqual(a["longitude_sector"]["standardised_beta"],0.02003485434695006,places=9)
+        self.assertAlmostEqual(a["spherical_degree2"]["standardised_beta"],-0.003294794324869813,places=9)
+        self.assertLess(a["spherical_degree2"]["HC3_pointwise_95CI"][0],0)
+        self.assertGreater(a["spherical_degree2"]["HC3_pointwise_95CI"][1],0)
+        b=data["geographic_fits"]["photo_weighted"]["leave_one_predeclared_sector_out"]["E060_E180"]
+        self.assertAlmostEqual(b["standardised_beta"],-0.010371821241885446,places=8)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        for value in ("geographically structured precipitation–capitulum",
+                      "**+0.020035**", "**−0.003295**",
+                      "**−0.010372**", "not a rainfall–orientation law",
+                      "HC3 pointwise 95% intervals", "not independent phylogenetic lineages",
+                      "plot_bio18_geographic_sensitivity.py"):
+            self.assertIn(value,paper)
+        self.assertNotIn("geographically universal rain response", paper.split("## 5. Conclusion")[1])
+        self.assertTrue((PAPER/"plot_bio18_geographic_sensitivity.py").is_file())
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
