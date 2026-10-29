@@ -81,8 +81,7 @@ def taxon_axis_breadth(cells: pd.DataFrame, scores: pd.DataFrame,
                 ids=np.where(sector==sec)[0]
                 shuffled[ids]=rng.permutation(residual[ids])
             perm[k]=np.linalg.lstsq(x,baseline+shuffled,rcond=None)[0][1]
-        p=float((1+np.count_nonzero(np.abs(perm)>=abs(coefficient))/
-                (permutations+1))
+        p=(1+int(np.count_nonzero(np.abs(perm)>=abs(coefficient))))/(permutations+1)
         outputs.append({
             "trait":name,
             "status":"estimated",
