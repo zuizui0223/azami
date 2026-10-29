@@ -22,7 +22,7 @@ from analysis.v4.s1_h3_climate_analogue_alignment import (
     observed_and_permutations, kde_overlap_and_permutations
 )
 
-DRAWS = 12
+DRAWS = 24
 PERMUTATIONS = 99
 MIN_DRAWS = 6
 MIN_PAIRS = 40
@@ -34,6 +34,7 @@ def declared_scenarios(resolution: int):
     if resolution not in (1, 5):
         raise ValueError("UNREGISTERED_SPATIAL_RESOLUTION")
     scenarios = [
+        {"label": "full3_reference_0p9", "threshold": .9, "bandwidth": .75},
         {"label": "narrow_climate_0p7", "threshold": .7},
         {"label": "wide_climate_1p1", "threshold": 1.1},
         {"label": "without_angle", "omit_axis": 0},
@@ -151,9 +152,12 @@ def execute(source: Path, receipt: Path, output: Path):
         z,_ = standardise_cells(cells)
         taxa = eligible_taxa(z)
         conditions={}
-        for index, scenario in enumerate(declared_scenarios(resolution)):
+        for scenario in declared_scenarios(resolution):
+            # Identical rarefied cell draws and permutation streams across
+            # every condition with the same taxon roster. This makes a
+            # bandwidth-only comparison leave distance estimates identical.
             conditions[scenario["label"]] = examine(
-                taxa,scenario,seed=SEED+resolution*500+index*1000)
+                taxa,scenario,seed=SEED+resolution*500)
         result[f"{resolution}degree"] = {
             "status":"source_matched_sensitivity",
             "n_taxa":len(taxa),
