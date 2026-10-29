@@ -165,7 +165,7 @@ class V4GEBMainContract(unittest.TestCase):
                        "### 2.6. Within-species native and introduced",
                        "### 3.1. Global image measurements and precipitation-associated",
                        "### 3.2. Radiation and elevation gradients",
-                                              "### 4.1. Precipitation, head presentation",
+                                              "### 4.1. The geographic contingency",
                        "### 4.2. Floral colour and climate",
                        "### 4.3. What public photographs measure"):
             self.assertIn(prefix,article)
@@ -210,10 +210,10 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertEqual(paper,blinded)
         self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2])
         for term in ("Globally distributed public photographs",
-                     "a larger downward-looking image angle",
+                     "more downward-looking head presentation",
                      "The conspecific native–introduced comparison provides a second ecological perspective.",
                      "**Figure 3 (source-verified geographic sensitivity).**",
-                     "The native within-taxon coefficient and the complete 80-test family are in Supporting Information",
+                     "The original within-taxon coefficient and all 80 original tests remain in Supporting Information",
                      "80-test family"):
             self.assertIn(term,paper)
         main_table=paper.split("**Table 2.",1)[1].split("**Out of scope",1)[0]
@@ -249,7 +249,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("Moreyra et al., 2025",article)
         self.assertIn("Siniscalchi, Ackerfield & Folk, 2023",article)
         self.assertIn("Hulme & Barrett, 2013",article)
-        self.assertIn("avoidance of pollen wetting and wash-off",article)
+        self.assertIn("Downward or inclined capitula may expose pollen-bearing and receptive tissues to less rain",article)
         self.assertIn("only Holm-surviving association",article)
         self.assertIn("1981–2010 climatic normal",article)
         self.assertIn("**141,014 native, 156,608 introduced**",article)
@@ -257,7 +257,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("native coefficient (**+0.136883**)",article)
         self.assertIn("Holm P of 0.102398",article)
         self.assertIn("**direct interaction test**",article)
-        self.assertIn("not evidence of rainfall-mediated selection",article)
+        self.assertIn("Neither the original Holm decision nor the exploratory HC3 geographic intervals prove adaptive shielding",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("**without** comparing native–introduced rainfall niches",article)
         for doi in ("10.1016/j.ympev.2025.108285",
@@ -293,7 +293,7 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(term,article)
         self.assertLess(article.index("### 3.1. Global image measurements"),
                         article.index("### 3.2. Radiation and elevation gradients"))
-        self.assertLess(article.index("### 4.1. Precipitation"),
+        self.assertLess(article.index("### 4.1. The geographic contingency"),
                         article.index("### 4.3. What public photographs measure"))
         benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
         for doi in ("10.1111/geb.13077","10.1111/geb.13507",
@@ -319,7 +319,7 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         for value in ("geographically structured precipitation–capitulum",
                       "**+0.020035**", "**−0.003295**",
-                      "**−0.010372**", "not a rainfall–orientation law",
+                      "**−0.010372**", "cannot be presented as a rainfall–orientation law",
                       "HC3 pointwise 95% intervals", "not independent phylogenetic lineages",
                       "plot_bio18_geographic_sensitivity.py"):
             self.assertIn(value,paper)
