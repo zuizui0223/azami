@@ -178,12 +178,12 @@ def fit_taxon(data, adjustment="none"):
                 "reason": str(exc)[:100]}
 
 
-def summarise_geography(rosters):
+def summarise_geography(rosters, *, verify_original_baseline=True):
     result = {}
     for weighting in WEIGHTINGS:
         frame = rosters[weighting]
         runs = {adj: fit_taxon(frame, adj) for adj in GEO_CONTROLS}
-        if weighting == "photo_weighted" and runs["none"]["status"] == "estimated":
+        if verify_original_baseline and weighting == "photo_weighted" and runs["none"]["status"] == "estimated":
             if not np.isclose(runs["none"]["standardised_beta"], EXPECTED_BETA,
                               rtol=0, atol=3e-7):
                 raise ValueError("TAXON_MEAN_BASELINE_DIFFERS_FROM_FROZEN_S1")
