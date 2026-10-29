@@ -135,10 +135,6 @@ The corresponding native-stratum point estimates were heterogeneous. In *C. vulg
 | Introduced *C. vulgare* | chroma | RSDS | 27,200 | +0.134504 | +0.066158, +0.202850 | 0.01456813 |
 | Introduced *C. vulgare* | lightness | RSDS | 27,200 | −0.142801 | −0.216718, −0.068884 | 0.01925414 |
 
-### 3.3. Scope of supplementary trait covariance
-
-Continuous angle, colour and outline phenotypes were measured jointly in **156,683 shared native photographs from 174 taxa**. All 28 pairwise associations and eight-state thresholded configurations are reported in [Supporting Information](SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md), because they were exploratory, included image-metric dependence and provided no independently tested functional mechanism. They were not used to select the climatic predictors or to establish the four Holm-supported findings.
-
 ### 3.3. Climatic occupancy breadth and floral morphospace diversity
 
 Among the original 313,350 native source observations, **157,822 photographs across 242 taxa** passed the matched quality gates for presentation angle, floral chroma and outline aspect. For the three-dimensional comparison, **63 taxa** had at least 40 eligible photographs spread across eight 1° geographic cells, and **31 taxa** passed the equivalent 5°-cell gate. At both resolutions, the climate and trait ellipsoid-volume estimates were calculated from the same number of spatially balanced cells per taxon (96 rarefactions), rather than expanding with the number of photos alone.
