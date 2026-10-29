@@ -30,3 +30,10 @@ From the original checksum-locked source ZIP, `plot_bio18_angle_part2.py` writes
 The existing `build_full_supplement.py` additionally regenerates `Table_S1_full_208_BIO18_tests.csv` (the entire S1=80 plus S2=128 frozen test ledger), independently verifies Holm/BH correction, and extracts the 28 original matched RV pairs. Figure and CSV generation must fail if source ZIP digest, rows or frozen coefficients differ.
 
 No unadjusted-only result is upgraded to a new Holm discovery. **The Main scientific claim remains one positive among-taxon angle×BIO18 association.**
+## Original-source geographic sensitivity added after the 24 October freeze
+
+A separate 2026-10-29 BIO18 original-source run recovered exactly **168,907 / 178** records/taxa and the original global beta +0.045446843 to numerical precision. Longitude-sector adjustment reduced the association to **+0.020035** (HC3 pointwise CI −0.010833,+0.050902); spherical geography to **−0.003295** (−0.063000,+0.056410); removing the east-sector taxa to **−0.010372** (−0.068465,+0.047721). With equal 5° cell weight within taxa, the spherical adjustment also included zero.
+
+This **does not change** the original S1 80-test Holm results above. The geographic coefficients have exploratory, **pointwise HC3 confidence intervals**, without a separate correction for the family of geography models. Thus the original Holm-supported global association is **not a demonstration that head orientation tracks rainfall independently of regional species composition**. Earlier BIO12 geographic sensitivity uses different predictors and source cohorts and is not substituted for the present BIO18 results.
+
+[Original-source BIO18 geographic run](https://github.com/zuizui0223/azami/actions/runs/40837107465) • [reanalysis report](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED_JA.md) • [aggregate machine-readable result](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json). The source-locked original within-/among-taxon coefficient forest remains part of SI; the main new Figure 3 shows the regional-sensitivity forest.
