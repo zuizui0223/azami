@@ -178,23 +178,45 @@ def draw_taxon_scores(cells: pd.DataFrame, *, draws=N_DRAWS):
     return pd.DataFrame(rows)
 
 
-def _design(scores, include_climate: bool):
-    columns=[np.ones(len(scores)), np.log1p(scores.geo_spread_km.to_numpy(float)),
-             np.log1p(scores.n_photos.to_numpy(float)),np.log1p(scores.n_cells.to_numpy(float))]
-    if include_climate:
-        columns.insert(1,scores.climate_log_volume.to_numpy(float))
-    sector=scores.sector.to_numpy(int)
-    columns.extend([(sector==s).astype(float) for s in (0,1)])
-    x=np.column_stack(columns)
-    if len(scores)<=x.shape[1]+5 or np.linalg.matrix_rank(x)!=x.shape[1]:
+def _design(scores):
+    """Keep climate breadth first; exclude constant/collinear nuisance covariates.
+
+    This is not predictor selection for a discovery claim. The three declared
+    sampling/geography controls are attempted in order and skipped only when
+    algebraically non-identifiable on the actual taxon eligibility cohort.
+    """
+    climate=scores.climate_log_volume.to_numpy(float)
+    base=np.column_stack([np.ones(len(scores)), climate])
+    if not np.isfinite(base).all() or np.linalg.matrix_rank(base)!=2:
+        raise ValueError("CLIMATE_BREADTH_FOCAL_TERM_NOT_IDENTIFIABLE")
+    controls=[
+        ("log geographic spread",np.log1p(scores.geo_spread_km.to_numpy(float))),
+        ("log observed photos",np.log1p(scores.n_photos.to_numpy(float))),
+        ("log occupied geographic cells",np.log1p(scores.n_cells.to_numpy(float))),
+    ]
+    group=scores.sector.to_numpy(int)
+    controls.extend((f"sector_{j}",(group==j).astype(float)) for j in (0,1))
+    kept=[];dropped=[]
+    x=base
+    for name,col in controls:
+        if not np.isfinite(col).all():
+            raise ValueError("NONFINITE_COVARIATE")
+        candidate=np.column_stack([x,col])
+        if (np.linalg.matrix_rank(candidate)==x.shape[1]+1 and
+            np.linalg.cond(candidate)<1e9):
+            x=candidate;kept.append(name)
+        else:
+            dropped.append(name)
+    if len(scores)<=x.shape[1]+5:
         raise ValueError("HYPERVOLUME_REGRESSION_NOT_IDENTIFIABLE")
-    return x
+    return x,kept,dropped
 
 
 def breadth_regression(scores: pd.DataFrame, permutations=N_PERMUTATIONS):
     if len(scores)<MIN_TAXA:
         return {"status":"insufficient_taxonomic_support","n_taxa":len(scores),"required":MIN_TAXA}
-    x=_design(scores,True);null=_design(scores,False)
+    x,active,dropped=_design(scores)
+    null=x[:,[0,*range(2,x.shape[1])]]
     y=scores.trait_log_volume.to_numpy(float)
     fit=sm.OLS(y,x).fit(cov_type="HC3")
     beta=float(fit.params[1]);ci=[float(q) for q in fit.conf_int(alpha=.05)[1]]
@@ -219,8 +241,8 @@ def breadth_regression(scores: pd.DataFrame, permutations=N_PERMUTATIONS):
             "sector_conditioned_residual_permutation_p_exploratory":p,
             "n_permutations":permutations,
             "adjusted_R2":float(fit.rsquared_adj),
-            "controls":["log geographic spread","log observed photos",
-                        "log occupied 1deg cells","fixed longitude sectors"],
+            "controls_retained":active,
+            "controls_omitted_algebraically":dropped,
             "not_causal_plasticity_or_adaptation":True}
 
 
