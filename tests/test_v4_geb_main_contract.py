@@ -430,6 +430,45 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("spatial", (PAPER/"SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md").read_text(encoding="utf-8").lower())
         self.assertNotIn("ecologically adaptive convergent evolution was proven",paper.lower())
 
+    def test_spatial_block_S1_S2_source_locked_as_SI_not_new_holm(self):
+        import json
+        a=json.loads((V4/"results/20261029_S1_BIO18_SPATIAL_BLOCK_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        b=json.loads((V4/"results/20261029_S2_COLOUR_SPATIAL_BLOCK_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        self.assertEqual((a["n_eligible"],a["n_native_taxa"]),(168907,178))
+        self.assertEqual(a["provenance"]["run_id"],40855350461)
+        self.assertAlmostEqual(a["original_beta_recovered"],.04544684307686103,places=7)
+        self.assertEqual(a["spatial_block"]["n_original_source_geo_blocks"],26)
+        self.assertEqual(a["spatial_block"]["n_valid_bootstraps"],399)
+        self.assertEqual(a["spatial_block"]["n_largest_holdouts_retaining_sign"],5)
+        self.assertGreater(a["spatial_block"]["source_block_bootstrap_95_percentile_interval"][0],0)
+        self.assertTrue(a["spatial_block"]["latlon_not_regression_covariates"])
+        self.assertEqual(b["provenance"]["run_id"],40855508122)
+        self.assertEqual((b["original_wild_source_n"],len(b["panels"])),(297622,6))
+        expected=[22936,26171,17335,27200,17335,27200]
+        for record,n in zip(b["panels"],expected):
+            self.assertEqual(record["n"],n)
+            self.assertEqual(record["spatial"]["n_valid_bootstraps"],399)
+            self.assertEqual(record["spatial"]["n_largest_holdouts_retaining_sign"],5)
+        introduced=[p for p in b["panels"] if p["status"]=="introduced"]
+        self.assertEqual(len(introduced),3)
+        chroma=next(p for p in introduced if p["trait"]=="corolla_lab_chroma")
+        self.assertLess(chroma["spatial"]["source_block_bootstrap_95_percentile_interval"][0],0)
+        self.assertGreater(chroma["spatial"]["source_block_bootstrap_95_percentile_interval"][1],0)
+        for p in introduced:
+            self.assertAlmostEqual(p["beta"],
+                next(v for v in (-.17373187423223405,.1345037874025455,-.14280073287481068)
+                     if abs(v-p["beta"])<1e-6),places=6)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        self.assertEqual(paper,(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8"))
+        for token in ("+0.014569 to +0.084483",
+                      "−0.22949 to −0.05578","−0.28093 to −0.01521",
+                      "−0.07581 to +0.20119",
+                      "SI_S2_COLOUR_SPATIAL_BLOCK_SENSITIVITY_20261029.md",
+                      "SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md",
+                      "### 3.3. Climate-conditioned floral resemblance beyond niche breadth"):
+            self.assertIn(token,paper)
+        self.assertIn("**Holm-2 P=0.010**",paper)
+
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())
         self.assertFalse((ROOT / ".github/workflows/publish-ch1-zenodo-v3-data.yml").exists())
