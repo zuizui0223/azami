@@ -104,6 +104,14 @@ jobs:
             --source work/h3/private/decoded/observations.csv.gz \
             --receipt work/h3/private/decoded/measurement_receipt.json \
             --out work/h3/output/H3_CLIMATE_TRAIT_HYPERVOLUME_AGGREGATE.json
+          python -m analysis.v4.s1_h3_climate_analogue_alignment \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --output work/h3/output/H3C_CONDITIONAL_KDE_TRAIT_OVERLAP_AGGREGATE.json
+          python -m analysis.v4.s1_h3_environment_moderated_trait_covariance \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --out work/h3/output/H3D_CLIMATE_MODERATED_TRAIT_COVARIANCE_AGGREGATE.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -120,6 +128,17 @@ jobs:
               elif isinstance(node,list):
                   for v in node:
                       yield from all_dict_keys(v)
+          for another_name in (
+              "H3C_CONDITIONAL_KDE_TRAIT_OVERLAP_AGGREGATE.json",
+              "H3D_CLIMATE_MODERATED_TRAIT_COVARIANCE_AGGREGATE.json",
+          ):
+              another=json.loads((f.parent/another_name).read_text())
+              assert another["original_source"]["source_observations"]==313350
+              assert another["original_source"]["quality_eligible_matched_observations"]==157822
+              assert "1degree" in another["results"] and "5degree" in another["results"]
+              for forbidden in ("obs_id","user_id","accepted_key","photo_id",
+                                "taxon_name","latitude","longitude","photographer_id"):
+                  assert forbidden not in set(all_dict_keys(another)),forbidden
           keys=set(all_dict_keys(a))
           for forbidden in ("obs_id","user_id","accepted_key","photo_id","taxon_name",
                             "latitude","longitude","photographer_id"):
