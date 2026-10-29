@@ -20,6 +20,8 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 **3.2 Flower colour after colonisation of new regions:** Two species × four range strata, 297,622 original wild source observations; three introduced-stratum colour×radiation/elevation associations survived the original 128-test Holm family. No formal range×environment interaction was estimated.
 
 **3.3 Local climatic analogues and floral morphospace:** H3a realised climatic breadth→floral volume and H3b species centroid correspondence are unresolved (63 taxa at 1°, 31 at 5°). H3c using same cell-balanced photographs detected a 3D trait distance advantage across climate-analogue sites (1° +0.04096; 5° +0.09433, exploratory Holm-2 P=0.010 at both resolutions) and density-overlap pattern relative to the taxon permutation null. The conditional subset's raw KDE L2 overlap is **lower**, not higher, than the full-distribution overlap. H3d three axis-breadth and six climate-modulated trait covariance contrasts failed exploratory Holm correction. [Detailed source audit](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md).
+
+**H3c robustness gate:** Six further fixed random-stream checks retained the positive *direction* at both resolutions (6/6), but nominal P<0.05 in only 2/6 of the 1° series versus 6/6 of 5° series. At 1°, excluding chroma or the central longitude sector reversed the distance contrast. KDE overlap was not consistently supported. See [full post-positive sensitivity SI](SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md). This is not another independent Holm-2 family.
 The weak exploratory 28-pair shape/colour/angle covariance remains in SI; “LEGO” is not a formal study hypothesis. Original S1/S2 frozen results unchanged.
 
 ## What the frozen results can support
