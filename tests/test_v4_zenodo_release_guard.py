@@ -28,6 +28,33 @@ class ZenodoGuardTests(unittest.TestCase):
         self.assertFalse(report["doi_assigned"])
         self.assertTrue(all(not p["recommended_publication"] for p in self.meta["candidate_files"]))
 
+    def test_author_approved_ccby4_scope_excludes_uncleared_third_party(self):
+        self.assertEqual(self.meta["data_license"], "CC-BY-4.0")
+        self.assertTrue(self.meta["data_license_confirmed"])
+        self.assertFalse(self.meta["third_party_rights_confirmed"])
+        self.assertEqual(self.meta["code_license"], "MIT")
+        self.assertEqual(len(self.meta["candidate_files"]), 3)
+        self.assertTrue(self.meta["candidate_files"][-1]["licensed_overlay"])
+        self.assertFalse(self.meta["candidate_files"][-1]["recommended_publication"])
+        self.assertIn("third_party_rights_confirmed", guard.check_metadata(self.meta)["blockers"])
+
+    def test_wrong_data_license_and_missing_rights_are_rejected(self):
+        changed = json.loads(json.dumps(self.meta))
+        changed["data_license"] = "CC0-1.0"
+        with self.assertRaisesRegex(ValueError, "Unexpected V4"):
+            guard.check_metadata(changed)
+        changed = json.loads(json.dumps(self.meta))
+        del changed["third_party_rights_confirmed"]
+        with self.assertRaisesRegex(ValueError, "rights clearance"):
+            guard.check_metadata(changed)
+
+    def test_scoped_license_candidate_requires_embedded_rights_documentation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, meta = self._make_zip(Path(directory), "synthetic-review.zip", "safe.csv")
+            meta["candidate_files"][1]["licensed_overlay"] = True
+            with self.assertRaisesRegex(ValueError, "missing rights"):
+                guard.inspect_bundle(path, meta)
+
     def test_no_existing_v2_doi_as_v4(self):
         self.assertIsNone(self.meta["published_doi"])
         self.assertNotEqual(self.meta.get("version_label"), "v2")

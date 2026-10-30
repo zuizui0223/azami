@@ -4,7 +4,7 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 
 **Current stage:** source-verified figures and editable main/SI review candidates assembled. No journal submission, permanent data deposit or DOI publication has occurred.
 
-**Repository merge / Zenodo boundary (2026-10-30):** PR #159 is merged into `main` at `e2229a2`; exploratory PR #160 remains open, unmerged and separately reviewed. [Zenodo V4 data-only preparation](../../docs/ZENODO_V4_RELEASE_HANDOFF.md) specifies frozen aggregate candidates, rights, creator metadata and byte verification. A real V4 DOI, confirmed aggregate-data license and anonymous reviewer access are still absent. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
+**Repository merge / Zenodo boundary (2026-10-30):** PR #159 is merged into `main` at `e2229a2`; exploratory PR #160 remains open, unmerged and separately reviewed. [Zenodo V4 data-only preparation](../../docs/ZENODO_V4_RELEASE_HANDOFF.md) specifies frozen aggregate candidates, rights, creator metadata and byte verification. A V4 DOI and anonymous reviewer access remain absent. CC BY 4.0 is now approved for eligible author-owned aggregate results, and the 65-file rights-scoped candidate passes 9/9 offline replay commands with all five CSV tables byte-identical. Third-party rights clearance and creators still require confirmation. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
 
 ## Format and scope
 
@@ -65,7 +65,7 @@ The weak exploratory 28-pair shape/colour/angle covariance remains in SI; “LEG
 **Still required before actual submission:**
 
 1. Confirm the author list/order, affiliations, corresponding author, acknowledgements, funding, conflicts and other journal declarations; create the separate author title page and final cover-letter PDF from those confirmed details.
-2. Choose the licence for redistributable aggregate data and establish a durable deposit with an appropriate reviewer-access route. No public DOI or anonymous hosted link is currently claimed; repository access alone is not a permanent archive. Preserve the distinct software and third-party image licences.
+2. The **CC BY 4.0 policy has been approved for original author-owned, redistributable numerical aggregates**. Complete file-level rights review and creator information, then establish durable deposition and suitable reviewer access. No public DOI or anonymous hosted link is yet claimed; MIT code and third-party photo/taxonomy/climate rights remain separate.
 3. Perform the final author sign-off on the main/SI package and submission declarations. Scientific interpretation remains observational; independent image-measurement validation and experimental tests of protection/fitness are limitations or future work, not evidence manufactured by formatting the package.
 
 **State:** the original numerical science is source-verified, and the manuscript is an editable review candidate. It has not been submitted or accepted. Author/access decisions above remain open.

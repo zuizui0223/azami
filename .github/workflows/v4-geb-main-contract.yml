@@ -16,6 +16,7 @@ on:
       - 'tests/test_repository_ref_audit.py'
       - 'tests/test_v4_zenodo_release_guard.py'
       - 'scripts/validate_zenodo_v4_release.py'
+      - 'scripts/build_zenodo_ccby4_overlay.py'
       - 'docs/ZENODO_V4_RELEASE_HANDOFF.md'
       - 'docs/BRANCH_REF_INPUT_20261030.json'
       - 'analysis/v4/**'
@@ -39,6 +40,7 @@ on:
       - 'tests/test_repository_ref_audit.py'
       - 'tests/test_v4_zenodo_release_guard.py'
       - 'scripts/validate_zenodo_v4_release.py'
+      - 'scripts/build_zenodo_ccby4_overlay.py'
       - 'docs/ZENODO_V4_RELEASE_HANDOFF.md'
       - 'docs/BRANCH_REF_INPUT_20261030.json'
       - 'analysis/v4/**'
@@ -71,6 +73,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_v4_geb_main_contract.py' -v
           python -m unittest discover -s tests -p 'test_v4_review_aggregate_bundle.py' -v
           python -m py_compile analysis/v4/final_v4_bio18_holm_freeze.py
+          python -m py_compile scripts/build_zenodo_ccby4_overlay.py scripts/validate_zenodo_v4_release.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/build_full_supplement.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_cross_functional_pairs.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_frozen_summary.py

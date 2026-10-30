@@ -4,7 +4,7 @@
 
 [`build_review_aggregate_bundle.py`](../build_review_aggregate_bundle.py) creates two local packages from three checksum-pinned aggregate artifacts: a source-provenance package and a review copy. Both verify the frozen aggregate results and regenerate numerical tables/figures without credentials or network access after Python dependencies are installed. **Neither package refits the statistical models from observation-level data or recreates measurements from original photographs.**
 
-No DOI, hosted reviewer link, external publication, release visibility change or historical Zenodo approval is used. A final licence for author-owned aggregate output data remains pending. The code remains under the existing MIT licence.
+No DOI, hosted reviewer link, external publication, release visibility change or historical Zenodo approval is used. CC BY 4.0 is now the selected policy for original author-controlled derived aggregate data, with separate third-party rights clearance still pending. Original code remains under the MIT licence.
 
 ## Actual candidate files
 
@@ -102,3 +102,21 @@ The output directory must be new, preventing silent overwrites. To use either ex
 This closes local aggregate preservation, source-byte inspection, a concrete candidate inventory and aggregate replay. It does not close the data-output licence decision, true anonymous reviewer access, a v4 persistent archive/DOI or complete original-source numerical reproduction. The manuscript's Figure 1 photograph rights were handled separately; none of those photographs or photographer identities are part of this aggregate package. The geographic main Figure 2 also has a separate source-aggregation workflow. WorldClim raster redistribution and item-specific iNaturalist rights remain distinct from the MIT software licence. The older v2 DOI and archived v3 approval do not establish permission or availability for this package.
 
 Generated `submission/` contents are ignored by the repository's existing `.gitignore`. The builder, focused tests and this `reproducibility_v4/` source directory are outside that ignored output directory and can be versioned normally. Binary candidates and `internal_provenance.json` remain generated handoff artifacts; the identifying crosswalk is not included in the review ZIP or this versioned source directory. Publishing a candidate remains a separate concrete decision.
+
+## CC BY 4.0 rights-scoped candidate (unpublished; 2026-10-30)
+
+A separately generated ZIP, `cirsium_v4_ccby4_scope_release_candidate.zip`, is **2,347,009 bytes** with **65 entries** and SHA-256 `d4ba5af840f9cd65e4c8abc0d48cdc1becf97800a9baca9573f245e51d914780`. It was built from the unchanged 63-entry original source ZIP by [the versioned overlay generator](../../../scripts/build_zenodo_ccby4_overlay.py), adding [the CC BY 4.0 data-scope notice](LICENSE_DATA_CC_BY_4_0.md) and [machine-readable rights status](DATA_RIGHTS_SCOPE.json). The file-level manifest, README and third-party notice are updated, but **all 14 source scientific data objects retain exact original bytes and SHA-256**.
+
+Two separate local builds produced byte-identical ZIPs. The actual newly licensed candidate was extracted and `replay_aggregates.py` completed **9/9 commands**, recreating **5/5 CSVs byte-identically** with 208, 28, 6, 80 and 2 rows. This is archived-aggregate replay, not original-photo measurement or observation-level model refitting. Its [verification receipt](CCBY4_RELEASE_CANDIDATE_RECEIPT_20261030.json) records the tested checksum.
+
+**CC BY 4.0 is scoped to original author-owned redistributable analytical outputs only.** Source photos, taxonomy, climate raster products and other third-party materials retain separate terms. MIT continues to apply to original source code. Creator identity/order, file-by-file rights and double-anonymous reviewer access are not certified; the ZIP must not be published or treated as a DOI-linked public dataset yet.
+
+To rebuild using the original source ZIP:
+```bash
+python scripts/build_zenodo_ccby4_overlay.py \
+  --source /path/to/cirsium_v4_aggregate_release_candidate.zip \
+  --output /path/to/cirsium_v4_ccby4_scope_release_candidate.zip
+python scripts/validate_zenodo_v4_release.py \
+  --metadata manuscripts/v4_s1_s2_frozen_20261025/reproducibility_v4/ZENODO_V4_METADATA_WORKING_DRAFT.json \
+  --bundle /path/to/cirsium_v4_ccby4_scope_release_candidate.zip
+```

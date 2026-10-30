@@ -20,7 +20,7 @@ SENSITIVE = re.compile(
 )
 REQUIRED_BLOCKERS = (
     "authors_confirmed",
-    "data_license_confirmed",
+    "third_party_rights_confirmed",
     "peer_review_anonymity_confirmed",
     "separate_zenodo_deposition_authorized",
     "publication_approved",
@@ -43,8 +43,8 @@ def check_metadata(metadata: dict) -> dict:
             raise ValueError(f"Invalid Git SHA in {key}")
     packages = metadata.get("candidate_files", [])
     names = [p.get("name") for p in packages]
-    if len(packages) != 2 or len(set(names)) != 2:
-        raise ValueError("Exactly two distinct documented candidates expected")
+    if len(packages) != 3 or len(set(names)) != 3:
+        raise ValueError("Exactly three distinct documented candidates expected")
     for p in packages:
         if not p["name"].endswith(".zip") or not SHA256.fullmatch(p["sha256"]):
             raise ValueError("Malformed candidate name or SHA-256")
@@ -54,6 +54,14 @@ def check_metadata(metadata: dict) -> dict:
             raise ValueError("Invalid member count")
         if p.get("recommended_publication") is not False:
             raise ValueError("Unapproved candidate marked for automatic publication")
+    if metadata.get("data_license_confirmed") is not True:
+        raise ValueError("Author approval of the data license has not been recorded")
+    if metadata.get("data_license") != "CC-BY-4.0":
+        raise ValueError("Unexpected V4 author-controlled aggregate data license")
+    if "third_party_rights_confirmed" not in metadata:
+        raise ValueError("Explicit third-party rights clearance gate required")
+    if not re.fullmatch(r"[0-9a-f]{64}", metadata.get("candidate_files", [{}])[-1].get("sha256", "")):
+        raise ValueError("Missing licensed candidate checksum")
     for key in REQUIRED_BLOCKERS:
         if not isinstance(metadata.get(key), bool):
             raise ValueError(f"Gate must be explicit boolean: {key}")
@@ -77,7 +85,7 @@ def inspect_bundle(path: Path, metadata: dict) -> dict:
         raise FileNotFoundError(path)
     matched = [p for p in metadata["candidate_files"] if p["name"] == path.name]
     if len(matched) != 1:
-        raise ValueError("Only one of the two frozen candidate ZIP filenames is accepted")
+        raise ValueError("Candidate ZIP filename not listed in metadata")
     expected = matched[0]
     if path.stat().st_size != expected["bytes"]:
         raise ValueError("Candidate ZIP size mismatch")
@@ -106,6 +114,26 @@ def inspect_bundle(path: Path, metadata: dict) -> dict:
                 SENSITIVE.search(normalized)
             ):
                 raise ValueError(f"Unsafe or identifying ZIP member: {member.filename}")
+    if expected.get("licensed_overlay"):
+        with zipfile.ZipFile(path) as archive:
+            names = set(archive.namelist())
+            necessary = {"LICENSE_DATA_CC_BY_4_0.md", "DATA_RIGHTS_SCOPE.json", "review_manifest.json"}
+            if not necessary <= names:
+                raise ValueError("CC BY 4.0 licensed candidate is missing rights/manifest documentation")
+            rights = json.loads(archive.read("DATA_RIGHTS_SCOPE.json"))
+            manifest = json.loads(archive.read("review_manifest.json"))
+            if rights.get("author_approved_data_license_policy") != "CC-BY-4.0":
+                raise ValueError("Rights scope contradicts chosen data license")
+            if rights.get("verified_file_by_file_redistribution_rights") is not False:
+                raise ValueError("Rights clearance has not been independently verified")
+            if manifest.get("data_license_policy_approved") is not True:
+                raise ValueError("ZIP manifest is missing the approved policy record")
+            declared = {row["path"]: row["sha256"] for row in manifest["files"]}
+            if set(declared) != names - {"review_manifest.json"}:
+                raise ValueError("ZIP manifest does not cover all files")
+            for name, expected_hash in declared.items():
+                if hashlib.sha256(archive.read(name)).hexdigest() != expected_hash:
+                    raise ValueError("ZIP manifest hash mismatch: " + name)
     return {
         "checked_file": path.name,
         "size": path.stat().st_size,

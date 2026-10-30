@@ -1,0 +1,47 @@
+{
+  "status": "PASS_LICENSE_SCOPED_UNPUBLISHED_RELEASE_CANDIDATE",
+  "verification_date": "2026-10-30",
+  "source_zip": {
+    "name": "cirsium_v4_aggregate_release_candidate.zip",
+    "bytes": 2344600,
+    "sha256": "3e2fa32f210977d3aae5a46a9f18e53f88a4ce7ed0af7e4d8057ca0aafb51414",
+    "members": 63
+  },
+  "new_candidate": {
+    "name": "cirsium_v4_ccby4_scope_release_candidate.zip",
+    "bytes": 2347009,
+    "sha256": "d4ba5af840f9cd65e4c8abc0d48cdc1becf97800a9baca9573f245e51d914780",
+    "members": 65,
+    "zip_crc_ok": true,
+    "file_manifest_sha256_verified": true,
+    "independent_rebuild_identical_sha256": true
+  },
+  "scientific_content": {
+    "original_derived_resource_byte_identical_count": 14,
+    "other_source_entries_byte_identical_count": 60,
+    "aggregate_replay_commands_passed": 9,
+    "output_csvs_byte_identical": 5,
+    "output_csv_rows": [
+      208,
+      28,
+      6,
+      80,
+      2
+    ],
+    "observation_level_models_refitted": false,
+    "raw_image_measurement_performed": false
+  },
+  "licensing": {
+    "author_owned_original_derived_aggregate_data": "CC-BY-4.0 (policy approved 2026-10-30)",
+    "original_software": "MIT",
+    "third_party_rights_cleared": false,
+    "creator_information_confirmed": false,
+    "double_anonymous_review_confirmed": false
+  },
+  "zenodo": {
+    "draft_created": false,
+    "doi_reserved": false,
+    "public_record_published": false
+  },
+  "disclosure": "Source original aggregate ZIP and new release candidate existed and were tested locally; binaries remain outside Git. This receipt is not public redistribution clearance."
+}

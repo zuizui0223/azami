@@ -14,7 +14,7 @@
     "photographic phenomics",
     "reproducibility"
   ],
-  "version_label": "v4-2026-10-30-rc1",
+  "version_label": "v4-2026-10-30-rc2",
   "canonical_git_commit": "e2229a20045044977afe235255355ca3892186fa",
   "original_S1_S2_frozen_commit": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159",
   "source_artifacts": {
@@ -47,12 +47,21 @@
       "members": 63,
       "purpose": "metadata-reduced review copy; notices still identify contributors",
       "recommended_publication": false
+    },
+    {
+      "name": "cirsium_v4_ccby4_scope_release_candidate.zip",
+      "bytes": 2347009,
+      "sha256": "d4ba5af840f9cd65e4c8abc0d48cdc1becf97800a9baca9573f245e51d914780",
+      "members": 65,
+      "purpose": "CC BY 4.0 rights-scoped unpublished release candidate; original scientific numeric files unchanged and license-scope documentation included",
+      "licensed_overlay": true,
+      "recommended_publication": false
     }
   ],
   "authors_confirmed": false,
   "creators": [],
-  "data_license_confirmed": false,
-  "data_license": null,
+  "data_license_confirmed": true,
+  "data_license": "CC-BY-4.0",
   "code_license": "MIT",
   "peer_review_anonymity_confirmed": false,
   "separate_zenodo_deposition_authorized": false,
@@ -60,10 +69,23 @@
   "published_doi": null,
   "prior_archive_note": "Historical V2 Zenodo DOI 10.5281/zenodo.22295791 is NOT a V4 identifier. Existing private GitHub V3 draft release is NOT this V4 dataset.",
   "blocking_gates": [
-    "Confirm creator names/order and affiliations or identifiers",
-    "Select author-authorized rights-compatible aggregate-data license",
-    "Verify the exact candidate ZIP bytes and internal metadata for privacy and copyrights",
-    "Select public versus restricted reviewer file access and ensure journal anonymity",
-    "Approve upload/publication separately; no DOI reservation or public record yet"
-  ]
+    "Confirm full names, author order and creator affiliations/ORCID for the new Zenodo dataset record",
+    "Perform file-by-file third-party rights, provenance and privacy clearance before any upload",
+    "Confirm the selected public/restricted file access and how attribution is handled under double-anonymous review",
+    "Approve a specific Zenodo deposit and upload the exact validated final candidate only after clearance",
+    "Approve publication separately after reviewing the actual draft; a DOI has not been reserved or published"
+  ],
+  "data_license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "data_license_scope": "original author-controlled derived aggregate tables, summary statistics and analytical figures only; third-party content is excluded and file-by-file rights review is pending",
+  "data_license_policy_approved_date": "2026-10-30",
+  "third_party_rights_confirmed": false,
+  "recorded_local_ccby4_replay": {
+    "status": "PASS_AGGREGATE_REPLAY_ONLY",
+    "generated_file": "cirsium_v4_ccby4_scope_release_candidate.zip",
+    "source_file_sha256": "3e2fa32f210977d3aae5a46a9f18e53f88a4ce7ed0af7e4d8057ca0aafb51414",
+    "source_manifest_numeric_resources_preserved": 14,
+    "commands_completed": 9,
+    "byte_identical_csv_tables": 5,
+    "observation_level_models_refitted": false
+  }
 }

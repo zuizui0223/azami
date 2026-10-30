@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "UNPUBLISHED_RIGHTS_SCOPED_CANDIDATE",
+  "author_approved_data_license_policy": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "license_scope": "original author-controlled derived aggregate tables, statistics and numerical data visualisations only, subject to file-level rights clearance",
+  "code_license": "MIT",
+  "code_license_file": "LICENSE",
+  "excluded_from_new_license": [
+    "source photographs and photo-derived identifying images",
+    "precise geographic coordinates or source observation/uploader IDs",
+    "third-party climate raster datasets and their native source databases",
+    "third-party taxonomic data and their database rights",
+    "non-author content under its own license"
+  ],
+  "verified_file_by_file_redistribution_rights": false,
+  "creators_confirmed": false,
+  "anonymous_review_confirmed": false,
+  "public_zenodo_record_created": false,
+  "zenodo_doi": null,
+  "provenance": "The numerical files retain their original bytes and SHA-256. Only the license-scope documentation and ZIP manifest change."
+}
