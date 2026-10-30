@@ -18,6 +18,13 @@ concurrency:
 
 jobs:
   coverage:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    # GitHub restricts draft-release asset GETs to push-capable tokens. Match
+    # the existing S2 source-recovery job; this job makes no repository or
+    # release mutations and never changes the draft's visibility.
+    permissions:
+      contents: write
+      actions: read
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -30,6 +37,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 2
+          persist-credentials: false
       - name: Restore source only when the coverage implementation changes
         id: decide
         run: |
