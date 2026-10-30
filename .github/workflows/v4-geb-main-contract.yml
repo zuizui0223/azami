@@ -12,6 +12,9 @@ on:
       - 'docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md'
       - 'docs/BRANCH_ARCHIVE_TRIAGE_20261030.md'
       - 'tests/test_repository_navigation.py'
+      - 'scripts/repository_ref_audit.py'
+      - 'tests/test_repository_ref_audit.py'
+      - 'docs/BRANCH_REF_INPUT_20261030.json'
       - 'analysis/v4/**'
       - 'manuscripts/v4_s1_s2_frozen_20261025/**'
       - 'legacy/v3/**'
@@ -29,6 +32,9 @@ on:
       - 'docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md'
       - 'docs/BRANCH_ARCHIVE_TRIAGE_20261030.md'
       - 'tests/test_repository_navigation.py'
+      - 'scripts/repository_ref_audit.py'
+      - 'tests/test_repository_ref_audit.py'
+      - 'docs/BRANCH_REF_INPUT_20261030.json'
       - 'analysis/v4/**'
       - 'manuscripts/v4_s1_s2_frozen_20261025/**'
       - 'legacy/v3/**'
@@ -54,6 +60,7 @@ jobs:
       - name: Check journal abstract, locked numbers, archive and static sources
         run: |
           python -m unittest discover -s tests -p 'test_repository_navigation.py' -v
+          python -m unittest discover -s tests -p 'test_repository_ref_audit.py' -v
           python -m unittest discover -s tests -p 'test_v4_geb_main_contract.py' -v
           python -m unittest discover -s tests -p 'test_v4_review_aggregate_bundle.py' -v
           python -m py_compile analysis/v4/final_v4_bio18_holm_freeze.py

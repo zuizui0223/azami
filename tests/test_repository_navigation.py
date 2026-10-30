@@ -15,6 +15,8 @@ INDEXES = (
     "docs/REPOSITORY_MAP.md",
     "docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md",
     "docs/BRANCH_ARCHIVE_TRIAGE_20261030.md",
+    "analysis/v4/README.md",
+    "manuscripts/v4_s1_s2_frozen_20261025/README.md",
 )
 LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 

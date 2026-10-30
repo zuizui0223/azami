@@ -29,3 +29,39 @@ The repository contains **137 branch references** in the GitHub REST listing at 
 5. Run frozen numerical, manuscript, navigation and code-contract CI again. Document both what remains and what was removed.
 
 **Implemented here:** a current README, stable directory indexes, source and submission runbook, and a CI-backed navigation check. **Not implemented:** physical relocation or deletion of scientific files, closing PRs, branch pruning, changes to numerical fits, or any public data release.
+
+## Verified complete reference snapshot — 30 October 2026
+
+The reproducible, non-secret input is in [`BRANCH_REF_INPUT_20261030.json`](BRANCH_REF_INPUT_20261030.json). It records **137 branches**, **157 PRs** (six open), one tag ref and one draft release from GitHub at PR #159 head `cf053d7f227f`. Head SHAs in this file are historical snapshots, not live branch heads. Regenerate a report with the read-only [audit script](../scripts/repository_ref_audit.py), or replay the snapshot offline:
+
+```bash
+python scripts/repository_ref_audit.py --input-json docs/BRANCH_REF_INPUT_20261030.json --output-json /tmp/azami-branch-audit.json
+python -m unittest discover -s tests -p 'test_repository_ref_audit.py' -v
+```
+
+**Duplicate group:** 49 branch names point to `7d28f2340e1d1b7fed5bd7a5611f52853e09a388`; 42 names appear as heads in historical PR metadata, and seven have **no historical PR-head-name match**. None of those 49 names is the head or base of an open PR. This does **not** prove absence of external links, scripts, deployments or collaborator dependencies.
+
+### Seven no-PR-head-name-match candidates — NOT approved for deletion
+
+- `agent/ecological-discussion-references-20260821`
+- `agent/supplement-figures-20260820`
+- `cleanup/code-only-prepublication-20260902`
+- `codex/ch1-spatial-scale-reframe`
+- `feature/ch1-paleoniche-pilot`
+- `figures/real-photo-yolo-world-map-v2`
+- `tmp-ignore`
+
+All seven point to `7d28f2340e1d1b7fed5bd7a5611f52853e09a388`.
+
+### Active PR dependency chains — preserve every named ref
+
+| Dependency chain | State | Why the branch must remain |
+| --- | --- | --- |
+| [#160](https://github.com/zuizui0223/azami/pull/160) → [#159](https://github.com/zuizui0223/azami/pull/159) → `main` | #160 exploratory V4.1, #159 current GEB article | #160 is based on #159's working branch; merging/removing either changes the review context. |
+| [#148](https://github.com/zuizui0223/azami/pull/148) → [#146](https://github.com/zuizui0223/azami/pull/146) → [#144](https://github.com/zuizui0223/azami/pull/144) → `main` | Three older draft PRs | Their bases form a dependency chain, not independent pruning targets. |
+| [#145](https://github.com/zuizui0223/azami/pull/145) → `main` | Older draft PR | Retain until its scope and overlap with the GEB manuscript are reviewed. |
+
+The only tag in this snapshot points to `0476640e740e327bc86d868994d38eba33dd73f9`, not the 49-name shared tip. An existing draft release must not be published or removed during this cleanup. Annotated tags may require dereferencing before comparing commit identities.
+
+**Completed:** archival refs and dependencies are reproducible from a frozen inventory and tested read-only code. **Not performed:** deleting branches or artifacts, closing/merging PRs, publishing releases, altering source data, renaming active import paths, or changing scientific estimates.
+
