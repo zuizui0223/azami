@@ -1,0 +1,376 @@
+{
+  "schema": "azami_v4_s2_exact_photo_colour_spatial_block_sensitivity_20261029_v1",
+  "status": "SOURCE_VERIFIED_S2_ORIGINAL_SIX_COEFFICIENTS_AND_20DEGREE_BLOCK_BOOTSTRAPS",
+  "provenance": {
+    "run_id": 40855508122,
+    "job_id": 123385975333,
+    "artifact_id": 12889487967,
+    "original_source_n": 297622,
+    "original_20261024_fixed_zip_sha256": "6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205",
+    "original_S2_128_Holm_family_unmodified": true
+  },
+  "source": {
+    "original_focal_wild_records": 297622,
+    "original_focal_source_sha256": "92bf96301f8e9018e42cd20d30574c5bd0cc1f5cb7566fbf2ea4acb54b2909ac",
+    "original_new_climate_source_sha256": "b7aaf982286b927688c0088b41b71ffbb71304ee190448f10d975bdac554d3d3",
+    "original_colour_measurements_sha256": "9c3ad5262c45f51251b2a19336acd9f3b9d1f44470c7d2dcf19086b692a8357f",
+    "measurement_source_columns": {
+      "corolla_lab_lightness": "corolla_lab_lightness_median",
+      "corolla_lab_chroma": "corolla_lab_chroma_median"
+    },
+    "no_original_ids_or_locations_exported": true
+  },
+  "panels": [
+    {
+      "species": "Cirsium arvense",
+      "range_status": "native",
+      "trait": "corolla_lab_lightness",
+      "exposure": "topo_elevation",
+      "n": 22936,
+      "beta": 0.05626673194073073,
+      "spatial": {
+        "status": "estimated",
+        "n_original_source_geo_blocks": 24,
+        "grid_cell_resolution_degrees": 20,
+        "block_partition_used_for_resampling_not_a_regression_predictor": true,
+        "n_valid_bootstraps": 399,
+        "n_requested_bootstraps": 399,
+        "source_block_bootstrap_95_percentile_interval": [
+          -0.052084243141023105,
+          0.12724478631026487
+        ],
+        "fraction_bootstraps_same_sign_as_original": 0.899749373433584,
+        "block_bootstrap_center": 0.051034462881403134,
+        "n_largest_source_weight_blocks_heldout": 5,
+        "largest_source_weight_block_holdout_results": [
+          {
+            "status": "estimated",
+            "coefficient": 0.05890401270411824,
+            "source_weight_fraction_omitted": 0.08180994729907773,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.05060645279096529,
+            "source_weight_fraction_omitted": 0.08109022380215589,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.06400650065689993,
+            "source_weight_fraction_omitted": 0.07484189133032051,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.03756321004967003,
+            "source_weight_fraction_omitted": 0.07133152173913043,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.07904252320977773,
+            "source_weight_fraction_omitted": 0.07047982450702285,
+            "sign_retained": true
+          }
+        ],
+        "n_largest_holdouts_retaining_sign": 5,
+        "not_original_S2_Holm_family_or_causal_spatial_partition": true
+      }
+    },
+    {
+      "species": "Cirsium arvense",
+      "range_status": "introduced",
+      "trait": "corolla_lab_lightness",
+      "exposure": "topo_elevation",
+      "n": 26171,
+      "beta": -0.17373187423223393,
+      "spatial": {
+        "status": "estimated",
+        "n_original_source_geo_blocks": 10,
+        "grid_cell_resolution_degrees": 20,
+        "block_partition_used_for_resampling_not_a_regression_predictor": true,
+        "n_valid_bootstraps": 399,
+        "n_requested_bootstraps": 399,
+        "source_block_bootstrap_95_percentile_interval": [
+          -0.22948807590853074,
+          -0.05578488567259356
+        ],
+        "fraction_bootstraps_same_sign_as_original": 1,
+        "block_bootstrap_center": -0.15454239605600456,
+        "n_largest_source_weight_blocks_heldout": 5,
+        "largest_source_weight_block_holdout_results": [
+          {
+            "status": "estimated",
+            "coefficient": -0.17667489130267394,
+            "source_weight_fraction_omitted": 0.23178421643333927,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.13411305546872643,
+            "source_weight_fraction_omitted": 0.22091623629154947,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.1408235916279413,
+            "source_weight_fraction_omitted": 0.17156339031339035,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.1908724313249171,
+            "source_weight_fraction_omitted": 0.12630598593067283,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.15134696354858307,
+            "source_weight_fraction_omitted": 0.0904603341511859,
+            "sign_retained": true
+          }
+        ],
+        "n_largest_holdouts_retaining_sign": 5,
+        "not_original_S2_Holm_family_or_causal_spatial_partition": true
+      }
+    },
+    {
+      "species": "Cirsium vulgare",
+      "range_status": "native",
+      "trait": "corolla_lab_chroma",
+      "exposure": "chelsa_rsds_mean",
+      "n": 17335,
+      "beta": 0.1368829067685122,
+      "spatial": {
+        "status": "estimated",
+        "n_original_source_geo_blocks": 13,
+        "grid_cell_resolution_degrees": 20,
+        "block_partition_used_for_resampling_not_a_regression_predictor": true,
+        "n_valid_bootstraps": 399,
+        "n_requested_bootstraps": 399,
+        "source_block_bootstrap_95_percentile_interval": [
+          0.06362698595175313,
+          0.22540084679622333
+        ],
+        "fraction_bootstraps_same_sign_as_original": 1,
+        "block_bootstrap_center": 0.14015123873343047,
+        "n_largest_source_weight_blocks_heldout": 5,
+        "largest_source_weight_block_holdout_results": [
+          {
+            "status": "estimated",
+            "coefficient": 0.15901067201822067,
+            "source_weight_fraction_omitted": 0.14582560403603773,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.13197762341200858,
+            "source_weight_fraction_omitted": 0.12390396250094357,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.1476796458694158,
+            "source_weight_fraction_omitted": 0.10417439596396226,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.11272282349093768,
+            "source_weight_fraction_omitted": 0.10331710286062082,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.14063113014590903,
+            "source_weight_fraction_omitted": 0.08577345685389513,
+            "sign_retained": true
+          }
+        ],
+        "n_largest_holdouts_retaining_sign": 5,
+        "not_original_S2_Holm_family_or_causal_spatial_partition": true
+      }
+    },
+    {
+      "species": "Cirsium vulgare",
+      "range_status": "introduced",
+      "trait": "corolla_lab_chroma",
+      "exposure": "chelsa_rsds_mean",
+      "n": 27200,
+      "beta": 0.13450378740254804,
+      "spatial": {
+        "status": "estimated",
+        "n_original_source_geo_blocks": 14,
+        "grid_cell_resolution_degrees": 20,
+        "block_partition_used_for_resampling_not_a_regression_predictor": true,
+        "n_valid_bootstraps": 399,
+        "n_requested_bootstraps": 399,
+        "source_block_bootstrap_95_percentile_interval": [
+          -0.07580890710639383,
+          0.20118621858868763
+        ],
+        "fraction_bootstraps_same_sign_as_original": 0.9473684210526315,
+        "block_bootstrap_center": 0.11500924952631508,
+        "n_largest_source_weight_blocks_heldout": 5,
+        "largest_source_weight_block_holdout_results": [
+          {
+            "status": "estimated",
+            "coefficient": 0.11454124208632058,
+            "source_weight_fraction_omitted": 0.26938514869549357,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.10603117628170558,
+            "source_weight_fraction_omitted": 0.25977382363798074,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.12490289482150377,
+            "source_weight_fraction_omitted": 0.14942528735632185,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.126079180809134,
+            "source_weight_fraction_omitted": 0.06151805753927772,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": 0.1635318056195494,
+            "source_weight_fraction_omitted": 0.05342447119635448,
+            "sign_retained": true
+          }
+        ],
+        "n_largest_holdouts_retaining_sign": 5,
+        "not_original_S2_Holm_family_or_causal_spatial_partition": true
+      }
+    },
+    {
+      "species": "Cirsium vulgare",
+      "range_status": "native",
+      "trait": "corolla_lab_lightness",
+      "exposure": "chelsa_rsds_mean",
+      "n": 17335,
+      "beta": -0.04880796672586844,
+      "spatial": {
+        "status": "estimated",
+        "n_original_source_geo_blocks": 13,
+        "grid_cell_resolution_degrees": 20,
+        "block_partition_used_for_resampling_not_a_regression_predictor": true,
+        "n_valid_bootstraps": 399,
+        "n_requested_bootstraps": 399,
+        "source_block_bootstrap_95_percentile_interval": [
+          -0.1139558022703178,
+          0.12465843485144872
+        ],
+        "fraction_bootstraps_same_sign_as_original": 0.8095238095238095,
+        "block_bootstrap_center": -0.03337740253182275,
+        "n_largest_source_weight_blocks_heldout": 5,
+        "largest_source_weight_block_holdout_results": [
+          {
+            "status": "estimated",
+            "coefficient": -0.0467234005482052,
+            "source_weight_fraction_omitted": 0.14582560403603773,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.022711662375503545,
+            "source_weight_fraction_omitted": 0.12390396250094357,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.06973848581358758,
+            "source_weight_fraction_omitted": 0.10417439596396226,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.03434597952683584,
+            "source_weight_fraction_omitted": 0.10331710286062082,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.049012284439957435,
+            "source_weight_fraction_omitted": 0.08577345685389513,
+            "sign_retained": true
+          }
+        ],
+        "n_largest_holdouts_retaining_sign": 5,
+        "not_original_S2_Holm_family_or_causal_spatial_partition": true
+      }
+    },
+    {
+      "species": "Cirsium vulgare",
+      "range_status": "introduced",
+      "trait": "corolla_lab_lightness",
+      "exposure": "chelsa_rsds_mean",
+      "n": 27200,
+      "beta": -0.14280073287481218,
+      "spatial": {
+        "status": "estimated",
+        "n_original_source_geo_blocks": 14,
+        "grid_cell_resolution_degrees": 20,
+        "block_partition_used_for_resampling_not_a_regression_predictor": true,
+        "n_valid_bootstraps": 399,
+        "n_requested_bootstraps": 399,
+        "source_block_bootstrap_95_percentile_interval": [
+          -0.2809265034830328,
+          -0.01521163227054867
+        ],
+        "fraction_bootstraps_same_sign_as_original": 0.9774436090225563,
+        "block_bootstrap_center": -0.13700115356511722,
+        "n_largest_source_weight_blocks_heldout": 5,
+        "largest_source_weight_block_holdout_results": [
+          {
+            "status": "estimated",
+            "coefficient": -0.13822868620958526,
+            "source_weight_fraction_omitted": 0.26938514869549357,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.12406215349593522,
+            "source_weight_fraction_omitted": 0.25977382363798074,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.13464810137483324,
+            "source_weight_fraction_omitted": 0.14942528735632185,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.15410651013289073,
+            "source_weight_fraction_omitted": 0.06151805753927772,
+            "sign_retained": true
+          },
+          {
+            "status": "estimated",
+            "coefficient": -0.16092979698489562,
+            "source_weight_fraction_omitted": 0.05342447119635448,
+            "sign_retained": true
+          }
+        ],
+        "n_largest_holdouts_retaining_sign": 5,
+        "not_original_S2_Holm_family_or_causal_spatial_partition": true
+      }
+    }
+  ],
+  "interpretation": {
+    "lat_lon_not_regression_predictors": true,
+    "twenty_degree_geographic_units_only_for_resampling": true,
+    "original_three_introduced_Holm_supported_slopes_unchanged": true,
+    "introduced_vulgare_RDSD_chroma_block_interval_crosses_zero": true,
+    "native_vulgare_chroma_block_interval_positive": true,
+    "not_causal_spatial_partition_or_evolutionary_adaptation": true,
+    "resampling_CI_not_simultaneous_Holm_interval": true
+  }
+}

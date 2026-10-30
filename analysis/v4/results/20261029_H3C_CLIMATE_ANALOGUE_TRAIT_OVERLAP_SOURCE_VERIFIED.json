@@ -1,0 +1,114 @@
+{
+  "schema": "azami_h3c_original_private_s1_qualitative_source_verified_20261029_v1",
+  "source": {
+    "decoded_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_observations": 313350,
+    "quality_eligible_matched_observations": 157822,
+    "matched_source_taxa": 242
+  },
+  "status": "SOURCE_DERIVED_EXPLORATORY_NOT_ORIGINAL_V4_HOLM",
+  "results": {
+    "1degree": {
+      "status": "source_matched_exploratory_analogue_alignment",
+      "n_taxa": 63,
+      "sector_taxa_counts": {
+        "sector_0": 36,
+        "sector_1": 21,
+        "sector_2": 6
+      },
+      "successful_rarefaction_draws": 24,
+      "requested_rarefaction_draws": 24,
+      "mean_eligible_cross_sector_taxon_pairs": 229.16666666666666,
+      "min_eligible_cross_sector_taxon_pairs": 198,
+      "max_eligible_cross_sector_taxon_pairs": 248,
+      "mean_eligible_analogue_cell_pairs": 2572.2083333333335,
+      "primary_trait_distance_advantage_of_climate_matched_cells": 0.040963661993538125,
+      "null_mean": -0.0012663817245123629,
+      "null_standard_deviation": 0.012894719292900233,
+      "two_sided_taxon_block_cell_permutation_p_exploratory": 0.005,
+      "holm2_distance_vs_overlap_p": 0.01,
+      "climate_analogue_conditional_KDE_L2_overlap": {
+        "status": "estimated",
+        "kernel_bandwidth_sd": 0.75,
+        "mean_conditional_analogue_support": 0.5074242096658144,
+        "mean_unconditional_eight_cells": 0.6150915034500138,
+        "conditional_minus_all_cells_overlap": -0.10766729378419942,
+        "null_mean": -0.11423417949963259,
+        "two_sided_taxon_block_permutation_p": 0.01,
+        "holm2_distance_vs_overlap_p": 0.01,
+        "bandwidth_sensitive_small_cell_KDE_not_true_hypervolume_intersection": true,
+        "conditional_clouds_selected_by_climate_only": true
+      },
+      "n_permutations": 199,
+      "min_climate_analog_distance": 0.9,
+      "sampling_sd_of_rarefaction_estimates": 0.04618228242506487,
+      "observed_positive_means_more_similar_under_climate_matching": true,
+      "within_taxon_cell_shuffles_preserve_taxon_mean": true,
+      "taxon_pairs_not_independent_replicates": true,
+      "not_phylogenetic_evolutionary_convergence_or_adaptation": true
+    },
+    "5degree": {
+      "status": "source_matched_exploratory_analogue_alignment",
+      "n_taxa": 31,
+      "sector_taxa_counts": {
+        "sector_0": 15,
+        "sector_1": 11,
+        "sector_2": 5
+      },
+      "successful_rarefaction_draws": 24,
+      "requested_rarefaction_draws": 24,
+      "mean_eligible_cross_sector_taxon_pairs": 103.25,
+      "min_eligible_cross_sector_taxon_pairs": 86,
+      "max_eligible_cross_sector_taxon_pairs": 114,
+      "mean_eligible_analogue_cell_pairs": 1107.7083333333333,
+      "primary_trait_distance_advantage_of_climate_matched_cells": 0.0943310892554725,
+      "null_mean": 0.00017882363937828992,
+      "null_standard_deviation": 0.016920608295084898,
+      "two_sided_taxon_block_cell_permutation_p_exploratory": 0.005,
+      "holm2_distance_vs_overlap_p": 0.01,
+      "climate_analogue_conditional_KDE_L2_overlap": {
+        "status": "estimated",
+        "kernel_bandwidth_sd": 0.75,
+        "mean_conditional_analogue_support": 0.46046146802286997,
+        "mean_unconditional_eight_cells": 0.5355448105247648,
+        "conditional_minus_all_cells_overlap": -0.07508334250189486,
+        "null_mean": -0.08348911327569386,
+        "two_sided_taxon_block_permutation_p": 0.015,
+        "holm2_distance_vs_overlap_p": 0.015,
+        "bandwidth_sensitive_small_cell_KDE_not_true_hypervolume_intersection": true,
+        "conditional_clouds_selected_by_climate_only": true
+      },
+      "n_permutations": 199,
+      "min_climate_analog_distance": 0.9,
+      "sampling_sd_of_rarefaction_estimates": 0.0993287908699413,
+      "observed_positive_means_more_similar_under_climate_matching": true,
+      "within_taxon_cell_shuffles_preserve_taxon_mean": true,
+      "taxon_pairs_not_independent_replicates": true,
+      "not_phylogenetic_evolutionary_convergence_or_adaptation": true
+    }
+  },
+  "methods": {
+    "climate_analogue_max_distance_Z": 0.9,
+    "gaussian_KDE_L2_overlap_bandwidth": 0.75,
+    "sector_taxon_cell_permutation_replicates": 199,
+    "rarefaction_draws": 24,
+    "spatial_resolution_primary": "1degree",
+    "sensitivity": "5degree",
+    "pairwise_distance_and_density_overlap_predeclared_Holm_family_size": 2
+  },
+  "interpretation": {
+    "distance_advantage_positive_indicates_local_conditioned_similarity": true,
+    "KDE_density_overlap_matched_absolute_lower_than_whole_eight_cells": true,
+    "KDE_density_overlap_enhancement_relative_to_within_taxon_cell_permutation_true": true,
+    "distance_and_overlap_not_independent_causal_evidence": true,
+    "no_evolutionary_convergence_or_functional_adaptation_claim": true,
+    "no_species_or_site_identifiers_exported": true
+  },
+  "verified_execution": {
+    "github_actions_run": 40847696537,
+    "original_private_job_id": 123359131501,
+    "aggregate_artifact_id": 12885860903,
+    "original_source_QC_signature": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "did_not_export_private_source": true
+  }
+}

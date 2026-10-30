@@ -1,6 +1,8 @@
 """Read-only integrity checks for the frozen V4 GEB manuscript and V3 archive."""
 from __future__ import annotations
 import csv
+import hashlib
+import json
 from pathlib import Path
 import re
 import unittest
@@ -57,9 +59,14 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("not an independent source cohort",article)
         self.assertIn("no native-versus-introduced climatic-niche analysis",article)
         self.assertIn("photo",article.lower())
-        self.assertIn("24/28",article)
-        self.assertIn("0.0487/0.00532",article)
-        self.assertIn("**Figure 2 (Part 1).** Eight-trait, 28-pair",article)
+        si_cov=(PAPER/"SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md").read_text(encoding="utf-8")
+        self.assertIn("24/28",si_cov)
+        self.assertIn("0.0487/0.00532",si_cov)
+        self.assertIn("**123/135**",si_cov)
+        self.assertIn("**Figure 2.** Worldwide sampling coverage",article)
+        self.assertNotIn("**Figure 5 (Part 1).**",article)
+        for biological_pair in ("angle", "chroma", "aspect"):
+            self.assertIn(biological_pair,(PAPER/"plot_cross_functional_pairs.py").read_text(encoding="utf-8"))
         forbidden=("+48.2","270.4 versus 222.2","−0.172","0.448",
                    "1.791","23/91","−1.03°","40166532404")
         for item in forbidden:
@@ -87,7 +94,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("native coefficient (**+0.136883**)",article)
         self.assertIn("Holm P of 0.102398",article)
         self.assertIn("introduced coefficient (**+0.134504**)",article)
-        self.assertIn("a direct interaction test",article)
+        self.assertIn("direct interaction test",article)
         self.assertIn("without** comparing native–introduced rainfall niches",article)
         si=(PAPER/"SI_S2_COLOUR_NATIVE_INTRO_FIXED_HOLM_CONTEXT.md").read_text(encoding="utf-8")
         self.assertIn("22,936",si)
@@ -101,12 +108,12 @@ class V4GEBMainContract(unittest.TestCase):
         manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(manuscript,blinded)
-        for name in ("Hulme and Barrett (2013)",
+        for name in ("Hulme & Barrett, 2013",
                      "Colautti, Maron & Barrett, 2009",
-                     "Guggisberg et al. (2013)",
-                     "rather than assuming that introduced plants have undergone a recent *species radiation*",
-                     "did not fit a range-status interaction",
-                     "do **not** compare native and introduced climatic niches"):
+                     "Guggisberg et al., 2013",
+                     "not a randomised climate intervention",
+                     "**direct interaction test**",
+                     "no native-versus-introduced climatic-niche analysis"):
             self.assertIn(name,manuscript)
         note=(PAPER/"S2_NATIVE_INTRO_EVOLUTIONARY_RATIONALE_REFERENCES_JA.md").read_text(encoding="utf-8")
         self.assertIn("急速な種分化・適応放散",note)
@@ -144,7 +151,7 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(species["source_name"].split()[1],doc)
         for token in ("156,608","156,750","99.91%","350","seven","100","15","10"):
             self.assertIn(token,paper)
-        self.assertIn("Table S3",paper)
+        self.assertIn("Table S1.1",paper)
         self.assertIn("not random",paper)
         self.assertNotIn("+48.2 mm/month",paper)
 
@@ -155,20 +162,19 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertNotIn("LEGO",article)
         headings=re.findall(r"^### 3\.(\d+)\. (.+)$",article,re.MULTILINE)
         self.assertEqual([int(i) for i,_ in headings],[1,2,3])
-        for prefix in ("### 2.4. Part 1 — Visible phenotypic integration",
-                       "### 2.5. Part 2 — Native-taxon capitulum angle",
-                       "### 2.6. Part 3 — Native/introduced",
-                       "### 3.1. Part 1 — Partial integration",
-                       "### 3.2. Part 2 — Among-taxon image angle",
-                       "### 3.3. Part 3 — Native/introduced colour",
-                       "### 4.1. Part 1 — Integration",
-                       "### 4.2. Part 2 — Climatic precipitation",
-                       "### 4.3. Part 3 — Colour gradients"):
+        for prefix in ("### 2.4. Supplementary matched-photograph trait associations",
+                       "### 2.5. Climatic associations within and among native taxa",
+                       "### 2.6. Within-species native and introduced",
+                       "### 3.1. Global image measurements and precipitation-associated",
+                       "### 3.2. Radiation and elevation gradients",
+                                              "### 4.1. Precipitation, head presentation",
+                       "### 4.2. Floral colour and climate",
+                       "### 4.4. What public photographs add"):
             self.assertIn(prefix,article)
         self.assertIn("not an independent source cohort",article)
         self.assertIn("does **not** create a source S3",article)
-        self.assertIn("phenotypic integration",article.lower())
-        self.assertIn("**123 of 135",article)
+        self.assertIn("SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md",article)
+        self.assertIn("156,683 photographs across 174 taxa",article)
         outline=(PAPER/"GEB_THREE_PART_STRUCTURE_JA.md").read_text(encoding="utf-8")
         for val in ("## 1. 頭花形質の定量化、表現型統合と組合せ",
                     "## 2. 頭花の画像角度とBIO18",
@@ -181,10 +187,10 @@ class V4GEBMainContract(unittest.TestCase):
         paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blind)
-        for key in ("Dalrymple et al. (2020)","Berardi et al., 2016",
-                    "greater image chroma and lower image lightness",
-                    "**Figure 3 (Part 2: featured ecological result).**",
-                    "**Figure 4 (Part 3).**",
+        for key in ("Dalrymple et al., 2020","Berardi et al., 2016",
+                    "positive radiation–chromatic contrast relationship",
+                    "**Figure 3.**",
+                    "**Figure 4.**",
                     "https://doi.org/10.1111/nph.16737",
                     "https://doi.org/10.3732/ajb.1600106"):
             self.assertIn(key,paper)
@@ -205,12 +211,12 @@ class V4GEBMainContract(unittest.TestCase):
         blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(paper,blinded)
         self.assertEqual([int(v) for v in re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)],[1,2,3])
-        for term in ("**Part 1** demonstrates partially integrated",
-                     "**Part 2** identifies the strongest",
-                     "**Part 3** identifies three",
-                     "**Figure 3 (Part 2: featured ecological result).**",
-                     "main figure includes only this Holm-supported term",
-                     "all 80 native-taxon tests with raw, BH and Holm P values"):
+        for term in ("Globally distributed public photographs",
+                     "a larger downward-looking image angle",
+                     "The conspecific native–introduced comparison provides a second ecological perspective.",
+                     "**Figure 3.**",
+                     "The native within-taxon coefficient and the complete 80-test family are in Supporting Information",
+                     "80-test family"):
             self.assertIn(term,paper)
         main_table=paper.split("**Table 2.",1)[1].split("**Out of scope",1)[0]
         self.assertNotIn("| Raw P |",main_table)
@@ -232,36 +238,337 @@ class V4GEBMainContract(unittest.TestCase):
         ci=(ROOT/".github/workflows/v4-geb-main-contract.yml").read_text(encoding="utf-8")
         for value in ("SI_S1_all_80_original_raw_BH_Holm.csv",
                       "figure3_BIO18_among_taxa_image_angle.png",
-                      "figure2_V4_same_photo_RV_matrix.png",
+                      "figure2_cross_functional_trait_pairs.png",
                       "figure4_S2_native_introduced_colour_coefficients.png"):
             self.assertIn(value,ci)
 
-    def test_photo_cross_domain_interaction_discussion_has_primary_sources(self):
+    def test_v4_manuscript_results_before_mechanistic_speculation(self):
         article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
         blind=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
         self.assertEqual(article,blind)
+        self.assertTrue(article.startswith("# Global photographic phenomics reveals"))
+        self.assertIn("regional radiations",article)
+        self.assertIn("Moreyra et al., 2025",article)
+        self.assertIn("Siniscalchi, Ackerfield & Folk, 2023",article)
+        self.assertIn("Hulme & Barrett, 2013",article)
+        self.assertIn("avoidance of pollen wetting and wash-off",article)
+        self.assertIn("only Holm-surviving association",article)
+        self.assertIn("1981–2010 climatic normal",article)
+        self.assertIn("**141,014 native, 156,608 introduced**",article)
+        self.assertIn("three Holm-supported comparisons from a single 128-test family",article)
+        self.assertIn("native coefficient (**+0.136883**)",article)
+        self.assertIn("Holm P of 0.102398",article)
+        self.assertIn("**direct interaction test**",article)
+        self.assertIn("not evidence of rainfall-mediated selection",article)
+        self.assertIn("no native-versus-introduced climatic-niche analysis",article)
+        self.assertIn("**without** comparing native–introduced rainfall niches",article)
+        for doi in ("10.1016/j.ympev.2025.108285",
+                    "10.1086/724310",
+                    "10.1080/17550874.2012.702793",
+                    "10.1111/1365-2745.12009",
+                    "10.1111/nph.16737"):
+            self.assertIn(doi,article)
+        si=(PAPER/"SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md").read_text(encoding="utf-8")
+        for pair in ("−0.225128","−0.246946","+0.019940"):
+            self.assertIn(pair,si)
+        for pair in ("r=−0.2251","r=−0.2469","r=+0.0199"):
+            self.assertNotIn(pair,article)
         audit=(PAPER/"GEB_INTERACTION_FILTER_LITERATURE_AUDIT_20261027_JA.md").read_text(encoding="utf-8")
-        for value in ("−0.2251","−0.2469","−0.0281","−0.0694","r=+0.0199",
-                      "P(landing | approach)", "photographic CIELAB chroma",
-                      "neither a fixed three-trait syndrome", "not pollinator choice",
-                      "capitulum receptacle width", "Neither measure is the photograph-derived height-to-width ratio"):
-            self.assertIn(value,article)
         for value in ("## 2. 実験・比較文献のエビデンス階層",
                       "### H1.", "### H2.", "### H3.", "### H4.", "### H5.",
                       "分類群間", "分類群内", "視覚", "食害"):
             self.assertIn(value,audit)
-        for doi in ("10.1007/s00114-023-01845-w",
-                    "10.1111/ele.13204",
-                    "10.1002/ece3.73221",
-                    "10.1007/s004420100773",
-                    "10.1139/b99-182",
-                    "10.1111/plb.13414",
-                    "10.1073/pnas.071053098"):
-            self.assertIn(doi,article)
-            self.assertIn(doi,audit)
-        self.assertIn("a larger **number of flowering heads per plant**",article)
-        self.assertIn("lower aspect ratio",audit)
         self.assertNotIn("LEGO",article)
+
+    def test_geb_published_style_main_findings_and_display_priorities(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blinded)
+        for term in ("Kuppler et al., 2020","Grenié et al., 2025",
+                     "https://doi.org/10.1111/geb.13077","https://doi.org/10.1111/geb.70131",
+                     "**Table 1.** Source observations and image-angle eligibility",
+                     "| *Cirsium arvense* | 78,646 | 70,964 | 49,072 | 43,195 |",
+                     "| *Cirsium vulgare* | 62,368 | 85,644 | 33,637 | 47,833 |",
+                     "**Total** | **141,014** | **156,608**",
+                     "**Figure 2.** Worldwide sampling coverage",
+                     "The full within- and among-taxon image-metric covariance analysis"):
+            self.assertIn(term,article)
+        self.assertLess(article.index("### 3.1. Global image measurements"),
+                        article.index("### 3.2. Radiation and elevation gradients"))
+        self.assertLess(article.index("### 4.1. Precipitation, head presentation"),
+                        article.index("### 4.4. What public photographs add"))
+        benchmark=(PAPER/"GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md").read_text(encoding="utf-8")
+        for doi in ("10.1111/geb.13077","10.1111/geb.13507",
+                    "10.1111/geb.13789"):
+            self.assertIn(doi,benchmark)
+
+    def test_bio18_geographic_sensitivity_is_si_only_and_not_causal_partition(self):
+        import json
+        path=V4/"results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json"
+        data=json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual((data["n"],data["taxa"]),(168907,178))
+        self.assertEqual(data["source"]["original_secure_workflow_run"],40837107465)
+        self.assertEqual(data["source"]["public_artifact_id"],12881655588)
+        a=data["geographic_fits"]["photo_weighted"]["global_geographic_adjustments"]
+        self.assertAlmostEqual(a["none"]["standardised_beta"],0.04544684307686103,places=7)
+        self.assertAlmostEqual(a["longitude_sector"]["standardised_beta"],0.02003485434695006,places=9)
+        self.assertAlmostEqual(a["spherical_degree2"]["standardised_beta"],-0.003294794324869813,places=9)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        si=(PAPER/"SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md").read_text(encoding="utf-8")
+        self.assertIn("SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md",paper)
+        self.assertIn("Spatial predictors share information with climate", si)
+        self.assertIn("no causal partition", si)
+        self.assertNotIn("The **exact-cohort geographic sensitivity**",paper)
+        self.assertNotIn("geographically structured precipitation–capitulum associations",paper)
+        self.assertTrue((PAPER/"plot_bio18_geographic_sensitivity.py").is_file())
+
+    def test_new_third_ecological_question_not_old_trait_r_claim(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        self.assertIn("### 3.1. Global image measurements",article)
+        self.assertIn("### 3.2. Radiation and elevation gradients",article)
+        self.assertNotIn("r=−0.2251",article)
+        self.assertNotIn("r=−0.2469",article)
+        self.assertTrue((V4/"s1_climate_trait_hypervolume.py").is_file())
+        self.assertTrue((V4/"HYPERVOLUME_CLIMATE_MORPHOSPACE_H3_PREDECLARED_20261029_JA.md").is_file())
+
+    def test_h3_climatic_breadth_and_flower_morphospace_original_source(self):
+        import json
+        h3=(V4/"results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json")
+        source=json.loads(h3.read_text(encoding="utf-8"))
+        self.assertEqual(source["verified_execution"]["run_id"],40841007115)
+        self.assertEqual(source["verified_execution"]["artifact_id"],12883021095)
+        self.assertEqual(source["source"]["quality_eligible_matched_observations"],157822)
+        self.assertEqual(source["source"]["matched_source_taxa"],242)
+        a=source["analyses"]["1degree"]
+        b=source["analyses"]["5degree"]
+        self.assertEqual((a["taxa"],b["taxa"]),(63,31))
+        self.assertAlmostEqual(a["breadth"]["trait_logvolume_slope_per_climate_logvolume"],
+                               0.06689477516770817,places=12)
+        self.assertAlmostEqual(a["breadth"]["sector_conditioned_residual_permutation_p_exploratory"],
+                               0.3875,places=6)
+        self.assertAlmostEqual(a["similarity"]["climate_distance_vs_trait_distance_spearman"],
+                               -0.008144762186869107,places=12)
+        self.assertTrue(a["similarity"]["phylogenetic_evolutionary_convergence_NOT_tested"])
+        manuscript=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        for term in ("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",
+                     "### 4.3. Local climatic similarity and joint capitulum resemblance",
+                     "**157,822 records across 242 taxa**","**63 taxa**",
+                     "not a thresholded hypervolume intersection",
+                     "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md"):
+            self.assertIn(term,manuscript)
+        breadth_si=(PAPER/"SI_H3_CLIMATE_MORPHOSPACE_BREADTH_20261029.md").read_text(encoding="utf-8")
+        for value in ("0.3875", "**−0.0081**", "0.9125", "supplementary H3a and H3b"):
+            self.assertIn(value,breadth_si)
+        self.assertIn("The standardized among-taxon coefficient was **+0.045447**",manuscript)
+        self.assertIn("β=**+0.134504**",manuscript)
+        self.assertIn("β=**−0.173732**",manuscript)
+        self.assertIn("β=**−0.142801**",manuscript)
+        self.assertTrue((PAPER/"plot_h3_climate_morphospace.py").is_file())
+        self.assertTrue((PAPER/"SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md").is_file())
+
+    def test_h3c_climate_analogue_and_h3d_covariance_sources_frozen(self):
+        import json
+        c=json.loads((V4/"results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        d=json.loads((V4/"results/20261029_H3D_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        for payload in (c,d):
+            self.assertEqual(payload["verified_execution"]["github_actions_run"],40847696537)
+            self.assertEqual(payload["verified_execution"]["aggregate_artifact_id"],12885860903)
+            self.assertEqual(payload["source"]["quality_eligible_matched_observations"],157822)
+        for key,n in (("1degree",63),("5degree",31)):
+            r=c["results"][key]
+            self.assertEqual(r["n_taxa"],n)
+            self.assertEqual(r["successful_rarefaction_draws"],24)
+            self.assertAlmostEqual(r["holm2_distance_vs_overlap_p"],0.01,places=6)
+            self.assertEqual(d["summary"][key]["taxa"],n)
+            self.assertFalse(any(t["exploratory_Holm_6_moderations"]<.05
+                                 for t in d["summary"][key]["moderation"]["results"]))
+            self.assertFalse(any(t["exploratory_Holm_3_traits"]<.05
+                                 for t in d["summary"][key]["breadth"]["results"]))
+        self.assertAlmostEqual(c["results"]["1degree"]["primary_trait_distance_advantage_of_climate_matched_cells"],
+                               .040963661993538125,places=12)
+        self.assertAlmostEqual(c["results"]["5degree"]["primary_trait_distance_advantage_of_climate_matched_cells"],
+                               .0943310892554725,places=12)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        for claim in ("**+0.04096**", "**+0.09433**",
+                      "Holm-2 P=0.010",
+                      "conditional climate",
+                      "SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md",
+                      "SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md"):
+            self.assertIn(claim if claim!="conditional climate" else "local climate-analogue analysis",paper)
+        self.assertTrue((PAPER/"plot_h3_climate_morphospace.py").is_file())
+
+    def test_h3c_positive_FROZEN_on_original_source_and_no_overclaimed_overlap(self):
+        import json
+        frozen=(V4/"H3C_SOURCE_VERIFIED_FROZEN_POSITIVE_20261029_JA.md").read_text(encoding="utf-8")
+        d=json.loads((V4/"results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        self.assertEqual(d["source"]["decoded_sha256"],
+                         "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed")
+        self.assertEqual(d["source"]["quality_eligible_matched_observations"],157822)
+        self.assertEqual(d["verified_execution"]["github_actions_run"],40847696537)
+        self.assertEqual(d["verified_execution"]["aggregate_artifact_id"],12885860903)
+        for key,n,beta,kde_p in (("1degree",63,0.040963661993538125,.010),
+                                  ("5degree",31,0.0943310892554725,.015)):
+            z=d["results"][key]
+            self.assertEqual(z["n_taxa"],n)
+            self.assertEqual(z["successful_rarefaction_draws"],24)
+            self.assertAlmostEqual(z["primary_trait_distance_advantage_of_climate_matched_cells"],beta,places=11)
+            self.assertAlmostEqual(z["holm2_distance_vs_overlap_p"],.01,places=6)
+            density=z["climate_analogue_conditional_KDE_L2_overlap"]
+            self.assertAlmostEqual(density["holm2_distance_vs_overlap_p"],kde_p,places=6)
+            self.assertLess(density["mean_conditional_analogue_support"],
+                            density["mean_unconditional_eight_cells"])
+        for claim in ("+0.04096366","+0.09433109","0.61509→0.50742",
+                      "0.53554→0.46046","Holm-2","進化的収束","SI"):
+            self.assertIn(claim,frozen)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        headings=re.findall(r"^### 3\.(\d+)\.",paper,re.MULTILINE)
+        self.assertEqual([int(v) for v in headings],[1,2,3])
+        self.assertIn("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",paper)
+        self.assertIn("**Holm-2 P=0.010**",paper)
+        overlap_si=(PAPER/"SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md").read_text(encoding="utf-8")
+        for value in ("0.61509 / 0.50742", "0.53554 / 0.46046", "not a greater overlap than all cells"):
+            self.assertIn(value,overlap_si)
+        self.assertIn("Holm P=**0.00920635**",paper)
+        self.assertIn("Holm P=**0.01456813**",paper)
+        self.assertIn("Holm P=**0.01925414**",paper)
+        self.assertIn("Holm P=**0.00131233**",paper)
+        self.assertIn("spatial", (PAPER/"SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md").read_text(encoding="utf-8").lower())
+        self.assertNotIn("ecologically adaptive convergent evolution was proven",paper.lower())
+
+    def test_spatial_block_S1_S2_source_locked_as_SI_not_new_holm(self):
+        import json
+        a=json.loads((V4/"results/20261029_S1_BIO18_SPATIAL_BLOCK_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        b=json.loads((V4/"results/20261029_S2_COLOUR_SPATIAL_BLOCK_SOURCE_VERIFIED.json").read_text(encoding="utf-8"))
+        self.assertEqual((a["n_eligible"],a["n_native_taxa"]),(168907,178))
+        self.assertEqual(a["provenance"]["run_id"],40855350461)
+        self.assertAlmostEqual(a["original_beta_recovered"],.04544684307686103,places=7)
+        self.assertEqual(a["spatial_block"]["n_original_source_geo_blocks"],26)
+        self.assertEqual(a["spatial_block"]["n_valid_bootstraps"],399)
+        self.assertEqual(a["spatial_block"]["n_largest_holdouts_retaining_sign"],5)
+        self.assertGreater(a["spatial_block"]["source_block_bootstrap_95_percentile_interval"][0],0)
+        self.assertTrue(a["spatial_block"]["latlon_not_regression_covariates"])
+        self.assertEqual(b["provenance"]["run_id"],40855508122)
+        self.assertEqual((b["source"]["original_focal_wild_records"],len(b["panels"])),(297622,6))
+        expected=[22936,26171,17335,27200,17335,27200]
+        for record,n in zip(b["panels"],expected):
+            self.assertEqual(record["n"],n)
+            self.assertEqual(record["spatial"]["n_valid_bootstraps"],399)
+            self.assertEqual(record["spatial"]["n_largest_holdouts_retaining_sign"],5)
+        introduced=[p for p in b["panels"] if p["range_status"]=="introduced"]
+        self.assertEqual(len(introduced),3)
+        chroma=next(p for p in introduced if p["trait"]=="corolla_lab_chroma")
+        self.assertLess(chroma["spatial"]["source_block_bootstrap_95_percentile_interval"][0],0)
+        self.assertGreater(chroma["spatial"]["source_block_bootstrap_95_percentile_interval"][1],0)
+        for p in introduced:
+            self.assertAlmostEqual(p["beta"],
+                next(v for v in (-.17373187423223405,.1345037874025455,-.14280073287481068)
+                     if abs(v-p["beta"])<1e-6),places=6)
+        paper=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        self.assertEqual(paper,(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8"))
+        for token in ("+0.014569 to +0.084483",
+                      "−0.22949 to −0.05578","−0.28093 to −0.01521",
+                      "−0.07581 to +0.20119",
+                      "SI_S2_COLOUR_SPATIAL_BLOCK_SENSITIVITY_20261029.md",
+                      "SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md",
+                      "### 3.3. Similar local climates are associated with more similar capitulum phenotypes"):
+            self.assertIn(token,paper)
+        self.assertIn("**Holm-2 P=0.010**",paper)
+
+    def test_H3c_postpositive_stability_qualifies_ecological_claim(self):
+        article=(PAPER/"GEB_RESEARCH_ARTICLE.md").read_text(encoding="utf-8")
+        blinded=(PAPER/"GEB_RESEARCH_ARTICLE_BLINDED.md").read_text(encoding="utf-8")
+        self.assertEqual(article,blinded)
+        si=(PAPER/"SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md").read_text(encoding="utf-8")
+        for marker in ("**6 of 6**","**2 of 6**",
+                       "−0.01158","−0.00742",
+                       "40859868003","12891286463",
+                       "not independently replicated"):
+            if marker=="not independently replicated":
+                continue
+            self.assertIn(marker,si)
+        result3=article.split("### 3.3.",1)[1].split("## 4. Discussion",1)[0]
+        for marker in ("positive in all six additional random-seed series",
+                       "Statistical support was more stable at 5°",
+                       "matching threshold, trait composition and regional coverage",
+                       "SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md"):
+            self.assertIn(marker,result3)
+        for unrelated_result in ("permutation P=0.3875", "ρ=−0.0081", "Holm P=0.096"):
+            self.assertNotIn(unrelated_result,result3)
+        for retained in ("### 3.1. Global image measurements and precipitation-associated capitulum presentation",
+                         "### 3.2. Radiation and elevation gradients in native and introduced ranges",
+                         "The standardized among-taxon coefficient was **+0.045447**",
+                         "β=**+0.134504**","β=**−0.142801**","β=**−0.173732**"):
+            self.assertIn(retained,article)
+        self.assertIn("### 3.3. Similar local climates are associated with more similar capitulum phenotypes",article)
+        self.assertNotIn("evolutionary convergence has been demonstrated",article.lower())
+        code=(V4/"s1_h3c_seed_stability.py").read_text(encoding="utf-8")
+        self.assertIn("DRAWS = 24",code)
+        self.assertIn("PERMS = 99",code)
+
+    def test_sampling_coverage_matches_original_cohorts_and_disclosure(self):
+        path = V4 / "results/20261030_SAMPLING_COVERAGE_SOURCE_VERIFIED.json"
+        self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
+                         "ca6d9c787c19758ebed68be53b7370d0fbc8a81b1b10235676c66619df04dc50")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual((data["cell_degrees"], data["minimum_records_per_displayed_cell"]), (5, 5))
+        expected = {
+            "s1_angle": (168907, 178, 118),
+            "h3c_primary": (153843, 63, 105),
+            "arvense_native": (22936, 1, 133),
+            "arvense_introduced": (26171, 1, 14),
+            "vulgare_native": (17335, 1, 62),
+            "vulgare_introduced": (27200, 1, 17),
+        }
+        self.assertEqual({p["panel"] for p in data["panels"]}, set(expected))
+        for panel in data["panels"]:
+            self.assertEqual((panel["total_records"], panel["total_taxa"], panel["suppressed_records"]),
+                             expected[panel["panel"]])
+            self.assertEqual(sum(c["records"] for c in panel["cells"]), panel["shown_records"])
+            self.assertEqual(panel["shown_records"] + panel["suppressed_records"], panel["total_records"])
+            self.assertEqual(len(panel["cells"]), panel["shown_cells"])
+            self.assertEqual(panel["shown_cells"] + panel["suppressed_cells"], panel["total_cells"])
+            self.assertEqual(len({(c["lat_bin"], c["lon_bin"]) for c in panel["cells"]}), len(panel["cells"]))
+            for cell in panel["cells"]:
+                self.assertEqual(set(cell), {"lat_bin", "lon_bin", "records", "taxa"})
+                self.assertTrue(0 <= cell["lat_bin"] < 36 and 0 <= cell["lon_bin"] < 72)
+                self.assertGreaterEqual(cell["records"], 5)
+        verified = data["source_verification"]
+        self.assertEqual((verified["h3_primary_taxa"], verified["h3_primary_taxon_cells"]), (63, 7117))
+        self.assertEqual((verified["h3_secondary_taxa"], verified["h3_secondary_taxon_cells"]), (31, 814))
+        self.assertEqual([r["n"] for r in verified["s2_original_six_rows"]],
+                         [22936, 26171, 17335, 27200, 17335, 27200])
+        for row in verified["s2_original_six_rows"]:
+            self.assertAlmostEqual(row["expected_beta"], row["recovered_beta"], places=10)
+
+    def test_submission_figures_have_verified_provenance_and_vector_masters(self):
+        def sha(path):
+            return hashlib.sha256(path.read_bytes()).hexdigest()
+        coverage = json.loads((PAPER / "figure2_render_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(sha(ROOT / coverage["source"]["path"]), coverage["source"]["sha256"])
+        self.assertEqual(sha(ROOT / coverage["renderer"]["path"]), coverage["renderer"]["sha256"])
+        self.assertEqual(sha(ROOT / coverage["basemap"]["path"]), coverage["basemap"]["sha256"])
+        self.assertEqual(coverage["source"]["ci_run_id"], 41020812565)
+        self.assertEqual(set(coverage["outputs"]), {"png", "pdf", "svg"})
+        for output in coverage["outputs"].values():
+            self.assertEqual(sha(ROOT / output["path"]), output["sha256"])
+        for panel in coverage["presentation"]["panels"]:
+            self.assertEqual(panel["record_sum_of_rendered_cells"], panel["shown_records"])
+            self.assertEqual(panel["number_of_rendered_cell_polygons"], panel["shown_cells"])
+        photos = json.loads((PAPER / "FIGURE1_PHOTO_CREDITS_20261030.json").read_text(encoding="utf-8"))
+        self.assertIsNone(photos["remaining_photo_license_issue"])
+        self.assertEqual(len(photos["photographs"]), 3)
+        for photo in photos["photographs"]:
+            self.assertTrue(photo["source_page_license_verified"])
+            self.assertIn(photo["verified_license"], {"CC BY 4.0", "CC0 1.0"})
+        self.assertEqual(sha(PAPER / "plot_measurement_pipeline_v4.py"), photos["render"]["renderer_sha256"])
+        for name, checksum in photos["render"]["output_files"].items():
+            self.assertEqual(sha(PAPER / "figures" / name), checksum)
+        exports = json.loads((PAPER / "figures/figure3_5_pdf_export_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(exports["outputs"]), 3)
+        for item in exports["outputs"]:
+            path = PAPER / "figures" / item["file"]
+            self.assertEqual(sha(path), item["sha256"])
+            self.assertTrue(path.read_bytes().startswith(b"%PDF-"))
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())

@@ -5,16 +5,42 @@ on:
     branches: [main]
     paths:
       - 'README.md'
+      - 'analysis/README.md'
+      - 'manuscripts/README.md'
+      - 'legacy/README.md'
+      - 'docs/REPOSITORY_MAP.md'
+      - 'docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md'
+      - 'docs/BRANCH_ARCHIVE_TRIAGE_20261030.md'
+      - 'tests/test_repository_navigation.py'
+      - 'scripts/repository_ref_audit.py'
+      - 'tests/test_repository_ref_audit.py'
+      - 'docs/BRANCH_REF_INPUT_20261030.json'
       - 'analysis/v4/**'
       - 'manuscripts/v4_s1_s2_frozen_20261025/**'
       - 'legacy/v3/**'
+      - 'tests/test_v4_geb_main_contract.py'
+      - 'tests/test_v4_review_aggregate_bundle.py'
+      - 'tests/test_v4_submission_sampling_coverage.py'
       - '.github/workflows/v4-geb-main-contract.yml'
   pull_request:
     paths:
       - 'README.md'
+      - 'analysis/README.md'
+      - 'manuscripts/README.md'
+      - 'legacy/README.md'
+      - 'docs/REPOSITORY_MAP.md'
+      - 'docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md'
+      - 'docs/BRANCH_ARCHIVE_TRIAGE_20261030.md'
+      - 'tests/test_repository_navigation.py'
+      - 'scripts/repository_ref_audit.py'
+      - 'tests/test_repository_ref_audit.py'
+      - 'docs/BRANCH_REF_INPUT_20261030.json'
       - 'analysis/v4/**'
       - 'manuscripts/v4_s1_s2_frozen_20261025/**'
       - 'legacy/v3/**'
+      - 'tests/test_v4_geb_main_contract.py'
+      - 'tests/test_v4_review_aggregate_bundle.py'
+      - 'tests/test_v4_submission_sampling_coverage.py'
       - '.github/workflows/v4-geb-main-contract.yml'
 permissions:
   contents: read
@@ -33,13 +59,23 @@ jobs:
           python-version: '3.12'
       - name: Check journal abstract, locked numbers, archive and static sources
         run: |
+          python -m unittest discover -s tests -p 'test_repository_navigation.py' -v
+          python -m unittest discover -s tests -p 'test_repository_ref_audit.py' -v
           python -m unittest discover -s tests -p 'test_v4_geb_main_contract.py' -v
+          python -m unittest discover -s tests -p 'test_v4_review_aggregate_bundle.py' -v
           python -m py_compile analysis/v4/final_v4_bio18_holm_freeze.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/build_full_supplement.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_cross_functional_pairs.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_frozen_summary.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/verify_s2_frozen_colour_context.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_s2_native_introduced_colour.py
           python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_angle_part2.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_h3_climate_morphospace.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_geographic_sensitivity.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/build_submission_documents.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/build_review_aggregate_bundle.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_measurement_pipeline_v4.py
+          python -m py_compile manuscripts/v4_s1_s2_frozen_20261025/plot_sampling_coverage_v4.py
       - name: Recover SHA-256-fixed original aggregated results
         run: |
           set -euo pipefail
@@ -56,21 +92,28 @@ jobs:
           test $(($(wc -l < work/geb_v4/si/Table_S2_S2_original_native_introduced_colour_coefficients.csv)-1)) -eq 6
       - name: Regenerate 208 frozen phenotype-environment tests, 28 RV pairs and non-niche figures
         run: |
-          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'matplotlib>=3.8,<4'
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'matplotlib>=3.8,<4'
+          python -m unittest discover -s tests -p 'test_v4_submission_sampling_coverage.py' -v
           python manuscripts/v4_s1_s2_frozen_20261025/build_full_supplement.py --artifact work/geb_v4/source.zip --out work/geb_v4/si
           test $(($(wc -l < work/geb_v4/si/Table_S1_full_208_BIO18_tests.csv)-1)) -eq 208
           test $(($(wc -l < work/geb_v4/si/Table_S2_all_28_RV_pairs.csv)-1)) -eq 28
           python manuscripts/v4_s1_s2_frozen_20261025/plot_frozen_summary.py --output-dir work/geb_v4/figures
           python manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_angle_part2.py --artifact work/geb_v4/source.zip --output-dir work/geb_v4/figures --si-dir work/geb_v4/si
+          python manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_geographic_sensitivity.py --output-dir work/geb_v4/si
+          test -s work/geb_v4/si/figure3_BIO18_geographic_sensitivity.png
+          test -s work/geb_v4/si/figure3_BIO18_geographic_sensitivity.svg
           test $(($(wc -l < work/geb_v4/si/SI_S1_all_80_original_raw_BH_Holm.csv)-1)) -eq 80
           test $(($(wc -l < work/geb_v4/si/SI_S1_BIO18_image_angle_both_scales.csv)-1)) -eq 2
           python manuscripts/v4_s1_s2_frozen_20261025/plot_s2_native_introduced_colour.py --source work/geb_v4/si/Table_S2_S2_original_native_introduced_colour_coefficients.csv --output-dir work/geb_v4/figures
-          cp work/geb_v4/si/Figure_S1_S1_all_28_RV.png work/geb_v4/figures/figure2_V4_same_photo_RV_matrix.png
-          cp work/geb_v4/si/Figure_S1_S1_all_28_RV.svg work/geb_v4/figures/figure2_V4_same_photo_RV_matrix.svg
-          test -s work/geb_v4/figures/figure2_V4_same_photo_RV_matrix.png
+          python manuscripts/v4_s1_s2_frozen_20261025/plot_cross_functional_pairs.py --pairs-csv work/geb_v4/si/Table_S2_all_28_RV_pairs.csv --output-dir work/geb_v4/figures
+          test -s work/geb_v4/figures/figure2_cross_functional_trait_pairs.png
+          test -s work/geb_v4/si/Figure_S1_S1_all_28_RV.png
           test -s work/geb_v4/figures/figure3_BIO18_among_taxa_image_angle.png
           test -s work/geb_v4/si/SI_Figure_BIO18_image_angle_both_scales.png
           test -s work/geb_v4/figures/figure4_S2_native_introduced_colour_coefficients.png
+          python manuscripts/v4_s1_s2_frozen_20261025/plot_h3_climate_morphospace.py --output-dir work/geb_v4/figures
+          test -s work/geb_v4/figures/figure5_H3_climatic_breadth_floral_morphospace.png
+          test -s work/geb_v4/figures/figure5_H3_climatic_breadth_floral_morphospace.svg
       - name: Validate original cross-domain signed correlations (descriptive only)
         run: |
           python - <<'PY'

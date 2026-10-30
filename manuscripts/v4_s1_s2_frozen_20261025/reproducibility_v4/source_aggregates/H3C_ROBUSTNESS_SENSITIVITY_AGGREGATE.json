@@ -1,0 +1,562 @@
+{
+  "schema": "azami_h3c_post_positive_robustness_20261029_v1",
+  "status": "SOURCE_VERIFIED_EXPLORATORY_DOES_NOT_AMEND_ORIGINAL_H3C",
+  "source_provenance": {
+    "decoded_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_observations": 313350,
+    "quality_eligible_matched_observations": 157822,
+    "matched_source_taxa": 242
+  },
+  "fixed_earlier_H3c": {
+    "original_positive_1degree_distance_advantage": 0.040963661993538125,
+    "original_positive_5degree_distance_advantage": 0.0943310892554725,
+    "original_24_rarefaction_199_permutation_Holm_2_unmodified": true
+  },
+  "diagnostic_design": {
+    "n_cell_draws": 24,
+    "permutations_per_draw": 99,
+    "original_climate_threshold": 0.9,
+    "original_bandwidth": 0.75,
+    "same_taxon_complete_3D_phenotype_vector_resampled_as_unit": true,
+    "all_post_positive_conditions_displayed_no_result_selection": true
+  },
+  "results": {
+    "1degree": {
+      "status": "source_matched_sensitivity",
+      "n_taxa": 63,
+      "conditions": {
+        "full3_reference_0p9": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 233.58333333333334,
+          "mean_supported_climate_analog_cell_pairs": 2633.9583333333335,
+          "distance_advantage": {
+            "observed": 0.006907924261237631,
+            "null_mean": -0.00033728419882676243,
+            "observed_minus_null_mean": 0.007245208460064393,
+            "unadjusted_permutation_p_diagnostic_only": 0.54,
+            "sd_across_repeated_cell_samplings": 0.05265203166732224,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.11164207283376093,
+            "null_mean": -0.11634729345047426,
+            "observed_minus_null_mean": 0.004705220616713329,
+            "unadjusted_permutation_p_diagnostic_only": 0.07,
+            "sd_across_repeated_cell_samplings": 0.014819314643337416,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "narrow_climate_0p7": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 125.29166666666667,
+          "mean_supported_climate_analog_cell_pairs": 1066.8333333333333,
+          "distance_advantage": {
+            "observed": 0.0261500590325634,
+            "null_mean": -0.001188718862694972,
+            "observed_minus_null_mean": 0.027338777895258373,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.06488686003057825,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.1293771899697053,
+            "null_mean": -0.13783593925825277,
+            "observed_minus_null_mean": 0.008458749288547479,
+            "unadjusted_permutation_p_diagnostic_only": 0.02,
+            "sd_across_repeated_cell_samplings": 0.020376437414383625,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.7,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "wide_climate_1p1": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 345.375,
+          "mean_supported_climate_analog_cell_pairs": 5251.208333333333,
+          "distance_advantage": {
+            "observed": 0.010927613963257301,
+            "null_mean": -0.00019520191138528266,
+            "observed_minus_null_mean": 0.011122815874642583,
+            "unadjusted_permutation_p_diagnostic_only": 0.27,
+            "sd_across_repeated_cell_samplings": 0.04455896251191661,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.09017373429610753,
+            "null_mean": -0.09165753678782745,
+            "observed_minus_null_mean": 0.001483802491719921,
+            "unadjusted_permutation_p_diagnostic_only": 0.58,
+            "sd_across_repeated_cell_samplings": 0.011047738236888855,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 1.1,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_angle": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 233.58333333333334,
+          "mean_supported_climate_analog_cell_pairs": 2633.9583333333335,
+          "distance_advantage": {
+            "observed": 0.00908733763514481,
+            "null_mean": -0.0010061038470454329,
+            "observed_minus_null_mean": 0.010093441482190242,
+            "unadjusted_permutation_p_diagnostic_only": 0.33,
+            "sd_across_repeated_cell_samplings": 0.04008172478469778,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.08687249953448341,
+            "null_mean": -0.08909273291890377,
+            "observed_minus_null_mean": 0.0022202333844203587,
+            "unadjusted_permutation_p_diagnostic_only": 0.47,
+            "sd_across_repeated_cell_samplings": 0.01412604254863648,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": 0,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_chroma": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 233.58333333333334,
+          "mean_supported_climate_analog_cell_pairs": 2633.9583333333335,
+          "distance_advantage": {
+            "observed": -0.011658810684877952,
+            "null_mean": -8.376253679439359e-05,
+            "observed_minus_null_mean": -0.011575048148083559,
+            "unadjusted_permutation_p_diagnostic_only": 0.33,
+            "sd_across_repeated_cell_samplings": 0.05105817221083547,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.11068775925475455,
+            "null_mean": -0.11046808641043583,
+            "observed_minus_null_mean": -0.00021967284431871625,
+            "unadjusted_permutation_p_diagnostic_only": 0.92,
+            "sd_across_repeated_cell_samplings": 0.012225544852245767,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": 1,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_outline_aspect": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 233.58333333333334,
+          "mean_supported_climate_analog_cell_pairs": 2633.9583333333335,
+          "distance_advantage": {
+            "observed": 0.020174237560049817,
+            "null_mean": 0.00018883378420263402,
+            "observed_minus_null_mean": 0.019985403775847184,
+            "unadjusted_permutation_p_diagnostic_only": 0.07,
+            "sd_across_repeated_cell_samplings": 0.047308507029754705,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.08277580801630928,
+            "null_mean": -0.09218879963428236,
+            "observed_minus_null_mean": 0.009412991617973085,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.01429739414233047,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": 2,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_western_sector": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 27,
+          "n_geographic_sectors": 2,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 56.625,
+          "mean_supported_climate_analog_cell_pairs": 607.2916666666666,
+          "distance_advantage": {
+            "observed": 0.08248146835631906,
+            "null_mean": 0.0006654214675753322,
+            "observed_minus_null_mean": 0.08181604688874372,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.09378590057998878,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.11290125849436845,
+            "null_mean": -0.12412243499990538,
+            "observed_minus_null_mean": 0.011221176505536931,
+            "unadjusted_permutation_p_diagnostic_only": 0.04,
+            "sd_across_repeated_cell_samplings": 0.0236842548574095,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": 0,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_central_sector": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 42,
+          "n_geographic_sectors": 2,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 48.083333333333336,
+          "mean_supported_climate_analog_cell_pairs": 718.375,
+          "distance_advantage": {
+            "observed": -0.008102895316771748,
+            "null_mean": -0.0006790133120926247,
+            "observed_minus_null_mean": -0.007423882004679124,
+            "unadjusted_permutation_p_diagnostic_only": 0.76,
+            "sd_across_repeated_cell_samplings": 0.07744700491180548,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.10012925584196708,
+            "null_mean": -0.10793665480082724,
+            "observed_minus_null_mean": 0.007807398958860165,
+            "unadjusted_permutation_p_diagnostic_only": 0.21,
+            "sd_across_repeated_cell_samplings": 0.02486424820058958,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": 1,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_eastern_sector": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 57,
+          "n_geographic_sectors": 2,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 125.875,
+          "mean_supported_climate_analog_cell_pairs": 1301.6666666666667,
+          "distance_advantage": {
+            "observed": 0.030499590706207603,
+            "null_mean": -0.0023712954728374908,
+            "observed_minus_null_mean": 0.03287088617904509,
+            "unadjusted_permutation_p_diagnostic_only": 0.03,
+            "sd_across_repeated_cell_samplings": 0.06834698924087108,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.10869924565981055,
+            "null_mean": -0.11587900642368187,
+            "observed_minus_null_mean": 0.007179760763871321,
+            "unadjusted_permutation_p_diagnostic_only": 0.07,
+            "sd_across_repeated_cell_samplings": 0.016159196734354463,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": 2,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "kde_h0p50": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 233.58333333333334,
+          "mean_supported_climate_analog_cell_pairs": 2633.9583333333335,
+          "distance_advantage": {
+            "observed": 0.006907924261237631,
+            "null_mean": -0.00033728419882676243,
+            "observed_minus_null_mean": 0.007245208460064393,
+            "unadjusted_permutation_p_diagnostic_only": 0.54,
+            "sd_across_repeated_cell_samplings": 0.05265203166732224,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.11059956229477728,
+            "null_mean": -0.11604333655341222,
+            "observed_minus_null_mean": 0.005443774258634931,
+            "unadjusted_permutation_p_diagnostic_only": 0.02,
+            "sd_across_repeated_cell_samplings": 0.01526767234296025,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.5,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "kde_h1p00": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 63,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 233.58333333333334,
+          "mean_supported_climate_analog_cell_pairs": 2633.9583333333335,
+          "distance_advantage": {
+            "observed": 0.006907924261237631,
+            "null_mean": -0.00033728419882676243,
+            "observed_minus_null_mean": 0.007245208460064393,
+            "unadjusted_permutation_p_diagnostic_only": 0.54,
+            "sd_across_repeated_cell_samplings": 0.05265203166732224,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.09292167514591665,
+            "null_mean": -0.09694894935643183,
+            "observed_minus_null_mean": 0.004027274210515186,
+            "unadjusted_permutation_p_diagnostic_only": 0.1,
+            "sd_across_repeated_cell_samplings": 0.01236275297935398,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 1.0,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        }
+      },
+      "geographic_source_support": {
+        "eligible_taxon_cell_pairs": 7117,
+        "eligible_taxa": 63
+      }
+    },
+    "5degree": {
+      "status": "source_matched_sensitivity",
+      "n_taxa": 31,
+      "conditions": {
+        "full3_reference_0p9": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 31,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 105.25,
+          "mean_supported_climate_analog_cell_pairs": 1138.9166666666667,
+          "distance_advantage": {
+            "observed": 0.10035313083339341,
+            "null_mean": 0.0020763643114310856,
+            "observed_minus_null_mean": 0.09827676652196232,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.07207545707511401,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.07027881271852983,
+            "null_mean": -0.08355815834922817,
+            "observed_minus_null_mean": 0.013279345630698339,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.016387853942732233,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "narrow_climate_0p7": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 31,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 62.875,
+          "mean_supported_climate_analog_cell_pairs": 533.5833333333334,
+          "distance_advantage": {
+            "observed": 0.11695384246846581,
+            "null_mean": -0.0016940228917890754,
+            "observed_minus_null_mean": 0.11864786536025489,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.07323647037883012,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.08974141620078992,
+            "null_mean": -0.09853595111258341,
+            "observed_minus_null_mean": 0.008794534911793495,
+            "unadjusted_permutation_p_diagnostic_only": 0.04,
+            "sd_across_repeated_cell_samplings": 0.021130800105795194,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.7,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "wide_climate_1p1": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 31,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 150.41666666666666,
+          "mean_supported_climate_analog_cell_pairs": 2138.3333333333335,
+          "distance_advantage": {
+            "observed": 0.07314999532367995,
+            "null_mean": 0.0002886451551958727,
+            "observed_minus_null_mean": 0.07286135016848408,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.05754496601027714,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.05687704799449537,
+            "null_mean": -0.06603360926364325,
+            "observed_minus_null_mean": 0.009156561269147885,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.010953282149528183,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 1.1,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": null,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_angle": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 31,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 105.25,
+          "mean_supported_climate_analog_cell_pairs": 1138.9166666666667,
+          "distance_advantage": {
+            "observed": 0.0795252883137041,
+            "null_mean": 0.0016477945255235686,
+            "observed_minus_null_mean": 0.07787749378818054,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.060661043057393525,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.05920236774265819,
+            "null_mean": -0.06531486790065338,
+            "observed_minus_null_mean": 0.006112500157995193,
+            "unadjusted_permutation_p_diagnostic_only": 0.06,
+            "sd_across_repeated_cell_samplings": 0.015201422939499276,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": 0,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_chroma": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 31,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 105.25,
+          "mean_supported_climate_analog_cell_pairs": 1138.9166666666667,
+          "distance_advantage": {
+            "observed": 0.08200902147440219,
+            "null_mean": 0.002853470628640251,
+            "observed_minus_null_mean": 0.07915555084576194,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.06744535458905614,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.06848434687852091,
+            "null_mean": -0.086620768060066,
+            "observed_minus_null_mean": 0.018136421181545084,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.013778335580051803,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": 1,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        },
+        "without_outline_aspect": {
+          "status": "estimated_exploratory_robustness",
+          "n_taxa": 31,
+          "n_geographic_sectors": 3,
+          "successful_draws": 24,
+          "requested_draws": 24,
+          "mean_supported_cross_sector_taxon_pairs": 105.25,
+          "mean_supported_climate_analog_cell_pairs": 1138.9166666666667,
+          "distance_advantage": {
+            "observed": 0.07512647165268403,
+            "null_mean": 0.00037072438208997447,
+            "observed_minus_null_mean": 0.07475574727059406,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.06546561549903546,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "conditional_KDE_overlap": {
+            "observed": -0.05027562233697649,
+            "null_mean": -0.0641674839960564,
+            "observed_minus_null_mean": 0.013891861659079914,
+            "unadjusted_permutation_p_diagnostic_only": 0.01,
+            "sd_across_repeated_cell_samplings": 0.01823544270202074,
+            "original_H3c_Holm_2_not_recomputed": true
+          },
+          "climate_distance_threshold": 0.9,
+          "kde_bandwidth": 0.75,
+          "omitted_trait_axis": 2,
+          "omitted_geographic_sector": null,
+          "not_independent_confirmatory_hypothesis_testing": true
+        }
+      },
+      "geographic_source_support": {
+        "eligible_taxon_cell_pairs": 814,
+        "eligible_taxa": 31
+      }
+    }
+  },
+  "limits": {
+    "post_positive_exploratory_not_independent_validation": true,
+    "no_phylogenetic_convergence_test": true,
+    "no_space_climate_causal_disentangling": true,
+    "frozen_S1_80_S2_128_tests_untouched": true,
+    "anonymous_aggregate_only": true
+  }
+}

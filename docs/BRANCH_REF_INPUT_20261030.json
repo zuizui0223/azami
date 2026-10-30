@@ -1,0 +1,2891 @@
+{
+  "schema_version": 1,
+  "snapshot_date_jst": "2026-10-30",
+  "source_pr159_head_before_inventory_commit": "cf053d7f227f1ff5bcec2ca1d393b85d6d29cf64",
+  "repository": "zuizui0223/azami",
+  "default_branch": "main",
+  "branches": [
+    {
+      "name": "agent/ch1-complete-draft-with-figures",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/ch1-multivariate-tmb-spatial",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/ch1-submission-gates-20260807",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/clarify-eazami-boundary-20260822",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/eazami-direct-colour-crop-harmonization-20260827",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/eazami-handoff-boundary-20260820",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/eazami-japan14-existing-cohort-audit-20260827",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/eazami-japan38-all-continuous-bridge-20260827",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/eazami-mechanism-boundary-20260820",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/eazami-pattern-v2-handoff-20260820",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/ecological-discussion-references-20260821",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/figure1-audit-workflow",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/figure1-measurement-audit",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/observation-pattern-handoff-20260820",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "agent/supplement-figures-20260820",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "analysis/ch1-environment-first-20260910",
+      "commit": {
+        "sha": "1046ac457bc25f9b76a51a5b50cb0f04fdf0e3bd"
+      }
+    },
+    {
+      "name": "analysis/ch1-hypothesis-recovery-audit",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "analysis/ch1-multitrait-env-conditional-20261024",
+      "commit": {
+        "sha": "1e3770b3c9a6b4054f1fe1aac0d39c88e06916ce"
+      }
+    },
+    {
+      "name": "analysis/ch1-rv-estimator-validity-20260915",
+      "commit": {
+        "sha": "5ef09cedd66835ee0f78edf54e0de07ae4c528dc"
+      }
+    },
+    {
+      "name": "analysis/ch1-v3-biological-axes-20260910",
+      "commit": {
+        "sha": "53b825771b558f8064de063ee6df3bef480cdac8"
+      }
+    },
+    {
+      "name": "analysis/ch1-v3-full-vif-sensitivity-20260909",
+      "commit": {
+        "sha": "bc9d02fe0c06cb1b11206d69d543b4bb770b6106"
+      }
+    },
+    {
+      "name": "analysis/ch1-v3-full-vifstep-20260909",
+      "commit": {
+        "sha": "6997e3e0448c3f09693d0cd7c285cd9beb4483b3"
+      }
+    },
+    {
+      "name": "analysis/ch1-wcvp-taxonomy-sensitivity-20260912",
+      "commit": {
+        "sha": "5b8af3de01165715658de2b612b8e7d427856324"
+      }
+    },
+    {
+      "name": "analysis/geb-v2-within-among-alignment",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "analysis/v4-bio18-spatial-holdout-20261029",
+      "commit": {
+        "sha": "72bcbc3b1db49a7bce41bf85757a7c836058bd4f"
+      }
+    },
+    {
+      "name": "analysis/v4-s1-s2-extreme-bioclim-lego-20261024",
+      "commit": {
+        "sha": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159"
+      }
+    },
+    {
+      "name": "analysis/v4-s2-joint-four-axis-recheck-20261025",
+      "commit": {
+        "sha": "873af95101e97307a2a1ceba3d60d78c9e7d0765"
+      }
+    },
+    {
+      "name": "archive/ch1-precleanup-20260827",
+      "commit": {
+        "sha": "584e4a9863ab0c133a050f15b4bb862730db7faf"
+      }
+    },
+    {
+      "name": "archive/chunk-actions-artifacts-20260903",
+      "commit": {
+        "sha": "e78cea0d26f910694f24d094a77a90e3568dd97e"
+      }
+    },
+    {
+      "name": "archive/pr142-v4-20261020-preconsolidation",
+      "commit": {
+        "sha": "18c0a035d71be7d2e74d6cff872b232cd4c8e3a5"
+      }
+    },
+    {
+      "name": "archive/pr92-preclean-20260909",
+      "commit": {
+        "sha": "942e91ef7efef3f7ea03dc479e56ee4ec54392b1"
+      }
+    },
+    {
+      "name": "archive/zenodo-draft-22703215",
+      "commit": {
+        "sha": "c4c5c226ba8a4d193d5fe58ff3464704ae88a481"
+      }
+    },
+    {
+      "name": "build/ch1-representative-holdout",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "chore/ch1-current-archive-staging-20260912",
+      "commit": {
+        "sha": "d0c0acd5f055ad5a20e19309741eaaa8f62a4c06"
+      }
+    },
+    {
+      "name": "chore/ch1-geb-scope-freeze-20260912",
+      "commit": {
+        "sha": "3bb1d6f1baef1beb0e4a59bb94d0f450411fe794"
+      }
+    },
+    {
+      "name": "chore/fix-readme-and-workflows",
+      "commit": {
+        "sha": "ac3796bb97c41a57a98c56e27f5c1b169ed3474c"
+      }
+    },
+    {
+      "name": "chore/verify-zenodo-anonymous-20260904",
+      "commit": {
+        "sha": "f890256fe550b9de2cfc4edd164570361d0996d3"
+      }
+    },
+    {
+      "name": "claude/cirsium-ch1-image-traits-cci80f",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "cleanup/code-only-prepublication-20260902",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "cleanup/geb-layout-recipes-20260911",
+      "commit": {
+        "sha": "c6d16fddd3b697c9b40a0bad8be9efc2b0eba394"
+      }
+    },
+    {
+      "name": "cleanup/geb-main-20260911",
+      "commit": {
+        "sha": "0bffad4c6890e5c3dfcf6d0c5f668a218d2feeb4"
+      }
+    },
+    {
+      "name": "cleanup/submission-only-20260820",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "codex/ch1-continuous-trait-universe",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "codex/ch1-spatial-scale-reframe",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "codex/pr69-continuous-reanalysis",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "codex/v4-native-integration-workflow",
+      "commit": {
+        "sha": "a686874188105158e6a98babb8e316b088db257b"
+      }
+    },
+    {
+      "name": "codex/world-trait-t2-t3-20261025",
+      "commit": {
+        "sha": "c376d51ac8afb97b8d3651d9896f102ed9711980"
+      }
+    },
+    {
+      "name": "diag/ch1-zenodo-bucket-transfer-state-20260928",
+      "commit": {
+        "sha": "d19297008f37a688be0820b040e5420130c341e4"
+      }
+    },
+    {
+      "name": "diag/ch1-zenodo-draft-identity-20260927",
+      "commit": {
+        "sha": "6ffb24a1723f2095e7a8172bc71471a4b4610430"
+      }
+    },
+    {
+      "name": "diag/ch1-zenodo-write-scope-20260927",
+      "commit": {
+        "sha": "49c45561777990a0c37b9a645a623605651b06dc"
+      }
+    },
+    {
+      "name": "docs/ch1-current-figure-surface-20260912",
+      "commit": {
+        "sha": "7ff3bcf4d9bc18af552ec0fbf1e96294dc500755"
+      }
+    },
+    {
+      "name": "docs/ch1-geb-submission-audit-20260912",
+      "commit": {
+        "sha": "412cb2b3b6f839512ab38e24f9f57728ca8f306b"
+      }
+    },
+    {
+      "name": "docs/ch1-geb-word-budget-20260912",
+      "commit": {
+        "sha": "c2c331b3373b14dc87b50c1c84f19ac92fd7405f"
+      }
+    },
+    {
+      "name": "docs/ch1-manuscript-novelty",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "docs/ch1-repro-boundary-20260926",
+      "commit": {
+        "sha": "e69f4d37a94e4321ccdfac764938ea1b13fdacaa"
+      }
+    },
+    {
+      "name": "docs/ch1-zenodo-publication-handoff-20260927",
+      "commit": {
+        "sha": "9c514b8280fb66564b833047820b980765f2398c"
+      }
+    },
+    {
+      "name": "docs/reproducibility-runbook-20260904",
+      "commit": {
+        "sha": "a67d343ffbeb7979fce9d3c51a3de38d399db61d"
+      }
+    },
+    {
+      "name": "docs/third-party-reproducibility-20260904",
+      "commit": {
+        "sha": "7f27ecf599b30d9b42766898dee3de3af5e95396"
+      }
+    },
+    {
+      "name": "dummy-noop",
+      "commit": {
+        "sha": "52c207a64a09b243e021dc6e7b20598ab4ab7f02"
+      }
+    },
+    {
+      "name": "explore/v4-functional-modules-20261020",
+      "commit": {
+        "sha": "4e7168b37284577011964cbac3a2fbab9291f13d"
+      }
+    },
+    {
+      "name": "explore/v4-upstream-redesign-20261020",
+      "commit": {
+        "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d"
+      }
+    },
+    {
+      "name": "feature/ch1-continuous-primary-traits",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "feature/ch1-historical-constraint-sensitivity",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "feature/ch1-paleoniche-pilot",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "feature/ch1-qc-join-involucre",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "feature/ch1-within-species-expansion",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "fig/ch1-v3-scale-integration-20260912",
+      "commit": {
+        "sha": "865967277804015852206d6a70f504c1b8544093"
+      }
+    },
+    {
+      "name": "figures/real-photo-yolo-world-map-v2",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "fix/ch1-accept-zenodo-discard-204-20260927",
+      "commit": {
+        "sha": "00bac081cc23baf462f0b4adae06014f6706bb3f"
+      }
+    },
+    {
+      "name": "fix/ch1-clean-stale-zenodo-bucket-heads-20260928",
+      "commit": {
+        "sha": "036e1fdf9d658fb47762048d9d7f1bf03670df2d"
+      }
+    },
+    {
+      "name": "fix/ch1-exhaustive-download-audit",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "fix/ch1-exhaustive-shard-artifact-path",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "fix/ch1-publish-existing-zenodo-draft-20260927",
+      "commit": {
+        "sha": "0dd2afe4a8452093faeea5e77eb5fee649d14771"
+      }
+    },
+    {
+      "name": "fix/ch1-refetch-zenodo-draft-files-20260927",
+      "commit": {
+        "sha": "583be8091186cad7d3a58c84bd8b97c822d365bf"
+      }
+    },
+    {
+      "name": "fix/ch1-reset-stale-zenodo-draft-20260927",
+      "commit": {
+        "sha": "fd18b51e81a886245db6340584ff648f9380518a"
+      }
+    },
+    {
+      "name": "fix/ch1-reuse-transferred-zenodo-file-20260928",
+      "commit": {
+        "sha": "11bf50b6ab4644e89bea61e5abb925996b1faeb4"
+      }
+    },
+    {
+      "name": "fix/ch1-scale-figure-margin-20260912",
+      "commit": {
+        "sha": "3804c6e33c66335ae8eae4f52c53e6b7a0743f77"
+      }
+    },
+    {
+      "name": "fix/ch1-select-real-zenodo-draft-20260927",
+      "commit": {
+        "sha": "f337645ff04e629d2d287c060624d24ee11f23c2"
+      }
+    },
+    {
+      "name": "fix/ch1-use-zenodo-bucket-upload-20260928",
+      "commit": {
+        "sha": "58fad24f654766409e7c2f0905cb57cda69c9bde"
+      }
+    },
+    {
+      "name": "fix/ch1-wait-zenodo-file-transfer-20260927",
+      "commit": {
+        "sha": "71c3137e37905bd7200a238697ac2286775dea07"
+      }
+    },
+    {
+      "name": "fix/ch1-zenodo-bucket-diag-response-20260928",
+      "commit": {
+        "sha": "202fed9c5bf4a5c1a52d7acd807e830ee9dcc484"
+      }
+    },
+    {
+      "name": "fix/ch1-zenodo-delete-deposition-file-endpoint-20260927",
+      "commit": {
+        "sha": "f3fb7247907401bca41d23d1307c58e354dea478"
+      }
+    },
+    {
+      "name": "fix/ch1-zenodo-exclude-manuscript-20260927",
+      "commit": {
+        "sha": "b86b4bdf918436f8846302ab808d3a00e588bef7"
+      }
+    },
+    {
+      "name": "fix/ch1-zenodo-staging-workflow-20260926",
+      "commit": {
+        "sha": "761f280f0a1e236836cda38e6b08d391554900a2"
+      }
+    },
+    {
+      "name": "fix/figure-style-source-integrity-20260902",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "fix/prepub-safe-figure-style-20260902",
+      "commit": {
+        "sha": "2e0c77d7087c12dffe6b286e5d0a8adcee97baf1"
+      }
+    },
+    {
+      "name": "integrate/pr81-auto-audit-20260901",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "main",
+      "commit": {
+        "sha": "84dc178791f5c7d6bbcd66ba7d6b66e97aec9188"
+      }
+    },
+    {
+      "name": "manuscript/geb-bio18-featured-si-raw-bh-holm-20261026",
+      "commit": {
+        "sha": "25033879c90d3b0372a2f23d4b194b36324c01de"
+      }
+    },
+    {
+      "name": "manuscript/geb-main-supp-model-system-20260828",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "manuscript/geb-s2-residence-time-literature-20261025",
+      "commit": {
+        "sha": "b81c1add46597d3d1c7cc5ef55df0ffbcee96753"
+      }
+    },
+    {
+      "name": "manuscript/geb-s2-two-species-eligibility-rationale-20261025",
+      "commit": {
+        "sha": "8e2d5bb48ded845870b135b7f60f0671ce8f7040"
+      }
+    },
+    {
+      "name": "manuscript/geb-submission-release",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "manuscript/geb-three-part-phenotype-framework-20261026",
+      "commit": {
+        "sha": "3a1b18747a7f214bc7b61c3b18836a6ccc9ec818"
+      }
+    },
+    {
+      "name": "manuscript/geb-trait-combinations-pollinator-filters-lit-20261027",
+      "commit": {
+        "sha": "2f43c2394b64808c57685238c4c70cd5c49cdff1"
+      }
+    },
+    {
+      "name": "manuscript/geb-v3-v4-minimal-ecology-figures-20261026",
+      "commit": {
+        "sha": "ca3d5bce237515173067d7b9517a2385abb318c9"
+      }
+    },
+    {
+      "name": "manuscript/geb-v4-s2-introduced-colour-interpretation-20261025",
+      "commit": {
+        "sha": "7f40629703c816cad56b271df4e90c4d65d1af51"
+      }
+    },
+    {
+      "name": "manuscript/v4-lego-conditional-interaction-refinement-20261027",
+      "commit": {
+        "sha": "cf053d7f227f1ff5bcec2ca1d393b85d6d29cf64"
+      }
+    },
+    {
+      "name": "manuscript/v4-s1-s2-frozen-paper-20261025",
+      "commit": {
+        "sha": "9477dac821a071fb6f6d9b63afd5d3539a5a0cf0"
+      }
+    },
+    {
+      "name": "paper/geb-s2-fouraxis-real-results-20261025",
+      "commit": {
+        "sha": "4351b9533a0d6190e60025950e596a475ec545f6"
+      }
+    },
+    {
+      "name": "refactor/ch1-submission-cleanup",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "release/ch1-publish-zenodo-v3-20260927",
+      "commit": {
+        "sha": "a1cca5f11fb09471185a3331f6b75fd0f09a9bfe"
+      }
+    },
+    {
+      "name": "release/geb-v4-s1s2-main-legacy-v3-20261025",
+      "commit": {
+        "sha": "51a24e3ce47125597501f77dc8426493fa8a43f1"
+      }
+    },
+    {
+      "name": "repair/reproducibility-completeness-20260903",
+      "commit": {
+        "sha": "d4777d71d752f93f22c6256eb1567e2cce827cf3"
+      }
+    },
+    {
+      "name": "repair/reproducibility-pipeline-20260903",
+      "commit": {
+        "sha": "ee1b47e8d1a4ae5c888eb57e3c3d5ff370a96a9a"
+      }
+    },
+    {
+      "name": "repro/ch1-anonymous-review-bundle-20260915",
+      "commit": {
+        "sha": "9ca2446276dc9fa601b888c9d8144fca83e3bf90"
+      }
+    },
+    {
+      "name": "repro/ch1-current-figure-bundle-20260926",
+      "commit": {
+        "sha": "191c4463e4d9e7516571c38ef13ea5696bc82654"
+      }
+    },
+    {
+      "name": "repro/ch1-current-release-builder-20260912",
+      "commit": {
+        "sha": "d0efe920246e73329c100d1380f127dca8e46afc"
+      }
+    },
+    {
+      "name": "repro/ch1-freeze-latest-zenodo-staging-20260926",
+      "commit": {
+        "sha": "89c1c2a7cf61848bf373a209498021e1be22d422"
+      }
+    },
+    {
+      "name": "repro/ch1-record-data-only-zenodo-staging-20260927",
+      "commit": {
+        "sha": "70818c2543e060c137509c88293c435d7d9e9b82"
+      }
+    },
+    {
+      "name": "repro/ch1-record-final-data-candidate-20260927",
+      "commit": {
+        "sha": "55eb3752862d268045cf6eb5435e996692425e9d"
+      }
+    },
+    {
+      "name": "repro/ch1-record-manuscript-free-staging-20260927",
+      "commit": {
+        "sha": "84e4db58852a79cdcccd46ffddbd651462762d01"
+      }
+    },
+    {
+      "name": "repro/ch1-record-zenodo-staging-20260926",
+      "commit": {
+        "sha": "f91c7923aa00da3058909566b52471a6eda288b8"
+      }
+    },
+    {
+      "name": "repro/ch1-release-input-freeze-20260926",
+      "commit": {
+        "sha": "ffff33ca052c73546b79f7b0005199017cb0cddb"
+      }
+    },
+    {
+      "name": "repro/ch1-release-metadata-contract-20260912",
+      "commit": {
+        "sha": "08ef69bc42b97a0c92187d4e32c4a1d5d7edfd44"
+      }
+    },
+    {
+      "name": "repro/ch1-si-qa-metadata-prep-20260927",
+      "commit": {
+        "sha": "2df2e149b4484de31a6c6781f729007f39a9b51d"
+      }
+    },
+    {
+      "name": "repro/ch1-stage-taxonomy-result-20260912",
+      "commit": {
+        "sha": "53c9b330fbdbf8b338c742046cf98aee95a52cc6"
+      }
+    },
+    {
+      "name": "repro/ch1-zenodo-data-final-20260927",
+      "commit": {
+        "sha": "277123a3abaec072088a40a57e3cd49909926586"
+      }
+    },
+    {
+      "name": "repro/ch1-zenodo-data-only-20260927",
+      "commit": {
+        "sha": "bafc382efe10574d55769090e8655c5afc9a094b"
+      }
+    },
+    {
+      "name": "repro/ch1-zenodo-staging-bundle-20260926",
+      "commit": {
+        "sha": "80a3e1f1ab3ee1b87b14a967028699064aab042b"
+      }
+    },
+    {
+      "name": "repro/zenodo-22295791-publication",
+      "commit": {
+        "sha": "7610a311e42540e968d69678672c4e0257a6f976"
+      }
+    },
+    {
+      "name": "repro/zenodo-anonymous-verification-20260904",
+      "commit": {
+        "sha": "8cf386fc9b7fefb6fda48bc127244fcb775f2ec9"
+      }
+    },
+    {
+      "name": "review/supervisor-comments-20260831",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "reviewer/bias-control-audit-2026-08-26",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "revision/ch1-v3-20260907",
+      "commit": {
+        "sha": "6061befaf56ee545bb3b2b4a80ed220d2def1190"
+      }
+    },
+    {
+      "name": "run/ch1-exhaustive-full-20260711",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "run/ch1-exhaustive-merge-only-20260712",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "run/ch1-exhaustive-pilot-shard1-20260711",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "run/ch1-exhaustive-pilot-shard1-v2-20260711",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "run/ch1-exhaustive-queue-20260711",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "run/ch1-exhaustive-queue-20260711-v2",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "scope/geb-v4-20261024-no-range-niche-20261025",
+      "commit": {
+        "sha": "7cc8b3024ddb4b8abdabd555256dcb75393dc392"
+      }
+    },
+    {
+      "name": "simplify/ch1-representative-holdout",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "snapshot/v4-final-bio18-holm-20261024",
+      "commit": {
+        "sha": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159"
+      }
+    },
+    {
+      "name": "tmp-ignore",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "name": "tmp/ch1-si-figure-pack-20260913",
+      "commit": {
+        "sha": "c830d42e2f9b9586fce273f6fc47338d1b277390"
+      }
+    },
+    {
+      "name": "validation/literature-orientation-supp-20260901",
+      "commit": {
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    }
+  ],
+  "pulls": [
+    {
+      "number": 160,
+      "title": "V4.1: geographic taxon turnover conditions the global BIO18–capitulum angle pattern",
+      "state": "open",
+      "head": {
+        "ref": "analysis/v4-bio18-spatial-holdout-20261029",
+        "sha": "72bcbc3b1db49a7bce41bf85757a7c836058bd4f"
+      },
+      "base": {
+        "ref": "manuscript/v4-lego-conditional-interaction-refinement-20261027",
+        "sha": "d09705ff8669957af3554bf48af50d161bb2d5a7"
+      }
+    },
+    {
+      "number": 159,
+      "title": "GEB V4: global floral phenomics, climate-linked traits and local morphospace alignment",
+      "state": "open",
+      "head": {
+        "ref": "manuscript/v4-lego-conditional-interaction-refinement-20261027",
+        "sha": "cf053d7f227f1ff5bcec2ca1d393b85d6d29cf64"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "84dc178791f5c7d6bbcd66ba7d6b66e97aec9188"
+      }
+    },
+    {
+      "number": 158,
+      "title": "GEB: evidence-graded pollinator landing, colour signals and seed-predator tradeoffs for Cirsium trait combinations",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-trait-combinations-pollinator-filters-lit-20261027",
+        "sha": "2f43c2394b64808c57685238c4c70cd5c49cdff1"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "f93b2b4ea96f7da9138bea591ae26a7e16711bdb"
+      }
+    },
+    {
+      "number": 157,
+      "title": "GEB: BIO18 image-angle as Part 2 main result; raw/BH/Holm and nonpassing slopes in SI",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-bio18-featured-si-raw-bh-holm-20261026",
+        "sha": "25033879c90d3b0372a2f23d4b194b36324c01de"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "107ce6c9d886965fb2d9701cfa84f764d6219b6e"
+      }
+    },
+    {
+      "number": 156,
+      "title": "GEB: minimal V3→V4 story update; connect ecological colour predictions and rebuild figure roles",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-v3-v4-minimal-ecology-figures-20261026",
+        "sha": "ca3d5bce237515173067d7b9517a2385abb318c9"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "30f407b73159e10419e1df763d70a28cb02f420f"
+      }
+    },
+    {
+      "number": 155,
+      "title": "GEB V4: three-part paper — global environment, native-introduced history, phenotypic integration",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-three-part-phenotype-framework-20261026",
+        "sha": "3a1b18747a7f214bc7b61c3b18836a6ccc9ec818"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "9ce62304ef9465c9b7349a11fc93f6c279154921"
+      }
+    },
+    {
+      "number": 154,
+      "title": "GEB S2: document why exactly two species qualify for historical native–introduced comparisons",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-s2-two-species-eligibility-rationale-20261025",
+        "sha": "8e2d5bb48ded845870b135b7f60f0671ce8f7040"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "410f9b4250ecd564cb270bd4b24a2fff27c19441"
+      }
+    },
+    {
+      "number": 153,
+      "title": "GEB S2: clarify native–introduced historical comparison and verify invasion-evolution literature",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-s2-residence-time-literature-20261025",
+        "sha": "b81c1add46597d3d1c7cc5ef55df0ffbcee96753"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a129a797a71ea3b5e618aedfed81b765887f54e8"
+      }
+    },
+    {
+      "number": 152,
+      "title": "GEB: interpret S2 introduced-stratum colour signals using original native counterparts",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-v4-s2-introduced-colour-interpretation-20261025",
+        "sha": "7f40629703c816cad56b271df4e90c4d65d1af51"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "237d393e104c2a1dc30027d977461af1e32d395e"
+      }
+    },
+    {
+      "number": 151,
+      "title": "GEB: return to frozen Oct 24 V4 S1–S2; defer native–introduced precipitation niche comparison",
+      "state": "closed",
+      "head": {
+        "ref": "scope/geb-v4-20261024-no-range-niche-20261025",
+        "sha": "7cc8b3024ddb4b8abdabd555256dcb75393dc392"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "e921c570fc08e0b07aac5eaef280fb9e05ea8a9b"
+      }
+    },
+    {
+      "number": 150,
+      "title": "GEB S2: source-real BIO18 four-axis natural contrasts and native–introduced interpretation",
+      "state": "closed",
+      "head": {
+        "ref": "paper/geb-s2-fouraxis-real-results-20261025",
+        "sha": "4351b9533a0d6190e60025950e596a475ec545f6"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "271e982a7deadd8ab229662491052ef431f6fe71"
+      }
+    },
+    {
+      "number": 149,
+      "title": "Promote frozen V4 S1–S2 GEB manuscript to main; archive V3 without deleting science",
+      "state": "closed",
+      "head": {
+        "ref": "release/geb-v4-s1s2-main-legacy-v3-20261025",
+        "sha": "51a24e3ce47125597501f77dc8426493fa8a43f1"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d"
+      }
+    },
+    {
+      "number": 148,
+      "title": "S2 source-real four-axis native–introduced niche and angle recheck (exploratory)",
+      "state": "open",
+      "head": {
+        "ref": "analysis/v4-s2-joint-four-axis-recheck-20261025",
+        "sha": "873af95101e97307a2a1ceba3d60d78c9e7d0765"
+      },
+      "base": {
+        "ref": "analysis/v4-s1-s2-extreme-bioclim-lego-20261024",
+        "sha": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159"
+      }
+    },
+    {
+      "number": 147,
+      "title": "Manuscript: V4 frozen S1–S2 climatic associations and visible phenotypic modules",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/v4-s1-s2-frozen-paper-20261025",
+        "sha": "9477dac821a071fb6f6d9b63afd5d3539a5a0cf0"
+      },
+      "base": {
+        "ref": "snapshot/v4-final-bio18-holm-20261024",
+        "sha": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159"
+      }
+    },
+    {
+      "number": 146,
+      "title": "V4 FINAL S1–S2: freeze BIO18 four-variable Holm results and observable phenotype LEGO",
+      "state": "open",
+      "head": {
+        "ref": "analysis/v4-s1-s2-extreme-bioclim-lego-20261024",
+        "sha": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159"
+      },
+      "base": {
+        "ref": "codex/v4-native-integration-workflow",
+        "sha": "73ecc4ad4d49748976b8ed991599aa9d354dff0f"
+      }
+    },
+    {
+      "number": 145,
+      "title": "Chapter 1: test climate-conditioned multitrait covariation without rewriting frozen claims",
+      "state": "open",
+      "head": {
+        "ref": "analysis/ch1-multitrait-env-conditional-20261024",
+        "sha": "1e3770b3c9a6b4054f1fe1aac0d39c88e06916ce"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d"
+      }
+    },
+    {
+      "number": 144,
+      "title": "V4: rain protection and capitulum orientation across space, introductions and phylogeny",
+      "state": "open",
+      "head": {
+        "ref": "codex/v4-native-integration-workflow",
+        "sha": "a686874188105158e6a98babb8e316b088db257b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d"
+      }
+    },
+    {
+      "number": 143,
+      "title": "V4: within- and between-species environmental gradients of colour, orientation and head outline",
+      "state": "closed",
+      "head": {
+        "ref": "codex/v4-common-slope-preserved-d0a588b",
+        "sha": "a7b870dc85475e9ad4d955269074f38e2e219c83"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d"
+      }
+    },
+    {
+      "number": 142,
+      "title": "V3 reproducibility + native-first 27-endpoint handoff (upstream remeasurement paused)",
+      "state": "closed",
+      "head": {
+        "ref": "explore/v4-functional-modules-20261020",
+        "sha": "4e7168b37284577011964cbac3a2fbab9291f13d"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b463dbc938e454baa54b2e480f7f1d8badd7795d"
+      }
+    },
+    {
+      "number": 141,
+      "title": "Remove stale incomplete Zenodo bucket heads before publish",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-clean-stale-zenodo-bucket-heads-20260928",
+        "sha": "036e1fdf9d658fb47762048d9d7f1bf03670df2d"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "22887476251a8e29560e38975a2c77c2a7233da8"
+      }
+    },
+    {
+      "number": 140,
+      "title": "Harden Zenodo bucket transfer diagnostic",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-zenodo-bucket-diag-response-20260928",
+        "sha": "202fed9c5bf4a5c1a52d7acd807e830ee9dcc484"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "c3a8e1f431fc800ec6047b1e80c46546b892d99c"
+      }
+    },
+    {
+      "number": 139,
+      "title": "Diagnose Zenodo bucket transfer state",
+      "state": "closed",
+      "head": {
+        "ref": "diag/ch1-zenodo-bucket-transfer-state-20260928",
+        "sha": "d19297008f37a688be0820b040e5420130c341e4"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "d936143f2c78df547dea1119b344cdcb04963ef3"
+      }
+    },
+    {
+      "number": 138,
+      "title": "Upload Chapter 1 v3 data through Zenodo bucket Files API",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-use-zenodo-bucket-upload-20260928",
+        "sha": "58fad24f654766409e7c2f0905cb57cda69c9bde"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "643ba0854f00ebdaaa362ab7f9207e9c23a4f421"
+      }
+    },
+    {
+      "number": 137,
+      "title": "Reuse verified Zenodo draft file across publish retries",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-reuse-transferred-zenodo-file-20260928",
+        "sha": "11bf50b6ab4644e89bea61e5abb925996b1faeb4"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "aa363bbdc0c5b2f2a16873c322e48f09ab25a6e7"
+      }
+    },
+    {
+      "number": 136,
+      "title": "Wait for Zenodo file transfer before publishing",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-wait-zenodo-file-transfer-20260927",
+        "sha": "71c3137e37905bd7200a238697ac2286775dea07"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a45b7073e05d8abefa57c4d553e464ec9fabed77"
+      }
+    },
+    {
+      "number": 135,
+      "title": "Refetch full Zenodo draft before replacing files",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-refetch-zenodo-draft-files-20260927",
+        "sha": "583be8091186cad7d3a58c84bd8b97c822d365bf"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "aa758a33e583b4072e13760a75b5de06cf4f60a3"
+      }
+    },
+    {
+      "number": 134,
+      "title": "Select only true unpublished Zenodo draft",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-select-real-zenodo-draft-20260927",
+        "sha": "f337645ff04e629d2d287c060624d24ee11f23c2"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "343a53d7b728f6e3d50f0485b494dc56d94f8308"
+      }
+    },
+    {
+      "number": 133,
+      "title": "Diagnose Zenodo new-version draft identity",
+      "state": "closed",
+      "head": {
+        "ref": "diag/ch1-zenodo-draft-identity-20260927",
+        "sha": "6ffb24a1723f2095e7a8172bc71471a4b4610430"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "717fb97684a85f43a816253405d3d7f7841b5a16"
+      }
+    },
+    {
+      "number": 132,
+      "title": "Diagnose Zenodo deposit write scope",
+      "state": "closed",
+      "head": {
+        "ref": "diag/ch1-zenodo-write-scope-20260927",
+        "sha": "49c45561777990a0c37b9a645a623605651b06dc"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "d14d92ef20107d98bc98f8039f0fab6a88ff6913"
+      }
+    },
+    {
+      "number": 131,
+      "title": "Use Zenodo deposition file delete endpoint",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-zenodo-delete-deposition-file-endpoint-20260927",
+        "sha": "f3fb7247907401bca41d23d1307c58e354dea478"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "66a36172dcb0380f9b8d51e36d7d852275cb6e08"
+      }
+    },
+    {
+      "number": 130,
+      "title": "Accept Zenodo discard HTTP 204",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-accept-zenodo-discard-204-20260927",
+        "sha": "00bac081cc23baf462f0b4adae06014f6706bb3f"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "07c90569359a98513335469969c28571d71ab268"
+      }
+    },
+    {
+      "number": 129,
+      "title": "Reset only stale locked Zenodo v2-shaped draft",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-reset-stale-zenodo-draft-20260927",
+        "sha": "fd18b51e81a886245db6340584ff648f9380518a"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "71113ba65b9129abf3884dba2c41e93b70edef4c"
+      }
+    },
+    {
+      "number": 128,
+      "title": "Reuse existing Zenodo new-version draft",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-publish-existing-zenodo-draft-20260927",
+        "sha": "0dd2afe4a8452093faeea5e77eb5fee649d14771"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "89f9db9b305a36f48cc3e2ad56ab41aa949c01ae"
+      }
+    },
+    {
+      "number": 127,
+      "title": "Publish Chapter 1 v3 data-only archive to Zenodo",
+      "state": "closed",
+      "head": {
+        "ref": "release/ch1-publish-zenodo-v3-20260927",
+        "sha": "a1cca5f11fb09471185a3331f6b75fd0f09a9bfe"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "70801352e71636d131c70bb41bc8b2c51143f1bc"
+      }
+    },
+    {
+      "number": 126,
+      "title": "Add Chapter 1 Zenodo publication handoff",
+      "state": "closed",
+      "head": {
+        "ref": "docs/ch1-zenodo-publication-handoff-20260927",
+        "sha": "9c514b8280fb66564b833047820b980765f2398c"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "d7857a4b0e7e6301d20cbc1eea82a769e40fe220"
+      }
+    },
+    {
+      "number": 125,
+      "title": "Record release-ready Chapter 1 Zenodo data candidate",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-record-final-data-candidate-20260927",
+        "sha": "55eb3752862d268045cf6eb5435e996692425e9d"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7483ae8e20fa5df2439ad524312d3ac9a0fbf71f"
+      }
+    },
+    {
+      "number": 124,
+      "title": "Build approved final data-only Zenodo candidate",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-zenodo-data-final-20260927",
+        "sha": "277123a3abaec072088a40a57e3cd49909926586"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a4950e9e60d3d7c0c679fdb1046b649877a84263"
+      }
+    },
+    {
+      "number": 123,
+      "title": "Record verified data-only Zenodo staging bundle",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-record-data-only-zenodo-staging-20260927",
+        "sha": "70818c2543e060c137509c88293c435d7d9e9b82"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "810637d9dfdde9c4b810c2472f43f254786ce614"
+      }
+    },
+    {
+      "number": 122,
+      "title": "Make Chapter 1 Zenodo release analysis-data only",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-zenodo-data-only-20260927",
+        "sha": "bafc382efe10574d55769090e8655c5afc9a094b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "d8d040cc71b8e0585f8bfb06c10ab03e870534f1"
+      }
+    },
+    {
+      "number": 121,
+      "title": "Record manuscript-free Chapter 1 Zenodo staging bundle",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-record-manuscript-free-staging-20260927",
+        "sha": "84e4db58852a79cdcccd46ffddbd651462762d01"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b128d8e3cb4c326c1c038f5d1e7f22ffe37b48b4"
+      }
+    },
+    {
+      "number": 120,
+      "title": "Exclude manuscripts from Chapter 1 Zenodo release",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-zenodo-exclude-manuscript-20260927",
+        "sha": "b86b4bdf918436f8846302ab808d3a00e588bef7"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "fbea78f0a6ffbc8806dbee757a61b4b13eeb856c"
+      }
+    },
+    {
+      "number": 119,
+      "title": "Record SI document QA and prepare Zenodo metadata",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-si-qa-metadata-prep-20260927",
+        "sha": "2df2e149b4484de31a6c6781f729007f39a9b51d"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a6c0085d8b578e777998f657e412cb3f1c9feb39"
+      }
+    },
+    {
+      "number": 118,
+      "title": "Freeze latest main Zenodo staging identity",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-freeze-latest-zenodo-staging-20260926",
+        "sha": "89c1c2a7cf61848bf373a209498021e1be22d422"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "5c0ae2af9a92bb79295fd11d77ad5bbc25f39757"
+      }
+    },
+    {
+      "number": 117,
+      "title": "Record assembled Chapter 1 Zenodo staging archive",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-record-zenodo-staging-20260926",
+        "sha": "f91c7923aa00da3058909566b52471a6eda288b8"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "4ba2304eba83e9a54f616d33cc85fd7ad818caf0"
+      }
+    },
+    {
+      "number": 116,
+      "title": "Fix Zenodo staging workflow runner paths",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-zenodo-staging-workflow-20260926",
+        "sha": "761f280f0a1e236836cda38e6b08d391554900a2"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "939d90709a45432927b8080389dae445aabf4aed"
+      }
+    },
+    {
+      "number": 115,
+      "title": "Build current Chapter 1 Zenodo staging bundle",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-zenodo-staging-bundle-20260926",
+        "sha": "80a3e1f1ab3ee1b87b14a967028699064aab042b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "85fe9e4e11f9baa2c07aac18732fad049a9d2b7b"
+      }
+    },
+    {
+      "number": 114,
+      "title": "Build current GEB figure surface for release",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-current-figure-bundle-20260926",
+        "sha": "191c4463e4d9e7516571c38ef13ea5696bc82654"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "45f0f54fccd2d10f3efd5bb61eb591c34266bf0e"
+      }
+    },
+    {
+      "number": 113,
+      "title": "Freeze current release inputs and replay environment",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-release-input-freeze-20260926",
+        "sha": "ffff33ca052c73546b79f7b0005199017cb0cddb"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "3a4e1d228b6c0a51e5050321d8726943f986e07d"
+      }
+    },
+    {
+      "number": 112,
+      "title": "Clarify upstream-data boundary and current replay status",
+      "state": "closed",
+      "head": {
+        "ref": "docs/ch1-repro-boundary-20260926",
+        "sha": "e69f4d37a94e4321ccdfac764938ea1b13fdacaa"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b802975365b32267d804aaafe25494d81e39c97e"
+      }
+    },
+    {
+      "number": 111,
+      "title": "Build anonymous Chapter 1 peer-review bundle",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-anonymous-review-bundle-20260915",
+        "sha": "9ca2446276dc9fa601b888c9d8144fca83e3bf90"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "dd8b68bc65811d8a4b402629d2d84a3120979bc1"
+      }
+    },
+    {
+      "number": 110,
+      "title": "Audit RV estimator validity for Chapter 1 scale contrast",
+      "state": "closed",
+      "head": {
+        "ref": "analysis/ch1-rv-estimator-validity-20260915",
+        "sha": "5ef09cedd66835ee0f78edf54e0de07ae4c528dc"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "e479e10485abcc2fe0c97dda9ee9acf36dd2d7b7"
+      }
+    },
+    {
+      "number": 109,
+      "title": "TEMP: pack canonical SI figures for document assembly",
+      "state": "closed",
+      "head": {
+        "ref": "tmp/ch1-si-figure-pack-20260913",
+        "sha": "c830d42e2f9b9586fce273f6fc47338d1b277390"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "e479e10485abcc2fe0c97dda9ee9acf36dd2d7b7"
+      }
+    },
+    {
+      "number": 108,
+      "title": "Freeze GEB word budget and SI numbering plan",
+      "state": "closed",
+      "head": {
+        "ref": "docs/ch1-geb-word-budget-20260912",
+        "sha": "c2c331b3373b14dc87b50c1c84f19ac92fd7405f"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b7ee3cd392c51b4e0e21b4616d91e21d604922a5"
+      }
+    },
+    {
+      "number": 107,
+      "title": "Record durable WCVP taxonomy sensitivity evidence",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-stage-taxonomy-result-20260912",
+        "sha": "53c9b330fbdbf8b338c742046cf98aee95a52cc6"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "62e6920fcd7746f8955aa399bbab5861bd92a72d"
+      }
+    },
+    {
+      "number": 106,
+      "title": "Add GEB blinded-review submission audit",
+      "state": "closed",
+      "head": {
+        "ref": "docs/ch1-geb-submission-audit-20260912",
+        "sha": "412cb2b3b6f839512ab38e24f9f57728ca8f306b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "0bcd3d15afee91176e57b3e7be671d7518555c5c"
+      }
+    },
+    {
+      "number": 105,
+      "title": "Add predeclared WCVP taxonomy sensitivity for Chapter 1",
+      "state": "closed",
+      "head": {
+        "ref": "analysis/ch1-wcvp-taxonomy-sensitivity-20260912",
+        "sha": "5b8af3de01165715658de2b612b8e7d427856324"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "9ad5097721d7fad8d40579a52d6370a96652dedd"
+      }
+    },
+    {
+      "number": 104,
+      "title": "Require approved metadata for final Chapter 1 release",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-release-metadata-contract-20260912",
+        "sha": "08ef69bc42b97a0c92187d4e32c4a1d5d7edfd44"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "5ba5f3e04bf2a8e482f2808df1aa174c0fdbad40"
+      }
+    },
+    {
+      "number": 103,
+      "title": "Fix scale-integration figure edge clipping",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-scale-figure-margin-20260912",
+        "sha": "3804c6e33c66335ae8eae4f52c53e6b7a0743f77"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "5ba5f3e04bf2a8e482f2808df1aa174c0fdbad40"
+      }
+    },
+    {
+      "number": 102,
+      "title": "Freeze current Chapter 1 figure roles",
+      "state": "closed",
+      "head": {
+        "ref": "docs/ch1-current-figure-surface-20260912",
+        "sha": "7ff3bcf4d9bc18af552ec0fbf1e96294dc500755"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "5ba5f3e04bf2a8e482f2808df1aa174c0fdbad40"
+      }
+    },
+    {
+      "number": 101,
+      "title": "Add current scale-dependent integration main-figure recipe",
+      "state": "closed",
+      "head": {
+        "ref": "fig/ch1-v3-scale-integration-20260912",
+        "sha": "865967277804015852206d6a70f504c1b8544093"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a7c264d43ce085f8911e0cc7928478878ed709a0"
+      }
+    },
+    {
+      "number": 100,
+      "title": "Add fail-closed Chapter 1 release bundle builder",
+      "state": "closed",
+      "head": {
+        "ref": "repro/ch1-current-release-builder-20260912",
+        "sha": "d0efe920246e73329c100d1380f127dca8e46afc"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "2093417191e0207f8062974b23eb92c56685c260"
+      }
+    },
+    {
+      "number": 99,
+      "title": "Stage current Chapter 1 artifacts for durable release",
+      "state": "closed",
+      "head": {
+        "ref": "chore/ch1-current-archive-staging-20260912",
+        "sha": "d0c0acd5f055ad5a20e19309741eaaa8f62a4c06"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "fa55e9a7205e29e97ed6f8a182e4cfdb25217189"
+      }
+    },
+    {
+      "number": 97,
+      "title": "Freeze Chapter 1 at GEB-ready scope",
+      "state": "closed",
+      "head": {
+        "ref": "chore/ch1-geb-scope-freeze-20260912",
+        "sha": "3bb1d6f1baef1beb0e4a59bb94d0f450411fe794"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "52c207a64a09b243e021dc6e7b20598ab4ab7f02"
+      }
+    },
+    {
+      "number": 96,
+      "title": "Reproducible figure layout revisions",
+      "state": "closed",
+      "head": {
+        "ref": "cleanup/geb-layout-recipes-20260911",
+        "sha": "c6d16fddd3b697c9b40a0bad8be9efc2b0eba394"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "1857f0ad398b8a5c41d6080443ef6146a675c185"
+      }
+    },
+    {
+      "number": 95,
+      "title": "Unify current reproduction and isolate historical implementations",
+      "state": "closed",
+      "head": {
+        "ref": "cleanup/geb-main-20260911",
+        "sha": "0bffad4c6890e5c3dfcf6d0c5f668a218d2feeb4"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "fe25abd46e7235c85e6da191f976e1c8a02d0406"
+      }
+    },
+    {
+      "number": 94,
+      "title": "ch1: environment-first continuous capitulum trait synthesis",
+      "state": "closed",
+      "head": {
+        "ref": "analysis/ch1-environment-first-20260910",
+        "sha": "1046ac457bc25f9b76a51a5b50cb0f04fdf0e3bd"
+      },
+      "base": {
+        "ref": "analysis/ch1-v3-biological-axes-20260910",
+        "sha": "4deae0815880baf5db3e2795bd79369344e8bace"
+      }
+    },
+    {
+      "number": 93,
+      "title": "ch1 v3: scale-dependent biological integration with frozen-v2 robustness anchors",
+      "state": "closed",
+      "head": {
+        "ref": "analysis/ch1-v3-biological-axes-20260910",
+        "sha": "53b825771b558f8064de063ee6df3bef480cdac8"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a52ff425c49611be804c4070e491f76a7d129482"
+      }
+    },
+    {
+      "number": 92,
+      "title": "ch1 v3: exploratory capitulum hypervolumes and phenotype distributions",
+      "state": "closed",
+      "head": {
+        "ref": "revision/ch1-v3-20260907",
+        "sha": "6061befaf56ee545bb3b2b4a80ed220d2def1190"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "a52ff425c49611be804c4070e491f76a7d129482"
+      }
+    },
+    {
+      "number": 91,
+      "title": "Close Zenodo anonymous redownload gate",
+      "state": "closed",
+      "head": {
+        "ref": "chore/verify-zenodo-anonymous-20260904",
+        "sha": "f890256fe550b9de2cfc4edd164570361d0996d3"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "82f0e22bd57ed50819a704d66528b5fa98d26bd1"
+      }
+    },
+    {
+      "number": 90,
+      "title": "Record published Zenodo v1 pending anonymous verification",
+      "state": "closed",
+      "head": {
+        "ref": "repro/zenodo-22295791-publication",
+        "sha": "7610a311e42540e968d69678672c4e0257a6f976"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "ea1eb0710c6485bc7a5601fdc0c6c808b00aa6f8"
+      }
+    },
+    {
+      "number": 89,
+      "title": "Define independent third-party Chapter 1 reproducibility",
+      "state": "closed",
+      "head": {
+        "ref": "docs/third-party-reproducibility-20260904",
+        "sha": "7f27ecf599b30d9b42766898dee3de3af5e95396"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "eb49860156f06b9833af9f2fcb66c8b2fda5cda0"
+      }
+    },
+    {
+      "number": 87,
+      "title": "Document audited Chapter 1 reproduction materials and Windows runbook",
+      "state": "closed",
+      "head": {
+        "ref": "docs/reproducibility-runbook-20260904",
+        "sha": "a67d343ffbeb7979fce9d3c51a3de38d399db61d"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "33ce3b34385c56fbc3f9c7b4964b4d9c51b4160f"
+      }
+    },
+    {
+      "number": 86,
+      "title": "Complete Chapter 1 recovery inventory and archive guardrails",
+      "state": "closed",
+      "head": {
+        "ref": "repair/reproducibility-completeness-20260903",
+        "sha": "d4777d71d752f93f22c6256eb1567e2cce827cf3"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "9b9ccf13f0790314ccf6884caedc4b591c7d88cc"
+      }
+    },
+    {
+      "number": 84,
+      "title": "Repair Chapter 1 reproducibility pipeline after cleanup",
+      "state": "closed",
+      "head": {
+        "ref": "repair/reproducibility-pipeline-20260903",
+        "sha": "ee1b47e8d1a4ae5c888eb57e3c3d5ff370a96a9a"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b09a7640e54f6edf03060e72447c021840c7c28f"
+      }
+    },
+    {
+      "number": 83,
+      "title": "Prepublication content removed",
+      "state": "closed",
+      "head": {
+        "ref": "fix/figure-style-source-integrity-20260902",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      },
+      "base": {
+        "ref": "integrate/pr81-auto-audit-20260901",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "number": 82,
+      "title": "Prepublication content removed",
+      "state": "closed",
+      "head": {
+        "ref": "integrate/pr81-auto-audit-20260901",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      },
+      "base": {
+        "ref": "review/supervisor-comments-20260831",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "number": 81,
+      "title": "Prepublication content removed",
+      "state": "closed",
+      "head": {
+        "ref": "validation/literature-orientation-supp-20260901",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "number": 80,
+      "title": "Resolve supervisor comments and strengthen Chapter 1 method audit",
+      "state": "closed",
+      "head": {
+        "ref": "review/supervisor-comments-20260831",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "number": 79,
+      "title": "Align GEB v2 figures, tables, and manuscript format",
+      "state": "closed",
+      "head": {
+        "ref": "audit/geb-v2-figures-20260828",
+        "sha": "0777fab52f9ef5ae4f13545fa9a78736e311eba7"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "692a5eb98efce6dc8b8a2ba49a3e0eacf92d46d7"
+      }
+    },
+    {
+      "number": 78,
+      "title": "Separate GEB main/supp and clarify thistles as a rapid-radiation model system",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-main-supp-model-system-20260828",
+        "sha": "44606ae93bead7e869af9ab9fd481ffcdd4c4c58"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "3e81324674aa118db6e3a2b64adef3de034d83b1"
+      }
+    },
+    {
+      "number": 77,
+      "title": "Export Japan38 bridge for all continuous capitulum traits",
+      "state": "closed",
+      "head": {
+        "ref": "agent/eazami-japan38-all-continuous-bridge-20260827",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7d28f2340e1d1b7fed5bd7a5611f52853e09a388"
+      }
+    },
+    {
+      "number": 76,
+      "title": "Build the frozen GEB submission release",
+      "state": "closed",
+      "head": {
+        "ref": "manuscript/geb-submission-release",
+        "sha": "075febfdac751715171af294412efabb4d491b24"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "cbf238f6080e48877953820d56880d55a1239887"
+      }
+    },
+    {
+      "number": 75,
+      "title": "Close Chapter 1 hypothesis recovery and synchronize the final narrative",
+      "state": "closed",
+      "head": {
+        "ref": "analysis/ch1-hypothesis-recovery-audit",
+        "sha": "1fd6636d5cd31a6beaef4acc0e79f6a913736292"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "65c7bf610f864c893acfaf628bd957cda734b346"
+      }
+    },
+    {
+      "number": 74,
+      "title": "Audit existing strict-spatial colour evidence for all 14 exact Japan38 concepts",
+      "state": "closed",
+      "head": {
+        "ref": "agent/eazami-japan14-existing-cohort-audit-20260827",
+        "sha": "8dc1c66bb16b828b756c914f763e42cf95e9f4ab"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "792c6d5511ab9369b65eabaad1a366b164c4ebd2"
+      }
+    },
+    {
+      "number": 73,
+      "title": "Harmonize EAzami direct colour proxies with production detector crops",
+      "state": "closed",
+      "head": {
+        "ref": "agent/eazami-direct-colour-crop-harmonization-20260827",
+        "sha": "d5353168eb0bd7c69be9953d65fb39dd53dedc1b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "792c6d5511ab9369b65eabaad1a366b164c4ebd2"
+      }
+    },
+    {
+      "number": 72,
+      "title": "Resolve multilevel GEB v2 capitulum space and environmental structure",
+      "state": "closed",
+      "head": {
+        "ref": "analysis/geb-v2-within-among-alignment",
+        "sha": "5718da7422c05e7282fdc6aa0bac2c92ea7c69dd"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "792c6d5511ab9369b65eabaad1a366b164c4ebd2"
+      }
+    },
+    {
+      "number": 71,
+      "title": "Run GEB v2 continuous trait geography and evidence grading",
+      "state": "closed",
+      "head": {
+        "ref": "codex/pr69-continuous-reanalysis",
+        "sha": "4ecd7c72c0eec6ba190fe6bfcefdeacc74c2e94c"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "4e6f66675004207d331fd620d6bcd894287f316a"
+      }
+    },
+    {
+      "number": 70,
+      "title": "Superseded — continuous trait universe integrated through PR #71 and #72",
+      "state": "closed",
+      "head": {
+        "ref": "codex/ch1-continuous-trait-universe",
+        "sha": "e77c5f04a54bd2a7fc9abfb74d91b0b890aa0ed8"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "4e6f66675004207d331fd620d6bcd894287f316a"
+      }
+    },
+    {
+      "number": 69,
+      "title": "Add locked reviewer bias controls and narrow Chapter 1 claims",
+      "state": "closed",
+      "head": {
+        "ref": "reviewer/bias-control-audit-2026-08-26",
+        "sha": "c335bdbbd58591c6140682733a29ed23d4607a24"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "4e6f66675004207d331fd620d6bcd894287f316a"
+      }
+    },
+    {
+      "number": 68,
+      "title": "Clarify Azami boundary with East Asian EAzami doctoral programme",
+      "state": "closed",
+      "head": {
+        "ref": "agent/clarify-eazami-boundary-20260822",
+        "sha": "42bdacbaa1a0e2f25314a688f41980b8dc72466f"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "e8ffa2e4f9cfe01606f4c418d9ca21f7524cd90b"
+      }
+    },
+    {
+      "number": 67,
+      "title": "Strengthen Chapter 1 visual narrative and sampling diagnostics",
+      "state": "closed",
+      "head": {
+        "ref": "agent/figure2-geography-20260821",
+        "sha": "3945aec8a75c35bf6d77847ab5a23bd02477afb3"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "3a254b59910e97a0f9836e1eed061e7e62952874"
+      }
+    },
+    {
+      "number": 66,
+      "title": "Strengthen ecological Discussion and reference integration",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ecological-discussion-references-review-20260821",
+        "sha": "1d421a340f979842b1b4b8b93804aafcabcb98bd"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "1869093ad019a2e23d82acf13290e05d1130fbdd"
+      }
+    },
+    {
+      "number": 65,
+      "title": "Freeze reproducible Supplement figures S1-S5",
+      "state": "closed",
+      "head": {
+        "ref": "agent/supplement-figures-review-20260821",
+        "sha": "a66736898fd6d682bb99459d3e6da3e849ef48c0"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "1a25ea6fb7df1dd485b5f5e89312af0a34468c5d"
+      }
+    },
+    {
+      "number": 64,
+      "title": "Update Azami handoff to EAzami pattern-reduction v2",
+      "state": "closed",
+      "head": {
+        "ref": "agent/eazami-pattern-v2-handoff-20260820",
+        "sha": "96a9b458edf407503fea7dc93da896f17432b7fe"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7e499e763fa6b8696b5cfe372f96b50aa38d4737"
+      }
+    },
+    {
+      "number": 63,
+      "title": "Freeze Azami observational boundary from EAzami mechanism reduction",
+      "state": "closed",
+      "head": {
+        "ref": "agent/eazami-mechanism-boundary-20260820",
+        "sha": "4ec2f44bddd08620a252213f49f25c8bb464f3f5"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "9589d397355c182c2505144ef2502c9616293fec"
+      }
+    },
+    {
+      "number": 62,
+      "title": "Restore the Azami to EAzami inference boundary",
+      "state": "closed",
+      "head": {
+        "ref": "agent/eazami-handoff-boundary-20260820",
+        "sha": "67c86f4f34facba33e06dfbc503d7d51fa109052"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "242ddd3003579c1360cdd314dc4727534726e6a1"
+      }
+    },
+    {
+      "number": 61,
+      "title": "Complete frozen Chapter 1 Supplement tables",
+      "state": "closed",
+      "head": {
+        "ref": "agent/complete-submission-supplement-20260820",
+        "sha": "1c16c4a59de9561d60580e84795db972c394ec11"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "242ddd3003579c1360cdd314dc4727534726e6a1"
+      }
+    },
+    {
+      "number": 60,
+      "title": "Refocus repository on Chapter 1 submission and build Supplement",
+      "state": "closed",
+      "head": {
+        "ref": "agent/submission-only-cleanup-20260820",
+        "sha": "e49dd89ccd8fc64cfe56038e0b6badef2ad22fe4"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "82d29a7b6ddac6cdf26fa0f2f79c342488e2b613"
+      }
+    },
+    {
+      "number": 59,
+      "title": "Refocus repository on Chapter 1 submission",
+      "state": "closed",
+      "head": {
+        "ref": "cleanup/submission-only-20260820",
+        "sha": "215df4abf48705b8b768e9a8f5ed271eeda6c171"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "82d29a7b6ddac6cdf26fa0f2f79c342488e2b613"
+      }
+    },
+    {
+      "number": 58,
+      "title": "Freeze Azami observation-only handoff to EAzami mechanisms",
+      "state": "closed",
+      "head": {
+        "ref": "agent/observation-pattern-handoff-20260820",
+        "sha": "ef126dce4fab9b4f50db5fbbb5054d49c1838250"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "394f5b71631a2c6081e776239b3f56d4dd0c8c63"
+      }
+    },
+    {
+      "number": 57,
+      "title": "Synchronize Chapter 1 continuous phenomics and EAzami handoff",
+      "state": "closed",
+      "head": {
+        "ref": "agent/macro-to-micro-handoff-20260816",
+        "sha": "8cf75cff25806471b0d16dca4723616544277d8e"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "934342730c2b36505aa5a0e5044fdbacbdaf4dd6"
+      }
+    },
+    {
+      "number": 56,
+      "title": "Close remaining Chapter 1 submission diagnostics",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-submission-gates-20260807",
+        "sha": "b24da673efa4e55bc3d4b242fa7e80404356495b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "99438661a69fca3054d4a511432ca419ef0cb084"
+      }
+    },
+    {
+      "number": 55,
+      "title": "Build leakage-free independent YOLO detector audit",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-independent-detector-audit",
+        "sha": "b31f86e699fd1af4eb7fce477ab69b848656387a"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "c42ab4bf38fe8d66200585727f3c9169cf9115e8"
+      }
+    },
+    {
+      "number": 54,
+      "title": "Replace confounded lability result and decompose nested image variance",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-reviewer-reanalysis",
+        "sha": "c047d54df0f7a4a889ac6048a0570735d2cc62d1"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "dc30a847b7003fbdff7b7b1a48b21d1b2bfb5b6f"
+      }
+    },
+    {
+      "number": 53,
+      "title": "Complete Chapter 1 supervisor draft and add result figures",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-complete-draft-with-figures",
+        "sha": "6255d778919abea1f8235ddfa560d7df847623cf"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "9cf307e2a05fe4cd324f87def06430a1d70a1707"
+      }
+    },
+    {
+      "number": 52,
+      "title": "Package submission utilities and remove duplicated audit helpers",
+      "state": "closed",
+      "head": {
+        "ref": "agent/repository-package-cleanup",
+        "sha": "2c4ff354f64d4622f999de2b164780c09f7ad5fe"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "106dbe824e2b9c6edf7860678c5e0a4effc011cf"
+      }
+    },
+    {
+      "number": 51,
+      "title": "Draft Chapter 1 Methods from frozen repository evidence",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-methods-draft",
+        "sha": "726b0c493496536f8c1c8a3f29de2194afdfce42"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "cc1825852648764f144e60840a18dd70a8c528fb"
+      }
+    },
+    {
+      "number": 50,
+      "title": "Prepare frozen observation-level input for spatial robustness audit",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-spatial-diagnostic-input",
+        "sha": "86a2f4d68a1b4d8cd1af9fe478e9d2c469131ebe"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "53457b2621d10eb7b8d75f4529c8542644b97d6b"
+      }
+    },
+    {
+      "number": 49,
+      "title": "Add Chapter 1 residual spatial and broad-region robustness audit",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-spatial-robustness-audit",
+        "sha": "89a7bfc15a95f4444ebc0abb800d050db7948b05"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "6b12b8753a158a2caabc4b97fbc00b96215c3444"
+      }
+    },
+    {
+      "number": 48,
+      "title": "Add reproducible Chapter 1 taxonomic freeze audit",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-taxonomic-freeze-audit",
+        "sha": "9e0cb5bce184b1c2934e848e6b9687d37e344cbd"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "5ccf17424a3448b3d8fc3b4104d4f65be8de3eec"
+      }
+    },
+    {
+      "number": 47,
+      "title": "Freeze repository-grounded title, abstract and submission strategy",
+      "state": "closed",
+      "head": {
+        "ref": "agent/submission-strategy-freeze",
+        "sha": "8a993f6a52fdf070196ef04f297ea329fdd0e068"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "5ccf17424a3448b3d8fc3b4104d4f65be8de3eec"
+      }
+    },
+    {
+      "number": 46,
+      "title": "Run Figure 1 and detector audits as a reproducible workflow",
+      "state": "closed",
+      "head": {
+        "ref": "agent/figure1-audit-workflow",
+        "sha": "73bcb077899fe8d4533fd8d1f27d75ff1bb83498"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7f2b7b2ea38f3a5ac23630a9be9fbb71634604e2"
+      }
+    },
+    {
+      "number": 45,
+      "title": "Add Figure 1 measurement and detector audit infrastructure",
+      "state": "closed",
+      "head": {
+        "ref": "agent/figure1-measurement-audit",
+        "sha": "ab8d4c30bcc0947940b4abed375e3b5c72efe7e8"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "8ca43bd6cecc4aaa65e2bb0a1159810a0ac745ae"
+      }
+    },
+    {
+      "number": 44,
+      "title": "Draft Chapter 1 Results from frozen repository evidence",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-results-draft-audit",
+        "sha": "938efd391a588c1930586d7308be03133a1c89e2"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "8ca43bd6cecc4aaa65e2bb0a1159810a0ac745ae"
+      }
+    },
+    {
+      "number": 43,
+      "title": "Draft Chapter 1 Introduction from structured literature review",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-introduction-literature-review",
+        "sha": "b45b6a1f3282d2e72fee4d48ac51ea9d9273ac80"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "07b44654b4830f85862832ce8bf409f3c9748e2d"
+      }
+    },
+    {
+      "number": 42,
+      "title": "Consolidate Chapter 1 analysis entry points and manuscript workspace",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-manuscript-prep-cleanup",
+        "sha": "4a0516e524aa73e63ca9154f0589a88407ab921a"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "e574ff2ac7506b0428066b35b79c9ca865c379d6"
+      }
+    },
+    {
+      "number": 41,
+      "title": "Integrate Cirsium evolutionary ecology into Chapter 1 discussion",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-evolutionary-context",
+        "sha": "d951e766ba7605f953ddd184b368e84287da5f0d"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "26826d2e7780771ec5e798d16d9e20d29be699dc"
+      }
+    },
+    {
+      "number": 40,
+      "title": "Result-led manuscript strategy",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-result-led-story-review",
+        "sha": "0dfc1c4fadfd883519e1f9673661b4238d75b6fe"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "afe509d90cd4318536dc73a2a9e2e6b26547c6c1"
+      }
+    },
+    {
+      "number": 39,
+      "title": "Align Chapter 1 entry points after final freeze",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-final-freeze",
+        "sha": "1471e17d76d699710cc5ca0bd75e536d24b85818"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "c71a43c615d6e5fa99993c1981d2d3e5987702cc"
+      }
+    },
+    {
+      "number": 38,
+      "title": "Freeze final Chapter 1 claims, documentation and submission path",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-final-freeze",
+        "sha": "d2d9228cc5a594ad83c9e72003a0ab1703801283"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "27fa94f44c306cfc1f11bea378a78289dd244b83"
+      }
+    },
+    {
+      "number": 37,
+      "title": "Add phylogenetic evidence robustness summary",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-phylo-evidence-summary",
+        "sha": "67de8021d025656b0bbe20bd31649018109bd191"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "fcccbe28cf11865bf48f83f5a18b9ce47dcccf68"
+      }
+    },
+    {
+      "number": 36,
+      "title": "Run live molecular coverage audit and phylogenetic signal analysis",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-db-audit-phylo-signal",
+        "sha": "6bf05b63e89e6bbf256924839045f7de5cf39740"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "49ebc3f5964282fa7dd4031cfca269f581767e5a"
+      }
+    },
+    {
+      "number": 35,
+      "title": "Clean lability workflow and audit phylogenetic-signal feasibility",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-phylo-feasibility-cleanup",
+        "sha": "9754703a7a2c222c4fa74d24689a0d38142e2e0c"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "464b66d7c4cf538e494a727ddc0834f57312e487"
+      }
+    },
+    {
+      "number": 34,
+      "title": "Finalize two-axis species lability analysis and submission structure",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-lability-phase1",
+        "sha": "e296d5141ffff66864e8fe538a26d2b317ee6f95"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "8a947296dd6b50caf01f660d76f43d0634b335b3"
+      }
+    },
+    {
+      "number": 33,
+      "title": "Add Ch1 submission cleanup, trait-module, and niche analyses",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-trait-modules-phylogeny-niche",
+        "sha": "cf04a1907d3f8cb209353ae29dea666b63f0697e"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "fd827143703a7b57ba22baec606be0125974f226"
+      }
+    },
+    {
+      "number": 32,
+      "title": "Clean Chapter 1 repository for manuscript submission",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-submission-cleanup",
+        "sha": "f3d33af4a81e57fb4f021f45c2f0c10111695389"
+      },
+      "base": {
+        "ref": "agent/ch1-lightweight-spde-inla",
+        "sha": "d512b80edfd7c6d4816d2a966adb8391b9278b0c"
+      }
+    },
+    {
+      "number": 31,
+      "title": "Add lightweight grouped SPDE-INLA environment analysis",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-lightweight-spde-inla",
+        "sha": "8aa9d024a0412506c15f85a45c1f81fed09d1586"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "fd827143703a7b57ba22baec606be0125974f226"
+      }
+    },
+    {
+      "number": 30,
+      "title": "Add joint multivariate hierarchical TMB spatial model",
+      "state": "closed",
+      "head": {
+        "ref": "agent/ch1-multivariate-tmb-spatial",
+        "sha": "06e51191bb2df1019adbc535a3d4c9735e23b9d3"
+      },
+      "base": {
+        "ref": "run/ch1-exhaustive-rf-environment-20260713",
+        "sha": "44e2161ed911e0f66157048815e448e0e24d5ee7"
+      }
+    },
+    {
+      "number": 29,
+      "title": "Run hierarchical SPDE-INLA environment analysis with XGBoost benchmark",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-rf-environment-20260713",
+        "sha": "44e2161ed911e0f66157048815e448e0e24d5ee7"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "490c4f712774b88df0c94e1d2f15c1de9647a189"
+      }
+    },
+    {
+      "number": 28,
+      "title": "Run exhaustive within-species climate analysis",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-within-species-20260713",
+        "sha": "a6951bdb4e67638380837197a8b44589b7329924"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "490c4f712774b88df0c94e1d2f15c1de9647a189"
+      }
+    },
+    {
+      "number": 27,
+      "title": "Extract compact summary from final exhaustive artifact",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-final-summary-20260713",
+        "sha": "c03e259f63083c249dcb1bc906b160d7f9b5a10f"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "490c4f712774b88df0c94e1d2f15c1de9647a189"
+      }
+    },
+    {
+      "number": 26,
+      "title": "Recover exhaustive merge from completed shard artifacts",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-merge-only-20260712",
+        "sha": "de4b64d93ab98827121090997b62869a65c7cd4b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "490c4f712774b88df0c94e1d2f15c1de9647a189"
+      }
+    },
+    {
+      "number": 25,
+      "title": "Execute full exhaustive all-photo continuous trait inference",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-full-20260711",
+        "sha": "0b20fa8e492db5967e1d143592eb92cf451cb560"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "490c4f712774b88df0c94e1d2f15c1de9647a189"
+      }
+    },
+    {
+      "number": 24,
+      "title": "Execute robust exhaustive inference pilot on shard 1",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-pilot-shard1-v2-20260711",
+        "sha": "2ba030f2d4b79bb3445981a7848ef2837ec531e9"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "490c4f712774b88df0c94e1d2f15c1de9647a189"
+      }
+    },
+    {
+      "number": 23,
+      "title": "Keep failed exhaustive image downloads in the audit instead of aborting shards",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-exhaustive-download-audit",
+        "sha": "6ad3e8292f662e10a3c2092b27fcb56a8c804afb"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "60bc0e1c64e96c4c5a0f57cd6be66bcd6a58a393"
+      }
+    },
+    {
+      "number": 22,
+      "title": "Fix nested artifact path resolution for exhaustive shard inference",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-exhaustive-shard-artifact-path",
+        "sha": "65557f7ce6e3c075138f7af5cc03b055e1b27288"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "0c684a98f9bf264a39f9964415cde7b8689a73eb"
+      }
+    },
+    {
+      "number": 21,
+      "title": "Execute exhaustive inference pilot on shard 1",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-pilot-shard1-20260711",
+        "sha": "5938c36f1ace208b74a30c641f53008779bd10af"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b3aba4a94dbcfdc5e0d107641bc1814f44669b9b"
+      }
+    },
+    {
+      "number": 20,
+      "title": "Execute exhaustive all-photo queue build",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-queue-20260711-v2",
+        "sha": "e38cf57352f4911d38bb94e39dfea89620398e47"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b3aba4a94dbcfdc5e0d107641bc1814f44669b9b"
+      }
+    },
+    {
+      "number": 19,
+      "title": "Run one-off exhaustive queue build",
+      "state": "closed",
+      "head": {
+        "ref": "run/ch1-exhaustive-queue-20260711",
+        "sha": "483d1613ef157d21acabea59f8e99f298a9a49a3"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b3aba4a94dbcfdc5e0d107641bc1814f44669b9b"
+      }
+    },
+    {
+      "number": 18,
+      "title": "Run exhaustive all-photo continuous inference before thinning",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-within-species-expansion",
+        "sha": "481e7addea27e8ff8861164097c763d58aa573b6"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "943b6a1c2da663750207bd7c60f20abf9821a159"
+      }
+    },
+    {
+      "number": 17,
+      "title": "Freeze Chapter 1 manuscript scope and novelty position",
+      "state": "closed",
+      "head": {
+        "ref": "docs/ch1-manuscript-novelty",
+        "sha": "4dd16a8eb0f403725d7233577340a83c9cceb459"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "33319c364811a6ebdc4dd83c344a7815a0ffb28f"
+      }
+    },
+    {
+      "number": 16,
+      "title": "Clean and harden Chapter 1 for manuscript submission",
+      "state": "closed",
+      "head": {
+        "ref": "refactor/ch1-submission-cleanup",
+        "sha": "43ddacffd5947cb73a06bc8acdbd7dce646be2a1"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "b7d7bcb35f816be4c4b853d321fe0c0a9df51db4"
+      }
+    },
+    {
+      "number": 15,
+      "title": "Add audited historical constraints and PGLS sensitivity",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-historical-constraint-sensitivity",
+        "sha": "d3fbb5a03e1216a534e1410f1ba38583fdf224ab"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "afb1372a9df83697d6f29c7d0f649fca1d0e16a2"
+      }
+    },
+    {
+      "number": 14,
+      "title": "Audit continuous-trait QC and integrate involucre supplements",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-qc-join-involucre",
+        "sha": "6c6d0ed1647f4413a464ada37014560a3255affb"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "7891b1cf5e9898daa4056c3d9f12a333665bd2e8"
+      }
+    },
+    {
+      "number": 13,
+      "title": "Correct continuous colour masks and signed head orientation",
+      "state": "closed",
+      "head": {
+        "ref": "fix/ch1-continuous-traits-v2",
+        "sha": "493483ac171770641a2c8a25596a6400b2ce082a"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "6c3ba0cccaa220342623d123a0a0a9e8bb284e67"
+      }
+    },
+    {
+      "number": 12,
+      "title": "Replace primary trait categories with continuous automated measurements",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-continuous-primary-traits",
+        "sha": "758f2c577a9bb1b116764ed600c5513f2609d77e"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "148bb966d4272e6d37359ff7c40d264143c7450f"
+      }
+    },
+    {
+      "number": 11,
+      "title": "Simplify Chapter 1 human holdout to 360 + 90 tasks",
+      "state": "closed",
+      "head": {
+        "ref": "simplify/ch1-representative-holdout",
+        "sha": "3a37ca454a073846d1c39f05222fde1e482ede52"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "130edae3f56cdba0f9ebf5f7c4c31a8adf86bf3c"
+      }
+    },
+    {
+      "number": 10,
+      "title": "Build representative human holdout for Chapter 1 primary traits",
+      "state": "closed",
+      "head": {
+        "ref": "build/ch1-representative-holdout",
+        "sha": "aed63be5e4d12667468f7f4e6a9634a9901ceab8"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "73d9d71b8236671c34092146bc5c4597bb0e7cf1"
+      }
+    },
+    {
+      "number": 9,
+      "title": "Fix trait audit app startup on Streamlit Cloud",
+      "state": "closed",
+      "head": {
+        "ref": "fix/trait-audit-streamlit-cloud",
+        "sha": "3772e8665f49c3f1c43b4a8f93f7bf8b684f5809"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "1a82163db047073fa6fbf1c80bfac6b14acd56a4"
+      }
+    },
+    {
+      "number": 8,
+      "title": "Ch.1 submission-readiness review + representative trait-measurement certification (priority 1)",
+      "state": "closed",
+      "head": {
+        "ref": "claude/cirsium-ch1-image-traits-cci80f",
+        "sha": "56204d0762d9f19c0dc5abdf836291e12d6bb996"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "1a82163db047073fa6fbf1c80bfac6b14acd56a4"
+      }
+    },
+    {
+      "number": 7,
+      "title": "Fix TypeError when writing bool values into StringDtype DataFrame columns in trait ontology validation",
+      "state": "closed",
+      "head": {
+        "ref": "copilot/fix-annotation-foundation-checks",
+        "sha": "fafe7f0566da59d93e032cd7b48b2d216c923c03"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "89878738fa5e0304820070ca246122ca017ab153"
+      }
+    },
+    {
+      "number": 6,
+      "title": "Ch.1: implement reproducible global iNaturalist collection pipeline",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-inat-metadata-collection",
+        "sha": "babcd3e4e8ac9d4f914a73e4fe53f9b47386dabc"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "3c5f987e39009258c3c7487ea85754705b0f3e7f"
+      }
+    },
+    {
+      "number": 5,
+      "title": "Ch.1: add local blinded trait-annotation app",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-trait-annotation-app",
+        "sha": "832a3d26197b6b17ed57d153b57cab0178bdc75c"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "08fe4b97f890459d62ae6326bbf6e10483d2f190"
+      }
+    },
+    {
+      "number": 4,
+      "title": "Ch.1: add annotation-manifest CI and smoke test",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-annotation-ci",
+        "sha": "17bc407859baee500fcd621eb5498746a5b3fc12"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "4d3170da3b2b84386d2a4777900824eef381e2e5"
+      }
+    },
+    {
+      "number": 3,
+      "title": "Ch.1: establish image-level annotation foundation",
+      "state": "closed",
+      "head": {
+        "ref": "feature/ch1-annotation-foundation",
+        "sha": "2174c9de6a03bfd556cd1367e87e1af65795077a"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "0b2593510e14474e78c1dc86b8534f0a27b31ff3"
+      }
+    },
+    {
+      "number": 2,
+      "title": "Redesign Chapter 1 as global multi-trait image-derived macroecology",
+      "state": "closed",
+      "head": {
+        "ref": "claude/cirsium-ch1-image-traits-cci80f",
+        "sha": "d4587e78085cd6220940b50cd53bdbd94be7bf5b"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "48fa7e28ccbfe160cca9e79516e13a60cebbbd4b"
+      }
+    },
+    {
+      "number": 1,
+      "title": "[codex] Add Cirsium floral trait architecture scaffold",
+      "state": "closed",
+      "head": {
+        "ref": "codex/add-floral-trait-architecture",
+        "sha": "9f12ceb19efefda6907605557e1d155d2ff067fa"
+      },
+      "base": {
+        "ref": "main",
+        "sha": "89ffca0b6954f2b79e7ba3bea14156cedc269403"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "ref": "refs/tags/azami-ch1-v2-2026-08-27",
+      "object": {
+        "sha": "0476640e740e327bc86d868994d38eba33dd73f9",
+        "type": "tag"
+      }
+    }
+  ],
+  "releases": [
+    {
+      "id": 384499945,
+      "tag_name": "private-v3-numerical-20260908",
+      "draft": true
+    }
+  ],
+  "note": "Public GitHub metadata only. PR head SHAs are snapshots. No branch deletion, PR closure, merge, or release mutation."
+}

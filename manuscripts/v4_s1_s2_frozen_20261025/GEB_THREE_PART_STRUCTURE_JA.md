@@ -1,16 +1,36 @@
-# GEB論文の3部構成 — 第2部にBIO18と頭花の向きを置く（2026-10-26）
+# GEB V4論文の構成 — 全球写真の連続形質と気候環境を主線にする（2026-10-29）
 
 **科学的固定点：** 2026-10-24のV4ソース・元ZIP SHA256は `6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205`。S1=80とS2=128のHolm検定群、元の4件のHolm支持関連、8連続形質/28ペアは不変。
 
 論文の内容は**写真による連続的な形質定量化（方法論）**と**頭花の環境的・多形質的な組織化（生態学）**という2軸でつなぐ。「LEGO」は個人的な仮称であり正式な科学用語として用いず、**表現型統合・部分的モジュール性**として、写真から観測可能な関連に限って表現する。
 
+## 2026-10-29 更新：空間感度はSI、第三の生態学的問いをH3へ
+
+**空間感度はSIのモデル依存性評価。** 同じBIO18×画像角度の全球正勾配は、経度帯・球面空間項で弱まるが、環境と空間の交絡が分離できるわけではない。Results 3.1の元Holm支持、Results 3.2の花色×環境結果は本文の既存主張として保持。感度の詳細は [SI](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md) に移す。
+
+**H3の実測結論：** 気候空間の広さから頭花形態空間の体積を直接予測する結果は支持されなかった（1°63分類群、β+0.0669、95% CI −0.1046～+0.2384、P=0.3875）。しかし、**別の経度帯の分類群の実際の撮影地を気候条件で一致させると、3次元頭花形態の距離が種内セル置換帰無より小さい**（1° +0.04096／5° +0.09433、両方Holm-2 P=0.010）。3次元KDE形態分布の重複も**帰無との相対比較では**一致方向（Holm-2 P=0.010／0.015）だが、条件付きサブセットの絶対重複は全セルより**低い**。気候×頭花形質間共分散6検定はHolm補正後に支持されず、形質別多様性3検定も未支持。系統的収束・選択・遺伝的相互作用は未検証。[H3c SI](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md)・[H3d SI](SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md)。
+
+## 2026-10-28 GEB原稿の中心ストーリー（文章改稿・数値変更なし）
+
+**研究上の問い：** 植物は異なる環境・地域へ進出する過程で形態を多様化するが、頭花形質の地理変異には、地域史を越えた気候環境との対応が見られるか。その対応は同種が人為的に新しい地域へ分布を広げても現れるか。
+
+**なぜアザミ属か：** 日本・北米などで複数の地域的放散が知られ、幅広い気候に分布する。多数の小花と総苞から成る同じ頭花構造の内部で、向き・花色・輪郭・総苞構造が多様であり、公開写真による全球の反復計測が可能。放散がすべて適応放散と証明されたわけではない（Moreyra et al. 2025; Siniscalchi et al. 2023）。
+
+**方法論：** YOLO系の頭花検出を起点とした既存の連続形質計測を、画像条件・形質別の計測可能性を明示して再利用。種平均・上下2分類・花色カテゴリだけでなく、画像鉛直からの角度・CIELAB・2D輪郭を分析。自生分類群間（S1）と同種の在来／導入域内（S2）を**別の尺度の観察的問い**として扱う。
+
+**生態学的主結果：** 自生178分類群の角度適格168,907観測で、最暖四半期降水量の高い地域の分類群ほど画像上で下向き寄り（β+0.045447、Holm P0.00920635）。キク科近縁群の雨への花粉保護実験と方向が整合するが、写真から物理的な雨よけや独立進化を実証したわけではない。
+
+**分布史の比較：** 元記録297,622件（在来141,014、導入156,608）の2種4層で日射・標高と花色の関係を推定し、Holm支持は導入域の3件。*C. vulgare* 日射×彩度では在来β+0.136883／導入β+0.134504と近いため「導入域のみ有意＝新しい適応」とは読まない。*C. arvense* 標高×明度では在来と導入の点推定符号が異なり、環境関連の変化の**候補**だが、域×環境交互作用は未検定。共通の問題は、既存変異・可塑性・創始者構成・現代進化と写真／環境の標本構成を区別すること。
+
+**GEB編集上の順位（掲載論文比較を反映）：** ①全球の連続画像計測と測定可能数・観測元の区別、②S1降水×向き（Results 3.1・Figure 3）、③S2日射・標高×花色と在来／導入の自然実験的比較（Results 3.2・Figure 4）、④形質間の弱い共変動（Resultsから削除してSIに保存）。先行文献は [GEB掲載論文監査](GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md)。送粉者・食害者の機能は本稿の実測結果として扱わない。
+
 ## 1. 頭花形質の定量化、表現型統合と組合せ
 
 **問い：** 頭花の向き・花色・輪郭は一体不可分な形質セットなのか、それともある程度の共変動を示しつつ、多様な組合せを形成するのか。
 
-**方法：** 自生域の共通写真**156,683枚・174分類群**で8形質/28ペアの分類群内・分類群間RV型共変動と3形質8通りの二値配置を検討。環境4変数で調整。
+**方法：** 自生域の共通写真**156,683枚・174分類群**で8指標・28ペアの原解析を保持したうえで、3つの領域間rは**主結果ではなくSI向けの探索的結果**とした。全28ペアと3形質二値配置はSIに移動。環境4変数で調整済みの既存値のみ表示し、新しい検定は行わない。
 
-**固定結果：** 28ペア中**24ペア**で分類群間RVが分類群内より大きい。領域内／領域間のRV中央値は分類群内 **0.085245／0.001419**、分類群間 **0.197455／0.015453**。向き・彩度・輪郭の8通りの配置すべてが**135分類群中123分類群**に観察された。独立した遺伝モジュールの存在ではなく、測定された画像形質の関連パターンである。
+**本文での実測結果：** 角度×彩度の分類群間 r **−0.2251**（分類群内 **−0.0281**）、角度×2D縦横比 **−0.2469**（**−0.0694**）、彩度×2D縦横比 **+0.0199**（**−0.0182**）。上向きに写る頭花ほど高彩度という弱い分類群間の対応はあるが、縦横比が低い＝絶対幅が広い、下向きが盗蜜者や植食者を排除する、という証拠ではない。**SIに保持する原結果：** 28ペア中24ペアの分類群間RV優位、登録領域内／領域間のRV中央値（内0.085245／0.001419、間0.197455／0.015453）、135分類群中123分類群での8状態観測、二値化に依存する高次指標。明度と彩度、円形度とsolidityは同じ生物学的側面・同一輪郭を重複して表す可能性があり、独立機能の同調と主張しない。
 
 ## 2. 頭花の画像角度とBIO18（降水）の関係 — 主結果
 
@@ -35,14 +55,32 @@
 ## 図表：今の主役を第2部に固定
 
 - **Figure 1：** V4公開写真の計測工程、写真・地域のサンプル構成、350→7→2の監査。
-- **Figure 2：** 第1部：8形質28ペアの共通写真RV行列。
-- **Figure 3：** **第2部：分類群間の画像角度×BIO18のHolm支持推定値のみ**を95% CIと表示。分類群内の未補正Pは載せない。
-- **Figure 4：** 第3部：在来／導入の花色×環境の元3組・計6係数の比較。
-- **Figure 5：** 第1部：3形質8組合せと閾値感度分析。
-- **SI：** 分類群内BIO18角度を含む**80件の未補正P・BH補正P・Holm補正Pの全表**と、両スケールの2係数図、S2の128件全表および28ペアの数表。
+- **Figure 2（未生成）:** 解析済みの観測地点・分類群の**実際の全球カバレッジ図**。元図の弱い3ペアrと28ペア全体はSIへ移す（歴史的な描画ファイル名がfigure2で始まる点に注意）。
+- **Figure 3：** 元のBIO18×頭花角度のHolm支持係数のみ主図に表示。経度帯・球面2次調整、東側除外の探索的区間はSIのみ。
+- **Figure 4：** Results 3.2：在来／導入の花色×環境の元3組・計6係数の比較。
+- **Figure 5：** Results 3.3：**気候条件の一致で近づく頭花の3次元形態距離**と、KDE密度重複の置換帰無との比較を主に示し、ニッチ幅×形態空間体積の未支持結果も同じ図で対照。
+- **SI（元Figure 5構想）：** 第1部：3形質8組合せと閾値感度分析。現段階で本図として提出しない。
+- **SI：** 分類群内BIO18角度を含む**80件の未補正P・BH補正P・Holm補正Pの全表**と、両スケールの2係数図、S2の128件全表、28ペア全行列（図と数表）、画像指標の重複性、8状態の閾値感度、導入域の形質共分散。
 
-第1〜3部は**編集上の研究質問**であり、元ソースは引き続きS1/S2の2種類だけ。新しいS3ソースは存在しない。図の並べ方・SIの配置は変更するが、元の結果・多重検定群を変更しない。
+観測のS1/S2を区別する3つの解析部分は**編集上の研究質問**であり、元ソースは引き続きS1/S2の2種類だけ。新しいS3ソースは存在しない。図の並べ方・SIの配置は変更するが、元の結果・多重検定群を変更しない。
 
-## 日本語要旨（BIO18を第2部に配置）
+## 日本語論文要約（2026-10-29 GEB掲載論文スタイルに統一）
 
-本研究では、公開写真を用いて世界のアザミ属の頭花の向き・花色・輪郭を連続量として定量化し、形質間の共変動と環境との関連を検討した。第一に、共通写真156,683枚・174分類群で8形質の28ペアを評価した結果、同じ形質領域内の共変動は領域間より大きく、向き・彩度・輪郭の多様な組合せが見られた。第二に、自生分類群の頭花画像角度と最暖四半期の降水量（BIO18）を検討し、分類群間で正の関連がHolm補正後も残った（β=+0.0454、P=0.0092）。第三に、在来・導入の両域で十分な観測がある2種を調べたところ、導入域で花色と日射・標高の関連が3件Holm補正後に有意となった。これらは形質の環境関連が一様でなく、部分的な表現型統合と歴史的な分布文脈の違いが共存する可能性を示す。ただし、画像で推定した角度から降雨防御や重力基準の姿勢そのものは実証していない。
+植物の形態的多様性は地域史と環境条件の双方に関係しうるが、種平均や上下二分類・花色カテゴリでは地理的な連続変異を捉えきれない。アザミ属は日本・北米などで地域的放散を経験し、頭花の向き・花色・輪郭・総苞構造が多様なため、全球の公開写真を通した比較系となる。頭花をYOLOで検出し、角度・CIELAB色・2D輪郭を形質別品質基準の下で連続計測した。
+
+第一の主結果は、自生178分類群の168,907角度適格観測において、最暖四半期降水量（BIO18）が大きい環境の分類群ほど画像上で下向き寄りだったこと（標準化β+0.045447、Holm P0.00920635）。これは雨による花粉の濡れや流失を避ける仮説と方向が一致するが、防御の実験的な証明ではない。
+
+さらに、同種が異なる分布史を持つ在来域と導入域を比較することで、進出先でも形質―環境関係が観測されるかを問うた。2種計297,622元野生記録（在来141,014、導入156,608）の4層のうち、導入域に限って *C. vulgare* の日射×彩度・明度、*C. arvense* の標高×明度の計3件がHolm補正後に有意だった。高日射に伴う高彩度・低明度や標高に伴う低明度は既報の非生物的花色勾配と方向が整合する。ただし *C. vulgare* 日射×彩度の在来係数は導入係数と近く、有意／非有意だけから新たな進化を推定できない。
+
+画像形質間の弱い共変動を主論文の独立結果から除外し、全28ペア・8通りの二値配置・形質間rの詳細はSIに保持する。Main Table 1には母集団・適格数を置き、Main Figure 3にはBIO18角度、Figure 4には在来／導入の花色係数を示す。全球分布地図（Figure 2）は源泉を検証してから実制作する。
+
+## New source-confirmed H3c/H3d endpoints (29 October 2026)
+
+**H3c — positive ecological pattern:** 157,822 common valid photographs/242 source taxa; **63 geographically supported taxa at 1°** and 31 at 5°. For different-sector taxa, matching the three-dimensional climate conditions of occupied cells (BIO12/BIO01/RSDS) yields closer three-dimensional photographed capitulum phenotypes (angle/chroma/aspect) than expected under within-taxon climate–trait permutation: **distance advantage +0.04096, Holm-2 P=0.010** (1°; mean 229 supported cross-sector pairs) and **+0.09433, Holm-2 P=0.010** (5°; mean 103 pairs). A fixed-bandwidth conditional 3D KDE L2 overlap comparison also deviated from its taxon-preserving null (Holm-2 P 0.010 / 0.015). **The conditional subset's absolute overlap was LOWER than the full eight-cell overlap**; this is a relative-to-permutation result, not an absolute increase in niche intersection. The H3a species-level breadth slope +0.0669 (CI −0.1046,+0.2384) and H3b species centroid ρ−0.0081 are not supported.
+
+**H3d — not a positive claim:** Three trait-specific climatic-breadth responses and six rainfall/radiation-modulated cross-trait covariance contrasts were prespecified and tested on the same matched source; none survived their respective exploratory Holm families. In particular, the nominal 1° solar-radiation × image-angle–outline covariance P=0.016 had Holm-6 P=0.096 and a non-replicating/opposite-signed 5° estimate. No genetically encoded module, correlational selection or evolutionary convergence is established.
+
+[H3c empirical source](../../analysis/v4/results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json) · [H3d empirical source](../../analysis/v4/results/20261029_H3D_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_SOURCE_VERIFIED.json) · [Source CI #40847696537](https://github.com/zuizui0223/azami/actions/runs/40847696537) · [H3c SI](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md) · [H3d SI](SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md).
+
+**GEB placement:** H3c is now Results **3.3** and Figure 5; H3a/H3b as context; H3d weak covariance moderation, the original 28-pair matrix and spatial BIO18 sensitivity are **SI**, while original 3.1/3.2 results and original S1 80/S2 128 Holm tests remain fixed.
+

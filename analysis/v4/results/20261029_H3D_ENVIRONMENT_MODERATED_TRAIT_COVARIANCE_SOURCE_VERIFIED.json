@@ -1,0 +1,404 @@
+{
+  "schema": "azami_h3d_original_private_s1_exploratory_original_source_verified_20261029_v1",
+  "source": {
+    "decoded_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_observations": 313350,
+    "quality_eligible_matched_observations": 157822,
+    "matched_source_taxa": 242
+  },
+  "status": "SOURCE_VERIFIED_EXPLORATORY_H3_NOT_ORIGINAL_HOLM",
+  "summary": {
+    "1degree": {
+      "taxa": 63,
+      "breadth": {
+        "status": "estimated",
+        "n_original_predeclared_traits": 3,
+        "controls_retained": [
+          "log geographic spread",
+          "log observed photos",
+          "log occupied geographic cells",
+          "sector_0",
+          "sector_1"
+        ],
+        "controls_omitted": [],
+        "taxon_units": 63,
+        "results": [
+          {
+            "trait": "orientation_image_vertical_angle",
+            "status": "estimated",
+            "n_taxa": 63,
+            "log_trait_sd_slope_per_3d_climate_logvolume": 0.02514118584640534,
+            "HC3_pointwise_95CI": [
+              -0.05059329920544327,
+              0.10087567089825396
+            ],
+            "within_sector_residual_permutation_p": 0.4475,
+            "rarefaction_draws": 96,
+            "same_species_climate_volume_as_original_H3a": true,
+            "exploratory_Holm_3_traits": 1
+          },
+          {
+            "trait": "corolla_lab_chroma",
+            "status": "estimated",
+            "n_taxa": 63,
+            "log_trait_sd_slope_per_3d_climate_logvolume": 0.03363539855712634,
+            "HC3_pointwise_95CI": [
+              -0.0675274994805292,
+              0.13479829659478187
+            ],
+            "within_sector_residual_permutation_p": 0.415,
+            "rarefaction_draws": 96,
+            "same_species_climate_volume_as_original_H3a": true,
+            "exploratory_Holm_3_traits": 1
+          },
+          {
+            "trait": "capitulum_outline_aspect_ratio",
+            "status": "estimated",
+            "n_taxa": 63,
+            "log_trait_sd_slope_per_3d_climate_logvolume": -0.012375643060369385,
+            "HC3_pointwise_95CI": [
+              -0.10179647285937216,
+              0.07704518673863339
+            ],
+            "within_sector_residual_permutation_p": 0.7625,
+            "rarefaction_draws": 96,
+            "same_species_climate_volume_as_original_H3a": true,
+            "exploratory_Holm_3_traits": 1
+          }
+        ],
+        "no_phenotypic_plasticity_or_adaptation_test": true
+      },
+      "moderation": {
+        "status": "estimated",
+        "n_tests_registered": 6,
+        "n_estimable_tests": 6,
+        "n_cells_source": 7117,
+        "n_taxa_source": 63,
+        "n_eligible_taxa_by_exposure": {
+          "chelsa_bio12": 63,
+          "chelsa_rsds_mean": 63
+        },
+        "trait_additive_climate_coefficients_matrices": {
+          "orientation_image_vertical_angle": [
+            0.028707407069119773,
+            0.043524989070211545,
+            -0.08001931642392172
+          ],
+          "corolla_lab_chroma": [
+            0.005717221158719709,
+            -0.012365049196013295,
+            -0.015700867693976755
+          ],
+          "capitulum_outline_aspect_ratio": [
+            -0.03939948532957039,
+            0.025795394184476572,
+            0.016481322614524434
+          ]
+        },
+        "results": [
+          {
+            "status": "estimated",
+            "climate": "chelsa_bio12",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "corolla_lab_chroma",
+            "n_taxa": 63,
+            "higher_minus_lower_exposure_residual_covariance": 0.023941569733068362,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.06687504593782526,
+              0.11276394192168375
+            ],
+            "taxon_sign_flip_permutation_p": 0.635,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_bio12",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 63,
+            "higher_minus_lower_exposure_residual_covariance": 0.08276040251615271,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.08943804875248484,
+              0.24892538959644978
+            ],
+            "taxon_sign_flip_permutation_p": 0.389,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_bio12",
+            "trait_a": "corolla_lab_chroma",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 63,
+            "higher_minus_lower_exposure_residual_covariance": 0.07098276251308963,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.018891699600319976,
+              0.17305711155230305
+            ],
+            "taxon_sign_flip_permutation_p": 0.172,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 0.8599999999999999
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_rsds_mean",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "corolla_lab_chroma",
+            "n_taxa": 63,
+            "higher_minus_lower_exposure_residual_covariance": -0.022066772915309715,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.09299662386121436,
+              0.056043175545662814
+            ],
+            "taxon_sign_flip_permutation_p": 0.589,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_rsds_mean",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 63,
+            "higher_minus_lower_exposure_residual_covariance": 0.1858256128798125,
+            "taxon_bootstrap_pointwise_95CI": [
+              0.02585203952071273,
+              0.36504537955414135
+            ],
+            "taxon_sign_flip_permutation_p": 0.016,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 0.096
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_rsds_mean",
+            "trait_a": "corolla_lab_chroma",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 63,
+            "higher_minus_lower_exposure_residual_covariance": -0.03072999633563827,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.10940404646206002,
+              0.04249729289323338
+            ],
+            "taxon_sign_flip_permutation_p": 0.462,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          }
+        ],
+        "regional_and_phylogenetic_effects_not_causally_separated": true,
+        "photo_measured_traits_not_fitness_or_genetic_covar": true
+      }
+    },
+    "5degree": {
+      "taxa": 31,
+      "breadth": {
+        "status": "estimated",
+        "n_original_predeclared_traits": 3,
+        "controls_retained": [
+          "log geographic spread",
+          "log observed photos",
+          "log occupied geographic cells",
+          "sector_0",
+          "sector_1"
+        ],
+        "controls_omitted": [],
+        "taxon_units": 31,
+        "results": [
+          {
+            "trait": "orientation_image_vertical_angle",
+            "status": "estimated",
+            "n_taxa": 31,
+            "log_trait_sd_slope_per_3d_climate_logvolume": 0.129377761871924,
+            "HC3_pointwise_95CI": [
+              -0.15450978008186178,
+              0.4132653038257098
+            ],
+            "within_sector_residual_permutation_p": 0.1275,
+            "rarefaction_draws": 96,
+            "same_species_climate_volume_as_original_H3a": true,
+            "exploratory_Holm_3_traits": 0.3825
+          },
+          {
+            "trait": "corolla_lab_chroma",
+            "status": "estimated",
+            "n_taxa": 31,
+            "log_trait_sd_slope_per_3d_climate_logvolume": -0.038696215000549344,
+            "HC3_pointwise_95CI": [
+              -0.19687059262000978,
+              0.11947816261891109
+            ],
+            "within_sector_residual_permutation_p": 0.52,
+            "rarefaction_draws": 96,
+            "same_species_climate_volume_as_original_H3a": true,
+            "exploratory_Holm_3_traits": 0.79
+          },
+          {
+            "trait": "capitulum_outline_aspect_ratio",
+            "status": "estimated",
+            "n_taxa": 31,
+            "log_trait_sd_slope_per_3d_climate_logvolume": -0.08279727764757328,
+            "HC3_pointwise_95CI": [
+              -0.35891818952548604,
+              0.1933236342303395
+            ],
+            "within_sector_residual_permutation_p": 0.395,
+            "rarefaction_draws": 96,
+            "same_species_climate_volume_as_original_H3a": true,
+            "exploratory_Holm_3_traits": 0.79
+          }
+        ],
+        "no_phenotypic_plasticity_or_adaptation_test": true
+      },
+      "moderation": {
+        "status": "estimated",
+        "n_tests_registered": 6,
+        "n_estimable_tests": 6,
+        "n_cells_source": 814,
+        "n_taxa_source": 31,
+        "n_eligible_taxa_by_exposure": {
+          "chelsa_bio12": 31,
+          "chelsa_rsds_mean": 31
+        },
+        "trait_additive_climate_coefficients_matrices": {
+          "orientation_image_vertical_angle": [
+            0.10152049792966114,
+            0.02922556916691497,
+            0.003341980485948766
+          ],
+          "corolla_lab_chroma": [
+            0.07778337048801454,
+            -0.17641737784444245,
+            0.02969632818035535
+          ],
+          "capitulum_outline_aspect_ratio": [
+            0.030479871450405507,
+            0.08684482433993501,
+            -0.014511243232195407
+          ]
+        },
+        "results": [
+          {
+            "status": "estimated",
+            "climate": "chelsa_bio12",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "corolla_lab_chroma",
+            "n_taxa": 31,
+            "higher_minus_lower_exposure_residual_covariance": 0.029041157403924794,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.13719066046898593,
+              0.1711750365632809
+            ],
+            "taxon_sign_flip_permutation_p": 0.725,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_bio12",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 31,
+            "higher_minus_lower_exposure_residual_covariance": 0.1319950034702994,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.07918731098605167,
+              0.3582230092520572
+            ],
+            "taxon_sign_flip_permutation_p": 0.252,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_bio12",
+            "trait_a": "corolla_lab_chroma",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 31,
+            "higher_minus_lower_exposure_residual_covariance": -0.06228862011923637,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.1912854621834196,
+              0.0870331913352404
+            ],
+            "taxon_sign_flip_permutation_p": 0.416,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_rsds_mean",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "corolla_lab_chroma",
+            "n_taxa": 31,
+            "higher_minus_lower_exposure_residual_covariance": -0.04863092657623701,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.18193850210471693,
+              0.07014183212866691
+            ],
+            "taxon_sign_flip_permutation_p": 0.463,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_rsds_mean",
+            "trait_a": "orientation_image_vertical_angle",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 31,
+            "higher_minus_lower_exposure_residual_covariance": -0.18971205558316886,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.44761211714046617,
+              0.02903251407403268
+            ],
+            "taxon_sign_flip_permutation_p": 0.143,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 0.8579999999999999
+          },
+          {
+            "status": "estimated",
+            "climate": "chelsa_rsds_mean",
+            "trait_a": "corolla_lab_chroma",
+            "trait_b": "capitulum_outline_aspect_ratio",
+            "n_taxa": 31,
+            "higher_minus_lower_exposure_residual_covariance": 0.0013306489702347725,
+            "taxon_bootstrap_pointwise_95CI": [
+              -0.12044350601326166,
+              0.11743799975446949
+            ],
+            "taxon_sign_flip_permutation_p": 0.985,
+            "n_permutations": 999,
+            "taxon_sign_flip_not_phylogenetic_independence": true,
+            "exploratory_Holm_6_moderations": 1
+          }
+        ],
+        "regional_and_phylogenetic_effects_not_causally_separated": true,
+        "photo_measured_traits_not_fitness_or_genetic_covar": true
+      }
+    }
+  },
+  "interpretation": {
+    "none_of_3_axis_specific_breadth_tests_survived_exploratory_Holm3": true,
+    "none_of_6_conditional_covariance_comparisons_survived_exploratory_Holm6": true,
+    "nominal_1deg_rsds_orientation_aspect_covariation_change_not_5deg_robust": true,
+    "photographic_trait_covariance_not_genetic_or_functional_trait_interaction": true,
+    "no_species_or_site_identifiers_exported": true
+  },
+  "verified_execution": {
+    "github_actions_run": 40847696537,
+    "original_private_job_id": 123359131501,
+    "aggregate_artifact_id": 12885860903,
+    "original_source_QC_signature": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "did_not_export_private_source": true
+  }
+}

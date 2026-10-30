@@ -1,6 +1,8 @@
-# GEB Research Article preparation and explicit stop gates — 25 October 2026
+# GEB Research Article preparation status — updated 30 October 2026
 
-Journal source: [Wiley Global Ecology and Biogeography author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html) (checked 2026-10-25).
+Journal source: [Wiley Global Ecology and Biogeography author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html) (rechecked 2026-10-30).
+
+**Current stage:** source-verified figures and editable main/SI review candidates assembled. No journal submission, permanent data deposit or DOI publication has occurred. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
 
 ## Format and scope
 
@@ -13,15 +15,16 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 - Cover letter uploaded separately as a PDF, including a <250-word paragraph explaining interest to GEB readership.
 - Data and code availability declaration is mandatory. Pre-print/anonymous review availability are not substitutes for a durable, rights-compliant data/code release.
 
-## Manuscript narrative: three research parts
+## Manuscript narrative: three ecological questions
 
-**Part 1. Photographic head-trait integration and combinations:** Eight constructs/28 original same-photo RV pairs and eight three-trait configurations; not genetic modularity.
+**3.1 Climate and head presentation:** Original native-taxon BIO18 × image angle, n=168,907/178 taxa, β=+0.045447, Holm P0.00920635. Geographic sensitivity is reported in [SI](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md) as model-dependence, not a causal separation of climate from space.
 
-**Part 2. BIO18 precipitation and capitulum presentation (featured):** Among native taxa image-referenced angle β +0.045447, 95% pointwise CI [+0.022349, +0.068545], Holm P 0.00920635. The original within-taxon β +0.058700, raw P 0.039865, BH P 0.395837 and Holm P 1.0 are reported **in SI only**, not as a second discovery; do not claim the within slope is zero or the among slope is statistically stronger.
+**3.2 Flower colour after colonisation of new regions:** Two species × four range strata, 297,622 original wild source observations; three introduced-stratum colour×radiation/elevation associations survived the original 128-test Holm family. No formal range×environment interaction was estimated.
 
-**Part 3. Native/introduced flower-colour gradients:** *C. arvense* and *C. vulgare*, 350→7→2 eligibility, three original introduced Holm positives, and matching native descriptive slopes with no formal range interaction.
+**3.3 Local climatic analogues and floral morphospace:** H3c detected greater joint angle–chroma–aspect resemblance at climate-matched cells than expected from within-taxon vector reassignment (distance advantage 1° +0.04096; 5° +0.09433, exploratory Holm-2 P=0.010 at each resolution). Main Figure 5 presents this distance result. The primary analysis retains 63 taxa / 7,117 taxon-cells; the separately verified map shows 153,843 contributing source photographs before cell aggregation and rarefaction. Taxa are assigned to different dominant longitude sectors; their matched cells need not occur in different sectors. Climatic breadth, centroids, KDE and covariance endpoints remain in SI. [Detailed source audit](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md).
 
-The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 and the Holm families remain unchanged. [Japanese outline](GEB_THREE_PART_STRUCTURE_JA.md).
+**H3c robustness gate:** Six further fixed random-stream checks retained the positive *direction* at both resolutions (6/6), but nominal P<0.05 in only 2/6 of the 1° series versus 6/6 of 5° series. At 1°, excluding chroma or the central longitude sector reversed the distance contrast. KDE overlap was not consistently supported. See [full post-positive sensitivity SI](SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md). This is not another independent Holm-2 family.
+The weak exploratory 28-pair shape/colour/angle covariance remains in SI; “LEGO” is not a formal study hypothesis. Original S1/S2 frozen results unchanged.
 
 ## What the frozen results can support
 
@@ -31,32 +34,57 @@ The earlier LEGO working label is not a formal hypothesis; source labels S1/S2 a
 
 **Phenotypic organisation:** eight visible constructs/28 pairs on the common S1 156,683-photo/174-taxon cohort show heterogeneous association structure; 24/28 adjusted RV are between>within; label-shuffle reference is conditional on measured coordinate definitions. **Do not claim** genetic autonomy of measured modules, functional synergy or independent evolutionary origins from common-source image traits.
 
-**Alternative explanation:** camera angle and lighting, taxon/geographic confounding (prior BIO12 area-control sensitivity), shared-pixel mathematical covariance, imperfect taxonomic and temporal resolution. Selected-model Holm correction is **not** adjusted for the earlier explorations leading to the fixed model. All significant results and all 208 tests are visible in the numerical supplement; don't conceal the full family.
+**Now empirically tested geographic dependence:** [2026-10-29 original-cohort BIO18 sensitivity](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED_JA.md) reprocessed the exact 168,907 images/178 taxa; sector adjustment β+0.020035 (HC3 CI includes zero), spherical geography β−0.003295 (CI includes zero), and eastern-region exclusion β−0.010372. The original Holm-supported β+0.045447 remains a global observational association; **it is not a geographically universal rain response**. The earlier BIO12 geographical result is a different model/cohort and not independent confirmation.
 
-## Seven display pieces for GEB (planned)
+**Alternative explanation:** camera angle and lighting, taxon/geographic confounding now tested on original BIO18, shared-pixel mathematical covariance, imperfect taxonomic and temporal resolution. Selected-model Holm correction is **not** adjusted for the earlier explorations leading to the fixed model. All significant results and all 208 tests are visible in the numerical supplement; don't conceal the full family.
 
-**Methodology plus ecology:** show the source-verified continuous photographed phenotypes, then their BIO18, native/introduced colour and domain-covariance structure. Scientific novelty rhetoric stays in the [separate cover letter](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
+## Seven main display pieces for GEB (five figures + two tables)
 
-1. **Figure 1:** V4 measurement workflow, provenance-safe coverage and audited 350→7→2 taxon selection (photo/geographic attribution QA outstanding).
-2. **Figure 2 (Part 1):** V4 same-photo full 28-pair RV matrices at within-/among-taxon scales (156,683 photos, 174 taxa).
-3. **Figure 3 (Part 2):** **Only** the original Holm-supported among-taxon image angle×BIO18 coefficient with pointwise 95% CI and corrected P. [SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) contains **all 80 native-taxon raw/BH/Holm tests** and a supplementary two-scale figure including within-taxon raw P.
-4. **Figure 4 (Part 3):** Three selected photographed colour×environment pairs in native/introduced strata, six exact original coefficients with CI; no range×environment interaction inference.
-5. **Figure 5 (Part 1):** Eight image-derived trait combinations and threshold sensitivity (publication-quality source-count figure still pending).
-6. **Table 1:** Native taxon within/among same-domain versus cross-domain descriptive RV medians.
+**Methodology plus ecology:** show how continuous photographed phenotypes are measured and where each analytical cohort was sampled, then the precipitation, colour and local-resemblance results. The [cover-letter draft](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md) has a single 206-word interest paragraph.
+
+1. **Figure 1:** Actual archived source photographs illustrate detection, image-referenced angle, floral pixels and projected outline. Current cohort membership is not asserted for the illustrative images. All three photo licences were verified from their source pages and API records: one CC BY 4.0 and two CC0 1.0. Credits and modifications are in the caption and [rights manifest](FIGURE1_PHOTO_CREDITS_20261030.json). PNG 600 dpi; PDF/SVG masters; 168 × 202 mm.
+2. **Figure 2:** Six actual source-verified sampling maps, pooled into 5° display cells and omitting cells with fewer than five records. Original S1 angle and six S2 colour cohorts were reproduced before export, and H3 geographic eligibility was verified. Mollweide equal-area projection, shared logarithmic scale, graticules and 10,000 km equatorial scale; 168 × 196 mm. [Coverage source](../../analysis/v4/results/20261030_SAMPLING_COVERAGE_SOURCE_VERIFIED.json) / [render manifest](figure2_render_manifest.json). The historical `figure2_cross_functional_trait_pairs` remains an SI figure.
+3. **Figure 3 (native climatic association):** Main figure displays **only the frozen, Holm-supported BIO18 × image-referenced angle coefficient**. The extra sector/spherical-geography and regional-holdout models belong to [spatial-model sensitivity in SI](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md), not the main figure. The [full S1 SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) retains all original 80 unadjusted/BH/Holm rows and both observational scales.
+4. **Figure 4 (native/introduced):** Three selected photographed colour×environment pairs in native/introduced strata, six exact original coefficients with CI; no range×environment interaction inference.
+5. **Figure 5 (H3):** Source-verified climate-matched joint-trait distance advantage versus the within-taxon permutation-null mean at 1° and 5°. Resolution-specific standardisations prevent direct effect-size comparison between grains. Gaussian-KDE similarity, climatic breadth and the original eight high/low configurations remain in SI. No fictitious photo scatter or evolutionary convergence inference.
+6. **Table 1:** Audited source totals and image-angle eligible observations by native/introduced stratum for *C. arvense* and *C. vulgare* (78,646/70,964 and 62,368/85,644; native/introduced totals 141,014/156,608). Weak r pairs and domain RV medians moved to SI.
 7. **Table 2:** Four original Holm-supported environment associations, with Holm rather than raw P displayed in the main table.
 
-**SI figures:** full 208-test table (80 native + 128 two-species) including unadjusted/BH/Holm P, the original two-scale BIO18 image-angle forest, all 28 RV pairs, the previous four-positive forest and S2 domain RV medians. Earlier V3 numerical plots are not re-labelled as V4.
+**SI figures and tables:** three original cross-domain correlation pairs and  full 208-test family with original/BH/Holm P, the two-scale BIO18 angle forest, all 28 RV pairs (original full matrix and CSV), 280 fixed-size label ranks, eight-state configurations with threshold sensitivity, original domain RV medians, previous four-positive forest and S2 range-stratum RV medians. See SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md. Earlier V3 numerical plots are not re-labelled as V4.
 
-## Submission blockers (not claimed complete)
+## Completed preparation and remaining submission decisions
 
-1. Source photo/year-range audit and provenance-safe geographic map; independent image-based angle, colour, shape accuracy assessments.
-2. Exact SI export of 208 tests, 28 adjusted/raw pair RV and full coefficients; latest source archive has been checksum-verified but needs public long-term data preservation.
-3. Reviewer-identity-concealed source access, durable DOI for releasable data/code and original source photo licences.
-4. Reference metadata, plot sizes/attribution, author title page, complete embedded figures, legends, editable .docx, line numbers and separate SI PDF/CSV package.
-5. External methods review of geographic/photographic confounding, model-selection sensitivity and the distinction between **within-stratum phenotype associations** and **excluded between-range climate/niche contrasts**.
+**Assembled:** five main figures in PNG/PDF/SVG; two editable main tables; complete captions with photographic attribution; editable main/SI Word candidates with continuous main-text line numbering; 11 SI appendices; five original numerical CSV exports; aggregate verification/rendering code and source receipts. Main/SI document assembly records source-text and numerical preservation, figure identity and reviewer navigation. Generated Word/ZIP packages are excluded from git and delivered separately.
 
-**State:** the science freeze is reproducible at its original code/Actions SHA; the article files are GEB-structured **drafts**, not an actual submitted manuscript or accepted evidence of ecological causation.
+**Source coverage verified:** [Actions #41020812565](https://github.com/zuizui0223/azami/actions/runs/41020812565), artifact 12961447511. Coarse-cell counts retain every cohort denominator and explicitly account for suppressed records. No exact coordinates, observation IDs, uploader IDs or environmental pixel records are included in the map export. Three photographic illustrations have separately documented attribution rights.
+
+**Aggregate replay verified:** the candidate reproduces the 208-test table, 28-pair table, six original colour coefficients, the 80-test native family and two-scale BIO18 table. Nine verification/render commands pass. It starts from archived aggregates and **does not rerun observation-level fits, raw-image measurement, bootstrap or permutation analyses**. The review copy neutralises identifying repository references but retains the legally required MIT copyright notice; full anonymity is not certified. See [package scope](reproducibility_v4/AGGREGATE_RELEASE_CANDIDATE_README.md).
+
+**Still required before actual submission:**
+
+1. Confirm the author list/order, affiliations, corresponding author, acknowledgements, funding, conflicts and other journal declarations; create the separate author title page and final cover-letter PDF from those confirmed details.
+2. Choose the licence for redistributable aggregate data and establish a durable deposit with an appropriate reviewer-access route. No public DOI or anonymous hosted link is currently claimed; repository access alone is not a permanent archive. Preserve the distinct software and third-party image licences.
+3. Perform the final author sign-off on the main/SI package and submission declarations. Scientific interpretation remains observational; independent image-measurement validation and experimental tests of protection/fitness are limitations or future work, not evidence manufactured by formatting the package.
+
+**State:** the original numerical science is source-verified, and the manuscript is an editable review candidate. It has not been submitted or accepted. Author/access decisions above remain open.
 
 ## Frozen GEB inferential scope
 
 **Included:** 24 October 2026 V4 S1 (native-taxon angle–climate and 28 photographic trait-pair analyses), original S2 128 within-stratum hypothesis tests, three Holm-supported introduced-stratum colour results, and original S2 phenotype-domain RV medians. **Excluded:** native-versus-introduced precipitation-niche, climatic centroid/novelty/expansion, background-matched niche analyses, and post-freeze within-species range × BIO18 interactions. Earlier source experiments remain archived at [`legacy/v4_s2_precipitation_niche_20261025/`](../../legacy/v4_s2_precipitation_niche_20261025/README.md), but should not be referenced as manuscript findings.
+
+**Editorial comparison:** [GEB published-article writing audit](GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md). GEB Research Article structured Abstract and broad-scale generality follow the [official author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html).
+
+**SI-only source-grounded spatial-model sensitivity:** [aggregate JSON](../../analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json), [secure-source CI](https://github.com/zuizui0223/azami/actions/runs/40837107465). `plot_bio18_geographic_sensitivity.py` generates an **SI sensitivity figure** in the standard CI artifact (separate from main Figure 3); no individual coordinates/observer data shared.
+
+**H3 original-source CI:** [Actions #40841007115](https://github.com/zuizui0223/azami/actions/runs/40841007115), artifact 12883021095; [machine-readable anonymous source-verified H3](../../analysis/v4/results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json). All H3 hypotheses are exploratory and separate from the 24 October S1/S2 frozen Holm tests.
+
+## New source-confirmed H3c/H3d endpoints (29 October 2026)
+
+**H3c — positive ecological pattern:** 157,822 common valid photographs/242 source taxa; **63 geographically supported taxa at 1°** and 31 at 5°. For different-sector taxa, matching the three-dimensional climate conditions of occupied cells (BIO12/BIO01/RSDS) yields closer three-dimensional photographed capitulum phenotypes (angle/chroma/aspect) than expected under within-taxon climate–trait permutation: **distance advantage +0.04096, Holm-2 P=0.010** (1°; mean 229 supported cross-sector pairs) and **+0.09433, Holm-2 P=0.010** (5°; mean 103 pairs). A fixed-bandwidth conditional 3D KDE L2 overlap comparison also deviated from its taxon-preserving null (Holm-2 P 0.010 / 0.015). **The conditional subset's absolute overlap was LOWER than the full eight-cell overlap**; this is a relative-to-permutation result, not an absolute increase in niche intersection. The H3a species-level breadth slope +0.0669 (CI −0.1046,+0.2384) and H3b species centroid ρ−0.0081 are not supported.
+
+**H3d — not a positive claim:** Three trait-specific climatic-breadth responses and six rainfall/radiation-modulated cross-trait covariance contrasts were prespecified and tested on the same matched source; none survived their respective exploratory Holm families. In particular, the nominal 1° solar-radiation × image-angle–outline covariance P=0.016 had Holm-6 P=0.096 and a non-replicating/opposite-signed 5° estimate. No genetically encoded module, correlational selection or evolutionary convergence is established.
+
+[H3c empirical source](../../analysis/v4/results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json) · [H3d empirical source](../../analysis/v4/results/20261029_H3D_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_SOURCE_VERIFIED.json) · [Source CI #40847696537](https://github.com/zuizui0223/azami/actions/runs/40847696537) · [H3c SI](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md) · [H3d SI](SI_H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_20261029.md).
+
+**GEB placement:** H3c is now Results **3.3** and Figure 5; H3a/H3b as context; H3d weak covariance moderation, the original 28-pair matrix and spatial BIO18 sensitivity are **SI**, while original 3.1/3.2 results and original S1 80/S2 128 Holm tests remain fixed.
+

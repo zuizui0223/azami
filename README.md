@@ -1,51 +1,47 @@
-# Azami — frozen V4 science | GEB three-part Research Article
+# Azami | Global photographic phenomics of *Cirsium*
 
-**Current main scientific baseline (frozen 24 October 2026): V4 S1–S2.** This repository preserves the existing V3 science under [`legacy/v3/`](legacy/v3/README.md) without deleting its original sources. V4 T2 (phylogenetic history) and T3 (other-tribe extension) are **not** part of the present GEB manuscript.
+> **Current working paper:** *Global photographic phenomics reveals climate-associated capitulum traits and local floral resemblance in Cirsium* — a **GEB Research Article candidate, not submitted or published**. The paper is maintained on [PR #159](https://github.com/zuizui0223/azami/pull/159). The default `main` branch may still show the older manuscript outline until that PR is merged.
+>
+> **現在地:** 最新の論文はResults **3.1 降水と向き、3.2 日射・標高と花色、3.3 似た気候での多形質の類似**。古い「形質組合せ／向き／花色」の3部構成を現在の本文と混同しないでください。
 
-## Start here
+## Read the current research
 
-1. [GEB Research Article draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md) — Methods, Results and Discussion organised into **three research parts** (visible trait integration; BIO18 and capitulum image angle; native/introduced colour–environment gradients).
-2. [Three-part Japanese research outline and abstract](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md) — parts 1, 2 and 3, without treating the informal LEGO working nickname as a theory or creating a new source S3.
-3. [Blinded reviewer-text working draft](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE_BLINDED.md) — identity-sensitive internal provenance hidden; **not yet submission ready** because anonymous reviewer access is not established.
-4. [Source and claim ledger](manuscripts/v4_s1_s2_frozen_20261025/CLAIM_LEDGER_AND_SUBMISSION_GATES.md) and [GEB preparation checklist](manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_CHECKLIST.md).
-5. [Frozen V4 scientific record](analysis/v4/FINAL_V4_BIO18_HOLM_LEGO_FREEZE_20261024_JA.md) and [read-only science checksum workflow](.github/workflows/v4-final-bio18-holm-freeze.yml).
-6. [Historical V3 archive](legacy/v3/README.md) and [V2 archive](legacy/v2/ORIGINAL_REPRODUCTION.md).
+| Purpose | Canonical entry |
+| --- | --- |
+| **Latest manuscript and figures** | [Research Article](manuscripts/v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md) · [manuscript guide](manuscripts/README.md) |
+| Results, cohort definitions and pending decisions | [GEB preparation checklist](manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_CHECKLIST.md) · [claim and submission gates](manuscripts/v4_s1_s2_frozen_20261025/CLAIM_LEDGER_AND_SUBMISSION_GATES.md) |
+| Figures 1–5, provenance and licenses | [figure directory](manuscripts/v4_s1_s2_frozen_20261025/figures/) · [asset audit](manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_ASSET_AUDIT_20261030_JA.md) |
+| Frozen scientific evidence | [V4 analysis](analysis/v4/README.md) · [24 October freeze](analysis/v4/FINAL_V4_BIO18_HOLM_LEGO_FREEZE_20261024_JA.md) |
+| Repeat an allowed verification / prepare journal materials | [reproduction and submission runbook](docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md) |
+| Find old work without treating it as a current result | [repository map](docs/REPOSITORY_MAP.md) · [archive guide](legacy/README.md) |
+| Branch/PR cleanup without losing provenance | [branch triage](docs/BRANCH_ARCHIVE_TRIAGE_20261030.md) |
 
-## Three-part GEB research question
+## Three results in the **current** article
 
-The paper joins a **methodological axis** (repeatable continuous photographic traits) with an **ecological axis** (environmental organisation of the same traits):
+1. **3.1 — Precipitation and photographed capitulum orientation:** among 178 native taxa (168,907 angle-eligible records), warmest-quarter precipitation (BIO18) is positively associated with image-frame head angle (standardised β=+0.045447; Holm P=0.00920635 in the original 80-test S1 family). This is *not* a measurement of gravity-based nodding.
+2. **3.2 — Floral colour along radiation and elevation:** separate within-range models for native/introduced *C. arvense* and *C. vulgare* yield three introduced-range associations surviving Holm correction in the original S2 128-test family. The four original colour-cohort sizes are **22,936/26,171** (*C. arvense*, native/introduced) and **17,335/27,200** (*C. vulgare*, native/introduced). The analysis did **not** formally test range-by-climate interaction or evolution after introduction.
+3. **3.3 — Multivariate resemblance under analogous local climates:** 63 taxa in the primary 1° analysis (7,117 taxon-by-cell values; 153,843 contributing photographic records *before* aggregation) show closer joint orientation–chroma–outline-aspect phenotypes at climate-matched cells than under a within-taxon whole-vector permutation null. Distance advantages: **+0.04096** at 1° and **+0.09433** at 5° (exploratory Holm-2 P=0.010 at each grain). The 1° signal depends on trait/region choices, documented in SI.
 
-1. **Part 1: Phenotypic integration and configurations** — eight image constructs, 28 matched-pair RV analyses and 3-trait arrangements in 156,683 shared native photographs/174 taxa.
-2. **Part 2: Capitulum image angle × warm-quarter precipitation BIO18** — the single Holm-supported native among-taxon association (β +0.045447, Holm P 0.00920635), featured in Main Figure 3.
-3. **Part 3: Native/introduced colour–environment associations** — two source-qualified species and three Holm-supported introduced-stratum floral-colour gradients (4 species×range strata).
+The shared **156,683 photographs across 174 taxa** form a separate eight-construct covariance cohort; they are **not** a universal denominator for results 3.1–3.3. S1 and S2 are original source cohorts, not three independent sets of images. The H3c exploratory correction is separate from their 80/128-test families. See the [manuscript guide](manuscripts/README.md) before reusing any sample size.
 
-The three parts **reuse original V4 sources S1 and S2**, not independent photo datasets or a new S3 testing family. Main Figure 3 deliberately does not show raw-only within-taxon P; [Supporting Information](manuscripts/v4_s1_s2_frozen_20261025/SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) makes **both original image-angle×BIO18 slopes and all 80 native raw/BH/Holm values** inspectable. The historical working nickname “LEGO” is not a formal genetic-module hypothesis. [Current Japanese outline](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md).
+## What the work contributes — and what it does not claim
 
-**Primary four-variable model:** CHELSA BIO18 (warmest-quarter **mean monthly** precipitation), BIO05, RSDS, plus WorldClim elevation. This is a **post hoc frozen** model, not independently preregistered. S1 is the native-range source census (313,350 records); S2 is the native/introduced wild census of *C. arvense* and *C. vulgare* (297,622). Eight photograph-derived constructs are analysed. Independent Holm families contain **80 S1 and 128 S2** biological comparisons (hue sine/cosine jointly counted as one construct).
+**Methodological:** observable, continuous measures of capitulum presentation, colour and two-dimensional outline can remain attached to the same photographic record and its location, enabling analyses beyond a single species mean.
 
-**Four Holm-supported observational associations:**
-- S1 between taxa: image-frame head angle × BIO18, standardized β +0.045447, Holm P = 0.00920635 (n 168,907).
-- S2 introduced *C. arvense*: image colour lightness × elevation, β −0.173732, Holm P = 0.00131233 (n 26,171).
-- S2 introduced *C. vulgare*: chroma × RSDS, β +0.134504, Holm P = 0.01456813 (n 27,200).
-- S2 introduced *C. vulgare*: lightness × RSDS, β −0.142801, Holm P = 0.01925414 (n 27,200).
+**Ecological:** capitulum appearance has climatic associations among native taxa, within the ranges of two species, and across different taxa at locally analogous climates. Rain avoidance, photoprotection and thermal absorption are **functional hypotheses**, not demonstrated mechanisms. Image top is not gravity vertical; visible JPEG colour is not calibrated pigment chemistry. This study does not demonstrate adaptive convergence or fitness advantages.
 
-**Part 1** finds larger between- than within-taxon RV for **24/28** adjusted pairs using the same **156,683 native photographs / 174 taxa**, with stronger within-domain photographic covariance (not genetic modules). **Part 2** foregrounds the native among-taxon angle×BIO18 relationship. **Part 3** retains three introduced-stratum Holm-supported **colour** associations; original source photographs overlap and cannot be counted as independent replication.
+## Repository boundaries
 
-**Current GEB scope exclusion:** no native-versus-introduced **precipitation-niche** or climate-occupancy comparison, no post-freeze 4D centroid/novelty or matched-climate range-effect regression. Those 25 October exploratory products were moved to [deferred historical research](legacy/v4_s2_precipitation_niche_20261025/README.md), outside the frozen primary narrative. See [scope policy](manuscripts/v4_s1_s2_frozen_20261025/SCOPE_LOCK_20261025_JA.md).
+- [`manuscripts/`](manuscripts/README.md): the current article, its SI, figure scripts, provenance and submission builders. Generated Word/PDF/ZIP review packages are produced outside Git, not scientific inputs.
+- [`analysis/`](analysis/README.md): V4 source contracts, scripts, checked aggregate outputs, and historical Chapter 1 code kept separate.
+- [`legacy/`](legacy/README.md): earlier V2/V3 and deferred experiments; preserved for provenance, not current claims.
+- [`tests/`](tests/): independent tests and frozen numerical/claim contracts.
+- [`.github/workflows/`](.github/workflows/): six current V4 verification or source-recovery workflows. These include protected-data operations; do not run or redistribute their private intermediates casually.
 
-**Not established:** causal rainfall selection, true gravity-based nodding, calibrated anthocyanin, heritable independent modules, evolutionary module reassembly or introduction-driven evolution. Previous BIO12 geographic analyses show sensitivity to taxon composition; photograph-based confounding remains a limitation. Full supplement and source checks are anchored to [frozen artifact 12547876704](https://github.com/zuizui0223/azami/actions/runs/40062126006), original-data success SHA `d2c45b00018a0c04e7c69a29857207dc1ac06d0c`, ZIP SHA-256 `6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205`. The scientific snapshot is `7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159`.
+**Science freeze:** the original S1/S2 statistical families were fixed on **2026-10-24**. H3c was added as a separate exploratory analysis on **2026-10-29**. The active manuscript keeps both histories explicit. The older [Japanese three-part working outline](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md) is historical planning context, **not** the current Results index.
 
-## Layout and reproducibility boundaries
+## Publication, licenses and privacy
 
-- `analysis/v4/`: **only frozen S1–S2 code, contracts and source-verified summaries**, not the T2/T3 research branches. For full, earlier private-source reconstruction use the source execution commit pinned above; today's `main` is a submission-oriented presentation of that immutable analysis, not a remeasurement.
-- `manuscripts/v4_s1_s2_frozen_20261025/`: GEB article and figure set limited to the 24 October frozen S1–S2 **phenotype–environment** science, with a scope-locked claim ledger and checked numerical supplement.
-- `legacy/v3/`: archived V3 analytical source, reproducibility package, result receipts, old CI definitions and dedicated tests.
-- `legacy/v2/`, `legacy/ch1_global/v2/`, `analysis/ch1/`, `src/azami_ch1/`, `analysis_outputs/`: retained earlier/shared resources. They are **not** the V4 results.
+No V4 data DOI or final public/anonymous reviewer deposit is established. An Actions artifact can expire; a successful local check against an existing aggregate cannot recreate restricted image-level data. Raw observation identifiers, precise locations, protected source photographs and other third-party material must follow their original access restrictions. Code's MIT license does **not** override image/data licenses: [LICENSE](LICENSE), [NOTICE](NOTICE.md), [Figure 1 credits](manuscripts/v4_s1_s2_frozen_20261025/FIGURE1_PHOTO_CREDITS_20261030.json). The historical Zenodo DOI for V2 is not a V4 dataset DOI.
 
-Only a **read-only V4 audit and GEB manuscript integrity** workflow remain active. Historical V3 Zenodo publishing steps are archived and must not auto-run after this change.
-
-## Public-data limitation and journal status
-
-The frozen V4 numerical artifact is verified but GitHub Actions artifacts can expire and private upstream measurements remain access-restricted. A durable deposit of allowable aggregates/code, anonymous review URL, field/photo validation, licences, full references, author metadata and final figure layout are still necessary to submit to *Global Ecology and Biogeography*. No DOI for V4 or published/submitted manuscript is claimed. The previous Zenodo DOI 10.5281/zenodo.22295791 is a **historical V2 numerical archive**, not the V4 dataset.
-
-Original code is MIT licensed; data, images and third-party assets remain subject to their separate licences; see [NOTICE](NOTICE.md).
+**Maintainership policy:** edit the dated GEB paper in place on its active working branch, keep source-locked scientific numbers stable, and record new verification separately. Do not bulk-move paths or delete branches before checking import paths, GitHub Actions, existing PR bases and archived artifact receipts. See [branch triage](docs/BRANCH_ARCHIVE_TRIAGE_20261030.md).

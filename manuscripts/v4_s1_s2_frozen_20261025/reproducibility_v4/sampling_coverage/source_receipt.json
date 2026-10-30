@@ -1,0 +1,72 @@
+{
+  "source_run": "https://github.com/zuizui0223/azami/actions/runs/41020812565",
+  "source_commit": "1fa733a463a6e546a69b8386eddbed6b2f1d047d",
+  "artifact_id": 12961447511,
+  "artifact_zip_sha256": "93924e9b36eee790d263ee6f5ca33859a7719fb428a9eb4f22198d3b9df22f8e",
+  "coverage_sha256": "ca6d9c787c19758ebed68be53b7370d0fbc8a81b1b10235676c66619df04dc50",
+  "original_s1_beta_and_six_s2_coefficients_reproduced": true,
+  "cohort_counts": [
+    {
+      "panel": "s1_angle",
+      "total_records": 168907,
+      "total_taxa": 178,
+      "total_cells": 306,
+      "shown_records": 168789,
+      "suppressed_records": 118,
+      "shown_cells": 246,
+      "suppressed_cells": 60
+    },
+    {
+      "panel": "h3c_primary",
+      "total_records": 153843,
+      "total_taxa": 63,
+      "total_cells": 295,
+      "shown_records": 153738,
+      "suppressed_records": 105,
+      "shown_cells": 237,
+      "suppressed_cells": 58
+    },
+    {
+      "panel": "arvense_native",
+      "total_records": 22936,
+      "total_taxa": 1,
+      "total_cells": 171,
+      "shown_records": 22803,
+      "suppressed_records": 133,
+      "shown_cells": 111,
+      "suppressed_cells": 60
+    },
+    {
+      "panel": "arvense_introduced",
+      "total_records": 26171,
+      "total_taxa": 1,
+      "total_cells": 60,
+      "shown_records": 26157,
+      "suppressed_records": 14,
+      "shown_cells": 53,
+      "suppressed_cells": 7
+    },
+    {
+      "panel": "vulgare_native",
+      "total_records": 17335,
+      "total_taxa": 1,
+      "total_cells": 111,
+      "shown_records": 17273,
+      "suppressed_records": 62,
+      "shown_cells": 83,
+      "suppressed_cells": 28
+    },
+    {
+      "panel": "vulgare_introduced",
+      "total_records": 27200,
+      "total_taxa": 1,
+      "total_cells": 71,
+      "shown_records": 27183,
+      "suppressed_records": 17,
+      "shown_cells": 62,
+      "suppressed_cells": 9
+    }
+  ],
+  "raw_source_records_exported": false,
+  "private_source_working_files_removed": true
+}

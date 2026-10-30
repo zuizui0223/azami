@@ -1,0 +1,175 @@
+name: V4 H3 climate occupancy and photo-trait hypervolume
+
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/s1_climate_trait_hypervolume.py'
+      - 'tests/test_v4_s1_climate_trait_hypervolume.py'
+      - 'analysis/v4/s1_h3_climate_analogue_alignment.py'
+      - 'tests/test_v4_s1_h3_climate_analogue_overlap.py'
+      - 'analysis/v4/s1_h3c_robustness.py'
+      - 'tests/test_v4_s1_h3c_robustness.py'
+      - 'analysis/v4/s1_h3c_seed_stability.py'
+      - 'tests/test_v4_s1_h3c_seed_stability.py'
+      - 'analysis/v4/H3C_RAREFACTION_SEED_STABILITY_PLAN_20261029_JA.md'
+      - 'analysis/v4/H3C_ROBUSTNESS_SCOPE_20261029_JA.md'
+      - 'analysis/v4/s1_h3_environment_moderated_trait_covariance.py'
+      - 'tests/test_v4_s1_h3_environment_moderated_trait_covariance.py'
+      - 'analysis/v4/H3_CLIMATE_ANALOG_PHENOTYPE_CONVERGENCE_DESIGN_20261029_JA.md'
+      - 'analysis/v4/H3_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_DESIGN_20261029_JA.md'
+      - 'analysis/v4/HYPERVOLUME_CLIMATE_MORPHOSPACE_H3_PREDECLARED_20261029_JA.md'
+      - '.github/workflows/v4-s1-climate-trait-hypervolume.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: azami-h3-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  h3-exact-original-native-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+      - name: H3 source-change gate (or explicit workflow dispatch)
+        id: decide
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "run_analysis=true" >> "$GITHUB_OUTPUT"
+          else
+            changed="$(git diff-tree --no-commit-id --name-only -r HEAD)"
+            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/s1_climate_trait_hypervolume\.py|tests/test_v4_s1_climate_trait_hypervolume\.py|analysis/v4/s1_h3c_seed_stability\.py|tests/test_v4_s1_h3c_seed_stability\.py|analysis/v4/s1_h3c_robustness\.py|tests/test_v4_s1_h3c_robustness\.py|analysis/v4/s1_h3_climate_analogue_alignment\.py|tests/test_v4_s1_h3_climate_analogue_overlap\.py|analysis/v4/s1_h3_environment_moderated_trait_covariance\.py|tests/test_v4_s1_h3_environment_moderated_trait_covariance\.py|\.github/workflows/v4-s1-climate-trait-hypervolume\.yml)$'; then
+              echo "run_analysis=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run_analysis=false" >> "$GITHUB_OUTPUT"
+              echo "Unchanged H3 analysis: keep existing 2026-10-29 source-verified result"
+            fi
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source reader and numeric / unit-test dependencies
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'cryptography>=46,<49' pytest
+      - name: Test fixed hypervolume estimator, source supports and taxon-level null
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m pytest -q tests/test_v4_s1_climate_trait_hypervolume.py tests/test_v4_s1_h3_climate_analogue_overlap.py tests/test_v4_s1_h3_environment_moderated_trait_covariance.py tests/test_v4_s1_h3c_robustness.py tests/test_v4_s1_h3c_seed_stability.py
+          python -m py_compile analysis/v4/s1_climate_trait_hypervolume.py analysis/v4/s1_h3_climate_analogue_alignment.py analysis/v4/s1_h3_environment_moderated_trait_covariance.py analysis/v4/s1_h3c_robustness.py analysis/v4/s1_h3c_seed_stability.py
+      - name: Restore original confidential S1 source and strict receipt
+        if: steps.decide.outputs.run_analysis == 'true'
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/h3/private work/h3/receipt work/h3/output
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/h3/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/h3/receipt
+          python - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path("work/h3")
+          raw=(root/"receipt/measurement_receipt.json").read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=="246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6"
+          receipt=json.loads(raw)
+          sealed=(root/"private/native-observation-measurements.csv.gz.aesgcm").read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt["encrypted_table_sha256"]
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ["AZAMI_METADATA_KEY"])).decrypt(
+                  sealed[:12],sealed[12:],receipt["encrypted_table_aad"].encode())
+          except Exception:
+              raise SystemExit("ORIGINAL_S1_PRIVATE_SOURCE_AUTHENTICATION_FAILED") from None
+          assert hashlib.sha256(clear).hexdigest()==receipt["prepared_table_sha256"]
+          (root/"private/raw_source.csv.gz").write_bytes(clear)
+          print("Verified original S1 source, no raw records exported",flush=True)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/h3/private/raw_source.csv.gz \
+            --receipt work/h3/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/h3/private/decoded
+      - name: Estimate 3D climatic and photographic occupied space breadth from original QC photographs
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_climate_trait_hypervolume \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --out work/h3/output/H3_CLIMATE_TRAIT_HYPERVOLUME_AGGREGATE.json
+          python -m analysis.v4.s1_h3_climate_analogue_alignment \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --output work/h3/output/H3C_CONDITIONAL_KDE_TRAIT_OVERLAP_AGGREGATE.json
+          python -m analysis.v4.s1_h3_environment_moderated_trait_covariance \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --out work/h3/output/H3D_CLIMATE_MODERATED_TRAIT_COVARIANCE_AGGREGATE.json
+          python -m analysis.v4.s1_h3c_robustness \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --output work/h3/output/H3C_ROBUSTNESS_SENSITIVITY_AGGREGATE.json
+          python -m analysis.v4.s1_h3c_seed_stability \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --output work/h3/output/H3C_MONTE_CARLO_SEED_STABILITY_AGGREGATE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          f=Path("work/h3/output/H3_CLIMATE_TRAIT_HYPERVOLUME_AGGREGATE.json")
+          a=json.loads(f.read_text())
+          assert a["original_decoded_source"]["source_observations"]==313350
+          assert a["inference"]["separate_from_original_S1_80_and_S2_128_Holm_families"]
+          assert "1degree" in a["analysis"] and "5degree" in a["analysis"]
+          def all_dict_keys(node):
+              if isinstance(node,dict):
+                  for k,v in node.items():
+                      yield k
+                      yield from all_dict_keys(v)
+              elif isinstance(node,list):
+                  for v in node:
+                      yield from all_dict_keys(v)
+          for another_name in (
+              "H3C_CONDITIONAL_KDE_TRAIT_OVERLAP_AGGREGATE.json",
+              "H3D_CLIMATE_MODERATED_TRAIT_COVARIANCE_AGGREGATE.json",
+              "H3C_ROBUSTNESS_SENSITIVITY_AGGREGATE.json",
+              "H3C_MONTE_CARLO_SEED_STABILITY_AGGREGATE.json",
+          ):
+              another=json.loads((f.parent/another_name).read_text())
+              parent=another.get("original_source",another.get("source_provenance"))
+              assert parent["source_observations"]==313350
+              assert parent["quality_eligible_matched_observations"]==157822
+              panels=another.get("results",another.get("panels"))
+              assert panels is not None and "1degree" in panels and "5degree" in panels
+              for forbidden in ("obs_id","user_id","accepted_key","photo_id",
+                                "taxon_name","latitude","longitude","photographer_id"):
+                  assert forbidden not in set(all_dict_keys(another)),forbidden
+          keys=set(all_dict_keys(a))
+          for forbidden in ("obs_id","user_id","accepted_key","photo_id","taxon_name",
+                            "latitude","longitude","photographer_id"):
+              assert forbidden not in keys,forbidden
+          print({"H3_primary_taxa":a["analysis"]["1degree"].get("n_taxa_eligible",0),
+                 "H3_status":a["analysis"]["1degree"]["status"],
+                 "H3_secondary_status":a["analysis"]["5degree"]["status"]},flush=True)
+          PY
+      - name: Upload anonymous aggregate ecological result only
+        if: always() && steps.decide.outputs.run_analysis == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-h3-trait-climate-volume-${{ github.run_id }}
+          path: work/h3/output/**
+          retention-days: 90
+          if-no-files-found: warn

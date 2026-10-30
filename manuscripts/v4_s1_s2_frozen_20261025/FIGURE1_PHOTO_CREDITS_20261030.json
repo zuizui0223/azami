@@ -1,0 +1,385 @@
+{
+  "schema_version": 1,
+  "figure": "Figure 1",
+  "figure_stem": "figure1_photographic_measurement_pipeline",
+  "audit_date": "2026-10-30",
+  "rights_status": "source_photo_pages_and_api_verified",
+  "remaining_photo_license_issue": null,
+  "source_commit": "90c21b0d52e6c983c6a9761d8569a7edc6f2d1a0",
+  "source_tree": "715a8f0d5bc759f70d12759212bce5ce32961938",
+  "source_assets": {
+    "composite": "legacy/v3/reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.png",
+    "measurements_and_credits": "legacy/v3/reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.csv",
+    "production_provenance": "legacy/v3/reproducibility/figures/source/Figure_1_real_photo_measurement_provenance.json",
+    "historical_checksum_report": "legacy/v3/reproducibility/figures/figure_build_report.json"
+  },
+  "photographs": [
+    {
+      "taxon": "Cirsium pannonicum",
+      "photo_id": 532420148,
+      "panels": [
+        "a",
+        "d",
+        "e",
+        "f"
+      ],
+      "source_page_url": "https://www.inaturalist.org/photos/532420148",
+      "source_display_name": "Bobo-X",
+      "source_display_name_role": "copyright credit",
+      "recorded_attribution": "(c) Bobo-X, some rights reserved (CC BY)",
+      "recorded_license_code": "cc-by",
+      "verified_license": "CC BY 4.0",
+      "license_uri": "https://creativecommons.org/licenses/by/4.0/",
+      "source_page_license_verified": true,
+      "api_license_and_attribution_match_archived_record": true,
+      "verified_at_utc": "2026-10-30T07:05:05.455479+00:00",
+      "photo_page_response_sha256": "fee7a7c0a00006e6eef1fbf000c436ffd9d0d76ed66bd28addd99f13bec2e724",
+      "source_page_evidence_excerpt": "Photo 532420148, (c) Bobo-X, some rights reserved (CC BY), uploaded by Bobo-X",
+      "api_metadata_evidence": {
+        "url": "https://api.inaturalist.org/v1/observations/295734197",
+        "response_sha256": "31bce646651443a17348061c4fb3769f6ded22d74fed5e8f2b85bfdd0227388f",
+        "photo_license_code": "cc-by",
+        "photo_attribution": "(c) Bobo-X, some rights reserved (CC BY)"
+      },
+      "original_image_downloaded_for_this_revision": false,
+      "redistributed_asset": "existing archived composite crops; original photo licenses retained"
+    },
+    {
+      "taxon": "Cirsium mohavense",
+      "photo_id": 4051162,
+      "panels": [
+        "b"
+      ],
+      "source_page_url": "https://www.inaturalist.org/photos/4051162",
+      "source_display_name": "Jesse Rorabaugh",
+      "source_display_name_role": "uploader named on the original photo page",
+      "recorded_attribution": "no rights reserved",
+      "recorded_license_code": "cc0",
+      "verified_license": "CC0 1.0",
+      "license_uri": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "source_page_license_verified": true,
+      "api_license_and_attribution_match_archived_record": true,
+      "verified_at_utc": "2026-10-30T07:05:05.456420+00:00",
+      "photo_page_response_sha256": "0b8ea1e2ebdcbb9ce45a6a1bc3d977c1ee19f343ce4e2fe30297f6fcd673aed1",
+      "source_page_evidence_excerpt": "Photo 4051162, no rights reserved, uploaded by Jesse Rorabaugh",
+      "api_metadata_evidence": {
+        "url": "https://api.inaturalist.org/v1/observations/3483362",
+        "response_sha256": "99268987ac98054014c86ec5ac19a4fb7cb88dd8c17244fe6915656b7eb0298b",
+        "photo_license_code": "cc0",
+        "photo_attribution": "no rights reserved"
+      },
+      "original_image_downloaded_for_this_revision": false,
+      "redistributed_asset": "existing archived composite crops; original photo licenses retained"
+    },
+    {
+      "taxon": "Cirsium subcoriaceum",
+      "photo_id": 475732253,
+      "panels": [
+        "c"
+      ],
+      "source_page_url": "https://www.inaturalist.org/photos/475732253",
+      "source_display_name": "Diego Blanco",
+      "source_display_name_role": "uploader named on the original photo page",
+      "recorded_attribution": "no rights reserved",
+      "recorded_license_code": "cc0",
+      "verified_license": "CC0 1.0",
+      "license_uri": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "source_page_license_verified": true,
+      "api_license_and_attribution_match_archived_record": true,
+      "verified_at_utc": "2026-10-30T07:05:05.456978+00:00",
+      "photo_page_response_sha256": "4ad9747a9277f8f06a11a60f138d86072cf4671fb49317c90f4b33dc4bf970ac",
+      "source_page_evidence_excerpt": "Photo 475732253, no rights reserved, uploaded by Diego Blanco",
+      "api_metadata_evidence": {
+        "url": "https://api.inaturalist.org/v1/observations/264903671",
+        "response_sha256": "01d5802162f770afcd713094c889020dd8bba6c8a8a57bc02fade5e7ae4c9f82",
+        "photo_license_code": "cc0",
+        "photo_attribution": "no rights reserved"
+      },
+      "original_image_downloaded_for_this_revision": false,
+      "redistributed_asset": "existing archived composite crops; original photo licenses retained"
+    }
+  ],
+  "license_scope": {
+    "repository_MIT_does_not_replace_photo_licenses": true,
+    "third_party_photos_retain_original_licenses": true,
+    "CC_BY_attribution_preserved": true,
+    "CC_BY_source_and_license_links_in_caption": true,
+    "changes_disclosed": "Cropped, resized for layout, original detector/mask/outline overlays retained, legacy panel labels replaced, vector image-top reference added; original biological content is not retouched.",
+    "official_guidance": [
+      "https://help.inaturalist.org/en/support/solutions/articles/151000169918",
+      "https://help.inaturalist.org/en/support/solutions/articles/151000175695",
+      "https://creativecommons.org/licenses/by/4.0/",
+      "https://creativecommons.org/publicdomain/zero/1.0/"
+    ]
+  },
+  "scientific_scope": {
+    "illustrative_archived_pipeline_examples": true,
+    "current_V4_cohort_membership_asserted": false,
+    "independent_detector_accuracy_validation_asserted": false,
+    "original_statistics_changed": false,
+    "geometry_is_two_dimensional": true,
+    "angle_reference": "image vertical; not gravity",
+    "domain_aggregation": "medians of eligible heads within photographic record; contributing heads may differ across domains",
+    "constructs": [
+      "image-referenced angle",
+      "lightness",
+      "chroma",
+      "circular hue",
+      "aspect ratio",
+      "circularity",
+      "solidity",
+      "width-profile coefficient of variation"
+    ],
+    "numerical_coordinates": 9,
+    "detailed_example_values": {
+      "orientation_angle_degrees": 0.7320090994773131,
+      "corolla_lab_lightness": 56.47058868408203,
+      "corolla_lab_chroma": 33.2866325378418,
+      "corolla_hue_degrees": 300.1734619140625,
+      "shape_aspect_ratio": 1.5925925925925926,
+      "shape_circularity": 0.7675002023434466,
+      "shape_solidity": 0.9542994588093806
+    },
+    "width_profile_cv_example": {
+      "value": null,
+      "reason": "Not present in archived Figure 1 head-value table; no value invented; definition referred to Table S2.1."
+    },
+    "excluded_legacy_overlay": {
+      "source_crop_xyxy": [
+        480,
+        2190,
+        1000,
+        2860
+      ],
+      "reason": "Historical overlay shows 1.1 degrees; production CSV value is 0.7320090994773131 degrees. Plain tight crop and vector image-top reference used instead."
+    }
+  },
+  "pipeline_code": [
+    "legacy/ch1_global/v2/78_build_figure1_measurement_audit.py",
+    "legacy/ch1_global/v2/56_run_primary_traits_continuous_v2.py",
+    "legacy/ch1_global/v2/52_measure_primary_traits_continuous.py",
+    "legacy/ch1_global/v2/53_aggregate_primary_trait_continuous.py"
+  ],
+  "transformations": [
+    {
+      "operation": "rectangular source-sheet crops",
+      "coordinate_convention": "[left, top, right, bottom], exclusive right/bottom, in original composite pixels",
+      "preserve_source_pixels": true
+    },
+    {
+      "operation": "nearest-neighbour display scaling",
+      "biological_pixels_retouched": false
+    },
+    {
+      "operation": "legacy raster panel letters replaced by consistent vector labels",
+      "area": "upper-left 5.5 by 4.1 mm presentation rectangle, outside focal head; differs by panel scale"
+    },
+    {
+      "operation": "new image-top arrow",
+      "area": "outside panel d",
+      "is_measured_head_axis": false
+    },
+    {
+      "operation": "new vector labels and workflow",
+      "source": "existing archived head values plus current Table S4 operational definitions"
+    }
+  ],
+  "caption_candidate": "Figure 1. From photographs to ecological comparisons. (a–c) Public Cirsium photographs with stored capitulum detector boxes. These archived source examples illustrate the measurement pipeline; their membership in the current V4 analytical cohorts is not asserted. (d–f) The boxed C. pannonicum head in (a) illustrates image-referenced orientation, floral colour and projected outline measurement. The arrow in (d) marks image top, not gravity; the displayed 0.7° is the archived production value 0.732009° rounded to one decimal place. In (e), the white boundary outlines the archived floral-pixel mask. In (f), red marks the contour, yellow its convex hull and blue the principal axis. Values are frozen head-level outputs. The eight constructs comprise angle, lightness, chroma, circular hue, aspect ratio, circularity, solidity and width-profile coefficient of variation (CV); hue uses two numerical coordinates. No example CV value is supplied by the archived panel table, so its definition is given in Table S2.1. Eligible head measurements are summarised within photographic records by domain; the sets of contributing heads can differ among domains. These linked records support the three ecological comparisons. Panels are cropped and annotated derivatives of the archived photographs; no new image measurements were used. Photo (a) and derivatives (d–f): © Bobo-X, CC BY 4.0, https://www.inaturalist.org/photos/532420148, https://creativecommons.org/licenses/by/4.0/. Photo (b): uploaded by Jesse Rorabaugh, CC0 1.0, https://www.inaturalist.org/photos/4051162. Photo (c): uploaded by Diego Blanco, CC0 1.0, https://www.inaturalist.org/photos/475732253. CC0 declaration: https://creativecommons.org/publicdomain/zero/1.0/.",
+  "verification_notes": [
+    "Original source photo pages and public API photo objects were read without credentials on 2026-10-30. Only image-specific attribution/license evidence was retained; no coordinates or protected source records are included.",
+    "Source composite is byte-identical to its archived checksum. Current metadata files use LF; their CRLF serialization exactly matches the historical figure report checksums.",
+    "No original photograph was downloaded in this revision. Existing archived source pixels were used."
+  ],
+  "render": {
+    "width_mm": 168.0,
+    "height_mm": 202.0,
+    "minimum_vector_text_size_pt": 8.0,
+    "raster_export_dpi": 600,
+    "text_within_canvas": true,
+    "crops": [
+      {
+        "panel": "a",
+        "source_crop_xyxy": [
+          100,
+          580,
+          642,
+          942
+        ],
+        "display_box_mm": [
+          5.070994475138125,
+          18.0,
+          49.85801104972375,
+          33.3
+        ],
+        "legacy_panel_label_replaced": true,
+        "label_patch_mm": [
+          5.5,
+          4.1
+        ],
+        "pixel_interpolation": "nearest"
+      },
+      {
+        "panel": "b",
+        "source_crop_xyxy": [
+          814,
+          442,
+          1492,
+          894
+        ],
+        "display_box_mm": [
+          59.025000000000006,
+          18.0,
+          49.94999999999999,
+          33.3
+        ],
+        "legacy_panel_label_replaced": true,
+        "label_patch_mm": [
+          5.5,
+          4.1
+        ],
+        "pixel_interpolation": "nearest"
+      },
+      {
+        "panel": "c",
+        "source_crop_xyxy": [
+          1574,
+          486,
+          2296,
+          967
+        ],
+        "display_box_mm": [
+          113.00769230769231,
+          18.0,
+          49.984615384615374,
+          33.3
+        ],
+        "legacy_panel_label_replaced": true,
+        "label_patch_mm": [
+          5.5,
+          4.1
+        ],
+        "pixel_interpolation": "nearest"
+      },
+      {
+        "panel": "d",
+        "source_crop_xyxy": [
+          129,
+          1260,
+          612,
+          1950
+        ],
+        "display_box_mm": [
+          14.499999999999998,
+          79.00714285714285,
+          31.000000000000004,
+          44.28571428571429
+        ],
+        "legacy_panel_label_replaced": true,
+        "label_patch_mm": [
+          5.5,
+          4.1
+        ],
+        "pixel_interpolation": "nearest"
+      },
+      {
+        "panel": "e",
+        "source_crop_xyxy": [
+          1693,
+          1260,
+          2176,
+          1950
+        ],
+        "display_box_mm": [
+          68.5,
+          79.00714285714285,
+          31.000000000000004,
+          44.28571428571429
+        ],
+        "legacy_panel_label_replaced": true,
+        "label_patch_mm": [
+          5.5,
+          4.1
+        ],
+        "pixel_interpolation": "nearest"
+      },
+      {
+        "panel": "f",
+        "source_crop_xyxy": [
+          2475,
+          1260,
+          2958,
+          1950
+        ],
+        "display_box_mm": [
+          122.5,
+          79.00714285714285,
+          31.000000000000004,
+          44.28571428571429
+        ],
+        "legacy_panel_label_replaced": true,
+        "label_patch_mm": [
+          5.5,
+          4.1
+        ],
+        "pixel_interpolation": "nearest"
+      }
+    ],
+    "source_checks": {
+      "Figure_1_real_photo_measurement_provenance.png": {
+        "sha256_current_bytes": "834e10fb4c32e133988fbcbe6cb98c8ce7d5cedc9941593a31a58adc3b318855",
+        "byte_checksum_verified": true
+      },
+      "Figure_1_real_photo_measurement_provenance.csv": {
+        "sha256_current_bytes": "f69be11eb4496cddfe7720f6371ff19dca85fac4356b43c2b0dcaac26e5e7c22",
+        "byte_checksum_verified": true,
+        "sha256_archived_crlf_bytes": "2bd45cbc4eb3de0873808008df12079dd31f3ea3cec0024e840ece65e07952fd",
+        "archived_checksum_verified_after_lf_to_crlf": true,
+        "line_ending_note": "Git working-tree LF; historical figure report used CRLF."
+      },
+      "Figure_1_real_photo_measurement_provenance.json": {
+        "sha256_current_bytes": "8935c5842ec3d7e837b5ed005a9587c25bb0f241304b9fc1df2b5fcec409052e",
+        "byte_checksum_verified": true,
+        "sha256_archived_crlf_bytes": "0d95d7f73929440a381b0e6239ffbfe9774f6f275a0900bdd3cf96fb65a611b1",
+        "archived_checksum_verified_after_lf_to_crlf": true,
+        "line_ending_note": "Git working-tree LF; historical figure report used CRLF."
+      }
+    },
+    "renderer_sha256": "58bd84e0213b698e01be63a0efa141d11518c5ae9079fa08aecab26f6f53e1ac",
+    "output_files": {
+      "figure1_photographic_measurement_pipeline.png": "75a0877c08e763ff169e3d36fa6c2b1c6fdce479cb678fa399e7936bdfa45577",
+      "figure1_photographic_measurement_pipeline.pdf": "de839032803a8712765c7b20dc38c1f5c184f394a0cb22c66dfe5ecc04625f6f",
+      "figure1_photographic_measurement_pipeline.svg": "8077017fda0e224945668af230b588b51da8f32f7936bf6730172df846374175"
+    },
+    "numerical_models_rerun": false,
+    "original_photographs_downloaded": false,
+    "historical_1_1_degree_overlay_used": false,
+    "example_width_profile_cv_value_displayed": false
+  },
+  "quality_review": {
+    "reviewed_on": "2026-10-30",
+    "whole_PNG_visually_inspected": true,
+    "whole_PDF_rasterization_visually_inspected": true,
+    "clipped_or_overlapping_vector_text_observed": false,
+    "PDF_pages": 1,
+    "PDF_page_size_points": [
+      476.220472440945,
+      572.5984251968505
+    ],
+    "PDF_fonts_embedded": [
+      "DejaVuSans-Bold",
+      "DejaVuSans-Oblique",
+      "DejaVuSans"
+    ],
+    "SVG_contains_six_source_image_panels": true,
+    "SVG_editable_vector_text": true,
+    "recorded_output_checksums_reverified": true,
+    "inherited_raster_annotation_note": "Stored detector boxes, detector-score labels and production overlays retain their original pixel content and relative scale; all newly typeset labels are at least 8 points."
+  },
+  "supporting_information_reference": {
+    "source_document": "SI_PHOTOGRAPHIC_TRAIT_MEASUREMENT_DEFINITIONS_20261029.md",
+    "source_document_table_label": "Table S4",
+    "review_package_table_label": "Table S2.1",
+    "review_package_appendix": "Appendix S2",
+    "change_scope": "Display cross-reference only; original source document and definitions unchanged."
+  }
+}

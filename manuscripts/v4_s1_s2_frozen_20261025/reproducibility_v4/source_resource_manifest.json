@@ -1,0 +1,96 @@
+{
+  "manifest_role": "review-copy resource index; not an identifying provenance crosswalk",
+  "path_base": "root of the extracted review aggregate package",
+  "scope": "aggregate verification and numerical re-rendering",
+  "observation_level_refitting_supported": false,
+  "refitting_limitation": "Original observation-level inputs and image-measurement/fitting workflows are outside this package; replay verifies archived aggregates and their exported tables and figures.",
+  "canonical_source_note": "The two source_aggregates JSON files preserved beside this manifest retain exact original bytes and source-audit metadata. Their hashes differ from the neutralized review-copy R013/R014 hashes below.",
+  "legal_attribution": "Original MIT LICENSE and NOTICE.md remain unchanged and identify Azami contributors; full author anonymity is not certified.",
+  "resources": [
+    {
+      "id": "R001",
+      "path": "si/Table_S1_full_208_BIO18_tests.csv",
+      "row_count": 208,
+      "sha256": "06053a69316afc3db630dbf18d9f8a7047d740f35e5cf9cceea20944a22956a9"
+    },
+    {
+      "id": "R002",
+      "path": "si/Table_S2_all_28_RV_pairs.csv",
+      "row_count": 28,
+      "sha256": "950a423feecbcb8ea1620dbe4482703ca8084bef6c1360affee7c7777037db53"
+    },
+    {
+      "id": "R003",
+      "path": "si/Table_S2_S2_original_native_introduced_colour_coefficients.csv",
+      "row_count": 6,
+      "sha256": "3826dd8501f89bb99a118701f15068c9276c460b7214db33584c1622a0a8f8a4"
+    },
+    {
+      "id": "R004",
+      "path": "si/SI_S1_all_80_original_raw_BH_Holm.csv",
+      "row_count": 80,
+      "sha256": "b0030d88d31edbce0bc64f8dda34808744b95046dc4a02927650d0a8de5261ea"
+    },
+    {
+      "id": "R005",
+      "path": "si/SI_S1_BIO18_image_angle_both_scales.csv",
+      "row_count": 2,
+      "sha256": "14501c5d751a4bda997b47b86901aed50d8d70f29dd3febd55c256a1cb256309"
+    },
+    {
+      "id": "R006",
+      "path": "analysis/v4/results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json",
+      "description": "Original exploratory H3c distance and density metrics",
+      "sha256": "72c83aae69f62007fba3ce2bbcd2bb8c8205463dac450d30391723c0accaaaa1"
+    },
+    {
+      "id": "R007",
+      "path": "analysis/v4/results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json",
+      "description": "H3 climatic and photographic breadth",
+      "sha256": "b3d61c0e13223d6e8a28f5467d169bd8056795d8125346aae9b48827cefabc18"
+    },
+    {
+      "id": "R008",
+      "path": "analysis/v4/results/20261029_H3D_ENVIRONMENT_MODERATED_TRAIT_COVARIANCE_SOURCE_VERIFIED.json",
+      "description": "H3d trait and covariance context",
+      "sha256": "e71cb4a44dad87d3a04ca0940683a14d9a7c69a1932546b281c672cae168603c"
+    },
+    {
+      "id": "R009",
+      "path": "analysis/v4/results/20261029_S1_BIO18_GEOGRAPHY_SOURCE_VERIFIED.json",
+      "description": "S1 geographic-regressor sensitivity",
+      "sha256": "11ea5fa63dc9ea50c3318d848d0f4e256899b15b66179a2c72d3e64aaff97df8"
+    },
+    {
+      "id": "R010",
+      "path": "analysis/v4/results/20261029_S1_BIO18_SPATIAL_BLOCK_SOURCE_VERIFIED.json",
+      "description": "S1 geographic block bootstrap",
+      "sha256": "710761ca7e3072f48ea580671ee89a27a6ff16b0958b87a130711404c87efde4"
+    },
+    {
+      "id": "R011",
+      "path": "analysis/v4/results/20261029_S2_COLOUR_SPATIAL_BLOCK_SOURCE_VERIFIED.json",
+      "description": "S2 six-row geographic block bootstrap",
+      "sha256": "a3f7ac7ab6a39947d16fed1e31d05d8c309d9e3f0ed434de4543e4d4277aead3"
+    },
+    {
+      "id": "R012",
+      "path": "analysis/v4/results/20261021_unified_abcde/S2_ALL_350_SPECIES_SOURCE_SCREEN_VERIFIED_20261021.json",
+      "description": "Whole-source focal-species support screen",
+      "sha256": "e740d1c3f48ca75952453ff4cd160215f46bba6665ae49267b26e20dd7d1bda4"
+    },
+    {
+      "id": "R013",
+      "path": "aggregates/H3C_ROBUSTNESS_SENSITIVITY_AGGREGATE.json",
+      "description": "Post-positive H3c threshold, trait, region and bandwidth diagnostics",
+      "sha256": "263935ec8a46eef639f4ea277a596291fb33514e484991682c63ed432cebdfb8"
+    },
+    {
+      "id": "R014",
+      "path": "aggregates/H3C_MONTE_CARLO_SEED_STABILITY_AGGREGATE.json",
+      "description": "Post-positive H3c six-seed stability",
+      "sha256": "d9d69197b0f91974f29bb8089d50904f0b5598a78ed2787a28e17abc980b79c8"
+    }
+  ],
+  "author_anonymity_certified": false
+}

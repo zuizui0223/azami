@@ -1,0 +1,47 @@
+{
+  "method": "Original matplotlib figure objects saved additionally as vector PDFs; original PNG/SVG source assets retained unchanged.",
+  "outputs": [
+    {
+      "file": "figure3_BIO18_among_taxa_image_angle.pdf",
+      "sha256": "824f516e57e24deee5081859862c633684c99f0061a2311c193d66adc46fcc7e",
+      "bytes": 27995
+    },
+    {
+      "file": "figure4_S2_native_introduced_colour_coefficients.pdf",
+      "sha256": "7b1ca0518545d27b2b1617c93a0d7e551f71ac2db26652bc2313dd6334d35b07",
+      "bytes": 31413
+    },
+    {
+      "file": "figure5_H3_climatic_breadth_floral_morphospace.pdf",
+      "sha256": "7ba198c0d66ca890879b196b15c18d53b3074a5d0bc6b1a676571770d4d4b57a",
+      "bytes": 29942
+    }
+  ],
+  "s1_s2_input_aggregate_sha256": "6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205",
+  "h3_inputs": [
+    {
+      "path": "analysis/v4/results/20261029_H3C_CLIMATE_ANALOGUE_TRAIT_OVERLAP_SOURCE_VERIFIED.json",
+      "sha256": "f0b8908f11c5a460d882b24fee91ee14825197d19e3fe821688b4a7223d15b42",
+      "role": "Main Figure 5 joint-trait distance and permutation-null summary"
+    },
+    {
+      "path": "analysis/v4/results/20261029_H3_CLIMATE_TRAIT_HYPERVOLUME_SOURCE_VERIFIED.json",
+      "sha256": "0de72b3668b2076d2d9132d6442de12546f33b8c630e97e258a860be14bfabeb",
+      "role": "Read by the same renderer for the separate supplementary breadth/context figure"
+    }
+  ],
+  "original_renderers": [
+    {
+      "path": "manuscripts/v4_s1_s2_frozen_20261025/plot_bio18_angle_part2.py",
+      "sha256": "7335d9a4450a17d38a74dcc5fef1cc1abb509413b05a082f1a527f7c78131b43"
+    },
+    {
+      "path": "manuscripts/v4_s1_s2_frozen_20261025/plot_s2_native_introduced_colour.py",
+      "sha256": "6616e6f415f2bcdd76da56bf10a81a142c224363ff64ff6081c2610cbc5bc15e"
+    },
+    {
+      "path": "manuscripts/v4_s1_s2_frozen_20261025/plot_h3_climate_morphospace.py",
+      "sha256": "f6c87fa7b7c19231b98a2d6965a5f873a7dceaa0a4e60685207171c6862b5a97"
+    }
+  ]
+}

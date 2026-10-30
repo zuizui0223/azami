@@ -1,0 +1,327 @@
+{
+  "schema": "azami_v4_S1_BIO18_geo_validated_stdout_subset_20261029_v1",
+  "source": {
+    "repository": "zuizui0223/azami",
+    "original_secure_workflow_run": 40837107465,
+    "original_secure_job": 123324362274,
+    "public_artifact_id": 12881655588,
+    "exact_frozen_source_cohort": 168907,
+    "exact_frozen_taxa": 178,
+    "original_beta_verified_in_runner": 0.04544684307686103,
+    "original_Holm_P_unchanged": 0.009206350580895119,
+    "code_commit": "7bb2274d6848226bc0890d48803190c64adca04d",
+    "original_archive_20261024_sha256": "6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205",
+    "artifact_has_full_raster_provenance_and_private_hashes": true
+  },
+  "status": "EMPIRICAL_BIO18_SOURCE_VERIFIED_NOT_IN_ORIGINAL_HOLM_FAMILY",
+  "n": 168907,
+  "taxa": 178,
+  "geographic_fits": {
+    "photo_weighted": {
+      "global_geographic_adjustments": {
+        "none": {
+          "status": "estimated",
+          "n_taxa": 178,
+          "n_parameters": 5,
+          "standardised_beta": 0.045446843076860956,
+          "HC3_pointwise_95CI": [
+            0.021558261314700167,
+            0.06933542483902175
+          ],
+          "HC3_p_uncorrected": 0.00019244388281924158,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true
+        },
+        "longitude_sector": {
+          "status": "estimated",
+          "n_taxa": 178,
+          "n_parameters": 7,
+          "standardised_beta": 0.02003485434695006,
+          "HC3_pointwise_95CI": [
+            -0.010832674518697141,
+            0.05090238321259726
+          ],
+          "HC3_p_uncorrected": 0.20332597314370926,
+          "geographic_covariates": "longitude_sector",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true
+        },
+        "spherical_degree2": {
+          "status": "estimated",
+          "n_taxa": 178,
+          "n_parameters": 13,
+          "standardised_beta": -0.003294794324869813,
+          "HC3_pointwise_95CI": [
+            -0.062999652226582,
+            0.05641006357684238
+          ],
+          "HC3_p_uncorrected": 0.9138687637361577,
+          "geographic_covariates": "spherical_degree2",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true
+        }
+      },
+      "within_predeclared_longitude_sectors": {
+        "W180_W030": {
+          "status": "estimated",
+          "n_taxa": 86,
+          "n_parameters": 5,
+          "standardised_beta": -0.0013791054768878602,
+          "HC3_pointwise_95CI": [
+            -0.05326205181419435,
+            0.050503840860418626
+          ],
+          "HC3_p_uncorrected": 0.9584506169037558,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "is_longitude_sector_not_independent_lineage_or_continent": true
+        },
+        "W030_E060": {
+          "status": "estimated",
+          "n_taxa": 54,
+          "n_parameters": 5,
+          "standardised_beta": -0.010211120130873438,
+          "HC3_pointwise_95CI": [
+            -0.29455969321166514,
+            0.27413745294991826
+          ],
+          "HC3_p_uncorrected": 0.94388848001676,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "is_longitude_sector_not_independent_lineage_or_continent": true
+        },
+        "E060_E180": {
+          "status": "estimated",
+          "n_taxa": 38,
+          "n_parameters": 5,
+          "standardised_beta": 0.030648490479119512,
+          "HC3_pointwise_95CI": [
+            -0.018547462243182464,
+            0.07984444320142149
+          ],
+          "HC3_p_uncorrected": 0.222073096180734,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "is_longitude_sector_not_independent_lineage_or_continent": true
+        }
+      },
+      "leave_one_predeclared_sector_out": {
+        "W180_W030": {
+          "status": "estimated",
+          "n_taxa": 92,
+          "n_parameters": 5,
+          "standardised_beta": 0.055031175918719366,
+          "HC3_pointwise_95CI": [
+            0.023870008916206217,
+            0.08619234292123251
+          ],
+          "HC3_p_uncorrected": 0.0005375108768614483,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "heldout_n_taxa": 86
+        },
+        "W030_E060": {
+          "status": "estimated",
+          "n_taxa": 124,
+          "n_parameters": 5,
+          "standardised_beta": 0.03659873630635018,
+          "HC3_pointwise_95CI": [
+            0.012345515322469882,
+            0.06085195729023048
+          ],
+          "HC3_p_uncorrected": 0.0031000773161878347,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "heldout_n_taxa": 54
+        },
+        "E060_E180": {
+          "status": "estimated",
+          "n_taxa": 140,
+          "n_parameters": 5,
+          "standardised_beta": -0.010371821241885446,
+          "HC3_pointwise_95CI": [
+            -0.06846493178120894,
+            0.04772128929743804
+          ],
+          "HC3_p_uncorrected": 0.7263928607930676,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "heldout_n_taxa": 38
+        }
+      },
+      "n_taxa_with_max_sector_fraction_below_0_70": 1
+    },
+    "equal_5degree_cell": {
+      "global_geographic_adjustments": {
+        "none": {
+          "status": "estimated",
+          "n_taxa": 178,
+          "n_parameters": 5,
+          "standardised_beta": 0.04851611184207989,
+          "HC3_pointwise_95CI": [
+            0.02239684947069036,
+            0.07463537421346943
+          ],
+          "HC3_p_uncorrected": 0.00027200160453901153,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true
+        },
+        "longitude_sector": {
+          "status": "estimated",
+          "n_taxa": 178,
+          "n_parameters": 7,
+          "standardised_beta": 0.030925749109234187,
+          "HC3_pointwise_95CI": [
+            -0.0012191598257950617,
+            0.06307065804426343
+          ],
+          "HC3_p_uncorrected": 0.0593450423221204,
+          "geographic_covariates": "longitude_sector",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true
+        },
+        "spherical_degree2": {
+          "status": "estimated",
+          "n_taxa": 178,
+          "n_parameters": 13,
+          "standardised_beta": 0.009267290353791,
+          "HC3_pointwise_95CI": [
+            -0.051020007748966034,
+            0.06955458845654804
+          ],
+          "HC3_p_uncorrected": 0.7631984843535413,
+          "geographic_covariates": "spherical_degree2",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true
+        }
+      },
+      "within_predeclared_longitude_sectors": {
+        "W180_W030": {
+          "status": "estimated",
+          "n_taxa": 86,
+          "n_parameters": 5,
+          "standardised_beta": -0.014348190764927944,
+          "HC3_pointwise_95CI": [
+            -0.0752425337966105,
+            0.04654615226675462
+          ],
+          "HC3_p_uncorrected": 0.6442138033515201,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "is_longitude_sector_not_independent_lineage_or_continent": true
+        },
+        "W030_E060": {
+          "status": "estimated",
+          "n_taxa": 52,
+          "n_parameters": 5,
+          "standardised_beta": -0.092078033793138,
+          "HC3_pointwise_95CI": [
+            -0.37750698930822796,
+            0.19335092172195195
+          ],
+          "HC3_p_uncorrected": 0.5272071115813596,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "is_longitude_sector_not_independent_lineage_or_continent": true
+        },
+        "E060_E180": {
+          "status": "estimated",
+          "n_taxa": 40,
+          "n_parameters": 5,
+          "standardised_beta": 0.05621104210014896,
+          "HC3_pointwise_95CI": [
+            0.008939702061127874,
+            0.10348238213917005
+          ],
+          "HC3_p_uncorrected": 0.01977330821444231,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "is_longitude_sector_not_independent_lineage_or_continent": true
+        }
+      },
+      "leave_one_predeclared_sector_out": {
+        "W180_W030": {
+          "status": "estimated",
+          "n_taxa": 92,
+          "n_parameters": 5,
+          "standardised_beta": 0.0622049294467218,
+          "HC3_pointwise_95CI": [
+            0.026957530803328127,
+            0.09745232809011548
+          ],
+          "HC3_p_uncorrected": 0.000542260896831792,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "heldout_n_taxa": 86
+        },
+        "W030_E060": {
+          "status": "estimated",
+          "n_taxa": 126,
+          "n_parameters": 5,
+          "standardised_beta": 0.04063329723729029,
+          "HC3_pointwise_95CI": [
+            0.014172247958547143,
+            0.06709434651603344
+          ],
+          "HC3_p_uncorrected": 0.0026150652398698976,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "heldout_n_taxa": 52
+        },
+        "E060_E180": {
+          "status": "estimated",
+          "n_taxa": 138,
+          "n_parameters": 5,
+          "standardised_beta": -0.02564914097464911,
+          "HC3_pointwise_95CI": [
+            -0.09033172036514457,
+            0.03903343841584635
+          ],
+          "HC3_p_uncorrected": 0.4370399446387849,
+          "geographic_covariates": "none",
+          "taxa_equal_weight": true,
+          "not_phylogenetic_or_causal": true,
+          "no_holm_correction_for_new_sensitivity_family": true,
+          "heldout_n_taxa": 40
+        }
+      },
+      "n_taxa_with_max_sector_fraction_below_0_70": 2
+    }
+  },
+  "public_release_cautions": [
+    "Only aggregate HC3 geographic sensitivities from original source; this json is a subset of the larger GitHub Actions artifact.",
+    "New tests have no multiplicity adjustment; do not cite nominal local P as an independent discovery.",
+    "Regional composition is not phylogenetic ancestry, and source photo angles are camera-referenced.",
+    "No original coordinates, taxa keys, individual photographs or photographer IDs appear in this file."
+  ]
+}

@@ -1,0 +1,171 @@
+name: V4 S1 BIO18 original-cohort geographic sensitivity
+
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/s1_bio18_geographic_replication.py'
+      - 'tests/test_v4_s1_bio18_geographic_replication.py'
+      - '.github/workflows/v4-s1-bio18-geographic-replication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: azami-v4-bio18-geo-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source-original-geographic-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+      - name: Gate full source recomputation to changes in the BIO18 analysis code
+        id: decide
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "run_analysis=true" >> "$GITHUB_OUTPUT"
+          else
+            changed="$(git diff-tree --no-commit-id --name-only -r HEAD)"
+            if printf "%s\n" "$changed" | grep -Eq "^(analysis/v4/s1_bio18_geographic_replication\.py|tests/test_v4_s1_bio18_geographic_replication\.py)$"; then
+              echo "run_analysis=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run_analysis=false" >> "$GITHUB_OUTPUT"
+              echo "Unrelated manuscript-only commit: skip source restoration"
+            fi
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned original-source and scientific dependencies
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'cryptography>=46,<49' 'rasterio>=1.4,<2' 'requests>=2.31,<3' pytest
+      - name: Validate source-free spatial design and no individual identifiers in outputs
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m pytest -q tests/test_v4_s1_bio18_geographic_replication.py
+          python -m py_compile analysis/v4/s1_bio18_geographic_replication.py
+
+      - name: Restore exact original encrypted S1 source (private within this job)
+        if: steps.decide.outputs.run_analysis == 'true'
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/bio18_geo/private work/bio18_geo/receipt work/bio18_geo/public work/bio18_geo/temp
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/bio18_geo/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/bio18_geo/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path("work/bio18_geo")
+          raw=(root/"receipt/measurement_receipt.json").read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=="246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6"
+          receipt=json.loads(raw)
+          sealed=(root/"private/native-observation-measurements.csv.gz.aesgcm").read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt["encrypted_table_sha256"]
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ["AZAMI_METADATA_KEY"])).decrypt(
+                  sealed[:12],sealed[12:],receipt["encrypted_table_aad"].encode())
+          except Exception:
+              raise SystemExit("ORIGINAL_S1_SOURCE_AUTHENTICATION_FAILED") from None
+          assert hashlib.sha256(clear).hexdigest()==receipt["prepared_table_sha256"]
+          (root/"private/native-original.csv.gz").write_bytes(clear)
+          print("Original S1 measurement archive verified privately")
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/bio18_geo/private/native-original.csv.gz \
+            --receipt work/bio18_geo/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/bio18_geo/private/decoded
+
+      - name: Recreate original BIOCLIM and elevation source pixels for S1 only
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.s1_s2_extreme_environment import retrieve, open_raster, sample_grid
+          from analysis.v4.s1_s2_extreme_lego import EXTRA
+          root=Path("work/bio18_geo")
+          native=pd.read_csv(root/"private/decoded/observations.csv.gz",
+                             usecols=["obs_id","latitude","longitude"],
+                             dtype={"obs_id":str},low_memory=False)
+          if len(native)!=313350 or not native.obs_id.is_unique:
+              raise ValueError("ORIGINAL_NATIVE_SOURCE_ROWS_CHANGED")
+          out=native[["obs_id"]].copy()
+          records=[]
+          for variable in EXTRA:
+              downloaded,meta=retrieve(variable,root/"temp")
+              original_raster=open_raster(downloaded,variable,root/"temp")
+              values,diagnostic=sample_grid(original_raster,variable,native)
+              out[variable]=values
+              records.append({
+                  "variable":variable,
+                  "source_sha256":meta["download_sha256"],
+                  "source_url":meta["url"],
+                  "n_finite":diagnostic["n_finite_extracted"],
+                  "source_pixel_sampling":diagnostic["sampled_from_original_raster_pixels"],
+                  "interpolation_or_cell_averaging":False
+              })
+              if original_raster!=downloaded:
+                  original_raster.unlink(missing_ok=True)
+              downloaded.unlink(missing_ok=True)
+              print({"layer":variable,"n_finite":diagnostic["n_finite_extracted"]},flush=True)
+          out.to_csv(root/"private/extended-source.csv.gz",index=False,compression="gzip")
+          receipt={
+              "schema":"S1_BIO18_GEO_EXACT_SOURCE_RASTERS_20261029",
+              "status":"COMPLETE_SEVEN_ORIGINAL_RASTERS",
+              "n_native_source_obs":len(native),
+              "rasters":records,
+              "no_private_geographic_or_user_observation_output":True
+          }
+          (root/"public/extra_raster_source_receipt.json").write_text(
+              json.dumps(receipt,indent=2)+"\n",encoding="utf-8")
+          PY
+
+      - name: Reproduce frozen BIO18 beta and compare fixed geographic controls
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_bio18_geographic_replication \
+            --native work/bio18_geo/private/decoded/observations.csv.gz \
+            --extended work/bio18_geo/private/extended-source.csv.gz \
+            --source-receipt work/bio18_geo/public/extra_raster_source_receipt.json \
+            --output work/bio18_geo/public/S1_BIO18_178taxa_GEOGRAPHY_SOURCE_VERIFIED.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("work/bio18_geo/public/S1_BIO18_178taxa_GEOGRAPHY_SOURCE_VERIFIED.json")
+          data=json.loads(p.read_text())
+          assert data["native_angle_eligible_records"]==168907
+          assert data["native_angle_taxa"]==178
+          assert abs(data["frozen_original_baseline_reproduced"]["standardised_beta"]-0.04544684307686103)<3e-7
+          assert set(data["sensitivity"])=={"photo_weighted","equal_5degree_cell"}
+          assert all(set(x["global_geographic_adjustments"])=={"none","longitude_sector","spherical_degree2"} for x in data["sensitivity"].values())
+          assert "obs_id" not in p.read_text() and "user_id" not in p.read_text()
+          print("BIO18 matched-source sensitivity source verified",flush=True)
+          PY
+
+      - name: Upload aggregate coefficients and raster checks, never raw source locations
+        if: always() && steps.decide.outputs.run_analysis == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-S1-BIO18-geography-aggregates-${{ github.run_id }}
+          path: work/bio18_geo/public/**
+          retention-days: 90
+          if-no-files-found: warn
