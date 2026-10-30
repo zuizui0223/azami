@@ -1,0 +1,106 @@
+{
+  "status": "ORIGINAL_FIVE_SOURCE_PIXEL_CACHE_REUSED_WITH_MISSINGNESS",
+  "original_wild_source_n": 297622,
+  "archived_sources": {
+    "chelsa_bio01": {
+      "artifact_id": 12243016948,
+      "zip_sha256": "0e3b83ebfb7de1865662cde2c2c2395fa7737460996e66354f87391f8f0867ab"
+    },
+    "chelsa_bio04": {
+      "artifact_id": 12241949860,
+      "zip_sha256": "dac232683b2a72b9c4f62eab0f341be7927e5e3287a29dbf3a162b893c2307e3"
+    },
+    "chelsa_bio12": {
+      "artifact_id": 12242703088,
+      "zip_sha256": "71e7edeb0d4c0042e973ed97672a1593bef98a608c917792006e22722e288ada"
+    },
+    "chelsa_bio15": {
+      "artifact_id": 12242508971,
+      "zip_sha256": "9f255a7c756fc83a5dd81e6c13d8fee63c53698d93bffb65ae13288e4eebb445"
+    },
+    "chelsa_rsds_mean": {
+      "artifact_id": 12242917323,
+      "zip_sha256": "2193bd04b979f6684f7bce7c670074af63072d270a20c4dc2fd0bd5934862df4"
+    }
+  },
+  "pixel_decode_audit": {
+    "chelsa_bio01": {
+      "source_raster_sha256": "5b2c7b9fcaa2dfaf1b49a4f943e779b9b0b9ebb35b21824b48b1c2ce1e8e629a",
+      "grid_cached_cells": 316,
+      "pixels_resampled": false,
+      "n_finite": 281606,
+      "n_missing": 16016,
+      "original_scale": 0.1,
+      "original_offset": -273.15,
+      "missing_tiles_imputed": false
+    },
+    "chelsa_bio04": {
+      "source_raster_sha256": "8e877c21b65a17a265982295c4f3ea3419d9753d22380a3520c33474ed4cddd2",
+      "grid_cached_cells": 316,
+      "pixels_resampled": false,
+      "n_finite": 281606,
+      "n_missing": 16016,
+      "original_scale": 0.1,
+      "original_offset": 0.0,
+      "missing_tiles_imputed": false
+    },
+    "chelsa_bio12": {
+      "source_raster_sha256": "918441cac0b633227d2a6dcc0ddcfb5efd40e015a426951a01cfbf9ba2f7a22c",
+      "grid_cached_cells": 316,
+      "pixels_resampled": false,
+      "n_finite": 281606,
+      "n_missing": 16016,
+      "original_scale": 1.0,
+      "original_offset": 0.0,
+      "missing_tiles_imputed": false
+    },
+    "chelsa_bio15": {
+      "source_raster_sha256": "0f349681b70c3502fd8027da5d266d0bf1d1e4ffd64d20fa4c1e8247f5a6b328",
+      "grid_cached_cells": 316,
+      "pixels_resampled": false,
+      "n_finite": 281606,
+      "n_missing": 16016,
+      "original_scale": 0.1,
+      "original_offset": 0.0,
+      "missing_tiles_imputed": false
+    },
+    "chelsa_rsds_mean": {
+      "source_raster_sha256": "cc1ad14a70a1a940be3d01d918d4c3f7e35db95b86b12af9be5487e1bbc1fc7d",
+      "grid_cached_cells": 316,
+      "pixels_resampled": false,
+      "n_finite": 281606,
+      "n_missing": 16016,
+      "original_scale": 0.001,
+      "original_offset": 0.0,
+      "missing_tiles_imputed": false
+    }
+  },
+  "finite_fraction_by_variable": {
+    "chelsa_bio01": {
+      "n_finite": 281606,
+      "fraction_finite": 0.9461867738272036,
+      "missing_value_imputed": false
+    },
+    "chelsa_bio04": {
+      "n_finite": 281606,
+      "fraction_finite": 0.9461867738272036,
+      "missing_value_imputed": false
+    },
+    "chelsa_bio12": {
+      "n_finite": 281606,
+      "fraction_finite": 0.9461867738272036,
+      "missing_value_imputed": false
+    },
+    "chelsa_bio15": {
+      "n_finite": 281606,
+      "fraction_finite": 0.9461867738272036,
+      "missing_value_imputed": false
+    },
+    "chelsa_rsds_mean": {
+      "n_finite": 281606,
+      "fraction_finite": 0.9461867738272036,
+      "missing_value_imputed": false
+    }
+  },
+  "original_source_missing_values_not_imputed": true
+}

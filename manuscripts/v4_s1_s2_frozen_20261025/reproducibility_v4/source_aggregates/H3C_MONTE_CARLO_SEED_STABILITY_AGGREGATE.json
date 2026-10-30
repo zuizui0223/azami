@@ -1,0 +1,299 @@
+{
+  "schema": "azami_h3c_original_24_rarefaction_by_6_fixed_seeds_v1",
+  "status": "SOURCE_VERIFIED_MONTE_CARLO_STABILITY_NOT_NEW_CONFIRMATION",
+  "source_provenance": {
+    "decoded_sha256": "342d78e9a8a960e8d9bdcf0bc2cdacd13bee48214a8b962419d5a71d5aef46ed",
+    "source_observations": 313350,
+    "quality_eligible_matched_observations": 157822,
+    "matched_source_taxa": 242
+  },
+  "original_H3c_frozen_reference": {
+    "1degree_distance_advantage": 0.040963661993538125,
+    "5degree_distance_advantage": 0.0943310892554725,
+    "1degree_Holm2": 0.01,
+    "5degree_Holm2": 0.01,
+    "original_H3c_results_not_refitted_or_replaced": true
+  },
+  "registered_sensitivity": {
+    "seeds": {
+      "1": [
+        20271030,
+        20281030,
+        20291030,
+        20301030,
+        20311030,
+        20321030
+      ],
+      "5": [
+        20271034,
+        20281034,
+        20291034,
+        20301034,
+        20311034,
+        20321034
+      ]
+    },
+    "draws": 24,
+    "permutations": 99,
+    "single_unchanged_climate_threshold": 0.9,
+    "single_unchanged_KDE_bandwidth": 0.75,
+    "no_outcome_selected_hypotheses_added": true
+  },
+  "panels": {
+    "1degree": {
+      "status": "estimated_exploratory_random_sequence_stability",
+      "n_taxa": 63,
+      "n_seeds_registered": 6,
+      "n_cell_draws_per_seed": 24,
+      "n_permutations_per_draw": 99,
+      "summary_distance": {
+        "n_independent_rng_sequences_not_independent_source_samples": 6,
+        "n_positive_relative_to_permutation_null": 6,
+        "min": 0.018341845991777975,
+        "median": 0.02122866175882623,
+        "max": 0.032746002248348706,
+        "range_of_unadjusted_permutation_p_diagnostic": [
+          0.01,
+          0.16
+        ],
+        "number_of_nominal_P_under_0p05_not_independent_confirmations": 2
+      },
+      "summary_KDE_overlap": {
+        "n_independent_rng_sequences_not_independent_source_samples": 6,
+        "n_positive_relative_to_permutation_null": 6,
+        "min": 0.004320948155584939,
+        "median": 0.005506543352163898,
+        "max": 0.007970181649772437,
+        "range_of_unadjusted_permutation_p_diagnostic": [
+          0.01,
+          0.1
+        ],
+        "number_of_nominal_P_under_0p05_not_independent_confirmations": 3
+      },
+      "all_seed_results": [
+        {
+          "status": "estimated",
+          "seed": 20271030,
+          "n_taxa": 63,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 234.83333333333334,
+          "matched_distance_advantage_observed": 0.022240902461008707,
+          "matched_distance_advantage_null_mean": -0.0005014777275516307,
+          "matched_distance_advantage_observed_minus_null": 0.022742380188560337,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.07,
+          "KDE_conditional_minus_unconditional_observed": -0.11303036619993433,
+          "KDE_conditional_minus_unconditional_null_mean": -0.11735131435551927,
+          "KDE_conditional_overlap_observed_minus_null": 0.004320948155584939,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.1
+        },
+        {
+          "status": "estimated",
+          "seed": 20281030,
+          "n_taxa": 63,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 230.95833333333334,
+          "matched_distance_advantage_observed": 0.018389266157010302,
+          "matched_distance_advantage_null_mean": -0.0008413195759722476,
+          "matched_distance_advantage_observed_minus_null": 0.01923058573298255,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.08,
+          "KDE_conditional_minus_unconditional_observed": -0.10913537197458316,
+          "KDE_conditional_minus_unconditional_null_mean": -0.1146680212536926,
+          "KDE_conditional_overlap_observed_minus_null": 0.0055326492791094445,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.03
+        },
+        {
+          "status": "estimated",
+          "seed": 20291030,
+          "n_taxa": 63,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 232.75,
+          "matched_distance_advantage_observed": 0.03254057046864465,
+          "matched_distance_advantage_null_mean": 0.001011865785218478,
+          "matched_distance_advantage_observed_minus_null": 0.03152870468342617,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.02,
+          "KDE_conditional_minus_unconditional_observed": -0.11200372071432219,
+          "KDE_conditional_minus_unconditional_null_mean": -0.11997390236409462,
+          "KDE_conditional_overlap_observed_minus_null": 0.007970181649772437,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.02
+        },
+        {
+          "status": "estimated",
+          "seed": 20301030,
+          "n_taxa": 63,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 229.91666666666666,
+          "matched_distance_advantage_observed": 0.017348920663070967,
+          "matched_distance_advantage_null_mean": -0.000992925328707009,
+          "matched_distance_advantage_observed_minus_null": 0.018341845991777975,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.16,
+          "KDE_conditional_minus_unconditional_observed": -0.10430185739701713,
+          "KDE_conditional_minus_unconditional_null_mean": -0.11204614023292507,
+          "KDE_conditional_overlap_observed_minus_null": 0.007744282835907945,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.01
+        },
+        {
+          "status": "estimated",
+          "seed": 20311030,
+          "n_taxa": 63,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 229.375,
+          "matched_distance_advantage_observed": 0.018403660736939623,
+          "matched_distance_advantage_null_mean": -0.0013112825921525015,
+          "matched_distance_advantage_observed_minus_null": 0.019714943329092124,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.06,
+          "KDE_conditional_minus_unconditional_observed": -0.1105785146841195,
+          "KDE_conditional_minus_unconditional_null_mean": -0.11580791841527398,
+          "KDE_conditional_overlap_observed_minus_null": 0.005229403731154478,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.08
+        },
+        {
+          "status": "estimated",
+          "seed": 20321030,
+          "n_taxa": 63,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 226.375,
+          "matched_distance_advantage_observed": 0.032057836907008086,
+          "matched_distance_advantage_null_mean": -0.0006881653413406178,
+          "matched_distance_advantage_observed_minus_null": 0.032746002248348706,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.1100599251127052,
+          "KDE_conditional_minus_unconditional_null_mean": -0.11554036253792355,
+          "KDE_conditional_overlap_observed_minus_null": 0.005480437425218351,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.07
+        }
+      ],
+      "random_sequences_are_monte_carlo_sensitivity_not_phylogenetic_replications": true
+    },
+    "5degree": {
+      "status": "estimated_exploratory_random_sequence_stability",
+      "n_taxa": 31,
+      "n_seeds_registered": 6,
+      "n_cell_draws_per_seed": 24,
+      "n_permutations_per_draw": 99,
+      "summary_distance": {
+        "n_independent_rng_sequences_not_independent_source_samples": 6,
+        "n_positive_relative_to_permutation_null": 6,
+        "min": 0.06538414872837338,
+        "median": 0.08387722257021024,
+        "max": 0.11147832576857893,
+        "range_of_unadjusted_permutation_p_diagnostic": [
+          0.01,
+          0.01
+        ],
+        "number_of_nominal_P_under_0p05_not_independent_confirmations": 6
+      },
+      "summary_KDE_overlap": {
+        "n_independent_rng_sequences_not_independent_source_samples": 6,
+        "n_positive_relative_to_permutation_null": 5,
+        "min": -0.00129387560488195,
+        "median": 0.004455757254588404,
+        "max": 0.014437115639691883,
+        "range_of_unadjusted_permutation_p_diagnostic": [
+          0.01,
+          0.73
+        ],
+        "number_of_nominal_P_under_0p05_not_independent_confirmations": 1
+      },
+      "all_seed_results": [
+        {
+          "status": "estimated",
+          "seed": 20271034,
+          "n_taxa": 31,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 106.91666666666667,
+          "matched_distance_advantage_observed": 0.08544005142801996,
+          "matched_distance_advantage_null_mean": 0.001555897250666729,
+          "matched_distance_advantage_observed_minus_null": 0.08388415417735323,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.07459174162595351,
+          "KDE_conditional_minus_unconditional_null_mean": -0.08153496149272017,
+          "KDE_conditional_overlap_observed_minus_null": 0.006943219866766659,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.05
+        },
+        {
+          "status": "estimated",
+          "seed": 20281034,
+          "n_taxa": 31,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 106.45833333333333,
+          "matched_distance_advantage_observed": 0.06390928933162769,
+          "matched_distance_advantage_null_mean": -0.0015972616572366746,
+          "matched_distance_advantage_observed_minus_null": 0.06550655098886436,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.0802109033826075,
+          "KDE_conditional_minus_unconditional_null_mean": -0.07891702777772555,
+          "KDE_conditional_overlap_observed_minus_null": -0.00129387560488195,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.73
+        },
+        {
+          "status": "estimated",
+          "seed": 20291034,
+          "n_taxa": 31,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 108.08333333333333,
+          "matched_distance_advantage_observed": 0.1111892948282227,
+          "matched_distance_advantage_null_mean": -0.00028903094035621403,
+          "matched_distance_advantage_observed_minus_null": 0.11147832576857893,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.06651948130755762,
+          "KDE_conditional_minus_unconditional_null_mean": -0.0809565969472495,
+          "KDE_conditional_overlap_observed_minus_null": 0.014437115639691883,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.01
+        },
+        {
+          "status": "estimated",
+          "seed": 20301034,
+          "n_taxa": 31,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 105.45833333333333,
+          "matched_distance_advantage_observed": 0.096897964594718,
+          "matched_distance_advantage_null_mean": -0.00037893024710214905,
+          "matched_distance_advantage_observed_minus_null": 0.09727689484182014,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.08115313988187883,
+          "KDE_conditional_minus_unconditional_null_mean": -0.08494316375567627,
+          "KDE_conditional_overlap_observed_minus_null": 0.0037900238737974407,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.25
+        },
+        {
+          "status": "estimated",
+          "seed": 20311034,
+          "n_taxa": 31,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 106.25,
+          "matched_distance_advantage_observed": 0.06655060409485042,
+          "matched_distance_advantage_null_mean": 0.0011664553664770426,
+          "matched_distance_advantage_observed_minus_null": 0.06538414872837338,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.08306815503183183,
+          "KDE_conditional_minus_unconditional_null_mean": -0.08535530056630265,
+          "KDE_conditional_overlap_observed_minus_null": 0.002287145534470819,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.52
+        },
+        {
+          "status": "estimated",
+          "seed": 20321034,
+          "n_taxa": 31,
+          "successful_rarefaction_draws": 24,
+          "mean_cross_sector_taxon_pairs": 107.70833333333333,
+          "matched_distance_advantage_observed": 0.08342769670401089,
+          "matched_distance_advantage_null_mean": -0.00044259425905637475,
+          "matched_distance_advantage_observed_minus_null": 0.08387029096306726,
+          "matched_distance_permutation_p_unadjusted_diagnostic": 0.01,
+          "KDE_conditional_minus_unconditional_observed": -0.0795021032480653,
+          "KDE_conditional_minus_unconditional_null_mean": -0.08462359388344466,
+          "KDE_conditional_overlap_observed_minus_null": 0.0051214906353793666,
+          "KDE_overlap_permutation_p_unadjusted_diagnostic": 0.17
+        }
+      ],
+      "random_sequences_are_monte_carlo_sensitivity_not_phylogenetic_replications": true
+    }
+  },
+  "interpretation": {
+    "repeated_rarefactions_not_independent_taxa_or_studies": true,
+    "nominal_P_across_seeds_not_combined_into_new_Holm_family": true,
+    "original_S1_80_and_S2_128_unchanged": true,
+    "no_convergence_adaptation_or_causal_climate_test": true,
+    "source_identifiers_coordinates_photos_absent": true
+  }
+}

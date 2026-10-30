@@ -67,6 +67,8 @@ The machine-readable manuscript-local file [table1_holm_associations.csv](table1
 
 ## Editorial completion gates
 
+**30 October 2026 status update:** The full numerical exports, licensed photographic illustration, actual source-verified sampling map and figure legends have been assembled. Editable main/SI review documents are generated separately, with verification code and an aggregate-only replay candidate. Figure 2's new 153,843-record denominator describes the 63 eligible H3 taxa before cell aggregation; it is not a new fitted endpoint or a replacement for 63 taxa / 7,117 taxon-cells. Author/title-page declarations, the derivative-data licence and durable anonymous access remain open. The historical preparation gates below record their original scope; the current status is maintained in [GEB_SUBMISSION_CHECKLIST.md](GEB_SUBMISSION_CHECKLIST.md).
+
 1. Recover the full 208-test model tables, full 28-pair raw/conditional RV outputs and original species/photo/site eligibility appendix from checksum-pinned statistical artifacts. Verify the frozen four-association Table 2 numerical rows byte-for-byte.
 2. Add provenance-safe figures: geographic sampling coverage, head-crop image example with original licences, complete 28-edge heatmap, and the three-way threshold sensitivity; never infer pixels/locations.
 3. Transcribe image/EXIF preprocessing, classifier weight identity, observer balancing, S1 between/within design formula, software versions, spatial residual limitations and source filtering into a reproducible Supplement.
@@ -86,7 +88,7 @@ The machine-readable manuscript-local file [table1_holm_associations.csv](table1
 
 **C16 has been withdrawn from the GEB manuscript's claim set**: native–introduced BIO18 source-location median comparisons, four-dimensional climate-centroid/novelty statistics, and matched-climate range effects are out of scope. All their original source receipts and code remain recoverable in [`legacy/v4_s2_precipitation_niche_20261025/`](../../legacy/v4_s2_precipitation_niche_20261025/README.md). This is a **manuscript scope change**, not falsification or alteration of the frozen 24 October data, the four accepted Holm coefficients, the 80/128 test-family definitions, or any photograph-derived trait covariance.
 
-**GEB掲載論文に基づく編集上の変更（2026-10-29）：** 気候の有意な環境関連（Results 3.1–3.2）を先に配置、元の弱い画像形質間rはSIのみ（Results独立節を削除）、Main Table 1は真の2種4層別のソース記録数と角度適格数。Main Figure 2の実際の地理分布図は未生成。根拠となった掲載論文と公式規程は [GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md](GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md)。
+**GEB掲載論文に基づく編集上の変更（2026-10-29、地図の状態は10-30更新）：** 気候の有意な環境関連（Results 3.1–3.2）を先に配置、元の弱い画像形質間rはSIのみ（Results独立節を削除）、Main Table 1は真の2種4層別のソース記録数と角度適格数。Main Figure 2は元の解析対象を再照合した地理分布図として作成済み。根拠となった掲載論文と公式規程は [GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md](GEB_PUBLISHED_RESEARCH_STYLE_AUDIT_20261029_JA.md)。
 
 **2026-10-29 H3c sensitivity qualification:** The source-verified [post-positive seed/threshold/trait/region SI](SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md) found a positive 3D-distance advantage in all six fixed Monte Carlo sequences at 1° and 5°, but nominal P<0.05 for 2/6 versus 6/6 respectively. 1° was sensitive to omitted chroma and central longitude sector; the KDE metric was less stable. These are post-hoc diagnostics, **not independent confirmations**, and do not alter frozen claim C24 or the original S1/S2 families.
 

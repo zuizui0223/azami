@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-30",
+  "status": "LOCAL_ASSET_DOCUMENT_AND_AGGREGATE_VERIFICATION_PASSED",
+  "scientific_source_baseline": "90c21b0d52e6c983c6a9761d8569a7edc6f2d1a0",
+  "source_preservation": {
+    "abstract_unchanged": true,
+    "introduction_unchanged": true,
+    "discussion_and_conclusion_unchanged": true,
+    "references_unchanged": true,
+    "methods_only_display_callouts_and_map_description_changed": true,
+    "results_and_table_cells_unchanged": true,
+    "main_blinded_equal": true
+  },
+  "document_quality": {
+    "status": "PASS_FINAL_DOCUMENT_CONTENT_AND_VISUAL_QA",
+    "checked_at_utc": "2026-10-30T07:54:46.653060+00:00",
+    "main_source_sha256": "fd6f70752f6332151b1876320cf7731f709011ed34462c436567eb4a014f3d74",
+    "builder_sha256": "0ed9bb9c6dbd1fc8562e9653e74fb03e70b271596ab462f3c4c9b04a64044c24",
+    "files": {
+      "GEB_RESEARCH_ARTICLE_REVIEW.docx": {
+        "sha256": "0d3d8424d10c71be1b1ad10860f501635b779bac7bf334fdbfdcc4acb622b02d",
+        "size_bytes": 4974145
+      },
+      "GEB_SUPPORTING_INFORMATION_REVIEW.docx": {
+        "sha256": "3f498ee941979e8ff60097ee626f93400b9332966a4da239d41af462370c7535",
+        "size_bytes": 1041753
+      },
+      "REVIEW_NAVIGATION.json": {
+        "sha256": "748cd346f2e2128231748cd6121cbb579ef45d87be133290c249702f53b13b9a",
+        "size_bytes": 29251
+      }
+    },
+    "content_roundtrip": {
+      "main_paragraphs": 134,
+      "main_editable_tables": 2,
+      "main_table_cells": 55,
+      "si_source_paragraphs": 183,
+      "si_editable_tables": 15,
+      "si_table_cells": 491
+    },
+    "main_visual_qa": {
+      "pages": 33,
+      "pages_1_17": "Individually inspected at original resolution by photo_rights_audit; PASS. Pixel-identical after final layout fix.",
+      "pages_18_33": "Individually inspected at original resolution by submission_package_review; PASS. Pages 28–33 re-inspected after final layout fix.",
+      "figures": 5,
+      "main_figure_width_mm": 168,
+      "legal_pages": [
+        29,
+        30,
+        32
+      ],
+      "all_captions_with_figures": true,
+      "line_numbers_continuous_1_to_647": true
+    },
+    "si_visual_qa": {
+      "pages": 36,
+      "figures": 7,
+      "prior_all_pages": "All 36 pages previously inspected individually at original resolution; PASS after isolated orphan-heading repair.",
+      "latest_changed_pages": [
+        10,
+        17
+      ],
+      "latest_changed_pages_review": "Individually inspected at original resolution by photo_rights_audit; PASS.",
+      "other_34_pages_pixel_identical": true,
+      "si_docx_parts_unchanged_by_final_main_layout_fix": true
+    },
+    "independent_numeric_comparison": {
+      "methods": 69,
+      "results": 83,
+      "all_11_si_appendices": 748,
+      "missing_or_extra": 0,
+      "note": "Navigation references, headings and file identifiers excluded; equivalent TeX and Unicode exponents normalized."
+    },
+    "metadata_and_links": {
+      "author_and_last_modified_by_blank": true,
+      "known_author_repository_local_path_identifiers_in_xml_or_relationships": false,
+      "tracked_revisions_or_comments": false,
+      "external_links": "Only credited source photographs/licences in main and published DOI links in SI.",
+      "whole_bundle_anonymity_certified": false,
+      "remaining_bundle_issue": "Required legal attribution is retained in the aggregate code bundle."
+    },
+    "navigation_manifest_sha256": "623a97294557f9cc2284e911161e3f2c8907a4b16cea9f18b41c8c1c6e1a5ed1",
+    "publication_limitations": [
+      "Durable deposition and hosted anonymous reviewer access remain outstanding.",
+      "Author-specific title page and declarations were not invented.",
+      "Separate source figures are available; scientific source prose was not changed by the document builder."
+    ]
+  },
+  "source_coverage_run": 41020812565,
+  "local_contract_tests": {
+    "main_manuscript_and_asset_provenance": 22,
+    "aggregate_bundle": 8,
+    "sampling_coverage_and_disclosure": 5
+  },
+  "aggregate_candidates": [
+    {
+      "filename": "cirsium_v4_aggregate_release_candidate.zip",
+      "bytes": 2344600,
+      "sha256": "3e2fa32f210977d3aae5a46a9f18e53f88a4ce7ed0af7e4d8057ca0aafb51414",
+      "files": 63,
+      "verification_and_render_commands_passed": 9,
+      "repeat_build_byte_identical": true
+    },
+    {
+      "filename": "cirsium_v4_review_aggregate_candidate.zip",
+      "bytes": 2333208,
+      "sha256": "0c18472b67c9478a63c8eb0a926096ecf6501e200f314059dc46de80b2255c38",
+      "files": 63,
+      "verification_and_render_commands_passed": 9,
+      "repeat_build_byte_identical": true
+    }
+  ],
+  "final_head_ci": "Check the final PR head checks; source reconstruction is evidenced separately by run 41020812565."
+}

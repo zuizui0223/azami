@@ -1,6 +1,8 @@
 """Read-only integrity checks for the frozen V4 GEB manuscript and V3 archive."""
 from __future__ import annotations
 import csv
+import hashlib
+import json
 from pathlib import Path
 import re
 import unittest
@@ -61,7 +63,7 @@ class V4GEBMainContract(unittest.TestCase):
         self.assertIn("24/28",si_cov)
         self.assertIn("0.0487/0.00532",si_cov)
         self.assertIn("**123/135**",si_cov)
-        self.assertIn("**Figure 2 (planned, NOT YET SOURCE-GENERATED).**",article)
+        self.assertIn("**Figure 2.** Worldwide sampling coverage",article)
         self.assertNotIn("**Figure 5 (Part 1).**",article)
         for biological_pair in ("angle", "chroma", "aspect"):
             self.assertIn(biological_pair,(PAPER/"plot_cross_functional_pairs.py").read_text(encoding="utf-8"))
@@ -149,7 +151,7 @@ class V4GEBMainContract(unittest.TestCase):
             self.assertIn(species["source_name"].split()[1],doc)
         for token in ("156,608","156,750","99.91%","350","seven","100","15","10"):
             self.assertIn(token,paper)
-        self.assertIn("Table S3",paper)
+        self.assertIn("Table S1.1",paper)
         self.assertIn("not random",paper)
         self.assertNotIn("+48.2 mm/month",paper)
 
@@ -288,7 +290,7 @@ class V4GEBMainContract(unittest.TestCase):
                      "| *Cirsium arvense* | 78,646 | 70,964 | 49,072 | 43,195 |",
                      "| *Cirsium vulgare* | 62,368 | 85,644 | 33,637 | 47,833 |",
                      "**Total** | **141,014** | **156,608**",
-                     "Figure 2 (planned, NOT YET SOURCE-GENERATED)",
+                     "**Figure 2.** Worldwide sampling coverage",
                      "The full within- and among-taxon image-metric covariance analysis"):
             self.assertIn(term,article)
         self.assertLess(article.index("### 3.1. Global image measurements"),
@@ -502,6 +504,71 @@ class V4GEBMainContract(unittest.TestCase):
         code=(V4/"s1_h3c_seed_stability.py").read_text(encoding="utf-8")
         self.assertIn("DRAWS = 24",code)
         self.assertIn("PERMS = 99",code)
+
+    def test_sampling_coverage_matches_original_cohorts_and_disclosure(self):
+        path = V4 / "results/20261030_SAMPLING_COVERAGE_SOURCE_VERIFIED.json"
+        self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
+                         "ca6d9c787c19758ebed68be53b7370d0fbc8a81b1b10235676c66619df04dc50")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual((data["cell_degrees"], data["minimum_records_per_displayed_cell"]), (5, 5))
+        expected = {
+            "s1_angle": (168907, 178, 118),
+            "h3c_primary": (153843, 63, 105),
+            "arvense_native": (22936, 1, 133),
+            "arvense_introduced": (26171, 1, 14),
+            "vulgare_native": (17335, 1, 62),
+            "vulgare_introduced": (27200, 1, 17),
+        }
+        self.assertEqual({p["panel"] for p in data["panels"]}, set(expected))
+        for panel in data["panels"]:
+            self.assertEqual((panel["total_records"], panel["total_taxa"], panel["suppressed_records"]),
+                             expected[panel["panel"]])
+            self.assertEqual(sum(c["records"] for c in panel["cells"]), panel["shown_records"])
+            self.assertEqual(panel["shown_records"] + panel["suppressed_records"], panel["total_records"])
+            self.assertEqual(len(panel["cells"]), panel["shown_cells"])
+            self.assertEqual(panel["shown_cells"] + panel["suppressed_cells"], panel["total_cells"])
+            self.assertEqual(len({(c["lat_bin"], c["lon_bin"]) for c in panel["cells"]}), len(panel["cells"]))
+            for cell in panel["cells"]:
+                self.assertEqual(set(cell), {"lat_bin", "lon_bin", "records", "taxa"})
+                self.assertTrue(0 <= cell["lat_bin"] < 36 and 0 <= cell["lon_bin"] < 72)
+                self.assertGreaterEqual(cell["records"], 5)
+        verified = data["source_verification"]
+        self.assertEqual((verified["h3_primary_taxa"], verified["h3_primary_taxon_cells"]), (63, 7117))
+        self.assertEqual((verified["h3_secondary_taxa"], verified["h3_secondary_taxon_cells"]), (31, 814))
+        self.assertEqual([r["n"] for r in verified["s2_original_six_rows"]],
+                         [22936, 26171, 17335, 27200, 17335, 27200])
+        for row in verified["s2_original_six_rows"]:
+            self.assertAlmostEqual(row["expected_beta"], row["recovered_beta"], places=10)
+
+    def test_submission_figures_have_verified_provenance_and_vector_masters(self):
+        def sha(path):
+            return hashlib.sha256(path.read_bytes()).hexdigest()
+        coverage = json.loads((PAPER / "figure2_render_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(sha(ROOT / coverage["source"]["path"]), coverage["source"]["sha256"])
+        self.assertEqual(sha(ROOT / coverage["renderer"]["path"]), coverage["renderer"]["sha256"])
+        self.assertEqual(sha(ROOT / coverage["basemap"]["path"]), coverage["basemap"]["sha256"])
+        self.assertEqual(coverage["source"]["ci_run_id"], 41020812565)
+        self.assertEqual(set(coverage["outputs"]), {"png", "pdf", "svg"})
+        for output in coverage["outputs"].values():
+            self.assertEqual(sha(ROOT / output["path"]), output["sha256"])
+        for panel in coverage["presentation"]["panels"]:
+            self.assertEqual(panel["record_sum_of_rendered_cells"], panel["shown_records"])
+            self.assertEqual(panel["number_of_rendered_cell_polygons"], panel["shown_cells"])
+        photos = json.loads((PAPER / "FIGURE1_PHOTO_CREDITS_20261030.json").read_text(encoding="utf-8"))
+        self.assertIsNone(photos["remaining_photo_license_issue"])
+        self.assertEqual(len(photos["photographs"]), 3)
+        for photo in photos["photographs"]:
+            self.assertTrue(photo["source_page_license_verified"])
+            self.assertIn(photo["verified_license"], {"CC BY 4.0", "CC0 1.0"})
+        self.assertEqual(sha(PAPER / "plot_measurement_pipeline_v4.py"), photos["render"]["renderer_sha256"])
+        for name, checksum in photos["render"]["output_files"].items():
+            self.assertEqual(sha(PAPER / "figures" / name), checksum)
+        exports = json.loads((PAPER / "figures/figure3_5_pdf_export_manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(exports["outputs"]), 3)
+        for item in exports["outputs"]:
+            path = PAPER / "figures" / item["file"]
+            self.assertEqual(sha(path), item["sha256"])
+            self.assertTrue(path.read_bytes().startswith(b"%PDF-"))
 
     def test_v3_archived(self):
         self.assertFalse((ROOT / "analysis/v3").exists())

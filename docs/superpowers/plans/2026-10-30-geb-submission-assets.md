@@ -30,10 +30,14 @@
 
 ## Tasks
 
-- [ ] Write and run failing aggregation/privacy tests, implement `analysis/v4/submission_sampling_coverage.py`, rerun tests.
-- [ ] Add source-only recovery workflow with explicit aggregate upload paths; run against authenticated original inputs and recover the successful coverage receipt.
-- [ ] Render Figure 2 from the verified receipt, inspect the full figure, and preserve a vector master.
-- [ ] Build Figure 1 from the existing licensed source composite with a verified rights manifest.
-- [ ] Update figure captions/callouts and availability status only after evidence exists; preserve scientific sections and coefficients.
-- [ ] Build and visually verify editable main/SI documents and a bounded aggregate/code package.
-- [ ] Review the complete diff, run relevant existing contracts plus new privacy/cohort tests, push with an expected-head lease, and verify the final workflows.
+- [x] Write and run failing aggregation/privacy tests, implement `analysis/v4/submission_sampling_coverage.py`, rerun tests.
+- [x] Add source-only recovery workflow with explicit aggregate upload paths; run against authenticated original inputs and recover the successful coverage receipt (run 41020812565).
+- [x] Render Figure 2 from the verified receipt, inspect the full figure, and preserve a vector master.
+- [x] Build Figure 1 from the existing licensed source composite with a verified rights manifest.
+- [x] Update figure captions/callouts and availability status only after evidence exists; preserve scientific sections and coefficients.
+- [x] Build and visually verify editable main/SI documents and a bounded aggregate/code package.
+- [x] Review the complete diff and run the manuscript, bundle and privacy/cohort contracts (22 + 8 + 5 tests).
+
+## Integration gate
+
+Push the reviewed asset/source tree with an expected-head lease. Verify the resulting branch head and its workflows before reporting completion; the live PR checks are the authoritative evidence for that post-commit step. Keep the source-coverage run 41020812565 as the data-recovery receipt, rather than treating an asset-only CI run as a new source reconstruction.

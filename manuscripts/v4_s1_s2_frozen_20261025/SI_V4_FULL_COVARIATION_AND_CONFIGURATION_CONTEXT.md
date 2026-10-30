@@ -110,8 +110,8 @@ is counted as a new statistically supported ecological or evolutionary
 finding. The full 28-pair matrix, within-/among-taxon signed-r subset and
 old exploratory image (`figure2_cross_functional_trait_pairs.png`) remain
 here as supplementary descriptive records. The historical plot filename
-does not represent the current main-paper Figure 2, which is reserved for
-a not-yet-built source-grounded geographic coverage map.
+does not represent the current main-paper Figure 2, which shows the
+source-verified geographic coverage of the separate analytical cohorts.
 
 Original photographed trait covariation was **chosen for biological
 interpretation after inspecting the results**; it was not independently

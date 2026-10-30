@@ -1,0 +1,229 @@
+{
+  "schema": "V4_FIGURE2_SAMPLING_COVERAGE_RENDER_20261030",
+  "status": "SOURCE_VERIFIED_COVERAGE_RENDERED",
+  "source": {
+    "path": "analysis/v4/results/20261030_SAMPLING_COVERAGE_SOURCE_VERIFIED.json",
+    "sha256": "ca6d9c787c19758ebed68be53b7370d0fbc8a81b1b10235676c66619df04dc50",
+    "schema": "V4_SAMPLING_COVERAGE_20261030",
+    "public_schema_and_original_cohort_contract_validated": true,
+    "ci_run_id": 41020812565,
+    "ci_commit": "1fa733a463a6e546a69b8386eddbed6b2f1d047d",
+    "ci_artifact_id": 12961447511,
+    "ci_artifact_zip_sha256": "93924e9b36eee790d263ee6f5ca33859a7719fb428a9eb4f22198d3b9df22f8e"
+  },
+  "basemap": {
+    "path": "legacy/v3/reproducibility/figures/source/natural_earth_110m_land_outline.json",
+    "sha256": "0f73d385f7d97e02aec1234e0a89fb46109e3fda7b31da7d6ec977094e15f9f4",
+    "source": "Natural Earth 1:110m land, public domain",
+    "archived_crlf_sha256": "c517cff9ef3e3aa6eb89998c6d1e047d741f16be83767a94999574f3b6f3f636",
+    "archived_checksum_verified_after_lf_to_crlf": true,
+    "line_ending_note": "Git working-tree LF; historical figure report used CRLF.",
+    "role": "Presentation land outline only; no political boundaries",
+    "rights": "Public domain",
+    "downloaded_by_renderer": false
+  },
+  "renderer": {
+    "path": "manuscripts/v4_s1_s2_frozen_20261025/plot_sampling_coverage_v4.py",
+    "sha256": "f081afee365ca8a859c9fe5c5a50da1e23012437dc757a60597c845a0a25b56b",
+    "matplotlib_version": "3.10.8",
+    "numpy_version": "2.3.5",
+    "network_used": false
+  },
+  "presentation": {
+    "panels": [
+      {
+        "panel": "s1_angle",
+        "total_records": 168907,
+        "total_taxa": 178,
+        "total_cells": 306,
+        "shown_records": 168789,
+        "suppressed_records": 118,
+        "shown_cells": 246,
+        "suppressed_cells": 60,
+        "letter": "a",
+        "map_box_mm": [
+          10.0,
+          16.0,
+          72.0,
+          36.0
+        ],
+        "record_sum_of_rendered_cells": 168789,
+        "number_of_rendered_cell_polygons": 246
+      },
+      {
+        "panel": "h3c_primary",
+        "total_records": 153843,
+        "total_taxa": 63,
+        "total_cells": 295,
+        "shown_records": 153738,
+        "suppressed_records": 105,
+        "shown_cells": 237,
+        "suppressed_cells": 58,
+        "letter": "b",
+        "map_box_mm": [
+          90.0,
+          16.0,
+          72.0,
+          36.0
+        ],
+        "record_sum_of_rendered_cells": 153738,
+        "number_of_rendered_cell_polygons": 237
+      },
+      {
+        "panel": "arvense_native",
+        "total_records": 22936,
+        "total_taxa": 1,
+        "total_cells": 171,
+        "shown_records": 22803,
+        "suppressed_records": 133,
+        "shown_cells": 111,
+        "suppressed_cells": 60,
+        "letter": "c",
+        "map_box_mm": [
+          10.0,
+          69.0,
+          72.0,
+          36.0
+        ],
+        "record_sum_of_rendered_cells": 22803,
+        "number_of_rendered_cell_polygons": 111
+      },
+      {
+        "panel": "arvense_introduced",
+        "total_records": 26171,
+        "total_taxa": 1,
+        "total_cells": 60,
+        "shown_records": 26157,
+        "suppressed_records": 14,
+        "shown_cells": 53,
+        "suppressed_cells": 7,
+        "letter": "d",
+        "map_box_mm": [
+          90.0,
+          69.0,
+          72.0,
+          36.0
+        ],
+        "record_sum_of_rendered_cells": 26157,
+        "number_of_rendered_cell_polygons": 53
+      },
+      {
+        "panel": "vulgare_native",
+        "total_records": 17335,
+        "total_taxa": 1,
+        "total_cells": 111,
+        "shown_records": 17273,
+        "suppressed_records": 62,
+        "shown_cells": 83,
+        "suppressed_cells": 28,
+        "letter": "e",
+        "map_box_mm": [
+          10.0,
+          122.0,
+          72.0,
+          36.0
+        ],
+        "record_sum_of_rendered_cells": 17273,
+        "number_of_rendered_cell_polygons": 83
+      },
+      {
+        "panel": "vulgare_introduced",
+        "total_records": 27200,
+        "total_taxa": 1,
+        "total_cells": 71,
+        "shown_records": 27183,
+        "suppressed_records": 17,
+        "shown_cells": 62,
+        "suppressed_cells": 9,
+        "letter": "f",
+        "map_box_mm": [
+          90.0,
+          122.0,
+          72.0,
+          36.0
+        ],
+        "record_sum_of_rendered_cells": 27183,
+        "number_of_rendered_cell_polygons": 62
+      }
+    ],
+    "text_bounds_checked": true,
+    "dimensions_mm": [
+      168.0,
+      196.0
+    ],
+    "raster_dpi": 600,
+    "minimum_text_pt": 8.0,
+    "projection": "Mollweide (equal-area), central meridian 0°",
+    "graticule_degrees": {
+      "longitude": 60,
+      "latitude": 30
+    },
+    "labelled_longitudes_degrees": [
+      -120,
+      0,
+      120
+    ],
+    "labelled_latitudes_degrees": [
+      -60,
+      0,
+      60
+    ],
+    "display_cell_degrees": 5,
+    "minimum_records_per_displayed_cell": 5,
+    "colour_scale": {
+      "measure": "pooled records per 5° latitude–longitude cell",
+      "normalization": "logarithmic, shared across all panels",
+      "minimum": 5,
+      "maximum": 13285,
+      "ticks": [
+        5,
+        50,
+        500,
+        5000,
+        13285
+      ],
+      "colours": [
+        "#d8e7f2",
+        "#8eb9d6",
+        "#4e91bd",
+        "#19659a",
+        "#083f69"
+      ],
+      "not_area_normalized": true
+    },
+    "scale_bar": {
+      "distance_km": 10000.0,
+      "valid_at_latitude_degrees": 0,
+      "spherical_mean_radius_km": 6371.0088,
+      "longitude_span_degrees": 89.93203637245381,
+      "length_mm": 17.986407274490762,
+      "computed_from_actual_native_projection_transform": true
+    },
+    "primary_h3_analysis_cell_degrees": 1,
+    "blank_cell_meaning": "Not displayed: absent or fewer than five records; not evidence of biological absence.",
+    "cohort_totals_are_not_additive": true,
+    "map_is_analytical_sampling_coverage_not_occurrence_range": true
+  },
+  "transformations": [
+    "Decode public five-degree cell indices to cell boundaries, with no point-level locations.",
+    "Project cell vertices pointwise with native Matplotlib Mollweide, then affine-place them; sample boundaries at one-degree intervals.",
+    "Colour each displayed cell by its unchanged pooled record count with one shared logarithmic scale.",
+    "Keep all disclosed cells; do not smooth, interpolate counts, impute suppressed cells or refit models.",
+    "Show full analytical cohort totals in panel titles and retain displayed/suppressed accounting here.",
+    "Project the archived Natural Earth land outlines; split antimeridian crossings and subdivide geographic segments to at most one degree."
+  ],
+  "outputs": {
+    "png": {
+      "path": "manuscripts/v4_s1_s2_frozen_20261025/figures/figure2_sampling_coverage.png",
+      "sha256": "4fd9456903b7bc826714f857a5e33f58f481728a8d319057cf619ae384b687f3"
+    },
+    "pdf": {
+      "path": "manuscripts/v4_s1_s2_frozen_20261025/figures/figure2_sampling_coverage.pdf",
+      "sha256": "da3adc63fbcd0cac984401708ee58e58a2966d57b18af991792d1ffac15ecbf5"
+    },
+    "svg": {
+      "path": "manuscripts/v4_s1_s2_frozen_20261025/figures/figure2_sampling_coverage.svg",
+      "sha256": "81d7e1bfc2b2dc3782d39c1c242ad9392ade6783ebaca4a06c1459f1b6eeed65"
+    }
+  }
+}

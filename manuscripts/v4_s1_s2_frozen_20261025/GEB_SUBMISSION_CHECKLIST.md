@@ -1,6 +1,8 @@
-# GEB Research Article preparation and explicit stop gates — 25 October 2026
+# GEB Research Article preparation status — updated 30 October 2026
 
-Journal source: [Wiley Global Ecology and Biogeography author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html) (checked 2026-10-25).
+Journal source: [Wiley Global Ecology and Biogeography author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html) (rechecked 2026-10-30).
+
+**Current stage:** source-verified figures and editable main/SI review candidates assembled. No journal submission, permanent data deposit or DOI publication has occurred. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
 
 ## Format and scope
 
@@ -19,7 +21,7 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 
 **3.2 Flower colour after colonisation of new regions:** Two species × four range strata, 297,622 original wild source observations; three introduced-stratum colour×radiation/elevation associations survived the original 128-test Holm family. No formal range×environment interaction was estimated.
 
-**3.3 Local climatic analogues and floral morphospace:** H3a realised climatic breadth→floral volume and H3b species centroid correspondence are unresolved (63 taxa at 1°, 31 at 5°). H3c using same cell-balanced photographs detected a 3D trait distance advantage across climate-analogue sites (1° +0.04096; 5° +0.09433, exploratory Holm-2 P=0.010 at both resolutions) and density-overlap pattern relative to the taxon permutation null. The conditional subset's raw KDE L2 overlap is **lower**, not higher, than the full-distribution overlap. H3d three axis-breadth and six climate-modulated trait covariance contrasts failed exploratory Holm correction. [Detailed source audit](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md).
+**3.3 Local climatic analogues and floral morphospace:** H3c detected greater joint angle–chroma–aspect resemblance at climate-matched cells than expected from within-taxon vector reassignment (distance advantage 1° +0.04096; 5° +0.09433, exploratory Holm-2 P=0.010 at each resolution). Main Figure 5 presents this distance result. The primary analysis retains 63 taxa / 7,117 taxon-cells; the separately verified map shows 153,843 contributing source photographs before cell aggregation and rarefaction. Taxa are assigned to different dominant longitude sectors; their matched cells need not occur in different sectors. Climatic breadth, centroids, KDE and covariance endpoints remain in SI. [Detailed source audit](SI_H3_CLIMATE_ANALOGUE_CONDITIONAL_OVERLAP_20261029.md).
 
 **H3c robustness gate:** Six further fixed random-stream checks retained the positive *direction* at both resolutions (6/6), but nominal P<0.05 in only 2/6 of the 1° series versus 6/6 of 5° series. At 1°, excluding chroma or the central longitude sector reversed the distance contrast. KDE overlap was not consistently supported. See [full post-positive sensitivity SI](SI_H3C_POSTPOSITIVE_ROBUSTNESS_20261029.md). This is not another independent Holm-2 family.
 The weak exploratory 28-pair shape/colour/angle covariance remains in SI; “LEGO” is not a formal study hypothesis. Original S1/S2 frozen results unchanged.
@@ -36,29 +38,35 @@ The weak exploratory 28-pair shape/colour/angle covariance remains in SI; “LEG
 
 **Alternative explanation:** camera angle and lighting, taxon/geographic confounding now tested on original BIO18, shared-pixel mathematical covariance, imperfect taxonomic and temporal resolution. Selected-model Holm correction is **not** adjusted for the earlier explorations leading to the fixed model. All significant results and all 208 tests are visible in the numerical supplement; don't conceal the full family.
 
-## Seven main display pieces for GEB (five figures + two tables; Figure 2 unbuilt)
+## Seven main display pieces for GEB (five figures + two tables)
 
-**Methodology plus ecology:** show the source-verified continuous photographed phenotypes, then their BIO18, native/introduced colour and domain-covariance structure. Scientific novelty rhetoric stays in the [separate cover letter](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md).
+**Methodology plus ecology:** show how continuous photographed phenotypes are measured and where each analytical cohort was sampled, then the precipitation, colour and local-resemblance results. The [cover-letter draft](GEB_COVER_LETTER_CONTRIBUTION_PITCH.md) has a single 206-word interest paragraph.
 
-1. **Figure 1:** V4 measurement workflow, provenance-safe coverage and audited 350→7→2 taxon selection (photo/geographic attribution QA outstanding).
-2. **Figure 2 (planned only):** actual source-verified global photographic coverage and eligible taxon/range map, pending licenced aggregation. **NOT yet generated; submission stop gate.** The original three cross-domain signed-r pair graph remains in SI despite its historical `figure2_` filename.
+1. **Figure 1:** Actual archived source photographs illustrate detection, image-referenced angle, floral pixels and projected outline. Current cohort membership is not asserted for the illustrative images. All three photo licences were verified from their source pages and API records: one CC BY 4.0 and two CC0 1.0. Credits and modifications are in the caption and [rights manifest](FIGURE1_PHOTO_CREDITS_20261030.json). PNG 600 dpi; PDF/SVG masters; 168 × 202 mm.
+2. **Figure 2:** Six actual source-verified sampling maps, pooled into 5° display cells and omitting cells with fewer than five records. Original S1 angle and six S2 colour cohorts were reproduced before export, and H3 geographic eligibility was verified. Mollweide equal-area projection, shared logarithmic scale, graticules and 10,000 km equatorial scale; 168 × 196 mm. [Coverage source](../../analysis/v4/results/20261030_SAMPLING_COVERAGE_SOURCE_VERIFIED.json) / [render manifest](figure2_render_manifest.json). The historical `figure2_cross_functional_trait_pairs` remains an SI figure.
 3. **Figure 3 (native climatic association):** Main figure displays **only the frozen, Holm-supported BIO18 × image-referenced angle coefficient**. The extra sector/spherical-geography and regional-holdout models belong to [spatial-model sensitivity in SI](SI_S1_BIO18_SPATIAL_SENSITIVITY_20261029.md), not the main figure. The [full S1 SI](SI_S1_BIO18_ANGLE_RAW_BH_HOLM_CONTEXT.md) retains all original 80 unadjusted/BH/Holm rows and both observational scales.
 4. **Figure 4 (native/introduced):** Three selected photographed colour×environment pairs in native/introduced strata, six exact original coefficients with CI; no range×environment interaction inference.
-5. **Figure 5 (H3):** Source-verified aggregate-only climate-matched head distance advantage, Gaussian-KDE L2 conditional-overlap versus permutation null and original climatic breadth slope (1°/5°). No fictitious 3D photo scatter or evolutionary convergence inference. **The original eight high/low three-trait configurations and binarisation-sensitive contrasts remain SI only.**
+5. **Figure 5 (H3):** Source-verified climate-matched joint-trait distance advantage versus the within-taxon permutation-null mean at 1° and 5°. Resolution-specific standardisations prevent direct effect-size comparison between grains. Gaussian-KDE similarity, climatic breadth and the original eight high/low configurations remain in SI. No fictitious photo scatter or evolutionary convergence inference.
 6. **Table 1:** Audited source totals and image-angle eligible observations by native/introduced stratum for *C. arvense* and *C. vulgare* (78,646/70,964 and 62,368/85,644; native/introduced totals 141,014/156,608). Weak r pairs and domain RV medians moved to SI.
 7. **Table 2:** Four original Holm-supported environment associations, with Holm rather than raw P displayed in the main table.
 
 **SI figures and tables:** three original cross-domain correlation pairs and  full 208-test family with original/BH/Holm P, the two-scale BIO18 angle forest, all 28 RV pairs (original full matrix and CSV), 280 fixed-size label ranks, eight-state configurations with threshold sensitivity, original domain RV medians, previous four-positive forest and S2 range-stratum RV medians. See SI_V4_FULL_COVARIATION_AND_CONFIGURATION_CONTEXT.md. Earlier V3 numerical plots are not re-labelled as V4.
 
-## Submission blockers (not claimed complete)
+## Completed preparation and remaining submission decisions
 
-1. Source photo/year-range audit and provenance-safe geographic map; independent image-based angle, colour, shape accuracy assessments.
-2. Exact SI export of 208 tests, 28 adjusted/raw pair RV and full coefficients; latest source archive has been checksum-verified but needs public long-term data preservation.
-3. Reviewer-identity-concealed source access, durable DOI for releasable data/code and original source photo licences.
-4. **Figure 2 geographic source map not generated**, plus reference metadata, plot sizes/attribution, author title page, complete embedded figures, legends, editable .docx, line numbers and separate SI PDF/CSV package.
-5. External methods review of geographic/photographic confounding, model-selection sensitivity and the distinction between **within-stratum phenotype associations** and **excluded between-range climate/niche contrasts**.
+**Assembled:** five main figures in PNG/PDF/SVG; two editable main tables; complete captions with photographic attribution; editable main/SI Word candidates with continuous main-text line numbering; 11 SI appendices; five original numerical CSV exports; aggregate verification/rendering code and source receipts. Main/SI document assembly records source-text and numerical preservation, figure identity and reviewer navigation. Generated Word/ZIP packages are excluded from git and delivered separately.
 
-**State:** the science freeze is reproducible at its original code/Actions SHA; the article files are GEB-structured **drafts**, not an actual submitted manuscript or accepted evidence of ecological causation.
+**Source coverage verified:** [Actions #41020812565](https://github.com/zuizui0223/azami/actions/runs/41020812565), artifact 12961447511. Coarse-cell counts retain every cohort denominator and explicitly account for suppressed records. No exact coordinates, observation IDs, uploader IDs or environmental pixel records are included in the map export. Three photographic illustrations have separately documented attribution rights.
+
+**Aggregate replay verified:** the candidate reproduces the 208-test table, 28-pair table, six original colour coefficients, the 80-test native family and two-scale BIO18 table. Nine verification/render commands pass. It starts from archived aggregates and **does not rerun observation-level fits, raw-image measurement, bootstrap or permutation analyses**. The review copy neutralises identifying repository references but retains the legally required MIT copyright notice; full anonymity is not certified. See [package scope](reproducibility_v4/AGGREGATE_RELEASE_CANDIDATE_README.md).
+
+**Still required before actual submission:**
+
+1. Confirm the author list/order, affiliations, corresponding author, acknowledgements, funding, conflicts and other journal declarations; create the separate author title page and final cover-letter PDF from those confirmed details.
+2. Choose the licence for redistributable aggregate data and establish a durable deposit with an appropriate reviewer-access route. No public DOI or anonymous hosted link is currently claimed; repository access alone is not a permanent archive. Preserve the distinct software and third-party image licences.
+3. Perform the final author sign-off on the main/SI package and submission declarations. Scientific interpretation remains observational; independent image-measurement validation and experimental tests of protection/fitness are limitations or future work, not evidence manufactured by formatting the package.
+
+**State:** the original numerical science is source-verified, and the manuscript is an editable review candidate. It has not been submitted or accepted. Author/access decisions above remain open.
 
 ## Frozen GEB inferential scope
 
