@@ -5,6 +5,13 @@ on:
     branches: [main]
     paths:
       - 'README.md'
+      - 'analysis/README.md'
+      - 'manuscripts/README.md'
+      - 'legacy/README.md'
+      - 'docs/REPOSITORY_MAP.md'
+      - 'docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md'
+      - 'docs/BRANCH_ARCHIVE_TRIAGE_20261030.md'
+      - 'tests/test_repository_navigation.py'
       - 'analysis/v4/**'
       - 'manuscripts/v4_s1_s2_frozen_20261025/**'
       - 'legacy/v3/**'
@@ -15,6 +22,13 @@ on:
   pull_request:
     paths:
       - 'README.md'
+      - 'analysis/README.md'
+      - 'manuscripts/README.md'
+      - 'legacy/README.md'
+      - 'docs/REPOSITORY_MAP.md'
+      - 'docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md'
+      - 'docs/BRANCH_ARCHIVE_TRIAGE_20261030.md'
+      - 'tests/test_repository_navigation.py'
       - 'analysis/v4/**'
       - 'manuscripts/v4_s1_s2_frozen_20261025/**'
       - 'legacy/v3/**'
@@ -39,6 +53,7 @@ jobs:
           python-version: '3.12'
       - name: Check journal abstract, locked numbers, archive and static sources
         run: |
+          python -m unittest discover -s tests -p 'test_repository_navigation.py' -v
           python -m unittest discover -s tests -p 'test_v4_geb_main_contract.py' -v
           python -m unittest discover -s tests -p 'test_v4_review_aggregate_bundle.py' -v
           python -m py_compile analysis/v4/final_v4_bio18_holm_freeze.py
