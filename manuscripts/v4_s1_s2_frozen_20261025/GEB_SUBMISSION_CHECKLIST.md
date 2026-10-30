@@ -2,7 +2,9 @@
 
 Journal source: [Wiley Global Ecology and Biogeography author guidelines](https://onlinelibrary.wiley.com/page/journal/14668238/homepage/forauthors.html) (rechecked 2026-10-30).
 
-**Current stage:** source-verified figures and editable main/SI review candidates assembled. No journal submission, permanent data deposit or DOI publication has occurred. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
+**Current stage:** source-verified figures and editable main/SI review candidates assembled. No journal submission, permanent data deposit or DOI publication has occurred.
+
+**Repository merge / Zenodo boundary (2026-10-30):** PR #159 is merged into `main` at `e2229a2`; exploratory PR #160 remains open, unmerged and separately reviewed. [Zenodo V4 data-only preparation](../../docs/ZENODO_V4_RELEASE_HANDOFF.md) specifies frozen aggregate candidates, rights, creator metadata and byte verification. A real V4 DOI, confirmed aggregate-data license and anonymous reviewer access are still absent. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
 
 ## Format and scope
 

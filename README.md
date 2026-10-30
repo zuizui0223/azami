@@ -1,6 +1,6 @@
 # Azami | Global photographic phenomics of *Cirsium*
 
-> **Current working paper:** *Global photographic phenomics reveals climate-associated capitulum traits and local floral resemblance in Cirsium* — a **GEB Research Article candidate, not submitted or published**. The paper is maintained on [PR #159](https://github.com/zuizui0223/azami/pull/159). The default `main` branch may still show the older manuscript outline until that PR is merged.
+> **Current working paper:** *Global photographic phenomics reveals climate-associated capitulum traits and local floral resemblance in Cirsium* — a **GEB Research Article candidate, not submitted or published**. [PR #159](https://github.com/zuizui0223/azami/pull/159) was **merged into `main`** on 2026-10-30 (merge commit `e2229a20045044977afe235255355ca3892186fa`). This is the canonical working manuscript, **not** a submitted or published paper.
 >
 > **現在地:** 最新の論文はResults **3.1 降水と向き、3.2 日射・標高と花色、3.3 似た気候での多形質の類似**。古い「形質組合せ／向き／花色」の3部構成を現在の本文と混同しないでください。
 
@@ -13,6 +13,7 @@
 | Figures 1–5, provenance and licenses | [figure directory](manuscripts/v4_s1_s2_frozen_20261025/figures/) · [asset audit](manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_ASSET_AUDIT_20261030_JA.md) |
 | Frozen scientific evidence | [V4 analysis](analysis/v4/README.md) · [24 October freeze](analysis/v4/FINAL_V4_BIO18_HOLM_LEGO_FREEZE_20261024_JA.md) |
 | Repeat an allowed verification / prepare journal materials | [reproduction and submission runbook](docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md) |
+| Prepare a V4 Zenodo data-only deposit (not yet published) | [V4 Zenodo handoff](docs/ZENODO_V4_RELEASE_HANDOFF.md) · [aggregate release candidate](manuscripts/v4_s1_s2_frozen_20261025/reproducibility_v4/AGGREGATE_RELEASE_CANDIDATE_README.md) |
 | Find old work without treating it as a current result | [repository map](docs/REPOSITORY_MAP.md) · [archive guide](legacy/README.md) |
 | Branch/PR cleanup without losing provenance | [branch triage](docs/BRANCH_ARCHIVE_TRIAGE_20261030.md) |
 
@@ -44,4 +45,4 @@ The shared **156,683 photographs across 174 taxa** form a separate eight-constru
 
 No V4 data DOI or final public/anonymous reviewer deposit is established. An Actions artifact can expire; a successful local check against an existing aggregate cannot recreate restricted image-level data. Raw observation identifiers, precise locations, protected source photographs and other third-party material must follow their original access restrictions. Code's MIT license does **not** override image/data licenses: [LICENSE](LICENSE), [NOTICE](NOTICE.md), [Figure 1 credits](manuscripts/v4_s1_s2_frozen_20261025/FIGURE1_PHOTO_CREDITS_20261030.json). The historical Zenodo DOI for V2 is not a V4 dataset DOI.
 
-**Maintainership policy:** edit the dated GEB paper in place on its active working branch, keep source-locked scientific numbers stable, and record new verification separately. Do not bulk-move paths or delete branches before checking import paths, GitHub Actions, existing PR bases and archived artifact receipts. See [branch triage](docs/BRANCH_ARCHIVE_TRIAGE_20261030.md).
+**Maintainership policy:** edit the dated GEB paper via reviewable PRs onto `main`, keep source-locked scientific numbers stable, and record new verification separately. Do not bulk-move paths or delete branches before checking import paths, GitHub Actions, existing PR bases and archived artifact receipts. See [branch triage](docs/BRANCH_ARCHIVE_TRIAGE_20261030.md).

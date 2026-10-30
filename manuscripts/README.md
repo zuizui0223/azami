@@ -1,6 +1,6 @@
 # Manuscripts — one current GEB working paper
 
-**Current manuscript:** [`v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md`](v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md) in [PR #159](https://github.com/zuizui0223/azami/pull/159). The dated folder name commemorates the original S1/S2 scientific freeze; the working article **also** includes the distinct exploratory H3c result added later.
+**Current manuscript:** [`v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md`](v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md), merged to `main` via [PR #159](https://github.com/zuizui0223/azami/pull/159) at `e2229a2`. This is a working paper, not a submitted article. The dated folder name commemorates the original S1/S2 scientific freeze; the working article **also** includes the distinct exploratory H3c result added later.
 
 | Need | Document |
 | --- | --- |

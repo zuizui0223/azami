@@ -1,6 +1,6 @@
 # Repository map — active science, manuscript, archives
 
-**Snapshot:** 2026-10-30, working branch of [PR #159](https://github.com/zuizui0223/azami/pull/159). This is a navigation and ownership map, **not a new scientific analysis**.
+**Snapshot and update:** 2026-10-30, [PR #159](https://github.com/zuizui0223/azami/pull/159) merged into `main` at `e2229a20045044977afe235255355ca3892186fa`. This is a navigation and ownership map, **not a new scientific analysis**.
 
 ## Source of truth, in reading order
 
@@ -12,6 +12,7 @@
 | Source statistics | [Frozen V4 analysis](../analysis/v4/README.md) and [source results](../analysis/v4/results/) | S1/S2 original corrected families and separate exploratory H3c/H3d source-verified aggregates. |
 | Interpretation limits | [Claim ledger](../manuscripts/v4_s1_s2_frozen_20261025/CLAIM_LEDGER_AND_SUBMISSION_GATES.md) | Supported claims and excluded causal/phylogenetic/introduced-evolution interpretations. |
 | Next submission steps | [GEB checklist](../manuscripts/v4_s1_s2_frozen_20261025/GEB_SUBMISSION_CHECKLIST.md) | Already made: figure and editable reviewer candidate. Outstanding: authorship declarations, permissions as appropriate, permanent rights-cleared data/code access, final anonymous review. |
+| Zenodo V4 (not yet published) | [Data-only release handoff](ZENODO_V4_RELEASE_HANDOFF.md) | Exact candidate ZIPs exist as documented local outputs; author, data license, rights, anonymity, byte verification and publishing approval remain pending. |
 | Reproducibility | [Runbook](REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md) | From zero-dependency navigation tests to checksum-locked archived aggregate reproduction; never publish private intermediates. |
 
 ## Directory ownership

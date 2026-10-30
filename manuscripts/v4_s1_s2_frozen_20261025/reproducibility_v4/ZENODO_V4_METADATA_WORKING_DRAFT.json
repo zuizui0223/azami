@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "PREPARATION_ONLY_NOT_PUBLISHED",
+  "record_type": "dataset",
+  "recommended_zenodo_title": "Cirsium capitulum phenomics across climatic gradients: V4 source-verified aggregate results and reproducibility code",
+  "description": "Reproducibility package for a GEB Research Article candidate on photographic capitulum orientation, colour and outline in Cirsium. Contains verified aggregate tests (original 80 S1 and 128 S2), trait covariance tables, native/introduced colour coefficients, and exploratory climate-analogue multivariate resemblance summaries with their methodological and robustness context. The replay verifies archived numerical outputs but does not reproduce original photographs, observer-level metadata, protected coordinates or source-data statistical refitting.",
+  "keywords": [
+    "Cirsium",
+    "capitulum",
+    "climate",
+    "citizen science",
+    "floral colour",
+    "macroecology",
+    "photographic phenomics",
+    "reproducibility"
+  ],
+  "version_label": "v4-2026-10-30-rc1",
+  "canonical_git_commit": "e2229a20045044977afe235255355ca3892186fa",
+  "original_S1_S2_frozen_commit": "7e25e409d39a7e8bb8a1ce1043d6bbfd41b7d159",
+  "source_artifacts": {
+    "primary": {
+      "id": 12547876704,
+      "zip_sha256": "6e081dc081bb8ee2311a05ac5b7fcddd3f6309be2fa909e87d432789f4e0e205"
+    },
+    "H3_robustness": {
+      "id": 12891286463,
+      "zip_sha256": "216fd6b8b722dd615ebbce9f58412ce245477c25ec65057afe9b5962cee33a91"
+    },
+    "figure_table": {
+      "id": 12956327726,
+      "zip_sha256": "0c6879ebddbf8ba56363049ca09fd69c7260150d0b38bcdcf52fe59f285a5c32"
+    }
+  },
+  "candidate_files": [
+    {
+      "name": "cirsium_v4_aggregate_release_candidate.zip",
+      "bytes": 2344600,
+      "sha256": "3e2fa32f210977d3aae5a46a9f18e53f88a4ce7ed0af7e4d8057ca0aafb51414",
+      "members": 63,
+      "purpose": "provenance-preserving internal source aggregate candidate",
+      "recommended_publication": false
+    },
+    {
+      "name": "cirsium_v4_review_aggregate_candidate.zip",
+      "bytes": 2333208,
+      "sha256": "0c18472b67c9478a63c8eb0a926096ecf6501e200f314059dc46de80b2255c38",
+      "members": 63,
+      "purpose": "metadata-reduced review copy; notices still identify contributors",
+      "recommended_publication": false
+    }
+  ],
+  "authors_confirmed": false,
+  "creators": [],
+  "data_license_confirmed": false,
+  "data_license": null,
+  "code_license": "MIT",
+  "peer_review_anonymity_confirmed": false,
+  "separate_zenodo_deposition_authorized": false,
+  "publication_approved": false,
+  "published_doi": null,
+  "prior_archive_note": "Historical V2 Zenodo DOI 10.5281/zenodo.22295791 is NOT a V4 identifier. Existing private GitHub V3 draft release is NOT this V4 dataset.",
+  "blocking_gates": [
+    "Confirm creator names/order and affiliations or identifiers",
+    "Select author-authorized rights-compatible aggregate-data license",
+    "Verify the exact candidate ZIP bytes and internal metadata for privacy and copyrights",
+    "Select public versus restricted reviewer file access and ensure journal anonymity",
+    "Approve upload/publication separately; no DOI reservation or public record yet"
+  ]
+}

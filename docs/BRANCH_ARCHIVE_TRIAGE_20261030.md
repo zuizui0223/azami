@@ -65,3 +65,12 @@ The only tag in this snapshot points to `0476640e740e327bc86d868994d38eba33dd73f
 
 **Completed:** archival refs and dependencies are reproducible from a frozen inventory and tested read-only code. **Not performed:** deleting branches or artifacts, closing/merging PRs, publishing releases, altering source data, renaming active import paths, or changing scientific estimates.
 
+
+## Post-merge status (2026-10-30)
+
+- [PR #159](https://github.com/zuizui0223/azami/pull/159) **merged to `main`** at `e2229a20045044977afe235255355ca3892186fa` using a merge commit, so the original scientific commit ancestry is preserved. Its old working head may still exist as a branch; this alone is not reason to delete it.
+- [PR #160](https://github.com/zuizui0223/azami/pull/160) was **retargeted to `main`** without merging its V4.1 science. It remains open and currently reports merge conflicts: 12 commits ahead and 139 behind at the moment of comparison. Reconcile deliberately, not by force-pushing `main`.
+- The historical 137-branch/157-PR [snapshot](BRANCH_REF_INPUT_20261030.json) remains unchanged as audit evidence. Its PR #159 state and base are a **dated snapshot**, not live metadata.
+- Zenodo release preparations are in [the V4 data-only handoff](ZENODO_V4_RELEASE_HANDOFF.md). No DOI/deposit/publication was created by this merge or branch triage.
+
+No old branch was deleted, and PRs #144/#145/#146/#148 were not closed. If another audit is requested later, refresh the snapshot first.

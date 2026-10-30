@@ -64,4 +64,8 @@ Generated Word/PDF/ZIP review packages live **outside Git** by design. Existing 
 - Never expose tokens, encryption secrets, unlicensed full images, precise source coordinates or uploader IDs through CI artifacts or a public release.
 - Never replace the frozen 24 October S1/S2 estimates without a separately documented new analysis and claim revision.
 - Never delete archive paths, remote branches or GitHub Actions artifacts solely because a new README no longer links to them.
-- Never publish to Zenodo, merge PR #159, or submit to GEB as a side effect of a repository-organisation task.
+- Never publish to Zenodo, merge later scientific PRs, or submit to GEB as a side effect of repository maintenance. PR #159 was explicitly merged on 2026-10-30; PR #160 remains separate.
+
+## 7. Zenodo V4 dataset handoff (not yet published)
+
+Use the [V4 Zenodo data-only handoff](ZENODO_V4_RELEASE_HANDOFF.md), [metadata draft](../manuscripts/v4_s1_s2_frozen_20261025/reproducibility_v4/ZENODO_V4_METADATA_WORKING_DRAFT.json), and [read-only validation script](../scripts/validate_zenodo_v4_release.py). Data rights, creators, reviewer anonymity, exact release bytes and explicit approval are release gates. The earlier V2 DOI and the GitHub V3 draft release do **not** identify this dataset.
