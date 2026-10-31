@@ -99,7 +99,7 @@ def aggregate_endpoint(frame: pd.DataFrame, construct: str, *, min_taxa: int = 2
     columns = list(FULL12) + ["latitude", "longitude"] + names
     z = frame[columns].apply(pd.to_numeric, errors="coerce")
     coords = z[["latitude", "longitude"]]
-    finite = np.isfinite(z).all(axis=1).to_numpy(bool)
+    finite = np.isfinite(z).all(axis=1).to_numpy(dtype=bool, copy=True)
     finite &= coords.latitude.between(-90, 90).to_numpy(bool)
     finite &= coords.longitude.between(-180, 180).to_numpy(bool)
     finite &= frame.accepted_key.notna().to_numpy(bool)
