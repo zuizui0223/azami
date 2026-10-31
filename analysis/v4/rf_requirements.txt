@@ -1,2 +1,5 @@
 # Optional dependency only for the post-freeze, non-default RF exploration.
 scikit-learn>=1.4,<2
+
+# Optional local/geospatial source extraction; never auto-download private observations.
+rasterio>=1.3,<2

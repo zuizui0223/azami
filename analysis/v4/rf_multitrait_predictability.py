@@ -85,18 +85,22 @@ def _valid_measurement(frame: pd.DataFrame, endpoints: list[str]) -> np.ndarray:
 
 def aggregate_endpoint(frame: pd.DataFrame, construct: str, *, min_taxa: int = 25,
                        min_cells: int = 8, min_photos: int = 40,
-                       min_per_cell: int = 3, degrees: int = 5) -> pd.DataFrame:
+                       min_per_cell: int = 3, degrees: int = 5,
+                       predictors: tuple[str, ...] = FULL12) -> pd.DataFrame:
     """One source-photo median per taxon×5° cell; outcome-specific QC.
 
-    Identical complete 12-variable cells underlie four- and twelve-variable fits.
+    Identical complete required-predictor cells underlie the paired RF fits.
+    The original function default remains the verified, frozen-source 12 axes.
     No response values imputed. Hue sine and cosine use a common photo set.
     """
     if construct not in FEATURES or degrees != 5:
         raise ValueError("UNKNOWN_CONSTRUCT_OR_UNDECLARED_SPATIAL_GRAIN")
     names = list(FEATURES[construct])
-    _require_columns(frame, ["accepted_key", "latitude", "longitude", *FULL12,
+    if not set(FULL12).issubset(predictors) or len(set(predictors)) != len(predictors):
+        raise ValueError("EXPANDED_PREDICTOR_UNIVERSE_MUST_INCLUDE_VERIFIED_TWELVE")
+    _require_columns(frame, ["accepted_key", "latitude", "longitude", *predictors,
                               *names, *(v + "__eligible" for v in names)], "TRAIT")
-    columns = list(FULL12) + ["latitude", "longitude"] + names
+    columns = list(predictors) + ["latitude", "longitude"] + names
     z = frame[columns].apply(pd.to_numeric, errors="coerce")
     coords = z[["latitude", "longitude"]]
     finite = np.isfinite(z).all(axis=1).to_numpy(dtype=bool, copy=True)
@@ -104,7 +108,7 @@ def aggregate_endpoint(frame: pd.DataFrame, construct: str, *, min_taxa: int = 2
     finite &= coords.longitude.between(-180, 180).to_numpy(bool)
     finite &= frame.accepted_key.notna().to_numpy(bool)
     finite &= _valid_measurement(frame, names)
-    w = z.loc[finite, list(FULL12) + names].copy()
+    w = z.loc[finite, list(predictors) + names].copy()
     w["taxon"] = frame.loc[finite, "accepted_key"].astype(str).to_numpy()
     lat = coords.loc[finite, "latitude"].to_numpy(float)
     lon = coords.loc[finite, "longitude"].to_numpy(float)
@@ -112,7 +116,7 @@ def aggregate_endpoint(frame: pd.DataFrame, construct: str, *, min_taxa: int = 2
     w["lon_cell"] = np.floor((lon + 180) / degrees).astype(int)
     w["region"] = np.select((lon < -30, lon < 60), (0, 1), default=2).astype(int)
     g = w.groupby(["taxon", "lat_cell", "lon_cell"], sort=True, observed=True)
-    out = g[list(FULL12) + names].median()
+    out = g[list(predictors) + names].median()
     out["photos"] = g.size()
     out["region"] = g.region.agg(lambda s: int(s.mode().iloc[0]))
     out = out.reset_index()
@@ -134,8 +138,8 @@ def aggregate_endpoint(frame: pd.DataFrame, construct: str, *, min_taxa: int = 2
         out = out.loc[out.taxon.isin(keep_hue)].reset_index(drop=True)
     if out.taxon.nunique() < min_taxa or out.region.nunique() < 3:
         raise ValueError("INSUFFICIENT_QUALIFIED_TAXA_OR_THREE_REGIONS_" + construct)
-    if (out[list(FULL12) + names].isna().any().any() or
-            not np.isfinite(out[list(FULL12) + names]).all().all()):
+    if (out[list(predictors) + names].isna().any().any() or
+            not np.isfinite(out[list(predictors) + names]).all().all()):
         raise ValueError("NONFINITE_AGGREGATED_VALUES")
     return out
 
@@ -174,25 +178,31 @@ def grouped_folds(cells: pd.DataFrame, kind: str, *, n_taxon_folds: int = 5):
 
 
 def score_models(cells: pd.DataFrame, construct: str, scheme: str, *,
-                 trees: int = 160, repeats: int = 3, seed: int = SEED) -> dict:
+                 trees: int = 160, repeats: int = 3, seed: int = SEED,
+                 predictor_sets: dict[str, tuple[str, ...]] | None = None,
+                 predictor_groups: dict[str, tuple[str, ...]] | None = None) -> dict:
     """Paired held-out evaluation; grouped permutation on test folds only.
 
     Skill is 1 - weighted SSE(model) / weighted SSE(training-fold constant).
     A negative value means worse than the training-fold constant prediction.
     """
     from sklearn.ensemble import RandomForestRegressor
+    predictor_sets = PREDICTOR_SETS if predictor_sets is None else predictor_sets
+    predictor_groups = GROUPS if predictor_groups is None else predictor_groups
+    if len(predictor_sets) != 2:
+        raise ValueError("EXACTLY_TWO_PAIRED_RF_PREDICTOR_SETS_REQUIRED")
     endpoints = FEATURES[construct]
     circular = construct == "hue"
     groups = grouped_folds(cells, scheme)
     species_counts = cells.groupby("taxon").size()
     weights = (1.0 / cells.taxon.map(species_counts)).to_numpy(float)
     all_results = {}
-    for model_name, predictors in PREDICTOR_SETS.items():
+    for model_name, predictors in predictor_sets.items():
         columns = list(predictors)
         x = cells[columns].to_numpy(float)
         y = cells[endpoints].to_numpy(float)
         base_loss = model_loss = 0.0
-        perm = {k: 0.0 for k, vars_ in GROUPS.items() if set(vars_) & set(columns)}
+        perm = {k: 0.0 for k, vars_ in predictor_groups.items() if set(vars_) & set(columns)}
         folds = []
         for fold, (train, test) in enumerate(groups):
             if len(train) < 25 or len(test) < 5:
@@ -216,7 +226,7 @@ def score_models(cells: pd.DataFrame, construct: str, scheme: str, *,
                           "test_taxa": int(cells.iloc[test].taxon.nunique()),
                           "skill": float(1 - fold_model / fold_base)})
             rng = np.random.default_rng(seed + 100 * fold)
-            for category, members in GROUPS.items():
+            for category, members in predictor_groups.items():
                 cols = [columns.index(name) for name in members if name in columns]
                 if not cols:
                     continue
@@ -236,14 +246,19 @@ def score_models(cells: pd.DataFrame, construct: str, scheme: str, *,
                 {k: float(v / base_loss) for k, v in perm.items()},
             "fold_diagnostics_aggregate_only": folds,
         }
-    return {"construct": construct, "generalisation": scheme,
+    key0, key1 = list(predictor_sets)
+    gain = float(all_results[key1]["out_of_fold_skill_vs_training_mean"] -
+                 all_results[key0]["out_of_fold_skill_vs_training_mean"])
+    result = {"construct": construct, "generalisation": scheme,
             "n_cells": int(len(cells)), "n_taxa": int(cells.taxon.nunique()),
             "photo_contributions": int(cells.photos.sum()),
             "hue_is_joint_circular_response": bool(circular),
             "models": all_results,
-            "twelve_minus_four_out_of_fold_skill": float(
-                all_results["expanded_twelve_predictor_rf"]["out_of_fold_skill_vs_training_mean"]
-                - all_results["fixed_four_predictor_rf"]["out_of_fold_skill_vs_training_mean"])}
+            "paired_skill_gain_upper_minus_lower": gain,
+            "paired_model_order": [key0, key1]}
+    if key0 == "fixed_four_predictor_rf" and key1 == "expanded_twelve_predictor_rf":
+        result["twelve_minus_four_out_of_fold_skill"] = gain
+    return result
 
 
 def run(native: Path, receipt: Path, extra: Path, extra_sha256: str,
