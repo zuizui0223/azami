@@ -6,6 +6,9 @@ on:
       - 'analysis/v4/rf_extended_environment.py'
       - 'tests/test_v4_rf_bio21_source_real.py'
       - 'tests/test_v4_rf_holdout_sensitivity.py'
+      - 'analysis/v4/rf_archived_atmosphere.py'
+      - 'tests/test_v4_rf_archived_atmosphere.py'
+      - 'analysis/v4/CHELSA_VPD_WIND23_RF_JA.md'
       - '.github/workflows/v4-rf-bio21-source.yml'
 permissions:
   contents: read
@@ -46,6 +49,7 @@ jobs:
         run: |
           python -m pytest -q tests/test_v4_rf_bio21_source_real.py \
             tests/test_v4_rf_holdout_sensitivity.py \
+            tests/test_v4_rf_archived_atmosphere.py \
             tests/test_v4_rf_extended_environment.py \
             tests/test_v4_rf_extended_raster_sampler.py \
             tests/test_v4_rf_multitrait_predictability.py
@@ -183,6 +187,57 @@ jobs:
               assert not set(all_keys(report)) & {'obs_id','accepted_key','taxon_name',
                   'photo_id','user_id','latitude','longitude','photographer_id'}
           PY
+      - name: Source-verified CHELSA VPD and wind exploratory 21-versus-23 test
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_archived_atmosphere \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra-nine-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra-nine-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --environment-metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/public/rf_21_vs_23_vpd_wind_full8.json \
+            --trees 80 --permutation-repeats 3
+          python -m analysis.v4.rf_archived_atmosphere \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra-nine-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra-nine-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --environment-metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/public/rf_21_vs_23_vpd_wind_posthoc_balanced.json \
+            --constructs angle,chroma,aspect --min-per-cell 1 \
+            --splits unseen_taxa_balanced,unseen_longitude_sectors \
+            --trees 80 --permutation-repeats 3
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/rf21/public')
+          main=json.loads((p/'rf_21_vs_23_vpd_wind_full8.json').read_text())
+          alt=json.loads((p/'rf_21_vs_23_vpd_wind_posthoc_balanced.json').read_text())
+          assert len(main['requested_constructs'])==8
+          assert not main['posthoc_support_or_folding_sensitivity']
+          assert main['original_S1_S2_Holm_and_H3c_unmodified']
+          assert alt['posthoc_support_or_folding_sensitivity']
+          assert alt['minimum_source_photos_per_taxon_cell']==1
+          assert alt['split_schemes']==['unseen_taxa_balanced','unseen_longitude_sectors']
+          for r in (main,alt):
+              keys=set()
+              def collect(node):
+                  if isinstance(node,dict):
+                      for k,v in node.items():
+                          keys.add(k); collect(v)
+                  elif isinstance(node,list):
+                      for v in node:collect(v)
+              collect(r)
+              assert not keys & {'obs_id','accepted_key','taxon_name','latitude',
+                                 'longitude','user_id','photo_id','photographer_id'}
+          PY
       - name: Upload ONLY aggregated climate source hashes/coverage and RF test summaries
         if: success()
         uses: actions/upload-artifact@v4
@@ -193,6 +248,8 @@ jobs:
             work/rf21/public/rf_12_vs_21_anchor3_aggregate.json
             work/rf21/public/rf_12_vs_21_full8_aggregate.json
             work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json
+            work/rf21/public/rf_21_vs_23_vpd_wind_full8.json
+            work/rf21/public/rf_21_vs_23_vpd_wind_posthoc_balanced.json
           if-no-files-found: error
           retention-days: 90
       - name: Always securely remove decrypted S1 and any raster/intermediate input
