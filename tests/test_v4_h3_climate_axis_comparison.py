@@ -36,6 +36,27 @@ class H3ClimateAxisComparisonTests(unittest.TestCase):
         source = inspect.getsource(mod.load_common)
         self.assertIn('usecols=[*_required_cols(), "chelsa_bio04", "chelsa_bio15"]', source)
 
+    def test_paired_model_difference_has_its_own_post_result_permutation_family(self):
+        result=self.synthetic_fixture_report()
+        row=result["paired_permutation_model_contrasts"][
+            "seasonality_added_BIO04_BIO15_to_BIO18_BIO01"]
+        self.assertEqual(row["new_model"],"seasonal5_bio18_bio01")
+        self.assertEqual(row["reference_model"],"warm3_bio18_bio01")
+        self.assertAlmostEqual(
+            row["observed_minus_null_paired_effect"],
+            result["models"]["seasonal5_bio18_bio01"]["observed_minus_null"]
+            -result["models"]["warm3_bio18_bio01"]["observed_minus_null"],
+            places=10)
+        self.assertGreaterEqual(
+            row["p_holm4_post_result_model_contrasts_exploratory"],
+            row["p_exploratory_two_sided_paired_permutation"])
+        self.assertEqual(len(result["paired_permutation_model_contrasts"]),4)
+        self.assertEqual(set(result["mean_climate_analogue_z_threshold_by_model"]),set(CLIMATE_SETS))
+        self.assertEqual(set(result["mean_preintersection_eligible_taxon_pairs_by_model"]),set(CLIMATE_SETS))
+
+    def synthetic_fixture_report(self):
+        return analyse_paired(self.fixture(),draws=3,permutations=19,seed=37)
+
     def test_no_elevation_and_exact_variable_sets(self):
         self.assertEqual(CLIMATE_SETS["annual3_original"],("chelsa_bio12","chelsa_bio01","chelsa_rsds_mean"))
         self.assertEqual(CLIMATE_SETS["warm3_bio18_bio05"],("chelsa_bio18","chelsa_bio05","chelsa_rsds_mean"))

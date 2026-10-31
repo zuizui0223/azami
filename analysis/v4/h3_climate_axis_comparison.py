@@ -299,10 +299,66 @@ def analyse_paired(cells: pd.DataFrame, *, draws=N_DRAWS,
     corrected=multipletests(pvals,method="holm")[1]
     for (name,output),pholm in zip(scenario_outputs.items(),corrected):
         output["p_holm4_across_posthoc_climate_definitions_exploratory"]=float(pholm)
+    # Exploratory paired *model differences*, using the same permutation
+    # vectors on the same eligible taxon-pair intersections across climate sets.
+    # These are not two independently sampled cross-taxon replication panels.
+    comparisons = {
+        "precipitation_timescale_BIO18_minus_BIO12_at_BIO01": (
+            "warm3_bio18_bio01", "annual3_original"),
+        "temperature_extreme_BIO05_minus_BIO01_at_BIO18": (
+            "warm3_bio18_bio05", "warm3_bio18_bio01"),
+        "seasonality_added_BIO04_BIO15_to_BIO18_BIO01": (
+            "seasonal5_bio18_bio01", "warm3_bio18_bio01"),
+        "five_axis_minus_original_annual_three_axis": (
+            "seasonal5_bio18_bio01", "annual3_original"),
+    }
+    paired_nulls = {
+        key: np.stack(permutations_by_scenario[key]).mean(axis=0)
+        for key in CLIMATE_SETS
+    }
+    contrasts, contrast_ps = {}, []
+    for name,(new,old) in comparisons.items():
+        contrast_null = paired_nulls[new] - paired_nulls[old]
+        expected_contrast = float(np.mean(contrast_null))
+        observed_contrast = float(
+            np.mean(results[new]) - np.mean(results[old]))
+        centered_effect = float(observed_contrast - expected_contrast)
+        centered_null = contrast_null - expected_contrast
+        p_paired = float((1+np.count_nonzero(
+            np.abs(centered_null) >= abs(centered_effect)
+        ))/(permutations+1))
+        contrasts[name] = {
+            "new_model":new,
+            "reference_model":old,
+            "observed_distance_advantage_difference":observed_contrast,
+            "paired_permutation_null_mean":expected_contrast,
+            "observed_minus_null_paired_effect":centered_effect,
+            "p_exploratory_two_sided_paired_permutation":p_paired,
+            "paired_same_taxa_cells_phenotypes_permutation_vectors":True,
+        }
+        contrast_ps.append(p_paired)
+    corrected_contrasts = multipletests(contrast_ps,method="holm")[1]
+    for row,padj in zip(contrasts.values(),corrected_contrasts):
+        row["p_holm4_post_result_model_contrasts_exploratory"] = float(padj)
+
     common_draws = [row for row in coverage if row["common_cross_taxon_pairs"]>=40 and row["common_sector_pair_types"]>=2]
+    if len(common_draws) != complete:
+        raise ValueError("MODEL_COMPARISON_COMMON_COHORT_DRAW_COUNT_MISMATCH")
+    thresholds_by_model = {
+        model:float(np.mean([row["matched_rate_quantiles"][model]
+                             for row in common_draws]))
+        for model in CLIMATE_SETS
+    }
+    initial_pairs_by_model = {
+        model:float(np.mean([row["qualified_taxon_pairs_per_climate"][model]
+                             for row in common_draws]))
+        for model in CLIMATE_SETS
+    }
     return {
         "status":"PAIRED_MATCHED_CLIMATE_AXIS_COMPARISON_EXPLORATORY",
         "n_taxa":n_taxa,
+        "mean_climate_analogue_z_threshold_by_model": thresholds_by_model,
+        "mean_preintersection_eligible_taxon_pairs_by_model": initial_pairs_by_model,
         "shared_climate_analogue_cell_pair_fraction_mean":float(np.mean([x["matched_rate_baseline"] for x in common_draws])),
         "successful_common_rarefaction_draws":complete,
         "required_minimum_successful_draws":min(MIN_SUCCESSFUL_DRAWS,draws),
@@ -311,6 +367,8 @@ def analyse_paired(cells: pd.DataFrame, *, draws=N_DRAWS,
         "source_matched_threshold_z":CLIMATE_ANALOG_Z,
         "distance_measurement_axes":list(PHENOTYPE),
         "models":scenario_outputs,
+        "paired_permutation_model_contrasts": contrasts,
+        "model_comparisons_added_after_initial_positive_H3c_exploratory": True,
         "paired_effect_differences_observed_minus_null": {
             key+"_minus_"+BASE:float(scenario_outputs[key]["observed_minus_null"]-scenario_outputs[BASE]["observed_minus_null"])
             for key in CLIMATE_SETS if key!=BASE
