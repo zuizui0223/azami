@@ -135,8 +135,12 @@ def sample_dem_terrain(source_tif: Path, expected_sha256: str,
         scale = float(src.scales[0]); offset = float(src.offsets[0])
         if not (np.isfinite(scale) and scale > 0 and np.isfinite(offset)):
             raise ValueError("DEM_RASTER_UNIT_SCALE_INVALID")
-        row = np.floor((lat - transform.f) / transform.e).astype(int)
-        col = np.floor((lon - transform.c) / transform.a).astype(int)
+        # Match the archived S1 `sample_grid` pixel-selection arithmetic
+        # byte-for-byte, including floating-point rounding at grid edges.
+        inverse = ~transform
+        col_fraction, row_fraction = inverse * (lon, lat)
+        row = np.floor(row_fraction).astype(int)
+        col = np.floor(col_fraction).astype(int)
         good = ((row >= 0) & (row < src.height) & (col >= 0) &
                 (col < src.width) & (np.abs(lat) < 85))
         included = np.flatnonzero(good)
@@ -227,6 +231,11 @@ def run_terrain(native:Path, receipt:Path, archived_seven:Path, archived_seven_s
     a=frame["topo_elevation"].to_numpy(float)
     same=np.isfinite(a)&np.isfinite(center)
     n_same=int(same.sum());n_disagree=int((~np.isclose(a[same],center[same],atol=1e-4,rtol=0)).sum())
+    # Public job logs: non-identifying aggregate only, no exact coordinates.
+    print(json.dumps({"dem_original_elevation_overlap_n":n_same,
+                      "dem_original_elevation_mismatch_n":n_disagree,
+                      "dem_center_finite_n":int(np.isfinite(center).sum()),
+                      "archived_elevation_finite_n":int(np.isfinite(a).sum())}),flush=True)
     if n_same < 250000 or n_disagree:
         raise ValueError("DEM_ELEVATION_NOT_IDENTICAL_TO_ARCHIVED_7_AXIS_SOURCE")
     private=temp/"terrain_private"
