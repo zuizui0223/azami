@@ -1,7 +1,5 @@
 # Manuscripts — one current GEB working paper
 
-**Current main model after source-verified interaction audit (2026-10-31):** [Results 3.1/3.2 retain BIO18 + BIO05 + RSDS + elevation, while 3.3 retains original BIO12 + BIO01 + RSDS](v4_s1_s2_frozen_20261025/GEB_PRIMARY_MODEL_AFTER_INTERACTION_AUDIT_20261031_JA.md). [The former climate-only three-variable selection](v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md) is historical and superseded. The existing article and figures already represent the original four-variable results; temperature×radiation interactions are a new **exploratory SI sensitivity**, not a replacement.
-
 **Current manuscript:** [`v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md`](v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md), merged to `main` via [PR #159](https://github.com/zuizui0223/azami/pull/159) at `e2229a2`. This is a working paper, not a submitted article. The dated folder name commemorates the original S1/S2 scientific freeze; the working article **also** includes the distinct exploratory H3c result added later.
 
 | Need | Document |
