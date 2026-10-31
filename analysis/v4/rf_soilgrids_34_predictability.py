@@ -113,6 +113,7 @@ def soil_reader(url: str, latitude, longitude, *, max_seconds=750):
     """Source VRT /vsicurl reads native original tiles; abort a too-slow layer."""
     import rasterio
     from rasterio.warp import transform
+    from rasterio.transform import rowcol
     start = time.monotonic()
     virtual = '/vsicurl?max_retry=1&retry_delay=1&list_dir=no&url=' + url
     with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR',
@@ -125,10 +126,9 @@ def soil_reader(url: str, latitude, longitude, *, max_seconds=750):
             xs, ys = transform('EPSG:4326', src.crs,
                                np.asarray(longitude).tolist(),
                                np.asarray(latitude).tolist())
-            # Rasterio DatasetReader.index() accepts scalar x/y only in some
-            # versions. Raster transform.rowcol() handles coordinate arrays.
-            from rasterio.transform import rowcol
-            rr, cc = rowcol(src.transform, np.asarray(xs), np.asarray(ys))
+            # Dataset.index is a scalar convenience wrapper; rowcol accepts
+            # the vector of projected point coordinates from the photo cohort.
+            rr, cc = rowcol(src.transform, xs, ys)
             order = np.lexsort((np.asarray(cc)//256, np.asarray(rr)//256))
             arr = np.full(len(xs), np.nan, dtype=float)
             points = np.column_stack([xs, ys])

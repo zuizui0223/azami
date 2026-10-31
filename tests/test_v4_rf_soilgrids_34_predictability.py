@@ -130,19 +130,20 @@ def test_budget_rejects_too_many_selected_source_positions():
     with pytest.raises(ValueError,match='SOURCE_POINT_BUDGET'):
         selected_source_positions(synthetic_source(n_taxa=80,n_cells=14,photos=5))
 
-def test_real_geotiff_vectorized_pixel_index_regression(tmp_path, monkeypatch):
-    """The source-wide 3K point call must work with array coordinates."""
+
+def test_batched_gdal_xy_to_rowcol_on_synthetic_geotiff(monkeypatch):
+    """Regression for GitHub #41195531381 vector-input Rasterio Dataset.index TypeError."""
     import rasterio
+    from rasterio.io import MemoryFile
     from rasterio.transform import from_origin
     from analysis.v4.rf_soilgrids_34_predictability import soil_reader
-    path=tmp_path/'soil-grid-mini.tif'
-    with rasterio.open(path,'w',driver='GTiff',count=1,crs='EPSG:4326',
-                       height=4,width=4,dtype='uint16',nodata=65535,
-                       transform=from_origin(0,4,1,1)) as writer:
-        writer.write(np.arange(1,17,dtype=np.uint16).reshape(4,4),1)
-    genuine_open=rasterio.open
-    monkeypatch.setattr(rasterio,'open',lambda *_args,**_kwargs:genuine_open(path))
-    result=soil_reader('https://files.isric.org/soilgrids/latest/data/phh2o/phh2o_0-5cm_Q0.5.vrt',
-                       np.array([3.5,2.5,1.5]),np.array([0.5,1.5,2.5]),
-                       max_seconds=10)
-    assert result.tolist()==[1.0,6.0,11.0]
+    data = np.arange(400, dtype='uint16').reshape(20,20)
+    with MemoryFile() as mem:
+        with mem.open(driver='GTiff',width=20,height=20,count=1,
+                      dtype='uint16',crs='EPSG:4326',nodata=65535,
+                      transform=from_origin(-180,90,1,1)) as dst:
+            dst.write(data,1)
+        monkeypatch.setattr(rasterio,'open', lambda *args,**kw: mem.open())
+        values = soil_reader('https://files.isric.org/soilgrids/latest/data/soc/soc_0-5cm_Q0.5.vrt',
+                             [89.5,88.5,80.5],[-179.5,-178.5,-170.5],max_seconds=15)
+        assert values.tolist()==[0,21,189]
