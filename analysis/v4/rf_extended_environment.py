@@ -186,8 +186,10 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
                  layer_manifest: Path, output: Path, *,
                  upper_tier: str = "complete_bioclim21",
                  trees: int = 160, repeats: int = 3,
-                 constructs: tuple[str, ...] | None = None) -> dict:
-    """Run exactly one adjacent nested-predictor comparison for a declared trait set.
+                 constructs: tuple[str, ...] | None = None,
+                 min_per_cell: int = 3,
+                 splits: tuple[str, ...] = ("unseen_taxa", "unseen_longitude_sectors")) -> dict:
+    """Run one nested comparison, or explicit posthoc support/split sensitivity.
 
     One tier per run avoids hiding a prohibitive 7x analysis compute bill, and
     keeps the missingness support for each contrast explicitly inspectable.
@@ -203,12 +205,18 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
     predictors = TIERS[upper_tier]
     paired_sets = {lower_tier: TIERS[lower_tier], upper_tier: predictors}
     requested = tuple(FEATURES) if constructs is None else tuple(constructs)
-    if not requested or len(requested) != len(set(requested)) or not set(requested).issubset(FEATURES):
+    allowed = {"unseen_taxa", "unseen_taxa_balanced", "unseen_longitude_sectors"}
+    if (not requested or len(requested) != len(set(requested)) or
+            not set(requested).issubset(FEATURES)):
         raise ValueError("INVALID_OR_DUPLICATED_REQUESTED_CONSTRUCTS")
+    if (min_per_cell not in (1, 3) or not splits or len(set(splits)) != len(splits)
+            or not set(splits).issubset(allowed)):
+        raise ValueError("UNREGISTERED_POSTHOC_SENSITIVITY_DESIGN")
     results = []
     for construct in requested:
         try:
-            cells = aggregate_endpoint(frame, construct, predictors=predictors)
+            cells = aggregate_endpoint(frame, construct, predictors=predictors,
+                                       min_per_cell=min_per_cell)
         except ValueError as exc:
             # Support failure is a legitimate result, not grounds for silently
             # relaxing QC or changing the predictor set after seeing the data.
@@ -218,7 +226,7 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
                             "reason": "too_few_qualified_taxa_or_regions",
                             "both_model_cohorts_not_relaxed": True})
             continue
-        for heldout in ("unseen_taxa", "unseen_longitude_sectors"):
+        for heldout in splits:
             if (heldout == "unseen_longitude_sectors" and
                     cells.groupby("region").taxon.nunique().min() < 5):
                 results.append({"construct": construct, "generalisation": heldout,
@@ -236,6 +244,10 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
         "status": "source_fitted_exploratory_not_original_Holm",
         "chosen_pair": [lower_tier, upper_tier],
         "requested_constructs": list(requested),
+        "minimum_source_photos_per_taxon_cell": min_per_cell,
+        "split_schemes": list(splits),
+        "posthoc_support_or_folding_sensitivity": bool(
+            min_per_cell != 3 or "unseen_taxa_balanced" in splits),
         "paired_predictor_universes": {n: list(p) for n, p in paired_sets.items()},
         "tier_data_support": {n: _support_record(frame, vars_) for n, vars_ in paired_sets.items()},
         "original_source": archived_provenance,
@@ -266,8 +278,9 @@ def main():
                    default="complete_bioclim21")
     p.add_argument("--trees", type=int, default=160)
     p.add_argument("--permutation-repeats", type=int, default=3)
-    p.add_argument("--constructs", default=",".join(FEATURES),
-                   help="Comma-separated 8 registered feature names, no substitutions")
+    p.add_argument("--constructs", default=",".join(FEATURES))
+    p.add_argument("--min-per-cell", type=int, choices=[1, 3], default=3)
+    p.add_argument("--splits", default="unseen_taxa,unseen_longitude_sectors")
     args = p.parse_args()
     if args.trees < 8 or args.permutation_repeats < 1:
         p.error("at least 8 trees and one holdout permutation are required")
@@ -276,7 +289,9 @@ def main():
                  args.extra32_table, args.extra32_sha256,
                  args.layer_manifest, args.output, upper_tier=args.upper_tier,
                  trees=args.trees, repeats=args.permutation_repeats,
-                 constructs=tuple(x.strip() for x in args.constructs.split(",") if x.strip()))
+                 constructs=tuple(x.strip() for x in args.constructs.split(",") if x.strip()),
+                 min_per_cell=args.min_per_cell,
+                 splits=tuple(x.strip() for x in args.splits.split(",") if x.strip()))
 
 
 if __name__ == "__main__":

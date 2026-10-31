@@ -168,6 +168,23 @@ def grouped_folds(cells: pd.DataFrame, kind: str, *, n_taxon_folds: int = 5):
         if n < 3:
             raise ValueError("TOO_FEW_TAXA_FOR_GROUPED_EVALUATION")
         return list(GroupKFold(n_splits=n).split(cells, groups=groups))
+    if kind == "unseen_taxa_balanced":
+        # Posthoc robustness: equal numbers of complete taxa in each fold;
+        # no species appears on both sides. The original GroupKFold remains
+        # the untouched primary exploratory analysis.
+        species = np.unique(cells.taxon.astype(str).to_numpy())
+        n = min(n_taxon_folds, len(species))
+        if n < 3:
+            raise ValueError("TOO_FEW_TAXA_FOR_BALANCED_GROUP_EVALUATION")
+        shuffled = np.random.default_rng(SEED).permutation(species)
+        folds = []
+        for species_holdout in np.array_split(shuffled, n):
+            is_test = cells.taxon.isin(species_holdout).to_numpy(bool)
+            train, test = np.flatnonzero(~is_test), np.flatnonzero(is_test)
+            if not len(train) or not len(test):
+                raise ValueError("EMPTY_BALANCED_TAXON_FOLD")
+            folds.append((train, test))
+        return folds
     if kind == "unseen_longitude_sectors":
         from sklearn.model_selection import LeaveOneGroupOut
         groups = cells.region.to_numpy()

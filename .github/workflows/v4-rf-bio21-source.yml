@@ -5,6 +5,7 @@ on:
       - 'analysis/v4/rf_bio21_source_real.py'
       - 'analysis/v4/rf_extended_environment.py'
       - 'tests/test_v4_rf_bio21_source_real.py'
+      - 'tests/test_v4_rf_holdout_sensitivity.py'
       - '.github/workflows/v4-rf-bio21-source.yml'
 permissions:
   contents: read
@@ -44,6 +45,7 @@ jobs:
       - name: Test original-source gate and protected raster runner on synthetic data
         run: |
           python -m pytest -q tests/test_v4_rf_bio21_source_real.py \
+            tests/test_v4_rf_holdout_sensitivity.py \
             tests/test_v4_rf_extended_environment.py \
             tests/test_v4_rf_extended_raster_sampler.py \
             tests/test_v4_rf_multitrait_predictability.py
@@ -122,6 +124,34 @@ jobs:
             --layer-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
             --output work/rf21/public/rf_12_vs_21_anchor3_aggregate.json \
             --constructs angle,chroma,aspect --trees 80 --permutation-repeats 3
+          # Complete all eight registered constructs without changing the
+          # three original 2026-10-31 anchor estimates or Holm paper.
+          python -m analysis.v4.rf_extended_environment \
+            --upper-tier complete_bioclim21 \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra32-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra32-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --layer-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --output work/rf21/public/rf_12_vs_21_full8_aggregate.json \
+            --trees 80 --permutation-repeats 3
+          # Explicit posthoc sensitivity: relaxed photo/cell support + equal
+          # numbers of taxa per group holdout fold; original output untouched.
+          python -m analysis.v4.rf_extended_environment \
+            --upper-tier complete_bioclim21 \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra32-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra32-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --layer-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --output work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json \
+            --constructs angle,chroma,aspect --min-per-cell 1 \
+            --splits unseen_taxa_balanced,unseen_longitude_sectors \
+            --trees 80 --permutation-repeats 3
           python - <<'PY'
           import json
           from pathlib import Path
@@ -140,6 +170,18 @@ jobs:
               'photo_id','user_id','latitude','longitude','photographer_id'}
           print('Aggregates checked: traits=', len(data['requested_constructs']),
                 'grouped_holdout_results=',len(data['results']),flush=True)
+          full=json.loads(Path('work/rf21/public/rf_12_vs_21_full8_aggregate.json').read_text())
+          sensitivity=json.loads(Path('work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json').read_text())
+          assert len(full['requested_constructs'])==8 and not full['posthoc_support_or_folding_sensitivity']
+          assert full['minimum_source_photos_per_taxon_cell']==3
+          assert sensitivity['requested_constructs']==['angle','chroma','aspect']
+          assert sensitivity['posthoc_support_or_folding_sensitivity']
+          assert sensitivity['minimum_source_photos_per_taxon_cell']==1
+          assert sensitivity['split_schemes']==['unseen_taxa_balanced','unseen_longitude_sectors']
+          for report in (full, sensitivity):
+              assert report['original_S1_S2_Holm_and_H3c_unmodified']
+              assert not set(all_keys(report)) & {'obs_id','accepted_key','taxon_name',
+                  'photo_id','user_id','latitude','longitude','photographer_id'}
           PY
       - name: Upload ONLY aggregated climate source hashes/coverage and RF test summaries
         if: success()
@@ -149,6 +191,8 @@ jobs:
           path: |
             work/rf21/public/bio21_source_receipt.json
             work/rf21/public/rf_12_vs_21_anchor3_aggregate.json
+            work/rf21/public/rf_12_vs_21_full8_aggregate.json
+            work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json
           if-no-files-found: error
           retention-days: 90
       - name: Always securely remove decrypted S1 and any raster/intermediate input
