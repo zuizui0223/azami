@@ -1,0 +1,129 @@
+name: V4 RF original S1 photographic within-cell dispersion (exploratory)
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/rf_photographic_within_cell_dispersion.py'
+      - 'tests/test_v4_rf_photographic_within_cell_dispersion.py'
+      - 'analysis/v4/RF_PHOTO_DISPERSION_QC_DESIGN_JA.md'
+      - '.github/workflows/v4-rf-photographic-variation.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: azami-v4-rf-photo-dispersion-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-verified-original-photo-dispersion:
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      github.event.pull_request.number == 167 &&
+      github.event.pull_request.head.repo.full_name == 'zuizui0223/azami' &&
+      github.event.pull_request.head.ref == 'analysis/v4-rf-multitrait-exploratory-20261031'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install source reader, numeric and synthetic-test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' \
+            'statsmodels>=0.14,<1' 'cryptography>=46,<49' pytest
+      - name: Validate source-grain/QC/hue/within-cell tests on synthetic data only
+        run: |
+          python -m pytest -q tests/test_v4_rf_photographic_within_cell_dispersion.py
+          python -m py_compile analysis/v4/rf_photographic_within_cell_dispersion.py
+      - name: Recover exact original S1 AES-GCM archive only inside protected job
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AZAMI_METADATA_KEY:-}" ]; then
+            echo 'SOURCE_AES_KEY_UNAVAILABLE_IN_AUTHORISED_JOB' >&2
+            exit 7
+          fi
+          mkdir -p work/photo-dispersion/private work/photo-dispersion/receipt work/photo-dispersion/public
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted \
+            --dir work/photo-dispersion/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate \
+            --dir work/photo-dispersion/receipt
+          python - <<'PY'
+          import os,hashlib,json
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/photo-dispersion')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          if hashlib.sha256(raw).hexdigest()!='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6':
+              raise SystemExit('S1_SOURCE_RECEIPT_CHANGED')
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          if hashlib.sha256(sealed).hexdigest()!=receipt['encrypted_table_sha256']:
+              raise SystemExit('S1_ENCRYPTED_TABLE_SHA_MISMATCH')
+          try:
+              plain=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('S1_ORIGINAL_SOURCE_AUTHENTICATION_FAILED') from None
+          if hashlib.sha256(plain).hexdigest()!=receipt['prepared_table_sha256']:
+              raise SystemExit('S1_DECRYPTED_TABLE_SHA_MISMATCH')
+          (root/'private/s1-original.csv.gz').write_bytes(plain)
+          print('Original S1 authenticated; no source rows logged')
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/photo-dispersion/private/s1-original.csv.gz \
+            --receipt work/photo-dispersion/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/photo-dispersion/private/decoded
+      - name: Measure original-photo within-cell and across-cell variation for all eight traits
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_photographic_within_cell_dispersion \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --receipt work/photo-dispersion/private/decoded/measurement_receipt.json \
+            --output work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json')
+          data=json.loads(p.read_text())
+          assert data['source_original_s1_observations']==313350
+          assert len(data['results'])==16
+          assert data['photo_QC_cohort_not_RF_28_or_soil_34_complete_case_cohort']
+          assert data['not_a_new_Holm_p_value_family_or_frozen_GEB_result']
+          assert data['private_row_taxon_observer_site_coordinates_not_exported']
+          assert all(x['status'] in ('estimated_QC_only','insufficient_repeated_taxon_cells')
+                     for x in data['results'])
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','latitude','longitude',
+                     'user_id','photographer_id','photo_id','individual_prediction'}
+          def walk(x):
+              if isinstance(x,dict):
+                  for k,v in x.items():
+                      if k in forbidden:raise ValueError('PRIVATE_AGGREGATE_KEY_'+k)
+                      walk(v)
+              elif isinstance(x,list):
+                  for v in x:walk(v)
+          walk(data)
+          print('Original S1 nonidentifying 16 aggregate summaries verified', flush=True)
+          PY
+      - name: Publish aggregate diagnostics only; no photograph, source or individual data
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-original-S1-photographic-variation-${{ github.run_id }}
+          path: work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Always remove original protected photo and metadata files
+        if: always()
+        run: rm -rf work/photo-dispersion/private work/photo-dispersion/receipt
