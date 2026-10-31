@@ -185,8 +185,9 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
                  archived_seven_sha256: str, extra32: Path, extra32_sha256: str,
                  layer_manifest: Path, output: Path, *,
                  upper_tier: str = "complete_bioclim21",
-                 trees: int = 160, repeats: int = 3) -> dict:
-    """Run exactly one adjacent nested-predictor comparison for all 8 traits.
+                 trees: int = 160, repeats: int = 3,
+                 constructs: tuple[str, ...] | None = None) -> dict:
+    """Run exactly one adjacent nested-predictor comparison for a declared trait set.
 
     One tier per run avoids hiding a prohibitive 7x analysis compute bill, and
     keeps the missingness support for each contrast explicitly inspectable.
@@ -201,8 +202,11 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
         required_columns=added_columns(upper_tier))
     predictors = TIERS[upper_tier]
     paired_sets = {lower_tier: TIERS[lower_tier], upper_tier: predictors}
+    requested = tuple(FEATURES) if constructs is None else tuple(constructs)
+    if not requested or len(requested) != len(set(requested)) or not set(requested).issubset(FEATURES):
+        raise ValueError("INVALID_OR_DUPLICATED_REQUESTED_CONSTRUCTS")
     results = []
-    for construct in FEATURES:
+    for construct in requested:
         try:
             cells = aggregate_endpoint(frame, construct, predictors=predictors)
         except ValueError as exc:
@@ -231,6 +235,7 @@ def run_extended(native: Path, receipt: Path, archived_seven: Path,
         "schema": "azami_v4_exploratory_rf_extended44_v1",
         "status": "source_fitted_exploratory_not_original_Holm",
         "chosen_pair": [lower_tier, upper_tier],
+        "requested_constructs": list(requested),
         "paired_predictor_universes": {n: list(p) for n, p in paired_sets.items()},
         "tier_data_support": {n: _support_record(frame, vars_) for n, vars_ in paired_sets.items()},
         "original_source": archived_provenance,
@@ -261,6 +266,8 @@ def main():
                    default="complete_bioclim21")
     p.add_argument("--trees", type=int, default=160)
     p.add_argument("--permutation-repeats", type=int, default=3)
+    p.add_argument("--constructs", default=",".join(FEATURES),
+                   help="Comma-separated 8 registered feature names, no substitutions")
     args = p.parse_args()
     if args.trees < 8 or args.permutation_repeats < 1:
         p.error("at least 8 trees and one holdout permutation are required")
@@ -268,7 +275,8 @@ def main():
                  args.archived_seven_table, args.archived_seven_sha256,
                  args.extra32_table, args.extra32_sha256,
                  args.layer_manifest, args.output, upper_tier=args.upper_tier,
-                 trees=args.trees, repeats=args.permutation_repeats)
+                 trees=args.trees, repeats=args.permutation_repeats,
+                 constructs=tuple(x.strip() for x in args.constructs.split(",") if x.strip()))
 
 
 if __name__ == "__main__":
