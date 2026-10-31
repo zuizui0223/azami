@@ -39,6 +39,7 @@ class H3ClimateAxisComparisonTests(unittest.TestCase):
     def test_no_elevation_and_exact_variable_sets(self):
         self.assertEqual(CLIMATE_SETS["annual3_original"],("chelsa_bio12","chelsa_bio01","chelsa_rsds_mean"))
         self.assertEqual(CLIMATE_SETS["warm3_bio18_bio05"],("chelsa_bio18","chelsa_bio05","chelsa_rsds_mean"))
+        self.assertEqual(CLIMATE_SETS["warm3_bio18_bio01"],("chelsa_bio18","chelsa_bio01","chelsa_rsds_mean"))
         self.assertEqual(CLIMATE_SETS["seasonal5_bio18_bio01"],("chelsa_bio18","chelsa_bio01","chelsa_rsds_mean","chelsa_bio04","chelsa_bio15"))
         self.assertFalse(any("elevation" in k.lower() for k in CLIMATE_UNION))
 
@@ -65,7 +66,7 @@ class H3ClimateAxisComparisonTests(unittest.TestCase):
         self.assertEqual(set(result["models"]),set(CLIMATE_SETS))
         for name,row in result["models"].items():
             self.assertEqual(row["n_climate_dimensions"],len(CLIMATE_SETS[name]))
-            self.assertGreaterEqual(row["p_holm3_across_posthoc_climate_definitions_exploratory"],row["p_exploratory_unadjusted"])
+            self.assertGreaterEqual(row["p_holm4_across_posthoc_climate_definitions_exploratory"],row["p_exploratory_unadjusted"])
             self.assertTrue(np.isfinite(row["observed_minus_null"]))
         self.assertNotIn("private_taxon_",str(result))
 

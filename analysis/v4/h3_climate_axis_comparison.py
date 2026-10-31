@@ -38,6 +38,7 @@ from analysis.v4.s1_h3_climate_analogue_alignment import (
 CLIMATE_SETS = {
     "annual3_original": ("chelsa_bio12", "chelsa_bio01", "chelsa_rsds_mean"),
     "warm3_bio18_bio05": ("chelsa_bio18", "chelsa_bio05", "chelsa_rsds_mean"),
+    "warm3_bio18_bio01": ("chelsa_bio18", "chelsa_bio01", "chelsa_rsds_mean"),
     "seasonal5_bio18_bio01": (
         "chelsa_bio18", "chelsa_bio01", "chelsa_rsds_mean",
         "chelsa_bio04", "chelsa_bio15",
@@ -58,7 +59,7 @@ PRIVATE_FIELDS = {
     "obs_id", "user_id", "photo_id", "photographer_id", "accepted_key",
     "taxon_name", "latitude", "longitude", "lat", "lon", "source_record",
 }
-N_SCENARIOS = 3
+N_SCENARIOS = 4
 
 
 def sha256(path: Path) -> str:
@@ -297,7 +298,7 @@ def analyse_paired(cells: pd.DataFrame, *, draws=N_DRAWS,
         pvals.append(p)
     corrected=multipletests(pvals,method="holm")[1]
     for (name,output),pholm in zip(scenario_outputs.items(),corrected):
-        output["p_holm3_across_posthoc_climate_definitions_exploratory"]=float(pholm)
+        output["p_holm4_across_posthoc_climate_definitions_exploratory"]=float(pholm)
     common_draws = [row for row in coverage if row["common_cross_taxon_pairs"]>=40 and row["common_sector_pair_types"]>=2]
     return {
         "status":"PAIRED_MATCHED_CLIMATE_AXIS_COMPARISON_EXPLORATORY",
