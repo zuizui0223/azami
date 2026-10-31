@@ -1,5 +1,7 @@
 # Manuscripts — one current GEB working paper
 
+**2026-10-31 explanatory-variable decision:** [BIO18 + BIO01 + RSDS is the selected climate-only GEB main model, with Results 3.2 findings and unresolved manuscript replacement clearly tracked](v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md). The existing Research Article body and figures remain the historical four-predictor version until a separately verified synchronized revision.
+
 **Current manuscript:** [`v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md`](v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md), merged to `main` via [PR #159](https://github.com/zuizui0223/azami/pull/159) at `e2229a2`. This is a working paper, not a submitted article. The dated folder name commemorates the original S1/S2 scientific freeze; the working article **also** includes the distinct exploratory H3c result added later.
 
 | Need | Document |

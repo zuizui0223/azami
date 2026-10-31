@@ -14,6 +14,10 @@ All original private source-reconstruction dependencies and cached assets remain
 
 V3 remains at [`legacy/v3/`](../../legacy/v3/README.md), numerically separate.
 
+## Current manuscript model choice (31 October 2026)
+
+**Selected for the next GEB manuscript revision:** CHELSA **BIO18 + BIO01 + RSDS** as the common three-predictor climate-only main model for Results 3.1–3.3; no elevation as predictor or missingness gate. See the [formal decision and Results 3.2 interpretation](../../manuscripts/v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md). Temperature-extreme BIO05 and five-variable seasonality are **SI sensitivity models**, not discarded data. The existing manuscript still reports the older historical four-variable estimates; it must be revised synchronously across abstract, methods, results, discussion, figures and supplements before submission. Original frozen results remain preserved for provenance.
+
 ## Verified elevation-free analyses, separated from the October frozen model
 
 The **historical frozen S1/S2 model** on 2026-10-24 includes elevation. The user's **new analysis direction** (31 October) excludes elevation from current climate-only alternatives; this does not relabel earlier four-predictor coefficients as three-predictor results.
