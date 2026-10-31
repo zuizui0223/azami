@@ -1,0 +1,234 @@
+name: V4 source-verified S1/S2 elevation versus BIO05-RSDS interaction audit
+
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/s1_s2_bio05_rsds_interaction_source.py'
+      - 'tests/test_v4_s1_s2_bio05_rsds_interaction.py'
+      - '.github/workflows/v4-s1-s2-temperature-radiation-interaction.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: azami-v4-s1-s2-temperature-radiation-interaction-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  source_interaction_audit:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    # GitHub restricts draft-release asset GETs to push-capable tokens. Match
+    # the existing S2 source-recovery job; this job makes no repository or
+    # release mutations and never changes the draft's visibility.
+    permissions:
+      contents: write
+      actions: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Restore source only when BIO05×RSDS interaction audit changes
+        id: decide
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "run_analysis=true" >> "$GITHUB_OUTPUT"
+          else
+            changed="$(git diff-tree --no-commit-id --name-only -r HEAD)"
+            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/s1_s2_bio05_rsds_interaction_source\.py|tests/test_v4_s1_s2_bio05_rsds_interaction\.py|\.github/workflows/v4-s1-s2-temperature-radiation-interaction\.yml)$'; then
+              echo "run_analysis=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "run_analysis=false" >> "$GITHUB_OUTPUT"
+              echo "Unchanged interaction audit: preserve source-verified result"
+            fi
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install original-source dependencies and run synthetic interaction tests
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'cryptography>=46,<49' 'shapely>=2,<3' 'rasterio>=1.4,<2' 'requests>=2.31,<3' pytest
+          python -m unittest discover -s tests -p 'test_v4_s1_s2_bio05_rsds_interaction.py' -v
+          python -m py_compile analysis/v4/s1_s2_bio05_rsds_interaction_source.py
+      - name: Restore original confidential WCVP-native and explicitly introduced S2 sources
+        if: steps.decide.outputs.run_analysis == 'true'
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+          AZAMI_MEASUREMENTS_KEY: ${{ secrets.AZAMI_MEASUREMENTS_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/submission/private work/submission/public work/submission/temp
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/submission/private/original-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/submission/private/original-metadata.aesgcm' | sha256sum -c -
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/659010325 \
+            > work/submission/private/original-measurements.aesgcm
+          echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/submission/private/original-measurements.aesgcm' | sha256sum -c -
+          gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
+            > work/submission/private/authority350.zip
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/submission/private/authority350.zip' | sha256sum -c -
+          python -m analysis.v4.native_introduced_opportunity \
+            --original work/submission/private/original-metadata.aesgcm \
+            --measurements work/submission/private/original-measurements.aesgcm \
+            --authority work/submission/private/authority350.zip \
+            --output work/submission/private/authority-public-stage \
+            --private-focal-all-wild-output work/submission/private/focal_wild.csv.gz
+          python - <<'PY'
+          import os,io
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.native_introduced_opportunity import (
+              decrypt_checked, MEASUREMENT_AAD, MEASUREMENT_SEALED_SHA,
+              MEASUREMENT_SHA,
+          )
+          src=Path('work/submission/private/original-measurements.aesgcm').read_bytes()
+          clear=decrypt_checked(src,os.environ['AZAMI_MEASUREMENTS_KEY'],
+                                MEASUREMENT_SEALED_SHA,MEASUREMENT_SHA,MEASUREMENT_AAD)
+          measured=pd.read_csv(io.BytesIO(clear),dtype={'obs_id':str},low_memory=False)
+          if measured.obs_id.duplicated().any():
+              raise ValueError('UNVERIFIED_OR_DUPLICATE_ORIGINAL_COLOUR_MEASUREMENTS')
+          measured.to_csv('work/submission/private/original-measured.csv.gz',
+                          index=False,compression='gzip')
+          print({'original_measurement_rows':len(measured),
+                 'source_colour_fields':[c for c in measured if 'chroma' in c or 'lightness' in c]},
+                flush=True)
+          PY
+      - name: Restore original checksum-authenticated CHELSA pixel caches with original missingness
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python - <<'PY'
+          import json,subprocess,zipfile
+          import numpy as np
+          import pandas as pd
+          from pathlib import Path
+          from analysis.v4.s1_s2_restore_original_five import CACHES,sha256
+          from analysis.v4.native_cached_climate import physical_climate_for_focal
+          private=Path('work/submission/private')
+          source=private/'focal_wild.csv.gz'
+          focal=pd.read_csv(source,dtype={'obs_id':str},low_memory=False)
+          if len(focal)!=297622 or focal.obs_id.duplicated().any():
+              raise ValueError('ORIGINAL_WCVP_WILD_S2_CENSUS_NOT_297622')
+          root=private/'original_chelsa_five'
+          root.mkdir(parents=True,exist_ok=True)
+          archives={}
+          for variable,(artifact,expected) in CACHES.items():
+              target=root/variable
+              target.mkdir(exist_ok=True)
+              zip_path=root/(variable+'.zip')
+              with zip_path.open('wb') as handle:
+                  subprocess.run(['gh','api',
+                      f'repos/zuizui0223/azami/actions/artifacts/{artifact}/zip'],
+                      stdout=handle,check=True)
+              if sha256(zip_path)!=expected:
+                  raise ValueError('S2_ORIGINAL_FIVE_CACHE_SHA_MISMATCH_'+variable)
+              with zipfile.ZipFile(zip_path) as archive:
+                  names=archive.namelist()
+                  if any(Path(n).is_absolute() or '..' in Path(n).parts for n in names):
+                      raise ValueError('UNSAFE_CHELSA_MEMBER_'+variable)
+                  archive.extractall(target)
+              zip_path.unlink()
+              archives[variable]={'artifact_id':artifact,'zip_sha256':expected}
+          values,diagnostics=physical_climate_for_focal(
+              focal,root,Path('analysis/v4/environment_source_metadata.json'))
+          coverage={}
+          for variable,a in values.items():
+              numbers=np.asarray(a,float)
+              if len(numbers)!=297622:
+                  raise ValueError('ORIGINAL_S2_FIVE_CHELSA_ROWS_DRIFT')
+              # Preserve actual missing raster values in the original success
+              # workflow; exact original per-outcome all12 coverage is checked
+              # downstream by the six frozen coefficient/denominator gates.
+              focal[variable]=numbers
+              coverage[variable]={
+                  'n_finite':int(np.isfinite(numbers).sum()),
+                  'fraction_finite':float(np.isfinite(numbers).mean()),
+                  'missing_value_imputed':False}
+          focal.to_csv(private/'focal_wild_five.csv.gz',
+                       index=False,compression='gzip')
+          (Path('work/submission/public')/'original_five_raster_receipt.json').write_text(
+              json.dumps({'status':'ORIGINAL_FIVE_SOURCE_PIXEL_CACHE_REUSED_WITH_MISSINGNESS',
+                          'original_wild_source_n':297622,
+                          'archived_sources':archives,
+                          'pixel_decode_audit':diagnostics,
+                          'finite_fraction_by_variable':coverage,
+                          'original_source_missing_values_not_imputed':True},
+                         indent=2,ensure_ascii=False,default=str)+'\n',encoding='utf-8')
+          print({'S2_original_five_pixel_coverage':coverage},flush=True)
+          PY
+      - name: Restore exact original encrypted S1 source (private within this job)
+        if: steps.decide.outputs.run_analysis == 'true'
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p work/submission/private work/submission/receipt work/submission/public work/submission/temp
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-native-observation-input-encrypted --dir work/submission/private
+          gh run download 39408603488 --repo zuizui0223/azami --name v4-all665115-native-climate-aggregate --dir work/submission/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path("work/submission")
+          raw=(root/"receipt/measurement_receipt.json").read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=="246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6"
+          receipt=json.loads(raw)
+          sealed=(root/"private/native-observation-measurements.csv.gz.aesgcm").read_bytes()
+          assert hashlib.sha256(sealed).hexdigest()==receipt["encrypted_table_sha256"]
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ["AZAMI_METADATA_KEY"])).decrypt(
+                  sealed[:12],sealed[12:],receipt["encrypted_table_aad"].encode())
+          except Exception:
+              raise SystemExit("ORIGINAL_S1_SOURCE_AUTHENTICATION_FAILED") from None
+          assert hashlib.sha256(clear).hexdigest()==receipt["prepared_table_sha256"]
+          (root/"private/native-original.csv.gz").write_bytes(clear)
+          print("Original S1 measurement archive verified privately")
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/submission/private/native-original.csv.gz \
+            --receipt work/submission/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/submission/private/decoded
+
+      - name: Recover the seven original source-pixel layers once for both source cohorts
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m analysis.v4.s1_s2_extreme_environment \
+            --native work/submission/private/decoded/observations.csv.gz \
+            --focal work/submission/private/focal_wild_five.csv.gz \
+            --out-private work/submission/private/extended \
+            --out-public work/submission/public \
+            --temporary work/submission/temp
+      - name: Reproduce original S1/S2 and fit matched 3/4 with and without BIO05×RSDS
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          python -m analysis.v4.s1_s2_bio05_rsds_interaction_source \
+            --native work/submission/private/decoded/observations.csv.gz \
+            --focal work/submission/private/focal_wild_five.csv.gz \
+            --extra work/submission/private/extended/environment_ext.csv.gz \
+            --measurements work/submission/private/original-measured.csv.gz \
+            --output work/submission/public/s1_s2_bio05_rsds_interaction.json
+          python -m json.tool work/submission/public/s1_s2_bio05_rsds_interaction.json > /dev/null
+      - name: Upload only validated aggregate coefficients, no source records
+        if: success() && steps.decide.outputs.run_analysis == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-v4-s1-s2-temperature-radiation-interaction-${{ github.run_id }}
+          path: work/submission/public/s1_s2_bio05_rsds_interaction.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Remove confidential working files
+        if: always() && steps.decide.outputs.run_analysis == 'true'
+        run: rm -rf work/submission/private work/submission/temp work/submission/receipt

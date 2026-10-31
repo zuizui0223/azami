@@ -1,3 +1,5 @@
+> **SUPERSEDED MODEL CHOICE — historical record (31 October 2026).** The choice below to use BIO18+BIO01+RSDS across all Results was subsequently reconsidered. The current author-directed recommendation after authenticated BIO05×RSDS evaluation is **BIO18+BIO05+RSDS+elevation for Results 3.1/3.2 and original BIO12+BIO01+RSDS for Results 3.3**. See [the current primary-model decision](GEB_PRIMARY_MODEL_AFTER_INTERACTION_AUDIT_20261031_JA.md). This old document remains for numerical/source provenance; **do not cite its earlier model selection as current**.
+
 # GEB主解析の説明変数確定とResults 3.2の科学的結論（2026-10-31）
 
 **確定した説明変数：CHELSA BIO18（最暖四半期の月平均降水量）＋BIO01（年平均気温）＋RSDS（短波日射量）。標高を主モデルに使わない。**
