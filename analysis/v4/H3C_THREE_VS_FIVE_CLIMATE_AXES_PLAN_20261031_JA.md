@@ -25,4 +25,4 @@
 
 コード: [analysis/v4/h3_climate_axis_comparison.py](h3_climate_axis_comparison.py) ／ [合成データテスト](../../tests/test_v4_h3_climate_axis_comparison.py) ／ [元データCI](../../.github/workflows/v4-h3-climate-axis-comparison.yml)。
 
-**進捗:** 2026-10-31仕様。元データの再実行に成功するまでは５軸モデルの肯定/否定結果を記載しない。
+**完了：** 元S1写真・気候画素による４モデル解析を [Actions #41177144743](https://github.com/zuizui0223/azami/actions/runs/41177144743) で実測成功。追加の**対応付きモデル間置換検定**も [Actions #41177966923](https://github.com/zuizui0223/azami/actions/runs/41177966923) で成功。結果は[実測解釈レポート](results/20261031_H3C_FOUR_ELEVATION_FREE_CLIMATE_AXES_SOURCE_VERIFIED_JA.md)と[機械可読要約](results/20261031_H3C_FOUR_CLIMATE_AXES_PAIRED_SUMMARY.json)に保存。**５軸の正の類似性は両解像度で支持されたが、BIO04・BIO15の追加による増分はどちらも未支持。** 1°ではBIO18・BIO05の３変数仕様が不支持だった。元H3cと元S1/S2の凍結結果は保持する。
