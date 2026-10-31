@@ -24,4 +24,4 @@ S1は在来分類群間・分類群内を分け、分類群等重み／分類群
 - 旧５変数BIO18＋BIO01＋RSDS＋BIO04＋BIO15で角度×BIO18分類群間 **+0.05305826、未補正P 0.00003221** は、同一８形質の156,683写真／174分類群に限定した旧探索結果（[Actions #40058244725](https://github.com/zuizui0223/azami/actions/runs/40058244725)）。168,907写真の新比較と数値を単純比較しない。
 - Results 3.3は[元データ実測の４仕様](results/20261031_H3C_FOUR_ELEVATION_FREE_CLIMATE_AXES_SOURCE_VERIFIED_JA.md)で完了。BIO18＋BIO01＋RSDSと５seasonalは双方1°・5°で正、**季節性追加によるモデル間効果量の増分は未支持**。一方BIO18＋BIO05＋RSDSは1°で不支持。これは本S1/S2再解析と異なる形態類似の推定量。
 
-**現在地:** `analysis/v4/s1_s2_climate_only_3_vs_5.py` と専用Actionsで元S1/S2の原写真・元気候を認証して再解析する。未実行・失敗時は結果の肯定を先取りしない。mainの論文本体は新Holm補正と数値検証後に別途更新する。
+**実測完走：** [Actions #41179235813](https://github.com/zuizui0223/azami/actions/runs/41179235813) SUCCESS。原S1/BIO18と元S2の６係数は再現成功。**全８形質の新Holm補正を完了**：S1 3mean 6/48、3hot 5/48、5seasonal 5/80；S2 3mean 2/96、3hot 5/96、5seasonal 2/160。標高欠測で除外しないS1角度は169,952件・178分類群。係数、根拠と解釈は[原ソース確認結果](results/20261031_S1_S2_CLIMATE_ONLY_3_VS_5_SOURCE_VERIFIED_JA.md)と[数値要約](results/20261031_S1_S2_CLIMATE_ONLY_3_VS_5_SUMMARY.json)に保持した。全結果は別の新探索的多重補正ファミリーで、2026-10-24旧凍結結果を上書きしない。mainの論文本体は新Holm補正と数値検証後に別途更新する。

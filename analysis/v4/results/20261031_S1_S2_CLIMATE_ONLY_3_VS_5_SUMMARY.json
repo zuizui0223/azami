@@ -1,0 +1,198 @@
+{
+  "schema": "azami_v4_S1_S2_climate_only_source_verified_summary_20261031",
+  "status": "SOURCE_VERIFIED_EXPLORATORY_POST_FREEZE_NOT_ORIGINAL_HOLM_FAMILIES",
+  "source": {
+    "github_actions_run": 41179235813,
+    "artifact_id": 13034028217,
+    "artifact_zip_sha256": "4e259e01a89176141ec7deab9a2c3e316012127bf01ab4e4da00fafc9e7f76dc",
+    "aggregate_json_sha256": "f1f1a9eb047e0e8bd594c371d7c22a6571de134bb1b2f5f2a019149b6df3358a",
+    "old_S1_BIO18_beta_reproduced": 0.04544684307686094,
+    "original_s1_observations": 313350,
+    "original_s2_observations": 297622,
+    "original_s2_six_coefficients_all_reproduced": true,
+    "no_identifying_source_records_exported": true
+  },
+  "models": {
+    "three_annual_mean": [
+      "BIO18",
+      "BIO01",
+      "RSDS"
+    ],
+    "three_warmest_max": [
+      "BIO18",
+      "BIO05",
+      "RSDS"
+    ],
+    "five_seasonal": [
+      "BIO18",
+      "BIO01",
+      "RSDS",
+      "BIO04",
+      "BIO15"
+    ],
+    "no_elevation_as_predictor_or_missingness_gate": true,
+    "same_complete_six_climate_obs_across_model_variants": true
+  },
+  "result31": {
+    "outcome": "camera_image_capitulum_angle",
+    "scope": "S1_between_equal_taxa",
+    "n_photos": 169952,
+    "n_taxa": 178,
+    "comparison_by_model": {
+      "three_annual_mean": {
+        "beta": 0.046221217867499234,
+        "CI95": [
+          0.024667855026803333,
+          0.06777458070819514
+        ],
+        "p_raw": 0.00002632311399799033,
+        "p_holm": 0.001131893901913584,
+        "family_size": 48
+      },
+      "three_warmest_max": {
+        "beta": 0.042483486389238025,
+        "CI95": [
+          0.019159957319328215,
+          0.06580701545914783
+        ],
+        "p_raw": 0.00035691669991795073,
+        "p_holm": 0.015704334796389833,
+        "family_size": 48
+      },
+      "five_seasonal": {
+        "beta": 0.04101623186754523,
+        "CI95": [
+          0.016594219287559678,
+          0.06543824444753078
+        ],
+        "p_raw": 0.0009957800348040196,
+        "p_holm": 0.07368772257549745,
+        "family_size": 80
+      }
+    },
+    "original_geographic_adjustment_sensitivity_still_applies": true
+  },
+  "result32": {
+    "source": "S2_four_separately_fitted_native_introduced_species_strata",
+    "family": {
+      "three_annual_mean": {
+        "tests": 96,
+        "holm_positive": 2
+      },
+      "three_warmest_max": {
+        "tests": 96,
+        "holm_positive": 5
+      },
+      "five_seasonal": {
+        "tests": 160,
+        "holm_positive": 2
+      }
+    },
+    "focal": {
+      "introduced_vulgare_lightness_rsds": {
+        "n": 27554,
+        "three_annual_mean": {
+          "beta": -0.129204,
+          "holm": 0.0013614163088670926
+        },
+        "three_warmest_max": {
+          "beta": -0.117612,
+          "holm": 0.000012527041547458562
+        },
+        "five_seasonal": {
+          "beta": -0.096584,
+          "holm": 0.15102679623808907
+        }
+      },
+      "introduced_vulgare_chroma_rsds": {
+        "n": 27554,
+        "three_annual_mean": {
+          "beta": 0.081303,
+          "holm": 1
+        },
+        "three_warmest_max": {
+          "beta": 0.082994,
+          "holm": 0.5347165948447399
+        },
+        "five_seasonal": {
+          "beta": 0.082904,
+          "holm": 1
+        }
+      }
+    },
+    "native_introduced_slope_interaction_not_tested": true
+  },
+  "result33": {
+    "source_run": 41177966923,
+    "source_artifact_id": 13033193644,
+    "scope": "H3c_cross_taxon_local_joint_photo_trait_distance_matched_vs_permuted",
+    "one_degree": {
+      "three_annual_mean": {
+        "effect": 0.052967792429911606,
+        "p_holm4": 0.02
+      },
+      "three_warmest_max": {
+        "effect": -0.012741500553527206,
+        "p_holm4": 0.35
+      },
+      "five_seasonal": {
+        "effect": 0.054220897524976545,
+        "p_holm4": 0.02
+      },
+      "seasonality_increment": {
+        "effect": 0.001253105095064942,
+        "p_paired_holm4": 0.92
+      }
+    },
+    "five_degree": {
+      "three_annual_mean": {
+        "effect": 0.12409076580179669,
+        "p_holm4": 0.02
+      },
+      "three_warmest_max": {
+        "effect": 0.09875172249468189,
+        "p_holm4": 0.02
+      },
+      "five_seasonal": {
+        "effect": 0.09928351090664184,
+        "p_holm4": 0.02
+      },
+      "seasonality_increment": {
+        "effect": -0.024807254895154857,
+        "p_paired_holm4": 0.375
+      }
+    }
+  },
+  "diagnostics": {
+    "max_vif_S1": {
+      "three_annual_mean": 1.483161331544673,
+      "three_warmest_max": 1.6733749613736055,
+      "five_seasonal": 2.587843425755056
+    },
+    "max_vif_S2": {
+      "three_annual_mean": 2.020211370412326,
+      "three_warmest_max": 1.9776376196930514,
+      "five_seasonal": 4.022945759927843
+    },
+    "AIC_five_vs_three_annual_mean_in_sample_lower_numeric_components": {
+      "S1": {
+        "n_lower": 9,
+        "n_total": 9
+      },
+      "S2": {
+        "n_lower": 35,
+        "n_total": 36
+      }
+    },
+    "AIC_is_not_out_of_sample_prediction_or_causal_climate_partition": true
+  },
+  "recommendation": {
+    "candidate_core": "BIO18+BIO01+RSDS",
+    "seasonal_five_sensitivity": "BIO18+BIO01+RSDS+BIO04+BIO15",
+    "warmest_temperature_sensitivity": "BIO18+BIO05+RSDS",
+    "no_elevation_new_science": true,
+    "manuscript_not_yet_replaced": true,
+    "old_4_variable_frozen_results_unmodified": true,
+    "new_families_post_hoc_exploratory": true
+  }
+}
