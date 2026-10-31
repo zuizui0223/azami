@@ -93,7 +93,7 @@ def aggregate_endpoint(frame: pd.DataFrame, construct: str, *, min_taxa: int = 2
     The original function default remains the verified, frozen-source 12 axes.
     No response values imputed. Hue sine and cosine use a common photo set.
     """
-    if construct not in FEATURES or degrees != 5:
+    if construct not in FEATURES or degrees not in (1, 2, 5):
         raise ValueError("UNKNOWN_CONSTRUCT_OR_UNDECLARED_SPATIAL_GRAIN")
     names = list(FEATURES[construct])
     if not set(FULL12).issubset(predictors) or len(set(predictors)) != len(predictors):

@@ -1,0 +1,182 @@
+name: V4 RF S1 original DEM terrain and geographic support
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/rf_bio21_source_real.py'
+      - 'analysis/v4/rf_extended_environment.py'
+      - 'tests/test_v4_rf_bio21_source_real.py'
+      - 'tests/test_v4_rf_holdout_sensitivity.py'
+      - 'analysis/v4/rf_archived_atmosphere.py'
+      - 'analysis/v4/rf_worldclim_terrain.py'
+      - 'analysis/v4/rf_support_atlas.py'
+      - 'tests/test_v4_rf_worldclim_terrain.py'
+      - 'tests/test_v4_rf_support_atlas.py'
+      - 'tests/test_v4_rf_archived_atmosphere.py'
+      - 'analysis/v4/CHELSA_VPD_WIND23_RF_JA.md'
+      - '.github/workflows/v4-rf-terrain-source.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: azami-rf-terrain-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-verified-worldclim-terrain:
+    # Secrets and original S1 may never run in a fork or an unrelated PR.
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      github.event.pull_request.number == 167 &&
+      github.event.pull_request.head.repo.full_name == 'zuizui0223/azami' &&
+      github.event.pull_request.head.ref == 'analysis/v4-rf-multitrait-exploratory-20261031'
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numeric, raster and encrypted-source dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' \
+            'statsmodels>=0.14,<1' 'scikit-learn>=1.4,<2' \
+            'rasterio>=1.3,<2' 'requests>=2.31,<3' 'cryptography>=46,<49' pytest
+      - name: Test original-source gate and protected raster runner on synthetic data
+        run: |
+          python -m pytest -q tests/test_v4_rf_worldclim_terrain.py \
+            tests/test_v4_rf_support_atlas.py \
+            tests/test_v4_rf_bio21_source_real.py \
+            tests/test_v4_rf_holdout_sensitivity.py \
+            tests/test_v4_rf_archived_atmosphere.py \
+            tests/test_v4_rf_extended_environment.py \
+            tests/test_v4_rf_extended_raster_sampler.py \
+            tests/test_v4_rf_multitrait_predictability.py
+          python -m py_compile analysis/v4/rf_bio21_source_real.py \
+            analysis/v4/rf_worldclim_terrain.py analysis/v4/rf_support_atlas.py
+      - name: Recover exact 313350-row confidential S1 from authenticated encrypted artifact
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AZAMI_METADATA_KEY:-}" ]; then
+            echo 'S1_METADATA_KEY_UNAVAILABLE_IN_AUTHORISED_WORKFLOW' >&2
+            exit 7
+          fi
+          mkdir -p work/rf21/private work/rf21/receipt work/rf21/public work/rf21/temp
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/rf21/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/rf21/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/rf21')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          if hashlib.sha256(raw).hexdigest() != '246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6':
+              raise SystemExit('S1_RECEIPT_SHA_MISMATCH')
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          if hashlib.sha256(sealed).hexdigest()!=receipt['encrypted_table_sha256']:
+              raise SystemExit('ENCRYPTED_S1_ARCHIVE_SHA_MISMATCH')
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12], sealed[12:], receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('S1_SOURCE_AUTHENTICATION_FAILED') from None
+          if hashlib.sha256(clear).hexdigest()!=receipt['prepared_table_sha256']:
+              raise SystemExit('S1_ORIGINAL_DECRYPTED_BYTES_MISMATCH')
+          (root/'private/s1-original.csv.gz').write_bytes(clear)
+          print('SHA/AESGCM original S1 verified (no source rows logged)',flush=True)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/rf21/private/s1-original.csv.gz \
+            --receipt work/rf21/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/private/decoded
+      - name: Download and sample the 16 source-true raster variables sequentially
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_bio21_source_real \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --private-dir work/rf21/private/environment \
+            --public-dir work/rf21/public \
+            --temporary work/rf21/temp
+      - name: Diagnose eligible original S1 taxa across 1-, 2- and 5-degree grids (no model fitting)
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_support_atlas \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --bio-nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --bio-nine-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/public/rf_23_source_geographical_support_atlas.json
+      - name: Derive five real terrain traits from archived WorldClim elevation and compare 23 versus 28
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_worldclim_terrain \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --bio-nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --bio-nine-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --bio21-source-receipt work/rf21/public/bio21_source_receipt.json \
+            --original-metadata analysis/v4/environment_source_metadata.json \
+            --outdir work/rf21/public \
+            --temporary work/rf21/temp \
+            --constructs angle,chroma,aspect --degrees 5 --min-per-cell 3 \
+            --splits unseen_taxa_balanced,unseen_longitude_sectors \
+            --trees 80 --repeats 2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('work/rf21/public')
+          atlas=json.loads((root/'rf_23_source_geographical_support_atlas.json').read_text())
+          geom=json.loads((root/'rf_23_to_28_terrain_5degree_min3_aggregate.json').read_text())
+          assert atlas['original_source']['s1_observations']==313350
+          assert len(atlas['records'])==18
+          assert geom['source']['s1_observations']==313350
+          assert geom['frozen_original_GEB_S1_S2_H3c_unchanged']
+          assert geom['terrain_provenance']['mismatch_n']==0
+          assert len(geom['terrain_provenance']['finite_source_records_by_trait'])==5
+          assert geom['design']['constructs']==['angle','chroma','aspect']
+          keys=set()
+          def walk(x):
+              if isinstance(x,dict):
+                  for k,v in x.items(): keys.add(k); walk(v)
+              elif isinstance(x,list):
+                  for y in x: walk(y)
+          for report in (atlas,geom): walk(report)
+          assert not (keys & {'obs_id','taxon','accepted_key','taxon_name',
+                               'latitude','longitude','photographer_id','user_id','photo_id'})
+          print('Authenticated 5 terrain fields; strict cell and taxon coverage tracked in aggregate only',flush=True)
+          PY
+      - name: Publish aggregate-only terrain provenance and paired holdout skill
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-rf-23v28-terrain-${{ github.run_id }}
+          path: |
+            work/rf21/public/bio21_source_receipt.json
+            work/rf21/public/rf_23_source_geographical_support_atlas.json
+            work/rf21/public/rf_23_to_28_terrain_5degree_min3_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Always discard protected observation tables and raw DEM rasters
+        if: always()
+        run: rm -rf work/rf21/private work/rf21/receipt work/rf21/temp
