@@ -5,6 +5,8 @@ on:
       - 'analysis/v4/rf_multitrait_predictability.py'
       - 'analysis/v4/rf_extended_environment.py'
       - 'analysis/v4/rf_extended_raster_sampler.py'
+      - 'analysis/v4/rf_soilgrids_28_to34.py'
+      - 'tests/test_v4_rf_soilgrids_28_to34.py'
       - 'analysis/v4/RF_MULTITRAIT_PREDICTABILITY_JA.md'
       - 'analysis/v4/RF_EXPANDED_44_PREDICTORS_JA.md'
       - 'analysis/v4/rf_requirements.txt'
@@ -31,12 +33,14 @@ jobs:
         run: |
           python -m pytest -q tests/test_v4_rf_multitrait_predictability.py \
             tests/test_v4_rf_extended_environment.py \
-            tests/test_v4_rf_extended_raster_sampler.py
+            tests/test_v4_rf_extended_raster_sampler.py \
+            tests/test_v4_rf_soilgrids_28_to34.py
       - name: Syntax and template checks
         run: |
           python -m py_compile analysis/v4/rf_multitrait_predictability.py \
             analysis/v4/rf_extended_environment.py \
-            analysis/v4/rf_extended_raster_sampler.py
+            analysis/v4/rf_extended_raster_sampler.py \
+            analysis/v4/rf_soilgrids_28_to34.py
           python -m analysis.v4.rf_extended_raster_sampler \
             --upper-tier complete_bioclim21 \
             --create-recipe-template /tmp/test_rf_bioclim21_template.json
