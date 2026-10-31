@@ -125,7 +125,10 @@ def soil_reader(url: str, latitude, longitude, *, max_seconds=750):
             xs, ys = transform('EPSG:4326', src.crs,
                                np.asarray(longitude).tolist(),
                                np.asarray(latitude).tolist())
-            rr, cc = src.index(xs, ys)
+            # Rasterio DatasetReader.index() accepts scalar x/y only in some
+            # versions. Raster transform.rowcol() handles coordinate arrays.
+            from rasterio.transform import rowcol
+            rr, cc = rowcol(src.transform, np.asarray(xs), np.asarray(ys))
             order = np.lexsort((np.asarray(cc)//256, np.asarray(rr)//256))
             arr = np.full(len(xs), np.nan, dtype=float)
             points = np.column_stack([xs, ys])
