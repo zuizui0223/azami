@@ -1,6 +1,6 @@
 # Manuscripts — one current GEB working paper
 
-**2026-10-31 explanatory-variable decision:** [BIO18 + BIO01 + RSDS is the selected climate-only GEB main model, with Results 3.2 findings and unresolved manuscript replacement clearly tracked](v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md). The existing Research Article body and figures remain the historical four-predictor version until a separately verified synchronized revision.
+**2026-10-31 latest section-specific decision:** [Results 3.1 and 3.2 use BIO18 + BIO05 + RSDS; Results 3.3 retains BIO12 + BIO01 + RSDS; all without elevation](v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md). The previous all-section BIO18/BIO01/RSDS choice is superseded. The existing Research Article and figures still show the historical four-predictor version until a separately verified synchronized revision.
 
 **Current manuscript:** [`v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md`](v4_s1_s2_frozen_20261025/GEB_RESEARCH_ARTICLE.md), merged to `main` via [PR #159](https://github.com/zuizui0223/azami/pull/159) at `e2229a2`. This is a working paper, not a submitted article. The dated folder name commemorates the original S1/S2 scientific freeze; the working article **also** includes the distinct exploratory H3c result added later.
 
@@ -14,6 +14,6 @@
 | Source-verifiable aggregates and builders | [Reproducibility candidate](v4_s1_s2_frozen_20261025/reproducibility_v4/) · [runbook](../docs/REPRODUCIBILITY_AND_SUBMISSION_RUNBOOK.md) |
 | Original scope lock and older outline | [Scope lock](v4_s1_s2_frozen_20261025/SCOPE_LOCK_20261025_JA.md) · [working three-part outline](v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md) |
 
-**Interpretation:** 3.1 is the native-taxon precipitation–angle result; 3.2 is colour–radiation/elevation within the two species' separate ranges; 3.3 is greater joint trait resemblance in similar climates across taxa. The supplementary 28-pair trait covariance and niche breadth/centroid/KDE tests are **not** replacements for the current 3.3.
+**Interpretation of the current frozen article (historical manuscript figures):** 3.1 is the native-taxon precipitation–angle result; 3.2 still displays the original four-variable colour–radiation/elevation results until the planned update; 3.3 is greater joint trait resemblance under **BIO12/BIO01/RSDS** analogues. **The new selected 3.1/3.2 main model is elevation-free BIO18/BIO05/RSDS**. The supplementary 28-pair trait covariance and niche breadth/centroid/KDE tests are **not** replacements for the current 3.3.
 
 The present Word/PDF/ZIP reviewer package is produced **outside version control** and is not final publication. No final anonymous reviewer data link or V4 DOI is claimed. See [repository map](../docs/REPOSITORY_MAP.md).

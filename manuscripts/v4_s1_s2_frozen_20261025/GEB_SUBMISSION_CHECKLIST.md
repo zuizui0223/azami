@@ -6,6 +6,10 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 
 **Repository merge / Zenodo boundary (2026-10-30):** PR #159 is merged into `main` at `e2229a2`; exploratory PR #160 remains open, unmerged and separately reviewed. [Zenodo V4 data-only preparation](../../docs/ZENODO_V4_RELEASE_HANDOFF.md) specifies frozen aggregate candidates, rights, creator metadata and byte verification. A V4 DOI and anonymous reviewer access remain absent. CC BY 4.0 is now approved for eligible author-owned aggregate results, and the 65-file rights-scoped candidate passes 9/9 offline replay commands with all five CSV tables byte-identical. Third-party rights clearance and creators still require confirmation. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
 
+## Latest explanation-variable decision (2026-10-31)
+
+**For next submission revision (all elevation-free):** **3.1 / 3.2 = BIO18 + BIO05 + RSDS**; **3.3 = original BIO12 + BIO01 + RSDS**, keeping the original H3c endpoint and its exploratory Holm-2 separate. The earlier choice of BIO18 + BIO01 + RSDS for *all* Results has been superseded. See the [canonical updated decision and 3.2 five Holm-supported associations](GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md). In the new 3.1, BIO18 between-taxon β=+0.04248349, new Holm P=0.01570433 (169,952 photo records / 178 native taxa). In new 3.2, five of 96 source-verified tests pass Holm across image lightness, hue, angle and outline; no native-versus-introduced interaction test was performed. The **existing** main article/figures/Table 2 and the original numerical SI still reflect the old four-variable freeze; they must be updated together before submission. The 2026-10-24 historical frozen inference and V4 Zenodo candidate remain separate and unchanged.
+
 ## Format and scope
 
 - **Research Article**, manuscript body approximately 5,000 words, about 50 references and **6–8 display pieces** (figures and tables combined; flexibility allowed).

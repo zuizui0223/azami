@@ -2,7 +2,7 @@
 
 > **Current working paper:** *Global photographic phenomics reveals climate-associated capitulum traits and local floral resemblance in Cirsium* — a **GEB Research Article candidate, not submitted or published**. [PR #159](https://github.com/zuizui0223/azami/pull/159) was **merged into `main`** on 2026-10-30 (merge commit `e2229a20045044977afe235255355ca3892186fa`). This is the canonical working manuscript, **not** a submitted or published paper.
 >
-> **現在地:** 最新の論文はResults **3.1 降水と向き、3.2 日射・標高と花色、3.3 似た気候での多形質の類似**。古い「形質組合せ／向き／花色」の3部構成を現在の本文と混同しないでください。
+> **現在地:** 次稿の主解析は **3.1・3.2：BIO18＋BIO05＋RSDS／3.3：BIO12＋BIO01＋RSDS（すべて標高なし）** と確定。現在公開している本文・図表は元の標高あり凍結稿で、科学的な新結果の本文・図表への同期差替えは未完了。古い3部構成を現在のResultsと混同しないでください。
 
 ## Read the current research
 
@@ -17,7 +17,11 @@
 | Find old work without treating it as a current result | [repository map](docs/REPOSITORY_MAP.md) · [archive guide](legacy/README.md) |
 | Branch/PR cleanup without losing provenance | [branch triage](docs/BRANCH_ARCHIVE_TRIAGE_20261030.md) |
 
-## Three results in the **current** article
+## Chosen predictors for the **next** GEB manuscript revision
+
+**3.1 and 3.2:** BIO18 (warm-quarter precipitation) + BIO05 (warmest-month maximum temperature) + RSDS (solar radiation). **3.3:** **unchanged original** BIO12 (annual precipitation) + BIO01 (annual mean temperature) + RSDS. **No elevation.** Read the [approved section-specific policy and source-verified S2 results](manuscripts/v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md); the main Research Article below remains the **historical four-predictor version until synchronized revision**, not a ready-to-submit three-variable paper.
+
+## Three results in the **currently committed historical** article
 
 1. **3.1 — Precipitation and photographed capitulum orientation:** among 178 native taxa (168,907 angle-eligible records), warmest-quarter precipitation (BIO18) is positively associated with image-frame head angle (standardised β=+0.045447; Holm P=0.00920635 in the original 80-test S1 family). This is *not* a measurement of gravity-based nodding.
 2. **3.2 — Floral colour along radiation and elevation:** separate within-range models for native/introduced *C. arvense* and *C. vulgare* yield three introduced-range associations surviving Holm correction in the original S2 128-test family. The four original colour-cohort sizes are **22,936/26,171** (*C. arvense*, native/introduced) and **17,335/27,200** (*C. vulgare*, native/introduced). The analysis did **not** formally test range-by-climate interaction or evolution after introduction.

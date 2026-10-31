@@ -2,6 +2,10 @@
 
 **Snapshot and update:** 2026-10-30, [PR #159](https://github.com/zuizui0223/azami/pull/159) merged into `main` at `e2229a20045044977afe235255355ca3892186fa`. This is a navigation and ownership map, **not a new scientific analysis**.
 
+## Current user-selected climate variables (31 October 2026)
+
+The **next submission revision** uses **BIO18/BIO05/RSDS for Results 3.1 and 3.2**, but retains the **original BIO12/BIO01/RSDS for Results 3.3**; all exclude elevation. This is a deliberate division between individual-trait associations under warm-period climates and the local multivariate similarity of **annual** climatic conditions. The earlier cross-section unified BIO18/BIO01/RSDS choice was superseded; [the current decision](../manuscripts/v4_s1_s2_frozen_20261025/GEB_CLIMATE_ONLY_MODEL_DECISION_20261031_JA.md) contains the specific 3.1/3.2 source-verified coefficients and five S2 Holm results. Historical frozen manuscript, figures and original source receipts are still archived unchanged and **not yet updated** to these chosen predictors.
+
 ## Source of truth, in reading order
 
 | Layer | Canonical path | Status and meaning |
