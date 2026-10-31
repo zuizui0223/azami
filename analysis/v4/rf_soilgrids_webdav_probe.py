@@ -99,11 +99,12 @@ def _download_vrt(url: str, *, max_bytes: int = MAX_VRT_BYTES) -> tuple[bytes, d
 
 
 def fixed_public_sentinel(url: str, scale_divisor: int) -> dict:
-    """Optional ONLY Amsterdam, NL public probe: no private S1 positions."""
+    """Test FOUR fixed public inland locations, never the confidential S1."""
     import rasterio
     import numpy as np
     from rasterio.warp import transform
-    # /vsicurl? is the ISRIC documented way to access their own master VRT.
+    # Registered public inland test locations, not precise user locations.
+    public_points = ((21.0, 52.0), (-94.0, 42.0), (25.0, -21.0), (137.0, 35.0))
     virtual = "/vsicurl?max_retry=1&retry_delay=1&list_dir=no&url=" + url
     with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
                       GDAL_HTTP_MAX_RETRY="1", GDAL_HTTP_RETRY_DELAY="1",
@@ -111,16 +112,32 @@ def fixed_public_sentinel(url: str, scale_divisor: int) -> dict:
         with rasterio.open(virtual) as src:
             if src.count != 1 or src.crs is None:
                 raise ValueError("SOILGRIDS_REMOTE_VRT_NOT_GEOREFERENCED")
-            xs, ys = transform("EPSG:4326", src.crs, [4.8952], [52.3702])
-            a = list(src.sample([(xs[0], ys[0])], indexes=1, masked=True))
-            if len(a) != 1 or np.ma.is_masked(a[0][0]):
-                return {"sentinel_sample_status": "nodata_at_public_test_point"}
-            raw = float(a[0][0])
-            if not np.isfinite(raw):
-                return {"sentinel_sample_status": "invalid_at_public_test_point"}
-            return {"sentinel_sample_status": "one_original_pixel_decoded",
-                    "sentinel_physical_value": raw / scale_divisor,
-                    "public_point_only": True}
+            xs, ys = transform("EPSG:4326", src.crs,
+                               [p[0] for p in public_points],
+                               [p[1] for p in public_points])
+            valid_values = []
+            masked_count = 0
+            for sample in src.sample(zip(xs, ys), indexes=1, masked=True):
+                if np.ma.is_masked(sample[0]):
+                    masked_count += 1
+                else:
+                    raw = float(sample[0])
+                    if np.isfinite(raw):
+                        valid_values.append(raw / scale_divisor)
+            if valid_values:
+                return {"sentinel_sample_status": "one_or_more_original_pixels_decoded",
+                        "public_points_tested": len(public_points),
+                        "public_land_points_with_finite_pixels": len(valid_values),
+                        "sentinel_physical_value_first": valid_values[0],
+                        "public_point_only": True}
+            return {"sentinel_sample_status": "no_finite_public_pixels",
+                    "public_points_tested": len(public_points),
+                    "masked_public_pixels": masked_count,
+                    "remote_raster_crs_valid": True,
+                    "remote_raster_nodata": str(src.nodata),
+                    "remote_raster_width": int(src.width),
+                    "remote_raster_height": int(src.height),
+                    "no_private_coordinates_used": True}
 
 
 def audit(*, fetcher=None, sampler=None, sample_property="soil_phh2o_0_5cm") -> dict:
@@ -182,6 +199,9 @@ def main():
                       "status": out["status"], "public_sentinel": out["public_sentinel"]}), flush=True)
     if out["authentic_vrt_layers"] != 6:
         raise SystemExit("SOILGRIDS_OFFICIAL_SOURCE_AUDIT_INCOMPLETE")
+    if a.public_sentinel and out["public_sentinel"].get("sentinel_sample_status") != \
+            "one_or_more_original_pixels_decoded":
+        raise SystemExit("SOILGRIDS_OFFICIAL_VRT_VALID_BUT_GEOSPATIAL_PIXEL_ACCESS_NOT_PROVEN")
 
 
 if __name__ == "__main__":
