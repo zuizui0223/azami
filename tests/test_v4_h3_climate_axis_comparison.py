@@ -30,6 +30,12 @@ class H3ClimateAxisComparisonTests(unittest.TestCase):
                 })
         return pd.DataFrame(result)
 
+    def test_original_source_reader_includes_original_seasonality_columns(self):
+        import inspect
+        from analysis.v4 import h3_climate_axis_comparison as mod
+        source = inspect.getsource(mod.load_common)
+        self.assertIn('usecols=[*_required_cols(), "chelsa_bio04", "chelsa_bio15"]', source)
+
     def test_no_elevation_and_exact_variable_sets(self):
         self.assertEqual(CLIMATE_SETS["annual3_original"],("chelsa_bio12","chelsa_bio01","chelsa_rsds_mean"))
         self.assertEqual(CLIMATE_SETS["warm3_bio18_bio05"],("chelsa_bio18","chelsa_bio05","chelsa_rsds_mean"))

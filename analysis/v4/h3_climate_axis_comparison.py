@@ -78,7 +78,7 @@ def load_common(native: Path, receipt: Path, extra: Path):
         source_receipt.get("environment_decoding_status")
             != "physical_units_gsp_invalid_encoding_masked_v1"):
         raise ValueError("WRONG_ORIGINAL_S1_SOURCE_OR_RECEIPT")
-    original = pd.read_csv(native, usecols=_required_cols(), dtype={"obs_id": str},
+    original = pd.read_csv(native, usecols=[*_required_cols(), "chelsa_bio04", "chelsa_bio15"], dtype={"obs_id": str},
                            low_memory=False)
     if (len(original) != SOURCE_N or original.obs_id.isna().any()
             or original.obs_id.duplicated().any()):
