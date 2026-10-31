@@ -1,0 +1,2 @@
+# Optional dependency only for the post-freeze, non-default RF exploration.
+scikit-learn>=1.4,<2
