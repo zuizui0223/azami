@@ -1,0 +1,180 @@
+name: V4 RF original S1 sparse SoilGrids 28 versus 34 (windowed fallback)
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/rf_soilgrids_34_window_runner.py'
+      - 'analysis/v4/rf_soilgrids_window_sampler.py'
+      - 'tests/test_v4_rf_soilgrids_34_predictability.py'
+      - 'tests/test_v4_rf_soilgrids_34_window_runner.py'
+      - 'tests/test_v4_rf_soilgrids_window_sampler.py'
+      - 'analysis/v4/RF_SOILGRIDS_SPARSE34_JA.md'
+      - '.github/workflows/v4-rf-soilgrids-34-windowed.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: azami-v4-rf-soil34-windowed-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-authenticated-sparse-original-s1-soil34-windowed:
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      github.event.pull_request.number == 167 &&
+      github.event.pull_request.head.repo.full_name == 'zuizui0223/azami' &&
+      github.event.pull_request.head.ref == 'analysis/v4-rf-multitrait-exploratory-20261031'
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install source audit, RF and DEM dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' \
+            'statsmodels>=0.14,<1' 'scikit-learn>=1.4,<2' \
+            'rasterio>=1.3,<2' 'requests>=2.31,<3' 'cryptography>=46,<49' pytest
+      - name: Verify synthetic-only source geometry, hash gates and soil34 pairing
+        run: |
+          python -m pytest -q tests/test_v4_rf_soilgrids_34_window_runner.py \
+            tests/test_v4_rf_soilgrids_window_sampler.py \
+            tests/test_v4_rf_soilgrids_34_predictability.py \
+            tests/test_v4_rf_soilgrids_private_pilot.py \
+            tests/test_v4_rf_soilgrids_webdav_probe.py \
+            tests/test_v4_rf_worldclim_terrain.py \
+            tests/test_v4_rf_multitrait_predictability.py
+          python -m py_compile analysis/v4/rf_soilgrids_34_predictability.py \
+            analysis/v4/rf_soilgrids_34_window_runner.py \
+            analysis/v4/rf_soilgrids_window_sampler.py
+      - name: Recover exact original 313350-row confidential S1 in protected workspace
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AZAMI_METADATA_KEY:-}" ]; then
+            echo 'PRIVATE_SOURCE_AES_KEY_UNAVAILABLE' >&2
+            exit 7
+          fi
+          mkdir -p work/soil34/private work/soil34/receipt work/soil34/public work/soil34/temp
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/soil34/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/soil34/receipt
+          python - <<'PY'
+          import os,hashlib,json
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/soil34')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          if hashlib.sha256(raw).hexdigest() != '246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6':
+              raise SystemExit('ORIGINAL_S1_RECEIPT_BYTES_CHANGED')
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          if hashlib.sha256(sealed).hexdigest()!=receipt['encrypted_table_sha256']:
+              raise SystemExit('ORIGINAL_S1_AESGCM_ENCRYPTED_BYTES_CHANGED')
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('PRIVATE_ORIGINAL_S1_AUTHENTICATION_FAILED') from None
+          if hashlib.sha256(clear).hexdigest()!=receipt['prepared_table_sha256']:
+              raise SystemExit('PRIVATE_ORIGINAL_S1_SHA_CHANGED')
+          (root/'private/source_original.csv.gz').write_bytes(clear)
+          print('Verified exact original S1 SHA, no identifiers printed',flush=True)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/soil34/private/source_original.csv.gz \
+            --receipt work/soil34/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/soil34/private/decoded
+      - name: Reconstruct original 7+9 CHELSA climate/elevation rasters privately
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_bio21_source_real \
+            --native work/soil34/private/decoded/observations.csv.gz \
+            --decoded-receipt work/soil34/private/decoded/measurement_receipt.json \
+            --private-dir work/soil34/private/environment \
+            --public-dir work/soil34/public \
+            --temporary work/soil34/temp
+      - name: Reconstruct original WorldClim 2.1 DEM five derived terrain variables
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_worldclim_terrain \
+            --native work/soil34/private/decoded/observations.csv.gz \
+            --receipt work/soil34/private/decoded/measurement_receipt.json \
+            --archived-seven work/soil34/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/soil34/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --bio-nine work/soil34/private/environment/chelsa_extra_nine.csv.gz \
+            --bio-nine-sha256 "$(python -c 'import json;print(json.load(open("work/soil34/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/soil34/private/environment/chelsa_nine_manifest.json \
+            --bio21-source-receipt work/soil34/public/bio21_source_receipt.json \
+            --original-metadata analysis/v4/environment_source_metadata.json \
+            --outdir work/soil34/public \
+            --temporary work/soil34/temp \
+            --constructs angle,chroma,aspect --degrees 5 --min-per-cell 3 \
+            --splits unseen_taxa_balanced,unseen_longitude_sectors \
+            --trees 80 --repeats 2
+      - name: Source-real windowed native-pixel SoilGrids Q0.5 sampling and paired 28 vs 34 heldout angle RF
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_soilgrids_34_window_runner \
+            --native work/soil34/private/decoded/observations.csv.gz \
+            --receipt work/soil34/private/decoded/measurement_receipt.json \
+            --archived-seven work/soil34/private/environment/original_seven.csv.gz \
+            --archived-seven-sha "$(python -c 'import json;print(json.load(open("work/soil34/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --bio-nine work/soil34/private/environment/chelsa_extra_nine.csv.gz \
+            --bio-nine-sha "$(python -c 'import json;print(json.load(open("work/soil34/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/soil34/private/environment/chelsa_nine_manifest.json \
+            --terrain-table work/soil34/temp/terrain_private/worldclim_terrain5.csv.gz \
+            --terrain-manifest work/soil34/temp/terrain_private/terrain_manifest.json \
+            --five-degree work/soil34/public/rf_23_to_28_terrain_5degree_min3_aggregate.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/soil34/public/rf_original_s1_sparse_soil_28_vs_34_1degree_aggregate.json \
+            --trees 80 --repeats 2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/soil34/public/rf_original_s1_sparse_soil_28_vs_34_1degree_aggregate.json')
+          d=json.loads(p.read_text())
+          assert d['source']['s1_original_n']==313350
+          assert d['source']['verified_DEM_original_elevation_mismatch_n']==0
+          assert d['original_frozen_GEB_Holm_H3c_and_prior_RF_unchanged']
+          assert len(d['soil_source']['variables'])==6
+          assert d['soil_source']['n_imputed_missing_soil_pixels']==0
+          assert d['soil_source_pixel_sampler']=='native_256px_GDAL_windows_source_pixel_equivalent'
+          assert d['source_sample_values_not_interpolated'] is True
+          assert d['selection']['n_selected_source_photo_positions']<=3000
+          assert d['selection']['photo_sites_per_selected_cell']==3
+          assert d['model_predictors']['terrain28_soilmatched'] and len(d['model_predictors']['terrain28_plus_soil34'])==34
+          forbidden={'obs_id','accepted_key','taxon_name','latitude','longitude',
+                     'user_id','photographer_id','photo_id','individual_prediction'}
+          keys=set()
+          def walk(v):
+              if isinstance(v,dict):
+                  for k,x in v.items():keys.add(k);walk(x)
+              elif isinstance(v,list):
+                  for x in v:walk(x)
+          walk(d)
+          assert not keys.intersection(forbidden),keys.intersection(forbidden)
+          print('Protected original-S1 SoilGrids RF aggregate validated; private source withheld')
+          PY
+      - name: Publish ONLY windowed aggregate source coverage, VRT digests and paired model metrics
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-v4-rf-sparse-soil34-windowed-original-source-${{ github.run_id }}
+          path: work/soil34/public/rf_original_s1_sparse_soil_28_vs_34_1degree_aggregate.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Always remove confidential observation IDs, original source positions and rasters
+        if: always()
+        run: rm -rf work/soil34/private work/soil34/receipt work/soil34/temp
