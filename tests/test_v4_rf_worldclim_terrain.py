@@ -61,6 +61,11 @@ def test_real_tif_source_sha_and_tile_borders(tmp_path):
     assert np.isfinite(values.to_numpy()).all()
     assert np.allclose(center,data[rr,cc])
     assert rec['finite_all_terrain_records']==5
+    # Manifests require meaningful, non-placeholder strings. A one-character
+    # SI symbol "m" is scientifically valid but rejected by the source gate;
+    # the published contract uses the explicit label "metres".
+    assert all(len(rec['unit_by_variable'][name]) > 2 for name in TERRAIN5)
+    assert rec['unit_by_variable']['topo_tpi'] == 'metres'
     with pytest.raises(ValueError,match='SHA_MISMATCH'):
         sample_dem_terrain(tif,'0'*64,lat,lon,require_global=False)
 

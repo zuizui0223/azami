@@ -176,7 +176,7 @@ def sample_dem_terrain(source_tif: Path, expected_sha256: str,
                "roughness_method":"RMS focal-minus-8-neighbour elevation difference",
                "aspect_method":"downslope east/north heading unit components; flat=0,0",
                "TPI_method":"center minus available-other-cell mean in 11x11, >=60 valid",
-               "unit_by_variable":dict(zip(TERRAIN5,("degree","m_RMS","m","unitless","unitless"))),
+               "unit_by_variable":dict(zip(TERRAIN5,("degree","metres_RMS","metres","unitless","unitless"))),
                "no_nodata_imputation_or_coordinate_export":True,
                "finite_source_records_by_trait":{
                    name:int(np.isfinite(result[:,i]).sum()) for i,name in enumerate(TERRAIN5)},

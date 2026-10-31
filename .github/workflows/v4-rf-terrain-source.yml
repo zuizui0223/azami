@@ -124,6 +124,16 @@ jobs:
             --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/rf21/public/rf_23_source_geographical_support_atlas.json
+      - name: Preserve nonidentifying geographic eligibility diagnostics even if DEM validation fails
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-rf-geographic-support-${{ github.run_id }}
+          path: |
+            work/rf21/public/bio21_source_receipt.json
+            work/rf21/public/rf_23_source_geographical_support_atlas.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Derive five real terrain traits from archived WorldClim elevation and compare 23 versus 28
         run: |
           set -euo pipefail
