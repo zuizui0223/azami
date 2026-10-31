@@ -1,11 +1,10 @@
 name: V4 RF original S1 sparse SoilGrids 28 versus 34 (protected)
+# When this fallback is explicitly activated after the currently running
+# scalar source-real job terminates, keep the original scalar workflow as an
+# auditable manual-only script to avoid two parallel S1/ISRIC extraction runs.
+# The original source-reconstruction and provenance steps remain untouched.
 on:
-  pull_request:
-    paths:
-      - 'analysis/v4/rf_soilgrids_34_predictability.py'
-      - 'tests/test_v4_rf_soilgrids_34_predictability.py'
-      - 'analysis/v4/RF_SOILGRIDS_SPARSE34_JA.md'
-      - '.github/workflows/v4-rf-soilgrids-34-source.yml'
+  workflow_dispatch:
 permissions:
   contents: read
   actions: read
