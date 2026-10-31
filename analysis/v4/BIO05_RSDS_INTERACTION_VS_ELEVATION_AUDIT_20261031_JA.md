@@ -35,3 +35,8 @@
 [コード](s1_s2_bio05_rsds_interaction_source.py)／[合成データテスト](../../tests/test_v4_s1_s2_bio05_rsds_interaction.py)／[元データ専用Actions](../../.github/workflows/v4-s1-s2-temperature-radiation-interaction.yml)。
 
 **現在地：** 今回は元の４変数を主解析の第一候補に戻し、交互作用は科学的に妥当な追加仮説として定義した。**交互作用の元データ検定値は、このワークフローが完走するまで未確定。** 後付けの有意性から主モデルを変更せず、地域・分類群を考慮した追加検証で意思決定する。Results 3.3の年間気候類似性結果は変更しない。
+
+
+## Source-verification outcome (31 October 2026)
+
+The implementation passed original-source tests in [GitHub Actions #41182224216](https://github.com/zuizui0223/azami/actions/runs/41182224216), with public aggregated-only artifact `13035453002`. See [the full source-verified scientific report](results/20261031_S1_S2_BIO05_RSDS_INTERACTION_SOURCE_VERIFIED_JA.md) and [machine summary](results/20261031_S1_S2_BIO05_RSDS_INTERACTION_SUMMARY.json). **S1: 0/8 interactions after Holm in both M3I and M4I. S2: 1/32 after Holm for introduced *C. vulgare* chroma (M4I β−0.088454, Holm P=0.011458).** Source-matched S1 radiation×chroma coefficients show that elevation removal, not BIO05×RSDS itself, is responsible for the major coefficient difference. Therefore **retain M4 original as main**, and present M4I as exploratory sensitivity. Original H3c is unchanged; original four-variable manuscript/figures remain correctly matched to main results.

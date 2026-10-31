@@ -4,6 +4,8 @@
 >
 > **現在地:** 最新の論文はResults **3.1 降水と向き、3.2 日射・標高と花色、3.3 似た気候での多形質の類似**。古い「形質組合せ／向き／花色」の3部構成を現在の本文と混同しないでください。
 
+**Latest analysis decision (31 October 2026):** Results **3.1/3.2 retain the original BIO18 + BIO05 + RSDS + elevation** as the interpretable primary adjustment; Results **3.3 retains BIO12 + BIO01 + RSDS**. An [authenticated BIO05×RSDS interaction audit](manuscripts/v4_s1_s2_frozen_20261025/GEB_PRIMARY_MODEL_AFTER_INTERACTION_AUDIT_20261031_JA.md) found **no Holm-supported S1 interactions (0/8)** and **one exploratory S2 interaction** (*C. vulgare* introduced chroma; 1/32). The superseded climate-only candidate and its different correlations remain documented as sensitivity results, **not hidden**. The original 2026-10-24 data/figures are unchanged.
+
 ## Read the current research
 
 | Purpose | Canonical entry |
@@ -37,7 +39,7 @@ The shared **156,683 photographs across 174 taxa** form a separate eight-constru
 - [`analysis/`](analysis/README.md): V4 source contracts, scripts, checked aggregate outputs, and historical Chapter 1 code kept separate.
 - [`legacy/`](legacy/README.md): earlier V2/V3 and deferred experiments; preserved for provenance, not current claims.
 - [`tests/`](tests/): independent tests and frozen numerical/claim contracts.
-- [`.github/workflows/`](.github/workflows/): six current V4 verification or source-recovery workflows. These include protected-data operations; do not run or redistribute their private intermediates casually.
+- [`.github/workflows/`](.github/workflows/): current V4 verification and protected source-recovery workflows (including post-freeze interaction sensitivity). These include protected-data operations; do not run or redistribute their private intermediates casually.
 
 **Science freeze:** the original S1/S2 statistical families were fixed on **2026-10-24**. H3c was added as a separate exploratory analysis on **2026-10-29**. The active manuscript keeps both histories explicit. The older [Japanese three-part working outline](manuscripts/v4_s1_s2_frozen_20261025/GEB_THREE_PART_STRUCTURE_JA.md) is historical planning context, **not** the current Results index.
 

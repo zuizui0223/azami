@@ -2,6 +2,10 @@
 
 **Snapshot and update:** 2026-10-30, [PR #159](https://github.com/zuizui0223/azami/pull/159) merged into `main` at `e2229a20045044977afe235255355ca3892186fa`. This is a navigation and ownership map, **not a new scientific analysis**.
 
+## Latest Results 3.1–3.3 model decision (31 October 2026)
+
+**3.1/3.2:** maintain the original **BIO18/BIO05/RSDS/elevation** four-variable models, with [BIO05×RSDS interaction source audit](../analysis/v4/results/20261031_S1_S2_BIO05_RSDS_INTERACTION_SOURCE_VERIFIED_JA.md) as an exploratory supplementary test; **3.3:** keep the original **BIO12/BIO01/RSDS** annual-climate H3c comparison. The former climate-only all-section selection is superseded; the former source-verified no-elevation results remain in the repository as reported sensitivity rather than being deleted. See [current manuscript decision](../manuscripts/v4_s1_s2_frozen_20261025/GEB_PRIMARY_MODEL_AFTER_INTERACTION_AUDIT_20261031_JA.md).
+
 ## Source of truth, in reading order
 
 | Layer | Canonical path | Status and meaning |

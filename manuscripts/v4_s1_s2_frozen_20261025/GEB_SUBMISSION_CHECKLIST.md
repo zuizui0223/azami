@@ -6,6 +6,10 @@ Journal source: [Wiley Global Ecology and Biogeography author guidelines](https:
 
 **Repository merge / Zenodo boundary (2026-10-30):** PR #159 is merged into `main` at `e2229a2`; exploratory PR #160 remains open, unmerged and separately reviewed. [Zenodo V4 data-only preparation](../../docs/ZENODO_V4_RELEASE_HANDOFF.md) specifies frozen aggregate candidates, rights, creator metadata and byte verification. A V4 DOI and anonymous reviewer access remain absent. CC BY 4.0 is now approved for eligible author-owned aggregate results, and the 65-file rights-scoped candidate passes 9/9 offline replay commands with all five CSV tables byte-identical. Third-party rights clearance and creators still require confirmation. The remaining author and access decisions are listed below; scientific limitations remain explicit in the manuscript and SI.
 
+## Latest main-model decision (31 October 2026; after the BIO05×RSDS test)
+
+**Results 3.1 and 3.2 remain the original BIO18 + BIO05 + RSDS + elevation models; Results 3.3 keeps BIO12 + BIO01 + RSDS.** The previous all-section three-predictor climate-only plan is superseded. This decision is supported by the source-matched [S1/S2 BIO05×RSDS interaction audit](../../analysis/v4/results/20261031_S1_S2_BIO05_RSDS_INTERACTION_SOURCE_VERIFIED_JA.md), with the current [author-facing model decision](GEB_PRIMARY_MODEL_AFTER_INTERACTION_AUDIT_20261031_JA.md) and [SI interpretation](SI_BIO05_RSDS_INTERACTION_SENSITIVITY_20261031.md). S1 had **0/8** Holm-supported between-taxon interactions; S2 had **1/32** (*C. vulgare* introduced chroma). Original frozen main coefficients, 80/128-test families, figures, and H3c annual 3-axis result are unchanged. The additional interaction and the previously observed elevation-free correlations are **exploratory supporting analyses** and must not be selectively hidden. Data/archive rights gates remain unchanged.
+
 ## Format and scope
 
 - **Research Article**, manuscript body approximately 5,000 words, about 50 references and **6–8 display pieces** (figures and tables combined; flexibility allowed).
