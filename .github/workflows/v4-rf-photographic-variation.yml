@@ -8,6 +8,9 @@ on:
       - 'analysis/v4/rf_photo_split_half_reliability.py'
       - 'tests/test_v4_rf_photo_split_half_reliability.py'
       - 'analysis/v4/RF_PHOTO_SPLIT_HALF_DESIGN_JA.md'
+      - 'analysis/v4/rf_photo_observer_disjoint_reliability.py'
+      - 'tests/test_v4_rf_photo_observer_disjoint_reliability.py'
+      - 'analysis/v4/RF_OBSERVER_DISJOINT_SPLIT_DESIGN_JA.md'
       - '.github/workflows/v4-rf-photographic-variation.yml'
 permissions:
   contents: read
@@ -23,7 +26,7 @@ jobs:
       github.event.pull_request.head.repo.full_name == 'zuizui0223/azami' &&
       github.event.pull_request.head.ref == 'analysis/v4-rf-multitrait-exploratory-20261031'
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 75
     env:
       GH_TOKEN: ${{ github.token }}
       PYTHONPATH: .
@@ -47,6 +50,8 @@ jobs:
           python -m py_compile analysis/v4/rf_photographic_within_cell_dispersion.py
           python -m pytest -q tests/test_v4_rf_photo_split_half_reliability.py
           python -m py_compile analysis/v4/rf_photo_split_half_reliability.py
+          python -m pytest -q tests/test_v4_rf_photo_observer_disjoint_reliability.py
+          python -m py_compile analysis/v4/rf_photo_observer_disjoint_reliability.py
       - name: Recover exact original S1 AES-GCM archive only inside protected job
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -157,6 +162,51 @@ jobs:
           audit(data)
           print('Source-real split-half verified: 16 construct/grain summaries, three seeds each',flush=True)
           PY
+      - name: Recover authenticated private observer roster and test globally observer-disjoint photographic geography
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/photo-dispersion/private/original-photo-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/photo-dispersion/private/original-photo-metadata.aesgcm' | sha256sum -c -
+          python -m analysis.v4.native_observers \
+            --sealed work/photo-dispersion/private/original-photo-metadata.aesgcm \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --out-private work/photo-dispersion/private/original-observers.csv.gz
+          python -m analysis.v4.rf_photo_observer_disjoint_reliability \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --receipt work/photo-dispersion/private/decoded/measurement_receipt.json \
+            --roster work/photo-dispersion/private/original-observers.csv.gz \
+            --output work/photo-dispersion/public/rf_photo_observer_disjoint_original_S1_1deg_5deg_aggregate.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/photo-dispersion/public/rf_photo_observer_disjoint_original_S1_1deg_5deg_aggregate.json').read_text())
+          assert d['source_original_S1_observations']==313350
+          assert d['distinct_authenticated_source_observers']==92839
+          assert len(d['results'])==16 and all(len(row['splits'])==3 for row in d['results'])
+          assert d['design']['one_observation_per_observer_taxon_cell']
+          assert d['private_observer_ids_and_photo_rows_not_exported']
+          assert d['frozen_GEB_S1_S2_H3c_unchanged']
+          allowed={'estimated_exploratory_reliability',
+                   'insufficient_independently_supported_cells',
+                   'insufficient_finite_taxon_correlations'}
+          assert all(s['status'] in allowed for row in d['results'] for s in row['splits'])
+          forbidden={'obs_id','accepted_key','taxon','user_id','photographer_id',
+                     'taxon_name','latitude','longitude','lat_cell','lon_cell',
+                     'photo_id','user_login','individual_prediction'}
+          def walk(x):
+              if isinstance(x,dict):
+                  for k,v in x.items():
+                      if k in forbidden:raise ValueError('PRIVATE_USER_SPLIT_KEY_'+k)
+                      walk(v)
+              elif isinstance(x,list):
+                  for v in x:walk(v)
+          walk(d)
+          print('Global observer-disjoint source result privacy and scientific gates verified',flush=True)
+          PY
       - name: Publish aggregate diagnostics only; no photograph, source or individual data
         if: success()
         uses: actions/upload-artifact@v4
@@ -165,6 +215,7 @@ jobs:
           path: |
             work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json
             work/photo-dispersion/public/rf_photo_split_half_original_S1_1deg_5deg_aggregate.json
+            work/photo-dispersion/public/rf_photo_observer_disjoint_original_S1_1deg_5deg_aggregate.json
           retention-days: 90
           if-no-files-found: error
       - name: Always remove original protected photo and metadata files
