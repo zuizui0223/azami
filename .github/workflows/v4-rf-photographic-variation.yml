@@ -20,6 +20,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   source-verified-original-photo-dispersion:
+    # The original metadata is a DRAFT release asset: GitHub restricts its
+    # read access to write-capable tokens. No repository/release mutation here.
+    permissions:
+      contents: write
+      actions: read
     if: >-
       github.repository == 'zuizui0223/azami' &&
       github.event.pull_request.number == 167 &&
