@@ -104,6 +104,48 @@ jobs:
             --private-dir work/rf21/private/environment \
             --public-dir work/rf21/public \
             --temporary work/rf21/temp
+      - name: Source-authenticated original V4 species-mean RF screen with all 23 environmental predictors
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_rf_screen.py tests/test_species_environment_existing_inputs.py tests/test_species_environment_scan.py
+          python -m analysis.v4.species_environment_rf_screen \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/rf_species_mean_V4_23axes_aggregate.json \
+            --trees 80 --repeats 2 --permutation-repeats 2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/rf21/public/rf_species_mean_V4_23axes_aggregate.json').read_text())
+          assert d['n_original_input_observations']==313350
+          assert len(d['results'])==8 and d['number_of_registered_predictors']==23
+          assert d['frozen_GEB_S1_S2_H3c_untouched']
+          assert d['source_provenance']['source_row_count']==313350
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(obj):
+              if isinstance(obj,dict):
+                  for key,value in obj.items():
+                      if key in forbidden:raise ValueError('PRIVATE_SOURCE_EXPORT_KEY_'+key)
+                      audit(value)
+              elif isinstance(obj,list):
+                  for value in obj:audit(value)
+          audit(d)
+          print('Source-verified all-23 environmental original V4 species RF aggregate',flush=True)
+          PY
+      - name: Upload original V4 S1 species-mean RF 23-variable nonidentifying result
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-species-mean-RF-23-${{ github.run_id }}
+          path: work/rf21/public/rf_species_mean_V4_23axes_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Source-real RF 12 versus 21, matching photo rows within paired groups
         run: |
           set -euo pipefail
