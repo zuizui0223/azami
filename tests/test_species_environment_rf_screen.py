@@ -144,7 +144,7 @@ def test_geographic_holdout_only_reports_broad_three_sector_statistics():
 
 
 def test_existing_authorized_source_adapter_reports_all_eight_without_private_rows(tmp_path):
-    from tests.test_species_environment_existing_inputs import files
+    from test_species_environment_existing_inputs import files
     from analysis.v4.species_environment_scan import sha256
     p=files(tmp_path);output=tmp_path/'rf_aggregate.json'
     r=rf.run_existing_rf(**p,source_receipt_sha256=sha256(p['source_receipt']),
