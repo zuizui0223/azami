@@ -3,6 +3,8 @@ name: V4 S2 original colour spatial block sensitivity
 on:
   pull_request:
     paths:
+      - 'analysis/v4/xonly_climate_selection.py'
+      - 'analysis/v4/s2_xonly_native_intro_selection.py'
       - 'analysis/v4/s2_native_intro_traitwise_subset.py'
       - 'analysis/v4/s2_original_colour_spatial_block_sensitivity.py'
       - 'tests/test_v4_s2_original_colour_spatial_block_sensitivity.py'
@@ -42,7 +44,7 @@ jobs:
             echo 'execute=true' >> "$GITHUB_OUTPUT"
           else
             changed="$(git diff-tree --no-commit-id --name-only -r HEAD)"
-            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/s2_original_colour_spatial_block_sensitivity\.py|tests/test_v4_s2_original_colour_spatial_block_sensitivity\.py|\.github/workflows/v4-s2-colour-spatial-block-sensitivity\.yml)$'; then
+            if printf '%s\n' "$changed" | grep -Eq '^(analysis/v4/xonly_climate_selection\.py|analysis/v4/s2_xonly_native_intro_selection\.py|analysis/v4/s2_original_colour_spatial_block_sensitivity\.py|tests/test_v4_s2_original_colour_spatial_block_sensitivity\.py|\.github/workflows/v4-s2-colour-spatial-block-sensitivity\.yml)$'; then
               echo 'execute=true' >> "$GITHUB_OUTPUT"
             else
               echo 'execute=false' >> "$GITHUB_OUTPUT"
@@ -202,6 +204,31 @@ jobs:
               json.dumps({'source_population':len(f),'original_extra_pixels':sources},
                          indent=2)+'\n',encoding='utf-8')
           PY
+      - name: Blind S2 climate selection from original X-only native introduced source
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s2_xonly_native_intro_selection \
+            --focal work/s2-spatial/private/focal_wild_five.csv.gz \
+            --extra work/s2-spatial/private/focal_extra7.csv.gz \
+            --output work/s2-spatial/public/V4_S2_XONLY_NATIVE_INTRO_BLIND_CHOICE.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/s2-spatial/public/V4_S2_XONLY_NATIVE_INTRO_BLIND_CHOICE.json').read_text())
+          assert d["original_source_observation_n"]==297622
+          assert d["trait_values_not_loaded"] and len(d["results"])==2
+          assert all(x["uses_same_selected_climate_columns_in_both_ranges"]
+                     for x in d["results"])
+          PY
+      - name: Upload only outcome-blind S2 climate selection aggregate
+        if: success() && steps.gate.outputs.execute == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S2-XONLY-BLIND-SELECTION-${{ github.run_id }}
+          path: work/s2-spatial/public/V4_S2_XONLY_NATIVE_INTRO_BLIND_CHOICE.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Reproduce all six original S2 coefficient rows before block bootstrap
         if: steps.gate.outputs.execute == 'true'
         run: |
