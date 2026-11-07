@@ -7,6 +7,9 @@ on:
       - 'tests/test_species_environment_partial_rda.py'
       - 'analysis/v4/SPECIES_ENVIRONMENT_PARTIAL_RDA_DESIGN_JA.md'
       - 'analysis/v4/species_environment_spls2.py'
+      - 'analysis/v4/species_environment_predictive_permutation.py'
+      - 'tests/test_species_environment_predictive_permutation.py'
+      - 'analysis/v4/V4_RF_SPLS2_PERMUTATION_SIGNIFICANCE_20261107_JA.md'
       - 'tests/test_species_environment_spls2.py'
       - 'analysis/v4/SPECIES_ENVIRONMENT_SPLS2_DESIGN_JA.md'
       - 'analysis/v4/rf_extended_environment.py'
@@ -209,6 +212,57 @@ jobs:
         with:
           name: azami-V4-S1-partial-RDA-climate22-space8-${{ github.run_id }}
           path: work/rf21/public/v4_original_s1_partial_rda_climate22_geo8_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: V4 original S1 RF group importance and sparse-PLS2 source-real permutation P values
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_predictive_permutation.py
+          python -m analysis.v4.species_environment_predictive_permutation \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/v4_original_S1_RF_SPLS2_permutation_aggregate.json \
+            --unrestricted 99 --regional 99 --trees 80
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('work/rf21/public/v4_original_S1_RF_SPLS2_permutation_aggregate.json').read_text())
+          assert r['schema']=='V4_S1_original_photo_RF_PLS2_posthoc_permutation_v1'
+          assert r['status']=='source_real_exploratory_permutation_calibration'
+          assert r['original_S1_source_row_count']==313350
+          assert r['data']['sPLS2_joint_taxa']==173
+          assert len(r['data']['X_variables'])==22 and 'topo_elevation' not in r['data']['X_variables']
+          assert r['methods']['permutation_unrestricted_n']==99 and r['methods']['permutation_within_sector_n']==99
+          assert len(r['hypotheses'])==3
+          for method in r['permutation_inference'].values():
+              assert 0<method['sPLS2_global_nested_cv']['null_p_one_sided']<=1
+              for key in ('RF_group_importance','sPLS2_selected_coefficient'):
+                  assert len(method[key])==3
+                  for x in method[key].values():
+                      assert 0<x['null_p_one_sided']<=x['posthoc_family3_holm']<=1
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','latitude','longitude',
+                    'photo_id','photographer_id','user_id','individual_prediction','_taxon_private'}
+          def privacy(o):
+              if isinstance(o,dict):
+                  for k,v in o.items():
+                      if k in forbidden:raise ValueError('PRIVATE_SOURCE_KEY_EXPORTED_'+k)
+                      privacy(v)
+              elif isinstance(o,list):
+                  for v in o:privacy(v)
+          privacy(r)
+          print('Verified V4 original S1 RF and sPLS2 anonymous empirical permutation P values',flush=True)
+          PY
+      - name: Upload source-authenticated V4 RF sPLS2 permutation P values (anonymous only)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-RF-sPLS2-permutation-${{ github.run_id }}
+          path: work/rf21/public/v4_original_S1_RF_SPLS2_permutation_aggregate.json
           retention-days: 90
           if-no-files-found: error
       - name: Source-authenticated original V4 species-mean RF screen with all 23 environmental predictors
