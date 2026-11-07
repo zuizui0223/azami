@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'analysis/v4/rf_bio21_source_real.py'
+      - 'analysis/v4/species_environment_spls2.py'
+      - 'tests/test_species_environment_spls2.py'
+      - 'analysis/v4/SPECIES_ENVIRONMENT_SPLS2_DESIGN_JA.md'
       - 'analysis/v4/rf_extended_environment.py'
       - 'tests/test_v4_rf_bio21_source_real.py'
       - 'tests/test_v4_rf_holdout_sensitivity.py'
@@ -104,6 +107,54 @@ jobs:
             --private-dir work/rf21/private/environment \
             --public-dir work/rf21/public \
             --temporary work/rf21/temp
+      - name: Original V4 S1 joint eight-construct sparse PLS2 with climate-only 22 axes
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_spls2.py
+          python -m analysis.v4.species_environment_spls2 \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/v4_original_s1_species_joint_spls2_climate22_aggregate.json \
+            --bootstrap 100
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          path=Path('work/rf21/public/v4_original_s1_species_joint_spls2_climate22_aggregate.json')
+          r=json.loads(path.read_text(encoding='utf-8'))
+          assert r['status']=='V4_SOURCE_VERIFIED_EXPLORATORY_SPLS2'
+          assert r['original_source_observation_n']==313350
+          assert len(r['predictors'])==22 and 'topo_elevation' not in r['predictors']
+          assert len(r['response_columns'])==9 and r['n_registered_constructs']==8
+          assert r['species_support']['n_joint_supported_taxa']>=40
+          assert r['prior_GEB_S1_S2_H3c_and_RF_frozen']
+          assert not r['includes_elevation_or_terrain'] and not r['uses_soil']
+          assert r['taxon_holdout_nested_cv']['n_outer_partitions']==10
+          assert r['authenticated_source_receipt_sha256']=='26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545'
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(node):
+              if isinstance(node,dict):
+                  for k,v in node.items():
+                      if k in forbidden:raise RuntimeError('PRIVATE_ORIGINAL_SOURCE_EXPORTED_'+k)
+                      audit(v)
+              elif isinstance(node,list):
+                  for x in node:audit(x)
+          audit(r)
+          print('Original V4 source-verified joint 8-construct sPLS2 aggregate validated',flush=True)
+          PY
+      - name: Upload original V4 S1 joint sparse PLS2 22-climate aggregate only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-joint-sPLS2-climate22-${{ github.run_id }}
+          path: work/rf21/public/v4_original_s1_species_joint_spls2_climate22_aggregate.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Source-authenticated original V4 species-mean RF screen with all 23 environmental predictors
         run: |
           set -euo pipefail
