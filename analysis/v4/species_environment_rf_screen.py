@@ -325,7 +325,7 @@ def run_existing_rf(native:Path,decoded_receipt:Path,seven:Path,nine:Path,
                     source_receipt:Path,nine_manifest:Path,output:Path,*,
                     source_receipt_sha256:str,trees:int=120,repeats:int=3,
                     permutation_repeats:int=2,geography:bool=True,
-                    expected_n:int=313350)->dict:
+                    expected_n:int=313350,no_elevation:bool=False)->dict:
     inputs=[native,decoded_receipt,seven,nine,source_receipt,nine_manifest]
     if Path(output).resolve() in {Path(v).resolve() for v in inputs}:
         raise ValueError('OUTPUT_OVERWRITES_SOURCE')
@@ -344,8 +344,22 @@ def run_existing_rf(native:Path,decoded_receipt:Path,seven:Path,nine:Path,
             d=d.merge(loc,on='obs_id',validate='one_to_one',how='left',sort=False)
             if not d.obs_id.equals(ids) or d.longitude.isna().all():
                 raise ValueError('SOURCE_GEOGRAPHY_MISMATCH')
+    if no_elevation:
+        # Same original QC and species panel; mask elevation only for RF.
+        d=d.copy()
+        d['topo_elevation']=np.nan
     r=run_screen(d,trees=trees,repeats=repeats,
                  permutation_repeats=permutation_repeats,geography=geography)
+    if no_elevation:
+        r['exclusion_scope']='RF_elevation_predictor_only_not_source_rows'
+        r['excluded_predictors']=['topo_elevation']
+        r['active_climate_predictor_count']=22
+        for row in r['results']:
+            for item in row.get('predictor_coverage',[]):
+                if item['name']=='topo_elevation':
+                    item.update(status='excluded_by_design',
+                                n_taxa_finite=None,coverage_fraction=None)
+
     r.update(source_provenance=receipt,
              scope='already-authorized local source files only; no source recovery or raster fetch',
              genuine_original_source_checked_by_existing_receipt=True)
@@ -363,12 +377,14 @@ def main():
     ap.add_argument('--repeats',type=int,default=3)
     ap.add_argument('--permutation-repeats',type=int,default=2)
     ap.add_argument('--no-geography',action='store_true')
+    ap.add_argument('--no-elevation',action='store_true')
     a=ap.parse_args()
     r=run_existing_rf(native=a.native,decoded_receipt=a.decoded_receipt,
         seven=a.seven,nine=a.nine,nine_manifest=a.nine_manifest,
         source_receipt=a.source_receipt,source_receipt_sha256=a.source_receipt_sha256,
         output=a.output,trees=a.trees,repeats=a.repeats,
-        permutation_repeats=a.permutation_repeats,geography=not a.no_geography)
+        permutation_repeats=a.permutation_repeats,geography=not a.no_geography,
+        no_elevation=a.no_elevation)
     print(json.dumps({'status':r['status'],'n_constructs':len(r['results']),
         'n_fitted':sum(z['status'].startswith('exploratory_fitted') for z in r['results'])}))
 

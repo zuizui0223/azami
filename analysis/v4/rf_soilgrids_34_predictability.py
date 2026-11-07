@@ -239,8 +239,103 @@ def verified_private_28(native,receipt,seven,seven_sha,nine,nine_sha,nine_manife
     return frame,source,ref['terrain_provenance']
 
 
+
+def matched_sparse_species_climate_soil_noelev(frame, soil_cells, *, trees=80, repeats=2):
+    """Compare 22 climate predictors versus 22+6 soil on identical taxa/cells.
+
+    Soil original pixels were sampled at ANGLE-eligible photo sites only.
+    Other constructs inherit that angle-selected cell universe, not full
+    SoilGrids coverage. The upstream 28-axis complete case defined the
+    original soil cell-selection universe; elevation and DEM are excluded
+    from BOTH fitted species models, not retrospectively from source sampling.
+    """
+    climate22=tuple(x for x in MODEL28 if x not in ('topo_elevation', *TERRAIN5))
+    assert len(climate22)==22 and len(set(climate22+tuple(SOIL6)))==28
+    models={'climate22_no_elevation':climate22,
+            'climate22_plus_soil6_no_elevation':climate22+tuple(SOIL6)}
+    groups={k:tuple(x for x in members if x in climate22)
+            for k,members in GROUPED_IMPORTANCE.items()
+            if any(x in climate22 for x in members)}
+    groups['SoilGrids6']=tuple(SOIL6)
+    keys=['taxon','lat_cell','lon_cell']
+    if soil_cells[keys].duplicated().any():
+        raise ValueError('DUPLICATE_SOIL_SAMPLED_CELLS')
+    retained=soil_cells[keys+list(SOIL6)].copy()
+    if not np.isfinite(retained[list(SOIL6)].to_numpy(float)).all():
+        raise ValueError('NONFINITE_SELECTED_SOIL_CELLS')
+    rows=[]
+    for construct, y_cols in FEATURES.items():
+        if construct=='angle':
+            values=soil_cells.copy()
+        else:
+            try:
+                source=aggregate_endpoint(frame,construct,predictors=MODEL28,
+                         degrees=1,min_per_cell=3,min_cells=1,min_photos=3,
+                         min_taxa=1)
+            except ValueError as exc:
+                if 'INSUFFICIENT_QUALIFIED_TAXA_OR_THREE_REGIONS' in str(exc):
+                    rows.append({'construct':construct,'status':'trait_source_insufficient'})
+                    continue
+                raise
+            values=source.merge(retained,on=keys,how='inner',validate='one_to_one')
+        if values.empty:
+            rows.append({'construct':construct,'status':'no_soil_matched_trait_cells'})
+            continue
+        required=['taxon','region','photos',*y_cols,*climate22,*SOIL6]
+        if not set(required).issubset(values.columns):
+            raise ValueError('MISSING_MATCHED_CONSTRUCT_SOURCE_COLUMNS')
+        g=values.groupby('taxon',sort=True,observed=True)
+        taxon=g[[*climate22,*SOIL6,*y_cols]].mean()
+        taxon['photos']=g.photos.sum()
+        taxon['n_cells']=g.size()
+        taxon['region']=g.region.agg(lambda v:int(v.mode().iloc[0]))
+        taxon=taxon.loc[(taxon.n_cells>=5)&(taxon.photos>=15)].copy()
+        if construct=='hue' and len(taxon):
+            vec=taxon[list(y_cols)].to_numpy(float)
+            norm=np.linalg.norm(vec,axis=1)
+            taxon=taxon.loc[norm>=.20].copy()
+            if len(taxon):
+                vec=taxon[list(y_cols)].to_numpy(float)
+                taxon.loc[:,list(y_cols)]=vec/np.linalg.norm(vec,axis=1)[:,None]
+        n=int(len(taxon))
+        if n<30:
+            rows.append({'construct':construct,'status':'insufficient_matched_taxa',
+                         'n_matched_taxa':n,
+                         'n_matched_cells':int(taxon.n_cells.sum()) if n else 0})
+            continue
+        group_frame=taxon.reset_index()
+        if not np.isfinite(group_frame[list(models['climate22_plus_soil6_no_elevation'])+list(y_cols)].to_numpy(float)).all():
+            raise ValueError('NONFINITE_SPECIES_SOURCE_MEANS')
+        output=score_models(group_frame,construct,'unseen_taxa_balanced',
+             trees=trees,repeats=repeats,predictor_sets=models,
+             predictor_groups=groups)
+        rows.append({'construct':construct,'status':'source_fitted_exploratory',
+                     'n_matched_taxa':n,
+                     'n_matched_cells':int(taxon.n_cells.sum()),
+                     'n_trait_source_photo_contributions':int(taxon.photos.sum()),
+                     'paired_comparison':output})
+    return {'schema':'azami_V4_matched_species_RF_climate22_vs_climate22_soil6_noelev_v1',
+            'status':'source_real_sparse_soil_matched_species',
+            'n_original_S1_records':int(len(frame)),
+            'climate_predictors':list(climate22),'soil_predictors':list(SOIL6),
+            'excluded_model_covariates':['topo_elevation',*TERRAIN5],
+            'original_angle_selected_soil_cells':int(len(soil_cells)),
+            'original_angle_28axis_complete_case_defined_soil_sample':True,
+            'all_eight_constructs_included_with_status':True,
+            'same_taxon_and_same_soil_cell_rows_for_paired_models':True,
+            'soil_source_sites_are_angle_eligible_not_trait_random':True,
+            'minimum_trait_eligible_cells_per_taxon':5,
+            'minimum_photos_per_taxon_on_matched_cells':15,
+            'soil_variables_are_SoilGrids_predicted_0to5cm_Q05':True,
+            'no_raster_retrieval_or_source_restoration_in_this_function':True,
+            'models_do_not_estimate_causal_effects':True,
+            'no_taxon_or_observation_ids_geo_or_predictions_exported':True,
+            'frozen_GEB_and_prior_RF_unchanged':True,
+            'results':rows}
+
 def run(native,receipt,seven,seven_sha,nine,nine_sha,nine_manifest,terrain,
         terrain_manifest,five_degree,metadata,output, *,trees=80,repeats=2,
+        species_output=None,
         fetcher=None,reader=None):
     if trees<8 or repeats<1:
         raise ValueError('SOIL_SOURCE_RF_FIXED_HYPERPARAMS_INVALID')
@@ -250,6 +345,15 @@ def run(native,receipt,seven,seven_sha,nine,nine_sha,nine_manifest,terrain,
     selected,photo,sites,selection=selected_source_positions(frame)
     soil,soil_receipt=sample_six_source_sites(sites,fetcher=fetcher,reader=reader)
     cells,support,eligible=attach_soil_to_cells(selected,photo,soil)
+    if species_output is not None:
+        paired=matched_sparse_species_climate_soil_noelev(frame,cells,
+                      trees=trees,repeats=repeats)
+        paired['original_S1_sha256']=source['source_s1_sha256']
+        paired['soil_six_source_provenance']=soil_receipt
+        dest=Path(species_output)
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        dest.write_text(json.dumps(paired,ensure_ascii=False,indent=2,
+                                  allow_nan=False)+'\n',encoding='utf-8')
     results=[]
     if eligible:
         for scheme in ('unseen_taxa_balanced','unseen_longitude_sectors'):
@@ -290,11 +394,12 @@ def main():
         p.add_argument('--'+item,type=str if item.endswith('sha') else Path,required=True)
     p.add_argument('--trees',type=int,default=80)
     p.add_argument('--repeats',type=int,default=2)
+    p.add_argument('--species-output',type=Path)
     a=p.parse_args()
     out=run(a.native,a.receipt,a.archived_seven,a.archived_seven_sha,
             a.bio_nine,a.bio_nine_sha,a.nine_manifest,a.terrain_table,
             a.terrain_manifest,a.five_degree,a.metadata,a.output,
-            trees=a.trees,repeats=a.repeats)
+            trees=a.trees,repeats=a.repeats,species_output=a.species_output)
     print(json.dumps({'status':out['status'],
                       'original_s1':out['source']['s1_original_n'],
                       'tested_soil_cell_count':out['soil_cell_support']['n_qualified_cells_before_soil'],

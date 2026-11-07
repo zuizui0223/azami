@@ -146,6 +146,49 @@ jobs:
           path: work/rf21/public/rf_species_mean_V4_23axes_aggregate.json
           retention-days: 90
           if-no-files-found: error
+      - name: V4 original S1 RF climate-only 22 predictors (elevation excluded)
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_rf_screen.py
+          python -m analysis.v4.species_environment_rf_screen \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/rf_species_mean_V4_climate22_noelevation.json \
+            --trees 80 --repeats 2 --permutation-repeats 2 --no-elevation
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/rf21/public/rf_species_mean_V4_climate22_noelevation.json').read_text())
+          assert len(x['results'])==8 and x['excluded_predictors']==['topo_elevation']
+          assert x['active_climate_predictor_count']==22
+          assert x['n_original_input_observations']==313350
+          assert all('topo_elevation' not in row.get('predictors_used',[])
+                     for row in x['results'])
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(d):
+              if isinstance(d,dict):
+                  for k,v in d.items():
+                      if k in forbidden:raise RuntimeError('SOURCE_KEY_EXPORT_'+k)
+                      audit(v)
+              elif isinstance(d,list):
+                  for v in d:audit(v)
+          audit(x)
+          print('Original S1 22-climate RF aggregate passes elevation/privacy gates')
+          PY
+      - name: Upload ONLY V4 S1 22-climate no-elevation RF summary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-climate22-noelevation-${{ github.run_id }}
+          path: work/rf21/public/rf_species_mean_V4_climate22_noelevation.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Source-real RF 12 versus 21, matching photo rows within paired groups
         run: |
           set -euo pipefail

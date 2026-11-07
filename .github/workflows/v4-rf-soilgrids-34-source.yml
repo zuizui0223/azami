@@ -132,6 +132,7 @@ jobs:
             --five-degree work/soil34/public/rf_23_to_28_terrain_5degree_min3_aggregate.json \
             --metadata analysis/v4/environment_source_metadata.json \
             --output work/soil34/public/rf_original_s1_sparse_soil_28_vs_34_1degree_aggregate.json \
+            --species-output work/soil34/public/rf_original_s1_matched_species_climate22_vs_soil28_noelev.json \
             --trees 80 --repeats 2
           python - <<'PY'
           import json
@@ -156,14 +157,27 @@ jobs:
                   for x in v:walk(x)
           walk(d)
           assert not keys.intersection(forbidden),keys.intersection(forbidden)
-          print('Protected original-S1 SoilGrids RF aggregate validated; private source withheld')
+          p2=Path('work/soil34/public/rf_original_s1_matched_species_climate22_vs_soil28_noelev.json')
+          test=json.loads(p2.read_text())
+          assert len(test['results'])==8
+          assert len(test['climate_predictors'])==22
+          assert len(test['soil_predictors'])==6
+          assert test['n_original_S1_records']==313350
+          assert test['frozen_GEB_and_prior_RF_unchanged']
+          assert test['all_eight_constructs_included_with_status']
+          keys=set()
+          walk(test)
+          assert not keys.intersection(forbidden)
+          print('Protected original-S1 soil 22 vs 28 species RF and old soil34 aggregates validated')
           PY
       - name: Publish ONLY aggregate source coverage, VRT digests and paired model metrics
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: azami-v4-rf-sparse-soil34-original-source-${{ github.run_id }}
-          path: work/soil34/public/rf_original_s1_sparse_soil_28_vs_34_1degree_aggregate.json
+          path: |
+            work/soil34/public/rf_original_s1_sparse_soil_28_vs_34_1degree_aggregate.json
+            work/soil34/public/rf_original_s1_matched_species_climate22_vs_soil28_noelev.json
           if-no-files-found: error
           retention-days: 90
       - name: Always remove confidential observation IDs, original source positions and rasters
