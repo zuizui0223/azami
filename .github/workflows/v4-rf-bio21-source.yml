@@ -6,6 +6,7 @@ on:
       - 'analysis/v4/species_environment_partial_rda.py'
       - 'tests/test_species_environment_partial_rda.py'
       - 'analysis/v4/SPECIES_ENVIRONMENT_PARTIAL_RDA_DESIGN_JA.md'
+      - 'analysis/v4/s1_traitwise_rf_subset_selection.py'
       - 'analysis/v4/species_environment_spls2.py'
       - 'analysis/v4/species_environment_spls2_geoelev.py'
       - 'tests/test_species_environment_spls2_geoelev.py'
@@ -321,6 +322,35 @@ jobs:
           path: work/rf21/public/v4_s1_spls2_climate_geography_elevation_crossfitted_aggregate.json
           if-no-files-found: error
           retention-days: 90
+      - name: V4 S1 original-source trait-wise nested climate-variable count exploration
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_traitwise_rf_subset_selection \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-sha 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/V4_S1_TRAITWISE_VARIABLE_SELECTION.json
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path("work/rf21/public/V4_S1_TRAITWISE_VARIABLE_SELECTION.json").read_text())
+          assert d["original_source_n"]==313350 and len(d["results"])==8
+          assert len(d["climate_predictors"])==22
+          assert all(x["n_taxa"]>=100 and len(x["variable_ranking"])==22 for x in d["results"])
+          assert all("topo_elevation" not in d["climate_predictors"] for _ in [0])
+          assert d["original_frozen_GEB_H3c_untouched"]
+          PY
+      - name: Upload protected V4 S1 trait-wise RF variable-count evaluation summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-traitwise-selector-${{ github.run_id }}
+          path: work/rf21/public/V4_S1_TRAITWISE_VARIABLE_SELECTION.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Source-authenticated original V4 species-mean RF screen with all 23 environmental predictors
         run: |
           set -euo pipefail
