@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'analysis/v4/xonly_climate_selection.py'
+      - 'analysis/v4/s2_xonly_native_intro_interactions.py'
+      - 'tests/test_v4_s2_xonly_native_intro_interactions.py'
       - 'analysis/v4/s2_xonly_native_intro_selection.py'
       - 'analysis/v4/s2_native_intro_traitwise_subset.py'
       - 'analysis/v4/s2_original_colour_spatial_block_sensitivity.py'
@@ -227,6 +229,34 @@ jobs:
         with:
           name: azami-V4-S2-XONLY-BLIND-SELECTION-${{ github.run_id }}
           path: work/s2-spatial/public/V4_S2_XONLY_NATIVE_INTRO_BLIND_CHOICE.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Fit native-introduced X-only selected climate interactions on same S2 support
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_v4_s2_xonly_native_intro_interactions.py
+          python -m analysis.v4.s2_xonly_native_intro_interactions \
+            --focal work/s2-spatial/private/focal_wild_five.csv.gz \
+            --extra work/s2-spatial/private/focal_extra7.csv.gz \
+            --measured work/s2-spatial/private/original-measured.csv.gz \
+            --selected work/s2-spatial/public/V4_S2_XONLY_NATIVE_INTRO_BLIND_CHOICE.json \
+            --output work/s2-spatial/public/V4_S2_XONLY_COMMON_RANGE_INTERACTIONS.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/s2-spatial/public/V4_S2_XONLY_COMMON_RANGE_INTERACTIONS.json').read_text())
+          assert d['original_source_wild_n']==297622
+          assert d['selected_X_fully_outcome_blind']
+          assert d['n_registered_species']==2 and d['n_registered_traits']==8
+          assert len(d['results'])==16 and d['original_S2_128_Holm_frozen_untouched']
+          PY
+      - name: Upload original S2 native introduced X-only climate interactions (anonymous)
+        if: success() && steps.gate.outputs.execute == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S2-XONLY-INTERACTIONS-${{ github.run_id }}
+          path: work/s2-spatial/public/V4_S2_XONLY_COMMON_RANGE_INTERACTIONS.json
           retention-days: 90
           if-no-files-found: error
       - name: Reproduce all six original S2 coefficient rows before block bootstrap
