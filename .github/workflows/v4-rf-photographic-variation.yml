@@ -1,0 +1,274 @@
+name: V4 RF original S1 photographic within-cell dispersion (exploratory)
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/rf_photographic_within_cell_dispersion.py'
+      - 'tests/test_v4_rf_photographic_within_cell_dispersion.py'
+      - 'analysis/v4/RF_PHOTO_DISPERSION_QC_DESIGN_JA.md'
+      - 'analysis/v4/rf_photo_split_half_reliability.py'
+      - 'tests/test_v4_rf_photo_split_half_reliability.py'
+      - 'analysis/v4/RF_PHOTO_SPLIT_HALF_DESIGN_JA.md'
+      - 'analysis/v4/rf_photo_observer_disjoint_reliability.py'
+      - 'tests/test_v4_rf_photo_observer_disjoint_reliability.py'
+      - 'analysis/v4/RF_OBSERVER_DISJOINT_SPLIT_DESIGN_JA.md'
+      - '.github/workflows/v4-rf-photographic-variation.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: azami-v4-rf-photo-dispersion-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-verified-original-photo-dispersion:
+    # The original metadata is a DRAFT release asset: GitHub restricts its
+    # read access to write-capable tokens. No repository/release mutation here.
+    permissions:
+      contents: write
+      actions: read
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      github.event.pull_request.number == 167 &&
+      github.event.pull_request.head.repo.full_name == 'zuizui0223/azami' &&
+      github.event.pull_request.head.ref == 'analysis/v4-rf-multitrait-exploratory-20261031'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install source reader, numeric and synthetic-test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' \
+            'statsmodels>=0.14,<1' 'cryptography>=46,<49' 'scikit-learn>=1.4,<2' pytest
+      - name: Validate source-grain/QC/hue/within-cell tests on synthetic data only
+        run: |
+          python -m pytest -q tests/test_v4_rf_photographic_within_cell_dispersion.py
+          python -m py_compile analysis/v4/rf_photographic_within_cell_dispersion.py
+          python -m pytest -q tests/test_v4_rf_photo_split_half_reliability.py
+          python -m py_compile analysis/v4/rf_photo_split_half_reliability.py
+          python -m pytest -q tests/test_v4_rf_photo_observer_disjoint_reliability.py
+          python -m py_compile analysis/v4/rf_photo_observer_disjoint_reliability.py
+      - name: Recover exact original S1 AES-GCM archive only inside protected job
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AZAMI_METADATA_KEY:-}" ]; then
+            echo 'SOURCE_AES_KEY_UNAVAILABLE_IN_AUTHORISED_JOB' >&2
+            exit 7
+          fi
+          mkdir -p work/photo-dispersion/private work/photo-dispersion/receipt work/photo-dispersion/public
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted \
+            --dir work/photo-dispersion/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate \
+            --dir work/photo-dispersion/receipt
+          python - <<'PY'
+          import os,hashlib,json
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/photo-dispersion')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          if hashlib.sha256(raw).hexdigest()!='246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6':
+              raise SystemExit('S1_SOURCE_RECEIPT_CHANGED')
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          if hashlib.sha256(sealed).hexdigest()!=receipt['encrypted_table_sha256']:
+              raise SystemExit('S1_ENCRYPTED_TABLE_SHA_MISMATCH')
+          try:
+              plain=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12],sealed[12:],receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('S1_ORIGINAL_SOURCE_AUTHENTICATION_FAILED') from None
+          if hashlib.sha256(plain).hexdigest()!=receipt['prepared_table_sha256']:
+              raise SystemExit('S1_DECRYPTED_TABLE_SHA_MISMATCH')
+          (root/'private/s1-original.csv.gz').write_bytes(plain)
+          print('Original S1 authenticated; no source rows logged')
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/photo-dispersion/private/s1-original.csv.gz \
+            --receipt work/photo-dispersion/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/photo-dispersion/private/decoded
+      - name: Measure original-photo within-cell and across-cell variation for all eight traits
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_photographic_within_cell_dispersion \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --receipt work/photo-dispersion/private/decoded/measurement_receipt.json \
+            --output work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json')
+          data=json.loads(p.read_text())
+          assert data['source_original_s1_observations']==313350
+          assert len(data['results'])==16
+          assert data['photo_QC_cohort_not_RF_28_or_soil_34_complete_case_cohort']
+          assert data['not_a_new_Holm_p_value_family_or_frozen_GEB_result']
+          assert data['private_row_taxon_observer_site_coordinates_not_exported']
+          assert all(x['status'] in ('estimated_QC_only','insufficient_repeated_taxon_cells')
+                     for x in data['results'])
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','latitude','longitude',
+                     'user_id','photographer_id','photo_id','individual_prediction'}
+          def walk(x):
+              if isinstance(x,dict):
+                  for k,v in x.items():
+                      if k in forbidden:raise ValueError('PRIVATE_AGGREGATE_KEY_'+k)
+                      walk(v)
+              elif isinstance(x,list):
+                  for v in x:walk(v)
+          walk(data)
+          print('Original S1 nonidentifying 16 aggregate summaries verified', flush=True)
+          PY
+      - name: Measure split-half reproducibility of independent original-photo cell medians
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_photo_split_half_reliability \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --receipt work/photo-dispersion/private/decoded/measurement_receipt.json \
+            --output work/photo-dispersion/public/rf_photo_split_half_original_S1_1deg_5deg_aggregate.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/photo-dispersion/public/rf_photo_split_half_original_S1_1deg_5deg_aggregate.json')
+          data=json.loads(p.read_text())
+          assert data['source_original_S1_observations']==313350
+          assert len(data['results'])==16
+          assert all(len(entry['splits'])==3 for entry in data['results'])
+          assert data['source_taxon_cell_photo_location_data_not_exported']
+          assert data['photo_QC_not_RF28_or_Soil34_environment_complete_case_cohort']
+          assert data['frozen_GEB_S1_S2_H3c_untouched']
+          allowed={'estimated_exploratory_reliability',
+                   'insufficient_independently_supported_cells',
+                   'insufficient_finite_taxon_correlations'}
+          assert all(split['status'] in allowed for row in data['results']
+                     for split in row['splits'])
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','latitude','longitude',
+                     'user_id','photographer_id','photo_id','individual_prediction',
+                     'lat_cell','lon_cell'}
+          def audit(x):
+              if isinstance(x,dict):
+                  for k,v in x.items():
+                      if k in forbidden:raise ValueError('PRIVATE_SPLIT_HALF_KEY_'+k)
+                      audit(v)
+              elif isinstance(x,list):
+                  for v in x:audit(v)
+          audit(data)
+          print('Source-real split-half verified: 16 construct/grain summaries, three seeds each',flush=True)
+          PY
+      - name: Recover authenticated private observer roster and test globally observer-disjoint photographic geography
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          gh api -H "Accept: application/octet-stream" \
+            repos/zuizui0223/azami/releases/assets/658986481 \
+            > work/photo-dispersion/private/original-photo-metadata.aesgcm
+          echo 'dfa98fa162a8029cb6477adf4c26ffc5819cc916a0513d32da14d78d845ab4b0  work/photo-dispersion/private/original-photo-metadata.aesgcm' | sha256sum -c -
+          python -m analysis.v4.native_observers \
+            --sealed work/photo-dispersion/private/original-photo-metadata.aesgcm \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --out-private work/photo-dispersion/private/original-observers.csv.gz
+          python -m analysis.v4.rf_photo_observer_disjoint_reliability \
+            --native work/photo-dispersion/private/decoded/observations.csv.gz \
+            --receipt work/photo-dispersion/private/decoded/measurement_receipt.json \
+            --roster work/photo-dispersion/private/original-observers.csv.gz \
+            --output work/photo-dispersion/public/rf_photo_observer_disjoint_original_S1_1deg_5deg_aggregate.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/photo-dispersion/public/rf_photo_observer_disjoint_original_S1_1deg_5deg_aggregate.json').read_text())
+          assert d['source_original_S1_observations']==313350
+          assert d['distinct_authenticated_source_observers']==92839
+          assert len(d['results'])==16 and all(len(row['splits'])==3 for row in d['results'])
+          assert d['design']['one_observation_per_observer_taxon_cell']
+          assert d['private_observer_ids_and_photo_rows_not_exported']
+          assert d['frozen_GEB_S1_S2_H3c_unchanged']
+          allowed={'estimated_exploratory_reliability',
+                   'insufficient_independently_supported_cells',
+                   'insufficient_finite_taxon_correlations'}
+          assert all(s['status'] in allowed for row in d['results'] for s in row['splits'])
+          forbidden={'obs_id','accepted_key','taxon','user_id','photographer_id',
+                     'taxon_name','latitude','longitude','lat_cell','lon_cell',
+                     'photo_id','user_login','individual_prediction'}
+          def walk(x):
+              if isinstance(x,dict):
+                  for k,v in x.items():
+                      if k in forbidden:raise ValueError('PRIVATE_USER_SPLIT_KEY_'+k)
+                      walk(v)
+              elif isinstance(x,list):
+                  for v in x:walk(v)
+          walk(d)
+          print('Global observer-disjoint source result privacy and scientific gates verified',flush=True)
+          PY
+      - name: Source-authenticated original V4 species-mean RF with native 7 predictors
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_rf_screen.py tests/test_species_environment_existing_inputs.py tests/test_species_environment_scan.py
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          import pandas as pd
+          from analysis.v4 import species_environment_rf_screen as rf
+          from analysis.v4.species_environment_scan import FEATURES
+          from analysis.v4.species_environment_existing_inputs import NATIVE7
+          native=Path('work/photo-dispersion/private/decoded/observations.csv.gz')
+          receipt=json.loads(Path('work/photo-dispersion/private/decoded/measurement_receipt.json').read_text())
+          srcsha=hashlib.sha256(native.read_bytes()).hexdigest()
+          assert receipt['prepared_table_sha256']==srcsha
+          assert receipt['native_observations']==313350
+          assert receipt['environment_decoding_status']=='physical_units_gsp_invalid_encoding_masked_v1'
+          columns={'obs_id','accepted_key','longitude',*NATIVE7}
+          for v in FEATURES.values():
+              columns.update(v)
+              columns.update(k+'__eligible' for k in v)
+          d=pd.read_csv(native,usecols=list(columns),dtype={'obs_id':str,'accepted_key':str},low_memory=False)
+          assert len(d)==313350 and set(d)==columns and d.obs_id.is_unique
+          r=rf.run_screen(d,trees=80,repeats=2,permutation_repeats=2)
+          assert len(r['results'])==8 and r['n_original_input_observations']==313350
+          assert r['frozen_GEB_S1_S2_H3c_untouched']
+          assert all(set(x['predictors_used'])<=set(NATIVE7) for x in r['results'] if 'predictors_used' in x)
+          r.update(original_V4_S1_provenance_sha256=srcsha,
+                   environment_tier='decoded_native_seven_only',
+                   original_S1_source_row_count=313350,
+                   not_a_23_predictor_result=True)
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(obj):
+              if isinstance(obj,dict):
+                  for key,value in obj.items():
+                      if key in forbidden:raise ValueError('PRIVATE_SOURCE_EXPORT_KEY_'+key)
+                      audit(value)
+              elif isinstance(obj,list):
+                  for value in obj:audit(value)
+          audit(r)
+          dest=Path('work/photo-dispersion/public/rf_species_mean_V4_native7_aggregate.json')
+          dest.write_text(json.dumps(r,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
+          print('Source-verified native7 original V4 species-mean RF aggregate',flush=True)
+          PY
+      - name: Publish aggregate diagnostics only; no photograph, source or individual data
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-original-S1-photographic-variation-${{ github.run_id }}
+          path: |
+            work/photo-dispersion/public/rf_photo_within_cell_original_S1_1deg_5deg_aggregate.json
+            work/photo-dispersion/public/rf_photo_split_half_original_S1_1deg_5deg_aggregate.json
+            work/photo-dispersion/public/rf_photo_observer_disjoint_original_S1_1deg_5deg_aggregate.json
+            work/photo-dispersion/public/rf_species_mean_V4_native7_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Always remove original protected photo and metadata files
+        if: always()
+        run: rm -rf work/photo-dispersion/private work/photo-dispersion/receipt

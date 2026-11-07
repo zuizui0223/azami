@@ -1,0 +1,9 @@
+construct,n_taxa,skill_native7,skill_all23,longitude_sector_skill_native7,longitude_sector_skill_all23,highest_individual_permutation_variable
+angle,178,+0.00668,-0.004999,-0.12215,-0.05076,chelsa_bio07
+lightness,177,+0.22880,+0.19463,+0.02440,-0.08771,chelsa_rsds_mean
+chroma,177,+0.22001,+0.24011,+0.12309,-0.03293,chelsa_bio08
+hue,177,+0.19191,+0.26886,+0.06882,-0.02082,chelsa_bio08
+aspect,177,-0.08907,-0.10113,-0.17937,-0.17122,chelsa_bio10
+circularity,177,-0.00316,-0.05139,-0.02750,-0.12344,chelsa_bio05
+solidity,177,-0.03025,-0.04441,-0.00929,+0.04083,chelsa_bio05
+width_profile,177,+0.05384,+0.07520,-0.16236,-0.26868,topo_elevation

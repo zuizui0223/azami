@@ -1,0 +1,106 @@
+{
+  "schema": "azami_rf_extended32_raster_recipe_v1",
+  "scope": "complete_bioclim21",
+  "notice": "SOURCE FILES ARE NOT ACQUIRED. Complete, verify and pin all fields before sampling.",
+  "layers": {
+    "chelsa_bio02": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio03": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio07": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio08": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio09": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio10": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio11": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio16": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    },
+    "chelsa_bio19": {
+      "dataset": "CHELSA-bioclim-v2.1",
+      "temporal_support": "1981-2010",
+      "raster_file": "",
+      "expected_sha256": "",
+      "source_url": "https://www.chelsa-climate.org/datasets/chelsa_bioclim",
+      "unit": "",
+      "derivation": "",
+      "scale": null,
+      "offset": null
+    }
+  }
+}

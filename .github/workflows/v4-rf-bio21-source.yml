@@ -1,0 +1,690 @@
+name: V4 RF CHELSA BIO21 original-source exploratory test
+on:
+  pull_request:
+    paths:
+      - 'analysis/v4/rf_bio21_source_real.py'
+      - 'analysis/v4/s1_h3_blind_climate_analogue.py'
+      - 'tests/test_v4_s1_h3_blind_climate_analogue.py'
+      - 'analysis/v4/s1_xonly_between_within_refit.py'
+      - 'tests/test_v4_s1_xonly_between_within_refit.py'
+      - 'analysis/v4/xonly_climate_selection.py'
+      - 'analysis/v4/s1_xonly_sectionwise_selection.py'
+      - 'tests/test_v4_xonly_climate_selection.py'
+      - 'analysis/v4/species_environment_partial_rda.py'
+      - 'tests/test_species_environment_partial_rda.py'
+      - 'analysis/v4/SPECIES_ENVIRONMENT_PARTIAL_RDA_DESIGN_JA.md'
+      - 'analysis/v4/s1_traitwise_rf_subset_selection.py'
+      - 'analysis/v4/species_environment_spls2.py'
+      - 'analysis/v4/species_environment_spls2_geoelev.py'
+      - 'tests/test_species_environment_spls2_geoelev.py'
+      - 'analysis/v4/V4_SPLS2_S1_CLIMATE_GEO_ELEV_CROSSFIT_DESIGN_JA.md'
+      - 'analysis/v4/species_environment_predictive_permutation.py'
+      - 'tests/test_species_environment_predictive_permutation.py'
+      - 'analysis/v4/V4_RF_SPLS2_PERMUTATION_SIGNIFICANCE_20261107_JA.md'
+      - 'tests/test_species_environment_spls2.py'
+      - 'analysis/v4/SPECIES_ENVIRONMENT_SPLS2_DESIGN_JA.md'
+      - 'analysis/v4/rf_extended_environment.py'
+      - 'tests/test_v4_rf_bio21_source_real.py'
+      - 'tests/test_v4_rf_holdout_sensitivity.py'
+      - 'analysis/v4/rf_archived_atmosphere.py'
+      - 'tests/test_v4_rf_archived_atmosphere.py'
+      - 'analysis/v4/CHELSA_VPD_WIND23_RF_JA.md'
+      - '.github/workflows/v4-rf-bio21-source.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: azami-rf-bio21-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-verified-chelsa-bio21:
+    # Secrets and original S1 may never run in a fork or an unrelated PR.
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      github.event.pull_request.number == 167 &&
+      github.event.pull_request.head.repo.full_name == 'zuizui0223/azami' &&
+      github.event.pull_request.head.ref == 'analysis/v4-rf-multitrait-exploratory-20261031'
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numeric, raster and encrypted-source dependencies
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' \
+            'statsmodels>=0.14,<1' 'scikit-learn>=1.4,<2' \
+            'rasterio>=1.3,<2' 'requests>=2.31,<3' 'cryptography>=46,<49' pytest
+      - name: Test original-source gate and protected raster runner on synthetic data
+        run: |
+          python -m pytest -q tests/test_v4_rf_bio21_source_real.py \
+            tests/test_v4_rf_holdout_sensitivity.py \
+            tests/test_v4_rf_archived_atmosphere.py \
+            tests/test_v4_rf_extended_environment.py \
+            tests/test_v4_rf_extended_raster_sampler.py \
+            tests/test_v4_rf_multitrait_predictability.py
+          python -m py_compile analysis/v4/rf_bio21_source_real.py
+      - name: Recover exact 313350-row confidential S1 from authenticated encrypted artifact
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AZAMI_METADATA_KEY:-}" ]; then
+            echo 'S1_METADATA_KEY_UNAVAILABLE_IN_AUTHORISED_WORKFLOW' >&2
+            exit 7
+          fi
+          mkdir -p work/rf21/private work/rf21/receipt work/rf21/public work/rf21/temp
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-native-observation-input-encrypted --dir work/rf21/private
+          gh run download 39408603488 --repo zuizui0223/azami \
+            --name v4-all665115-native-climate-aggregate --dir work/rf21/receipt
+          python - <<'PY'
+          import os, json, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          root=Path('work/rf21')
+          raw=(root/'receipt/measurement_receipt.json').read_bytes()
+          if hashlib.sha256(raw).hexdigest() != '246a5ea9643617c6dc766e0b8d27a444a5496afe150d7768032740cf6a53f0a6':
+              raise SystemExit('S1_RECEIPT_SHA_MISMATCH')
+          receipt=json.loads(raw)
+          sealed=(root/'private/native-observation-measurements.csv.gz.aesgcm').read_bytes()
+          if hashlib.sha256(sealed).hexdigest()!=receipt['encrypted_table_sha256']:
+              raise SystemExit('ENCRYPTED_S1_ARCHIVE_SHA_MISMATCH')
+          try:
+              clear=AESGCM(bytes.fromhex(os.environ['AZAMI_METADATA_KEY'])).decrypt(
+                  sealed[:12], sealed[12:], receipt['encrypted_table_aad'].encode())
+          except Exception:
+              raise SystemExit('S1_SOURCE_AUTHENTICATION_FAILED') from None
+          if hashlib.sha256(clear).hexdigest()!=receipt['prepared_table_sha256']:
+              raise SystemExit('S1_ORIGINAL_DECRYPTED_BYTES_MISMATCH')
+          (root/'private/s1-original.csv.gz').write_bytes(clear)
+          print('SHA/AESGCM original S1 verified (no source rows logged)',flush=True)
+          PY
+          python -m analysis.v4.decode_environment \
+            --table work/rf21/private/s1-original.csv.gz \
+            --receipt work/rf21/receipt/measurement_receipt.json \
+            --metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/private/decoded
+      - name: Download and sample the 16 source-true raster variables sequentially
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_bio21_source_real \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --private-dir work/rf21/private/environment \
+            --public-dir work/rf21/public \
+            --temporary work/rf21/temp
+      - name: Select S1 climate variables BLIND to all flower trait results for 3.1 and 3.3
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_v4_xonly_climate_selection.py
+          python -m analysis.v4.s1_xonly_sectionwise_selection \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-sha 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/V4_S1_XONLY_SECTIONWISE_SELECTED.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result=json.loads(Path("work/rf21/public/V4_S1_XONLY_SECTIONWISE_SELECTED.json").read_text())
+          assert result["original_native_observations"]==313350
+          assert len(result["candidate_predictors"])==22
+          assert not result["uses_original_or_previous_flower_trait_results"]
+          assert not result["uses_photographic_trait_columns"]
+          assert set(result["section33"]["by_resolution"])=={"1degree","5degree"}
+          PY
+      - name: Upload ONLY source-confirmed S1 X-only blind climate selection summary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-XONLY-BLIND-VARIABLE-CHOICE-${{ github.run_id }}
+          path: work/rf21/public/V4_S1_XONLY_SECTIONWISE_SELECTED.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Refit S1 between- and within-taxon climate slopes from X-only blind choices
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_v4_s1_xonly_between_within_refit.py
+          python -m analysis.v4.s1_xonly_between_within_refit \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-sha 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --selected work/rf21/public/V4_S1_XONLY_SECTIONWISE_SELECTED.json \
+            --output work/rf21/public/V4_S1_XONLY_BETWEEN_WITHIN_CLIMATE_REGRESSION.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("work/rf21/public/V4_S1_XONLY_BETWEEN_WITHIN_CLIMATE_REGRESSION.json").read_text())
+          assert r['n_original_native_S1']==313350 and r['selected_without_traits']
+          assert len(r['results'])==8 and r['not_original_S1_80_tests_or_H3c']
+          assert r['n_tests_familywise_original_pvalues']<=8*15
+          assert all(x['support']['n_taxa']>=35 for x in r['results'])
+          PY
+      - name: Upload source-verified S1 blind-selection between-within regression aggregate
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-XONLY-GRADIENT-REFIT-${{ github.run_id }}
+          path: work/rf21/public/V4_S1_XONLY_BETWEEN_WITHIN_CLIMATE_REGRESSION.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Source-verified original H3c with X-only selected climate and matched-pair calibration
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_v4_s1_h3_blind_climate_analogue.py
+          python -m analysis.v4.s1_h3_blind_climate_analogue \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-sha 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --selected work/rf21/public/V4_S1_XONLY_SECTIONWISE_SELECTED.json \
+            --output work/rf21/public/V4_H3C_XONLY_CLIMATE_PROJECTION.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/rf21/public/V4_H3C_XONLY_CLIMATE_PROJECTION.json').read_text())
+          assert d["original_source_observation_n"]==313350
+          assert d["H3_climate_variable_selection_outcome_blind"]
+          assert set(d["results"])=={"1degree","5degree"}
+          assert all(set(v["results"])=={"original3","blind_selected_PCA3","blind_selected_raw7"}
+                     for v in d["results"].values())
+          PY
+      - name: Upload original S1 blind climate projection and H3c phenotype alignment (anonymous)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-XONLY-H3C-ANALOG-${{ github.run_id }}
+          path: work/rf21/public/V4_H3C_XONLY_CLIMATE_PROJECTION.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Original V4 S1 joint eight-construct sparse PLS2 with climate-only 22 axes
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_spls2.py
+          python -m analysis.v4.species_environment_spls2 \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/v4_original_s1_species_joint_spls2_climate22_aggregate.json \
+            --bootstrap 100
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          path=Path('work/rf21/public/v4_original_s1_species_joint_spls2_climate22_aggregate.json')
+          r=json.loads(path.read_text(encoding='utf-8'))
+          assert r['status']=='V4_SOURCE_VERIFIED_EXPLORATORY_SPLS2'
+          assert r['original_source_observation_n']==313350
+          assert len(r['predictors'])==22 and 'topo_elevation' not in r['predictors']
+          assert len(r['response_columns'])==9 and r['n_registered_constructs']==8
+          assert r['species_support']['n_joint_supported_taxa']>=40
+          assert r['prior_GEB_S1_S2_H3c_and_RF_frozen']
+          assert not r['includes_elevation_or_terrain'] and not r['uses_soil']
+          assert r['taxon_holdout_nested_cv']['n_outer_partitions']==10
+          assert r['authenticated_source_receipt_sha256']=='26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545'
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(node):
+              if isinstance(node,dict):
+                  for k,v in node.items():
+                      if k in forbidden:raise RuntimeError('PRIVATE_ORIGINAL_SOURCE_EXPORTED_'+k)
+                      audit(v)
+              elif isinstance(node,list):
+                  for x in node:audit(x)
+          audit(r)
+          print('Original V4 source-verified joint 8-construct sPLS2 aggregate validated',flush=True)
+          PY
+      - name: Upload original V4 S1 joint sparse PLS2 22-climate aggregate only
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-joint-sPLS2-climate22-${{ github.run_id }}
+          path: work/rf21/public/v4_original_s1_species_joint_spls2_climate22_aggregate.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Original V4 S1 same-photos climate and geography partial RDA
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_partial_rda.py tests/test_species_environment_spls2.py
+          python -m analysis.v4.species_environment_partial_rda \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/v4_original_s1_partial_rda_climate22_geo8_aggregate.json \
+            --permutations 499
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/rf21/public/v4_original_s1_partial_rda_climate22_geo8_aggregate.json')
+          z=json.loads(p.read_text(encoding='utf-8'))
+          assert z['analysis_status']=='V4_SOURCE_VERIFIED_EXPLORATORY_PARTIAL_RDA'
+          assert z['n_original_observations']==313350
+          assert z['n_joint_photo_supported_before_all22_climate_complete_case']==173
+          assert z['n_joint_supported_taxa']==173
+          assert z['photo_source_support']['source_photo_contributions_to_taxon_means']==156899
+          assert z['same_exact_taxa_in_all_comparisons']
+          assert z['historical_phylogeny_status']=='not_estimated_no_authenticated_V4_matched_tree'
+          assert z['previous_sPLS2_and_GEB_results_unchanged']
+          assert len(z['climate_source_variables'])==22
+          assert set(z['families'])=={'all_eight','color','angle','outline'}
+          for name, models in z['families'].items():
+              assert len(models)==4
+              assert all(v['n_taxa']==173 for v in models.values())
+              assert all(v['n_geo_dimensions']==8 for v in models.values())
+          prohibited={'obs_id','accepted_key','_taxon_private','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def check(o):
+              if isinstance(o,dict):
+                  for k,v in o.items():
+                      if k in prohibited:raise RuntimeError('PRIVATE_SOURCE_FIELD_'+k)
+                      check(v)
+              elif isinstance(o,list):
+                  for v in o:check(v)
+          check(z)
+          print('Authenticated V4 S1 climate-space two-block partial RDA summary validated',flush=True)
+          PY
+      - name: Upload ONLY V4 S1 same-photo climate/space partial RDA aggregate
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-partial-RDA-climate22-space8-${{ github.run_id }}
+          path: work/rf21/public/v4_original_s1_partial_rda_climate22_geo8_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: V4 original S1 RF group importance and sparse-PLS2 source-real permutation P values
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_predictive_permutation.py
+          python -m analysis.v4.species_environment_predictive_permutation \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/v4_original_S1_RF_SPLS2_permutation_aggregate.json \
+            --unrestricted 99 --regional 99 --trees 80
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('work/rf21/public/v4_original_S1_RF_SPLS2_permutation_aggregate.json').read_text())
+          assert r['schema']=='V4_S1_original_photo_RF_PLS2_posthoc_permutation_v1'
+          assert r['status']=='source_real_exploratory_permutation_calibration'
+          assert r['original_S1_source_row_count']==313350
+          assert r['data']['sPLS2_joint_taxa']==173
+          assert len(r['data']['X_variables'])==22 and 'topo_elevation' not in r['data']['X_variables']
+          assert r['methods']['permutation_unrestricted_n']==99 and r['methods']['permutation_within_sector_n']==99
+          assert len(r['hypotheses'])==3
+          for method in r['permutation_inference'].values():
+              assert 0<method['sPLS2_global_nested_cv']['null_p_one_sided']<=1
+              for key in ('RF_group_importance','sPLS2_selected_coefficient'):
+                  assert len(method[key])==3
+                  for x in method[key].values():
+                      assert 0<x['null_p_one_sided']<=x['posthoc_family3_holm']<=1
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','latitude','longitude',
+                    'photo_id','photographer_id','user_id','individual_prediction','_taxon_private'}
+          def privacy(o):
+              if isinstance(o,dict):
+                  for k,v in o.items():
+                      if k in forbidden:raise ValueError('PRIVATE_SOURCE_KEY_EXPORTED_'+k)
+                      privacy(v)
+              elif isinstance(o,list):
+                  for v in o:privacy(v)
+          privacy(r)
+          print('Verified V4 original S1 RF and sPLS2 anonymous empirical permutation P values',flush=True)
+          PY
+      - name: Upload source-authenticated V4 RF sPLS2 permutation P values (anonymous only)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-RF-sPLS2-permutation-${{ github.run_id }}
+          path: work/rf21/public/v4_original_S1_RF_SPLS2_permutation_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Cross-fitted original V4 S1 sPLS2 climate axes versus geography and elevation
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_spls2.py tests/test_species_environment_partial_rda.py tests/test_species_environment_spls2_geoelev.py
+          python -m analysis.v4.species_environment_spls2_geoelev \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/v4_s1_spls2_climate_geography_elevation_crossfitted_aggregate.json \
+            --repeats 2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/rf21/public/v4_s1_spls2_climate_geography_elevation_crossfitted_aggregate.json')
+          d=json.loads(p.read_text())
+          assert d['status']=='V4_ORIGINAL_S1_SOURCE_VERIFIED_CROSSFITTED_SPLS2_GEO_ELEV'
+          assert d['original_input_observations']==313350
+          assert d['environment_axes']['number_of_original_bioclim_climate_predictors']==22
+          assert d['environment_axes']['number_of_spls2_axes']==2
+          assert d['species_support']['n_source_species_before_elevation_gate']==173
+          assert 40<=d['species_support']['n_source_species_matching_elevation_gate']<=173
+          assert d['all_models_use_exact_same_matched_source_taxa_and_fold_indices']
+          assert d['no_confirmatory_p_values'] and d['original_frozen_S1_S2_H3c_unchanged']
+          assert d['heldout']['n_partitions']==10
+          assert len(d['heldout']['model_skill_against_training_mean'])==5
+          assert len(d['heldout']['model_skill_by_construct'])==8
+          if d['heldout']['geographic_holdout']['status']=='estimated':
+              assert d['heldout']['geographic_holdout']['n_partitions']==3
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','_taxon_private',
+                     'individual_prediction'}
+          def privacy(o):
+              if isinstance(o,dict):
+                  for k,v in o.items():
+                      if k in forbidden:raise RuntimeError('PRIVATE_SOURCE_EXPORTED_'+k)
+                      privacy(v)
+              elif isinstance(o,list):
+                  for v in o:privacy(v)
+          privacy(d)
+          print('Original V4 S1 sPLS2 climate/geography/elevation crossfit aggregate passed',flush=True)
+          PY
+      - name: Upload anonymous original V4 S1 crossfitted climate geographic elevation comparison
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-sPLS2-climate-geo-elev-${{ github.run_id }}
+          path: work/rf21/public/v4_s1_spls2_climate_geography_elevation_crossfitted_aggregate.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: V4 S1 original-source trait-wise nested climate-variable count exploration
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_traitwise_rf_subset_selection \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-sha 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/V4_S1_TRAITWISE_VARIABLE_SELECTION.json
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=json.loads(Path("work/rf21/public/V4_S1_TRAITWISE_VARIABLE_SELECTION.json").read_text())
+          assert d["original_source_n"]==313350 and len(d["results"])==8
+          assert len(d["climate_predictors"])==22
+          assert all(x["n_taxa"]>=100 and len(x["variable_ranking"])==22 for x in d["results"])
+          assert all("topo_elevation" not in d["climate_predictors"] for _ in [0])
+          assert d["original_frozen_GEB_H3c_untouched"]
+          PY
+      - name: Upload protected V4 S1 trait-wise RF variable-count evaluation summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-traitwise-selector-${{ github.run_id }}
+          path: work/rf21/public/V4_S1_TRAITWISE_VARIABLE_SELECTION.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Source-authenticated original V4 species-mean RF screen with all 23 environmental predictors
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_rf_screen.py tests/test_species_environment_existing_inputs.py tests/test_species_environment_scan.py
+          python -m analysis.v4.species_environment_rf_screen \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/rf_species_mean_V4_23axes_aggregate.json \
+            --trees 80 --repeats 2 --permutation-repeats 2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/rf21/public/rf_species_mean_V4_23axes_aggregate.json').read_text())
+          assert d['n_original_input_observations']==313350
+          assert len(d['results'])==8 and d['number_of_registered_predictors']==23
+          assert d['frozen_GEB_S1_S2_H3c_untouched']
+          assert d['source_provenance']['source_row_count']==313350
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(obj):
+              if isinstance(obj,dict):
+                  for key,value in obj.items():
+                      if key in forbidden:raise ValueError('PRIVATE_SOURCE_EXPORT_KEY_'+key)
+                      audit(value)
+              elif isinstance(obj,list):
+                  for value in obj:audit(value)
+          audit(d)
+          print('Source-verified all-23 environmental original V4 species RF aggregate',flush=True)
+          PY
+      - name: Upload original V4 S1 species-mean RF 23-variable nonidentifying result
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-species-mean-RF-23-${{ github.run_id }}
+          path: work/rf21/public/rf_species_mean_V4_23axes_aggregate.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: V4 original S1 RF climate-only 22 predictors (elevation excluded)
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_species_environment_rf_screen.py
+          python -m analysis.v4.species_environment_rf_screen \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-receipt-sha256 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --output work/rf21/public/rf_species_mean_V4_climate22_noelevation.json \
+            --trees 80 --repeats 2 --permutation-repeats 2 --no-elevation
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('work/rf21/public/rf_species_mean_V4_climate22_noelevation.json').read_text())
+          assert len(x['results'])==8 and x['excluded_predictors']==['topo_elevation']
+          assert x['active_climate_predictor_count']==22
+          assert x['n_original_input_observations']==313350
+          assert all('topo_elevation' not in row.get('predictors_used',[])
+                     for row in x['results'])
+          forbidden={'obs_id','accepted_key','taxon','taxon_name','user_id',
+                     'photo_id','photographer_id','latitude','longitude','individual_prediction'}
+          def audit(d):
+              if isinstance(d,dict):
+                  for k,v in d.items():
+                      if k in forbidden:raise RuntimeError('SOURCE_KEY_EXPORT_'+k)
+                      audit(v)
+              elif isinstance(d,list):
+                  for v in d:audit(v)
+          audit(x)
+          print('Original S1 22-climate RF aggregate passes elevation/privacy gates')
+          PY
+      - name: Upload ONLY V4 S1 22-climate no-elevation RF summary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-climate22-noelevation-${{ github.run_id }}
+          path: work/rf21/public/rf_species_mean_V4_climate22_noelevation.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Source-real RF 12 versus 21, matching photo rows within paired groups
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=Path('work/rf21/public/bio21_source_receipt.json')
+          receipt=json.loads(r.read_text())
+          assert receipt['source_observations']==313350
+          assert len(receipt['source_variables'])==16
+          for variable in receipt['source_variables']:
+              assert receipt['source_variables'][variable]['coverage']>=.75
+          PY
+          python -m analysis.v4.rf_extended_environment \
+            --upper-tier complete_bioclim21 \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra32-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra32-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --layer-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --output work/rf21/public/rf_12_vs_21_anchor3_aggregate.json \
+            --constructs angle,chroma,aspect --trees 80 --permutation-repeats 3
+          # Complete all eight registered constructs without changing the
+          # three original 2026-10-31 anchor estimates or Holm paper.
+          python -m analysis.v4.rf_extended_environment \
+            --upper-tier complete_bioclim21 \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra32-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra32-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --layer-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --output work/rf21/public/rf_12_vs_21_full8_aggregate.json \
+            --trees 80 --permutation-repeats 3
+          # Explicit posthoc sensitivity: relaxed photo/cell support + equal
+          # numbers of taxa per group holdout fold; original output untouched.
+          python -m analysis.v4.rf_extended_environment \
+            --upper-tier complete_bioclim21 \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra32-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra32-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --layer-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --output work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json \
+            --constructs angle,chroma,aspect --min-per-cell 1 \
+            --splits unseen_taxa_balanced,unseen_longitude_sectors \
+            --trees 80 --permutation-repeats 3
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('work/rf21/public/rf_12_vs_21_anchor3_aggregate.json')
+          data=json.loads(path.read_text())
+          assert data['original_S1_S2_Holm_and_H3c_unmodified'] is True
+          assert set(data['requested_constructs'])=={'angle','chroma','aspect'}
+          assert data['original_source']['s1_observations']==313350
+          def all_keys(v):
+              if isinstance(v,dict):
+                  for k,x in v.items():
+                      yield k; yield from all_keys(x)
+              elif isinstance(v,list):
+                  for x in v: yield from all_keys(x)
+          assert not set(all_keys(data)) & {'obs_id','accepted_key','taxon_name',
+              'photo_id','user_id','latitude','longitude','photographer_id'}
+          print('Aggregates checked: traits=', len(data['requested_constructs']),
+                'grouped_holdout_results=',len(data['results']),flush=True)
+          full=json.loads(Path('work/rf21/public/rf_12_vs_21_full8_aggregate.json').read_text())
+          sensitivity=json.loads(Path('work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json').read_text())
+          assert len(full['requested_constructs'])==8 and not full['posthoc_support_or_folding_sensitivity']
+          assert full['minimum_source_photos_per_taxon_cell']==3
+          assert sensitivity['requested_constructs']==['angle','chroma','aspect']
+          assert sensitivity['posthoc_support_or_folding_sensitivity']
+          assert sensitivity['minimum_source_photos_per_taxon_cell']==1
+          assert sensitivity['split_schemes']==['unseen_taxa_balanced','unseen_longitude_sectors']
+          for report in (full, sensitivity):
+              assert report['original_S1_S2_Holm_and_H3c_unmodified']
+              assert not set(all_keys(report)) & {'obs_id','accepted_key','taxon_name',
+                  'photo_id','user_id','latitude','longitude','photographer_id'}
+          PY
+      - name: Source-verified CHELSA VPD and wind exploratory 21-versus-23 test
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.rf_archived_atmosphere \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra-nine-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra-nine-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --environment-metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/public/rf_21_vs_23_vpd_wind_full8.json \
+            --trees 80 --permutation-repeats 3
+          python -m analysis.v4.rf_archived_atmosphere \
+            --native-table work/rf21/private/decoded/observations.csv.gz \
+            --native-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --archived-seven-table work/rf21/private/environment/original_seven.csv.gz \
+            --archived-seven-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["original_seven_private_table_sha256"])')" \
+            --extra-nine-table work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --extra-nine-sha256 "$(python -c 'import json;print(json.load(open("work/rf21/public/bio21_source_receipt.json"))["extra_nine_private_table_sha256"])')" \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --environment-metadata analysis/v4/environment_source_metadata.json \
+            --output work/rf21/public/rf_21_vs_23_vpd_wind_posthoc_balanced.json \
+            --constructs angle,chroma,aspect --min-per-cell 1 \
+            --splits unseen_taxa_balanced,unseen_longitude_sectors \
+            --trees 80 --permutation-repeats 3
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/rf21/public')
+          main=json.loads((p/'rf_21_vs_23_vpd_wind_full8.json').read_text())
+          alt=json.loads((p/'rf_21_vs_23_vpd_wind_posthoc_balanced.json').read_text())
+          assert len(main['requested_constructs'])==8
+          assert not main['posthoc_support_or_folding_sensitivity']
+          assert main['original_S1_S2_Holm_and_H3c_unmodified']
+          assert alt['posthoc_support_or_folding_sensitivity']
+          assert alt['minimum_source_photos_per_taxon_cell']==1
+          assert alt['split_schemes']==['unseen_taxa_balanced','unseen_longitude_sectors']
+          for r in (main,alt):
+              keys=set()
+              def collect(node):
+                  if isinstance(node,dict):
+                      for k,v in node.items():
+                          keys.add(k); collect(v)
+                  elif isinstance(node,list):
+                      for v in node:collect(v)
+              collect(r)
+              assert not keys & {'obs_id','accepted_key','taxon_name','latitude',
+                                 'longitude','user_id','photo_id','photographer_id'}
+          PY
+      - name: Upload ONLY aggregated climate source hashes/coverage and RF test summaries
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-v4-rf-bio21-source-real-${{ github.run_id }}
+          path: |
+            work/rf21/public/bio21_source_receipt.json
+            work/rf21/public/rf_12_vs_21_anchor3_aggregate.json
+            work/rf21/public/rf_12_vs_21_full8_aggregate.json
+            work/rf21/public/rf_12_vs_21_posthoc_balanced_support_aggregate.json
+            work/rf21/public/rf_21_vs_23_vpd_wind_full8.json
+            work/rf21/public/rf_21_vs_23_vpd_wind_posthoc_balanced.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Always securely remove decrypted S1 and any raster/intermediate input
+        if: always()
+        run: rm -rf work/rf21/private work/rf21/receipt work/rf21/temp
