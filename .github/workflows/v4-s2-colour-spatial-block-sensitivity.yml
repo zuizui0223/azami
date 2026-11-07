@@ -3,6 +3,7 @@ name: V4 S2 original colour spatial block sensitivity
 on:
   pull_request:
     paths:
+      - 'analysis/v4/s2_native_intro_traitwise_subset.py'
       - 'analysis/v4/s2_original_colour_spatial_block_sensitivity.py'
       - 'tests/test_v4_s2_original_colour_spatial_block_sensitivity.py'
       - '.github/workflows/v4-s2-colour-spatial-block-sensitivity.yml'
@@ -18,6 +19,10 @@ concurrency:
 
 jobs:
   exact-original-S2-colour-spatial-blocks:
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.pull_request.head.repo.full_name == 'zuizui0223/azami')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -52,7 +57,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check 'numpy>=1.26,<3' 'pandas>=2.1,<3' 'scipy>=1.11,<2' 'statsmodels>=0.14,<1' 'cryptography>=46,<49' 'shapely>=2,<3' 'rasterio>=1.4,<2' 'requests>=2.31,<3' pytest
           python -m pytest -q tests/test_v4_s2_original_colour_spatial_block_sensitivity.py
-          python -m py_compile analysis/v4/s2_original_colour_spatial_block_sensitivity.py
+          python -m py_compile analysis/v4/s2_original_colour_spatial_block_sensitivity.py analysis/v4/s2_native_intro_traitwise_subset.py
       - name: Restore original confidential WCVP-native and explicitly introduced S2 sources
         if: steps.gate.outputs.execute == 'true'
         env:
@@ -223,6 +228,25 @@ jobs:
               assert protected not in txt,protected
           print('S2 six source-verified frozen rows and spatial-block sensitivities validated',
                 flush=True)
+          PY
+      - name: S2 source-authenticated native and introduced colour-specific predictor selection
+        if: steps.gate.outputs.execute == 'true'
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s2_native_intro_traitwise_subset \
+            --focal work/s2-spatial/private/focal_wild_five.csv.gz \
+            --extra work/s2-spatial/private/focal_extra7.csv.gz \
+            --measured work/s2-spatial/private/original-measured.csv.gz \
+            --out work/s2-spatial/public/V4_S2_NATIVE_INTRO_TRAITWISE_VARIABLE_SELECTION.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/s2-spatial/public/V4_S2_NATIVE_INTRO_TRAITWISE_VARIABLE_SELECTION.json')
+          d=json.loads(p.read_text())
+          assert d['original_wild_source_n']==297622
+          assert len(d['panels'])==8 and len(d['frozen_reference_rows_checked'])==6
+          assert all(len(p['outer_selected_feature_frequency'])==4 for p in d['panels'])
+          assert d['preserves_frozen_S2_128_Holm_and_S1_H3c']
           PY
       - name: Upload aggregate-only source receipts and spatial block sensitivity tables
         if: always() && steps.gate.outputs.execute == 'true'
