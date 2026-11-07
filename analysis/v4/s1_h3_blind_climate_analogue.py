@@ -99,6 +99,45 @@ def calibrate_threshold(cells,x_original,x_selected,seed):
                       "outcome_blind_X_distance_quantile_calibration":True,
                       "selected_distance_threshold":threshold}
 
+def matched_pairs_raw_nd(x:np.ndarray,y:np.ndarray,sector:np.ndarray,threshold:float):
+    """Same H3c pair/support rules, allowing 7-dimensional CLIMATE and 3D Y."""
+    if (x.ndim!=3 or y.ndim!=3 or x.shape[:2]!=y.shape[:2] or
+        x.shape[1]!=8 or y.shape[2]!=3 or x.shape[2]<3 or
+        sector.shape!=(len(x),) or threshold<=0):
+        raise ValueError("H3_DIMENSIONAL_PAIR_SHAPE_UNSUPPORTED")
+    ii=[];jj=[];distances=[];masks=[];counts=[];sector_types=[]
+    for i in range(len(x)):
+        for j in range(i+1,len(x)):
+            if sector[i]==sector[j]:continue
+            d_env=np.linalg.norm(x[i,:,None,:]-x[j,None,:,:],axis=2)
+            matched=d_env<=threshold
+            if (int(matched.sum())<h3.MIN_ANALOG_CELL_PAIRS or
+                np.flatnonzero(matched.any(axis=1)).size<h3.MIN_DISTINCT_CELLS_PER_SIDE or
+                np.flatnonzero(matched.any(axis=0)).size<h3.MIN_DISTINCT_CELLS_PER_SIDE):
+                continue
+            d_y=np.linalg.norm(y[i,:,None,:]-y[j,None,:,:],axis=2)
+            ii.append(i);jj.append(j)
+            distances.append(d_y);masks.append(matched)
+            counts.append(int(matched.sum()))
+            sector_types.append(tuple(sorted((int(sector[i]),int(sector[j])))))
+    if not ii:
+        return None,{"status":"no_analogous_pair_support","n_pairs":0,
+                     "n_sector_pair_types":0}
+    n_sector_types=len(set(sector_types))
+    meta={"status":"qualified" if
+          len(ii)>=h3.MIN_ELIGIBLE_TAXON_PAIRS and
+          n_sector_types>=h3.MIN_SECTOR_PAIR_TYPES
+          else "insufficient_analogue_pairs",
+          "n_pairs":len(ii),"n_sector_pair_types":n_sector_types,
+          "n_analog_cell_pairs":int(sum(counts)),
+          "mean_analog_cell_pairs_per_taxon_pair":float(np.mean(counts)),
+          "n_taxa_represented":len(set(ii)|set(jj))}
+    pair={"i":np.asarray(ii,int),"j":np.asarray(jj,int),
+          "d":np.stack(distances),"mask":np.stack(masks),
+          "analog_n":np.asarray(counts,float)}
+    return pair,meta
+
+
 def _compare(cells,climate_columns,degree):
     cells=cells.reset_index(drop=True)
     counts=cells.groupby("accepted_key",sort=True,observed=True).size()
@@ -106,8 +145,10 @@ def _compare(cells,climate_columns,degree):
     w=w/w.sum()
     xorig=standardized(cells,CLIMATE,w)
     xnew,pca=climate_pcs(cells,climate_columns,w)
+    xraw=standardized(cells,climate_columns,w)
     Y=standardized(cells,PHENOTYPE,w)
     threshold,calibrate=calibrate_threshold(cells,xorig,xnew,SEED+degree)
+    raw_threshold,raw_calibration=calibrate_threshold(cells,xorig,xraw,SEED+degree)
     taxa_groups=[g.index.to_numpy(int) for _,g in cells.groupby("accepted_key",sort=True,observed=True)]
     sectors=np.asarray([int(np.bincount(h3.geographic_sector(
                         cells.loc[ix,"longitude"].to_numpy(float)),minlength=3).argmax())
@@ -116,19 +157,23 @@ def _compare(cells,climate_columns,degree):
     # Same rarefied source cells in both climate representations within draw.
     rng=np.random.default_rng(SEED+20+degree)
     metrics={name:{"adv":[],"null":[],"support":[],"overlap":[],"overlap_null":[]}
-             for name in ("original3","blind_selected_PCA3")}
+             for name in ("original3","blind_selected_PCA3","blind_selected_raw7")}
     for rep in range(DRAWS):
         take=[rng.choice(ix,8,replace=False) for ix in taxa_groups]
         y=np.stack([Y[ids] for ids in take])
         for name,X,cutoff in (("original3",xorig,h3.CLIMATE_ANALOG_Z),
-                              ("blind_selected_PCA3",xnew,threshold)):
+                              ("blind_selected_PCA3",xnew,threshold),
+                              ("blind_selected_raw7",xraw,raw_threshold)):
             xx=np.stack([X[ids] for ids in take])
-            previous=h3.CLIMATE_ANALOG_Z
-            h3.CLIMATE_ANALOG_Z=cutoff
-            try:
-                pairs,support=h3.matched_pairs(xx,y,sectors)
-            finally:
-                h3.CLIMATE_ANALOG_Z=previous
+            if name=="blind_selected_raw7":
+                pairs,support=matched_pairs_raw_nd(xx,y,sectors,cutoff)
+            else:
+                previous=h3.CLIMATE_ANALOG_Z
+                h3.CLIMATE_ANALOG_Z=cutoff
+                try:
+                    pairs,support=h3.matched_pairs(xx,y,sectors)
+                finally:
+                    h3.CLIMATE_ANALOG_Z=previous
             metrics[name]["support"].append(support)
             if support["status"]!="qualified":continue
             nullrng=np.random.default_rng(SEED+degree*100000+rep*3)
@@ -176,7 +221,9 @@ def _compare(cells,climate_columns,degree):
         result[name]=row
     return {"degree":degree,"matched_source_support":int(len(taxa_groups)),
             "source_climate_axes_metadata":pca,
-            "climate_distance_support_calibration":calibrate,
+            "climate_distance_support_calibration":{
+                "selected_PCA3":calibrate,"selected_raw7":raw_calibration},
+            "tested_original_selected_seven_dimensions_without_PCA":True,
             "results":result}
 
 def run_existing(native,decoded_receipt,seven,nine,nine_manifest,source_receipt,

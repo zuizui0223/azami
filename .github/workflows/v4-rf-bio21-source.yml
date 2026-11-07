@@ -207,7 +207,7 @@ jobs:
           assert d["original_source_observation_n"]==313350
           assert d["H3_climate_variable_selection_outcome_blind"]
           assert set(d["results"])=={"1degree","5degree"}
-          assert all(set(v["results"])=={"original3","blind_selected_PCA3"}
+          assert all(set(v["results"])=={"original3","blind_selected_PCA3","blind_selected_raw7"}
                      for v in d["results"].values())
           PY
       - name: Upload original S1 blind climate projection and H3c phenotype alignment (anonymous)
