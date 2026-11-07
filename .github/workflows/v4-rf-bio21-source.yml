@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'analysis/v4/rf_bio21_source_real.py'
+      - 'analysis/v4/s1_h3_blind_climate_analogue.py'
+      - 'tests/test_v4_s1_h3_blind_climate_analogue.py'
       - 'analysis/v4/s1_xonly_between_within_refit.py'
       - 'tests/test_v4_s1_xonly_between_within_refit.py'
       - 'analysis/v4/xonly_climate_selection.py'
@@ -182,6 +184,38 @@ jobs:
         with:
           name: azami-V4-S1-XONLY-GRADIENT-REFIT-${{ github.run_id }}
           path: work/rf21/public/V4_S1_XONLY_BETWEEN_WITHIN_CLIMATE_REGRESSION.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Source-verified original H3c with X-only selected climate and matched-pair calibration
+        run: |
+          set -euo pipefail
+          python -m pytest -q tests/test_v4_s1_h3_blind_climate_analogue.py
+          python -m analysis.v4.s1_h3_blind_climate_analogue \
+            --native work/rf21/private/decoded/observations.csv.gz \
+            --decoded-receipt work/rf21/private/decoded/measurement_receipt.json \
+            --seven work/rf21/private/environment/original_seven.csv.gz \
+            --nine work/rf21/private/environment/chelsa_extra_nine.csv.gz \
+            --nine-manifest work/rf21/private/environment/chelsa_nine_manifest.json \
+            --source-receipt work/rf21/public/bio21_source_receipt.json \
+            --source-sha 26b80b279fa2b372099ef945972d3e4fdf58127fe9f8fd92530ac08a931d9545 \
+            --selected work/rf21/public/V4_S1_XONLY_SECTIONWISE_SELECTED.json \
+            --output work/rf21/public/V4_H3C_XONLY_CLIMATE_PROJECTION.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('work/rf21/public/V4_H3C_XONLY_CLIMATE_PROJECTION.json').read_text())
+          assert d["original_source_observation_n"]==313350
+          assert d["H3_climate_variable_selection_outcome_blind"]
+          assert set(d["results"])=={"1degree","5degree"}
+          assert all(set(v["results"])=={"original3","blind_selected_PCA3"}
+                     for v in d["results"].values())
+          PY
+      - name: Upload original S1 blind climate projection and H3c phenotype alignment (anonymous)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: azami-V4-S1-XONLY-H3C-ANALOG-${{ github.run_id }}
+          path: work/rf21/public/V4_H3C_XONLY_CLIMATE_PROJECTION.json
           retention-days: 90
           if-no-files-found: error
       - name: Original V4 S1 joint eight-construct sparse PLS2 with climate-only 22 axes
