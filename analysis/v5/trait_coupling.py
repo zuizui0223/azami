@@ -28,7 +28,6 @@ def compare(x,y,rng):
 
 
 def analyze(c,sp,traits,project,grid,density,overlap,seed):
-    from scipy.spatial.distance import cdist
     x,_=project(c,list(VARIABLES));edges=grid(x)
     native=c.range_state.eq("native").to_numpy()
     raw=c[[*VARIABLES,*traits]].to_numpy()
@@ -38,6 +37,7 @@ def analyze(c,sp,traits,project,grid,density,overlap,seed):
     regions=[[g.index.to_numpy() for _,g in c[c.range_state==kind].groupby("block") if len(g)>=8] for kind in ("native","introduced")]
     n,m=map(len,regions)
     sums=np.zeros((n+1,m,4))
+    rarity=np.zeros((n+1,m))
     delta=np.zeros((n+1,m,z.shape[1]))
     cut=[np.linspace(v.min()-2.5,v.max()+2.5,65) for v in z[:,-3:].T]
     def surfaces(ids):
@@ -53,6 +53,17 @@ def analyze(c,sp,traits,project,grid,density,overlap,seed):
         picks=[[rng.choice(ids,8,replace=False) for ids in side] for side in regions]
         ns=[surfaces(ids) for ids in picks[0]]+[reference]
         ins=[surfaces(ids) for ids in picks[1]]
+        # Fraction of native mass at grid cells denser than the focal cell,
+        # assigning half the tied mass. Its mean under the native density is .5.
+        ranks=[]
+        for density_set in ns:
+            weights=density_set[0]
+            levels,inv=np.unique(weights,return_inverse=True)
+            mass=np.bincount(inv,weights=weights,minlength=len(levels))
+            score=(1-np.cumsum(mass)+.5*mass)[inv]
+            np.testing.assert_allclose(score@weights,.5,atol=1e-9)
+            ranks.append(score)
+        rarity+=np.array(ranks)@np.array([s[0] for s in ins]).T/32
         for j in range(4):
             sums[:,:,j]+=overlap([s[j] for s in ns],[s[j] for s in ins])/32
         left=np.stack([z[ids].mean(0) for ids in picks[0]]+[ref_mean])
@@ -64,6 +75,8 @@ def analyze(c,sp,traits,project,grid,density,overlap,seed):
         for j,trait in enumerate(["angle","chroma","outline"]):
             tests=[("overlap","climate_D",climate,1-sums[sl,:,j+1]),
                    ("novelty_direction","climate_D",climate,delta[sl,:,5+j])]
+            tests.append(("rarity_overlap","native_density_rank",rarity[sl],1-sums[sl,:,j+1]))
+            tests.append(("rarity_direction","native_density_rank",rarity[sl],delta[sl,:,5+j]))
             tests.extend(("signed",axis,delta[sl,:,k],delta[sl,:,5+j]) for k,axis in enumerate(VARIABLES))
             for test,axis,a,b in tests:
                 rho,p,lo,hi=compare(a,b,np.random.default_rng(seed+9))
@@ -71,7 +84,7 @@ def analyze(c,sp,traits,project,grid,density,overlap,seed):
                                     n_native_regions=n if design=="regional" else 1,n_intro_regions=m,
                                     rho=rho,p=p,leave_min=lo,leave_max=hi))
         for (i,j),ds in np.ndenumerate(climate):
-            row=dict(species=sp,design=design,native_region=i+1,intro_region=j+1,climate_D=1-ds)
+            row=dict(species=sp,design=design,native_region=i+1,intro_region=j+1,climate_D=1-ds,native_climate_rarity=rarity[sl][i,j])
             for k,trait in enumerate(["angle","chroma","outline"]):
                 row[trait+"_D"]=sums[sl,:,k+1][i,j]
                 row[trait+"_shift"]=delta[sl,:,5+k][i,j]
