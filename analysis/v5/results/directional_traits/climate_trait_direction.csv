@@ -1,0 +1,25 @@
+panel,species,scope,trait,axis,expected,geo,beta,lo,hi,holm,units
+S1,all,between,angle,bio18,positive,False,0.185535341011156,0.027885147282048,0.343185534740264,0.1781879260076721,standardized_y_per_environment_SD
+S1,all,within,angle,bio18,positive,False,0.3523349554916757,-0.0235138571999023,0.7281837681832537,0.4575676755996701,standardized_y_per_environment_SD
+S1,all,between,angle,bio18,positive,True,0.0756153143729906,-0.1354866255678832,0.2867172543138646,1.0,standardized_y_per_environment_SD
+S1,all,within,angle,bio18,positive,True,0.3348355189429076,-0.0806853415367051,0.7503563794225204,1.0,standardized_y_per_environment_SD
+S1,all,between,chroma,bio05,negative_within_same_pigment_class_only,False,0.2039101216891592,0.0875234958530039,0.3202967475253146,0.0093776612861747,standardized_y_per_environment_SD
+S1,all,within,chroma,bio05,negative_within_same_pigment_class_only,False,-0.1302146815035488,-0.2816717320939899,0.0212423690868922,0.5395413551700725,standardized_y_per_environment_SD
+S1,all,between,chroma,rsds_mean,positive,False,-0.33726057761004,-0.5053592120291721,-0.1691619431909078,0.0023004076008467,standardized_y_per_environment_SD
+S1,all,within,chroma,rsds_mean,positive,False,-0.0012484906694376,-0.1984227343494837,0.1959257530106084,1.0,standardized_y_per_environment_SD
+S1,all,between,chroma,bio05,negative_within_same_pigment_class_only,True,0.1873508657026723,0.0363052198884351,0.3383965115169095,0.1637780282335189,standardized_y_per_environment_SD
+S1,all,within,chroma,bio05,negative_within_same_pigment_class_only,True,-0.1240478608308307,-0.2914195540939969,0.0433238324323354,1.0,standardized_y_per_environment_SD
+S1,all,between,chroma,rsds_mean,positive,True,-0.1819829619319297,-0.4562850947345939,0.0923191708707343,1.0,standardized_y_per_environment_SD
+S1,all,within,chroma,rsds_mean,positive,True,0.0048033965634672,-0.2589947352602251,0.2686015283871596,1.0,standardized_y_per_environment_SD
+S2,Cirsium arvense,sim,angle,bio18,positive,cell_cluster,-2.3551503323446856,-7.23421524753029,2.5239145828409195,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium arvense,new,angle,bio18,positive,cell_cluster,-2.6401105510020515,-6.257915859656272,0.9776947576521692,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium arvense,sim,chroma,rsds_mean,positive,cell_cluster,-1.1310850067442504,-2.575585771838611,0.31341575835011,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium arvense,new,chroma,rsds_mean,positive,cell_cluster,1.2798920893345056,-0.4349514066609294,2.9947355853299404,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium arvense,sim,chroma,bio05,negative_within_same_pigment_class_only,cell_cluster,-0.6686594568672931,-1.681177775720874,0.343858861986288,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium arvense,new,chroma,bio05,negative_within_same_pigment_class_only,cell_cluster,-3.093688897962512,-4.516692562619161,-1.670685233305863,0.0003802454659757,degrees_or_Cstar_per_environment_SD
+S2,Cirsium vulgare,sim,angle,bio18,positive,cell_cluster,-1.6475088840031733,-5.192745522604257,1.8977277545979103,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium vulgare,new,angle,bio18,positive,cell_cluster,2.110868490707591,-1.9305572307141088,6.152294212129291,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium vulgare,sim,chroma,rsds_mean,positive,cell_cluster,-0.1609253229582297,-1.9342570557555947,1.6124064098391353,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium vulgare,new,chroma,rsds_mean,positive,cell_cluster,0.730978397792458,-0.4224030111453392,1.8843598067302552,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium vulgare,sim,chroma,bio05,negative_within_same_pigment_class_only,cell_cluster,-0.1057462796496144,-1.5306025998389694,1.3191100405397405,1.0,degrees_or_Cstar_per_environment_SD
+S2,Cirsium vulgare,new,chroma,bio05,negative_within_same_pigment_class_only,cell_cluster,0.7930612708286008,-0.508553073542681,2.0946756151998827,1.0,degrees_or_Cstar_per_environment_SD
