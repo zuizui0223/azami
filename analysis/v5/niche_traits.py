@@ -105,6 +105,8 @@ def main():
         complete=rows.dropna(subset=list(VARIABLES));sn=groups(complete,'native');si=groups(complete,'introduced')
         args=[env[env._range=='native'],env[env._range=='introduced'],sn,si]
         transform,edges,nat,inv=_pca_env_2d(*args,return_grid=True)
+        from analysis.v5.invasion_partition import run as partition
+        partition(sp,*args,transform,edges,nat,inv,OUT)
         D=1-abs(nat-inv).sum()/2
         assert abs(D-frozen['species'][sp]['PCA_env_background_corrected_Schoener_D'])<1e-5
         for a,stat in climatic_shift_summary(sn,si).items():

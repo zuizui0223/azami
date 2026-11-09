@@ -2,7 +2,7 @@ name: V5 S2 full niche and introduced head traits
 on:
   push:
     branches: [codex/v5-heads-scales]
-    paths: ['analysis/v5/niche_traits.py','analysis/v5/rain_transfer.py','analysis/v5/novel_head_overlap.py','analysis/v5/config_overlap.py','analysis/v5/whole_head_density.py','analysis/v5/record_density.py','analysis/v5/paired_prediction.py','analysis/v5/introduced_direct.py','analysis/v5/transfer_support.py','analysis/v5/native_pca_env*.py','.github/workflows/v5-novelty.yml']
+    paths: ['analysis/v5/niche_traits.py','analysis/v5/invasion_partition.py','analysis/v5/rain_transfer.py','analysis/v5/novel_head_overlap.py','analysis/v5/config_overlap.py','analysis/v5/whole_head_density.py','analysis/v5/record_density.py','analysis/v5/paired_prediction.py','analysis/v5/introduced_direct.py','analysis/v5/transfer_support.py','analysis/v5/native_pca_env*.py','.github/workflows/v5-novelty.yml']
   workflow_dispatch:
 
 permissions:
