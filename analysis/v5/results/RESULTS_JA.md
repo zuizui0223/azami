@@ -1,5 +1,7 @@
 # V5　どの空間・分類群スケールでアザミの頭花と気候が対応するか
 
+[S2 主解析：在来域・移入域全体の気候と頭花のオーバーラップ](whole_range_overlap/RESULTS_JA.md)　／　[地域反復・創始者効果を考慮した補足](transfer_support/RESULTS_JA.md)
+
 [気候類似性・新規気候での頭花重複と移動方向・20分類群での機能予測の再現性](configuration/RESULTS_JA.md)
 
 **V5の二つの研究軸**：[収斂進化と適応放散の機能仮説・追加実測](two_axes/RESULTS_JA.md)。新規気候への進出を問う主対照は[頭花空間の在来域からのずれ](novel_head_overlap/RESULTS_JA.md)。以下は各軸を支える解析別の結果。
@@ -63,4 +65,5 @@ S2の主解析を全分布域の背景補正済みニッチ占有と、新規気
 - [S1・S2・S3 実データ解析](https://github.com/zuizui0223/azami/actions/runs/42568245953)
 - [標高なしの焦点仮説・種名の追加予測価値](https://github.com/zuizui0223/azami/actions/runs/42568637328)
 - 設計と11文献は DESIGN_JA.md。係数と不確実性、地域ブロック検証、分布域の支持、両方向の置換検定をCSVに保存。解析コード analysis/v5。公開出力は集計のみ。
+
 
