@@ -37,7 +37,7 @@ def run(sp,native,intro,out):
     pairs=match_cells(c)
     a=c.iloc[np.concatenate([i for i,j in pairs])]
     b=c.iloc[np.concatenate([j for i,j in pairs])]
-    rows=[]; shifts=[]; climate=[]
+    rows=[]; shifts=[]; climate=[]; joint=[]
     for model,axes in MODELS.items():
         ref=n.dropna(subset=axes)
         ok=a[axes].notna().all(axis=1).to_numpy() & b[axes].notna().all(axis=1).to_numpy()
@@ -58,10 +58,25 @@ def run(sp,native,intro,out):
         def skill(obs,pred):
             return 1-((obs-pred)**2).sum(0)/(obs**2).sum(0)
         rng=np.random.default_rng(20261109); boot=[]
+        sd_y=y[:,:2].std(0)
+        def alignment(obs,pred):
+            u,v=obs[:,:2]/sd_y,pred[:,:2]/sd_y
+            length=np.linalg.norm(u,axis=1)*np.linalg.norm(v,axis=1)
+            use=length>1e-12
+            cos=(u[use]*v[use]).sum(1)/length[use]
+            return [cos.mean(),np.mean(cos>0),1-np.sum((u-v)**2)/np.sum(u**2),len(cos)]
+        directions=[]
         for _ in range(999):
             i=resample_blocks(block,rng); j=resample_blocks(paired,rng)
             p=dx[j]@coefficients(x[i],y[i])[1:]
             boot.append([dy[j].mean(0),p.mean(0),skill(dy[j],p)])
+            directions.append(alignment(dy[j],p))
+        result=alignment(dy,prediction)
+        limits=np.quantile(directions,[.025,.975],axis=0)
+        record=dict(species=sp,model=model,pairs=len(left),nonzero_pairs=result[3])
+        for k,metric in enumerate(["mean_cosine","fraction_same_half_plane","joint_q2"]):
+            record.update({metric:result[k],metric+"_lo":limits[0,k],metric+"_hi":limits[1,k]})
+        joint.append(record)
         lo,hi=np.quantile(boot,[.025,.975],axis=0)
         for t,trait in enumerate(["angle","chroma","outline"]):
             rows.append(dict(species=sp,model=model,trait=trait,native=len(ref),pairs=len(left),blocks=len(set(paired)),
@@ -74,6 +89,6 @@ def run(sp,native,intro,out):
         for k,key in enumerate(axes):
             climate.append(dict(species=sp,model=model,axis=key,native_mean=mean[k],native_sd=sd[k],
                                 analogous_mean=left[key].mean(),novel_mean=right[key].mean(),change_sd=dx[:,k].mean()))
-    for file,records in [("native_transfer_test",rows),("native_transfer_components",shifts),("paired_climate_directions",climate)]:
+    for file,records in [("native_transfer_test",rows),("native_transfer_components",shifts),("paired_climate_directions",climate),("native_transfer_alignment",joint)]:
         path=out/(file+".csv")
         pd.DataFrame(records).to_csv(path,index=False,header=not path.exists(),mode="a")
