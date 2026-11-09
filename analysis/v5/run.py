@@ -71,6 +71,7 @@ def heterogeneity(cells,axes,yname,focal=None):
 def s1(native):
     from analysis.v5.climate_domains import evaluate
     domain_scores=[]
+    domain_directions=[]
     slopes=[];scores=[];variance=[];random=[]
     for label,trait in TRAITS.items():
         frame,_=selected_source(native,[trait])
@@ -82,7 +83,9 @@ def s1(native):
         for k in [label,*axes]:
             val=cells[k];mean=np.average(val,weights=w)
             cells[k]=(val-mean)/np.sqrt(np.average((val-mean)**2,weights=w))
-        domain_scores.extend(evaluate(cells,label,region,w))
+        cv, directions = evaluate(cells,label,region,w)
+        domain_scores.extend(cv)
+        domain_directions.extend(directions)
         y=cells[label].to_numpy()
         means=cells.groupby('accepted_key')[axes+[label]].transform('mean')
         variance.append(dict(trait=label,n_photo=len(frame),n_taxa=species.nunique(),taxon_cells=len(cells),
@@ -111,6 +114,7 @@ def s1(native):
                 random.append(dict(trait=label,spec=spec,axis=FOCUS[label],**heterogeneity(cells,axis,label)))
                 if spec=='warm' and label=='chroma':
                     random.append(dict(trait=label,spec=spec,axis='bio05',**heterogeneity(cells,axis,label,'bio05')))
+    pd.DataFrame(domain_directions).to_csv(OUT/'s1_domain_directions.csv',index=False)
     pd.DataFrame(domain_scores).to_csv(OUT/'s1_domain_cv.csv',index=False)
     adjust(pd.DataFrame(slopes),['spec','geo_adjust']).to_csv(OUT/'s1_slopes.csv',index=False)
     for file,rows in [('s1_spatial_cv',scores),('s1_variance',variance),('s1_slope_heterogeneity',random)]:
