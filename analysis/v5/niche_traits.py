@@ -133,6 +133,8 @@ def main():
                 centroids.extend(vectors)
                 from analysis.v5.rain_transfer import run_transfer
                 run_transfer(sp,sn,d,OUT)
+                from analysis.v5.paired_prediction import run as predict_pairs
+                predict_pairs(sp,sn,d,OUT)
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
     vector_table = pd.DataFrame(centroids)
     vector_table["holm_six"] = multipletests(vector_table.p_block_flip, method="holm")[1]
