@@ -76,6 +76,7 @@ def collect(frame, monthly):
             for kind in ["mean","peak"]:
                 v = selected.mean(1) if kind=="mean" else selected.max(1)
                 frame[f"{window}_{kind}_{axis}"] = np.where(valid & frame.month.notna(),v,np.nan)
+    frame["warm_quarter_bio05"] = np.where(valid & frame.month.notna(),monthly["tmax"].max(axis=1),np.nan)
     # All tied warmest quarters count as qualifying in the alignment audit.
     ties = np.isclose(quarter,quarter.max(1,keepdims=True),rtol=0,atol=1e-6)
     membership = np.logical_or.reduce([ties[ids,(m-i)%12] for i in range(3)])
@@ -101,6 +102,9 @@ def evaluate(frame):
                      "peak":["peak_tmax","peak_prec","peak_srad"]}
             if window=="observation_month":
                 specs["peak"]=["mean_tmax","mean_prec","mean_srad"]
+            hottest = "bio05" if window=="warm_quarter" else "mean_tmax"
+            specs["hot_with_mean_rain_sun"] = [hottest,"mean_prec","mean_srad"]
+            specs["four"] = ["mean_tavg",hottest,"mean_prec","mean_srad"]
             columns = list(dict.fromkeys(sum(specs.values(),[])))
             fields = [window+"_"+v for v in columns]
             complete = d.dropna(subset=fields)
@@ -117,7 +121,12 @@ def evaluate(frame):
                 for scale, values in levels.items():
                     cov = np.cov(values[axes].T,aweights=weights)
                     corr = cov/np.sqrt(np.outer(np.diag(cov),np.diag(cov)))
-                    vif = np.diag(np.linalg.inv(corr))
+                    vif = []
+                    for j in range(len(axes)):
+                        keep = np.arange(len(axes)) != j
+                        r = corr[j,keep]
+                        unique = 1-r @ np.linalg.pinv(corr[np.ix_(keep,keep)]) @ r
+                        vif.append(1/unique if unique > 1e-10 else np.inf)
                     for i,a in enumerate(axes):
                         diagnostics.append(dict(trait=trait,window=window,spec=spec,scale=scale,a=a,b=a,stat="VIF",value=vif[i]))
                         for j in range(i):
@@ -129,7 +138,7 @@ def evaluate(frame):
                 for k,scale in enumerate(levels):
                     for j,axis in enumerate(axes):
                         coeffs.append(dict(trait=trait,window=window,spec=spec,axis=axis,scale=scale,
-                                           taxa=cells.accepted_key.nunique(),cells=len(cells),**stats_row(fit,1+k*3+j)))
+                                           taxa=cells.accepted_key.nunique(),cells=len(cells),**stats_row(fit,1+k*len(axes)+j)))
     return {"seasonal_alignment":summaries,"seasonal_slopes":coeffs,"seasonal_collinearity":diagnostics}
 
 
