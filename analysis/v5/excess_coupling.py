@@ -44,6 +44,7 @@ def run(c,sp,traits,project):
     native=c.range_state.eq("native").to_numpy()
     w=1/c.groupby("range_state").range_state.transform("size")
     raw=c[traits].to_numpy()
+    profiled=c[[*traits,*VARIABLES]].to_numpy()
     mean=np.average(raw,axis=0,weights=w)
     z=(raw-mean)/np.sqrt(np.average((raw-mean)**2,axis=0,weights=w))
     x,_=project(c,list(VARIABLES));y,_=project(c,traits)
@@ -65,14 +66,14 @@ def run(c,sp,traits,project):
                 cx,dc=climate.scores(native,weight)
                 hy,dh=head.scores(native,weight)
                 for j,subset in enumerate([native,~native]):
-                    rows[j].append(summary(cx[subset],hy[subset],raw[subset],weight[subset]))
+                    rows[j].append(summary(cx[subset],hy[subset],profiled[subset],weight[subset]))
                 if k==0: orig=(dc,dh)
             for side,values in zip(["native","introduced"],rows):
                 arr=np.array(values)
                 row=dict(species=sp,side=side,trait=name,h=h,climate_D=orig[0],trait_D=orig[1],
                          cells=sum(native if side=="native" else ~native))
                 for j,key in enumerate(["head_excess_in_climate_excess","head_excess_in_climate_overlap","difference",
-                                         "angle_shift","chroma_shift","outline_shift"]):
+                                         "angle_shift","chroma_shift","outline_shift",*[axis+"_shift" for axis in VARIABLES]]):
                     row[key]=arr[0,j]
                     if len(arr)>1:
                         row[key+"_lo"],row[key+"_hi"]=np.quantile(arr[1:,j],[.025,.975])
