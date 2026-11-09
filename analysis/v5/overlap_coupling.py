@@ -87,12 +87,16 @@ def main():
     src['j']=((src.longitude+180)%360).astype(int)
     src['block']=(src.i//20)*18+src.j//20
     from analysis.v5 import trait_coupling
+    from analysis.v5 import native_region_baseline
+    baselines=[];region_values=[]
     components=[];component_pairs=[]
     summary=[];pairs=[];full=[]
     for sp,s in src.groupby('taxon_name'):
         grouped=s.groupby(['range_state','block','i','j'])
         c=grouped[[*VARIABLES,*TRAITS]].median().reset_index()
         c['photos']=grouped.size().to_numpy()
+        base,values=native_region_baseline.run(c,sp,TRAITS,project,grid,density,SEED)
+        baselines.extend(base);region_values.extend(values)
         rows,points=trait_coupling.analyze(c,sp,TRAITS,project,grid,density,overlap,SEED)
         components.extend(rows);component_pairs.extend(points)
         for t in [TRAITS,TRAITS[:2]]:
@@ -102,6 +106,8 @@ def main():
     primary=(tab.h==.5)&tab['shape']
     tab.loc[primary,'holm_primary']=multipletests(tab.loc[primary,'p'],method='holm')[1]
     OUT.mkdir(exist_ok=True)
+    pd.DataFrame(baselines).to_csv(OUT/"native_baseline.csv",index=False)
+    pd.DataFrame(region_values).to_csv(OUT/"native_baseline_regions.csv",index=False)
     trait_coupling.save(components,component_pairs,OUT)
     for file,df in [('regional',tab),('pairs',pd.DataFrame(pairs)),('whole',pd.DataFrame(full))]:
         df.to_csv(OUT/(file+'.csv'),index=False)
