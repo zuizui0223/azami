@@ -1,0 +1,13 @@
+species,traits,dimensions,limits,h,representation,group,D,cells,records
+Cirsium arvense,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,records,all,0.8941524738868742,860,22269
+Cirsium arvense,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,records,analogue,0.8942406159835213,823,22057
+Cirsium arvense,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,records,novel,0.7319190875700987,30,167
+Cirsium arvense,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,medians,all,0.8314553703473644,860,22269
+Cirsium arvense,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,medians,analogue,0.8309703725785614,823,22057
+Cirsium arvense,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,medians,novel,0.7347310083246784,30,167
+Cirsium vulgare,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,records,all,0.9172850960850986,1139,25532
+Cirsium vulgare,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,records,analogue,0.9170804535240902,931,22314
+Cirsium vulgare,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,records,novel,0.8451034570347121,190,3157
+Cirsium vulgare,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,medians,all,0.8690476579559991,1139,25532
+Cirsium vulgare,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,medians,analogue,0.8586753292143383,931,22314
+Cirsium vulgare,orientation_angle_degrees_median+corolla_lab_chroma_median+shape_aspect_ratio_median,3,original,0.5,medians,novel,0.8267790656202283,190,3157
