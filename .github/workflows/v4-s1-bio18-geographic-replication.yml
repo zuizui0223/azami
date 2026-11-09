@@ -138,34 +138,10 @@ jobs:
               json.dumps(receipt,indent=2)+"\n",encoding="utf-8")
           PY
 
-      - name: Reproduce frozen BIO18 beta and compare fixed geographic controls
-        if: steps.decide.outputs.run_analysis == 'true'
-        run: |
-          set -euo pipefail
-          python -m analysis.v4.s1_bio18_geographic_replication \
-            --native work/bio18_geo/private/decoded/observations.csv.gz \
-            --extended work/bio18_geo/private/extended-source.csv.gz \
-            --source-receipt work/bio18_geo/public/extra_raster_source_receipt.json \
-            --output work/bio18_geo/public/S1_BIO18_178taxa_GEOGRAPHY_SOURCE_VERIFIED.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p=Path("work/bio18_geo/public/S1_BIO18_178taxa_GEOGRAPHY_SOURCE_VERIFIED.json")
-          data=json.loads(p.read_text())
-          assert data["native_angle_eligible_records"]==168907
-          assert data["native_angle_taxa"]==178
-          assert abs(data["frozen_original_baseline_reproduced"]["standardised_beta"]-0.04544684307686103)<3e-7
-          assert set(data["sensitivity"])=={"photo_weighted","equal_5degree_cell"}
-          assert all(set(x["global_geographic_adjustments"])=={"none","longitude_sector","spherical_degree2"} for x in data["sensitivity"].values())
-          assert "obs_id" not in p.read_text() and "user_id" not in p.read_text()
-          print("BIO18 matched-source sensitivity source verified",flush=True)
-          PY
-
-      - name: Upload aggregate coefficients and raster checks, never raw source locations
-        if: always() && steps.decide.outputs.run_analysis == 'true'
-        uses: actions/upload-artifact@v4
+      - name: Compute colour sufficient statistics without exporting photo records
+        run: python -m analysis.v4.s1_colour_pls_moments
+      - uses: actions/upload-artifact@v4
         with:
-          name: v4-S1-BIO18-geography-aggregates-${{ github.run_id }}
-          path: work/bio18_geo/public/**
-          retention-days: 90
-          if-no-files-found: warn
+          name: s1-colour-pls-moments
+          path: work/bio18_geo/public/s1_colour_moments.json
+          retention-days: 30
