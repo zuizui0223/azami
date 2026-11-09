@@ -99,7 +99,7 @@ def main():
     measured=pd.read_csv(PRIVATE/'original-measured.csv.gz',usecols=['obs_id',*TRAITS.values()],dtype={'obs_id':str})
     wild=wild.drop(columns=list(TRAITS.values()),errors='ignore').merge(measured,on='obs_id',how='left',validate='one_to_one')
     frozen=json.loads(Path('analysis/v4/results/20261021_unified_abcde/S2_TWO_SPECIES_FULL_WCVP_NICHE_VERIFIED_20261021.json').read_text())
-    occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[]
+    occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[];configuration=[]
     for sp,rows in wild.groupby('taxon_name'):
         env,_=_background_species_audit(auth,land.dropna(subset=list(VARIABLES)),sp,land)
         complete=rows.dropna(subset=list(VARIABLES));sn=groups(complete,'native');si=groups(complete,'introduced')
@@ -127,9 +127,15 @@ def main():
             from analysis.v5.novel_head_overlap import analysis
             head_overlap.extend(analysis(sp,sn,d,level))
             if level==.95:
+                from analysis.v5.config_overlap import run as config_run
+                configuration.extend(config_run(sp,sn,d))
                 from analysis.v5.rain_transfer import run_transfer
                 run_transfer(sp,sn,d,OUT)
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
+    config=pd.DataFrame(configuration)
+    primary=config.within_block & config.dimensions.eq(3)
+    config.loc[primary,"holm_two_species"]=multipletests(config.loc[primary,"p"],method="holm")[1]
+    config.to_csv(OUT/"configuration_overlap.csv",index=False)
     head=pd.DataFrame(head_overlap)
     primary=head.design.eq('geographic_pairs') & head.native95_mass.eq(.95) & head.n_traits.eq(3) & head.bandwidth.eq(.5)
     assert primary.sum()==2
