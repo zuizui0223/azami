@@ -124,6 +124,9 @@ def main():
             if level==.95:assert abs(frac-frozen['species'][sp]['introduced_density_outside_native_95percent_probability_content'])<1e-5
             occ.append(dict(species=sp,coverage=level,D=D,outside_density=frac,n_native=len(sn),n_intro=len(si),outside_grid=int((~inside).sum()),n_novel=int(novel.sum())))
             d['novel']=novel.astype(int)
+            if level==.95:
+                from analysis.v5.rain_transfer import run_transfer
+                run_transfer(sp,sn,d,OUT)
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
     for name,rs in [('niche',occ),('breadth',breadth),('trait_contrasts',contrasts),('trait_gradients',slopes),('trait_covariation',pairs)]:
         df=pd.DataFrame(rs)
