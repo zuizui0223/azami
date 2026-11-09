@@ -21,12 +21,17 @@ def main():
         taxa=h.eligible_taxa(z)
         rng=np.random.default_rng(20261109)
         perm_rng=np.random.default_rng(20261111)
+        # A single cell-label map per taxon and permutation applies to all 24 draws.
+        maps=[np.array([perm_rng.permutation(len(t["y"])) for _ in range(499)]) for t in taxa]
+        draw_rng=np.random.default_rng(20261109)
         # Fixed taxon bootstrap weights across rarefactions: pairs sharing taxa remain linked.
         mult=np.random.default_rng(20261112).multinomial(len(taxa),np.full(len(taxa),1/len(taxa)),size=499)
         mult=np.vstack([np.ones(len(taxa)),mult])
         acc={};within=[]
         for rep in range(24):
             x,y,sector=h._sample_taxa(taxa,rng)
+            picks=[draw_rng.choice(len(t["x"]),8,replace=False) for t in taxa]
+            np.testing.assert_allclose(y,np.stack([t["y"][ids] for t,ids in zip(taxa,picks)]))
             p,support=h.matched_pairs(x,y,sector)
             if support["status"]!="qualified":continue
             i,j=p["i"],p["j"]
@@ -52,11 +57,15 @@ def main():
             def advantage(vectors):
                 dist=np.linalg.norm(vectors[:,u]-vectors[:,v],axis=2)
                 return np.mean(dist.mean(1)-(dist*mm).sum(1)/mm.sum(1))
-            scores=[advantage(yy)]
-            for _ in range(499):
-                order=np.argsort(perm_rng.random(yy.shape[:2]),axis=1)
-                scores.append(advantage(np.take_along_axis(yy,order[:,:,None],axis=1)))
-            within.append([ok.sum(),*scores])
+            # Collapsing each taxon's distance matrix before pooling avoids treating
+            # taxa, shared cell pairs or repeated rarefactions as independent tests.
+            null=np.zeros(499)
+            for taxon_id in np.flatnonzero(ok):
+                ids=maps[taxon_id][:,picks[taxon_id]]
+                shuffled=taxa[taxon_id]["y"][ids]
+                dist=np.linalg.norm(shuffled[:,u]-shuffled[:,v],axis=2)
+                null+=dist.mean(1)-dist[:,near[taxon_id]].mean(1)
+            within.append([ok.sum(),advantage(yy),*(null/ok.sum())])
         for (sample,scale),reps in acc.items():
             xx,xy=np.mean(reps,axis=0).reshape(2,-1,3,3)
             coef=np.linalg.solve(xx,xy)
