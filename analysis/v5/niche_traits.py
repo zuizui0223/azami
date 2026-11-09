@@ -129,6 +129,8 @@ def main():
             if level==.95:
                 from analysis.v5.whole_head_density import run as all_head_overlap
                 all_head_overlap(sp,sn,si,d,OUT)
+                from analysis.v5.record_density import run as record_density
+                record_density(sp,sn,si,d,OUT)
                 from analysis.v5.config_overlap import run as config_run
                 config_rows, vectors = config_run(sp,sn,d)
                 configuration.extend(config_rows)
@@ -143,6 +145,8 @@ def main():
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
     from analysis.v5.introduced_direct import finalize
     finalize(OUT)
+    from analysis.v5.record_density import finalize as finish_gradients
+    finish_gradients(OUT)
     vector_table = pd.DataFrame(centroids)
     vector_table["holm_six"] = multipletests(vector_table.p_block_flip, method="holm")[1]
     vector_table.to_csv(OUT/"matched_centroids.csv", index=False)
