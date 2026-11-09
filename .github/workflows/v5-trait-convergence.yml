@@ -2,7 +2,7 @@ name: V5 component-wise climate analogue test
 on:
   push:
     branches: [codex/v5-heads-scales]
-    paths: ['analysis/v5/trait_convergence.py', '.github/workflows/v5-trait-convergence.yml']
+    paths: ['analysis/v5/trait_convergence.py', 'analysis/v5/config_convergence.py', '.github/workflows/v5-trait-convergence.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -71,9 +71,11 @@ jobs:
             --output work/bio18_geo/private/decoded
 
       - name: Decompose distance on identical cells and taxon permutations
-        run: python -m analysis.v5.trait_convergence
+        run: |
+          python -m analysis.v5.trait_convergence
+          python -m analysis.v5.config_convergence
       - uses: actions/upload-artifact@v4
         with:
           name: v5-trait-convergence
-          path: work/bio18_geo/public/v5_trait_convergence.csv
+          path: work/bio18_geo/public/v5_*.csv
           if-no-files-found: error
