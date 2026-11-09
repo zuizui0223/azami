@@ -99,7 +99,7 @@ def main():
     measured=pd.read_csv(PRIVATE/'original-measured.csv.gz',usecols=['obs_id',*TRAITS.values()],dtype={'obs_id':str})
     wild=wild.drop(columns=list(TRAITS.values()),errors='ignore').merge(measured,on='obs_id',how='left',validate='one_to_one')
     frozen=json.loads(Path('analysis/v4/results/20261021_unified_abcde/S2_TWO_SPECIES_FULL_WCVP_NICHE_VERIFIED_20261021.json').read_text())
-    occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[];configuration=[];centroids=[];clouds={}
+    occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[];configuration=[];centroids=[];clouds={};photo_clouds={}
     for sp,rows in wild.groupby('taxon_name'):
         env,_=_background_species_audit(auth,land.dropna(subset=list(VARIABLES)),sp,land)
         complete=rows.dropna(subset=list(VARIABLES));sn=groups(complete,'native');si=groups(complete,'introduced')
@@ -128,7 +128,7 @@ def main():
             head_overlap.extend(analysis(sp,sn,d,level))
             if level==.95:
                 from analysis.v5.config_overlap import run as config_run
-                config_rows, vectors, clouds[sp] = config_run(sp,sn,d)
+                config_rows, vectors, clouds[sp], photo_clouds[sp] = config_run(sp,sn,d)
                 configuration.extend(config_rows)
                 centroids.extend(vectors)
                 from analysis.v5.rain_transfer import run_transfer
@@ -136,6 +136,7 @@ def main():
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
     from analysis.v5.head_clouds import draw
     draw(clouds,OUT)
+    draw(photo_clouds,OUT,observations=True)
     vector_table = pd.DataFrame(centroids)
     vector_table["holm_six"] = multipletests(vector_table.p_block_flip, method="holm")[1]
     vector_table.to_csv(OUT/"matched_centroids.csv", index=False)

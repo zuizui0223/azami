@@ -92,4 +92,5 @@ jobs:
           path: |
             work/submission/novelty/*.csv
             work/submission/novelty/head_clouds.*
+            work/submission/novelty/observed_heads.png
           if-no-files-found: error
