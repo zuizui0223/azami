@@ -41,8 +41,14 @@ def compare(sp,n,i,native,intro,nat,common,out):
         c["climate_rarity"]=r[c.u,c.v]
         c["common"]=common[c.u,c.v]
         c["block"]=c.i.floordiv(20)*18+c.j.floordiv(20)
+    from analysis.v5.native_pca_env import _probability_content
+    core = _probability_content(nat, .95)[i.u,i.v]
+    profiles = []
+    curves = []
+    for inside, part in i.groupby(core):
+        profiles.append(dict(species=sp, native_core=inside, cells=len(part),
+                             **part[list(VARIABLES)].median().to_dict()))
     if sp == "Cirsium vulgare":
-        from analysis.v5.native_pca_env import _probability_content
         from analysis.v5.vulgare_climate_map import export
         export(i, _probability_content(nat, .95), out)
         from analysis.v5.vulgare_rain_regime import run as rain_regime
@@ -75,12 +81,27 @@ def compare(sp,n,i,native,intro,nat,common,out):
             assert np.linalg.matrix_rank(X)==X.shape[1]
             for col,name,sy in zip(T,["angle","chroma","outline"],sd):
                 fit=sm.WLS(d[col].to_numpy()/sy,X,weights=w).fit(cov_type="cluster",cov_kwds={"groups":d.block},use_t=True)
+                if binsize == 4 and model == "occupancy_rank":
+                    for side, part in d.groupby("introduced"):
+                        # Show the fitted response on the occupied support of each range.
+                        for rarity_bin, group in part.groupby(np.minimum(9, (part.climate_rarity*10).astype(int))):
+                            if len(group) < 5:
+                                continue
+                            position = np.average(group.climate_rarity, weights=group.w)
+                            zw = (position-cen[0])/sx[0]
+                            contrast = np.array([1, side, zw, side*zw])*sy
+                            estimate = fit.t_test(contrast)
+                            lower, upper = estimate.conf_int().ravel()
+                            curves.append(dict(species=sp, trait=name, introduced=side,
+                                rarity_bin=rarity_bin, cells=len(group), rarity=position,
+                                observed=np.average(group[col],weights=group.w),
+                                fitted=estimate.effect.item(),lo=lower,hi=upper))
                 for j,axis in enumerate(axes):
                     for term,ids in [("native",[2+j]),("introduced",[2+j,2+len(axes)+j]),("difference",[2+len(axes)+j])]:
                         v=np.zeros(X.shape[1]);v[ids]=1
                         t=fit.t_test(v);l,h=t.conf_int().ravel()
                         differences.append(dict(species=sp,coarsen=binsize,model=model,trait=name,axis=axis,term=term,beta=t.effect.item(),lo=l,hi=h,p=t.pvalue.item(),axis_sd=sx[j],native_trait_sd=sy))
-    for file,rows in [("rarity_gradient",slopes),("range_gradient",differences),("gradient_support",support)]:
+    for file,rows in [("rarity_gradient",slopes),("range_gradient",differences),("gradient_support",support),("main_rarity_curves",curves),("main_climate_profiles",profiles)]:
         path=out/(file+".csv");pd.DataFrame(rows).to_csv(path,index=False,mode="a",header=not path.exists())
 
 
