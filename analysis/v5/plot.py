@@ -13,7 +13,7 @@ def render(path):
     order=[('angle','between'),('angle','within'),('chroma','between'),('chroma','within')]
     for i,(t,s) in enumerate(order):
         for geo,color,shift in [(False,'#135d79',-.11),(True,'#ae5931',.11)]:
-            v=f[(f.trait==t)&(f.scale==s)&(f.geo==geo)].iloc[0]
+            v=f[(f.trait==t)&(f.scale==s)&(f.geo==geo)&(f.axis=={'angle':'bio18','chroma':'rsds_mean'}[t])].iloc[0]
             axes[0].errorbar(v.beta,i+shift,xerr=[[v.beta-v.lower],[v.upper-v.beta]],fmt='o',ms=4,
                 capsize=2,color=color,label=('Climate' if not geo else 'Climate + geography') if i==0 else None)
     axes[0].set_yticks(range(4),['Angle / between','Angle / within','Chroma / between','Chroma / within'])
