@@ -66,6 +66,16 @@ def fit_gradients(sp,d,model,axes):
         X=centered[:,:raw.shape[1]]
         assert np.linalg.matrix_rank(X)==X.shape[1]
         loo=[]
+        err=np.zeros(len(T)); baseline_error=np.zeros(len(T))
+        novel=X[new==1,:len(axes)]
+        time=X[new==1,-3:]
+        nw=np.sqrt(w[new==1])[:,None]
+        residual=novel*nw-(time*nw)@np.linalg.lstsq(time*nw,novel*nw,rcond=None)[0]
+        # Residual columns have weighted zero means before sqrt weighting;
+        # use cross products to preserve the intended WLS metric exactly.
+        gram=residual.T@residual
+        corr=gram/np.sqrt(np.outer(np.diag(gram),np.diag(gram)))
+        vif=np.diag(np.linalg.inv(corr))
         if regional:
             for block in np.unique(d.block):
                 keep=d.block.to_numpy()!=block
@@ -73,7 +83,14 @@ def fit_gradients(sp,d,model,axes):
                 xx=X[keep]*wx
                 if np.linalg.matrix_rank(xx)==X.shape[1]:
                     yy=centered[keep,raw.shape[1]:]*wx
-                    loo.append(np.linalg.lstsq(xx,yy,rcond=None)[0])
+                    fitted=np.linalg.lstsq(xx,yy,rcond=None)[0]
+                    loo.append(fitted)
+                    te=(~keep)&(new==1)
+                    if te.any():
+                        truth=centered[te,raw.shape[1]:]
+                        time_fit=np.linalg.lstsq(xx[:,-3:],yy,rcond=None)[0]
+                        err+=np.sum(w[te,None]*(truth-X[te]@fitted)**2,axis=0)
+                        baseline_error+=np.sum(w[te,None]*(truth-X[te,-3:]@time_fit)**2,axis=0)
         for j,trait in enumerate(["angle","chroma","outline"]):
             f=sm.WLS(centered[:,raw.shape[1]+j],X,weights=w).fit(cov_type="cluster",cov_kwds={"groups":d.block},use_t=True)
             for k,axis in enumerate(axes):
@@ -84,6 +101,7 @@ def fit_gradients(sp,d,model,axes):
                                      lo=lo,hi=hi,p=t.pvalue.item(),
                                      loo_min=min((con@b0[:,j] for b0 in loo),default=np.nan),
                                      loo_max=max((con@b0[:,j] for b0 in loo),default=np.nan),climate_sd=climate_sd[k],trait_sd=trait_sd[j],
+                                     novel_VIF=vif[k],novel_within_region_cv_q2=1-err[j]/baseline_error[j] if regional else np.nan,
                                      native_like_cells=round(w[new==0].sum()),novel_cells=round(w[new==1].sum()),
                                      novel_blocks=d.loc[new==1,"block"].nunique()))
     return rows
