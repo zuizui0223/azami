@@ -63,6 +63,4 @@ def run(sp,native,intro):
                             native=n[T[j]].mean(), analogous=a[T[j]].mean(), novel=b[T[j]].mean(),
                             novel_minus_analogous=means[j], difference_native_sd=means[j]/n[T[j]].std(ddof=0),
                             p_block_flip=p_values[j]))
-    from analysis.v5.head_clouds import observations_in_cells
-    observations = [observations_in_cells(frame,cells) for frame,cells in ((native,n),(intro,a),(intro,b))]
-    return rows, vectors, [g[T].to_numpy() for g in (n,a,b)], observations
+    return rows, vectors
