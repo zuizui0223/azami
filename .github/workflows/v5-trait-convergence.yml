@@ -2,7 +2,7 @@ name: V5 component-wise climate analogue test
 on:
   push:
     branches: [codex/v5-heads-scales]
-    paths: ['analysis/v5/trait_convergence.py', 'analysis/v5/config_convergence.py','analysis/v5/signed_pairs.py', '.github/workflows/v5-trait-convergence.yml']
+    paths: ['analysis/v5/trait_convergence.py', 'analysis/v5/config_convergence.py','analysis/v5/signed_pairs.py','analysis/v5/photo_to_cells.py', '.github/workflows/v5-trait-convergence.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -75,6 +75,7 @@ jobs:
           python -m analysis.v5.trait_convergence
           python -m analysis.v5.config_convergence
           python -m analysis.v5.signed_pairs
+          python -m analysis.v5.photo_to_cells
       - uses: actions/upload-artifact@v4
         with:
           name: v5-trait-convergence
