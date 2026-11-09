@@ -40,7 +40,10 @@ def analysis(sp,native,intro,level):
     ties=int((c.novel==.5).sum());c=c[c.novel!=.5].reset_index(drop=True)
     pairs=match_cells(c)
     result=[]
-    for cols in [T,T[:2]]:
+    subsets=[T,T[:2]]
+    if level==.95:
+        subsets.extend([[T[0],T[2]],T[1:],*[T[j:j+1] for j in range(3)]])
+    for cols in subsets:
         x=n[cols].to_numpy();v=c[cols].to_numpy(); mean=x.mean(0);sd=x.std(0)
         x=(x-mean)/sd;v=(v-mean)/sd
         # Robust bounds, with extreme observations retained in tail bins.
@@ -56,7 +59,7 @@ def analysis(sp,native,intro,level):
             def D(u,v):return np.minimum(u,v).sum()
             sim=c.novel==0;new=c.novel==1
             u,v=surface(b[sim]),surface(b[new])
-            base=dict(species=sp,native95_mass=level,n_traits=len(cols),bandwidth=h,
+            base=dict(traits="+".join(["angle","chroma","outline"][T.index(v)] for v in cols),species=sp,native95_mass=level,n_traits=len(cols),bandwidth=h,
                       n_native=len(n),n_analogous=int(sim.sum()),n_novel=int(new.sum()),mixed_ties=ties,
                       photo_native=n.photos.sum(),photo_analogous=c[sim].photos.sum(),photo_novel=c[new].photos.sum())
             result.append(dict(**base,design='all_cells',D_native_analogous=D(ref,u),D_native_novel=D(ref,v),
