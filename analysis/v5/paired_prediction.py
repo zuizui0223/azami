@@ -51,6 +51,9 @@ def run(sp,native,intro,out):
         block=ref.block.to_numpy(); paired=left.block.to_numpy()
         fit=coefficients(x,y)
         prediction=dx@fit[1:]
+        if model=="head_month":
+            from analysis.v5.transfer_support import audit
+            support, robustness=audit(sp,ref,left,right,axes,x,dx,dy,prediction,y[:,:2].std(0))
         cv=np.zeros_like(y);base=np.zeros_like(y)
         for tr,te in GroupKFold(5).split(x,groups=block):
             cv[te]=np.column_stack([np.ones(len(te)),x[te]])@coefficients(x[tr],y[tr])
@@ -89,6 +92,6 @@ def run(sp,native,intro,out):
         for k,key in enumerate(axes):
             climate.append(dict(species=sp,model=model,axis=key,native_mean=mean[k],native_sd=sd[k],
                                 analogous_mean=left[key].mean(),novel_mean=right[key].mean(),change_sd=dx[:,k].mean()))
-    for file,records in [("native_transfer_test",rows),("native_transfer_components",shifts),("paired_climate_directions",climate),("native_transfer_alignment",joint)]:
+    for file,records in [("native_transfer_test",rows),("native_transfer_components",shifts),("paired_climate_directions",climate),("native_transfer_alignment",joint),("transfer_support",support),("transfer_robustness",robustness)]:
         path=out/(file+".csv")
         pd.DataFrame(records).to_csv(path,index=False,header=not path.exists(),mode="a")
