@@ -2,7 +2,7 @@ name: V5 head traits across taxonomic scales, range status and sampled habitats
 on:
   push:
     branches: [codex/v5-heads-scales]
-    paths: ['analysis/v5/run.py', '.github/workflows/v5-heads.yml']
+    paths: ['analysis/v5/run.py','analysis/v5/climate_domains.py', '.github/workflows/v5-heads.yml']
   workflow_dispatch:
 
 permissions:
