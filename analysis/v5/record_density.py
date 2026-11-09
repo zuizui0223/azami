@@ -38,6 +38,14 @@ def gradients(sp,d,folder):
     d["cos"]=np.cos(2*np.pi*month/12)
     d["year"]=date.dt.year-2020
     d=d[d.novel.isin([0,1])].dropna(subset=[*axes,"year"]).copy()
+    models={"head_month":axes,"niche":["bio01","bio04","bio12","bio15","rsds_mean"]}
+    result=[]
+    for model,axes in models.items():
+        result.extend(fit_gradients(sp,d,model,axes))
+    return result
+
+
+def fit_gradients(sp,d,model,axes):
     w=1/d.groupby(["i","j"])[T[0]].transform("size").to_numpy()
     def standardized(v):
         mean=np.average(v,axis=0,weights=w)
@@ -57,14 +65,25 @@ def gradients(sp,d,folder):
         centered=(z-avg).to_numpy()
         X=centered[:,:raw.shape[1]]
         assert np.linalg.matrix_rank(X)==X.shape[1]
+        loo=[]
+        if regional:
+            for block in np.unique(d.block):
+                keep=d.block.to_numpy()!=block
+                wx=np.sqrt(w[keep])[:,None]
+                xx=X[keep]*wx
+                if np.linalg.matrix_rank(xx)==X.shape[1]:
+                    yy=centered[keep,raw.shape[1]:]*wx
+                    loo.append(np.linalg.lstsq(xx,yy,rcond=None)[0])
         for j,trait in enumerate(["angle","chroma","outline"]):
             f=sm.WLS(centered[:,raw.shape[1]+j],X,weights=w).fit(cov_type="cluster",cov_kwds={"groups":d.block},use_t=True)
             for k,axis in enumerate(axes):
-                for term,indices in [("analogue",[k]),("novel",[k,k+3]),("difference",[k+3])]:
+                for term,indices in [("analogue",[k]),("novel",[k,k+len(axes)]),("difference",[k+len(axes)])]:
                     con=np.zeros(X.shape[1]);con[indices]=1
                     t=f.t_test(con);b=t.effect.item();lo,hi=t.conf_int().ravel()
-                    rows.append(dict(species=sp,regional=regional,trait=trait,axis=axis,term=term,beta=b,
-                                     lo=lo,hi=hi,p=t.pvalue.item(),climate_sd=climate_sd[k],trait_sd=trait_sd[j],
+                    rows.append(dict(species=sp,climate=model,regional=regional,trait=trait,axis=axis,term=term,beta=b,
+                                     lo=lo,hi=hi,p=t.pvalue.item(),
+                                     loo_min=min((con@b0[:,j] for b0 in loo),default=np.nan),
+                                     loo_max=max((con@b0[:,j] for b0 in loo),default=np.nan),climate_sd=climate_sd[k],trait_sd=trait_sd[j],
                                      native_like_cells=round(w[new==0].sum()),novel_cells=round(w[new==1].sum()),
                                      novel_blocks=d.loc[new==1,"block"].nunique()))
     return rows
@@ -99,5 +118,5 @@ def run(sp,native,intro,labeled,out):
 def finalize(out):
     p=out/"novel_gradient.csv"
     d=pd.read_csv(p)
-    d["holm"]=d.groupby(["regional","term"]).p.transform(lambda x:multipletests(x,method="holm")[1])
+    d["holm"]=d.groupby(["climate","regional","term"]).p.transform(lambda x:multipletests(x,method="holm")[1])
     d.to_csv(p,index=False)
