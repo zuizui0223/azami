@@ -19,6 +19,7 @@ def main(seasonal=False, matched_baseline=False):
     threshold=h.CLIMATE_ANALOG_Z*np.sqrt(width/3)
     suffix="_seasonal" if seasonal else ("_matched3" if matched_baseline else "")
     cross=[]
+    diagnostics=[]
     df,_=load_source(decoded/"observations.csv.gz",decoded/"measurement_receipt.json",extra)
     out=[];sim=[]
     for deg in (1,5):
@@ -84,6 +85,19 @@ def main(seasonal=False, matched_baseline=False):
         for (sample,scale),reps in acc.items():
             xx=np.mean([r[0] for r in reps],axis=0).reshape(-1,width,width)
             xy=np.mean([r[1] for r in reps],axis=0).reshape(-1,width,3)
+            if seasonal:
+                # The original no-intercept signed-difference model is invariant to
+                # reflecting each row and its response around zero. On this
+                # symmetrized design, Pearson correlation is the normalized Gram.
+                gram=xx[0]
+                sd=np.sqrt(np.diag(gram))
+                corr=gram/np.outer(sd,sd)
+                vif=np.linalg.inv(corr).diagonal()
+                axes=["annual_rain","mean_temperature","radiation","temperature_seasonality","precipitation_seasonality"]
+                for j,a in enumerate(axes):
+                    diagnostics.append(dict(degrees=deg,sample=sample,scale=scale,axis=a,
+                        vif=vif[j],condition_index=np.sqrt(np.linalg.cond(corr)),
+                        **dict(zip(axes,corr[j]))))
             coef=np.linalg.solve(xx,xy)
             lo,hi=np.quantile(coef[1:],[.025,.975],axis=0)
             for a,axis in enumerate(["annual_rain","mean_temperature","radiation","temperature_seasonality","precipitation_seasonality"][:width]):
@@ -104,6 +118,8 @@ def main(seasonal=False, matched_baseline=False):
     tab=pd.DataFrame(sim);tab["holm"]=multipletests(tab.p,method="holm")[1]
     tab.to_csv(root/f"public/v5_within_analogue{suffix}.csv",index=False)
 
+    if diagnostics:
+        pd.DataFrame(diagnostics).to_csv(root/"public/v5_seasonal_collinearity.csv",index=False)
     if cross:
         tab=pd.DataFrame(cross);tab["holm"]=multipletests(tab.p,method="holm")[1]
         tab.to_csv(root/f"public/v5_cross_analogue{suffix}.csv",index=False)
