@@ -9,7 +9,7 @@ from analysis.v5.novel_head_overlap import T
 
 
 def mass_rank(p):
-    values, inverse=np.unique(p,return_inverse=True)
+    values, inverse=np.unique(p.ravel(),return_inverse=True)
     mass=np.bincount(inverse,weights=p.ravel(),minlength=len(values))
     rank=1-mass.cumsum()+mass/2
     return rank[inverse.ravel()].reshape(p.shape)
@@ -84,3 +84,4 @@ def finalize(out):
         adjust=lambda x:multipletests(x,method="holm")[1]
         d["holm"]=d.groupby(keys).p.transform(adjust) if keys else adjust(d.p)
         d.to_csv(path,index=False)
+
