@@ -92,6 +92,8 @@ def run(sp,native,intro,out):
         for k,key in enumerate(axes):
             climate.append(dict(species=sp,model=model,axis=key,native_mean=mean[k],native_sd=sd[k],
                                 analogous_mean=left[key].mean(),novel_mean=right[key].mean(),change_sd=dx[:,k].mean()))
-    for file,records in [("native_transfer_test",rows),("native_transfer_components",shifts),("paired_climate_directions",climate),("native_transfer_alignment",joint),("transfer_support",support),("transfer_robustness",robustness)]:
+    from analysis.v5.transfer_support import single_endpoint_cohorts
+    expanded=single_endpoint_cohorts(sp,native,intro,out.parent/"temp")
+    for file,records in [("native_transfer_test",rows),("native_transfer_components",shifts),("paired_climate_directions",climate),("native_transfer_alignment",joint),("transfer_endpoint_cohorts",expanded),("transfer_support",support),("transfer_robustness",robustness)]:
         path=out/(file+".csv")
         pd.DataFrame(records).to_csv(path,index=False,header=not path.exists(),mode="a")
