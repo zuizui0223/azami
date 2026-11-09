@@ -48,7 +48,7 @@ def _required_cols():
             *(p + "__eligible" for p in PHENOTYPE)]
 
 
-def load_source(table_path: Path, receipt_path: Path):
+def load_source(table_path: Path, receipt_path: Path, extra_axes=()):
     receipt=json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     source=Path(table_path)
     sha=hashlib.sha256(source.read_bytes()).hexdigest()
@@ -56,15 +56,15 @@ def load_source(table_path: Path, receipt_path: Path):
         receipt.get("native_observations")!=SOURCE_N or
         receipt.get("environment_decoding_status")!="physical_units_gsp_invalid_encoding_masked_v1"):
         raise ValueError("SOURCE_ARCHIVE_CHECKSUM_OR_DECODE_NOT_VALIDATED")
-    d=pd.read_csv(source, usecols=_required_cols(),
+    d=pd.read_csv(source, usecols=[*_required_cols(), *extra_axes],
                   dtype={"obs_id":str},low_memory=False)
     if len(d)!=SOURCE_N or d.obs_id.isna().any() or d.obs_id.duplicated().any():
         raise ValueError("ORIGINAL_NATIVE_OBSERVATION_GRAIN_DRIFT")
-    mask=np.isfinite(d[list(AXES)+["latitude","longitude"]].to_numpy(float)).all(axis=1)
+    mask=np.isfinite(d[list(AXES + extra_axes)+["latitude","longitude"]].to_numpy(float)).all(axis=1)
     for name in PHENOTYPE:
         mask &= d[name+"__eligible"].fillna(False).eq(True).to_numpy(bool)
     mask &= d[PHENOTYPE[0]].between(0,180).to_numpy(bool)
-    d=d.loc[mask,["accepted_key","latitude","longitude",*AXES]].copy()
+    d=d.loc[mask,["accepted_key","latitude","longitude",*AXES,*extra_axes]].copy()
     if (len(d)<50000 or d.accepted_key.nunique()<75 or
         not d.latitude.between(-90,90).all() or
         not d.longitude.between(-180,180).all()):
@@ -74,7 +74,7 @@ def load_source(table_path: Path, receipt_path: Path):
               "matched_source_taxa":int(d.accepted_key.nunique())}
 
 
-def geo_aggregate(d: pd.DataFrame, degrees: int):
+def geo_aggregate(d: pd.DataFrame, degrees: int, extra_axes=()):
     if degrees not in (1,5):
         raise ValueError("CELL_SIZE_NOT_PREDECLARED")
     work=d.copy()
@@ -82,7 +82,7 @@ def geo_aggregate(d: pd.DataFrame, degrees: int):
     work["_loncell"]=np.floor((work.longitude+180)/degrees).astype(int)
     grouped=work.groupby(["accepted_key","_latcell","_loncell"],sort=True)
     cells=grouped.agg(
-        **{name:(name,"median") for name in AXES},
+        **{name:(name,"median") for name in AXES + extra_axes},
         n_photos=(PHENOTYPE[0],"size"),
         latitude=("latitude","median"),
         longitude=("longitude","median"),
@@ -104,9 +104,9 @@ def geo_aggregate(d: pd.DataFrame, degrees: int):
     }
 
 
-def standardise_cells(cells: pd.DataFrame):
+def standardise_cells(cells: pd.DataFrame, extra_axes=()):
     """Across-taxonomy pooled z scales with equal taxon total weight."""
-    x=cells[list(AXES)].to_numpy(float)
+    x=cells[list(AXES + extra_axes)].to_numpy(float)
     counts=cells.groupby("accepted_key").size()
     w=cells.accepted_key.map(1/counts).to_numpy(float)
     w/=w.sum()
@@ -115,10 +115,10 @@ def standardise_cells(cells: pd.DataFrame):
     if not np.isfinite(sd).all() or np.any(sd<=1e-10):
         raise ValueError("ZERO_OR_NAN_CLIMATE_OR_TRAIT_GLOBAL_SCALING")
     result=cells.copy()
-    for idx,name in enumerate(AXES):
+    for idx,name in enumerate(AXES + extra_axes):
         result["_z"+str(idx)]=(x[:,idx]-mean[idx])/sd[idx]
-    return result,{"global_mean":dict(zip(AXES,[float(v) for v in mean])),
-                   "global_sd":dict(zip(AXES,[float(v) for v in sd])),
+    return result,{"global_mean":dict(zip(AXES + extra_axes,[float(v) for v in mean])),
+                   "global_sd":dict(zip(AXES + extra_axes,[float(v) for v in sd])),
                    "equal_taxon_total_weight":True}
 
 

@@ -73,12 +73,12 @@ def _sample_taxa(taxa, rng):
     return np.array(x),np.array(y),np.array(sec,int)
 
 
-def matched_pairs(x: np.ndarray, y: np.ndarray, sector: np.ndarray):
+def matched_pairs(x: np.ndarray, y: np.ndarray, sector: np.ndarray, threshold=CLIMATE_ANALOG_Z):
     """Return pairwise original morphology distances and climate-only masks.
 
     Pair cell counts and supported sector pairs are all source blind to y.
     """
-    if (x.shape!=y.shape or x.ndim!=3 or x.shape[1:]!=(RAREFIED_CELLS,3)
+    if (x.ndim!=3 or y.shape!=(len(x),RAREFIED_CELLS,3) or x.shape[1]!=RAREFIED_CELLS
         or sector.shape!=(x.shape[0],)):
         raise ValueError("INVALID_MULTIVARIATE_SOURCE")
     group_i=[];group_j=[];distances=[];masks=[];counts=[];types=[]
@@ -87,7 +87,7 @@ def matched_pairs(x: np.ndarray, y: np.ndarray, sector: np.ndarray):
             if sector[i]==sector[j]:
                 continue
             d_env=np.linalg.norm(x[i,:,None,:]-x[j,None,:,:],axis=2)
-            matched=(d_env<=CLIMATE_ANALOG_Z)
+            matched=(d_env<=threshold)
             if (int(matched.sum())<MIN_ANALOG_CELL_PAIRS
                 or np.flatnonzero(matched.any(axis=1)).size<MIN_DISTINCT_CELLS_PER_SIDE
                 or np.flatnonzero(matched.any(axis=0)).size<MIN_DISTINCT_CELLS_PER_SIDE):

@@ -75,6 +75,7 @@ jobs:
           python -m analysis.v5.trait_convergence
           python -m analysis.v5.config_convergence
           python -m analysis.v5.signed_pairs
+          python -c "from analysis.v5.signed_pairs import main; main(matched_baseline=True); main(seasonal=True)"
           python -m analysis.v5.photo_to_cells
       - uses: actions/upload-artifact@v4
         with:

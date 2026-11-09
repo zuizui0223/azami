@@ -11,14 +11,25 @@ def moments(dx,dy,weights):
     return np.einsum("nka,nkb,nk->nab",dx,dx,weights),np.einsum("nka,nkb,nk->nab",dx,dy,weights)
 
 
-def main():
+def main(seasonal=False, matched_baseline=False):
     decoded=root/"private/decoded"
-    df,_=load_source(decoded/"observations.csv.gz",decoded/"measurement_receipt.json")
+    extra=("chelsa_bio04","chelsa_bio15") if seasonal or matched_baseline else ()
+    width=5 if seasonal else 3
+    # Preserve the root-mean-square standardized difference per climate variable.
+    threshold=h.CLIMATE_ANALOG_Z*np.sqrt(width/3)
+    suffix="_seasonal" if seasonal else ("_matched3" if matched_baseline else "")
+    cross=[]
+    df,_=load_source(decoded/"observations.csv.gz",decoded/"measurement_receipt.json",extra)
     out=[];sim=[]
     for deg in (1,5):
-        cells,_=geo_aggregate(df,deg)
-        z,_=standardise_cells(cells)
+        cells,_=geo_aggregate(df,deg,extra)
+        z,_=standardise_cells(cells,extra)
         taxa=h.eligible_taxa(z)
+        if seasonal:
+            for t,(_,part) in zip(taxa,z.groupby("accepted_key",sort=True)):
+                t["x"]=np.column_stack([t["x"],part[["_z6","_z7"]].to_numpy()])
+        cross_scores=[]
+        streams=np.random.default_rng(20261110)
         rng=np.random.default_rng(20261109)
         perm_rng=np.random.default_rng(20261111)
         # A single cell-label map per taxon and permutation applies to all 24 draws.
@@ -32,10 +43,14 @@ def main():
             x,y,sector=h._sample_taxa(taxa,rng)
             picks=[draw_rng.choice(len(t["x"]),8,replace=False) for t in taxa]
             np.testing.assert_allclose(y,np.stack([t["y"][ids] for t,ids in zip(taxa,picks)]))
-            p,support=h.matched_pairs(x,y,sector)
+            p,support=h.matched_pairs(x,y,sector,threshold)
             if support["status"]!="qualified":continue
+            if extra:
+                seed=int(streams.integers(2**31))
+                score,perm=h.observed_and_permutations(p,len(taxa),np.random.default_rng(seed),499)
+                cross_scores.append([score,*perm])
             i,j=p["i"],p["j"]
-            dx=(x[i,:,None,:]-x[j,None,:,:]).reshape(len(i),64,3)
+            dx=(x[i,:,None,:]-x[j,None,:,:]).reshape(len(i),64,width)
             dy=(y[i,:,None,:]-y[j,None,:,:]).reshape(len(i),64,3)
             w=mult[:,i]*mult[:,j]
             w=w/w.sum(1,keepdims=True)
@@ -48,9 +63,9 @@ def main():
                     xx,xy=moments(*parts)
                     key=(label,scale)
                     if key not in acc: acc[key]=[]
-                    acc[key].append((w@xx.reshape(-1,9),w@xy.reshape(-1,9)))
+                    acc[key].append((w@xx.reshape(-1,width*width),w@xy.reshape(-1,width*3)))
             u,v=np.triu_indices(8,1)
-            near=np.linalg.norm(x[:,u]-x[:,v],axis=2)<=h.CLIMATE_ANALOG_Z
+            near=np.linalg.norm(x[:,u]-x[:,v],axis=2)<=threshold
             ok=(near.sum(1)>=2)&(near.sum(1)<len(u))
             if not ok.any():continue
             yy=y[ok];mm=near[ok]
@@ -67,20 +82,31 @@ def main():
                 null+=dist.mean(1)-dist[:,near[taxon_id]].mean(1)
             within.append([ok.sum(),advantage(yy),*(null/ok.sum())])
         for (sample,scale),reps in acc.items():
-            xx,xy=np.mean(reps,axis=0).reshape(2,-1,3,3)
+            xx=np.mean([r[0] for r in reps],axis=0).reshape(-1,width,width)
+            xy=np.mean([r[1] for r in reps],axis=0).reshape(-1,width,3)
             coef=np.linalg.solve(xx,xy)
             lo,hi=np.quantile(coef[1:],[.025,.975],axis=0)
-            for a,axis in enumerate(["annual_rain","mean_temperature","radiation"]):
+            for a,axis in enumerate(["annual_rain","mean_temperature","radiation","temperature_seasonality","precipitation_seasonality"][:width]):
                 for t,trait in enumerate(["angle","chroma","outline"]):
                     out.append(dict(degrees=deg,sample=sample,scale=scale,axis=axis,trait=trait,
                                     beta=coef[0,a,t],lo=lo[a,t],hi=hi[a,t],draws=len(reps)))
+        if extra:
+            if len(cross_scores)<12: raise ValueError("Insufficient seasonal analogue draws")
+            obs,*null=np.mean(cross_scores,axis=0)
+            null=np.asarray(null)
+            excess=obs-null.mean()
+            cross.append(dict(degrees=deg,draws=len(cross_scores),taxa=len(taxa),cells=len(cells),photos=len(df),threshold=threshold,excess=excess,p=(1+(abs(null-null.mean())>=abs(excess)-1e-12).sum())/500))
         k,obs,*null=np.mean(within,axis=0)
         null=np.array(null);center=null.mean()
         sim.append(dict(degrees=deg,mean_supported_taxa=k,draws=len(within),observed=obs,
                         null_mean=center,excess=obs-center,p=(1+(abs(null-center)>=abs(obs-center)).sum())/500))
-    pd.DataFrame(out).to_csv(root/"public/v5_signed_pairs.csv",index=False)
+    pd.DataFrame(out).to_csv(root/f"public/v5_signed_pairs{suffix}.csv",index=False)
     tab=pd.DataFrame(sim);tab["holm"]=multipletests(tab.p,method="holm")[1]
-    tab.to_csv(root/"public/v5_within_analogue.csv",index=False)
+    tab.to_csv(root/f"public/v5_within_analogue{suffix}.csv",index=False)
+
+    if cross:
+        tab=pd.DataFrame(cross);tab["holm"]=multipletests(tab.p,method="holm")[1]
+        tab.to_csv(root/f"public/v5_cross_analogue{suffix}.csv",index=False)
 
 if __name__=="__main__":
     main()
