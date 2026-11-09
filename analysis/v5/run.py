@@ -45,7 +45,7 @@ def stats_row(fit,j):
     lo,hi=np.asarray(fit.conf_int())[j]
     return dict(beta=float(np.asarray(fit.params)[j]),lower=lo,upper=hi,p=float(np.asarray(fit.pvalues)[j]))
 
-def heterogeneity(cells,axes,yname):
+def heterogeneity(cells,axes,yname,focal=None):
     """REML synthesis of partial slopes of well-sampled taxa, common units."""
     estimates=[]; variances=[]
     for _,g in cells.groupby('accepted_key'):
@@ -53,7 +53,7 @@ def heterogeneity(cells,axes,yname):
         x=sm.add_constant(g[axes].to_numpy(),has_constant='add')
         if np.linalg.matrix_rank(x)<x.shape[1] or np.linalg.cond(x)>100: continue
         fit=sm.OLS(g[yname],x).fit(cov_type='HC3')
-        j=axes.index(FOCUS[yname])+1
+        j=axes.index(focal or FOCUS[yname])+1
         v=fit.bse.iloc[j]**2 if hasattr(fit.bse,'iloc') else fit.bse[j]**2
         if np.isfinite(v) and v>0:
             estimates.append(np.asarray(fit.params)[j]);variances.append(v)
@@ -64,7 +64,8 @@ def heterogeneity(cells,axes,yname):
         return np.log(v+t).sum()+np.log(w.sum())+np.sum(w*(b-np.average(b,weights=w))**2)
     opt=minimize_scalar(objective,bounds=(0,max(1,5*np.var(b))),method='bounded')
     tau2=opt.x if objective(opt.x)<objective(0) else 0
-    return dict(n_taxa=len(b),mean_partial_slope=np.average(b,weights=1/(v+tau2)),tau=np.sqrt(tau2),
+    loo=[np.average(np.delete(b,k),weights=1/np.delete(v+tau2,k)) for k in range(len(b))]
+    return dict(loo_mean_min=min(loo),loo_mean_max=max(loo),n_taxa=len(b),mean_partial_slope=np.average(b,weights=1/(v+tau2)),tau=np.sqrt(tau2),
                 observed_positive=int((b>0).sum()),observed_negative=int((b<0).sum()))
 
 def s1(native):
@@ -104,7 +105,9 @@ def s1(native):
             scores.append(dict(trait=label,spec=spec,spatial_Q2=1-err/null,
                                max_VIF_between=np.diag(np.linalg.inv(corr)).max()))
             if spec in ['warm','warm_elev']:
-                random.append(dict(trait=label,spec=spec,**heterogeneity(cells,axis,label)))
+                random.append(dict(trait=label,spec=spec,axis=FOCUS[label],**heterogeneity(cells,axis,label)))
+                if spec=='warm' and label=='chroma':
+                    random.append(dict(trait=label,spec=spec,axis='bio05',**heterogeneity(cells,axis,label,'bio05')))
     adjust(pd.DataFrame(slopes),['spec','geo_adjust']).to_csv(OUT/'s1_slopes.csv',index=False)
     for file,rows in [('s1_spatial_cv',scores),('s1_variance',variance),('s1_slope_heterogeneity',random)]:
         pd.DataFrame(rows).to_csv(OUT/(file+'.csv'),index=False)
