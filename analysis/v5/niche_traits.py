@@ -127,6 +127,8 @@ def main():
             from analysis.v5.novel_head_overlap import analysis
             head_overlap.extend(analysis(sp,sn,d,level))
             if level==.95:
+                from analysis.v5.whole_head_density import run as all_head_overlap
+                all_head_overlap(sp,sn,si,d,OUT)
                 from analysis.v5.config_overlap import run as config_run
                 config_rows, vectors = config_run(sp,sn,d)
                 configuration.extend(config_rows)
