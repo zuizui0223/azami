@@ -2,7 +2,7 @@ name: V5 overlap of climate and capitulum spaces
 on:
   push:
     branches: [codex/v5-heads-scales]
-    paths: ['analysis/v5/overlap_coupling.py', '.github/workflows/v5-coupling.yml']
+    paths: ['analysis/v5/overlap_coupling.py','analysis/v5/trait_coupling.py', '.github/workflows/v5-coupling.yml']
   workflow_dispatch:
 
 permissions:

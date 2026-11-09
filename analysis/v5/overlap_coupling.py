@@ -86,11 +86,15 @@ def main():
     src['i']=(src.latitude+90).clip(upper=179.99999).astype(int)
     src['j']=((src.longitude+180)%360).astype(int)
     src['block']=(src.i//20)*18+src.j//20
+    from analysis.v5 import trait_coupling
+    components=[];component_pairs=[]
     summary=[];pairs=[];full=[]
     for sp,s in src.groupby('taxon_name'):
         grouped=s.groupby(['range_state','block','i','j'])
         c=grouped[[*VARIABLES,*TRAITS]].median().reset_index()
         c['photos']=grouped.size().to_numpy()
+        rows,points=trait_coupling.analyze(c,sp,TRAITS,project,grid,density,overlap,SEED)
+        components.extend(rows);component_pairs.extend(points)
         for t in [TRAITS,TRAITS[:2]]:
             for h in [.35,.5,.75]:
                 calculate(c,sp,t,h,summary,pairs,full)
@@ -98,6 +102,7 @@ def main():
     primary=(tab.h==.5)&tab['shape']
     tab.loc[primary,'holm_primary']=multipletests(tab.loc[primary,'p'],method='holm')[1]
     OUT.mkdir(exist_ok=True)
+    trait_coupling.save(components,component_pairs,OUT)
     for file,df in [('regional',tab),('pairs',pd.DataFrame(pairs)),('whole',pd.DataFrame(full))]:
         df.to_csv(OUT/(file+'.csv'),index=False)
 if __name__=='__main__': main()
