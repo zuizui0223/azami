@@ -41,6 +41,10 @@ def compare(sp,n,i,native,intro,nat,common,out):
         c["climate_rarity"]=r[c.u,c.v]
         c["common"]=common[c.u,c.v]
         c["block"]=c.i.floordiv(20)*18+c.j.floordiv(20)
+    if sp == "Cirsium vulgare":
+        from analysis.v5.native_pca_env import _probability_content
+        from analysis.v5.vulgare_climate_map import export
+        export(i, _probability_content(nat, .95), out)
     slopes=[];differences=[];support=[]
     g=i[i.common].copy()
     rarity=g.climate_rarity.to_numpy()
