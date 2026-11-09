@@ -45,6 +45,8 @@ def run(sp,env_n,env_i,native,intro,transform,edges,nat,inv,out):
                     outside_other_background=partition[2],outside_own_background=partition[3],
                     outside_core_conditional_common=partition[1]/sum(partition[:2])))
             if not (bg==.99 and occ==.95):continue
+            from analysis.v5.expansion_consistency import compare
+            compare(sp,n,i,native,intro,nat,an&ai,out)
             u,v=i.u,i.v
             groups={"occupied_native_core":(ai&an&on)[u,v],
                     "expansion_in_common_climate":(ai&an&~on)[u,v],

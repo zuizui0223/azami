@@ -151,6 +151,8 @@ def main():
     finish_gradients(OUT)
     from analysis.v5.adjusted_exposures import finalize as finish_exposures
     finish_exposures(OUT)
+    from analysis.v5.expansion_consistency import finalize as finish_range_slopes
+    finish_range_slopes(OUT)
     vector_table = pd.DataFrame(centroids)
     vector_table["holm_six"] = multipletests(vector_table.p_block_flip, method="holm")[1]
     vector_table.to_csv(OUT/"matched_centroids.csv", index=False)
