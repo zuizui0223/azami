@@ -23,6 +23,8 @@ def cells(frame, native, folder):
     d["i"] = np.minimum(179,np.floor(d.latitude+90)).astype(int)
     d["j"] = np.floor((d.longitude+180)%360).astype(int)
     axes = list(dict.fromkeys(a for model in MODELS.values() for a in model))
+    if "niche_distance" in d:
+        axes.append("niche_distance")
     return base.merge(d.groupby(["i","j"])[axes].median(),on=["i","j"],validate="one_to_one")
 
 
@@ -53,6 +55,8 @@ def run(sp,native,intro,out):
         prediction=dx@fit[1:]
         if model=="head_month":
             from analysis.v5.transfer_support import audit
+            from analysis.v5.introduced_direct import run as direct
+            direct(sp,left,right,axes,dx,dy,y[:,:2].std(0),out)
             support, robustness=audit(sp,ref,left,right,axes,x,dx,dy,prediction,y[:,:2].std(0))
         cv=np.zeros_like(y);base=np.zeros_like(y)
         for tr,te in GroupKFold(5).split(x,groups=block):

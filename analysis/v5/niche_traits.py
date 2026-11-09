@@ -134,8 +134,13 @@ def main():
                 from analysis.v5.rain_transfer import run_transfer
                 run_transfer(sp,sn,d,OUT)
                 from analysis.v5.paired_prediction import run as predict_pairs
+                from scipy.ndimage import distance_transform_edt
+                dist=distance_transform_edt(~mask,sampling=[np.diff(e)[0] for e in edges])
+                d["niche_distance"]=dist[bins[0][inside],bins[1][inside]]
                 predict_pairs(sp,sn,d,OUT)
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
+    from analysis.v5.introduced_direct import finalize
+    finalize(OUT)
     vector_table = pd.DataFrame(centroids)
     vector_table["holm_six"] = multipletests(vector_table.p_block_flip, method="holm")[1]
     vector_table.to_csv(OUT/"matched_centroids.csv", index=False)
