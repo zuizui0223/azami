@@ -45,6 +45,8 @@ def compare(sp,n,i,native,intro,nat,common,out):
         from analysis.v5.native_pca_env import _probability_content
         from analysis.v5.vulgare_climate_map import export
         export(i, _probability_content(nat, .95), out)
+        from analysis.v5.vulgare_rain_regime import run as rain_regime
+        rain_regime(n, i, out)
     slopes=[];differences=[];support=[]
     g=i[i.common].copy()
     rarity=g.climate_rarity.to_numpy()
