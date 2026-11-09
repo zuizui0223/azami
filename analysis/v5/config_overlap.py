@@ -1,5 +1,5 @@
 """Overlap attributable to the co-occurrence of marginal trait coordinates."""
-from pathlib import Path
+from itertools import product
 import numpy as np
 import pandas as pd
 from scipy.ndimage import gaussian_filter
@@ -49,4 +49,18 @@ def run(sp,native,intro):
             rows.append(dict(species=sp,dimensions=len(cols),within_block=restricted,pairs=len(a),blocks=a.block.nunique(),
                 observed_D_sim=ob[0],observed_D_new=ob[1],observed_drop=ob[2],recombined_D_sim=avg[0],recombined_D_new=avg[1],recombined_drop=avg[2],
                 configuration_excess=ob[2]-avg[2],null_low=lo,null_high=hi,p=p))
-    return rows
+    # The centroid vector uses the same paired cells as the overlap comparison.
+    difference = b[T].to_numpy() - a[T].to_numpy()
+    unique_blocks = np.unique(blocks[1])
+    block_sums = np.stack([difference[blocks[1] == block].sum(0) for block in unique_blocks])
+    flips = np.array(list(product([-1, 1], repeat=len(unique_blocks))))
+    null = flips @ block_sums / len(a)
+    means = difference.mean(0)
+    p_values = (abs(null) >= abs(means) - 1e-12).mean(0)
+    vectors = []
+    for j, trait in enumerate(["angle", "chroma", "outline"]):
+        vectors.append(dict(species=sp, trait=trait, pairs=len(a), blocks=len(unique_blocks),
+                            native=n[T[j]].mean(), analogous=a[T[j]].mean(), novel=b[T[j]].mean(),
+                            novel_minus_analogous=means[j], difference_native_sd=means[j]/n[T[j]].std(ddof=0),
+                            p_block_flip=p_values[j]))
+    return rows, vectors
