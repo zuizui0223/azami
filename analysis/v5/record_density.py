@@ -38,6 +38,8 @@ def gradients(sp,d,folder):
     d["sin"]=np.sin(2*np.pi*month/12)
     d["cos"]=np.cos(2*np.pi*month/12)
     d["year"]=date.dt.year-2020
+    from analysis.v5.adjusted_exposures import compare
+    compare(sp,d,monthly,month,folder.parent/"novelty")
     d=d[d.novel.isin([0,1])].dropna(subset=[*axes,"year"]).copy()
     models={"head_month":axes,"niche":["bio01","bio04","bio12","bio15","rsds_mean"]}
     result=[]
