@@ -99,7 +99,7 @@ def main():
     measured=pd.read_csv(PRIVATE/'original-measured.csv.gz',usecols=['obs_id',*TRAITS.values()],dtype={'obs_id':str})
     wild=wild.drop(columns=list(TRAITS.values()),errors='ignore').merge(measured,on='obs_id',how='left',validate='one_to_one')
     frozen=json.loads(Path('analysis/v4/results/20261021_unified_abcde/S2_TWO_SPECIES_FULL_WCVP_NICHE_VERIFIED_20261021.json').read_text())
-    occ=[];breadth=[];contrasts=[];slopes=[];pairs=[]
+    occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[]
     for sp,rows in wild.groupby('taxon_name'):
         env,_=_background_species_audit(auth,land.dropna(subset=list(VARIABLES)),sp,land)
         complete=rows.dropna(subset=list(VARIABLES));sn=groups(complete,'native');si=groups(complete,'introduced')
@@ -124,10 +124,17 @@ def main():
             if level==.95:assert abs(frac-frozen['species'][sp]['introduced_density_outside_native_95percent_probability_content'])<1e-5
             occ.append(dict(species=sp,coverage=level,D=D,outside_density=frac,n_native=len(sn),n_intro=len(si),outside_grid=int((~inside).sum()),n_novel=int(novel.sum())))
             d['novel']=novel.astype(int)
+            from analysis.v5.novel_head_overlap import analysis
+            head_overlap.extend(analysis(sp,sn,d,level))
             if level==.95:
                 from analysis.v5.rain_transfer import run_transfer
                 run_transfer(sp,sn,d,OUT)
             traits_comparison(sp,d,level,contrasts,slopes,pairs)
+    head=pd.DataFrame(head_overlap)
+    primary=head.design.eq('geographic_pairs') & head.native95_mass.eq(.95) & head.n_traits.eq(3) & head.bandwidth.eq(.5)
+    assert primary.sum()==2
+    head.loc[primary,'holm_primary']=multipletests(head.loc[primary,'p_swap'],method='holm')[1]
+    head.to_csv(OUT/'novel_head_overlap.csv',index=False)
     for name,rs in [('niche',occ),('breadth',breadth),('trait_contrasts',contrasts),('trait_gradients',slopes),('trait_covariation',pairs)]:
         df=pd.DataFrame(rs)
         if name in ['trait_contrasts','trait_gradients','trait_covariation']:
