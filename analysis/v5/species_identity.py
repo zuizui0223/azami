@@ -40,9 +40,12 @@ def run():
             for geo in [False,True]:
                 design=np.column_stack([X,geography]) if geo else X
                 fit=cluster_fit(y,design,w,blk)
-                for s,j in [('between',axes.index(exposure)+1),('within',axes.index(exposure)+1+len(axes))]:
-                    slopes.append(dict(trait=trait,axis=exposure,scale=s,spec=group,geo=geo,n_photo=len(d),
-                                       n_taxa=t.nunique(),**stats_row(fit,j)))
+                focal_axes=([exposure] if group=='focal_only' or trait=='angle' else ['bio05','rsds_mean'])
+                if trait=='aspect' and group=='focal_only':continue
+                for axis in focal_axes:
+                    for scale,j in [('between',axes.index(axis)+1),('within',axes.index(axis)+1+len(axes))]:
+                        slopes.append(dict(trait=trait,axis=axis,scale=scale,spec=group,geo=geo,n_photo=len(d),
+                                           n_taxa=t.nunique(),**stats_row(fit,j)))
         # Identical held-out cells and weights for all competing predictors.
         err={k:0. for k in ['mean','species_only','climate_geo','climate_geo_species']}
         ntest=0;seen=set(); fold_rows=[]

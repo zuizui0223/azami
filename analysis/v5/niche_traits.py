@@ -19,8 +19,8 @@ PRIVATE=BASE/'private'
 OUT=BASE/'novelty'
 TRAITS={'angle':'orientation_angle_degrees_median','chroma':'corolla_lab_chroma_median','aspect':'shape_aspect_ratio_median'}
 AXES={'angle':['bio18','bio05','rsds_mean'],'chroma':['rsds_mean','bio05','bio18'],
-      'aspect':['bio04','bio15','bio01','bio12']}
-TEST={'angle':['bio18'],'chroma':['rsds_mean','bio05'],'aspect':['bio04','bio15']}
+      'aspect':['bio05','rsds_mean','bio18']}
+TEST={'angle':['bio18'],'chroma':['rsds_mean','bio05'],'aspect':['bio05','rsds_mean']}
 
 def wmean(a,w):
     return np.average(a,axis=0,weights=w)
@@ -64,9 +64,9 @@ def traits_comparison(species,intro,coverage,contrasts,slopes,pairs):
         for a in TEST[t]:
             j=axes.index(a); idx=2+j; contrast=np.zeros(X.shape[1]);contrast[idx]=contrast[idx+len(axes)]=1
             test=fit.t_test(contrast);lo,hi=np.asarray(test.conf_int()).ravel()
-            slopes.append(dict(**info,axis=a,climate_sd=sd[j],slope_sim=fit.params.iloc[idx],slope_new=float(np.asarray(test.effect).item()),
+            slopes.append(dict(**info,axis=a,climate_sd=sd[j],slope_sim=fit.params.iloc[idx],sim_lower=fit.conf_int().iloc[idx,0],sim_upper=fit.conf_int().iloc[idx,1],p_sim=fit.pvalues.iloc[idx],slope_new=float(np.asarray(test.effect).item()),
                                new_lower=lo,new_upper=hi,p_new=float(test.pvalue),**{'slope_difference':fit.params.iloc[idx+len(axes)],
-                               'p_difference':fit.pvalues.iloc[idx+len(axes)]}))
+                               'p_difference':fit.pvalues.iloc[idx+len(axes)],'difference_lower':fit.conf_int().iloc[idx+len(axes),0],'difference_upper':fit.conf_int().iloc[idx+len(axes),1]}))
     if coverage!=.95:return
     d=intro.dropna(subset=[*TRAITS.values(),'novel','bio18','bio05','rsds_mean']).copy()
     d=d[d[TRAITS['angle']].between(0,180)]
@@ -129,7 +129,7 @@ def main():
         df=pd.DataFrame(rs)
         if name in ['trait_contrasts','trait_gradients','trait_covariation']:
             key='climate_date_adjusted' if name=='trait_covariation' else 'coverage'
-            for pv in ['p','p_new','p_difference']:
+            for pv in ['p','p_sim','p_new','p_difference']:
                 if pv in df:
                     df['holm_'+pv]=df.groupby(key)[pv].transform(lambda s:s.where(s.isna(),pd.Series(multipletests(s.dropna(),method='holm')[1],index=s.dropna().index)) if s.notna().any() else s)
         df.to_csv(OUT/(name+'.csv'),index=False)
