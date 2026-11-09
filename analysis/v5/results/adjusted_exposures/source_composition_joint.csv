@@ -1,0 +1,5 @@
+species,traits,inside_native_mean_hull
+Cirsium arvense,angle+chroma,True
+Cirsium arvense,angle+chroma+outline,True
+Cirsium vulgare,angle+chroma,False
+Cirsium vulgare,angle+chroma+outline,False
