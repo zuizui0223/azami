@@ -2,7 +2,7 @@ name: V5 head traits across taxonomic scales, range status and sampled habitats
 on:
   push:
     branches: [codex/v5-heads-scales]
-    paths: ['analysis/v5/run.py','analysis/v5/climate_domains.py', '.github/workflows/v5-heads.yml']
+    paths: ['analysis/v5/run.py','analysis/v5/climate_domains.py','analysis/v5/seasonal_exposure.py', '.github/workflows/v5-heads.yml']
   workflow_dispatch:
 
 permissions:
@@ -188,6 +188,10 @@ jobs:
             --temporary work/submission/temp
       - name: Fit V5, exporting only aggregate results
         run: python -m analysis.v5.run
+      - name: Match climate normals to dated heads and the local warm quarter
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
+        run: python -m analysis.v5.seasonal_exposure
       - uses: actions/upload-artifact@v4
         with:
           name: v5-heads-aggregate
