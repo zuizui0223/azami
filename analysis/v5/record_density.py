@@ -4,7 +4,8 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy.ndimage import gaussian_filter
 from statsmodels.stats.multitest import multipletests
-from analysis.v5.novel_head_overlap import T,make_cells
+from itertools import product
+from analysis.v5.novel_head_overlap import T,make_cells,match_cells
 from analysis.v5.seasonal_exposure import normals
 
 
@@ -107,6 +108,48 @@ def fit_gradients(sp,d,model,axes):
     return rows
 
 
+def matched_overlap(cells,data,sp):
+    candidates=cells[2].query("novel!=.5").reset_index(drop=True)
+    pairs=match_cells(candidates)
+    total=sum(len(a) for a,b in pairs)
+    samples=[]
+    for side in [0,1]:
+        selected=candidates.iloc[np.concatenate([pair[side] for pair in pairs])]
+        records=data[2].merge(selected[["i","j"]],on=["i","j"],validate="many_to_one")
+        np.testing.assert_allclose(records.w.sum(),total)
+        samples.append(records)
+    if len(pairs)<=11:
+        flips=np.array(list(product([0.,1.],repeat=len(pairs))))
+        correction=0
+    else:
+        flips=np.random.default_rng(20261109).integers(2,size=(999,len(pairs)))
+        correction=1
+    rows=[]
+    for cols,label in [(T,"joint"),(T[:2],"angle_chroma"),([T[0]],"angle"),([T[1]],"chroma"),([T[2]],"outline")]:
+        mean=cells[0][cols].mean().to_numpy();sd=cells[0][cols].std(ddof=0).to_numpy()
+        bounds=np.quantile((pd.concat(cells[:2])[cols].to_numpy()-mean)/sd,[.005,.995],axis=0)
+        ref=density((data[0][cols].to_numpy()-mean)/sd,data[0].w,bounds,.5).ravel()
+        sides=[]
+        for records in samples:
+            pieces=[]
+            for _,g in records.groupby("block",sort=True):
+                pieces.append(density((g[cols].to_numpy()-mean)/sd,g.w,bounds,.5).ravel()*g.w.sum()/total)
+            sides.append(np.array(pieces))
+        a,b=sides
+        u=a.sum(0);v=b.sum(0)
+        overlap_a=np.minimum(ref,u).sum();overlap_b=np.minimum(ref,v).sum()
+        delta=overlap_a-overlap_b
+        extreme=0
+        for start in range(0,len(flips),16):
+            swapped=u+flips[start:start+16]@(b-a)
+            diffs=np.minimum(ref,swapped).sum(1)-np.minimum(ref,u+v-swapped).sum(1)
+            extreme+=np.count_nonzero(abs(diffs)>=abs(delta)-1e-12)
+        rows.append(dict(species=sp,trait=label,pairs=total,blocks=len(pairs),
+                         D_analogue=overlap_a,D_novel=overlap_b,drop=delta,
+                         p=(extreme+correction)/(len(flips)+correction)))
+    return rows
+
+
 def run(sp,native,intro,labeled,out):
     cells=[make_cells(native,True),make_cells(intro,True),make_cells(labeled)]
     data=[observations(g,c) for g,c in zip([native,intro,labeled],cells)]
@@ -128,12 +171,17 @@ def run(sp,native,intro,labeled,out):
                         rows.append(dict(species=sp,traits="+".join(cols),dimensions=len(cols),limits=limits,h=h,
                                          representation=representation,group=group,D=np.minimum(densities[0],densities[k]).sum(),
                                          cells=len(cell_groups[k]),records=len(groups[k])))
-    for name,records in [("record_density",rows),("novel_gradient",gradients(sp,data[2],out.parent/"temp"))]:
+    for name,records in [("record_matched",matched_overlap(cells,data,sp)),("record_density",rows),("novel_gradient",gradients(sp,data[2],out.parent/"temp"))]:
         path=out/(name+".csv")
         pd.DataFrame(records).to_csv(path,index=False,mode="a",header=not path.exists())
 
 
 def finalize(out):
+    path=out/"record_matched.csv"
+    tests=pd.read_csv(path)
+    family=tests.trait.where(tests.trait.isin(["joint","angle_chroma"]),"individual")
+    tests["holm"]=tests.groupby(family).p.transform(lambda x:multipletests(x,method="holm")[1])
+    tests.to_csv(path,index=False)
     p=out/"novel_gradient.csv"
     d=pd.read_csv(p)
     d["holm"]=d.groupby(["climate","regional","term"]).p.transform(lambda x:multipletests(x,method="holm")[1])
