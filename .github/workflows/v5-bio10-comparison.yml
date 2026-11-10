@@ -31,7 +31,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: azami-v5-bio05-bio10-comparison-${{ github.event.pull_request.number || github.ref }}
+  group: azami-v5-bio05-bio10-comparison-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
