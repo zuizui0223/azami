@@ -1,5 +1,8 @@
 # V5　頭花形質と気候を比較する尺度
 
+> **2026-11-10 主解析と感度分析の優先順位**：[問い別の階層表](results/V5_PRIMARY_SENSITIVITY_HIERARCHY_20261110_JA.md)。Part Iの降水×向き・Part IIの同種内降水×向きはBIO18（＋BIO05・RSDS・BIO04・BIO15）を主要な機能仮説、Part Iの気候―頭花類似性とPart IIのニッチDはBIO12/BIO01＋RSDS・BIO04・BIO15を主要な分布環境とする。**回転依存の旧輪郭は主要な頭花形態の証拠から除外**。全て既存データを見た後の編集判断で、過去の当初主仕様3変数と取り違えない。
+
+
 > **2026-11-09 編集更新（既存結果を見た後の方針）**：現行の主線は Part I「全球の気候類似性と頭花類似性」、Part II「在来・移入の気候ニッチDと頭花多形質空間Dの対応、および新規気候（在来主要95%外）の頭花D」。**気候希少度の連続指数を現行の主解析・主図・考察には使わない。** 下記の当初設計と既存解析を上書きしない。Part IIの数値・不確実性・異なる分母の区別は [CLIMATE_HEAD_OVERLAP_DECISION_20261109_JA.md](results/CLIMATE_HEAD_OVERLAP_DECISION_20261109_JA.md) と [現行V5 Results](results/RESULTS_JA.md) を参照。
 
 
