@@ -225,6 +225,14 @@ def _one_species(c, land, authority, species):
     # are included in result outputs.
     output = []
     for h in (.5, .35, .75):
+        # Area-weighted WCVP background KDE is independent of photo draw.
+        # Compute it once per region and bandwidth, not 32x per draw.
+        bg_h = {}
+        for key in keys["native"] + keys["introduced"]:
+            available = regional[key]["available"]
+            bg_h[key] = regional_density(
+                transform(available[list(VARIABLES)].to_numpy(float)),
+                edgebg, h, weights=available._area_weight.to_numpy(float))
         for head, positions in (("three_trait", y), ("angle_chroma", y2)):
             rain = np.zeros((len(keys["native"]), len(keys["introduced"])))
             raw = np.zeros_like(rain)
@@ -240,10 +248,8 @@ def _one_species(c, land, authority, species):
                 bg_parts, original_parts, head_parts = [], [], []
                 for state, block, sample in picked:
                     occ = regional_density(xp[sample], edgebg, h)
-                    b = regional[key := (state, block)]["available"]
-                    bden = regional_density(transform(b[list(VARIABLES)].to_numpy(float)),
-                                            edgebg, h, weights=b._area_weight.to_numpy(float))
-                    corrected, coverage = correct_occupancy(occ, bden)
+                    corrected, coverage = correct_occupancy(
+                        occ, bg_h[(state, block)])
                     support_min = min(support_min, coverage)
                     bg_parts.append(corrected.ravel())
                     original_parts.append(regional_density(xold[sample], edges["original_photo_climate"], h).ravel())
@@ -378,8 +384,8 @@ def main():
     results = {
         "schema": "azami_v5_background_corrected_regional_niche_head_paired_20261110_v1",
         "status": "SOURCE_VERIFIED_NEW_ESTIMATE",
-        "main": t.loc[main].to_dict(orient="records"),
-        "sensitivities": t.loc[~main].to_dict(orient="records"),
+        "main": json.loads(t.loc[main].to_json(orient="records")),
+        "sensitivities": json.loads(t.loc[~main].to_json(orient="records")),
         "support": audits,
         "original_source_wild_n": 297622,
         "source_rasters": {key: {
