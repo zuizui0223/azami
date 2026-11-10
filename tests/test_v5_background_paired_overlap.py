@@ -69,7 +69,7 @@ def test_background_pca_keeps_2_axes_and_uses_wcvp_area_not_photo_numbers():
     df["range_state"] = ["native"]*n + ["introduced"]*n
     df["_area_weight"] = np.linspace(.1, 1., 2*n)
     project, variance = weighted_project_from_background(df)
-    x = project(df[VARIABLES].to_numpy())
+    x = project(df[list(VARIABLES)].to_numpy())
     assert x.shape == (2*n, 2)
     assert 0 < variance <= 1
     assert np.isfinite(x).all()
