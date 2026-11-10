@@ -2,7 +2,7 @@ name: V5 Parts I and II annual versus warm climate with seasonality
 on:
   pull_request:
     branches:
-      - codex/v5-climate-head-overlap-20261109
+      - main
     paths:
       - analysis/v5/annual_warm_sources.py
       - analysis/v5/annual_warm_s1.py
