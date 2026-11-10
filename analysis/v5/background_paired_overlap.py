@@ -373,6 +373,61 @@ def _head_cells(wild, *, require_original_cohort=True):
     return result
 
 
+def _historical_photo_pixel_cache(wild):
+    """Recreate the *original* V5 pairing cache, including authentic missingness.
+
+    This intentionally follows .github/workflows/v5-coupling.yml. The separate
+    S2 recover_original_five helper has an unrelated >=95% coverage gate that
+    the historical V5 regional pairing did NOT impose. Missing pixels are never
+    imputed; the eligible photo cohort is chosen only afterwards.
+    """
+    import subprocess
+    import zipfile
+    from analysis.v4.s1_s2_restore_original_five import CACHES, sha256
+    from analysis.v4.native_cached_climate import physical_climate_for_focal
+
+    root = PRIVATE / "original_five_photo_cache"
+    root.mkdir(parents=True, exist_ok=True)
+    receipts = {}
+    for name, (artifact_id, expected_hash) in CACHES.items():
+        dest = root / name
+        dest.mkdir(parents=True, exist_ok=True)
+        archive_path = root / (name + ".zip")
+        with archive_path.open("wb") as f:
+            subprocess.run(
+                ["gh", "api",
+                 f"repos/zuizui0223/azami/actions/artifacts/{artifact_id}/zip"],
+                stdout=f, check=True)
+        if sha256(archive_path) != expected_hash:
+            raise ValueError("ORIGINAL_V5_PHOTO_CACHE_SHA_MISMATCH_" + name)
+        with zipfile.ZipFile(archive_path) as z:
+            members = z.namelist()
+            if any(Path(member).is_absolute() or ".." in Path(member).parts
+                   for member in members):
+                raise ValueError("UNSAFE_ORIGINAL_V5_CACHE_ARCHIVE")
+            z.extractall(dest)
+        archive_path.unlink()
+        receipts[name] = {"artifact_id": artifact_id,
+                          "zip_sha256": expected_hash,
+                          "source_cache_verified": True}
+    cached, pixel_audit = physical_climate_for_focal(
+        wild, root, Path("analysis/v4/environment_source_metadata.json"))
+    photo = wild.copy()
+    for name in VARIABLES:
+        data = np.asarray(cached[name], float)
+        if len(data) != len(wild):
+            raise ValueError("HISTORICAL_V5_CACHED_CLIMATE_ROW_COUNT_DRIFT")
+        photo[name] = data
+        receipts[name]["finite_original_v5_pixels"] = int(np.isfinite(data).sum())
+        receipts[name]["missingness_retained_without_imputation"] = True
+    return photo, {
+        "status": "ORIGINAL_V5_FIVE_CACHED_PIXEL_MASK_REPRODUCED",
+        "archives": receipts,
+        "pixel_diagnostic": pixel_audit,
+        "all_original_pixel_missingness_retained": True,
+    }
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     wild, land, authority, receipts = _source_original()
@@ -382,12 +437,7 @@ def main():
     # TIFF completeness mask. Use exact old cache values for the SAME photo
     # cohort while using full original TIFFs for WCVP background availability.
     # No invented climate values or coalescing of missing pixels.
-    from analysis.v4.s1_s2_restore_original_five import recover_original_five
-    photo_wild, photo_receipt = recover_original_five(
-        wild.copy(),
-        PRIVATE / "original_photo_five_caches",
-        Path("analysis/v4/environment_source_metadata.json"),
-    )
+    photo_wild, photo_receipt = _historical_photo_pixel_cache(wild)
     comparison = {}
     for variable in VARIABLES:
         new = wild[variable].to_numpy(float)
