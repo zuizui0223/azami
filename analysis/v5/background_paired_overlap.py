@@ -324,8 +324,13 @@ def _source_original():
     return wild, land, authority, receipts
 
 
-def _head_cells(wild):
-    """Exactly the original photo-eligible observer×cell cohort, not an E-only cohort."""
+def _head_cells(wild, *, require_original_cohort=True):
+    """Exactly photo-eligible observer×cell source, with optional diagnostic gate.
+
+    The full global TIFF extraction can have a different missingness mask from
+    the original five archived 5-degree caches. Compare the two rather than
+    silently enlarging the historical photograph cohort.
+    """
     src = (PRIVATE / "original-measurements.aesgcm").read_bytes()
     clear = decrypt_checked(src, os.environ["AZAMI_MEASUREMENTS_KEY"],
                             MEASUREMENT_SEALED_SHA, MEASUREMENT_SHA, MEASUREMENT_AAD)
@@ -348,13 +353,20 @@ def _head_cells(wild):
         c = sub.groupby(["range_state", "block", "i", "j"])[[*VARIABLES, *TRAITS]].median().reset_index()
         c["photos"] = sub.groupby(["range_state", "block", "i", "j"]).size().to_numpy()
         # Provenance anchor against the original 2026-11-09 paired overlap run.
-        if int(c.photos.sum()) != EXPECTED_PHOTOS[sp]:
-            raise ValueError("V5_ORIGINAL_PAIRED_PHOTO_COHORT_DRIFT")
+        if require_original_cohort and int(c.photos.sum()) != EXPECTED_PHOTOS[sp]:
+            raise ValueError(
+                "V5_ORIGINAL_PAIRED_PHOTO_COHORT_DRIFT_"
+                + sp.replace(" ", "_")
+                + "_got_" + str(int(c.photos.sum()))
+                + "_expected_" + str(EXPECTED_PHOTOS[sp]))
         old_regions = tuple(
             sum(len(g) >= 8 for _, g in c[c.range_state == state].groupby("block"))
             for state in ("native", "introduced"))
-        if old_regions != EXPECTED_REGIONS[sp]:
-            raise ValueError("V5_ORIGINAL_PAIRED_REGIONS_DRIFT")
+        if require_original_cohort and old_regions != EXPECTED_REGIONS[sp]:
+            raise ValueError("V5_ORIGINAL_PAIRED_REGIONS_DRIFT_"
+                             + sp.replace(" ", "_")
+                             + "_got_" + str(old_regions)
+                             + "_expected_" + str(EXPECTED_REGIONS[sp]))
         result[sp] = c
     if set(result) != set(SPECIES_KEYS):
         raise ValueError("V5_ORIGINAL_TWO_SPECIES_NOT_PRESENT")
@@ -364,7 +376,46 @@ def _head_cells(wild):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     wild, land, authority, receipts = _source_original()
-    cells = _head_cells(wild)
+
+    # Diagnostic source-parity gate. The original 2026-11-09 regional overlap
+    # consumed five SHA-verified CACHE pixels, not the newly recovered global
+    # TIFF completeness mask. Use exact old cache values for the SAME photo
+    # cohort while using full original TIFFs for WCVP background availability.
+    # No invented climate values or coalescing of missing pixels.
+    from analysis.v4.s1_s2_restore_original_five import recover_original_five
+    photo_wild, photo_receipt = recover_original_five(
+        wild.copy(),
+        PRIVATE / "original_photo_five_caches",
+        Path("analysis/v4/environment_source_metadata.json"),
+    )
+    comparison = {}
+    for variable in VARIABLES:
+        new = wild[variable].to_numpy(float)
+        old = photo_wild[variable].to_numpy(float)
+        common = np.isfinite(new) & np.isfinite(old)
+        max_abs = float(np.max(np.abs(new[common] - old[common]))) if common.any() else None
+        comparison[variable] = {
+            "old_cache_complete": int(np.isfinite(old).sum()),
+            "full_original_complete": int(np.isfinite(new).sum()),
+            "full_only": int((np.isfinite(new) & ~np.isfinite(old)).sum()),
+            "cache_only": int((~np.isfinite(new) & np.isfinite(old)).sum()),
+            "max_abs_original_pixel_difference_on_common": max_abs,
+        }
+        if max_abs is None or max_abs > 1e-7:
+            raise ValueError("ORIGINAL_CACHE_FULL_PIXEL_MISMATCH_" + variable)
+    full_cells = _head_cells(wild, require_original_cohort=False)
+    cells = _head_cells(photo_wild, require_original_cohort=True)
+    parity = {
+        species: {
+            "full_original_tiff_photo_eligible": int(full_cells[species].photos.sum()),
+            "historical_cached_photo_eligible": int(cells[species].photos.sum()),
+            "historical_paired_expected": EXPECTED_PHOTOS[species],
+        }
+        for species in SPECIES_KEYS
+    }
+    print({"source_parity_checked": True,
+           "photo_eligible_original_vs_full": parity,
+           "original_pixel_missingness_diagnostics": comparison}, flush=True)
     rows, audits = [], {}
     for sp in SPECIES_KEYS:
         status, result = _one_species(cells[sp], land, authority, sp)
@@ -392,6 +443,9 @@ def main():
             "source_SHA256": v["source_SHA256"],
             "original_pixels_only": v["original_pixels_only"]}
             for key, v in receipts.items()},
+        "historical_photo_cache_source": photo_receipt["status"],
+        "original_pixel_missingness_comparison": comparison,
+        "photo_cohort_source_parity": parity,
         "no_individual_records_published": True,
         "old_published_original_rhos_are_not_background_corrected": True,
         "not_genetic_adaptation": True,
