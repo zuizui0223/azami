@@ -36,4 +36,4 @@
 
 **重要：** この文書は2026-11-10までの結果を見てから追加した**編集上の階層化**。厳密な事前登録／確認解析への昇格は不可。最暖期だけのBIO18/BIO05/RSDSを原V5の「当初主仕様」として歴史的に保存し、BIO04/BIO15追加後の5軸モデルを当初固定の3軸モデルと偽らない。
 
-参照：[原V5設計](../../DESIGN_JA.md)／[年間・最暖期のソース監査結果](ANNUAL_VS_WARM_PART_I_II_20261110_JA.md)／[降水×向きの直接検定](RAIN_ANGLE_ANNUAL_WARM_20261110_JA.md)／[輪郭問題と地域ペアD](V5_BACKGROUND_CORRECTED_PAIRED_RESULTS_20261110_JA.md)。
+参照：[原V5設計](../DESIGN_JA.md)／[年間・最暖期のソース監査結果](ANNUAL_VS_WARM_PART_I_II_20261110_JA.md)／[降水×向きの直接検定](RAIN_ANGLE_ANNUAL_WARM_20261110_JA.md)／[輪郭問題と地域ペアD](V5_BACKGROUND_CORRECTED_PAIRED_RESULTS_20261110_JA.md)。
