@@ -73,7 +73,7 @@ jobs:
           echo '111c8fb668265a623c948b635dea68b5182f0a2be04d91ec03bda056b608eb60  work/submission/private/original-measurements.aesgcm' | sha256sum -c -
           gh api repos/zuizui0223/azami/actions/artifacts/12244160272/zip \
             > work/submission/private/authority350.zip
-          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcb8085959854ec80dc826a56ca1  work/submission/private/authority350.zip' | sha256sum -c -
+          echo 'ec0e3b67c2fb81d4d1dd8a9215585e4523abcbf8085959854ec80dc826a56ca1  work/submission/private/authority350.zip' | sha256sum -c -
       - name: Calculate background-corrected regional climate D vs matching head D
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
