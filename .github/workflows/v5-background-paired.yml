@@ -8,6 +8,13 @@ on:
       - analysis/v5/background_paired_overlap.py
       - tests/test_v5_background_paired_overlap.py
       - .github/workflows/v5-background-paired.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - analysis/v5/background_paired_overlap.py
+      - tests/test_v5_background_paired_overlap.py
+      - .github/workflows/v5-background-paired.yml
   workflow_dispatch:
 
 permissions:
