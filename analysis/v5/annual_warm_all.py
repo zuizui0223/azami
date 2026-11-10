@@ -11,6 +11,7 @@ from analysis.v5.background_paired_overlap import (
 from analysis.v5.annual_warm_sources import sample_warm, PRIVATE, OUT, EXTRA
 from analysis.v5.annual_warm_s1 import run as run_s1
 from analysis.v5.annual_warm_s2 import run as run_s2
+from analysis.v5.annual_warm_s2_rain_angle import run as run_s2_rain_angle
 
 ROOT=Path("work/submission")
 NAME="v5_part1_part2_annual_vs_warm_both_seasonality.json"
@@ -50,6 +51,15 @@ def main():
     if measured.obs_id.duplicated().any():
         raise ValueError("S2_DECRYPTED_MEASUREMENTS_DUPLICATED")
     s2=run_s2(wild,land,authority,historic,measured)
+    s2["rain_angle"]=run_s2_rain_angle(historic,measured)
+    print({"part":"II_rain_vs_head_angle",
+           "primary_within_region":[{
+               "species":r["species"],"climate":r["climate_model"],
+               "native_beta":r["rain_partial_slope"]["native"]["beta"],
+               "introduced_beta":r["rain_partial_slope"]["introduced"]["beta"],
+               "difference_p_holm":r["holm_4_species_x_climate_for_range_interaction"]
+           } for r in s2["rain_angle"]["results"]
+             if r["model"]=="within_20degree_region"]},flush=True)
     print({"part":"II",
            "niches":[{k:r[k] for k in ("species","model",
                        "full_range_climate_overlap_D",
@@ -61,7 +71,7 @@ def main():
                      for r in s2["regional_overlap"]
                      if r["head_dimensions"]==3 and r["bandwidth_pc_sd"]==.5]},flush=True)
     report={
-        "schema":"V5_PART_I_AND_II_ANNUAL_VS_WARM_PLUS_BIO04_BIO15_20261110_v1",
+        "schema":"V5_PART_I_AND_II_ANNUAL_VS_WARM_PLUS_BIO04_BIO15_RAIN_ANGLE_20261110_v2",
         "status":"ORIGINAL_S1_S2_SHARES_5_CLIMATE_MODEL_COMPARISON_COMPLETE",
         "frozen_original_core": {
             "native_s1":313350,"wild_s2":297622,
