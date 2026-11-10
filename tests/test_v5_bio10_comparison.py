@@ -92,3 +92,19 @@ def test_s2_selection_never_duplicates_seasonality_columns():
     inputs=[*VARIABLES,*S2_EXTRA]
     assert len(inputs)==len(set(inputs))
     assert set(S2_EXTRA)=={"chelsa_bio18","chelsa_bio05","chelsa_bio10"}
+
+
+def test_pair_selection_jaccard_and_same_pair_difference_are_aggregates():
+    from analysis.v5.bio10_pair_diagnostics import selection_summary
+    a={(0,1):{"mask":np.array([[1,0],[0,1]],bool),"adv":0.2,"n_analog":2},
+       (0,2):{"mask":np.array([[0,1],[1,0]],bool),"adv":-0.1,"n_analog":2}}
+    b={(0,1):{"mask":np.array([[1,1],[0,0]],bool),"adv":-0.3,"n_analog":2},
+       (1,2):{"mask":np.array([[1,0],[0,1]],bool),"adv":0.5,"n_analog":2}}
+    d=selection_summary(a,b)
+    assert d["eligible_taxon_pairs_first"]==2
+    assert d["eligible_taxon_pairs_second"]==2
+    assert d["same_taxon_pair_intersection"]==1
+    assert d["taxon_pair_jaccard"]==1/3
+    assert d["cell_pair_jaccard_within_shared_taxon_pairs"]==1/3
+    assert d["same_pair_mean_phenotype_advantage_first"]==.2
+    assert d["same_pair_mean_phenotype_advantage_second"]==-.3
