@@ -97,3 +97,20 @@
 - [類似／新規気候での頭花D・地域置換](results/novel_head_overlap/RESULTS_JA.md)
 - [在来地域を保留した基準](results/invasion_design/RESULTS_JA.md)
 - [現行の主線変更と数値の帰属](results/CLIMATE_HEAD_OVERLAP_DECISION_20261109_JA.md)
+
+
+## 7. 論文本文用の英文草案（原著から内容を学んで独自に執筆。投稿版では未確定）
+
+**Introduction / rationale (working draft):**
+
+> Comparisons between native and introduced ranges offer a within-species opportunity to examine whether climatic occupancy and phenotype–environment associations persist across major biogeographic changes. Studies of plant invasions have shown that climatic niche shifts depend on environmental availability, geographic context and introduction history, and that differences between ranges do not necessarily indicate evolved changes in climatic tolerance (Petitpierre et al., 2012; Guisan et al., 2014; Atwater et al., 2018; Rönnfeldt et al., 2026). Likewise, changes in phenotypic traits need not parallel changes in occupied climates: pre-existing variation, environmental filtering, plasticity and nonrandom introduction of source populations can generate different combinations of niche and trait dynamics (Hulme & Barrett, 2013). We therefore treated the native ranges of two widely introduced *Cirsium* species as contemporary reference distributions and asked whether changes in climatic occupancy are accompanied by changes in multivariate, photograph-derived capitulum phenotypes.
+
+**Methods / test logic (working draft):**
+
+> For each species, we quantified climatic occupancy overlap between its native and introduced ranges using a shared five-variable climatic ordination and accounted for differences in geographically available climate. We then compared the distributions of image-referenced capitulum angle, photographic corolla chroma and projected outline shape using taxon- and photograph-linked records. Climatic and phenotypic overlap were examined separately for whole ranges and, using exactly matched eligible geographic cells, across pairs of native and introduced regions. Region-label permutations accounted for the reuse of regions across pairwise comparisons. We additionally tested whether capitulum phenotypes in introduced occurrences outside the native range's main 95% climatic occupancy region differed from those in climatically analogous introduced occurrences, using within-region matched-cell contrasts. Comparisons restricted to angle and chroma assess sensitivity to the rotation dependence of the projected outline metric. We interpret these tests as observational associations, not as evidence of selection or genetic evolution after introduction.
+
+**Discussion / evidence-limited formulation (working draft):**
+
+> The climatic environments occupied in the introduced ranges differed from those occupied in the native ranges, whereas photographed capitulum phenotypes retained substantial overlap. However, climatic and phenotypic overlap across paired regions did not show a detectable monotonic association, and lower phenotypic overlap in climatically novel introduced occurrences was not supported after spatial matching and multiplicity correction. These findings are compatible with colonization of different realized climatic environments without large, consistently detectable changes in the measured capitulum phenotype space, but they do not establish phenotypic invariance or ecological fitting as a causal mechanism. Inference remains limited by the number of focal species, uncertain introduction sources, uneven geographic replication and photographic measurement error.
+
+上記のDiscussion草案は今後の背景補正済み地域ペア解析や独立形質QCで結果が変われば修正する。特に現在の**地域ペアrhoは観測地点の気候D**であって背景補正済みニッチDではないため、Methods/Resultsに2つの推定対象を明記して混同しない。
