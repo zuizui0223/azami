@@ -7,8 +7,10 @@ on:
       - analysis/v5/annual_warm_sources.py
       - analysis/v5/annual_warm_s1.py
       - analysis/v5/annual_warm_s2.py
+      - analysis/v5/annual_warm_s2_rain_angle.py
       - analysis/v5/annual_warm_all.py
       - tests/test_v5_annual_warm_full.py
+      - tests/test_v5_s2_rain_angle.py
       - .github/workflows/v5-annual-warm-full.yml
   workflow_dispatch:
 
@@ -126,8 +128,8 @@ jobs:
 
       - name: Validate both 5-axis models and source receipts before original download
         run: |
-          python -m pytest -q tests/test_v5_annual_warm_full.py tests/test_v5_background_paired_overlap.py
-          python -m py_compile analysis/v5/annual_warm_sources.py analysis/v5/annual_warm_s1.py analysis/v5/annual_warm_s2.py analysis/v5/annual_warm_all.py
+          python -m pytest -q tests/test_v5_annual_warm_full.py tests/test_v5_background_paired_overlap.py tests/test_v5_s2_rain_angle.py
+          python -m py_compile analysis/v5/annual_warm_sources.py analysis/v5/annual_warm_s1.py analysis/v5/annual_warm_s2.py analysis/v5/annual_warm_s2_rain_angle.py analysis/v5/annual_warm_all.py
       - name: Compare original V5 Parts I and II on equal annual/warm/seasonal source cohorts
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
