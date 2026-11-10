@@ -5,7 +5,8 @@ import pandas as pd
 from analysis.v5.bio10_s1 import (
     EXTRA, CLIMATE, CLIMATE_NAMES, THRESH, _bootstrap_moments
 )
-from analysis.v5.bio10_s2 import MODELS
+from analysis.v5.bio10_s2 import MODELS, EXTRA as S2_EXTRA
+from analysis.v4.native_cached_climate import VARIABLES
 from analysis.v5.bio10_s2_angle_chroma import AXES, _fit, RESPONSES
 from analysis.v5.bio10_source_audit import URLS
 
@@ -86,3 +87,8 @@ def test_s2_bio10_chroma_has_radiation_focal_without_conflating_rarity():
     from analysis.v5.bio10_s2_angle_chroma import FOCAL
     assert FOCAL["chroma"]=="radiation"
     assert FOCAL["angle"]=="rain"
+
+def test_s2_selection_never_duplicates_seasonality_columns():
+    inputs=[*VARIABLES,*S2_EXTRA]
+    assert len(inputs)==len(set(inputs))
+    assert set(S2_EXTRA)=={"chelsa_bio18","chelsa_bio05","chelsa_bio10"}
