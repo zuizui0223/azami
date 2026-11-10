@@ -61,7 +61,7 @@ def selection_summary(a,b):
 
 def run(native, decoded, receipt):
     d,proof=verified_photo_source(native,decoded,receipt)
-    rows=[];comparisons=[]
+    rows=[];comparisons=[];support_by_degree={}
     for deg in (1,5):
         cells,_=geo_aggregate(d,deg,EXTRA)
         z,_=standardise_cells(cells,EXTRA)
@@ -78,7 +78,11 @@ def run(native, decoded, receipt):
                 x=np.stack([t["x"][model][ids] for t,ids in zip(taxa,picks)])
                 pairs,support=h.matched_pairs(x,y,regions,THRESH)
                 if support["status"]!="qualified":
-                    raise ValueError("BIO10_DIAGNOSTIC_UNSUPPORTED_CLIMATE_ANALOG_DRAWS")
+                    # Original V5 drops unsupported rarefactions; never
+                    # manufacture extra climate-analogue cell pairs.
+                    draws[model].append(None)
+                    pair_refs[model].append(None)
+                    continue
                 obs,null=h.observed_and_permutations(
                     pairs,len(taxa),np.random.default_rng(20261119+deg*1000+rep),N_NULL)
                 draws[model].append((obs,null))
@@ -86,20 +90,35 @@ def run(native, decoded, receipt):
             for k in range(len(COMPARE)):
                 for j in range(k+1,len(COMPARE)):
                     model1,model2=COMPARE[k],COMPARE[j]
+                    if pair_refs[model1][-1] is None or pair_refs[model2][-1] is None:
+                        continue
                     q=selection_summary(pair_refs[model1][-1],pair_refs[model2][-1])
                     rows.append({
                         "degree":deg,"model_a":model1,"model_b":model2,
                         "draw_number_for_diagnostic_only":rep,
                         **q
                     })
+        support_by_degree[str(deg)]={
+            model:int(sum(x is not None for x in draws[model])) for model in COMPARE
+        }
         for a,b in (
             ("warm_bio10_plus_seasonality","warm_plus_seasonality"),
             ("warm_bio10_plus_seasonality","annual_plus_seasonality")
         ):
-            av=np.array([x[0] for x in draws[a]],float)
-            bv=np.array([x[0] for x in draws[b]],float)
-            an=np.mean([x[1] for x in draws[a]],axis=0)
-            bn=np.mean([x[1] for x in draws[b]],axis=0)
+            paired=[(x,y) for x,y in zip(draws[a],draws[b])
+                    if x is not None and y is not None]
+            if len(paired)<12:
+                comparisons.append({
+                    "degree":deg,"model_new":a,"model_reference":b,
+                    "status":"NOT_ESTIMABLE_TOO_FEW_COMMON_QUALIFIED_DRAWS",
+                    "n_paired_qualified_draws":len(paired),
+                    "min_required":12
+                })
+                continue
+            av=np.array([x[0][0] for x in paired],float)
+            bv=np.array([x[1][0] for x in paired],float)
+            an=np.mean([x[0][1] for x in paired],axis=0)
+            bn=np.mean([x[1][1] for x in paired],axis=0)
             # Under the joint within-taxon null, the same phenotype
             # permutation stream is used for each climate definition.
             diff_obs=float(av.mean()-bv.mean())
@@ -108,6 +127,8 @@ def run(native, decoded, receipt):
             p=float((1+np.sum(np.abs(diff_null-diff_null.mean())>=abs(excess)-1e-12))/(N_NULL+1))
             comparisons.append({
                 "degree":deg,"model_new":a,"model_reference":b,
+                "status":"ESTIMATED_PAIRED_NULL_TEST",
+                "n_paired_qualified_draws":len(paired),
                 "observed_model_difference":diff_obs,
                 "paired_difference_excess_over_null":excess,
                 "paired_taxon_permutation_p_exploratory":p,
@@ -116,6 +137,12 @@ def run(native, decoded, receipt):
             })
     table=pd.DataFrame(rows)
     agg=[]
+    if table.empty:
+        return {
+            "status":"NO_SHARED_QUALIFIED_RAREFACTION_DRAWS",
+            "support_counts":support_by_degree,
+            "no_taxon_identity_or_original_points_exported":True,
+        }
     for (deg,a,b),g in table.groupby(["degree","model_a","model_b"],sort=True):
         rec={"degree":int(deg),"model_a":a,"model_b":b,"draws":len(g)}
         for field in (
@@ -138,6 +165,7 @@ def run(native, decoded, receipt):
         "resolutions":[1,5],
         "selected_taxon_pair_overlap":agg,
         "bio10_minus_other_model_paired_null_tests":comparisons,
+        "support_counts":support_by_degree,
         "negative_trait_advantage_not_evidence_for_adaptive_divergence":True,
         "no_taxon_identity_or_original_points_exported":True,
     }
