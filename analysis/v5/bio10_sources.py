@@ -14,7 +14,7 @@ from analysis.v5.bio10_source_audit import acquire, CACHE
 from analysis.v5.native_pca_env_fullcoverage import sample_original_pixels
 
 BIO10="chelsa_bio10"
-PINNED_BIO10_SHA256=None  # Must be set after independently checked provenance-only run.
+PINNED_BIO10_SHA256="0ad0720f09f6f44848f45e51502e27532ab0eb71e5ed6b0ca2500ea58032fad5"  # Source-only Actions #42777573878; official 1981–2010 CHELSA v2.1.
 
 
 def sample_bio10(wild, land, native):
