@@ -1,0 +1,198 @@
+"""Direct S2 BIO05 vs BIO10 warm-quarter climatic effect on photographed angle/chroma.
+
+This completes the rainfall-angle question omitted from the first combined
+Part I+II comparison. Both fits use the exact same old V5 source photos,
+same 1-degree cells and 20-degree region blocks; predictors differ only in
+BIO01/BIO12 (annual) versus BIO05/BIO18 (warm). Both retain BIO04, BIO15,
+and RSDS.
+
+Per species two designs are given: pooled across regions (descriptive
+geographic association), and geographically within-block demeaned (the
+principal sensitivity). Cluster SEs use the 20-degree region as sampling
+unit, not photographs or pairwise pseudo-replicates. A range x rain slope
+contrast is tested rather than treating "significant in only one range" as
+evidence for a difference.
+
+Observational PHOTO-frame angles; not gravity-calibrated, not causal
+rain protection, not population genetics. No climate rarity.
+"""
+from __future__ import annotations
+
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+from statsmodels.stats.multitest import multipletests
+
+from analysis.v4.native_cached_climate import VARIABLES
+from analysis.v5.bio10_s2 import MODELS, _photo_cells
+
+AXES = {
+    "annual_plus_seasonality": (
+        "chelsa_bio12", "chelsa_bio01", "chelsa_rsds_mean",
+        "chelsa_bio04", "chelsa_bio15"),
+    "warm_plus_seasonality": (
+        "chelsa_bio18", "chelsa_bio05", "chelsa_rsds_mean",
+        "chelsa_bio04", "chelsa_bio15"),
+    "warm_bio10_plus_seasonality": (
+        "chelsa_bio18", "chelsa_bio10", "chelsa_rsds_mean",
+        "chelsa_bio04", "chelsa_bio15"),
+}
+RESPONSES={"angle":"orientation_angle_degrees_median",
+           "chroma":"corolla_lab_chroma_median"}
+FOCAL={"angle":"rain","chroma":"radiation"}
+MIN_CELLS_PER_REGION = 8
+MIN_REGIONS_PER_RANGE = 3
+CLUSTER_CONDITION_LIMIT = 1.e8
+
+
+def _supported_cells(cells: pd.DataFrame, species: str) -> pd.DataFrame:
+    """Only original one-degree cells in 20-degree regions with >=8 cells."""
+    d = cells.loc[cells.taxon_name.eq(species)].copy()
+    region_count = d.groupby(["range_state","block"]).block.transform("size")
+    d = d.loc[region_count >= MIN_CELLS_PER_REGION].copy()
+    d["cluster"] = d.range_state.astype(str)+"_"+d.block.astype(str)
+    support=d.groupby("range_state").cluster.nunique().to_dict()
+    if (len(d)<120 or any(support.get(state, 0)<MIN_REGIONS_PER_RANGE
+                       for state in ("native","introduced"))):
+        raise ValueError("S2_RAIN_ANGLE_REGIONAL_SUPPORT_TOO_SMALL_"+species)
+    if d[["range_state","block","i","j"]].duplicated().any():
+        raise ValueError("S2_REGION_CELL_NOT_UNIQUE")
+    return d
+
+
+def _fit(d: pd.DataFrame, axes, demeaning: bool, response: str="orientation_angle_degrees_median"):
+    """A single two-range interaction model, cluster inference by 20deg block."""
+    present=d[list(axes)+[response]].to_numpy(float)
+    if not np.isfinite(present).all():
+        raise ValueError("S2_RAIN_ANGLE_REQUIRED_VALUES_MISSING")
+    x=present[:,:len(axes)]
+    y=present[:,-1]
+    # Species-wide, all-range 1-degree-cell equally weighted SD.
+    mu=x.mean(axis=0);sd=x.std(axis=0)
+    yy=y.std()
+    if (sd<=1e-10).any() or yy<=1e-10:
+        raise ValueError("S2_RAIN_ANGLE_ZERO_PREDICTOR_OR_RESPONSE_SD")
+    xx=(x-mu)/sd
+    y=(y-y.mean())/yy
+    is_intro=d.range_state.eq("introduced").to_numpy(int)
+    groups=d.cluster.to_numpy()
+    if demeaning:
+        # Control all 20degree region-specific intercepts, including range.
+        for g in np.unique(groups):
+            mask=groups==g
+            xx[mask]-=xx[mask].mean(axis=0)
+            y[mask]-=y[mask].mean()
+        X=np.column_stack((xx,xx*is_intro[:,None]))
+    else:
+        # Native baseline intercept + five climate partial slopes;
+        # introduced intercept and five climate-by-range interactions.
+        X=np.column_stack((
+            np.ones(len(d)),xx,is_intro,xx*is_intro[:,None]
+        ))
+    nterms=len(axes)
+    offset=0 if demeaning else 1
+    interaction=offset+nterms+(0 if demeaning else 1)
+    if np.linalg.matrix_rank(X)!=X.shape[1]:
+        raise ValueError("S2_RAIN_ANGLE_MODEL_NOT_FULL_RANK")
+    if np.linalg.cond(X)>=CLUSTER_CONDITION_LIMIT:
+        raise ValueError("S2_RAIN_ANGLE_NEAR_COLLINEAR")
+    fit=sm.OLS(y,X).fit(
+        cov_type="cluster",
+        cov_kwds={"groups":groups},
+        use_t=True)
+    def test(l):
+        r=fit.t_test(l)
+        lo,hi=np.asarray(r.conf_int(),float).reshape(-1)
+        return {
+            "beta":float(np.asarray(r.effect).item()),
+            "ci95_pointwise":[float(lo),float(hi)],
+            "p_pointwise":float(np.asarray(r.pvalue).item()),
+        }
+    tests={}
+    for idx,name in enumerate(("rain","temperature","radiation",
+                               "temperature_seasonality",
+                               "precipitation_seasonality")):
+        contrast=np.zeros(X.shape[1])
+        contrast[offset+idx]=1
+        native=test(contrast)
+        contrast[interaction+idx]=1
+        introduced=test(contrast)
+        diff=np.zeros(X.shape[1]);diff[interaction+idx]=1
+        tests[name]={
+            "native":native,
+            "introduced":introduced,
+            "introduced_minus_native":test(diff),
+        }
+    return {
+        "model":"within_20degree_region" if demeaning else "pooled_spatial_regions",
+        "n_geographic_region_clusters":int(d.cluster.nunique()),
+        "n_1degree_cells":int(len(d)),
+        "n_native_cells":int((is_intro==0).sum()),
+        "n_introduced_cells":int((is_intro==1).sum()),
+        "n_native_regions":int(d.loc[d.range_state.eq("native"),"cluster"].nunique()),
+        "n_introduced_regions":int(d.loc[d.range_state.eq("introduced"),"cluster"].nunique()),
+        "predictor_standardisation":"equal_weight_per_eligible_1degree_cell_both_ranges",
+        "response_standardisation":"photographic_angle_cell_equal_both_ranges",
+        "clustered_se_for_geographic_20degree_region":True,
+        "condition_number":float(np.linalg.cond(X)),
+        "model_comparison_same_cells":True,
+        "rain_partial_slope":tests["rain"],
+        "radiation_partial_slope":tests["radiation"],
+        "all_axis_slopes":tests,
+        "no_temporal_photo_month_control":True,
+        "no_causal_rain_exposure_or_heritable_adaptation_inference":True,
+    }
+
+
+def run(photo_wild:pd.DataFrame, measured:pd.DataFrame) -> dict:
+    _,cells=_photo_cells(photo_wild,measured)
+    output={
+        "status":"SOURCE_VERIFIED_S2_BIO05_BIO10_ANGLE_CHROMA",
+        "description":"original_V5_same_photo_eligible_1degree_cells",
+        "models":{k:list(v) for k,v in AXES.items()},
+        "responses":RESPONSES,
+        "image_relative_angle_not_gravity":True,
+        "colour_chroma_not_chemical_pigment":True,
+        "exploratory_models_posthoc":True,
+        "same_photo_cell_membership_three_climates":True,
+        "results":[],
+    }
+    for species in ("Cirsium arvense","Cirsium vulgare"):
+        d=_supported_cells(cells,species)
+        for name,axes in AXES.items():
+            if set(axes)!=set(MODELS[name]):
+                raise ValueError("S2_BIO10_CLIMATE_AXES_DISAGREE_WITH_NICHE")
+            for trait,response in RESPONSES.items():
+                for within in (False,True):
+                    fit=_fit(d,axes,within,response)
+                    output["results"].append({
+                        "species":species,
+                        "climate_model":name,
+                        "trait":trait,
+                        "focal_exposure":FOCAL[trait],
+                        "rain_variable":"BIO12" if name.startswith("annual") else "BIO18",
+                        "temperature_variable":
+                            "BIO01" if name.startswith("annual") else
+                            "BIO10" if "bio10" in name else "BIO05",
+                        **fit,
+                    })
+    # Six comparisons (2 species × 3 climate model definitions) for each
+    # trait/region specification. Interaction and introduced-only focal
+    # slopes are TWO separately marked exploratory families.
+    for model in ("within_20degree_region","pooled_spatial_regions"):
+        for trait in RESPONSES:
+            rows=[v for v in output["results"]
+                  if v["model"]==model and v["trait"]==trait]
+            if len(rows)!=6:
+                raise ValueError("S2_BIO10_FOCAL_TEST_FAMILY_NOT_SIX")
+            target=FOCAL[trait]
+            for stat,key in (
+                ("introduced_minus_native","holm_6_interaction"),
+                ("introduced","holm_6_introduced_slope")
+            ):
+                ps=[v["all_axis_slopes"][target][stat]["p_pointwise"]
+                    for v in rows]
+                adjusted=multipletests(ps,method="holm")[1]
+                for row,p in zip(rows,adjusted):
+                    row[key]=float(p)
+    return output
