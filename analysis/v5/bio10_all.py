@@ -10,6 +10,7 @@ from analysis.v5.background_paired_overlap import (
 )
 from analysis.v5.annual_warm_sources import sample_warm, PRIVATE, OUT, EXTRA
 from analysis.v5.bio10_s1 import run as run_s1
+from analysis.v5.bio10_pair_diagnostics import run as run_pair_selection_diagnostics
 from analysis.v5.bio10_s2 import run as run_s2
 from analysis.v5.bio10_s2_angle_chroma import run as run_s2_angle_chroma
 from analysis.v5.bio10_sources import sample_bio10, PINNED_BIO10_SHA256
@@ -43,6 +44,14 @@ def main():
     # Deliberately keep both existing annual climate and new warm climate
     # on the SAME original observations and photo QC. No missing fill.
     s1=run_s1(native,original,receipt)
+    s1["cross_taxon_pair_selection_diagnostics"]=run_pair_selection_diagnostics(
+        native,original,receipt)
+    print({"part":"I_pair_selection",
+           "pair_overlap":[{k:r[k] for k in (
+               "degree","model_a","model_b","taxon_pair_jaccard_mean",
+               "cell_pair_jaccard_within_shared_taxon_pairs_mean")}
+               for r in s1["cross_taxon_pair_selection_diagnostics"]["selected_taxon_pair_overlap"]]},
+          flush=True)
     if s1["cohort"]["matched_annual_and_warm_source_photo_n"]!=157822:
         raise ValueError("BIO10_S1_COHORT_NOT_MATCHED_TO_OLD_V5")
     prev={(1,"annual_plus_seasonality"):0.01866528656793442,
@@ -80,7 +89,7 @@ def main():
                "species":r["species"],"climate":r["climate_model"],
                "native_beta":r["rain_partial_slope"]["native"]["beta"],
                "introduced_beta":r["rain_partial_slope"]["introduced"]["beta"],
-               "difference_p_holm":r["holm_4_species_x_climate_for_range_interaction"]
+               "difference_p_holm":r["holm_6_interaction"]
            } for r in s2["angle_and_chroma"]["results"]
              if r["model"]=="within_20degree_region" and r["trait"]=="angle"]},flush=True)
     print({"part":"II",
