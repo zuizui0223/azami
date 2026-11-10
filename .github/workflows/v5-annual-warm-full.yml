@@ -1,6 +1,6 @@
 name: V5 Parts I and II annual versus warm climate with seasonality
 on:
-  push:
+  pull_request:
     branches:
       - codex/v5-climate-head-overlap-20261109
     paths:
