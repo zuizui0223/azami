@@ -25,7 +25,10 @@ from analysis.v5.background_paired_overlap import (
     project as photo_project, grid as photo_grid, infer
 )
 from analysis.v5.bio10_s1 import CLIMATE_NAMES
-from analysis.v5.bio10_s1 import EXTRA
+# S1 adds BIO04/BIO15 as extras because its old source had only 3 axes.
+# S2 already includes both in VARIABLES: list just newly sampled layers,
+# otherwise DataFrame column selection duplicates BIO04/BIO15.
+EXTRA=("chelsa_bio18","chelsa_bio05","chelsa_bio10")
 
 MODELS={
     "annual_plus_seasonality":tuple(VARIABLES),
