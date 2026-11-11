@@ -7,7 +7,7 @@
 
 ## Abstract
 
-**Aim:** Climatic resemblance may organise floral appearance among locations without requiring equally strong differentiation of whole-head phenotypes when a species occupies new climates. We examined geographical correspondence in capitulum presentation, colour and climate across two nested levels of comparison.
+**Aim:** Does climatic resemblance predict local floral resemblance, and do introduced-range climatic differences imply comparable floral differentiation? We compared these patterns at two geographical levels.
 
 **Location:** Native Cirsium taxa worldwide; native and introduced ranges of C. arvense and C. vulgare.
 
@@ -15,11 +15,11 @@
 
 **Major taxa studied:** Cirsium (Asteraceae).
 
-**Methods:** We analysed geographically repeated photographic measurements of capitulum image angle, corolla chroma (CIELAB C*) and projected outline. A source pool of 157,822 quality-controlled native photographs supported comparisons of climate-matched taxon-by-location cells at 1° and 5°, evaluated against taxon-preserving permutations. For two introduced species, we estimated background-adjusted native–introduced overlap in five-dimensional annual climate as represented in a common PCA space, then compared capitulum overlap in geographically matched analogous versus outside-core climates. We assessed directional chroma differences as a complementary, individual-trait contrast.
+**Methods:** We used image-referenced capitulum angle, corolla chroma (CIELAB C*) and projected outline from geographically linked photographs. A source pool of 157,822 native photographs supported 1° and 5° climate-matched comparisons with taxon-preserving permutations. For two introduced species, we quantified native–introduced annual climatic occupancy overlap after background correction, compared geographically matched capitulum distributions and estimated chroma differences.
 
 **Results:** Climatically matched sites showed greater joint capitulum resemblance within native taxa at both resolutions; evidence among taxa was stronger at 5° than 1°. Annual precipitation covaried positively with photographed downward angle, and precipitation seasonality with chroma, in exploratory paired-location analyses. Native–introduced climatic overlap was D=0.474 for C. arvense and D=0.442 for C. vulgare. Introduced C. vulgare had higher mean photographic chroma than the native reference (+1.74 C*; +2.46 C* after matching climatic composition), although geographically matched tests did not establish corresponding multivariate capitulum divergence in outside-core climates.
 
-**Main conclusions:** Floral resemblance and climatic resemblance correspond at local scales, while range-wide climatic occupancy differences do not necessarily show an equivalent shift in all photographed head traits. Individual colour dimensions may differ even where joint phenotypic spaces overlap. These observational patterns do not identify adaptive evolution.
+**Main conclusions:** Climatic and floral resemblance correspond locally, while native–introduced climatic occupancy differences need not produce uniform whole-head differences. Individual colour components can differ even where joint phenotypic spaces overlap. These observations do not establish adaptive evolution.
 
 **Keywords:** biogeography; capitulum; climatic niche; floral chroma; introduced ranges; morphospace; photographic phenomics; spatial grain
 
@@ -142,9 +142,6 @@ The source-audited analysis code, readme material, aggregate result tables and o
 
 ## References
 
-- Anadon-Rosell, A., Casanovas, A., Bog, M., Illa, E., Kreyling, J., Martínez-Vilalta, J., Ninot, J. M., Pérez-Haase, A. & Wilmking, M. (2025). Intraindividual variability as a large source of trait variation in clonal tundra dwarf shrubs along elevation and latitude gradients. *Global Ecology and Biogeography* 34:e70134. https://doi.org/10.1111/geb.70134
-- Berardi, A. E., Fields, P. D., Abbate, J. L. & Taylor, D. R. (2016). Elevational divergence and clinal variation in floral color and leaf chemistry in *Silene vulgaris*. *American Journal of Botany* 103:1508–1523. https://doi.org/10.3732/ajb.1600106
-- Blonder, B., Lamanna, C., Violle, C. & Enquist, B. J. (2014). The n-dimensional hypervolume. *Global Ecology and Biogeography* 23:595–609. https://doi.org/10.1111/geb.12146
 - CHELSA climatologies, version 2.1: https://www.chelsa-climate.org/datasets/chelsa_climatologies
 - Chen, J. G., Yang, Y., Zhang, Z. Q., Niu, Y. & Sun, H. (2013). A nodding capitulum enhances the reproductive success of *Cremanthodium campanulatum* (Asteraceae) at high elevations in the Sino-Himalayan Mountains. *Plant Ecology & Diversity* 6:487–494. https://doi.org/10.1080/17550874.2012.702793
 - Colautti, R. I. & Lau, J. A. (2015). Contemporary evolution during invasion: evidence for differentiation, natural selection, and local adaptation. *Molecular Ecology* 24:1999–2017. https://doi.org/10.1111/mec.13162
