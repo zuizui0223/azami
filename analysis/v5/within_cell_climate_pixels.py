@@ -198,7 +198,7 @@ def _solve_boot(xx,xy,cidx,tidx):
 def _bootstrap_group(xx,xy,labels_seed,nboot=N_BOOT):
     rng=np.random.default_rng(labels_seed)
     n=len(xx)
-    if n<10:return np.full((0,2)),np.full((0,2))
+    if n<10:return np.empty((0,2)),np.empty((0,2))
     blockcounts=rng.multinomial(n,np.full(n,1/n),size=nboot)
     cidx=(CLIMATE.index(FOCAL[0][1]),CLIMATE.index(FOCAL[1][1]))
     tidx=(OUTCOME.index(FOCAL[0][2]),OUTCOME.index(FOCAL[1][2]))
