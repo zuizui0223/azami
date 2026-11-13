@@ -177,17 +177,21 @@ The source-audited analysis code, readme material, aggregate result tables and o
 
 ## Tables
 
-**Table 1. Original sources and analysis-specific geographical replication.** Source records and selected photo-based aggregate cells are deliberately presented separately; taxon–cells and 20° blocks are different units. The 1° and 5° source pools overlap but their eligible taxa differ.
+**Table 1. Verified photographic observation counts and distinct analysis denominators.** Original WCVP wild-observation counts, image-trait-eligible observation records, and geographic cells have different grains and must not be summed. Native S1 observations can overlap the S2 native source, and different rows reuse the same photographs. Original CHELSA climate values were extracted at ~1 km raster pixels at occurrence locations; 1° and 5° refer to subsequent taxon-by-cell aggregation, not the climate source resolution.
 
-| Comparison | Source/eligible photos | Eligible taxa or focal species | Main geographical unit | Replication used for the stated result |
-|---|---:|---|---|---|
-| Part I native source | 313,350 original observations | Native *Cirsium* | Photo-linked location | Original source census (not the inferential N) |
-| Part I annual climatic analogues, 1° | 157,822 joint-photo eligibility pool | 63 taxa | 1° taxon–cell | 7,117 taxon–cells; eight cells per taxon in each of 24 rarefactions |
-| Part I annual climatic analogues, 5° | Same 157,822-photo eligibility pool | 31 taxa | 5° taxon–cell | 814 taxon–cells; separately drawn same-sized rarefactions |
-| Part II native and introduced source | 297,622 original wild observations | *C. arvense*, *C. vulgare* | Observation; WCVP range | Two-species source census (phenotype eligibility is analysis-specific) |
-| Part II head D in climate groups: *C. arvense* | Phenotype-complete subset of S2 | One species | 1° cell matched within 20° region | 30 pairs across nine blocks |
-| Part II head D in climate groups: *C. vulgare* | Phenotype-complete subset of S2 | One species | 1° cell matched within 20° region | 146 pairs across 14 blocks |
-| Part II *C. vulgare* chroma | Chroma-complete S2 cell-level subset | One species | 1° cell / range-climate PCA class | Native–introduced C* means; common-climate frequency balancing |
+| Analysis / eligibility stage | Source observations | Analysis records or photo-derived measurements | Geographic/taxonomic support |
+|---|---:|---:|---|
+| Part I native source, before three-trait eligibility | 313,350 | 157,822 joint angle–chroma–outline-and-climate eligible photographic records across 242 taxa | S1 quality-cohort pool; not an independent comparison N |
+| Part I annual five-axis local analogy, 1° | Same native S1 source | **153,843** eligible photographic records *located in retained taxa/cells* | **63 taxa, 7,117 taxon–cells**; eight cells sampled per taxon in each of 24 rarefactions |
+| Part I annual five-axis local analogy, 5° | Same native S1 source | **132,998** records *located in retained taxa/cells* | **31 taxa, 814 taxon–cells**; separately sampled; not the same set of taxa as 1° |
+| Part II *C. arvense*, climatic occupation, native / introduced | 78,646 / 70,964 | **30,523 / 38,406** observer-cell-thinned records with all five CHELSA variables | Occurrence-based native–introduced PCA climate-density comparison, not an image-trait cohort |
+| Part II *C. vulgare*, climatic occupation, native / introduced | 62,368 / 85,644 | **26,161 / 49,088** observer-cell-thinned records with all five CHELSA variables | Same climate-only comparison; neither species uses all source observations as independent climate records |
+| Part II *C. arvense*, joint capitulum-space D, native / introduced | Same *C. arvense* source | **18,505 / 22,269** three-trait-complete photographic records | Native **1,366** and introduced **860** 1° cells; principal outside-core contrast **30 matched cell pairs in nine 20° blocks** |
+| Part II *C. vulgare*, joint capitulum-space D, native / introduced | Same *C. vulgare* source | **13,115 / 25,532** three-trait-complete photographic records | Native **1,113** and introduced **1,139** 1° cells; **146 matched pairs in 14 blocks** |
+| Part II shared-climate-class chroma reweighting, *C. arvense* | Reuses above phenotype-complete S2 cohorts | Counted as **1° cell medians**, not separate photo-level replicates | **1,206 native / 801 introduced** cells with common climatic class support (primary coarsening) |
+| Part II shared-climate-class chroma reweighting, *C. vulgare* | Reuses above phenotype-complete S2 cohorts | Counted as **1° cell medians**, not separate photo-level replicates | **1,052 native / 1,015 introduced** cells with common climatic class support (primary coarsening) |
+
+**Counting boundary:** Part I's 157,822 is the complete-phenotype input pool; 153,843 and 132,998 are its retained-taxon cell members, *not additional photographs*. For the separate historical three-axis climatic analogue matching, a photo-to-cell audit identified 67,719 and 114,448 source photographic records in compared cells across the 24 draws at 1° and 5°, respectively; these are **not** the verified matched-photo counts for the five-axis test and are not pooled into its N. Part II climate-density records do not require three image traits. The two species together contribute 79,421 three-trait-complete photographic records for their native–introduced capitulum-space comparison, but native S1 and S2 should not be summed as independent original photographs.
 
 **Table 2. Ecological results from the adopted annual five-axis V5 and a separately labelled three-axis shape-component decomposition.** Positive signs denote extra resemblance or more downward-looking/higher chroma measurements as appropriate; they do not indicate evolutionary adaptation. The intervals in directional trait tests are pointwise bootstrap 95% intervals.
 
