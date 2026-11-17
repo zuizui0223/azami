@@ -5,6 +5,7 @@ on:
     paths:
       - 'analysis/v4/s1_climate_trait_hypervolume.py'
       - 'tests/test_v4_s1_climate_trait_hypervolume.py'
+      - 'analysis/v4/s1_h3_climate_axis_dropout.py'
       - 'analysis/v4/s1_h3_climate_analogue_alignment.py'
       - 'tests/test_v4_s1_h3_climate_analogue_overlap.py'
       - 'analysis/v4/s1_h3c_robustness.py'
@@ -31,6 +32,10 @@ concurrency:
 
 jobs:
   h3-exact-original-native-source:
+    if: >-
+      github.repository == 'zuizui0223/azami' &&
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.pull_request.head.repo.full_name == 'zuizui0223/azami')
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -164,6 +169,23 @@ jobs:
           print({"H3_primary_taxa":a["analysis"]["1degree"].get("n_taxa_eligible",0),
                  "H3_status":a["analysis"]["1degree"]["status"],
                  "H3_secondary_status":a["analysis"]["5degree"]["status"]},flush=True)
+          PY
+      - name: New H3c original S1 climate variable set leave-one-out test
+        if: steps.decide.outputs.run_analysis == 'true'
+        run: |
+          set -euo pipefail
+          python -m analysis.v4.s1_h3_climate_axis_dropout \
+            --source work/h3/private/decoded/observations.csv.gz \
+            --receipt work/h3/private/decoded/measurement_receipt.json \
+            --output work/h3/output/H3C_CLIMATE_AXIS_DROPOUT_SENSITIVITY.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('work/h3/output/H3C_CLIMATE_AXIS_DROPOUT_SENSITIVITY.json')
+          r=json.loads(p.read_text())
+          assert r['n_original_s1_observations']==313350
+          assert all(len(v['climate_candidates'])==4 for v in r['results'].values())
+          assert r['original_H3c_24x199_Holm2_positive_untouched']
           PY
       - name: Upload anonymous aggregate ecological result only
         if: always() && steps.decide.outputs.run_analysis == 'true'
