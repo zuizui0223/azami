@@ -21,7 +21,7 @@ def export(data:pd.DataFrame, target:Path)->dict:
     needed=TRAITS+list(VARIABLES)+["latitude","longitude","taxon_name","range_state"]
     if not set(needed).issubset(data):
         raise ValueError("V5_SOURCE_FIELDS_NOT_COMPLETE")
-    d=data.loc[data.taxon_name.isin({s for s,_ in EXPECT}) &
+    d=data.loc[data.taxon_name.isin({s for s,_ in EXPECTED}) &
                data.range_state.isin({"native","introduced"}),needed].copy()
     for c in TRAITS+list(VARIABLES)+["latitude","longitude"]:
         d[c]=pd.to_numeric(d[c], errors="coerce")
@@ -29,7 +29,7 @@ def export(data:pd.DataFrame, target:Path)->dict:
     d=d.loc[d[TRAITS[0]].between(0,180) &
             d.latitude.between(-90,90) & d.longitude.between(-180,180)]
     counts=d.groupby(["taxon_name","range_state"]).size()
-    got={key:int(counts.get(key,0)) for key in EXPECT}
+    got={key:int(counts.get(key,0)) for key in EXPECTED}
     if got!=EXPECTED:
         raise ValueError("V5_THREE_TRAIT_COHORT_COUNT_MISMATCH: "+repr(got))
     d=d.copy()
@@ -42,8 +42,8 @@ def export(data:pd.DataFrame, target:Path)->dict:
     public.to_csv(target,index=False)
     receipt={
       "source":"V5 exact three-trait and five-annual-climate photo cohort",
-      "total_records":sum(EXPECT.values()),
-      "stratum_totals":{s+"_"+r:int(n) for (s,r),n in EXPECT.items()},
+      "total_records":sum(EXPECTED.values()),
+      "stratum_totals":{s+"_"+r:int(n) for (s,r),n in EXPECTED.items()},
       "shown_cells":int(len(public)),
       "shown_records":int(public.record_count.sum()),
       "suppressed_records":int(cells.record_count.sum()-public.record_count.sum()),
