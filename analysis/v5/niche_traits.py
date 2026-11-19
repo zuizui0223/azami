@@ -98,6 +98,9 @@ def main():
         t.unlink(missing_ok=True);p.unlink(missing_ok=True)
     measured=pd.read_csv(PRIVATE/'original-measured.csv.gz',usecols=['obs_id',*TRAITS.values()],dtype={'obs_id':str})
     wild=wild.drop(columns=list(TRAITS.values()),errors='ignore').merge(measured,on='obs_id',how='left',validate='one_to_one')
+    # Source-audited disclosure-limited photo coverage; never writes raw locations.
+    from analysis.v5.export_v5_photo_coverage_5deg import export as export_photo_coverage
+    export_photo_coverage(wild, OUT/'v5_photo_coverage_5deg_public.csv')
     frozen=json.loads(Path('analysis/v4/results/20261021_unified_abcde/S2_TWO_SPECIES_FULL_WCVP_NICHE_VERIFIED_20261021.json').read_text())
     occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[];configuration=[];centroids=[]
     for sp,rows in wild.groupby('taxon_name'):
