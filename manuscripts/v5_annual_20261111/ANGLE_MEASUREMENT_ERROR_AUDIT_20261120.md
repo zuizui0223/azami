@@ -33,6 +33,30 @@ These are descriptive percentages on non-independent biological records, with no
 
 All five annual BIO12 source-record quintiles contained approximately 31,565 records. For the joint aspect-near-one/angle>90 flag, the fractions (driest to wettest) were **18.36%, 19.10%, 18.82%, 18.54%, 19.75%** (rainfall median 514, 667, 804, 1024, 1471 mm). No large monotonic change in this *proxy* is evident. However, these raw-record summaries are not the original 1°/5° taxon-paired regression units; they do not establish that photography error is independent of climate, space or taxonomic structure.
 
+## Archived usable-head support and repeated-head check
+
+Additional source-authenticated Actions completed: [S1 #44667958818](https://github.com/zuizui0223/azami/actions/runs/44667958818) and [S2 #44667963701](https://github.com/zuizui0223/azami/actions/runs/44667963701).
+
+| Archived support | S1 157,822 records | S2 79,421 records |
+|---|---:|---:|
+| Exactly one **usable head** per photographic record | 53,525 (33.91%) | 22,921 (28.86%) |
+| At least two usable heads | 104,297 (66.09%) | 56,500 (71.14%) |
+| At least three usable heads | 64,251 | 37,119 |
+| Median usable heads per record | 2 | 2 |
+| 95th percentile usable heads per record | 7 | 8 |
+
+The source-observation measurement archive has exact usable-head counts but **does not retain the within-photo head angle MAD, per-head confidence, or mirror-flip angular disagreement**. These cannot be reconstructed from per-record medians. More than one head in the same photograph is also **not** repeated measurement of the same physical head: they may genuinely point in different directions. Hence the within-photo count is an opportunity to design validation, not an angular error estimate.
+
+### Original pilot using independent botanical descriptions (not photograph-level ground truth)
+
+The existing `analysis_outputs/literature_orientation_external_validation_2026-09-01/literature_orientation_external_validation_report.json` used 11 source taxa with adjudicated literature states (7 upright, 4 nodding). The image-angle median was **72.44°** for upright versus **90.20°** for nodding; directional difference +17.77°, one-sided exact permutation P = **0.103**. This pilot is directionally compatible but underpowered and not statistically significant. It cannot measure individual-photo angular deviation from gravity or establish an error fraction for V5.
+
+## Next audit gate (actual measurement error)
+
+Predefine a blinded manually annotated sample stratified by (1) within-factor-1.05, 1.05–1.10, and outside-factor-1.10 **rotated outline aspect**; (2) angle <=90 vs >90; (3) wet vs dry BIO12, geography and taxon; (4) flowering versus pappus/fruiting stage. In a source-linked, licensed, private photo panel, independently mark image-up, head longitudinal axis oriented towards visible florets, peduncle axis and flowering stage. Report **circular image-axis angular error** (signed 0–180), error >15°/30° and 90° category mismatch by stratum, with head- or photo-cluster uncertainty; compare a gravity-referenced estimate only if a vertical physical reference actually exists. This is distinct from the original PCA confidence score.
+
+Recompute both the annual five-axis joint distance test and the within-pair BIO12–angle slope on the *same exact selection rules* after a documented quality gate. Do not treat the V5's 5° excess +0.238 or exploratory rainfall slopes as independently robust until tested. Lack of an observed near-one-aspect enrichment for angle>90 is not evidence of unbiased error.
+
 ## What remains unmeasured
 
 These audits do **not** establish: (i) true physical angle or gravity alignment; (ii) human-annotated agreement to PCA-derived head angle; (iii) error distributions by head-axis **eigenvalue anisotropy**; (iv) image camera roll or EXIF reference validity beyond available metadata; (v) whether stricter actual head orientation confidence thresholds change V5 Fig. 2/3.
