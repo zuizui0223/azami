@@ -132,7 +132,7 @@ def analyse(frame:pd.DataFrame, degrees:int, *, ignore_angle:bool=False)->dict:
     if len(within)!=N_DRAWS or len(cross_scores)!=N_DRAWS:
         raise ValueError(f"V5_DRAW_FAMILY_DRIFT_{degrees}: "+
                          f"{len(within)}/{len(cross_scores)}")
-    obs,*perms=np.mean(within,axis=0)
+    supported_taxa,obs,*perms=np.mean(within,axis=0)
     null=np.asarray(perms)
     base=np.mean(null)
     within_excess=float(obs-base)
