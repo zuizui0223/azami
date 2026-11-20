@@ -89,7 +89,7 @@ def main():
     for c in qc:
         pre &= native[c].gt(0)
     eligible=native.loc[pre,[
-        "accepted_key","latitude","longitude",*traits
+        "obs_id","accepted_key","latitude","longitude",*traits
     ]].copy().rename(columns=traits)
     print(json.dumps({
        "native_source_records":313350,
@@ -137,7 +137,10 @@ def main():
        "quality_interpretation":"Rotated outline aspect is not PCA eigenvalue anisotropy or proven measurement error",
        "all_s1":_profile(selected),
        "by_grain":grid,
-       "rain_quintile":_rain_quintiles(selected)
+       "rain_quintile":_rain_quintiles(selected),
+       "head_level_support_and_repeatability":__import__(
+          "analysis.v5.audit_angle_repeatability",fromlist=["summarise"]
+       ).summarise(selected.obs_id.to_numpy(),measured)
     }
     OUT.mkdir(parents=True,exist_ok=True)
     path=OUT/"v5_angle_suspect_s1_recovered.json"
