@@ -150,6 +150,69 @@ def audit_s1(source: Path, receipt: Path) -> dict:
         "annual_precipitation_source_record_quintiles":_rain_quintiles(selected),
     }
 
+
+def audit_s2(data: pd.DataFrame) -> dict:
+    """Audit the exact V5 focal 79,421-record three-trait AND climate cohort."""
+    from analysis.v4.native_cached_climate import VARIABLES
+    targets = {
+        ("Cirsium arvense","native"):18505,
+        ("Cirsium arvense","introduced"):22269,
+        ("Cirsium vulgare","native"):13115,
+        ("Cirsium vulgare","introduced"):25532,
+    }
+    cols = [
+        "taxon_name","range_state","latitude","longitude",
+        "orientation_angle_degrees_median",
+        "corolla_lab_chroma_median",
+        "shape_aspect_ratio_median",
+        *VARIABLES,
+    ]
+    if not set(cols).issubset(data.columns):
+        raise ValueError("S2_INPUT_SCHEMA_HAS_DRIFTED")
+    d=data.loc[data.taxon_name.isin({t for t,_ in targets}) &
+        data.range_state.isin({"native","introduced"}),cols].copy()
+    number_cols = [
+        "latitude","longitude","orientation_angle_degrees_median",
+        "corolla_lab_chroma_median","shape_aspect_ratio_median",
+        *VARIABLES,
+    ]
+    for k in number_cols:
+        d[k]=pd.to_numeric(d[k],errors="coerce")
+    d=d.replace([np.inf,-np.inf],np.nan).dropna(subset=number_cols)
+    d=d.loc[d.orientation_angle_degrees_median.between(0,180)
+        & d.latitude.between(-90,90) & d.longitude.between(-180,180)]
+    observed = d.groupby(["taxon_name","range_state"]).size()
+    if any(int(observed.get(key,0))!=n for key,n in targets.items()):
+        raise ValueError("S2_EXACT_THREE_TRAIT_COHORT_CHANGED: "+
+                         repr(observed.to_dict()))
+    d=d.rename(columns={
+        "orientation_angle_degrees_median":ANGLE,
+        "shape_aspect_ratio_median":ASPECT,
+    })
+    return {
+        "schema":"azami_v5_s2_image_angle_proxy_flags_v1",
+        "denominator":"original photo-derived observation records after original CHELSA and three-trait eligibility",
+        "quality_interpretation":"Aspect near 1 is not a PCA eigenvalue ratio and is NOT a verified error. Image angle is not calibrated to gravity.",
+        "all_s2":_profile(d),
+        "by_species_and_range":{
+            k+"|"+v:_profile(group)
+            for (k,v),group in d.groupby(["taxon_name","range_state"])
+        },
+        "annual_precipitation_source_record_quintiles":_rain_quintiles(d),
+    }
+
+
+def export_s2(data: pd.DataFrame, output:Path) -> dict:
+    result=audit_s2(data)
+    output=Path(output)
+    output.parent.mkdir(parents=True,exist_ok=True)
+    output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",
+                      encoding="utf-8")
+    print("V5_ANGLE_S2_AUDIT_AGGREGATED_JSON_START")
+    print(json.dumps(result,ensure_ascii=False,separators=(",",":")))
+    print("V5_ANGLE_S2_AUDIT_AGGREGATED_JSON_END")
+    return result
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--s1-source",type=Path,required=True)
