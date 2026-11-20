@@ -48,7 +48,7 @@ def _profile(frame: pd.DataFrame) -> dict:
         raise ValueError("EMPTY_ANGLE_QUALITY_COHORT")
     # Symmetric near-one ratio; e.g. 1/1.1 < A < 1.1
     near = {
-        str(cutoff): np.abs(np.log(aspect)) <= np.log(cutoff)
+        f"{cutoff:.2f}": np.abs(np.log(aspect)) <= np.log(cutoff)
         for cutoff in [1.05, 1.10, 1.20, 1.30, 1.50]
     }
     bins = {
@@ -83,7 +83,7 @@ def _profile(frame: pd.DataFrame) -> dict:
                                        if mask.any() else None),
             }
             for name, mask in (
-                ("near_one_aspect_le_1.10",near["1.1"] if "1.1" in near else near["1.10"]),
+                ("near_one_aspect_le_1.10",near["1.10"]),
                 ("outside_near_one_aspect",~near["1.10"]),
             )
         ],
