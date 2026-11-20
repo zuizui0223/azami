@@ -51,6 +51,19 @@ The source-observation measurement archive has exact usable-head counts but **do
 
 The existing `analysis_outputs/literature_orientation_external_validation_2026-09-01/literature_orientation_external_validation_report.json` used 11 source taxa with adjudicated literature states (7 upright, 4 nodding). The image-angle median was **72.44°** for upright versus **90.20°** for nodding; directional difference +17.77°, one-sided exact permutation P = **0.103**. This pilot is directionally compatible but underpowered and not statistically significant. It cannot measure individual-photo angular deviation from gravity or establish an error fraction for V5.
 
+## Historical empirical repeatability and perturbation sensitivity (different sample, not V5-wide)
+
+A separate original automated technical audit, `analysis/ch1/image_to_trait_automated_technical_audit_summary.json`, is directly informative and was rechecked against `legacy/v2/figures/run_image_to_trait_perturbation_audit.py` and `legacy/v3/analysis/v3/ASSESSABILITY_AND_TECHNICAL_STRESS_RESULT_20260910.md`:
+
+| Audit | Original scope | Observed diagnostic |
+| --- | --- | --- |
+| Left/right-mirror assessment of retained angles | 6,626 detected capitula (69.2% orientation usable after QC) | Post-QC mirror angle discrepancy, p95 **4.67°** |
+| Deliberate 5%-of-box shift, angle recomputed | 100 detected heads / 100 source-assigned taxa, nine technical perturbations | Angle difference p95 **54.1°**; Spearman agreement **0.758** |
+
+The **54.1° is a perturbation response**, not an observed angular error against independent labels. It nevertheless establishes that automatic image-angle estimates can be highly sensitive to detector-box placement; this is a more directly relevant technical failure mode than rotated outline aspect near unity alone. The original technical audit used no human ground-truth angular annotation and cannot quantify V5's mismeasurement prevalence.
+
+The separate V3 frozen-model error-stress report, `legacy/v3/reproducibility/current_reference/technical_stress/frozen_technical_error_stress_report.json`, artificially added **independent zero-mean Gaussian perturbations** calibrated to these p95 magnitudes. It retained a positive **V3** 142-taxon BIO12–angle sign in 2,000/2,000 simulations under both stress conventions (unperturbed beta +0.304, severe-stress median +0.255). This does **not** validate the **V5** coefficient or address correlated detector errors, stage composition, photo roll or physical orientation.
+
 ## Next audit gate (actual measurement error)
 
 Predefine a blinded manually annotated sample stratified by (1) within-factor-1.05, 1.05–1.10, and outside-factor-1.10 **rotated outline aspect**; (2) angle <=90 vs >90; (3) wet vs dry BIO12, geography and taxon; (4) flowering versus pappus/fruiting stage. In a source-linked, licensed, private photo panel, independently mark image-up, head longitudinal axis oriented towards visible florets, peduncle axis and flowering stage. Report **circular image-axis angular error** (signed 0–180), error >15°/30° and 90° category mismatch by stratum, with head- or photo-cluster uncertainty; compare a gravity-referenced estimate only if a vertical physical reference actually exists. This is distinct from the original PCA confidence score.
