@@ -54,16 +54,36 @@ def main():
         "corolla_lab_chroma_median":"corolla_lab_chroma",
         "shape_aspect_ratio_median":ASPECT,
     }
-    qc=["n_usable_heads_orientation","n_usable_heads_colour",
-        "n_usable_heads_shape"]
-    required=["obs_id",*traits,*qc]
+    # The archived source normalizes per-domain quality counts using
+    # source-specific endpoint names. Introspect names, never assume a
+    # historical primary pipeline column survives the archive unchanged.
+    quality_candidates={
+        "angle":["orientation_angle_degrees_n_usable_heads",
+                 "n_usable_heads_orientation"],
+        "chroma":["corolla_lab_chroma_n_usable_heads",
+                  "n_usable_heads_colour"],
+        "aspect":["shape_aspect_ratio_n_usable_heads",
+                  "n_usable_heads_shape"]
+    }
+    required=["obs_id",*traits]
     if not set(required).issubset(measured.columns):
         raise ValueError("SOURCE_HEAD_MEASUREMENT_FIELDS_CHANGED: "+
                          repr(sorted(set(required)-set(measured))))
+    qc=[next((name for name in candidates if name in measured.columns),None)
+        for candidates in quality_candidates.values()]
+    qc=[c for c in qc if c is not None]
+    print(json.dumps({
+        "original_measurement_quality_field_names_used":qc,
+        "other_quality_column_names":[
+            k for k in measured if
+            ("usable" in k or "confidence" in k)][:50]
+    }))
     native=native[["obs_id","accepted_key","latitude","longitude"]].merge(
-        measured[required],on="obs_id",how="left",validate="one_to_one")
+        measured[[*required,*qc]],on="obs_id",how="left",validate="one_to_one")
     for k in [*traits,*qc]:
         native[k]=pd.to_numeric(native[k],errors="coerce")
+    # The original aggregator generates finite median fields from only
+    # eligible heads. Optional n_usable fields further constrain those.
     pre=(np.isfinite(native[list(traits)].to_numpy(float)).all(axis=1)
          & native["orientation_angle_degrees_median"].between(0,180))
     for c in qc:
