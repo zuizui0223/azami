@@ -2,7 +2,7 @@ name: V5 S1 recovered native image-angle prevalence audit (originals)
 on:
   push:
     branches: [codex/v5-annual-manuscript-draft-20261111]
-    paths: ['.github/workflows/v5-angle-suspects-s1-recovered.yml','analysis/v5/run_angle_suspects_s1_recovered.py']
+    paths: ['.github/workflows/v5-angle-suspects-s1-recovered.yml','analysis/v5/run_angle_suspects_s1_recovered.py','analysis/v5/v5_angle_error_sensitivity.py']
   workflow_dispatch:
 
 permissions:
@@ -84,6 +84,10 @@ jobs:
                  'source_colour_fields':[c for c in measured if 'chroma' in c or 'lightness' in c]},
                 flush=True)
           PY
+      - name: Validate error-sensitivity code before original-source recovery
+        run: |
+          python -m py_compile analysis/v5/v5_angle_error_sensitivity.py
+          python -m py_compile analysis/v5/run_angle_suspects_s1_recovered.py
       - name: Audit photographed orientation risk without full trait refit
         env:
           AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
@@ -93,4 +97,5 @@ jobs:
           name: v5-angle-suspects-s1-recovered
           path: |
             work/submission/public/v5_angle_suspect_s1_recovered.json
+            work/submission/public/v5_angle_error_sensitivity.json
           if-no-files-found: error
