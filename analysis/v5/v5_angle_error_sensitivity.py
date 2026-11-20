@@ -176,7 +176,10 @@ def run(selected:pd.DataFrame, out:Path)->dict:
     groups=selected.groupby("accepted_key",sort=False)[RAIN]
     means=groups.transform("mean").to_numpy(float)
     sds=groups.transform("std").to_numpy(float)
-    z=np.clip((rain-means)/np.maximum(sds,1e-8),-2,2)
+    # Singleton source taxa have undefined within-taxon SD. Their
+    # centered precipitation contrast is identically zero.
+    denominator=np.where(np.isfinite(sds)&(sds>1e-8),sds,1.0)
+    z=np.clip((rain-means)/denominator,-2,2)
     scenario_specs=[
         ("baseline_3trait", None,None,False),
         ("without_angle_2trait",None,None,True),
