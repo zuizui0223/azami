@@ -101,6 +101,8 @@ def main():
     # Source-audited disclosure-limited photo coverage; never writes raw locations.
     from analysis.v5.export_v5_photo_coverage_5deg import export as export_photo_coverage
     export_photo_coverage(wild, OUT/'v5_photo_coverage_5deg_public.csv')
+    from analysis.v5.audit_angle_suspects import export_s2 as audit_angle_s2
+    audit_angle_s2(wild, OUT/'v5_angle_suspect_s2.json')
     frozen=json.loads(Path('analysis/v4/results/20261021_unified_abcde/S2_TWO_SPECIES_FULL_WCVP_NICHE_VERIFIED_20261021.json').read_text())
     occ=[];breadth=[];contrasts=[];slopes=[];pairs=[];head_overlap=[];configuration=[];centroids=[]
     for sp,rows in wild.groupby('taxon_name'):
