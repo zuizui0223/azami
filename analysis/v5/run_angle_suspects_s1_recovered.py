@@ -148,5 +148,9 @@ def main():
     print("V5_ANGLE_S1_RECOVERED_AUDIT_AGGREGATED_JSON_START")
     print(json.dumps(report,ensure_ascii=False,separators=(",",":")))
     print("V5_ANGLE_S1_RECOVERED_AUDIT_AGGREGATED_JSON_END")
+    # Use the *exact same 157,822 records* to estimate consequences
+    # of original image-angle error on the adopted 1°/5° five-axis results.
+    from analysis.v5.v5_angle_error_sensitivity import run as sensitivity
+    sensitivity(selected,OUT/"v5_angle_error_sensitivity.json")
 
 if __name__=="__main__":main()
