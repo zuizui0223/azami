@@ -85,6 +85,8 @@ jobs:
                 flush=True)
           PY
       - name: Audit photographed orientation risk without full trait refit
+        env:
+          AZAMI_METADATA_KEY: ${{ secrets.AZAMI_METADATA_KEY }}
         run: python -m analysis.v5.run_angle_suspects_s1_recovered
       - uses: actions/upload-artifact@v4
         with:
