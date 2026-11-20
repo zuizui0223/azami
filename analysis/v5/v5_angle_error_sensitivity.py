@@ -46,6 +46,9 @@ def analyse(frame:pd.DataFrame, degrees:int, *, ignore_angle:bool=False)->dict:
     z,_=standardise_cells(cells,ANNUAL)
     taxa=h.eligible_taxa(z)
     assert (len(taxa),len(cells))==GRAIN[degrees]
+    # Preserve exact source y3 coordinates when the 2-trait sensitivity
+    # deliberately removes the angle dimension.
+    original_y3=[t["y"].copy() for t in taxa]
     for t,(_,g) in zip(taxa,z.groupby("accepted_key",sort=True)):
         assert len(t["x"])==len(g)
         t["x"]=np.column_stack([
@@ -77,10 +80,7 @@ def analyse(frame:pd.DataFrame, degrees:int, *, ignore_angle:bool=False)->dict:
         # scenarios, supply original 3D coordinates *only for the climate mask*,
         # then replace d with actual 2D Euclidean phenotype distances.
         if ignore_angle:
-            y3=np.stack([
-                z.loc[z.accepted_key.eq(t["taxon"]),["_z3","_z4","_z5"]].to_numpy(float)[ix]
-                for t,ix in zip(taxa,picks)
-            ])
+            y3=np.stack([full[ix] for full,ix in zip(original_y3,picks)])
             pair,support=h.matched_pairs(x,y3,sector,THRESHOLD)
             if pair is not None:
                 pair=dict(pair,d=np.linalg.norm(
