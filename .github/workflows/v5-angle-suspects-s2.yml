@@ -91,4 +91,5 @@ jobs:
           name: v5-angle-suspects-s2-aggregate
           path: |
             work/submission/public/v5_angle_suspect_s2.json
+            work/submission/public/v5_angle_repeatability_s2.json
           if-no-files-found: error
