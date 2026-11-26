@@ -45,7 +45,9 @@ def distances(reference,values,k=5):
     if (sd<=0).any():raise ValueError("Constant native feature")
     ref=(reference-mu)/sd
     z=(values-mu)/sd
-    return cKDTree(ref).query(z,k=k)[0].mean(1)
+    if not 1<=k<=len(ref):raise ValueError("Invalid nearest-neighbor count")
+    # Sequence k preserves the neighbor axis even for k=1 (scipy squeezes scalar k=1).
+    return cKDTree(ref).query(z,k=list(range(1,k+1)))[0].mean(axis=1)
 
 def calibration(n,c,cols,splits):
     a=n[cols].to_numpy(float);b=c[cols].to_numpy(float)
