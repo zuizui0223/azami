@@ -1,0 +1,21 @@
+# Standing genetic variation and contemporary invasion: next research question (2026-11-26)
+
+## Theory
+The speed of invasion adaptation can depend on variants available before a new selection regime. SGV is a hypothesis about inherited alleles already present in the colonizing population before selection; today's full native-range observed phenotypes are not an ancestral allele pool. Ecological fitting or source sorting can produce range expansion without post-introduction evolution. Treat this as a falsifiable evolutionary mechanism, not a title claiming a discovery.
+- Barrett & Schluter (2008) TREE, doi:10.1016/j.tree.2007.09.008.
+- Prentis et al. (2008), Adaptive evolution in invasive species, PMID 18467157.
+- Alexander (2013), Evolution under changing climates: climatic niche stasis despite rapid evolution in a non-native plant, PMID 23902908.
+- Colautti & Barrett (2013), Rapid adaptation to climate facilitates range expansion of an invasive plant, PMID 24136968.
+- Guggisberg et al. (2012), Invasion history of North American Canada thistle, Cirsium arvense, doi:10.1111/j.1365-2699.2012.02746.x. Multiple lineages/introductions, admixture and possible preadaptation complicate temporal interpretation.
+- Genetically Based Trait Differentiation but Lack of Trade-offs between Stress Tolerance and Performance in Introduced Canada Thistle (2020), doi:10.1016/j.xplc.2020.100116. Common gardens of European and N American populations support genetically based differentiation of performance/stress traits; not evidence of genetic colour change.
+- NIES Invasive Species of Japan, Cirsium vulgare: https://www.nies.go.jp/biodiversity/invasive/DB/detail/80470e.html reports first record in Hokkaido 1960s, origin North America (secondary introduction). First record is not founding date.
+
+## Predictions and evidence gates
+P1: substantial climatic occupancy shift with contemporary native-like phenotypes. Descriptive support, not demonstrated ancestral genotypes.
+P2: specific phenotypes increase in frequency in introduced novel climates. Eight-endpoint results exploratory only; chroma lead, region-within audit attenuated earlier continuous association.
+P3: temporal redistribution within the same introduced geographic populations or stable local cells (not space-for-time). Assess the existing dated observations for balanced repeated cell cohorts, year/month/observer/measurement shifts. Historical first records are interval-censored proxy for residence time, not evidence of trait change; separate introduction regions and source histories. Predeclare minimum cells, blocks, time-span, repeated observations and blind quality controls before testing all eight traits. No conversion of a modern cross-sectional range difference divided by residence time into rate. A contemporary time trend is still phenotypic, potentially plastic or sampling driven.
+P4: trait differences persist in a common environment and predict relative fitness in the new climate, e.g. reciprocal common garden across multiple populations from known source and introduced ranges, color standardization and seed set, survival. Require population/lineage replication and controls for maternal effects.
+P5: candidate inherited variants existed in founding/source populations before the selective regime and increased after introduction. Need source assignment and population-genomic or dated historical DNA, association with trait and fitness, comparison against demographic/ancestry null. Modern native presence alone is insufficient. Distinguish repeated introduction/admixture, drift and novel mutation.
+
+## Immediate transition
+Stop further cross-sectional model tuning; identify whether the existing observation dates support P3 and whether published species-level source/genomic data can support P4/5. Prioritize C. vulgare for photographic chroma candidate; use C. arvense published population history as a distinct comparative system, not as genetic validation of C. vulgare. Any new temporal analysis requires stable observation conditions and source histories; if insufficient, stop and report. No modifications to main/poster until evidence gates are evaluated.
