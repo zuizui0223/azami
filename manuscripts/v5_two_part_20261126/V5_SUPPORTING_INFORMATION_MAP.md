@@ -16,6 +16,9 @@ Companion to [V5_MANUSCRIPT_EN.md](V5_MANUSCRIPT_EN.md) and [Japanese interpreta
 
 | S11 | Spatial variance partition, regional contrast cancellation, fixed climate-dependent shape transfer and incomplete folds | [curve-mechanism results](../../analysis/v5/results/phenotype_curve_mechanism/RESULTS_JA.md), [run 45940907456](https://github.com/zuizui0223/azami/actions/runs/45940907456), [artifact 15173220991](https://github.com/zuizui0223/azami/actions/runs/45940907456/artifacts/15173220991) |
 
+| S12 | Regional score contributions, equal-region curves, joint marginal-tail signs | [regional diagnosis](../../analysis/v5/results/phenotype_curve_regional_structure/RESULTS_JA.md), [run 45945070400](https://github.com/zuizui0223/azami/actions/runs/45945070400), [artifact 15174622514](https://github.com/zuizui0223/azami/actions/runs/45945070400/artifacts/15174622514) |
+| S13 | Fixed water-only reconstruction, all six models, complete-fold skill, all reconstructed curves and failure counts | [reconstruction results](../../analysis/v5/results/phenotype_water_curve_reconstruction/RESULTS_JA.md), [run 45946843871](https://github.com/zuizui0223/azami/actions/runs/45946843871), [artifact 15175325712](https://github.com/zuizui0223/azami/actions/runs/45946843871/artifacts/15175325712) |
+
 ## Claims and numerical boundaries
 
 - Resemblance: within-taxon Holm .004/.004; between-taxon 5-axis .076/.012, matched 3-axis .016/.016. Distinguish .076 from significance. Signed coefficients have pointwise intervals, not adjusted confirmation.
@@ -27,6 +30,8 @@ Companion to [V5_MANUSCRIPT_EN.md](V5_MANUSCRIPT_EN.md) and [Japanese interpreta
 - Preserve observation audit: pooled rarity–chroma associations attenuate with geographic centering, native transfer predictions fail, and out-of-region enrichment prediction gains small. Negative results matter to the discussion.
 
 - Regional cancellation: chroma CA 99.85%/98.53%, CV 21.07%/14.70%, pair-weighted differences in native SD. Not independent replication, a causal fraction or decomposition of B. CA primary among-cell variance .417→.168, within-cell .456→.475. CV angle variance decomposition definition-dependent. Fixed climate-shape models did not improve completed held-out comparisons; preserve incomplete folds.
+
+- Direct shape reconstruction: primary CV water-only species shape allocation gain +0.953% versus null, constant B +0.999%; reconstructed chroma b/c .107/.012 vs observed .270/−.115, angle .007/−.005 vs observed .042/.126. Primary CA and shared-response full-fold results unavailable; alternative definition gives negligible improvement or deterioration. Equal-region and tail-sign checks are descriptive. No environmental mechanism or selection regime identified.
 
 ## Remaining work before submission
 Assemble exact aggregate tables from retained verified artifacts (do not invent missing values). Prepare final Figs. 1–5, graphical QC and captions. Harmonize citation metadata and photo/occurrence source licensing, WCVP/CHELSA version details, data-access and author statements. No claim of complete publication-ready SI or finished figures at this stage. Prior final decision retained as historical editorial record; this V5 manuscript supersedes its storyline without modifying results, main branch, or poster.
