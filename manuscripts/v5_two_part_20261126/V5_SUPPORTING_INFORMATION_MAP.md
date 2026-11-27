@@ -14,6 +14,8 @@ Companion to [V5_MANUSCRIPT_EN.md](V5_MANUSCRIPT_EN.md) and [Japanese interpreta
 | S9 | All 36 water response comparisons, actual paired climate profiles, water support diagnostics, alternative definitions | [water interaction](../../analysis/v5/results/phenotype_water_interaction/RESULTS_JA.md), [run 45918755584](https://github.com/zuizui0223/azami/actions/runs/45918755584), [artifact 15164060490](https://github.com/zuizui0223/azami/actions/runs/45918755584/artifacts/15164060490) |
 | S10 | Fixed common-water-support diagnostic, 18 estimates and 18 unavailable planned comparisons, leave-one-region results | [shared support](../../analysis/v5/results/phenotype_water_shared_support/RESULTS_JA.md), [run 45929361238](https://github.com/zuizui0223/azami/actions/runs/45929361238), [artifact 15167374646](https://github.com/zuizui0223/azami/actions/runs/45929361238/artifacts/15167374646) |
 
+| S11 | Spatial variance partition, regional contrast cancellation, fixed climate-dependent shape transfer and incomplete folds | [curve-mechanism results](../../analysis/v5/results/phenotype_curve_mechanism/RESULTS_JA.md), [run 45940907456](https://github.com/zuizui0223/azami/actions/runs/45940907456), [artifact 15173220991](https://github.com/zuizui0223/azami/actions/runs/45940907456/artifacts/15173220991) |
+
 ## Claims and numerical boundaries
 
 - Resemblance: within-taxon Holm .004/.004; between-taxon 5-axis .076/.012, matched 3-axis .016/.016. Distinguish .076 from significance. Signed coefficients have pointwise intervals, not adjusted confirmation.
@@ -23,6 +25,8 @@ Companion to [V5_MANUSCRIPT_EN.md](V5_MANUSCRIPT_EN.md) and [Japanese interpreta
 - Relative enrichment exp(4b) CV 2.94, pointwise interval 1.40–6.17, primary Holm .183105, all24 Holm .402832. Negative chroma curvature and positive angle curvature primary raw P=.009399/.010132, both Holm12=.112793. CA all 6 raw P>.05. Direct species difference raw P=.322895. No measured selection gradients or correlation selection.
 - Water comparison: full density-surplus to shared support, not full primary to restricted sensitivity. Restricted primary is unavailable, not a measured null. Species contrast 14.59→5.85pp; 95% interval −3.08 to +14.79; all 18 estimates raw P>.05 and all adjusted P=1. Support diagnostic is not causal mediation. 
 - Preserve observation audit: pooled rarity–chroma associations attenuate with geographic centering, native transfer predictions fail, and out-of-region enrichment prediction gains small. Negative results matter to the discussion.
+
+- Regional cancellation: chroma CA 99.85%/98.53%, CV 21.07%/14.70%, pair-weighted differences in native SD. Not independent replication, a causal fraction or decomposition of B. CA primary among-cell variance .417→.168, within-cell .456→.475. CV angle variance decomposition definition-dependent. Fixed climate-shape models did not improve completed held-out comparisons; preserve incomplete folds.
 
 ## Remaining work before submission
 Assemble exact aggregate tables from retained verified artifacts (do not invent missing values). Prepare final Figs. 1–5, graphical QC and captions. Harmonize citation metadata and photo/occurrence source licensing, WCVP/CHELSA version details, data-access and author statements. No claim of complete publication-ready SI or finished figures at this stage. Prior final decision retained as historical editorial record; this V5 manuscript supersedes its storyline without modifying results, main branch, or poster.

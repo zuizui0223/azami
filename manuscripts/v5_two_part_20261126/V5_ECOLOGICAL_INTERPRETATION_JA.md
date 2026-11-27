@@ -36,3 +36,7 @@ Lande & Arnold (1983) の選択勾配は形質と相対適応度の関係。適�
 ## 先行研究の根拠
 [選択勾配 Lande & Arnold 1983](https://doi.org/10.1111/j.1558-5646.1983.tb00236.x)・[選択と遺伝の区別 Svensson 2023](https://academic.oup.com/evolut/article/77/7/1493/7146186)・[環境共分散 Rausher 1992](https://academic.oup.com/evolut/article/46/3/616/6869880)・[既存遺伝変異 Barrett & Schluter 2008](https://pubmed.ncbi.nlm.nih.gov/18006185/)・[生態的適合 Agosta & Klemens 2008](https://doi.org/10.1111/j.1461-0248.2008.01237.x)・[侵入の形質とニッチ Hulme & Barrett 2013](https://doi.org/10.1111/1365-2745.12009)・[頭花方向実験 Chen et al.](https://doi.org/10.1080/17550874.2012.702793)・[向きと送粉・降雨のトレードオフ](https://pubmed.ncbi.nlm.nih.gov/33073503/)・[給水と色素 Warren & Mackenzie 2001](https://doi.org/10.1046/j.1469-8137.2001.00159.x)・[花色マクロ生態 Dalrymple et al. 2020](https://doi.org/10.1111/nph.16737)・[乾燥度と色素 Sullivan & Koski 2021](https://pubmed.ncbi.nlm.nih.gov/33653138/)・[CA生活史 Tiley 2010](https://doi.org/10.1111/j.1365-2745.2010.01678.x)・[CV生活史 Zouhar 2002](https://research.fs.usda.gov/feis/species-reviews/cirvul)。
 出典はそれぞれの系における機能・理論を支える。アザミの三選択類型を直接検証した先行研究ではない。
+
+
+## 最新Cの空間構造（2026-11-27追記）
+CA彩度の地域別平均差は主95%で5正4負、正寄与+.204342、負寄与−.203709、加重平均+.000632在来SD、相殺99.845%。密度超過98.530%。CVは21.067%/14.704%、正方向地域のセル対重み91.8%/93.7%。CA主仕様の地点間分散.417219→.167664、地点内.455630→.474510。地点間分散の減少方向は密度超過でも同じだが各空間成分の区間は0を含む。CV角度の分散増加は主仕様では主に地点間だが密度超過で同じ分解にならない。気候依存曲線の地域保留予測は完了比較で悪化し、未完折りもある。連続形質平均の相殺と分散はBの条件付き曲率そのものの因果分解でない。選択様式・気候原因・時間的収斂は未同定。[元結果](../../analysis/v5/results/phenotype_curve_mechanism/RESULTS_JA.md)。
